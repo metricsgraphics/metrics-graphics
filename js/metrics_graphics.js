@@ -215,7 +215,6 @@ function moz_chart(){
 	// alt
 	if (args.markers){
 		//
-		console.log(args.markers);
 		svg.selectAll('.dates').data(args.markers).enter().append('svg:line')
 			.attr('x1', function(d){return args.scales.X(d['date'])})
 			.attr('x2', function(d){return args.scales.X(d['date'])})
@@ -375,7 +374,6 @@ function moz_chart(){
 				var current_date = d;
 				var next_date, previous_date;
 				var x_coord;
-				//console.log(current_date, i);
 				if (i == 0){
 					next_date = args.data[1];
 					x_coord = args.scalefns.xf(current_date) - (args.scalefns.xf(next_date) - args.scalefns.xf(current_date))/2;
