@@ -11,7 +11,8 @@ moz.defaults.all = {
 	data:     [],
 	left:     50,
 	right:    10,
-	first: false,
+	first: false,                    // not sure what this is anymore.
+	markers: null,                   // sets the marker lines        
 	x_accessor:'date',
 	y_accessor:'value',
 	y_max_accessor:'value',
@@ -128,7 +129,7 @@ function moz_chart(){
 	add_date_x(args);
 	add_value_y(args);
 
-	var versions_in_range = app.versions;
+	//var versions_in_range = app.versions;
 
 
 	args.scalefns.xf = function(di){
@@ -212,25 +213,29 @@ function moz_chart(){
 		.attr('stroke', 'black');
 
 	// alt
-	svg.selectAll('.dates').data(app.versions).enter().append('svg:line')
-		.attr('x1', function(d){return args.scales.X(d['date'])})
-		.attr('x2', function(d){return args.scales.X(d['date'])})
-		.attr('y1', args.top)
-		.attr('y2', args.height - args.bottom - args.buffer)
-		.attr('opacity', .2)
-		.attr('stroke-dasharray', '3,1')
-		.attr('stroke','black');
+	if (args.markers){
+		//
+		console.log(args.markers);
+		svg.selectAll('.dates').data(args.markers).enter().append('svg:line')
+			.attr('x1', function(d){return args.scales.X(d['date'])})
+			.attr('x2', function(d){return args.scales.X(d['date'])})
+			.attr('y1', args.top)
+			.attr('y2', args.height - args.bottom - args.buffer)
+			.attr('opacity', .2)
+			.attr('stroke-dasharray', '3,1')
+			.attr('stroke','black');
 
-	svg.selectAll('.dates').data(app.versions).enter().append('svg:text')
-		.attr('x', function(d){return args.scales.X(d['date'])})
-		.attr('y', args.top-8)
-		.attr('text-anchor', 'middle')
-		.attr('opacity', .2)
-		.attr('font-size', 8)
-		.attr('font-weight', 300)
-		.text(function(d){return d['version']})
-		.attr('fill', 'black')
-		.attr('stroke','black');
+	svg.selectAll('.dates').data(args.markers).enter().append('svg:text')
+			.attr('x', function(d){return args.scales.X(d['date'])})
+			.attr('y', args.top-8)
+			.attr('text-anchor', 'middle')
+			.attr('opacity', .2)
+			.attr('font-size', 8)
+			.attr('font-weight', 300)
+			.text(function(d){return d['label']})
+			.attr('fill', 'black')
+			.attr('stroke','black');
+	}
 
 	var years = d3.time.years(
 		d3.min(args.data, function(d){return d[args.x_accessor]}), 
