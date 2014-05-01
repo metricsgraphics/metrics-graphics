@@ -17,6 +17,7 @@ moz.defaults.all = {
 	y_max_accessor:'value',
 	list:     false,
 	goal:     null,
+	area:     'rgba(0,0,255,.3)',
 	top:      40,
 	bottom:   30,
 	xax_tick: 5,
@@ -197,12 +198,13 @@ function moz_chart(){
 	//
 
 	// main area
-	svg.append('svg:path')
-		.attr('d', area(args.data))
-		.attr('fill', 'blue')
-		.attr('opacity', .3)
-		.attr('stroke', 'none');
-
+	if (args.area){
+		svg.append('svg:path')
+			.attr('d', area(args.data))
+			.attr('fill', args.area)
+			.attr('stroke', 'none');	
+	}
+	
 	// main line
 	svg.append('svg:path')
 		.attr('d', line(args.data))

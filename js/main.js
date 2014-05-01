@@ -26,9 +26,9 @@ d3.json('data/firefox_releases.json', function(versions){
 
 		moz_chart({
 			data: data, 
-			width:600,
-			height:250,
-			right:20,
+			width: 600,
+			height: 250,
+			right: 20,
 			target:'div#fake_users',
 			x_accessor:'date', 
 			y_accessor:'value'});
@@ -46,6 +46,7 @@ d3.json('data/firefox_releases.json', function(versions){
 			width:600,
 			height:250,
 			right:20,
+			area: false,
 			type:'percentage',
 			target:'div#percentage',
 			x_accessor:'date', 
