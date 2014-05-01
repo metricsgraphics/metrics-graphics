@@ -1,0 +1,244 @@
+body {
+	margin:0;
+	font-family: 'Open Sans', sans-serif;
+	background-color:white;
+	color:black;
+}
+
+div#container {
+}
+
+div#content-body {
+	margin:auto;
+	margin-top:10px;
+}
+
+svg {
+/*	outline:1px dotted gray;
+*/}
+
+span#update_status {
+	font-weight:bold;
+	opacity:.5;
+	color:gray;
+}
+
+
+div#head {
+	border-bottom:.1px solid rgba(255,255,255,.5);
+	margin-bottom:20px;
+
+}
+
+div#update_description {
+	text-align:center;
+	font-weight:300;
+	text-transform:uppercase;
+	margin-bottom:20px;
+}
+
+div#head h1 {
+	font-weight:300;
+	width:100%;
+	text-align:center;
+	margin:0;
+	font-size:50px;
+}
+
+div#head h2 {
+	text-align:center;
+	margin:0;
+	color:red;
+	font-size:18px;
+	font-weight:300;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+
+div#head h2 span {
+	font-weight:800;
+	font-size:16px;
+	display:inline-block;
+	color:white;
+	background-color:red;
+	opacity:.3;
+	padding:3px;
+	padding-left:5px;
+	padding-right:5px;
+	border-radius:5px;
+}
+
+
+
+/*///////////////////////////////*/
+/*             Torso             */
+/*///////////////////////////////*/
+
+div#is_data_real {
+	position:absolute;
+	left:60px;
+	top:20px;
+	width:200px;
+	background-color:rgba(255,40,0,.5);
+	text-align:center;
+	font-size:11px;
+	padding:10px;
+	border-radius:10px;
+	color:white;
+	font-weight:800;
+}
+
+div#description {
+	width:600px;
+	margin:auto;
+	font-size:12px;
+}
+
+div#torso {
+	width:1400px;
+	margin:auto;
+	margin-top:50px;
+}
+
+div#torso div#first {
+	width:1200px;
+	margin:auto;
+}
+
+div#torso div#first div {
+	float:left;
+}
+
+
+div svg {
+}
+
+h2.first {
+	padding-left:50px;
+	text-transform:uppercase;
+	font-weight:300;
+	margin-bottom:0;
+}
+
+/*///////////////////////////////*/
+/*             trunk             */
+/*///////////////////////////////*/
+
+div#after {
+}
+
+div.section {
+	clear:both;
+	width:1200px;
+	margin:auto;
+	padding-top:30px;
+}
+
+
+div.brief {
+	width:400px;
+	float:left;
+	font-size:13px;
+}
+
+div.brief h2 {
+	margin:0;
+	font-size:30px;
+	font-weight:normal;
+	text-transform:uppercase;
+
+}
+
+
+div.graphs {
+	width:800px;
+	float:left;
+}
+
+div.below_graph {
+	float:left;
+}
+
+h2.below {
+	padding-left:50px;
+	text-transform:uppercase;
+	font-weight:300;
+	margin-bottom:0;
+	margin-top:8px;
+}
+
+
+
+
+div#legs {
+
+	border-top:1px solid lightgray;
+	width:1000px;
+	min-height:100px;
+	clear:both;
+	margin:auto;
+	margin-top:40px;
+	margin-bottom:40px;
+}
+
+div#legs a {
+	color:black;
+	display:block;
+	text-decoration:none;
+	text-transform:uppercase;
+	font-weight:300;
+}
+
+div#legs a:hover {
+	text-decoration:underline;
+}
+
+
+
+div.leg {
+	padding-top:50px;
+	padding-bottom:50px;
+	float:left;
+	width:500px;
+	padding-bottom:30px;
+}
+
+div#left-leg a {
+	text-align:right;
+	padding-right:20px;
+}
+
+div#right-leg a {
+	text-align:left;
+	padding-left:20px;
+}
+
+
+
+div#feet {
+	background-color:black;
+	color:rgba(255,255,255,.9);
+	padding-top:40px;
+	height:60px;
+	clear:both;
+	width: 100%;
+	padding-bottom:50px;
+	text-align:center;
+	font-weight:normal;
+	font-size:16px;
+	box-shadow:-1px 0px 50px rgba(0,0,0,.5),
+	inset -1px 10px 10px rgba(0,0,0,.3);
+}
+
+div#feet a {
+	color:lightblue;
+	font-weight:300;
+}
+
+div#feet span {
+	font-weight:800;
+	text-transform:uppercase;
+}
+
+
+
