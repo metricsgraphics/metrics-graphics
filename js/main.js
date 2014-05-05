@@ -13,14 +13,14 @@ $(document).ready(function() {
         });
         app.versions.reverse();
 
-        d3.json('data/fake_users.json', function(data) {
-            data = _.map(data, function(d) {
+        d3.json('data/fake_users.json', function(json_data) {
+            json_data.data = _.map(json_data.data, function(d) {
                 d['date'] = fff.parse(d['date']);
                 return d;
             });
-            $('#fake_users').append('<h2>Unique fake users</h2>')
+            $('#fake_users').append('<h2>' + json_data.title + '</h2>')
             moz_chart({
-                data: data,
+                data: json_data.data,
                 width: 600,
                 height: 250,
                 right: 20,
@@ -31,8 +31,8 @@ $(document).ready(function() {
             })
         })
         
-        d3.json('data/some_percentage.json', function(data) {
-            data = _.map(data, function(d) {
+        d3.json('data/some_percentage.json', function(json_data) {
+            json_data.data = _.map(json_data.data, function(d) {
                 d['date'] = fff.parse(d['date']);
                 return d;
             });
@@ -43,9 +43,9 @@ $(document).ready(function() {
                 'date': new Date('2014-03-15'),
                 'label': '2nd Milestone'
             }, ]
-            $('#percentage').append('<h2>Some percentage</h2>')
+            $('#percentage').append('<h2>' + json_data.title + '</h2>')
             moz_chart({
-                data: data,
+                data: json_data.data,
                 width: 600,
                 height: 250,
                 right: 20,
