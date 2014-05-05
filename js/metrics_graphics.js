@@ -347,7 +347,7 @@ function goal_over(svg, args) {
             })
             .attr('opacity', 0.85);
             
-        svg.selectAll('text.adi_rollover')
+        svg.selectAll('text')
             .filter(function(g, j) {
                 return d == g;
             })
@@ -386,19 +386,10 @@ function goal_over(svg, args) {
 
 function goal_out(svg, args) {
     return function(d, i) {
-        svg.selectAll('text.adi_averages')
-            .attr('opacity', 0);
-            
-        svg.selectAll('line.adi_average')
-            .attr('opacity', 0);
-            
         svg.selectAll('circle')
             .attr('opacity', 0);
             
-        svg.selectAll('text.adi_rollover')
-            .attr('opacity', 0);
-            
-        svg.select('text.goals_rollover_text')
+        svg.select('.goals_rollover_text')
             .remove();
             
         d3.selectAll('circle.last_point')
