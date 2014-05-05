@@ -1,3 +1,5 @@
+'use strict';
+
 var moz = {};
 moz.defaults = {};
 moz.defaults.all = {
@@ -110,20 +112,15 @@ function moz_chart() {
             .attr('text-anchor', 'end')
             .text(num(d3.round(args.goal)));
     }
-    
-    var line = d3.svg.line()
-        .x(args.scalefns.xf)
-        .y(args.scalefns.yf)
-        .interpolate('cardinal');
-        
-    var area = d3.svg.area()
-        .x(args.scalefns.xf)
-        .y0(args.scales.Y(0))
-        .y1(args.scalefns.yf)
-        .interpolate('cardinal');
-        
+
     // main area
     if (args.area) {
+        var area = d3.svg.area()
+            .x(args.scalefns.xf)
+            .y0(args.scales.Y(0))
+            .y1(args.scalefns.yf)
+            .interpolate('cardinal');
+        
         svg.append('path')
             .attr('class', 'main-area')
             .attr('d', area(args.data))
@@ -131,6 +128,11 @@ function moz_chart() {
     }
     
     // main line
+    var line = d3.svg.line()
+        .x(args.scalefns.xf)
+        .y(args.scalefns.yf)
+        .interpolate('cardinal');
+        
     svg.append('path')
         .attr('class', 'main-line')
         .attr('d', line(args.data))
@@ -220,7 +222,7 @@ function moz_chart() {
                     return args.area;
                 });
                 
-    var yax_format;
+    var yax_format; // currently, {count, percentage}
     if (args.type == 'count') {
         yax_format = function(f) {
             var pf = d3.formatPrefix(f);
@@ -342,7 +344,8 @@ function moz_chart() {
 function goal_over(svg, args) {
     return function(d, i) {
         d3.selectAll('circle')
-            .attr('opacity', 0).filter(function(g, j) {
+            .attr('opacity', 0)
+            .filter(function(g, j) {
                 return d == g;
             })
             .attr('opacity', 0.85);
@@ -378,9 +381,12 @@ function goal_over(svg, args) {
             .attr('x', args.width - args.right + 4)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end')
-            .text(fmt(dd) + '  ' + num(d[args.y_accessor]));
+            .text(function() {
+                return fmt(dd) + '  ' + num(d[args.y_accessor])
+            });
     }
 }
+
 // nohup make ARGS="scripts/downloads_daily.py outData/2014-04-01.csv
 // /data/weblogs/v2_raw/download-stats.mozilla.org/2014-04-01" hadoop &
 
