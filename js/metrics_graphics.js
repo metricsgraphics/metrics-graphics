@@ -26,7 +26,7 @@ moz.defaults.all = {
     min_y: null,
     xax_count: 8,
     yax_tick: 5,
-    yax_count: 4,
+    yax_count: 5,
     axis_opacity: 0.3,
     decimal: false,
     xax_date_format: function(d) {
@@ -66,8 +66,8 @@ function moz_chart() {
             .attr('height', args.height);
                 
     // determine the x bounds, given the data, or go with specified range
-    add_date_x(args);
-    add_value_y(args);
+    args = add_date_x(args);
+    args = add_value_y(args);
         
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
@@ -373,7 +373,7 @@ function goal_over(svg, args) {
         }
         
         var dd = new Date(+d[args.x_accessor]);
-        dd.setDate(dd.getDate() + 1);
+        dd.setDate(dd.getDate());
         
         svg.append('text')
             .classed('goals_rollover_text', true)
@@ -437,7 +437,7 @@ function which_version(date) {
 function add_date_x(args) {
     var min_x = args.min_x ? args.min_x : args.data[0][args.x_accessor];
     var max_x = args.max_x ? args.max_x : _.last(args.data)[args.x_accessor];
-    
+
     args.scales.X = d3.time.scale()
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right]);
