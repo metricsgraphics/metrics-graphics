@@ -1,59 +1,43 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<title>Metrics Graphics</title>
-
-<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
- <link rel="stylesheet" type="text/css" href="css/style.css">
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src='js/underscore-min.js'></script>
-<script src='js/d3.min.js'></script>
-<script src='js/metrics_graphics.js'></script>
-<script src='js/main.js'></script>
-
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>Metrics Graphics</title>
+    
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' 
+        rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' 
+        rel='stylesheet' type='text/css'>
+    
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src='js/underscore-min.js'></script>
+    <script src='js/d3.min.js'></script>
+    <script src='js/metrics_graphics.js'></script>
+    <script src='js/main.js'></script>
 </head>
 
 <body>
+    <div id='container'>
+        <div id='content-body'>
+            <div id='head'>
+                <h1>Metrics Graphics</h1>
+            </div>
 
-<div id='container'>
-<div id='content-body'>
+            <div id='description'>
+                <p>Here is a collection, and something of a set of visual tests, of 
+                graphics we will be using. The point of this repository is to ensure 
+                that everything under js/metrics_graphics.js works properly, so we 
+                may use that file for other graph-based projects. The main file, 
+                metrics_graphics.js, requires d3, jquery, and underscore at the 
+                moment. Below are a few examples. The data here is not real.</p>
+            </div>
 
-<div id='head'>
-	<h1>Metrics Graphics</h1>
-</div>
-
-<div id='is_data_real'>
-	note: the data here is synthetic.
-</div>
-
-
-
-<div id='description'>
-<p>Here is a collection (and something of a set of visual tests) of graphics we will be using. The point of this repository is to ensure that everything under js/metrics_graphics.js works properly, so we may use that file for other graph-based projects.</p>
-<p>
-	The main file, metrics_graphics.js, requires d3, jquery, and underscore at the moment. Below are a few examples.
-</p>
-</div>
-
-<div id='torso'>
-
-<div id='first'>
-	<div id='fake_users'></div>
-	<div id='percentage'></div>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-</div>
-</div>
-
+            <div id='torso'>
+                <div id='fake_users'></div>
+                <div id='percentage'></div>
+            </div>
+        </div>
+    </div>
 </body>
+</html>
