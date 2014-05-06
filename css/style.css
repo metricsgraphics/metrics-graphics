@@ -4,6 +4,10 @@ body {
     font-family: 'Open Sans', sans-serif, Arial;
 }
 
+circle {
+    fill: #0000ff;
+}
+
 .markers line {
     opacity: 0.2;
     shape-rendering: crispEdges;
@@ -65,6 +69,7 @@ p {
 }
 
 path.main-area {
+    fill: #0000ff;
     opacity: 0.2;
     stroke: none;
 }
@@ -72,6 +77,7 @@ path.main-area {
 path.main-line {
     opacity: 0.8;
     fill: none;
+    stroke: #0000ff;
 }
 
 text {
@@ -95,6 +101,7 @@ text {
 
 .x-axis line,
 .y-axis line {
+    opacity: 0.3;
     shape-rendering: crispEdges;
     stroke: black;
 }

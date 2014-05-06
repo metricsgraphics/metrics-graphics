@@ -16,7 +16,7 @@ moz.defaults.all = {
     y_max_accessor: 'value',
     list: false,
     goal: null,
-    area: 'rgb(0,0,255)',
+    area: true,
     top: 40,
     bottom: 30,
     xax_tick: 5,
@@ -25,7 +25,6 @@ moz.defaults.all = {
     xax_count: 8,
     yax_tick: 5,
     yax_count: 5,
-    axis_opacity: 0.3,
     decimal: false,
     buffer: 8,
     type: 'count',
@@ -109,8 +108,7 @@ charts.line = function(args) {
             .attr('x1', args.scales.X(_.last(args.scales.X.ticks(args.xax_count))))
             .attr('x2', args.scales.X(_.first(args.scales.X.ticks(args.xax_count))))
             .attr('y1', args.height - args.bottom)
-            .attr('y2', args.height - args.bottom)
-            .attr('opacity', args.axis_opacity);
+            .attr('y2', args.height - args.bottom);
         
         g.selectAll('.xax-ticks')
             .data(args.scales.X.ticks(args.xax_count)).enter()
@@ -118,8 +116,7 @@ charts.line = function(args) {
                     .attr('x1', args.scales.X)
                     .attr('x2', args.scales.X)
                     .attr('y1', args.height - args.bottom)
-                    .attr('y2', args.height - args.bottom + args.xax_tick)
-                    .attr('opacity', args.axis_opacity);
+                    .attr('y2', args.height - args.bottom + args.xax_tick);
                 
         g.selectAll('.xax-labels')
             .data(args.scales.X.ticks(args.xax_count)).enter()
@@ -196,8 +193,7 @@ charts.line = function(args) {
             .attr('x1', args.left)
             .attr('x2', args.left)
             .attr('y1', args.scales.Y(_.first(args.scales.Y.ticks(args.yax_count))))
-            .attr('y2', args.scales.Y(_.last(args.scales.Y.ticks(args.yax_count))))
-            .attr('opacity', args.axis_opacity);
+            .attr('y2', args.scales.Y(_.last(args.scales.Y.ticks(args.yax_count))));
         
         g.selectAll('.yax-ticks')
             .data(args.scales.Y.ticks(args.yax_count)).enter()
@@ -205,8 +201,7 @@ charts.line = function(args) {
                     .attr('x1', args.left)
                     .attr('x2', args.left - args.yax_tick)
                     .attr('y1', args.scales.Y)
-                    .attr('y2', args.scales.Y)
-                    .attr('opacity', args.axis_opacity);
+                    .attr('y2', args.scales.Y);
                 
         g.selectAll('.yax-labels')
             .data(args.scales.Y.ticks(args.yax_count)).enter()
@@ -237,8 +232,7 @@ charts.line = function(args) {
         
             svg.append('path')
                 .attr('class', 'main-area')
-                .attr('d', area(args.data))
-                .attr('fill', args.area);
+                .attr('d', area(args.data));
         }
     
         // main line
@@ -249,10 +243,7 @@ charts.line = function(args) {
         
         svg.append('path')
             .attr('class', 'main-line')
-            .attr('d', line(args.data))
-            .attr('stroke', function() {
-                return (args.area) ? args.area : 'black';
-            });
+            .attr('d', line(args.data));
             
         return this;
     }
@@ -314,12 +305,6 @@ charts.line = function(args) {
                     .attr('r', 2.5)
                     .attr('opacity', function(d, i) {
                         return (i == args.data.length - 1) ? 0.85 : 0;
-                    })
-                    .attr('fill', function() {
-                        if(!args.area)
-                            return 'black';
-                        
-                        return args.area;
                     });
 
         //main rollover
