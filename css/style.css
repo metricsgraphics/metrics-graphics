@@ -4,13 +4,13 @@ body {
     font-family: 'Open Sans', sans-serif, Arial;
 }
 
-.dates line {
+.markers line {
     opacity: 0.2;
     shape-rendering: crispEdges;
     stroke: black;
 }
 
-.dates text {
+.markers text {
     fill: black;
     font-size: 9px;
     opacity: 0.5;
