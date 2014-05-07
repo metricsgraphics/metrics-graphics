@@ -1,43 +1,43 @@
 'use strict';
 
-var moz = {};
-moz.defaults = {};
-moz.defaults.all = {
-    scales: {},
-    scalefns: {},
-    width: 350,
-    height: 220,
-    data: [],
-    left: 50,
-    right: 10,
-    markers: null, // sets the marker lines
-    x_accessor: 'date',
-    y_accessor: 'value',
-    y_max_accessor: 'value',
-    list: false,
-    goal: null,
-    area: true,
-    top: 40,
-    bottom: 30,
-    xax_tick: 5,
-    min_x: null,
-    min_y: null,
-    xax_count: 8,
-    yax_tick: 5,
-    yax_count: 5,
-    decimal: false,
-    buffer: 8,
-    type: 'count',
-    target: '#viz',
-    xax_date_format: function(d) {
-        var df = d3.time.format('%b %d');
-        return df(d);
-    }
-}
-
 var charts = {};
 
 function moz_chart() {
+    var moz = {};
+    moz.defaults = {};
+    moz.defaults.all = {
+        scales: {},
+        scalefns: {},
+        width: 350,
+        height: 220,
+        data: [],
+        left: 50,
+        right: 10,
+        markers: null, // sets the marker lines
+        x_accessor: 'date',
+        y_accessor: 'value',
+        y_max_accessor: 'value',
+        list: false,
+        goal: null,
+        area: true,
+        top: 40,
+        bottom: 30,
+        xax_tick: 5,
+        min_x: null,
+        min_y: null,
+        xax_count: 8,
+        yax_tick: 5,
+        yax_count: 5,
+        decimal: false,
+        buffer: 8,
+        type: 'count',
+        target: '#viz',
+        xax_date_format: function(d) {
+            var df = d3.time.format('%b %d');
+            return df(d);
+        }
+    }
+
     var args = arguments[0];
     if (!args) { args = {}; }
     args = _.defaults(args, moz.defaults.all);
@@ -54,7 +54,6 @@ function moz_chart() {
         .mainPlot()
         .rollover();
 }
-
 
 
 charts.line = function(args) {
@@ -290,22 +289,6 @@ charts.line = function(args) {
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
         var g;
-        
-        g = svg.append('g')
-        .attr('class', 'point');
-                 
-        g.selectAll('.point')
-            .data(args.data).enter()
-                .append('circle')
-                    .classed('last_point', function(d, i) {
-                        return i == args.data.length - 1;
-                    })
-                    .attr('cx', args.scalefns.xf)
-                    .attr('cy', args.scalefns.yf)
-                    .attr('r', 2.5)
-                    .attr('opacity', function(d, i) {
-                        return (i == args.data.length - 1) ? 0.85 : 0;
-                    });
 
         //main rollover
         g = svg.append('g')
@@ -356,11 +339,12 @@ charts.line = function(args) {
         
         return function(d, i) {
             d3.selectAll('circle')
-                .attr('opacity', 0)
-                .filter(function(g, j) {
-                    return d == g;
-                })
-                .attr('opacity', 0.85);
+                .remove();
+            
+            svg.append('circle')
+                    .attr('cx', args.scales.X(d.date))
+                    .attr('cy', args.scales.Y(d.value))
+                    .attr('r', 2.5);
             
             svg.selectAll('text')
                 .filter(function(g, j) {
@@ -408,9 +392,6 @@ charts.line = function(args) {
             
             svg.select('.goals_rollover_text')
                 .remove();
-            
-            d3.selectAll('circle.last_point')
-                .attr('opacity', 0.85);
         }
     }
     
