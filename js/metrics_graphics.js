@@ -55,6 +55,136 @@ function moz_chart() {
         .rollover();
 }
 
+function xAxis(args) {
+    var svg = d3.select(args.target + ' svg');
+    var g;
+    
+    // determine the x bounds, given the data, or go with specified range
+    var min_x = args.min_x ? args.min_x : args.data[0][args.x_accessor];
+    var max_x = args.max_x ? args.max_x : _.last(args.data)[args.x_accessor];
+
+    args.scales.X = d3.time.scale()
+        .domain([min_x, max_x])
+        .range([args.left + args.buffer, args.width - args.right]);
+
+    // x axis
+    g = svg.append('g')
+        .attr('class', 'x-axis');
+    
+    g.append('line')
+        .attr('x1', args.scales.X(_.last(args.scales.X.ticks(args.xax_count))))
+        .attr('x2', args.scales.X(_.first(args.scales.X.ticks(args.xax_count))))
+        .attr('y1', args.height - args.bottom)
+        .attr('y2', args.height - args.bottom);
+    
+    g.selectAll('.xax-ticks')
+        .data(args.scales.X.ticks(args.xax_count)).enter()
+            .append('line')
+                .attr('x1', args.scales.X)
+                .attr('x2', args.scales.X)
+                .attr('y1', args.height - args.bottom)
+                .attr('y2', args.height - args.bottom + args.xax_tick);
+            
+    g.selectAll('.xax-labels')
+        .data(args.scales.X.ticks(args.xax_count)).enter()
+            .append('text')
+                .attr('x', args.scales.X)
+                .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
+                .attr('dy', '.50em')
+                .attr('text-anchor', 'middle')
+                .text(function(d) {
+                    return args.xax_date_format(d);
+                })
+        
+    //are we adding years to x-axis
+    var years = d3.time.years(
+        d3.min(args.data, function(d) { return d[args.x_accessor]; }),
+        d3.max(args.data, function(d) { return d[args.x_accessor]; })
+    );
+    
+    g = svg.append('g')
+        .attr('class', 'year-marker');
+    
+    g.selectAll('.year_marker')
+        .data(years).enter()
+            .append('line')
+                .attr('x1', args.scales.X)
+                .attr('x2', args.scales.X)
+                .attr('y1', args.top)
+                .attr('y2', args.height - args.bottom);
+            
+    var yformat = d3.time.format('%Y');
+    g.selectAll('.year_marker')
+        .data(years).enter()
+            .append('text')
+                .attr('x', args.scales.X)
+                .attr('y', args.height - args.bottom + 28)
+                .attr('text-anchor', 'middle')
+                .text(function(d) {
+                    return yformat(d)
+                });
+                
+    return this;
+}
+    
+function yAxis(args) {
+    var svg = d3.select(args.target + ' svg');
+    var g;
+    
+    args.scales.Y = d3.scale.linear()
+        .domain([0, Math.max(d3.max(args.data, function(d) {
+            return d[args.y_accessor]
+        }) * 10 / 9, args.goal * 10 / 9)])
+        .range([args.height - args.bottom - args.buffer, args.top]);
+    
+    
+    var yax_format; // currently, {count, percentage}
+    if (args.type == 'count') {
+        yax_format = function(f) {
+            var pf = d3.formatPrefix(f);
+            return pf.scale(f) + pf.symbol;
+        };
+    }
+    else {
+        yax_format = function(d_) {
+            var n = d3.format('%p');
+            return n(d_);
+        }
+    }
+        
+    // y axis
+    g = svg.append('g')
+        .attr('class', 'y-axis');
+
+    g.append('line')
+        .attr('x1', args.left)
+        .attr('x2', args.left)
+        .attr('y1', args.scales.Y(_.first(args.scales.Y.ticks(args.yax_count))))
+        .attr('y2', args.scales.Y(_.last(args.scales.Y.ticks(args.yax_count))));
+    
+    g.selectAll('.yax-ticks')
+        .data(args.scales.Y.ticks(args.yax_count)).enter()
+            .append('line')
+                .attr('x1', args.left)
+                .attr('x2', args.left - args.yax_tick)
+                .attr('y1', args.scales.Y)
+                .attr('y2', args.scales.Y);
+            
+    g.selectAll('.yax-labels')
+        .data(args.scales.Y.ticks(args.yax_count)).enter()
+            .append('text')
+                .attr('x', args.left - args.yax_tick * 3 / 2)
+                .attr('dx', -3).attr('y', args.scales.Y)
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'end')
+                .text(function(d, i) {
+                    var o = yax_format(d);
+                    return o;
+                })
+                
+    return this;
+}
+    
 
 charts.line = function(args) {
     this.args = args;
@@ -81,139 +211,9 @@ charts.line = function(args) {
         }
         
         //we kind of need axes in all cases
-        this.xAxis(args);
-        this.yAxis(args);
+        xAxis(args);
+        yAxis(args);
         
-        return this;
-    }
-    
-    this.xAxis = function(args) {
-        var svg = d3.select(args.target + ' svg');
-        var g;
-        
-        // determine the x bounds, given the data, or go with specified range
-        var min_x = args.min_x ? args.min_x : args.data[0][args.x_accessor];
-        var max_x = args.max_x ? args.max_x : _.last(args.data)[args.x_accessor];
-
-        args.scales.X = d3.time.scale()
-            .domain([min_x, max_x])
-            .range([args.left + args.buffer, args.width - args.right]);
-    
-        // x axis
-        g = svg.append('g')
-            .attr('class', 'x-axis');
-        
-        g.append('line')
-            .attr('x1', args.scales.X(_.last(args.scales.X.ticks(args.xax_count))))
-            .attr('x2', args.scales.X(_.first(args.scales.X.ticks(args.xax_count))))
-            .attr('y1', args.height - args.bottom)
-            .attr('y2', args.height - args.bottom);
-        
-        g.selectAll('.xax-ticks')
-            .data(args.scales.X.ticks(args.xax_count)).enter()
-                .append('line')
-                    .attr('x1', args.scales.X)
-                    .attr('x2', args.scales.X)
-                    .attr('y1', args.height - args.bottom)
-                    .attr('y2', args.height - args.bottom + args.xax_tick);
-                
-        g.selectAll('.xax-labels')
-            .data(args.scales.X.ticks(args.xax_count)).enter()
-                .append('text')
-                    .attr('x', args.scales.X)
-                    .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
-                    .attr('dy', '.50em')
-                    .attr('text-anchor', 'middle')
-                    .text(function(d) {
-                        return args.xax_date_format(d);
-                    })
-            
-        //are we adding years to x-axis
-        var years = d3.time.years(
-            d3.min(args.data, function(d) { return d[args.x_accessor]; }),
-            d3.max(args.data, function(d) { return d[args.x_accessor]; })
-        );
-        
-        g = svg.append('g')
-            .attr('class', 'year-marker');
-        
-        g.selectAll('.year_marker')
-            .data(years).enter()
-                .append('line')
-                    .attr('x1', args.scales.X)
-                    .attr('x2', args.scales.X)
-                    .attr('y1', args.top)
-                    .attr('y2', args.height - args.bottom);
-                
-        var yformat = d3.time.format('%Y');
-        g.selectAll('.year_marker')
-            .data(years).enter()
-                .append('text')
-                    .attr('x', args.scales.X)
-                    .attr('y', args.height - args.bottom + 28)
-                    .attr('text-anchor', 'middle')
-                    .text(function(d) {
-                        return yformat(d)
-                    });
-                    
-        return this;
-    }
-    
-    this.yAxis = function(args) {
-        var svg = d3.select(args.target + ' svg');
-        var g;
-        
-        args.scales.Y = d3.scale.linear()
-            .domain([0, Math.max(d3.max(args.data, function(d) {
-                return d[args.y_accessor]
-            }) * 10 / 9, args.goal * 10 / 9)])
-            .range([args.height - args.bottom - args.buffer, args.top]);
-        
-        
-        var yax_format; // currently, {count, percentage}
-        if (args.type == 'count') {
-            yax_format = function(f) {
-                var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
-            };
-        }
-        else {
-            yax_format = function(d_) {
-                var n = d3.format('%p');
-                return n(d_);
-            }
-        }
-            
-        // y axis
-        g = svg.append('g')
-            .attr('class', 'y-axis');
-    
-        g.append('line')
-            .attr('x1', args.left)
-            .attr('x2', args.left)
-            .attr('y1', args.scales.Y(_.first(args.scales.Y.ticks(args.yax_count))))
-            .attr('y2', args.scales.Y(_.last(args.scales.Y.ticks(args.yax_count))));
-        
-        g.selectAll('.yax-ticks')
-            .data(args.scales.Y.ticks(args.yax_count)).enter()
-                .append('line')
-                    .attr('x1', args.left)
-                    .attr('x2', args.left - args.yax_tick)
-                    .attr('y1', args.scales.Y)
-                    .attr('y2', args.scales.Y);
-                
-        g.selectAll('.yax-labels')
-            .data(args.scales.Y.ticks(args.yax_count)).enter()
-                .append('text')
-                    .attr('x', args.left - args.yax_tick * 3 / 2)
-                    .attr('dx', -3).attr('y', args.scales.Y)
-                    .attr('dy', '.35em')
-                    .attr('text-anchor', 'end')
-                    .text(function(d, i) {
-                        var o = yax_format(d);
-                        return o;
-                    })
-                    
         return this;
     }
     
