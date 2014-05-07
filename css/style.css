@@ -1,3 +1,15 @@
+.area1-color {
+    fill: #0000ff;
+}
+
+.area2-color {
+    fill: #05b378;
+}
+
+.area3-color {
+    fill: #db4437;
+}
+
 body {
     background-color: #fff;
     color: #000;
@@ -64,13 +76,24 @@ h2 {
     text-align: center;
 }
 
+.line1-color {
+    stroke: #0000ff;
+}
+
+.line2-color {
+    stroke: #05b378;
+}
+
+.line3-color {
+    stroke: #db4437;
+}
+
 p {
     font-family: 'PT Serif', serif;
     font-size: 16px;
 }
 
 path.main-area {
-    fill: #0000ff;
     opacity: 0.2;
     stroke: none;
 }
@@ -78,7 +101,6 @@ path.main-area {
 path.main-line {
     opacity: 0.8;
     fill: none;
-    stroke: #0000ff;
 }
 
 text {

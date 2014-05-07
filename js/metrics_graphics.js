@@ -6,6 +6,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        chart_type: 'line',
         scales: {},
         scalefns: {},
         width: 350,
@@ -48,20 +49,27 @@ function moz_chart() {
         args.y_accessor = 1;
     }
     
-    //build the chart (assuming line chart for now)
-    charts.line(args)
-        .markers()
-        .mainPlot()
-        .rollover();
+    //build the chart
+    charts.line(args).markers().mainPlot().rollover();
 }
 
 function xAxis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
-    
+    var min_x;
+    var max_x;
+
     // determine the x bounds, given the data, or go with specified range
-    var min_x = args.min_x ? args.min_x : args.data[0][args.x_accessor];
-    var max_x = args.max_x ? args.max_x : _.last(args.data)[args.x_accessor];
+    for(var i=0; i<args.data.length; i++) {
+        if(args.data[i][0][args.x_accessor] < min_x || !min_x)
+            min_x = args.data[i][0][args.x_accessor];
+
+        if(_.last(args.data[i])[args.x_accessor] > max_x || !max_x)
+            max_x = _.last(args.data[i])[args.x_accessor];
+    }
+
+    min_x = args.min_x ? args.min_x : min_x;
+    max_x = args.max_x ? args.max_x : max_x;
 
     args.scales.X = d3.time.scale()
         .domain([min_x, max_x])
@@ -131,8 +139,9 @@ function yAxis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
     
+    //todo get ymax from all lines if multiple lines, currently getting it from first line
     args.scales.Y = d3.scale.linear()
-        .domain([0, Math.max(d3.max(args.data, function(d) {
+        .domain([0, Math.max(d3.max(args.data[0], function(d) {
             return d[args.y_accessor]
         }) * 10 / 9, args.goal * 10 / 9)])
         .range([args.height - args.bottom - args.buffer, args.top]);
@@ -185,17 +194,19 @@ function yAxis(args) {
     return this;
 }
     
-
 charts.line = function(args) {
     this.args = args;
 
     this.init = function(args) {
         //do we need to clean up dates? assume we always do for now
         var fff = d3.time.format('%Y-%m-%d');
-        args.data = _.map(args.data, function(d) {
-            d['date'] = fff.parse(d['date']);
-            return d;
-        });
+
+        for(var i=0;i<args.data.length;i++) {
+            args.data[i] = _.map(args.data[i], function(d) {
+                d['date'] = fff.parse(d['date']);
+                return d;
+            });
+        }
     
         d3.select(args.target)
             .append('svg')
@@ -222,17 +233,11 @@ charts.line = function(args) {
         var g;
           
         // main area
-        if (args.area) {
-            var area = d3.svg.area()
-                .x(args.scalefns.xf)
-                .y0(args.scales.Y(0))
-                .y1(args.scalefns.yf)
-                .interpolate('cardinal');
-        
-            svg.append('path')
-                .attr('class', 'main-area')
-                .attr('d', area(args.data));
-        }
+        var area = d3.svg.area()
+            .x(args.scalefns.xf)
+            .y0(args.scales.Y(0))
+            .y1(args.scalefns.yf)
+            .interpolate('cardinal');
     
         // main line
         var line = d3.svg.line()
@@ -240,9 +245,17 @@ charts.line = function(args) {
             .y(args.scalefns.yf)
             .interpolate('cardinal');
         
-        svg.append('path')
-            .attr('class', 'main-line')
-            .attr('d', line(args.data));
+        for(var i=args.data.length-1; i>=0; i--) {
+            if (args.area) {
+                svg.append('path')
+                    .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
+                    .attr('d', area(args.data[i]));
+            }
+
+            svg.append('path')
+                .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                .attr('d', line(args.data[i]));
+        }
             
         return this;
     }
@@ -290,12 +303,12 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         var g;
 
-        //main rollover
+        //main rollover, only for first line at the moment for multi-line charts, todo
         g = svg.append('g')
             .attr('class', 'transparent-rollover-rect');
         
         g.selectAll('.periods')
-            .data(args.data).enter()
+            .data(args.data[0]).enter()
                 .append('rect')
                     .attr('x', function(d, i) {
                         var current_date = d;
@@ -303,13 +316,13 @@ charts.line = function(args) {
                         var x_coord;
                     
                         if (i == 0) {
-                            next_date = args.data[1];
+                            next_date = args.data[0][1]; //todo
                             x_coord = args.scalefns.xf(current_date) 
                                 - (args.scalefns.xf(next_date) 
                                 - args.scalefns.xf(current_date)) / 2;
                         }
                         else {
-                            previous_date = args.data[i - 1];
+                            previous_date = args.data[0][i - 1]; //todo
                             x_coord = args.scalefns.xf(current_date) 
                                 - (args.scalefns.xf(current_date) 
                                 - args.scalefns.xf(previous_date)) / 2;
@@ -319,12 +332,12 @@ charts.line = function(args) {
                     })
                     .attr('y', args.top)
                     .attr('width', function(d, i) {
-                        if (i != args.data.length - 1) {
-                            return args.scalefns.xf(args.data[i + 1]) - args.scalefns.xf(d);
+                        if (i != args.data[0].length - 1) { //todo
+                            return args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d); //todo
                         }
                         else {
-                            return args.scalefns.xf(args.data[1]) 
-                                - args.scalefns.xf(args.data[0]);
+                            return args.scalefns.xf(args.data[0][1]) //todo
+                                - args.scalefns.xf(args.data[0][0]); //todo
                         }
                     })
                     .attr('height', args.height - args.bottom)
@@ -342,8 +355,8 @@ charts.line = function(args) {
                 .remove();
             
             svg.append('circle')
-                    .attr('cx', args.scales.X(d.date))
-                    .attr('cy', args.scales.Y(d.value))
+                    .attr('cx', args.scales.X(d[args.x_accessor]))
+                    .attr('cy', args.scales.Y(d[args.y_accessor]))
                     .attr('r', 2.5);
             
             svg.selectAll('text')
