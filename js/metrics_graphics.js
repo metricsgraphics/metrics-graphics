@@ -31,7 +31,7 @@ function moz_chart() {
         yax_count: 5,
         decimal: false,
         buffer: 8,
-        type: 'count',
+        format: 'count',
         target: '#viz',
         xax_date_format: function(d) {
             var df = d3.time.format('%b %d');
@@ -148,7 +148,7 @@ function yAxis(args) {
     
     
     var yax_format; // currently, {count, percentage}
-    if (args.type == 'count') {
+    if (args.format == 'count') {
         yax_format = function(f) {
             var pf = d3.formatPrefix(f);
             return pf.scale(f) + pf.symbol;
@@ -398,7 +398,7 @@ charts.line = function(args) {
         
             var fmt = d3.time.format('%b %e, %Y');
         
-            if (args.type == 'count') {
+            if (args.format == 'count') {
                 var num = function(d_) {
                     var n = d3.format("0,000");
                     d_ = args.decimal ? d3.round(d_, 2) : d3.round(d_);

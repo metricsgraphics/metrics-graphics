@@ -47,7 +47,7 @@ $(document).ready(function() {
             right: 20,
             area: false,
             markers: markers,
-            type: 'percentage',
+            format: 'percentage',
             target: 'div#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
