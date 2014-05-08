@@ -23,6 +23,7 @@ function moz_chart() {
         area: true,
         top: 40,
         bottom: 30,
+        show_years: true,
         xax_tick: 5,
         min_x: null,
         min_y: null,
@@ -59,7 +60,6 @@ function xAxis(args) {
     var min_x;
     var max_x;
 
-    // determine the x bounds, given the data, or go with specified range
     for(var i=0; i<args.data.length; i++) {
         if(args.data[i][0][args.x_accessor] < min_x || !min_x)
             min_x = args.data[i][0][args.x_accessor];
@@ -105,33 +105,41 @@ function xAxis(args) {
                 })
         
     //are we adding years to x-axis
-    var years = d3.time.years(
-        d3.min(args.data, function(d) { return d[args.x_accessor]; }),
-        d3.max(args.data, function(d) { return d[args.x_accessor]; })
-    );
-    
-    g = svg.append('g')
-        .attr('class', 'year-marker');
-    
-    g.selectAll('.year_marker')
-        .data(years).enter()
-            .append('line')
-                .attr('x1', args.scales.X)
-                .attr('x2', args.scales.X)
-                .attr('y1', args.top)
-                .attr('y2', args.height - args.bottom);
-            
-    var yformat = d3.time.format('%Y');
-    g.selectAll('.year_marker')
-        .data(years).enter()
-            .append('text')
-                .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + 28)
-                .attr('text-anchor', 'middle')
-                .text(function(d) {
-                    return yformat(d)
-                });
+    if (args.show_years){
+        var min_x;
+        var max_x;
+
+        for (var i=0; i<args.data.length; i++) {
+            if(args.data[i][0][args.x_accessor] < min_x || !min_x)
+              min_x = args.data[i][0][args.x_accessor];
+            if(_.last(args.data[i])[args.x_accessor] > max_x || !max_x)
+               max_x = _.last(args.data[i])[args.x_accessor];
+        }
+        var years = d3.time.years(min_x, max_x);
+
+        
+        g = svg.append('g')
+            .attr('class', 'year-marker');
+        
+        g.selectAll('.year_marker')
+            .data(years).enter()
+                .append('line')
+                    .attr('x1', args.scales.X)
+                    .attr('x2', args.scales.X)
+                    .attr('y1', args.top)
+                    .attr('y2', args.height - args.bottom);
                 
+        var yformat = d3.time.format('%Y');
+        g.selectAll('.year_marker')
+            .data(years).enter()
+                .append('text')
+                    .attr('x', args.scales.X)
+                    .attr('y', args.height - args.bottom + 28)
+                    .attr('text-anchor', 'middle')
+                    .text(function(d) {
+                        return yformat(d);
+                    });
+    };         
     return this;
 }
     
