@@ -1,9 +1,16 @@
 $(document).ready(function() {
     //sample chart 1
-    var fake_baselines = [{value:150000000, label:"first baseline"},{value:15000000, label:"second baseline"}]
     d3.json('data/fake_users1.json', function(data) {
-        $('#fake_users1').append('<h2>Unique fake users</h2>')
+        var fake_baselines = [{value:160000000, label:'a baseline'}]
+        
+        // chart_title({
+
+        // });
+
+
         moz_chart({
+            title:"Fake Users",
+            description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
             data: data,
             width: 600,
             height: 250,
@@ -17,8 +24,16 @@ $(document).ready(function() {
         
     //sample chart 2
     d3.json('data/fake_users2.json', function(data) {
-        $('#fake_users2').append('<h2>Unique fake users</h2>')
+        
+        // chart_title({
+        //     target:"#fake_users2", 
+        //     title:"More Fake Users",
+        //     description: "This line chart contains multiple lines. We're still working out the style details."
+        // });
+
         moz_chart({
+            title:"More Fake Users",
+            description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
             width: 600,
             height: 250,
@@ -39,8 +54,14 @@ $(document).ready(function() {
             'label': '2nd Milestone'
         }, ]
             
-        $('#percentage').append('<h2>Some percentage</h2>')
+        // chart_title({
+        //     target:"#percentage", 
+        //     title:"Some Percentages",
+        //     description: "Here is an example with the area turned off, and using the percentage format instead."
+        // });
         moz_chart({
+            title:"Some Percentages",
+            description: "Here is an example with the area turned off, and using the percentage format instead.",
             data: data,
             width: 600,
             height: 250,

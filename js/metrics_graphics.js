@@ -57,6 +57,25 @@ function moz_chart() {
     charts.line(args).markers().mainPlot().rollover();
 }
 
+function chart_title(args){
+    var defaults = {
+        target: null,
+        title: null,
+        description: null
+    };
+    var args = arguments[0];
+    if (!args) { args = {}; }
+    args = _.defaults(args, defaults);
+    if (args.target && args.title){
+        $(args.target).append('<h2 class="chart_title">' + args.title + ' <span>(?)</span></h2>');
+        if (args.description){
+            $(args.target + ' h2.chart_title').popover({'content': args.description, 'trigger':'hover', 'placement': 'top'});        
+        }
+        
+    }
+    
+}
+
 function xAxis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
@@ -166,7 +185,7 @@ function yAxis(args) {
 
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
-    
+
     //todo get ymax from all lines if multiple lines, currently getting it from first line
     args.scales.Y = d3.scale.linear()
         .domain([0, max_y * args.inflator])
@@ -298,7 +317,9 @@ charts.line = function(args) {
                 return d;
             });
         }
-    
+        
+        chart_title(args);
+
         d3.select(args.target)
             .append('svg')
                 .attr('width', args.width)
