@@ -1,12 +1,8 @@
 $(document).ready(function() {
     //sample chart 1
     d3.json('data/fake_users1.json', function(data) {
+
         var fake_baselines = [{value:160000000, label:'a baseline'}]
-        
-        // chart_title({
-
-        // });
-
 
         moz_chart({
             title:"Fake Users",
@@ -18,18 +14,13 @@ $(document).ready(function() {
             baselines: fake_baselines,
             target: '#fake_users1',
             x_accessor: 'date',
-            y_accessor: 'value'
+            y_accessor: 'value',
+            link: true
         })
     })
         
     //sample chart 2
     d3.json('data/fake_users2.json', function(data) {
-        
-        // chart_title({
-        //     target:"#fake_users2", 
-        //     title:"More Fake Users",
-        //     description: "This line chart contains multiple lines. We're still working out the style details."
-        // });
 
         moz_chart({
             title:"More Fake Users",
@@ -40,12 +31,14 @@ $(document).ready(function() {
             right: 20,
             target: '#fake_users2',
             x_accessor: 'date',
-            y_accessor: 'value'
+            y_accessor: 'value',
+            link: true
         })
     })
 
     //sample chart 3
     d3.json('data/some_percentage.json', function(data) {
+
         var markers = [{
             'date': new Date('2014-02-01'),
             'label': '1st Milestone'
@@ -54,11 +47,6 @@ $(document).ready(function() {
             'label': '2nd Milestone'
         }, ]
             
-        // chart_title({
-        //     target:"#percentage", 
-        //     title:"Some Percentages",
-        //     description: "Here is an example with the area turned off, and using the percentage format instead."
-        // });
         moz_chart({
             title:"Some Percentages",
             description: "Here is an example with the area turned off, and using the percentage format instead.",
