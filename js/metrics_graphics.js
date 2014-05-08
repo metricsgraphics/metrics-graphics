@@ -27,6 +27,9 @@ function moz_chart() {
         xax_tick: 5,
         min_x: null,
         min_y: null,
+        max_x: null,
+        max_y: null,
+        inflator: 10/9, // for setting y axis max 
         xax_count: 8,
         yax_tick: 5,
         yax_count: 5,
@@ -146,12 +149,27 @@ function xAxis(args) {
 function yAxis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
+
+    var min_y, max_y;
+    var current_max, current_min;
+    for(var i=0; i<args.data.length; i++) {
+        if (i == 0){
+            max_y = args.data[i][0][args.y_accessor];
+            min_y = args.data[i][0][args.y_accessor];
+        }
+        current_min = d3.min(args.data[i], function(d){return d[args.y_accessor]})
+        current_max = d3.max(args.data[i], function(d){return d[args.y_accessor]})
+
+        max_y = Math.max(max_y, current_max);
+        min_y = Math.min(min_y, current_min);
+    }
+
+    min_y = args.min_y ? args.min_y : min_y;
+    max_y = args.max_y ? args.max_y : max_y;
     
     //todo get ymax from all lines if multiple lines, currently getting it from first line
     args.scales.Y = d3.scale.linear()
-        .domain([0, Math.max(d3.max(args.data[0], function(d) {
-            return d[args.y_accessor]
-        }) * 10 / 9, args.goal * 10 / 9)])
+        .domain([0, max_y * args.inflator])
         .range([args.height - args.bottom - args.buffer, args.top]);
     
     
