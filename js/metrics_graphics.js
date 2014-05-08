@@ -73,7 +73,7 @@ function xAxis(args) {
 
     args.scales.X = d3.time.scale()
         .domain([min_x, max_x])
-        .range([args.left + args.buffer, args.width - args.right]);
+        .range([args.left + args.buffer, args.width - args.right-args.buffer]);
 
     // x axis
     g = svg.append('g')
@@ -193,6 +193,71 @@ function yAxis(args) {
                 
     return this;
 }
+
+function markers(args) {
+        var svg = d3.select(args.target + ' svg');
+        var gm;
+        var gb;
+        
+        if (args.markers) {
+            gm = svg.append('g')
+                .attr('class', 'markers');
+            
+            gm.selectAll('.markers')
+                .data(args.markers)
+                .enter().append('line')
+                    .attr('x1', function(d) {
+                        return args.scales.X(d['date'])
+                    })
+                    .attr('x2', function(d) {
+                        return args.scales.X(d['date'])
+                    })
+                    .attr('y1', args.top)
+                    .attr('y2', function() {
+                        return args.height - args.bottom - args.buffer;
+                    })
+                    .attr('stroke-dasharray', '3,1');
+                
+            gm.selectAll('.markers')
+                .data(args.markers)
+                .enter().append('text')
+                    .attr('x', function(d) {
+                        return args.scales.X(d['date'])
+                    })
+                    .attr('y', args.top - 8)
+                    .attr('text-anchor', 'middle')
+                    .text(function(d) {
+                        return d['label'];
+                    });
+        }
+
+        if (args.baselines){
+            gb = svg.append('g')
+                .attr('class', 'baselines');
+
+            gb.selectAll('.baselines')
+                .data(args.baselines)
+                .enter().append('line')
+                    .attr('x1', args.left + args.buffer)
+                    .attr('x2', args.width-args.right-args.buffer)
+                    .attr('y1', function(d){
+                        return args.scales.Y(d['value'])})
+                    .attr('y2', function(d){return args.scales.Y(d['value'])});
+                
+            gb.selectAll('.baselines')
+                .data(args.baselines)
+                .enter().append('text')
+                    .attr('x', args.width-args.right - args.buffer)
+                    .attr('y', function(d){return args.scales.Y(d['value'])})
+                    .attr('dy', -3)
+                    .attr('text-anchor', 'end')
+                    .text(function(d) {
+                        return d['label'];
+                    });
+        }
+        
+        return this;
+    }
     
 charts.line = function(args) {
     this.args = args;
@@ -261,43 +326,9 @@ charts.line = function(args) {
     }
     
     this.markers = function() {
-        var svg = d3.select(args.target + ' svg');
-        var g;
-        
-        if (args.markers) {
-            g = svg.append('g')
-                .attr('class', 'markers');
-            
-            g.selectAll('.markers')
-                .data(args.markers)
-                .enter().append('line')
-                    .attr('x1', function(d) {
-                        return args.scales.X(d['date'])
-                    })
-                    .attr('x2', function(d) {
-                        return args.scales.X(d['date'])
-                    })
-                    .attr('y1', args.top)
-                    .attr('y2', function() {
-                        return args.height - args.bottom - args.buffer;
-                    })
-                    .attr('stroke-dasharray', '3,1');
-                
-            g.selectAll('.markers')
-                .data(args.markers)
-                .enter().append('text')
-                    .attr('x', function(d) {
-                        return args.scales.X(d['date'])
-                    })
-                    .attr('y', args.top - 8)
-                    .attr('text-anchor', 'middle')
-                    .text(function(d) {
-                        return d['label'];
-                    });
-        }
-        
+        markers(args);
         return this;
-    }
+    };
 
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');

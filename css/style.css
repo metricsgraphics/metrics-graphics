@@ -34,6 +34,20 @@ circle {
     stroke: none;
 }
 
+
+.baselines line {
+    opacity: 0.2;
+    shape-rendering: crispEdges;
+    stroke: black;
+}
+
+.baselines text {
+    fill: black;
+    font-size: 9px;
+    opacity: 0.5;
+    stroke: none;
+}
+
 #description {
     margin: auto;
     margin-bottom: 50px;

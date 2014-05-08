@@ -1,5 +1,6 @@
 $(document).ready(function() {
     //sample chart 1
+    var fake_baselines = [{value:150000000, label:"first baseline"},{value:15000000, label:"second baseline"}]
     d3.json('data/fake_users1.json', function(data) {
         $('#fake_users1').append('<h2>Unique fake users</h2>')
         moz_chart({
@@ -7,6 +8,7 @@ $(document).ready(function() {
             width: 600,
             height: 250,
             right: 20,
+            baselines: fake_baselines,
             target: '#fake_users1',
             x_accessor: 'date',
             y_accessor: 'value'
