@@ -383,6 +383,12 @@ charts.line = function(args) {
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
         var g;
+        
+        //append circle
+        svg.append('circle')
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', 0);
 
         //main rollover, only for first line at the moment for multi-line charts, todo
         g = svg.append('g')
@@ -422,20 +428,17 @@ charts.line = function(args) {
                         }
                     })
                     .attr('height', args.height - args.bottom)
-                    .on('mouseover', this.rolloverOn(svg, args))
-                    .on('mouseout', this.rolloverOff(svg, args));
+                    .on('mouseover', this.rolloverOn(args))
+                    .on('mouseout', this.rolloverOff(args));
         
         return this;
     }
     
-    this.rolloverOn = function() {
+    this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
         
         return function(d, i) {
-            d3.selectAll('circle')
-                .remove();
-            
-            svg.append('circle')
+            svg.selectAll('circle')
                     .attr('cx', args.scales.X(d[args.x_accessor]))
                     .attr('cy', args.scales.Y(d[args.y_accessor]))
                     .attr('r', 2.5);
@@ -477,9 +480,9 @@ charts.line = function(args) {
         }
     }
     
-    this.rolloverOff = function() {
+    this.rolloverOff = function(args) {
         var svg = d3.select(args.target + ' svg');
-        
+
         return function(d, i) {
             svg.selectAll('circle')
                 .attr('opacity', 0);
