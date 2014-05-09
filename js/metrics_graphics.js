@@ -442,10 +442,13 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         
         return function(d, i) {
+                
             svg.selectAll('circle')
                     .attr('cx', args.scales.X(d[args.x_accessor]))
                     .attr('cy', args.scales.Y(d[args.y_accessor]))
-                    .attr('r', 2.5);
+                    .attr('r', 2.5)
+                    .style('opacity', 1);
+                    
             
             svg.selectAll('text')
                 .filter(function(g, j) {
@@ -489,7 +492,7 @@ charts.line = function(args) {
 
         return function(d, i) {
             svg.selectAll('circle')
-                .attr('opacity', 0);
+                .style('opacity', 0);
             
             svg.select('.goals_rollover_text')
                 .remove();
