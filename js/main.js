@@ -7,7 +7,7 @@ $(document).ready(function() {
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         moz_chart({
-            title:"Fake Users",
+            title: "Fake Users",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
             data: data,
             width: 600,
@@ -50,7 +50,7 @@ $(document).ready(function() {
         }, ]
             
         moz_chart({
-            title:"Some Percentages",
+            title: "Some Percentages",
             description: "Here is an example with the area turned off, and using the percentage format instead.",
             data: data,
             width: 600,
@@ -64,18 +64,34 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
     })
+    
+    //sample chart 4           
+    moz_chart({
+        title: "Glorious Chart",
+        chart_type: 'missing-data',
+        description: "Here is an example of a chart whose data is currently missing.",
+        width: 600,
+        height: 250,
+        right: 20,
+        target: 'div#glorious_chart'
+    })
 })
 
 function assignEventListeners() {
     $('#dark-css').click(function () {
+        $('.missing').css('background-image', 'url(images/missing-data-dark.png)');
+    
         $('.pill').removeClass('active');
         $(this).toggleClass('active');
         
         $('#dark').attr({href : 'css/style-darkness.css'});
+        
         return false;
     });
     
     $('#light-css').click(function () {
+        $('.missing').css('background-image', 'url(images/missing-data.png)');
+    
         $('.pill').removeClass('active');
         $(this).toggleClass('active');
         

@@ -54,7 +54,11 @@ function moz_chart() {
     }
     
     //build the chart
-    charts.line(args).markers().mainPlot().rollover();
+    if(args.chart_type == 'missing-data')
+        charts.missing(args);
+    else
+        charts.line(args).markers().mainPlot().rollover();
+    
 }
 
 function chart_title(args) {
@@ -490,6 +494,40 @@ charts.line = function(args) {
             svg.select('.goals_rollover_text')
                 .remove();
         }
+    }
+    
+    this.init(args);
+    return this;
+}
+
+charts.missing = function(args) {
+    this.args = args;
+
+    this.init = function(args) {
+        chart_title(args);
+
+        var svg = d3.select(args.target)
+            .append('svg')
+                .attr('width', args.width)
+                .attr('height', args.height);
+                
+        svg.append('rect')
+            .attr('class', 'missing-pane')
+            .attr('x', args.left)
+            .attr('y', args.top)
+            .attr('width', args.width - (args.left * 2))
+            .attr('height', args.height - (args.top * 2));
+            
+        svg.append('text')
+            .attr('x', args.width / 2)
+            .attr('y', args.height / 2)
+            .attr('dy', '.50em')
+            .attr('text-anchor', 'middle')
+            .text(function(d) {
+                return 'Data currently missing or unavailable';
+            })
+        
+        return this;
     }
     
     this.init(args);

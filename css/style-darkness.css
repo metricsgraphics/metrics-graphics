@@ -70,6 +70,10 @@ h2.chart_title span {
     stroke: #ff0000;
 }
 
+.missing {
+    background-image: url(../images/missing-data-dark.png);
+}
+
 .popover {
   color: #737373;
 }
