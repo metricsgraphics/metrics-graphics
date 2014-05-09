@@ -57,7 +57,7 @@ function moz_chart() {
     charts.line(args).markers().mainPlot().rollover();
 }
 
-function chart_title(args){
+function chart_title(args) {
     var defaults = {
         target: null,
         title: null,
@@ -66,14 +66,17 @@ function chart_title(args){
     var args = arguments[0];
     if (!args) { args = {}; }
     args = _.defaults(args, defaults);
-    if (args.target && args.title){
-        $(args.target).append('<h2 class="chart_title">' + args.title + ' <span>(?)</span></h2>');
-        if (args.description){
-            $(args.target + ' h2.chart_title').popover({'content': args.description, 'trigger':'hover', 'placement': 'top'});        
-        }
-        
-    }
     
+    if (args.target && args.title) {
+        $(args.target).append('<h2 class="chart_title">' 
+            + args.title + ' <span>(?)</span></h2>');
+            
+        if (args.description){
+            $(args.target + ' h2.chart_title')
+                .popover({'content': args.description,
+                    'trigger':'hover', 'placement': 'top'});        
+        }   
+    }
 }
 
 function xAxis(args) {

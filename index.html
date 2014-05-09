@@ -8,7 +8,8 @@
     <link href='http://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' 
         rel='stylesheet' type='text/css'>
 
-    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/style.css" rel="stylesheet" type="text/css" id="light">
+    <link href="" rel="stylesheet" type="text/css" id="dark">
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src='js/underscore-min.js'></script>
@@ -27,13 +28,16 @@
             </div>
 
             <div id='description'>
-            
                 <p>Here is a collection, and something of a set of visual tests, of 
                 graphics we will be using. The point of this repository is to ensure 
                 that everything under js/metrics_graphics.js works properly, so we 
                 may use that file for other graph-based projects. The main file, 
                 metrics_graphics.js, requires d3, jquery, and underscore at the 
                 moment. Below are a few examples. The data here is not real.</p>
+                <p class="text-center">
+                    <a href="#" id="light-css" class="pill active">Light style</a> &nbsp; 
+                    <a href="#" id="dark-css" class="pill">Dark style</a>
+                </p>
             </div>
 
             <div id='torso'>

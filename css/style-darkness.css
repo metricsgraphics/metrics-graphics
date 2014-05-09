@@ -1,0 +1,93 @@
+a,
+a:active,
+a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+.area1-color {
+    fill: #ffd300;
+}
+
+.area2-color {
+    fill: #18ff00;
+}
+
+.area3-color {
+    fill: #ff0000;
+}
+
+body {
+    background-color: #272727;
+    color: #e8e8e8;
+}
+
+circle {
+    fill: #ffcb00;
+}
+
+.markers line {
+    stroke: #fff;
+}
+
+.markers text {
+    fill: #fff;
+}
+
+.baselines line {
+    stroke: #fff;
+}
+
+.baselines text {
+    fill: #fff;
+}
+
+.goal line {
+    stroke: #fff;
+}
+
+.goal text {
+    fill: #fff;
+}
+
+.goals_rollover_text {
+    fill: #fff;
+}
+
+h2.chart_title span {
+    color: #fff;
+}
+
+.line1-color {
+    stroke: #ffd300;
+}
+
+.line2-color {
+    stroke: #18ff00;
+}
+
+.line3-color {
+    stroke: #ff0000;
+}
+
+.popover {
+  color: #737373;
+}
+
+text {
+    fill: #fff;
+}
+
+.x-axis line,
+.y-axis line {
+    stroke: #fff;
+}
+
+.x-axis text,
+.y-axis text {
+    fill: #fff;
+}
+
+.year-marker text {
+    fill: #fff;
+}

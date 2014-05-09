@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    assignEventListeners();
+    
     //sample chart 1
     d3.json('data/fake_users1.json', function(data) {
 
@@ -63,3 +65,21 @@ $(document).ready(function() {
         })
     })
 })
+
+function assignEventListeners() {
+    $('#dark-css').click(function () {
+        $('.pill').removeClass('active');
+        $(this).toggleClass('active');
+        
+        $('#dark').attr({href : 'css/style-darkness.css'});
+        return false;
+    });
+    
+    $('#light-css').click(function () {
+        $('.pill').removeClass('active');
+        $(this).toggleClass('active');
+        
+        $('#dark').attr({href : ''});
+        return false;
+    });
+}
