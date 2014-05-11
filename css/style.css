@@ -92,13 +92,12 @@ circle {
 h2.chart_title {
     cursor: pointer;
     font-weight: 400;
-    margin-bottom: 0;
 }
 
-h2.chart_title span {
-    font-size: 0.5em;
-    color: darkgray;
-    font-weight: 800;
+h2.chart_title .fa {
+    color: #cccccc;
+    font-size: 14px;
+    vertical-align: top;
 }
 
 #head {

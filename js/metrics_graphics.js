@@ -73,7 +73,7 @@ function chart_title(args) {
     
     if (args.target && args.title) {
         $(args.target).append('<h2 class="chart_title">' 
-            + args.title + ' <span>(?)</span></h2>');
+            + args.title + '<i class="fa fa-question-circle fa-inverse"></i></h2>');
             
         if (args.description){
             $(args.target + ' h2.chart_title')
