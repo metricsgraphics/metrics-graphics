@@ -524,6 +524,9 @@ charts.line = function(args) {
         return function(d, i) {
             svg.selectAll('circle')
                 .style('opacity', 0);
+                
+            d3.selectAll('.transparent-rollover-rect rect')
+                .attr('opacity', 0);
             
             svg.select('.goals_rollover_text')
                 .remove();
