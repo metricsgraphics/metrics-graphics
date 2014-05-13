@@ -17,8 +17,7 @@ $(document).ready(function() {
             baselines: fake_baselines,
             target: '#fake_users1',
             x_accessor: 'date',
-            y_accessor: 'value',
-            link: true
+            y_accessor: 'value'
         })
     })
         
@@ -35,8 +34,7 @@ $(document).ready(function() {
             right: 20,
             target: '#fake_users2',
             x_accessor: 'date',
-            y_accessor: 'value',
-            link: true
+            y_accessor: 'value'
         })
     })
 

@@ -6,7 +6,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        link: false,
+        linked: false,
         chart_type: 'line',
         scales: {},
         scalefns: {},
