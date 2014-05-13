@@ -24,10 +24,15 @@
 <body>
     <div id='container'>
         <div id='content-body'>
-            <div id='download-links'>
-                <a href='https://github.com/mozilla/metrics-graphics' target='_blank'>Code</a> | <a href='https://github.com/mozilla/metrics-graphics/issues'  target='_blank'>Issues</a>
-            </div>
             <div id='head'>
+                <ul>
+                    <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
+                    <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
+                    <li class='divider'>|</li>
+                    <li><a href="#" id="light-css" class="pill active">Light style</a></li>
+                    <li><a href="#" id="dark-css" class="pill">Dark style</a></li>
+                </ul>
+                
                 <h1>Metrics Graphics</h1>
             </div>
 
@@ -36,13 +41,8 @@
                 graphics we will be using. The point of this repository is to ensure 
                 that everything under js/metrics_graphics.js works properly, so we 
                 may use that file for other graph-based projects. The main file, 
-                metrics_graphics.js, requires d3, jquery, and underscore at the 
+                metrics-graphics.js, requires d3, jquery, and underscore at the 
                 moment. Below are a few examples. The data here is not real.</p>
-
-                <p class="text-center">
-                    <a href="#" id="light-css" class="pill active">Light style</a> &nbsp; 
-                    <a href="#" id="dark-css" class="pill">Dark style</a>
-                </p>
             </div>
 
             <div id='torso'>

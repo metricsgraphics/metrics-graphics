@@ -4,37 +4,18 @@ body {
     font-family: 'Open Sans', sans-serif, Arial;
 }
 
-div#download-links {
-    position:absolute;
-    top:0;
-    left:0;
-    margin-bottom:35px;
-    padding:10px;
-    padding-left:15px;
-    padding-right:15px;
-    font-size:15px;
-    color:white;
-    font-weight:300;
-    border-bottom-right-radius:5px;
-    background-color:rgba(0,100,0,.5);
-}
-
-div#download-links:hover {
-  background-color:rgba(0,100,0,.6);
-}
-
-div#download-links a {
-  color:white;
-}
-
-div#download-links a:hover {
-  text-decoration:underline;
-}
-
 a,
 a:active,
 a:visited {
-    color: black;
+    color: #4a87ba;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.pill:hover {
     text-decoration: none;
 }
 
@@ -97,6 +78,11 @@ circle {
     width: 80%;
 }
 
+.divider {
+    color: #000000;
+    opacity: 0.2;
+}
+
 .goal line {
     opacity: 0.5;
     stroke: blue;
@@ -128,14 +114,29 @@ h2.chart_title .fa {
 }
 
 #head {
+    color: #ccccc;
+    margin: auto;
     margin-bottom: 20px;
+    min-width: 700px;
+    width: 80%;
 }
 
 #head h1 {
     font-size: 50px;
     font-weight: 300;
-    margin: 0;
-    text-align: center;
+    margin: 45px 0 0 0;
+}
+
+#head ul {
+    font-size: 14px;
+    clear: both;
+    padding: 10px 0 0 0;
+}
+
+#head ul li {
+    display: inline;
+    list-style: none;
+    padding-right: 15px;
 }
 
 .line1-color {

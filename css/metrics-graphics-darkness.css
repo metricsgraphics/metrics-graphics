@@ -1,7 +1,7 @@
 a,
 a:active,
 a:visited {
-    color: #fff;
+    color: #71b4eb;
     text-decoration: none;
 }
 
@@ -24,6 +24,11 @@ body {
 
 circle {
     fill: #ffcb00;
+}
+
+.divider {
+    color: #fff;
+    opacity: 0.1;
 }
 
 .markers line {
