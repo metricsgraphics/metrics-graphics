@@ -259,6 +259,10 @@ function yAxis(args) {
 }
 
 function init(args) {
+    //do we need to turn json data to 2d array?
+    if(!$.isArray(args.data[0]))
+        args.data = [args.data];
+
     var fff = d3.time.format('%Y-%m-%d');
     var linked;
     for(var i=0;i<args.data.length;i++) {
