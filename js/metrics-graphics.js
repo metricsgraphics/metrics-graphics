@@ -447,7 +447,7 @@ charts.line = function(args) {
                                 - args.scalefns.xf(args.data[0][0]); //todo
                         }
                     })
-                    .attr('height', args.height - args.bottom)
+                    .attr('height', args.height - args.bottom - args.top - args.buffer)
                     .attr('opacity', 0)
                     .on('mouseover', this.rolloverOn(args))
                     .on('mouseout', this.rolloverOff(args));
