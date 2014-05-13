@@ -339,10 +339,6 @@ text {
     display: inline-block;
 }
 
-.transparent-rollover-rect {
-    opacity: 0;
-}
-
 .x-axis line,
 .y-axis line {
     opacity: 0.3;

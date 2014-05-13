@@ -411,9 +411,11 @@ charts.line = function(args) {
             .data(args.data[0]).enter()
                 .append('rect')
                     .attr('class', function(d){
-                        var v = d[args.x_accessor];
-                        var formatter = d3.time.format('%Y-%m-%d');
-                        return 'roll_' + formatter(v);
+                        if(args.linked) {
+                            var v = d[args.x_accessor];
+                            var formatter = d3.time.format('%Y-%m-%d');
+                            return 'roll_' + formatter(v);
+                        }
                     })
                     .attr('x', function(d, i) {
                         var current_date = d;
@@ -446,6 +448,7 @@ charts.line = function(args) {
                         }
                     })
                     .attr('height', args.height - args.bottom)
+                    .attr('opacity', 0)
                     .on('mouseover', this.rolloverOn(args))
                     .on('mouseout', this.rolloverOff(args));
         
@@ -457,27 +460,26 @@ charts.line = function(args) {
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
-                
             svg.selectAll('circle')
-                    .attr('cx', args.scales.X(d[args.x_accessor]))
-                    .attr('cy', args.scales.Y(d[args.y_accessor]))
-                    .attr('r', 2.5)
-                    .style('opacity', 1);
-            // if linked, then attempt to trigger all the other linked rollovers.
-            if (args.linked){
-                // var linked_svg;
-                // var this_d;
-                // var w = d3.selectAll('svg.linked').call(
-                //     function(selection){
-                //         this_d = selection.select('rect.roll_' + x_formatter(d[args.x_accessor])).data());
-                //         linked_svg.selectAll('circle')
-                //             .attr('cx', args.scales.X(this_d[args.x_accessor]))
-                //             .attr('cy', args.scales.Y(this_d[args.y_accessor]))
-                //             .attr('r', 2.5)
-                //             .style('opacity', 1);
-                //     }
-                // )
-            }
+                .attr('cx', function() {
+                    return args.scales.X(d[args.x_accessor]);
+                })
+                .attr('cy', function() {
+                    return args.scales.Y(d[args.y_accessor]);
+                })
+                .attr('r', 2.5)
+                .style('opacity', 1);
+     
+            if(args.linked) {    
+                var v = d[args.x_accessor];
+                var formatter = d3.time.format('%Y-%m-%d');
+            
+                d3.selectAll('.transparent-rollover-rect rect')
+                    .attr('opacity', 0);
+                
+                d3.selectAll('.roll_' + formatter(v))
+                    .attr('opacity', 0.2)
+            }    
             
             svg.selectAll('text')
                 .filter(function(g, j) {
