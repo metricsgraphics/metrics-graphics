@@ -86,7 +86,7 @@ function assignEventListeners() {
         $('.pill').removeClass('active');
         $(this).toggleClass('active');
         
-        $('#dark').attr({href : 'css/style-darkness.css'});
+        $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
         
         return false;
     });
