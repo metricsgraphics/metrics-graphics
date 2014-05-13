@@ -3,7 +3,12 @@ $(document).ready(function() {
     
     //sample chart 1
     d3.json('data/fake_users1.json', function(data) {
-
+        var fff = d3.time.format('%Y-%m-%d');
+        for(var i=0;i<data.length;i++) {
+            var d = data[i];
+            d['date'] = fff.parse(d['date']);
+        }
+    
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         moz_chart({
@@ -23,7 +28,14 @@ $(document).ready(function() {
         
     //sample chart 2
     d3.json('data/fake_users2.json', function(data) {
-
+        var fff = d3.time.format('%Y-%m-%d');
+        for(var i=0;i<data.length;i++) {
+            data[i] = _.map(data[i], function(d) {
+                d['date'] = fff.parse(d['date']);
+                return d;
+            });
+        }
+        
         moz_chart({
             title:"More Fake Users",
             description: "This line chart contains multiple lines. We're still working out the style details.",
@@ -40,7 +52,14 @@ $(document).ready(function() {
 
     //sample chart 3
     d3.json('data/some_percentage.json', function(data) {
-
+        var fff = d3.time.format('%Y-%m-%d');
+        for(var i=0;i<data.length;i++) {
+            data[i] = _.map(data[i], function(d) {
+                d['date'] = fff.parse(d['date']);
+                return d;
+            });
+        }
+        
         var markers = [{
             'date': new Date('2014-02-01'),
             'label': '1st Milestone'

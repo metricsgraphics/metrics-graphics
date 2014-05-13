@@ -263,15 +263,8 @@ function init(args) {
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
 
-    var fff = d3.time.format('%Y-%m-%d');
     var linked;
-    for(var i=0;i<args.data.length;i++) {
-        args.data[i] = _.map(args.data[i], function(d) {
-            d['date'] = fff.parse(d['date']);
-            return d;
-        });
-    }
-    
+
     chart_title(args);
 
     d3.select(args.target)
