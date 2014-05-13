@@ -1,3 +1,36 @@
+body {
+    background-color: #fff;
+    color: #000;
+    font-family: 'Open Sans', sans-serif, Arial;
+}
+
+div#download-links {
+    position:absolute;
+    top:0;
+    left:0;
+    margin-bottom:35px;
+    padding:10px;
+    padding-left:15px;
+    padding-right:15px;
+    font-size:15px;
+    color:white;
+    font-weight:300;
+    border-bottom-right-radius:5px;
+    background-color:rgba(0,100,0,.5);
+}
+
+div#download-links:hover {
+  background-color:rgba(0,100,0,.6);
+}
+
+div#download-links a {
+  color:white;
+}
+
+div#download-links a:hover {
+  text-decoration:underline;
+}
+
 a,
 a:active,
 a:visited {
@@ -23,12 +56,6 @@ a.active {
 
 .area3-color {
     fill: #db4437;
-}
-
-body {
-    background-color: #fff;
-    color: #000;
-    font-family: 'Open Sans', sans-serif, Arial;
 }
 
 circle {
