@@ -6,6 +6,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        link: false,
         chart_type: 'line',
         scales: {},
         scalefns: {},
@@ -88,6 +89,10 @@ function xAxis(args) {
     var g;
     var min_x;
     var max_x;
+
+    args.scalefns.xf = function(di) {
+            return args.scales.X(di[args.x_accessor]);
+    }
 
     for(var i=0; i<args.data.length; i++) {
         if(args.data[i][0][args.x_accessor] < min_x || !min_x)
@@ -177,6 +182,13 @@ function yAxis(args) {
     var g;
 
     var min_y, max_y;
+
+
+    
+    args.scalefns.yf = function(di) {
+        return args.scales.Y(di[args.y_accessor]);
+    }
+
     var current_max, current_min;
     for(var i=0; i<args.data.length; i++) {
         if (i == 0){
@@ -243,6 +255,31 @@ function yAxis(args) {
                     return o;
                 })
                 
+    return this;
+}
+
+function init(args) {
+    var fff = d3.time.format('%Y-%m-%d');
+    var linked;
+    for(var i=0;i<args.data.length;i++) {
+        args.data[i] = _.map(args.data[i], function(d) {
+            d['date'] = fff.parse(d['date']);
+            return d;
+        });
+    }
+    
+    chart_title(args);
+
+    d3.select(args.target)
+        .append('svg')
+            .classed('linked', args.linked)
+            .attr('width', args.width)
+            .attr('height', args.height);
+    
+    //we kind of need axes in all cases
+    xAxis(args);
+    yAxis(args);
+    
     return this;
 }
 
@@ -315,35 +352,7 @@ charts.line = function(args) {
     this.args = args;
 
     this.init = function(args) {
-        //do we need to clean up dates? assume we always do for now
-        var fff = d3.time.format('%Y-%m-%d');
-
-        for(var i=0;i<args.data.length;i++) {
-            args.data[i] = _.map(args.data[i], function(d) {
-                d['date'] = fff.parse(d['date']);
-                return d;
-            });
-        }
-        
-        chart_title(args);
-
-        d3.select(args.target)
-            .append('svg')
-                .attr('width', args.width)
-                .attr('height', args.height);
-            
-        args.scalefns.xf = function(di) {
-            return args.scales.X(di[args.x_accessor]);
-        }
-    
-        args.scalefns.yf = function(di) {
-            return args.scales.Y(di[args.y_accessor]);
-        }
-        
-        //we kind of need axes in all cases
-        xAxis(args);
-        yAxis(args);
-        
+        init(args);
         return this;
     }
     
@@ -401,6 +410,11 @@ charts.line = function(args) {
         g.selectAll('.periods')
             .data(args.data[0]).enter()
                 .append('rect')
+                    .attr('class', function(d){
+                        var v = d[args.x_accessor];
+                        var formatter = d3.time.format('%Y-%m-%d');
+                        return 'roll_' + formatter(v);
+                    })
                     .attr('x', function(d, i) {
                         var current_date = d;
                         var next_date, previous_date;
@@ -440,7 +454,8 @@ charts.line = function(args) {
     
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
-        
+        var x_formatter = d3.time.format('%Y-%m-%d');
+
         return function(d, i) {
                 
             svg.selectAll('circle')
@@ -448,7 +463,21 @@ charts.line = function(args) {
                     .attr('cy', args.scales.Y(d[args.y_accessor]))
                     .attr('r', 2.5)
                     .style('opacity', 1);
-                    
+            // if linked, then attempt to trigger all the other linked rollovers.
+            if (args.linked){
+                // var linked_svg;
+                // var this_d;
+                // var w = d3.selectAll('svg.linked').call(
+                //     function(selection){
+                //         this_d = selection.select('rect.roll_' + x_formatter(d[args.x_accessor])).data());
+                //         linked_svg.selectAll('circle')
+                //             .attr('cx', args.scales.X(this_d[args.x_accessor]))
+                //             .attr('cy', args.scales.Y(this_d[args.y_accessor]))
+                //             .attr('r', 2.5)
+                //             .style('opacity', 1);
+                //     }
+                // )
+            }
             
             svg.selectAll('text')
                 .filter(function(g, j) {
