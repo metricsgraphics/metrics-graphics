@@ -81,7 +81,11 @@ $(document).ready(function() {
 
 function assignEventListeners() {
     $('#dark-css').click(function () {
-        $('.missing').css('background-image', 'url(images/missing-data-dark.png)');
+        $('.missing')
+            .css('background-image', 'url(images/missing-data-dark.png)');
+            
+        $('.transparent-rollover-rect')
+            .attr('fill', 'white');
     
         $('.pill').removeClass('active');
         $(this).toggleClass('active');
@@ -92,7 +96,11 @@ function assignEventListeners() {
     });
     
     $('#light-css').click(function () {
-        $('.missing').css('background-image', 'url(images/missing-data.png)');
+        $('.missing')
+            .css('background-image', 'url(images/missing-data.png)');
+            
+        $('.transparent-rollover-rect')
+            .attr('fill', 'black');
     
         $('.pill').removeClass('active');
         $(this).toggleClass('active');
