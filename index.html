@@ -9,7 +9,7 @@
         rel='stylesheet' type='text/css'>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" 
         rel="stylesheet">
-
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" id="light">
     <link href="css/metrics-graphics.css" rel="stylesheet" type="text/css" id="light">
     <link href="" rel="stylesheet" type="text/css" id="dark">
     
@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <div id='container'>
+    <div id='container' class='container'>
         <div id='content-body'>
             <div id='head'>
                 <ul>
@@ -48,8 +48,22 @@
             <div id='torso'>
                 <div id='fake_users1'></div>
                 <div id='fake_users2'></div>
-                <div id='percentage'></div>
                 <div id='glorious_chart' class='missing'></div>
+            </div>
+            <div id='trunk'>
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Sections &amp; Briefings</h2>
+                        <p>This is a briefing. It helps describe the graphs you might see to your right. The point of this type of section style is to illustrate metrics that are important but more fine-grained than you might see in the above section.</p>
+                    </div>
+                    <div class='col-lg-7'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='briefing-1'></div>
+                            <div class='col-lg-6 gr' id='briefing-2'></div>
+                        </div>
+                        <div class='col-lg-1'></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -4,6 +4,33 @@ body {
     font-family: 'Open Sans', sans-serif, Arial;
 }
 
+.gr {
+  text-align:center;
+/*  outline:1px solid black;
+*/}
+
+div#torso {}
+
+div#trunk {
+  margin-top:40px;
+}
+
+div#trunk h2 {
+  font-size:15px;
+}
+
+div#trunk h2.trunk-title {
+  text-transform:uppercase;
+  font-weight:300;
+  font-size:25px;
+}
+
+div.trunk-section {
+  border-top:1px solid black;
+  padding-top:15px;
+  padding-bottom:25px;
+}
+
 a,
 a:active,
 a:visited {

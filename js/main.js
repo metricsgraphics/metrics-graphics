@@ -1,3 +1,24 @@
+function convert_dates(data){
+    data = _.map(data, function(d){
+            d['date'] = new Date(d['date']);
+            return d;
+    });
+    return data;
+}
+
+var torso = {};
+torso.width=375;
+torso.height=200;
+torso.right=20;
+
+var trunk = {};
+
+trunk.width=320;
+trunk.height=150;
+trunk.left=35;
+trunk.right=10;
+trunk.xax_count=5;
+
 $(document).ready(function() {
     assignEventListeners();
     
@@ -15,9 +36,9 @@ $(document).ready(function() {
             title: "Fake Users",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
             data: data,
-            width: 600,
-            height: 250,
-            right: 20,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             linked: true,
             baselines: fake_baselines,
             target: '#fake_users1',
@@ -41,9 +62,9 @@ $(document).ready(function() {
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
             linked: true,
-            width: 600,
-            height: 250,
-            right: 20,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             target: '#fake_users2',
             x_accessor: 'date',
             y_accessor: 'value'
@@ -72,16 +93,16 @@ $(document).ready(function() {
             title: "Some Percentages",
             description: "Here is an example with the area turned off, and using the percentage format instead.",
             data: data,
-            width: 600,
-            height: 250,
-            right: 20,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             area: false,
             markers: markers,
             format: 'percentage',
             target: 'div#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
     })
     
     //sample chart 4           
@@ -89,11 +110,45 @@ $(document).ready(function() {
         title: "Glorious Chart",
         chart_type: 'missing-data',
         description: "Here is an example of a chart whose data is currently missing.",
-        width: 600,
-        height: 250,
-        right: 20,
+        width: torso.width,
+        height: torso.height,
+        right: torso.right,
         target: 'div#glorious_chart'
-    })
+    });
+
+    // lower section
+    d3.json('data/brief-1.json', function(data) {
+        data = convert_dates(data);
+        moz_chart({
+            title: "This Section, pt. 1",
+            description: "Another Graph.",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#briefing-1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+
+    });
+    d3.json('data/brief-2.json', function(data) {
+        data = convert_dates(data);
+        moz_chart({
+            title: "Another Chart",
+            description: "Yet Another Graph.",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#briefing-2',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+
+    });
 })
 
 function assignEventListeners() {
