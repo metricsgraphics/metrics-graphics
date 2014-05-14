@@ -79,7 +79,7 @@ function chart_title(args) {
         if (args.description){
             $(args.target + ' h2.chart_title')
                 .popover({'content': args.description,
-                    'trigger':'hover', 'placement': 'top'});        
+                    'trigger':'hover', 'placement': 'top'});
         }   
     }
 }
@@ -506,7 +506,7 @@ charts.line = function(args) {
             svg.append('text')
                 .classed('goals_rollover_text', true)
                 .attr('xml:space', 'preserve')
-                .attr('x', args.width - args.right + 4)
+                .attr('x', args.width - args.right)
                 .attr('y', args.top / 2)
                 .attr('text-anchor', 'end')
                 .text(function() {
