@@ -79,7 +79,7 @@ function chart_title(args) {
         if (args.description){
             $(args.target + ' h2.chart_title')
                 .popover({'content': args.description,
-                    'trigger':'hover', 'placement': 'top'});        
+                    'trigger':'hover', 'placement': 'top'});
         }   
     }
 }
