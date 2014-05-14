@@ -99,7 +99,6 @@ circle {
 #description {
     margin: auto;
     margin-bottom: 50px;
-    min-width: 700px;
     width: 80%;
 }
 
@@ -143,7 +142,6 @@ h2.chart_title .fa {
     color: #ccccc;
     margin: auto;
     margin-bottom: 20px;
-    min-width: 700px;
     width: 80%;
 }
 
