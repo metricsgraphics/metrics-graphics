@@ -1,25 +1,16 @@
-function convert_dates(data){
-    data = _.map(data, function(d){
-            d['date'] = new Date(d['date']);
-            return d;
-    });
-    return data;
-}
-
-var torso = {};
-torso.width=375;
-torso.height=200;
-torso.right=20;
-
-var trunk = {};
-
-trunk.width=320;
-trunk.height=150;
-trunk.left=35;
-trunk.right=10;
-trunk.xax_count=5;
-
 $(document).ready(function() {
+    var torso = {};
+    torso.width = 375;
+    torso.height = 200;
+    torso.right = 20;
+
+    var trunk = {};
+    trunk.width = 320;
+    trunk.height = 150;
+    trunk.left = 35;
+    trunk.right = 10;
+    trunk.xax_count = 5;
+
     assignEventListeners();
     
     //sample chart 1
@@ -133,6 +124,7 @@ $(document).ready(function() {
         });
 
     });
+    
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
         moz_chart({
@@ -147,7 +139,6 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
-
     });
 })
 
@@ -180,4 +171,13 @@ function assignEventListeners() {
         $('#dark').attr({href : ''});
         return false;
     });
+}
+
+function convert_dates(data){
+    data = _.map(data, function(d){
+        d['date'] = new Date(d['date']);
+        return d;
+    });
+    
+    return data;
 }
