@@ -1,5 +1,35 @@
 'use strict';
 
+var each = function(obj, iterator, context) {
+    // yanked out of underscore
+    if (obj == null) return obj;
+    if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+      obj.forEach(iterator, context);
+    } else if (obj.length === +obj.length) {
+      for (var i = 0, length = obj.length; i < length; i++) {
+        if (iterator.call(context, obj[i], i, obj) === breaker) return;
+      }
+    } else {
+      for (var k in obj) {
+        if (iterator.call(context, obj[k], k, obj) === breaker) return;
+      }
+    }
+    return obj;
+};
+
+function merge_with_defaults(obj){
+    // taken from underscore
+    each(Array.prototype.slice.call(arguments, 1), function(source) {
+      if (source) {
+        for (var prop in source) {
+          if (obj[prop] === void 0) obj[prop] = source[prop];
+        }
+      }
+    });
+    return obj;
+  };
+
+
 var charts = {};
 
 function moz_chart() {
@@ -46,7 +76,7 @@ function moz_chart() {
 
     var args = arguments[0];
     if (!args) { args = {}; }
-    args = _.defaults(args, moz.defaults.all);
+    args = merge_with_defaults(args, moz.defaults.all);
     
     var g = '';
     if (args.list) {
@@ -70,7 +100,7 @@ function chart_title(args) {
     };
     var args = arguments[0];
     if (!args) { args = {}; }
-    args = _.defaults(args, defaults);
+    args = merge_with_defaults(args, defaults);
     
     if (args.target && args.title) {
         $(args.target).append('<h2 class="chart_title">' 
@@ -93,13 +123,15 @@ function xAxis(args) {
     args.scalefns.xf = function(di) {
             return args.scales.X(di[args.x_accessor]);
     }
-
+    var last_i;
     for(var i=0; i<args.data.length; i++) {
+        last_i = args.data[i].length-1;
+
         if(args.data[i][0][args.x_accessor] < min_x || !min_x)
             min_x = args.data[i][0][args.x_accessor];
 
-        if(_.last(args.data[i])[args.x_accessor] > max_x || !max_x)
-            max_x = _.last(args.data[i])[args.x_accessor];
+        if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
+            max_x = args.data[i][last_i][args.x_accessor];
     }
 
     min_x = args.min_x ? args.min_x : min_x;
@@ -112,10 +144,10 @@ function xAxis(args) {
     // x axis
     g = svg.append('g')
         .attr('class', 'x-axis');
-    
+    var last_i = args.scales.X.ticks(args.xax_count).length-1
     g.append('line')
-        .attr('x1', args.scales.X(_.last(args.scales.X.ticks(args.xax_count))))
-        .attr('x2', args.scales.X(_.first(args.scales.X.ticks(args.xax_count))))
+        .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i] ))
+        .attr('x2', args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
         .attr('y1', args.height - args.bottom)
         .attr('y2', args.height - args.bottom);
     
@@ -144,10 +176,11 @@ function xAxis(args) {
         var max_x;
 
         for (var i=0; i<args.data.length; i++) {
+            last_i = args.data[i].length-1;
             if(args.data[i][0][args.x_accessor] < min_x || !min_x)
               min_x = args.data[i][0][args.x_accessor];
-            if(_.last(args.data[i])[args.x_accessor] > max_x || !max_x)
-               max_x = _.last(args.data[i])[args.x_accessor];
+            if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
+               max_x = args.data[i][last_i][args.x_accessor];
         }
         var years = d3.time.years(min_x, max_x);
 
@@ -229,11 +262,13 @@ function yAxis(args) {
     g = svg.append('g')
         .attr('class', 'y-axis');
 
+    var last_i = args.scales.Y.ticks(args.yax_count).length-1;
+
     g.append('line')
         .attr('x1', args.left)
         .attr('x2', args.left)
-        .attr('y1', args.scales.Y(_.first(args.scales.Y.ticks(args.yax_count))))
-        .attr('y2', args.scales.Y(_.last(args.scales.Y.ticks(args.yax_count))));
+        .attr('y1', args.scales.Y(args.scales.Y.ticks(args.yax_count)[0]))
+        .attr('y2', args.scales.Y(args.scales.Y.ticks(args.yax_count)[last_i]));
     
     g.selectAll('.yax-ticks')
         .data(args.scales.Y.ticks(args.yax_count)).enter()

@@ -40,13 +40,9 @@ $(document).ready(function() {
         
     //sample chart 2
     d3.json('data/fake_users2.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {
-            data[i] = _.map(data[i], function(d) {
-                d['date'] = fff.parse(d['date']);
-                return d;
-            });
-        }
+            data[i] = convert_dates(data[i]);
+        };
         
         moz_chart({
             title:"More Fake Users",
@@ -60,18 +56,16 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-    })
+    });
 
     //sample chart 3
     d3.json('data/some_percentage.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            data[i] = _.map(data[i], function(d) {
-                d['date'] = fff.parse(d['date']);
-                return d;
-            });
-        }
-        
+        // for (var i=0;i<data.length;i++) {
+        //         data[i] = convert_dates(data[i]);
+        //     };
+        // })
+        data = convert_dates(data);
+
         var markers = [{
             'date': new Date('2014-02-01'),
             'label': '1st Milestone'
@@ -174,8 +168,9 @@ function assignEventListeners() {
 }
 
 function convert_dates(data){
-    data = _.map(data, function(d){
-        d['date'] = new Date(d['date']);
+    data = data.map(function(d){
+        var fff = d3.time.format('%Y-%m-%d');
+        d['date'] = fff.parse(d['date']);
         return d;
     });
     
