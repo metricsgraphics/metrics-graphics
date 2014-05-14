@@ -26,7 +26,7 @@ div#trunk h2.trunk-title {
 }
 
 div.trunk-section {
-  border-top:1px solid black;
+  border-top:1px solid #cccccc;
   padding-top:15px;
   padding-bottom:25px;
 }
@@ -137,6 +137,7 @@ h2.chart_title {
 h2.chart_title .fa {
     color: #cccccc;
     font-size: 14px;
+    padding-left: 4px;
     vertical-align: top;
 }
 

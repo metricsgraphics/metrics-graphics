@@ -87,6 +87,10 @@ text {
     fill: #fff;
 }
 
+div.trunk-section {
+    border-top-color: #5e5e5e;
+}
+
 .x-axis line,
 .y-axis line {
     stroke: #fff;
