@@ -71,8 +71,9 @@ circle {
 
 .markers line {
     opacity: 0.2;
-    shape-rendering: crispEdges;
     stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
 
 .markers text {
@@ -85,8 +86,9 @@ circle {
 
 .baselines line {
     opacity: 0.2;
-    shape-rendering: crispEdges;
     stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
 
 .baselines text {
@@ -229,8 +231,9 @@ text {
 .x-axis line,
 .y-axis line {
     opacity: 0.3;
-    shape-rendering: crispEdges;
     stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
 
 .x-axis text,
@@ -242,7 +245,7 @@ text {
 
 .x-axis-small text,
 .y-axis-small text {
-  font-size:8px;
+    font-size: 8px;
 }
 
 .year-marker text {
@@ -252,5 +255,5 @@ text {
 }
 
 .year-marker-small text {
-  font-size:8px;
+    font-size: 8px;
 }
