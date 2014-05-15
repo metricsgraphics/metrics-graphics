@@ -179,7 +179,7 @@ function xAxis(args) {
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
-                    return args.xax_format(d);
+                    return args.xax_units + args.xax_format(d);
                 })
         
     //are we adding years to x-axis
@@ -255,8 +255,7 @@ function yAxis(args) {
         .domain([0, max_y * args.inflator])
         .range([args.height - args.bottom - args.buffer, args.top]);
     
-    
-    var yax_format; // currently, {count, percentage}
+    var yax_format;
     if (args.format == 'count') {
         yax_format = function(f) {
             var pf = d3.formatPrefix(f);
