@@ -42,7 +42,6 @@ $(document).ready(function() {
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            linked: true,
             baselines: fake_baselines,
             target: '#fake_users1',
             x_accessor: 'date',
@@ -60,7 +59,6 @@ $(document).ready(function() {
             title:"More Fake Users",
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
-            linked: true,
             width: torso.width,
             height: torso.height,
             right: torso.right,
@@ -117,10 +115,11 @@ $(document).ready(function() {
     d3.json('data/brief-1.json', function(data) {
         data = convert_dates(data);
         moz_chart({
-            title: "This Section, pt. 1",
-            description: "Another Graph.",
+            title: "Linked Charts",
+            description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other. We are still working out how to make the exact same changes in each, but for now the rollovers merely trigger the rect.",
             data: data,
             width: trunk.width,
+            linked:true,
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
@@ -147,9 +146,11 @@ $(document).ready(function() {
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
         moz_chart({
-            title: "Another Smaller One",
-            description: "Yet Another Graph.",
+            title: "area=false",
+            description: "Small check to see that area: false works how we'd expect it.",
             data: data,
+            area: false,
+            linked:true,
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
