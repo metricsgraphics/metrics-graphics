@@ -1,15 +1,27 @@
 $(document).ready(function() {
+
     var torso = {};
+
     torso.width = 375;
     torso.height = 200;
     torso.right = 20;
 
     var trunk = {};
+
     trunk.width = 320;
     trunk.height = 150;
     trunk.left = 35;
     trunk.right = 10;
     trunk.xax_count = 5;
+
+    var small = {};
+
+    small.width = 240;
+    small.height = 140;
+    small.left = 20;
+    small.right = 20;
+    small.top = 20;
+    small.xax_count = 5;
 
     assignEventListeners();
     
@@ -116,13 +128,26 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        moz_chart({
+            title: "Small Text Inferred By Size",
+            description: "If the args.width - args.left - args.right is smaller than the args.small_width_threshold (and the flip for the height) then the text size automatically scales to be slightly smaller.",
+            data: data,
+            width: small.width,
+            height: small.height,
+            right: small.right,
+            top: small.top,
+            xax_count: 4,
+            target: 'div#small1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
 
     });
     
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
         moz_chart({
-            title: "Another Chart",
+            title: "Another Smaller One",
             description: "Yet Another Graph.",
             data: data,
             width: trunk.width,
@@ -130,6 +155,19 @@ $(document).ready(function() {
             right: trunk.right,
             xax_count: 4,
             target: 'div#briefing-2',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+        moz_chart({
+            title: "small_text=true",
+            description: "by adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            small_text:true,
+            xax_count: 4,
+            target: 'div#small2',
             x_accessor: 'date',
             y_accessor: 'value'
         });

@@ -240,8 +240,17 @@ text {
     opacity: 0.5;
 }
 
+.x-axis-small text,
+.y-axis-small text {
+  font-size:8px;
+}
+
 .year-marker text {
     fill: black;
     font-size: 9px;
     opacity: 0.5;
+}
+
+.year-marker-small text {
+  font-size:8px;
 }

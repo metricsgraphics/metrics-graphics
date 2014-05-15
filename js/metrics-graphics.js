@@ -40,6 +40,9 @@ function moz_chart() {
         chart_type: 'line',
         scales: {},
         scalefns: {},
+        small_width_threshold: 160,
+        small_height_threshold: 120,
+        small_text:false,
         width: 350,
         height: 220,
         data: [],
@@ -143,8 +146,14 @@ function xAxis(args) {
 
     // x axis
     g = svg.append('g')
-        .attr('class', 'x-axis');
-    var last_i = args.scales.X.ticks(args.xax_count).length-1
+        .classed('x-axis', true)
+        .classed('x-axis-small', 
+            args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
+            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
+            args.small_text);
+
+    var last_i = args.scales.X.ticks(args.xax_count).length-1;
+
     g.append('line')
         .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i] ))
         .attr('x2', args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
@@ -259,8 +268,14 @@ function yAxis(args) {
     }
         
     // y axis
+
     g = svg.append('g')
-        .attr('class', 'y-axis');
+        .classed('y-axis', true)
+        .classed('y-axis-small', 
+            args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
+            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
+            args.small_text);
+;
 
     var last_i = args.scales.Y.ticks(args.yax_count).length-1;
 
