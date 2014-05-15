@@ -36,48 +36,48 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        linked: false,
-        chart_type: 'line',
-        scales: {},
-        scalefns: {},
-        small_width_threshold: 160,
-        small_height_threshold: 120,
-        small_text:false,
-        width: 350,
-        height: 220,
-        data: [],
-        left: 50,
-        right: 10,
-        markers: null, // sets the marker lines
-        x_accessor: 'date',
-        y_accessor: 'value',
-        y_max_accessor: 'value',
-        list: false,
-        goal: null,
         area: true,
-        top: 40,
         bottom: 30,
-        show_years: true,
-        xax_tick: 5,
-        min_x: null,
-        min_y: null,
+        buffer: 8,
+        chart_type: 'line',
+        data: [],
+        decimal: false,
+        format: 'count',
+        goal: null,
+        height: 220,
+        inflator: 10/9, // for setting y axis max
+        left: 50,
+        linked: false,
+        list: false,
+        markers: null, // sets the marker lines
         max_x: null,
         max_y: null,
-        inflator: 10/9, // for setting y axis max 
-        xax_count: 6,
-        yax_tick: 5,
-        yax_count: 5,
-        decimal: false,
-        buffer: 8,
-        format: 'count',
+        min_x: null,
+        min_y: null,
+        right: 10,
+        scalefns: {},
+        scales: {},
+        show_years: true,
+        small_height_threshold: 120,
+        small_text: false,
+        small_width_threshold: 160,
         target: '#viz',
-        xax_units: '',
-        yax_units: '',
+        top: 40,
+        width: 350, 
+        x_accessor: 'date',
+        xax_count: 6,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
             return df(d);
-        }
+        },
+        xax_tick: 5,
+        xax_units: '',
+        y_accessor: 'value',
+        y_max_accessor: 'value',
+        yax_count: 5,
+        yax_tick: 5,
+        yax_units: ''
     }
 
     var args = arguments[0];
