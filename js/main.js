@@ -116,7 +116,7 @@ $(document).ready(function() {
             description: "A chart where we're not plotting dates on the x-axis.",
             data: data,
             area: false,
-            width: trunk.width,
+            width: torso.width,
             height: torso.height,
             right: trunk.right,
             target: 'div#xnotdate',
