@@ -200,9 +200,9 @@ function xAxis(args) {
             if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
                 max_x = args.data[i][last_i][args.x_accessor];
         }
-        console.log(min_x, max_x);
+        
         var years = d3.time.years(min_x, max_x);
-console.log(years);
+
         g = svg.append('g')
             .attr('class', 'year-marker');
         
