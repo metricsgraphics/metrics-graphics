@@ -25,7 +25,6 @@ $(document).ready(function() {
 
     assignEventListeners();
     
-    //sample chart 1
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {
@@ -49,7 +48,6 @@ $(document).ready(function() {
         })
     })
         
-    //sample chart 2
     d3.json('data/fake_users2.json', function(data) {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i]);
@@ -70,11 +68,9 @@ $(document).ready(function() {
 
     //sample chart 3
     d3.json('data/some_percentage.json', function(data) {
-        // for (var i=0;i<data.length;i++) {
-        //         data[i] = convert_dates(data[i]);
-        //     };
-        // })
-        data = convert_dates(data);
+        for(var i=0;i<data.length;i++) {
+            data[i] = convert_dates(data[i]);
+        };
 
         var markers = [{
             'date': new Date('2014-02-01'),
@@ -86,12 +82,11 @@ $(document).ready(function() {
             
         moz_chart({
             title: "Some Percentages",
-            description: "Here is an example with the area turned off, and using the percentage format instead.",
+            description: "Here is an example that shows percentages.",
             data: data,
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            area: false,
             markers: markers,
             format: 'percentage',
             target: 'div#percentage',
@@ -100,7 +95,22 @@ $(document).ready(function() {
         });
     })
     
-    //sample chart 4           
+    d3.json('data/some_currency.json', function(data) {
+        data = convert_dates(data);    
+        moz_chart({
+            title: "Some Currency",
+            description: "Here is an example that uses custom units for currency.",
+            data: data,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            target: 'div#currency',
+            x_accessor: 'date',
+            yax_units: '$',
+            y_accessor: 'value'
+        });
+    })
+    
     moz_chart({
         title: "Glorious Chart",
         chart_type: 'missing-data',
@@ -114,6 +124,7 @@ $(document).ready(function() {
     // lower section
     d3.json('data/brief-1.json', function(data) {
         data = convert_dates(data);
+        
         moz_chart({
             title: "Linked Charts",
             description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other. We are still working out how to make the exact same changes in each, but for now the rollovers merely trigger the rect.",
@@ -127,6 +138,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        
         moz_chart({
             title: "Small Text Inferred By Size",
             description: "If the args.width - args.left - args.right is smaller than the args.small_width_threshold (and the flip for the height) then the text size automatically scales to be slightly smaller.",
@@ -145,6 +157,7 @@ $(document).ready(function() {
     
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
+        
         moz_chart({
             title: "area=false",
             description: "Small check to see that area: false works how we'd expect it.",
@@ -159,6 +172,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        
         moz_chart({
             title: "small_text=true",
             description: "by adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",

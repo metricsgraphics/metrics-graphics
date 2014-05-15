@@ -27,7 +27,7 @@ function merge_with_defaults(obj){
       }
     });
     return obj;
-  };
+};
 
 
 var charts = {};
@@ -64,14 +64,17 @@ function moz_chart() {
         max_x: null,
         max_y: null,
         inflator: 10/9, // for setting y axis max 
-        xax_count: 8,
+        xax_count: 6,
         yax_tick: 5,
         yax_count: 5,
         decimal: false,
         buffer: 8,
         format: 'count',
         target: '#viz',
-        xax_date_format: function(d) {
+        xax_units: '',
+        yax_units: '',
+        xax_format: function(d) {
+            //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
             return df(d);
         }
@@ -176,7 +179,7 @@ function xAxis(args) {
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
-                    return args.xax_date_format(d);
+                    return args.xax_format(d);
                 })
         
     //are we adding years to x-axis
@@ -257,7 +260,7 @@ function yAxis(args) {
     if (args.format == 'count') {
         yax_format = function(f) {
             var pf = d3.formatPrefix(f);
-            return pf.scale(f) + pf.symbol;
+            return args.yax_units + pf.scale(f) + pf.symbol;
         };
     }
     else {
