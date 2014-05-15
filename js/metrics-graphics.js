@@ -62,6 +62,7 @@ function moz_chart() {
         small_text: false,
         small_width_threshold: 160,
         target: '#viz',
+        time_series: true,
         top: 40,
         width: 350, 
         x_accessor: 'date',
@@ -142,8 +143,12 @@ function xAxis(args) {
 
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
-
-    args.scales.X = d3.time.scale()
+    
+    args.scales.X = (args.time_series) 
+        ? d3.time.scale() 
+        : d3.scale.linear();
+        
+    args.scales.X
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right-args.buffer]);
 
@@ -183,20 +188,21 @@ function xAxis(args) {
                 })
         
     //are we adding years to x-axis
-    if (args.show_years){
+    if (args.show_years) {
         var min_x;
         var max_x;
 
         for (var i=0; i<args.data.length; i++) {
             last_i = args.data[i].length-1;
+            
             if(args.data[i][0][args.x_accessor] < min_x || !min_x)
-              min_x = args.data[i][0][args.x_accessor];
+                min_x = args.data[i][0][args.x_accessor];
             if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
-               max_x = args.data[i][last_i][args.x_accessor];
+                max_x = args.data[i][last_i][args.x_accessor];
         }
+        console.log(min_x, max_x);
         var years = d3.time.years(min_x, max_x);
-
-        
+console.log(years);
         g = svg.append('g')
             .attr('class', 'year-marker');
         
@@ -228,8 +234,6 @@ function yAxis(args) {
 
     var min_y, max_y;
 
-
-    
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
     }
@@ -270,7 +274,6 @@ function yAxis(args) {
     }
         
     // y axis
-
     g = svg.append('g')
         .classed('y-axis', true)
         .classed('y-axis-small', 
@@ -315,6 +318,21 @@ function init(args) {
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
 
+    //sort x-axis
+        for(var i=0; i<args.data.length; i++) {
+            args.data[i].sort(function(a, b) {
+                return a[args.x_accessor] - b[args.x_accessor];
+            });
+        }
+        
+    //do we have a time_series?
+    if($.type(args.data[0][0][args.x_accessor]) == 'date') {
+        args.time_series = true;
+    }
+    else {
+        args.time_series = false;
+    }
+    
     var linked;
 
     chart_title(args);
@@ -337,7 +355,7 @@ function markers(args) {
         var gm;
         var gb;
         
-        if (args.markers) {
+        if(args.markers) {
             gm = svg.append('g')
                 .attr('class', 'markers');
             
@@ -345,10 +363,10 @@ function markers(args) {
                 .data(args.markers)
                 .enter().append('line')
                     .attr('x1', function(d) {
-                        return args.scales.X(d['date'])
+                        return args.scales.X(d[args.x_accessor])
                     })
                     .attr('x2', function(d) {
-                        return args.scales.X(d['date'])
+                        return args.scales.X(d[args.x_accessor])
                     })
                     .attr('y1', args.top)
                     .attr('y2', function() {
@@ -360,7 +378,7 @@ function markers(args) {
                 .data(args.markers)
                 .enter().append('text')
                     .attr('x', function(d) {
-                        return args.scales.X(d['date'])
+                        return args.scales.X(d[args.x_accessor])
                     })
                     .attr('y', args.top - 8)
                     .attr('text-anchor', 'middle')
@@ -369,7 +387,7 @@ function markers(args) {
                     });
         }
 
-        if (args.baselines){
+        if(args.baselines) {
             gb = svg.append('g')
                 .attr('class', 'baselines');
 
@@ -456,7 +474,7 @@ charts.line = function(args) {
         g = svg.append('g')
             .attr('class', 'transparent-rollover-rect');
         
-        g.selectAll('.periods')
+        g.selectAll('.rollover-rects')
             .data(args.data[0]).enter()
                 .append('rect')
                     .attr('class', function(d){
@@ -467,21 +485,21 @@ charts.line = function(args) {
                         }
                     })
                     .attr('x', function(d, i) {
-                        var current_date = d;
-                        var next_date, previous_date;
+                        var current_x = d;
+                        var next_x, previous_x;
                         var x_coord;
                     
                         if (i == 0) {
-                            next_date = args.data[0][1]; //todo
-                            x_coord = args.scalefns.xf(current_date) 
-                                - (args.scalefns.xf(next_date) 
-                                - args.scalefns.xf(current_date)) / 2;
+                            next_x = args.data[0][1]; //todo
+                            x_coord = args.scalefns.xf(current_x) 
+                                - (args.scalefns.xf(next_x) 
+                                - args.scalefns.xf(current_x)) / 2;
                         }
                         else {
-                            previous_date = args.data[0][i - 1]; //todo
-                            x_coord = args.scalefns.xf(current_date) 
-                                - (args.scalefns.xf(current_date) 
-                                - args.scalefns.xf(previous_date)) / 2;
+                            previous_x = args.data[0][i - 1]; //todo
+                            x_coord = args.scalefns.xf(current_x) 
+                                - (args.scalefns.xf(current_x) 
+                                - args.scalefns.xf(previous_x)) / 2;
                         }
                         
                         return x_coord;    
@@ -551,10 +569,7 @@ charts.line = function(args) {
                     return n(d_);
                 }
             }
-        
-            var dd = new Date(+d[args.x_accessor]);
-            dd.setDate(dd.getDate());
-        
+
             svg.append('text')
                 .classed('goals_rollover_text', true)
                 .attr('xml:space', 'preserve')
@@ -562,7 +577,16 @@ charts.line = function(args) {
                 .attr('y', args.top / 2)
                 .attr('text-anchor', 'end')
                 .text(function() {
-                    return fmt(dd) + '  ' + num(d[args.y_accessor])
+                    if(args.time_series) {
+                        var dd = new Date(+d[args.x_accessor]);
+                        dd.setDate(dd.getDate());
+                        
+                        return fmt(dd) + '  ' + num(d[args.y_accessor]);
+                    }
+                    else {
+                        return args.x_accessor + ': ' + num(d[args.x_accessor]) 
+                        + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
+                    }
                 });
         }
     }

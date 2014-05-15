@@ -66,7 +66,6 @@ $(document).ready(function() {
         })
     });
 
-    //sample chart 3
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i]);
@@ -96,7 +95,7 @@ $(document).ready(function() {
     })
     
     d3.json('data/some_currency.json', function(data) {
-        data = convert_dates(data);    
+        data = convert_dates(data);   
         moz_chart({
             title: "Some Currency",
             description: "Here is an example that uses custom units for currency.",
@@ -110,6 +109,25 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
     })
+    
+    d3.json('data/xnotdate.json', function(data) {
+        moz_chart({
+            title: "X-axis not time",
+            description: "A chart where we're not plotting dates on the x-axis.",
+            data: data,
+            area: false,
+            width: trunk.width,
+            height: torso.height,
+            right: trunk.right,
+            target: 'div#xnotdate',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'males',
+            y_accessor: 'females'
+        });
+    });
     
     moz_chart({
         title: "Glorious Chart",
@@ -130,7 +148,7 @@ $(document).ready(function() {
             description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other. We are still working out how to make the exact same changes in each, but for now the rollovers merely trigger the rect.",
             data: data,
             width: trunk.width,
-            linked:true,
+            linked: true,
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
@@ -163,7 +181,7 @@ $(document).ready(function() {
             description: "Small check to see that area: false works how we'd expect it.",
             data: data,
             area: false,
-            linked:true,
+            linked: true,
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
@@ -180,7 +198,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
-            small_text:true,
+            small_text: true,
             xax_count: 4,
             target: 'div#small2',
             x_accessor: 'date',
