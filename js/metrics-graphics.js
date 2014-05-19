@@ -493,11 +493,10 @@ charts.line = function(args) {
                     })
                     .attr('x', function(d, i) {
                         var current_x = d;
-                        var next_x, previous_x;
                         var x_coord;
                     
                         if (i == 0) {
-                            next_x = args.data[0][1]; //todo
+                            var next_x = args.data[0][1]; //todo
                             x_coord = args.scalefns.xf(current_x) 
                                 - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
                                 / 2;
