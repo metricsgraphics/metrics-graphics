@@ -76,7 +76,6 @@ function moz_chart() {
         x_label: '',
         y_accessor: 'value',
         y_label: '',
-        y_max_accessor: 'value',
         yax_count: 5,
         yax_tick: 5,
         yax_units: ''
