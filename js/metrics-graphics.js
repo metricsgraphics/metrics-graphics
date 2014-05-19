@@ -166,7 +166,7 @@ function xAxis(args) {
             .attr('x', function() {
                 return args.width / 2;
             })
-            .attr('y', args.height - args.buffer)
+            .attr('y', args.height - 10)
             .attr('dy', '.50em')
             .attr('text-anchor', 'middle')
             .text(function(d) {

@@ -112,6 +112,7 @@ $(document).ready(function() {
     
     d3.json('data/xnotdate.json', function(data) {
         moz_chart({
+            bottom: 37,
             title: "X-axis not time",
             description: "A chart where we're not plotting dates on the x-axis and where the axes include labels.",
             data: data,
