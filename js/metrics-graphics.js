@@ -155,10 +155,7 @@ function xAxis(args) {
     // x axis
     g = svg.append('g')
         .classed('x-axis', true)
-        .classed('x-axis-small', 
-            args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
-            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
-            args.small_text);
+        .classed('x-axis-small', args.use_small_class);
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
 
@@ -188,7 +185,7 @@ function xAxis(args) {
                 })
         
     //are we adding years to x-axis
-    if (args.show_years) {
+    if (args.time_series && args.show_years) {
         var min_x;
         var max_x;
 
@@ -203,8 +200,15 @@ function xAxis(args) {
         
         var years = d3.time.years(min_x, max_x);
 
+        if (years.length==0){
+            var first_tick = args.scales.X.ticks(args.xax_tick)[0];
+            years = [first_tick];
+
+        }
+
         g = svg.append('g')
-            .attr('class', 'year-marker');
+            .classed('year-marker', true)
+            .classed('year-marker-small', args.use_small_class); // slight padding
         
         g.selectAll('.year_marker')
             .data(years).enter()
@@ -220,6 +224,7 @@ function xAxis(args) {
                 .append('text')
                     .attr('x', args.scales.X)
                     .attr('y', args.height - args.bottom + 28)
+                    .attr('dy', args.use_small_class ? -3 : 0)
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return yformat(d);
@@ -276,10 +281,7 @@ function yAxis(args) {
     // y axis
     g = svg.append('g')
         .classed('y-axis', true)
-        .classed('y-axis-small', 
-            args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
-            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
-            args.small_text);
+        .classed('y-axis-small', args.use_small_class);
 ;
 
     var last_i = args.scales.Y.ticks(args.yax_count).length-1;
@@ -344,6 +346,10 @@ function init(args) {
             .attr('height', args.height);
     
     //we kind of need axes in all cases
+
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
+            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
+            args.small_text;
     xAxis(args);
     yAxis(args);
     
