@@ -499,14 +499,14 @@ charts.line = function(args) {
                         if (i == 0) {
                             next_x = args.data[0][1]; //todo
                             x_coord = args.scalefns.xf(current_x) 
-                                - (args.scalefns.xf(next_x) 
-                                - args.scalefns.xf(current_x)) / 2;
+                                - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
+                                / 2;
                         }
                         else {
-                            previous_x = args.data[0][i - 1]; //todo
-                            x_coord = args.scalefns.xf(current_x) 
-                                - (args.scalefns.xf(current_x) 
-                                - args.scalefns.xf(previous_x)) / 2;
+                            var width = args.scalefns.xf(args.data[0][1])
+                                - args.scalefns.xf(args.data[0][0]); //todo
+                            
+                            x_coord = args.scalefns.xf(current_x) - width / 2;
                         }
                         
                         return x_coord;    
@@ -514,7 +514,8 @@ charts.line = function(args) {
                     .attr('y', args.top)
                     .attr('width', function(d, i) {
                         if (i != args.data[0].length - 1) { //todo
-                            return args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d); //todo
+                            return args.scalefns.xf(args.data[0][i + 1]) 
+                                - args.scalefns.xf(d); //todo
                         }
                         else {
                             return args.scalefns.xf(args.data[0][1]) //todo
