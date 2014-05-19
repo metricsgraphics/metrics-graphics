@@ -43,7 +43,6 @@ function moz_chart() {
         data: [],
         decimal: false,
         format: 'count',
-        goal: null,
         height: 220,
         inflator: 10/9, // for setting y axis max
         left: 50,
