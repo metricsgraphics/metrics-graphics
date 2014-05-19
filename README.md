@@ -7,6 +7,8 @@ The easiest set of examples is in main.js - this shows the examples that we curr
 
 Take a look at the issues to see the milestones and other upcoming work on this repository. We plan on having fuller documentation in the next milestone, as well as a guide to how to contribute to the library in a way that makes us feel warm inside when we accept your pull request.
 
+You can check out the demo page [here](https://metrics.mozilla.com/metrics-graphics/).
+
 Here is one example, with comments annotating the arguments
 
 ```

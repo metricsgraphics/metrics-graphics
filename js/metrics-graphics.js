@@ -208,7 +208,7 @@ function xAxis(args) {
 
         g = svg.append('g')
             .classed('year-marker', true)
-            .classed('year-marker-small', args.use_small_class); // slight padding
+            .classed('year-marker-small', args.use_small_class); 
         
         g.selectAll('.year_marker')
             .data(years).enter()
@@ -350,6 +350,7 @@ function init(args) {
     args.use_small_class = args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
             args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
             args.small_text;
+    
     xAxis(args);
     yAxis(args);
     
