@@ -128,8 +128,9 @@ function xAxis(args) {
     var max_x;
 
     args.scalefns.xf = function(di) {
-            return args.scales.X(di[args.x_accessor]);
+        return args.scales.X(di[args.x_accessor]);
     }
+    
     var last_i;
     for(var i=0; i<args.data.length; i++) {
         last_i = args.data[i].length-1;
@@ -151,11 +152,27 @@ function xAxis(args) {
     args.scales.X
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right-args.buffer]);
-
+    
     // x axis
     g = svg.append('g')
         .classed('x-axis', true)
         .classed('x-axis-small', args.use_small_class);
+
+
+    //are we adding a label?
+    if(args.x_label) {
+        g.append('text')
+            .attr('class', 'label')
+            .attr('x', function() {
+                return args.width / 2;
+            })
+            .attr('y', args.height - args.buffer)
+            .attr('dy', '.50em')
+            .attr('text-anchor', 'middle')
+            .text(function(d) {
+                return args.x_label;
+            })
+    }
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
 
@@ -282,7 +299,24 @@ function yAxis(args) {
     g = svg.append('g')
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
-;
+
+    //are we adding a label?
+    if(args.y_label) {
+        g.append('text')
+            .attr('class', 'label')
+            .attr('x', function() {
+                return -1 * args.height / 2;
+            })
+            .attr('y', "0.4em")
+            .attr("dy", "0.4em")
+            .attr('text-anchor', 'middle')
+            .text(function(d) {
+                return args.y_label;
+            })
+            .attr("transform", function(d) {
+                return "rotate(-90)";
+            });
+    }
 
     var last_i = args.scales.Y.ticks(args.yax_count).length-1;
 

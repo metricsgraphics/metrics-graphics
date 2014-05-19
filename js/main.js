@@ -125,7 +125,9 @@ $(document).ready(function() {
                 return pf.scale(f) + pf.symbol;
             },
             x_accessor: 'males',
-            y_accessor: 'females'
+            y_accessor: 'females',
+            x_label: 'males',
+            y_label: 'females',
         });
     });
     

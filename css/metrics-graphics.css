@@ -230,9 +230,22 @@ text {
     opacity: 0.5;
 }
 
+.x-axis .label,
+.y-axis .label {
+    font-family: 'PT Serif', serif;
+    font-size: 9.5px;
+    font-style: italic;
+    letter-spacing: 1;
+}
+
 .x-axis-small text,
 .y-axis-small text {
     font-size: 8px;
+}
+
+.x-axis-small .label,
+.y-axis-small .label {
+    font-size: 8.5px;
 }
 
 .year-marker text {
