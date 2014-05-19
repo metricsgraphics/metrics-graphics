@@ -109,20 +109,7 @@ circle {
     opacity: 0.2;
 }
 
-.goal line {
-    opacity: 0.5;
-    stroke: blue;
-    stroke-width: 1
-}
-
-.goal text {
-    fill: blue;
-    font-size: 8px;
-    font-weight: 600;
-    opacity: 0.3;
-}
-
-.goals_rollover_text {
+.active_datapoint {
     fill: black;
     font-size: 11px;
     font-weight: 400;

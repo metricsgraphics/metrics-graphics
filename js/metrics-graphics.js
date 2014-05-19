@@ -74,7 +74,9 @@ function moz_chart() {
         },
         xax_tick: 5,
         xax_units: '',
+        x_label: '',
         y_accessor: 'value',
+        y_label: '',
         y_max_accessor: 'value',
         yax_count: 5,
         yax_tick: 5,
@@ -578,7 +580,7 @@ charts.line = function(args) {
             }
 
             svg.append('text')
-                .classed('goals_rollover_text', true)
+                .classed('active_datapoint', true)
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
                 .attr('y', args.top / 2)
@@ -608,7 +610,7 @@ charts.line = function(args) {
             d3.selectAll('.transparent-rollover-rect rect')
                 .attr('opacity', 0);
             
-            svg.select('.goals_rollover_text')
+            svg.select('.active_datapoint')
                 .remove();
         }
     }
