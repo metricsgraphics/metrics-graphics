@@ -46,6 +46,21 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
+        
+        moz_chart({
+            title: "Extended Ticks",
+            description: "A longer chart with extended horizontal ticks enabled.",
+            data: data,
+            width: 960,
+            area: false,
+            xax_tick: 0,
+            y_extended_ticks: true,
+            height: torso.height,
+            right: torso.right,
+            target: '#long',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        })
     })
         
     d3.json('data/fake_users2.json', function(data) {
@@ -112,7 +127,8 @@ $(document).ready(function() {
     
     d3.json('data/xnotdate.json', function(data) {
         moz_chart({
-            bottom: 37,
+            left: 80,
+            bottom: 50,
             title: "X-axis not time",
             description: "A chart where we're not plotting dates on the x-axis and where the axes include labels.",
             data: data,

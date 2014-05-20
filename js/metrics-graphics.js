@@ -73,8 +73,10 @@ function moz_chart() {
         },
         xax_tick: 5,
         xax_units: '',
+        x_extended_ticks: false,
         x_label: '',
         y_accessor: 'value',
+        y_extended_ticks: false,
         y_label: '',
         yax_count: 5,
         yax_tick: 5,
@@ -151,7 +153,7 @@ function xAxis(args) {
         
     args.scales.X
         .domain([min_x, max_x])
-        .range([args.left + args.buffer, args.width - args.right-args.buffer]);
+        .range([args.left + args.buffer, args.width - args.right - args.buffer]);
     
     // x axis
     g = svg.append('g')
@@ -159,28 +161,32 @@ function xAxis(args) {
         .classed('x-axis-small', args.use_small_class);
 
 
+    var last_i = args.scales.X.ticks(args.xax_count).length-1;
+
     //are we adding a label?
     if(args.x_label) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return args.width / 2;
+                return args.left + args.buffer
+                    + ((args.width - args.right - args.buffer)
+                        - (args.left + args.buffer)) / 2;
             })
-            .attr('y', args.height - 10)
+            .attr('y', args.height - args.bottom / 2)
             .attr('dy', '.50em')
-            .attr('text-anchor', 'middle')
+            .attr('text-anchor', 'end')
             .text(function(d) {
                 return args.x_label;
             })
     }
 
-    var last_i = args.scales.X.ticks(args.xax_count).length-1;
-
-    g.append('line')
-        .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i] ))
-        .attr('x2', args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
-        .attr('y1', args.height - args.bottom)
-        .attr('y2', args.height - args.bottom);
+    if(!args.x_extended_ticks && !args.y_extended_ticks) {
+        g.append('line')
+            .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
+            .attr('x2', args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
+            .attr('y1', args.height - args.bottom)
+            .attr('y2', args.height - args.bottom);
+    }
     
     g.selectAll('.xax-ticks')
         .data(args.scales.X.ticks(args.xax_count)).enter()
@@ -188,7 +194,11 @@ function xAxis(args) {
                 .attr('x1', args.scales.X)
                 .attr('x2', args.scales.X)
                 .attr('y1', args.height - args.bottom)
-                .attr('y2', args.height - args.bottom + args.xax_tick);
+                .attr('y2', function() {
+                    return (args.x_extended_ticks)
+                        ? args.top
+                        : args.height - args.bottom + args.xax_tick;
+                });
             
     g.selectAll('.xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
@@ -217,7 +227,7 @@ function xAxis(args) {
         
         var years = d3.time.years(min_x, max_x);
 
-        if (years.length==0){
+        if (years.length == 0){
             var first_tick = args.scales.X.ticks(args.xax_tick)[0];
             years = [first_tick];
 
@@ -305,9 +315,13 @@ function yAxis(args) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return -1 * args.height / 2;
+                return -1 * (args.top + args.buffer + 
+                        ((args.height - args.bottom - args.buffer)
+                            - (args.top + args.buffer)) / 2);
             })
-            .attr('y', "0.4em")
+            .attr('y', function() {
+                return args.left / 2;
+            })
             .attr("dy", "0.4em")
             .attr('text-anchor', 'middle')
             .text(function(d) {
@@ -320,17 +334,23 @@ function yAxis(args) {
 
     var last_i = args.scales.Y.ticks(args.yax_count).length-1;
 
-    g.append('line')
-        .attr('x1', args.left)
-        .attr('x2', args.left)
-        .attr('y1', args.scales.Y(args.scales.Y.ticks(args.yax_count)[0]))
-        .attr('y2', args.scales.Y(args.scales.Y.ticks(args.yax_count)[last_i]));
+    if(!args.x_extended_ticks && !args.y_extended_ticks) {
+        g.append('line')
+            .attr('x1', args.left)
+            .attr('x2', args.left)
+            .attr('y1', args.scales.Y(args.scales.Y.ticks(args.yax_count)[0]))
+            .attr('y2', args.scales.Y(args.scales.Y.ticks(args.yax_count)[last_i]));
+    }
     
     g.selectAll('.yax-ticks')
         .data(args.scales.Y.ticks(args.yax_count)).enter()
             .append('line')
                 .attr('x1', args.left)
-                .attr('x2', args.left - args.yax_tick)
+                .attr('x2', function() {
+                    return (args.y_extended_ticks)
+                        ? args.width - args.right
+                        : args.left - args.yax_tick;
+                })
                 .attr('y1', args.scales.Y)
                 .attr('y2', args.scales.Y);
             
