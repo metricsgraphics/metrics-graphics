@@ -36,51 +36,51 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        area: true,
-        bottom: 30,
-        buffer: 8,
-        chart_type: 'line',
-        data: [],
-        decimal: false,
-        format: 'count',
-        height: 220,
-        inflator: 10/9, // for setting y axis max
-        left: 50,
-        linked: false,
-        list: false,
-        markers: null, // sets the marker lines
+        top: 40,                      // the size of the top margin
+        bottom: 30,                   // the size of the bottom margin
+        right: 10,                    // size of the right margin
+        left: 50,                     // size of the left margin
+        buffer: 8,                    // the buffer between the actual chart area and the margins
+        width: 350,                   // the width of the entire graphic
+        height: 220,                  // the height of the entire graphic
+        small_height_threshold: 120,  // the height threshold for when smaller text appears
+        small_width_threshold: 160,   // the width  threshold for when smaller text appears
+        small_text: false,            // coerces small text regardless of graphic size
+        xax_count: 6,                 // number of x axis ticks
+        xax_tick: 5,                  // x axis tick length
+        yax_count: 5,                 // number of y axis ticks
+        yax_tick: 5,                  // y axis tick length
+        x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
+        y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         max_x: null,
         max_y: null,
         min_x: null,
         min_y: null,
-        right: 10,
-        scalefns: {},
-        scales: {},
-        show_years: true,
-        small_height_threshold: 120,
-        small_text: false,
-        small_width_threshold: 160,
-        target: '#viz',
-        time_series: true,
-        top: 40,
-        width: 350, 
         x_accessor: 'date',
-        xax_count: 6,
+        xax_units: '',
+        x_label: '',
+        y_accessor: 'value',
+        y_label: '',
+        yax_units: '',
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
             return df(d);
         },
-        xax_tick: 5,
-        xax_units: '',
-        x_extended_ticks: false,
-        x_label: '',
-        y_accessor: 'value',
-        y_extended_ticks: false,
-        y_label: '',
-        yax_count: 5,
-        yax_tick: 5,
-        yax_units: ''
+
+        area: true,
+        chart_type: 'line',   
+        data: [],
+        decimals: 2,                  // the number of decimals in any rollover
+        format: 'count',
+        inflator: 10/9,               // for setting y axis max
+        linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+        list: false,
+        markers: null,                // sets the marker lines
+        scalefns: {},
+        scales: {},
+        show_years: true,
+        target: '#viz'
     }
 
     var args = arguments[0];
@@ -619,14 +619,16 @@ charts.line = function(args) {
         
             if (args.format == 'count') {
                 var num = function(d_) {
+                    var is_float = d_ % 1 != 0;
                     var n = d3.format("0,000");
-                    d_ = args.decimal ? d3.round(d_, 2) : d3.round(d_);
+                    d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
             }
             else {
                 var num = function(d_) {
-                    var n = d3.format('%');
+                    var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
+                    var n = d3.format(fmt_string);
                     return n(d_);
                 }
             }

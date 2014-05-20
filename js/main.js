@@ -107,6 +107,21 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        moz_chart({
+                title: "Changing Precision 2",
+                description: "Here we set decimals: 0 for percentages.",
+                data: data,
+                decimals: 0,
+                format: 'Percentage',
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_count: 4,
+                target: 'div#precision2',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
     })
     
     d3.json('data/some_currency.json', function(data) {
@@ -224,7 +239,27 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
     });
+    d3.json('data/float.json', function(data) {
+        data = convert_dates(data);
+
+        moz_chart({
+                title: "Changing Precision 1",
+                description: "Here we set decimals: 3 to get 3 decimals in the rollover for percentages.",
+                data: data,
+                decimals: 3,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_count: 4,
+                target: 'div#precision1',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
+    });
 })
+
+
 
 function assignEventListeners() {
     $('#dark-css').click(function () {
