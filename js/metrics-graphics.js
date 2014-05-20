@@ -542,69 +542,94 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         var g;
         
+        //rollover text
+        svg.append('text')
+            .attr('class', 'active_datapoint')
+            .attr('xml:space', 'preserve')
+            .attr('x', args.width - args.right)
+            .attr('y', args.top / 2)
+            .attr('text-anchor', 'end');
+                
         //append circle
         svg.append('circle')
             .attr('cx', 0)
             .attr('cy', 0)
             .attr('r', 0);
 
-        //main rollover, only for first line at the moment for multi-line charts, todo
+        //main rollover
         g = svg.append('g')
             .attr('class', 'transparent-rollover-rect');
-        
-        g.selectAll('.rollover-rects')
-            .data(args.data[0]).enter()
-                .append('rect')
-                    .attr('class', function(d){
-                        if(args.linked) {
-                            var v = d[args.x_accessor];
-                            var formatter = d3.time.format('%Y-%m-%d');
-                            return 'roll_' + formatter(v);
-                        }
-                    })
-                    .attr('x', function(d, i) {
-                        var current_x = d;
-                        var x_coord;
-                    
-                        if (i == 0) {
-                            var next_x = args.data[0][1]; //todo
-                            x_coord = args.scalefns.xf(current_x) 
-                                - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
-                                / 2;
-                        }
-                        else {
-                            var width = args.scalefns.xf(args.data[0][1])
-                                - args.scalefns.xf(args.data[0][0]); //todo
-                            
-                            x_coord = args.scalefns.xf(current_x) - width / 2;
-                        }
+            
+        //main rollover
+        for(var i=0; i<args.data.length; i++) {
+            g.selectAll('.rollover-rects')
+                .data(args.data[i]).enter()
+                    .append('rect')
+                        .attr('class', function(d) {
+                            if(args.linked) {
+                                var v = d[args.x_accessor];
+                                var formatter = d3.time.format('%Y-%m-%d');
+                                
+                                return 'line' + (i+1) + '-color ' + 'roll_' + formatter(v);
+                            }
+                            else {
+                                return 'line' + (i+1) + '-color';
+                            }
+                        })
+                        .attr('x', function(d, i) {
+                            var current_x = d;
+                            var x_coord;
                         
-                        return x_coord;    
-                    })
-                    .attr('y', args.top)
-                    .attr('width', function(d, i) {
-                        if (i != args.data[0].length - 1) { //todo
-                            return args.scalefns.xf(args.data[0][i + 1]) 
-                                - args.scalefns.xf(d); //todo
-                        }
-                        else {
-                            return args.scalefns.xf(args.data[0][1]) //todo
-                                - args.scalefns.xf(args.data[0][0]); //todo
-                        }
-                    })
-                    .attr('height', args.height - args.bottom - args.top - args.buffer)
-                    .attr('opacity', 0)
-                    .on('mouseover', this.rolloverOn(args))
-                    .on('mouseout', this.rolloverOff(args));
+                            if (i == 0) {
+                                var next_x = args.data[0][1]; //todo
+                                x_coord = args.scalefns.xf(current_x) 
+                                    - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
+                                    / 2;
+                            }
+                            else {
+                                var width = args.scalefns.xf(args.data[0][1])
+                                    - args.scalefns.xf(args.data[0][0]); //todo
+                                
+                                x_coord = args.scalefns.xf(current_x) - width / 2;
+                            }
+                            
+                            return x_coord;    
+                        })
+                        .attr('y', function(d, i) {
+                            return (args.data.length > 1)
+                                ? args.scalefns.yf(d) - 12 //multi-line chart sensitivity
+                                : args.top;
+                        })
+                        .attr('width', function(d, i) {
+                            if (i != args.data[0].length - 1) { //todo
+                                return args.scalefns.xf(args.data[0][i + 1]) 
+                                    - args.scalefns.xf(d); //todo
+                            }
+                            else {
+                                return args.scalefns.xf(args.data[0][1]) //todo
+                                    - args.scalefns.xf(args.data[0][0]); //todo
+                            }
+                        })
+                        .attr('height', function(d, i) {
+                            return (args.data.length > 1)
+                                ? 24 //multi-line chart sensitivity
+                                : args.height - args.bottom - args.top - args.buffer;
+                        })
+                        .attr('opacity', 0)
+                        .on('mouseover', this.rolloverOn(args, i))
+                        .on('mouseout', this.rolloverOff(args));
+        }
         
         return this;
     }
     
-    this.rolloverOn = function(args) {
+    this.rolloverOn = function(args, line_i) {
         var svg = d3.select(args.target + ' svg');
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
+            console.log($(this));
+        
             svg.selectAll('circle')
                 .attr('cx', function() {
                     return args.scales.X(d[args.x_accessor]);
@@ -613,9 +638,14 @@ charts.line = function(args) {
                     return args.scales.Y(d[args.y_accessor]);
                 })
                 .attr('r', 2.5)
+                .attr('class', function() {
+                    console.log('area' + (line_i+1) + '-color');
+                    return 'area' + (line_i+1) + '-color';
+                    
+                })
                 .style('opacity', 1);
      
-            if(args.linked) {    
+            if(args.linked) {
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
             
@@ -650,12 +680,8 @@ charts.line = function(args) {
                 }
             }
 
-            svg.append('text')
-                .classed('active_datapoint', true)
-                .attr('xml:space', 'preserve')
-                .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
-                .attr('text-anchor', 'end')
+            //update rollover text
+            svg.select('.active_datapoint')
                 .text(function() {
                     if(args.time_series) {
                         var dd = new Date(+d[args.x_accessor]);
@@ -679,14 +705,17 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d, i) {
-            svg.selectAll('circle')
-                .style('opacity', 0);
-                
             d3.selectAll('.transparent-rollover-rect rect')
                 .attr('opacity', 0);
-            
-            svg.select('.active_datapoint')
-                .remove();
+                
+            //if multi-line, don't remove active datapoint text on mouse out
+            if(args.data.length <= 1) {
+                svg.selectAll('circle')
+                    .style('opacity', 0);
+                
+                svg.select('.active_datapoint')
+                    .text('');
+            }
         }
     }
     
