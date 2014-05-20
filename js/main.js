@@ -48,13 +48,20 @@ $(document).ready(function() {
         })
         
         moz_chart({
-            title: "Extended Ticks",
-            description: "A longer chart with extended horizontal ticks enabled.",
+            title: "Extended Ticks, Custom Rollover",
+            description: "A wider chart with extended horizontal ticks enabled and a custom rollover text.",
             data: data,
             width: 960,
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
+            rollover_callback: function(d, i) {
+                //custom format the rollover text, show days
+                var prefix = d3.formatPrefix(d.value);
+                $('.active_datapoint')
+                    .html('Day ' + (i+1) + ' &nbsp; '
+                            + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+            },
             height: torso.height,
             right: torso.right,
             target: '#long',
@@ -144,7 +151,7 @@ $(document).ready(function() {
         moz_chart({
             left: 80,
             bottom: 50,
-            title: "X-axis not time",
+            title: "X-axis Not Time",
             description: "A chart where we're not plotting dates on the x-axis and where the axes include labels.",
             data: data,
             area: false,

@@ -29,7 +29,6 @@ function merge_with_defaults(obj){
     return obj;
 };
 
-
 var charts = {};
 
 function moz_chart() {
@@ -62,6 +61,7 @@ function moz_chart() {
         y_accessor: 'value',
         y_label: '',
         yax_units: '',
+        rollover_callback: null,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
@@ -651,6 +651,10 @@ charts.line = function(args) {
                         + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
                     }
                 });
+
+            if(args.rollover_callback) {
+                args.rollover_callback(d, i);
+            }
         }
     }
     
