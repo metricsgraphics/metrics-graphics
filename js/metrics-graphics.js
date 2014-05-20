@@ -29,8 +29,8 @@ function merge_with_defaults(obj){
     return obj;
 };
 
-
 var charts = {};
+var time_series = true;
 
 function moz_chart() {
     var moz = {};
@@ -62,7 +62,6 @@ function moz_chart() {
         small_text: false,
         small_width_threshold: 160,
         target: '#viz',
-        time_series: true,
         top: 40,
         width: 350, 
         x_accessor: 'date',
@@ -148,7 +147,7 @@ function xAxis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     
-    args.scales.X = (args.time_series) 
+    args.scales.X = (time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
         
@@ -213,7 +212,7 @@ function xAxis(args) {
                 })
         
     //are we adding years to x-axis
-    if (args.time_series && args.show_years) {
+    if (time_series && args.show_years) {
         var min_x;
         var max_x;
 
@@ -384,10 +383,10 @@ function init(args) {
         
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
-        args.time_series = true;
+        time_series = true;
     }
     else {
-        args.time_series = false;
+        time_series = false;
     }
     
     var linked;
@@ -639,7 +638,7 @@ charts.line = function(args) {
                 .attr('y', args.top / 2)
                 .attr('text-anchor', 'end')
                 .text(function() {
-                    if(args.time_series) {
+                    if(time_series) {
                         var dd = new Date(+d[args.x_accessor]);
                         dd.setDate(dd.getDate());
                         
