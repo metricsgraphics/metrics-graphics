@@ -60,7 +60,7 @@ $(document).ready(function() {
                 var prefix = d3.formatPrefix(d.value);
                 $('.active_datapoint')
                     .html('Day ' + (i+1) + ' &nbsp; '
-                            + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                        + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             height: torso.height,
             right: torso.right,
