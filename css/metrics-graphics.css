@@ -262,3 +262,9 @@ text {
 .year-marker-small text {
     font-size: 8px;
 }
+
+div#footer {
+    text-align:center;
+    padding:40px;
+    border-top: 1px solid #cccccc;
+}
