@@ -48,8 +48,8 @@ $(document).ready(function() {
         })
         
         moz_chart({
-            title: "Extended Ticks",
-            description: "A longer chart with extended horizontal ticks enabled.",
+            title: "Extended Ticks, Custom Rollover",
+            description: "A wider chart with extended horizontal ticks enabled and a custom rollover text.",
             data: data,
             width: 960,
             area: false,
@@ -136,7 +136,7 @@ $(document).ready(function() {
         moz_chart({
             left: 80,
             bottom: 50,
-            title: "X-axis not time",
+            title: "X-axis Not Time",
             description: "A chart where we're not plotting dates on the x-axis and where the axes include labels.",
             data: data,
             area: false,
