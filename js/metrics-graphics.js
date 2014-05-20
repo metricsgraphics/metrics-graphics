@@ -53,6 +53,7 @@ function moz_chart() {
         max_y: null,
         min_x: null,
         min_y: null,
+        rollover_callback: null,
         right: 10,
         scalefns: {},
         scales: {},
@@ -649,6 +650,10 @@ charts.line = function(args) {
                         + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
                     }
                 });
+
+            if(args.rollover_callback) {
+                args.rollover_callback(d, i);
+            }
         }
     }
     

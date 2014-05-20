@@ -55,6 +55,13 @@ $(document).ready(function() {
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
+            rollover_callback: function(d, i) {
+                //custom format the rollover text, show days
+                var prefix = d3.formatPrefix(d.value);
+                $('.active_datapoint')
+                    .html('Day ' + (i+1) + ' &nbsp; '
+                            + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+            },
             height: torso.height,
             right: torso.right,
             target: '#long',
