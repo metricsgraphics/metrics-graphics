@@ -264,6 +264,41 @@ $(document).ready(function() {
                 y_accessor: 'value'
             });
     });
+    //
+    d3.json('data/neg1.json', function(data) {
+        data = convert_dates(data);
+
+        moz_chart({
+                title: "Negative Values 1",
+                description: "Currently defaults to having no area by default.",
+                data: data,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                target: 'div#neg1',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
+    });
+    d3.json('data/neg2.json', function(data) {
+
+        moz_chart({
+                title: "Negative Values 2",
+                description: "Check for same with two numbers instead of date.",
+                data: data,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                target: 'div#neg2',
+                x_accessor: 'subject',
+                y_accessor: 'measure'
+            });
+    });
 })
 
 

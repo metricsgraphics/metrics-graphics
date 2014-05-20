@@ -147,6 +147,15 @@ function xAxis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     
+    args.x_axis_negative = false;
+    if (!args.time_series) {
+        if (min_x > 0){
+            min_x = 0;
+        } else  {
+            min_x = min_x  - (max_x * (args.inflator-1));
+            args.x_axis_negative = true;
+        }
+    }
     args.scales.X = (args.time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
@@ -179,7 +188,7 @@ function xAxis(args) {
                 return args.x_label;
             })
     }
-
+    
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
         g.append('line')
             .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
@@ -256,7 +265,8 @@ function xAxis(args) {
                     .text(function(d) {
                         return yformat(d);
                     });
-    };         
+    };    
+
     return this;
 }
     
@@ -286,9 +296,16 @@ function yAxis(args) {
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
 
-    //todo get ymax from all lines if multiple lines, currently getting it from first line
+    // we are currently saying that if the min val > 0, set 0 as min y.
+    if (min_y > 0){
+        min_y = 0;
+        args.y_axis_negative = false;
+    } else {
+        min_y = min_y  - (max_y * (args.inflator-1));
+        args.y_axis_negative = true;
+    }
     args.scales.Y = d3.scale.linear()
-        .domain([0, max_y * args.inflator])
+        .domain([min_y, max_y * args.inflator])
         .range([args.height - args.bottom - args.buffer, args.top]);
     
     var yax_format;
@@ -502,7 +519,7 @@ charts.line = function(args) {
             .interpolate('cardinal');
         
         for(var i=args.data.length-1; i>=0; i--) {
-            if (args.area) {
+            if (args.area && !args.y_axis_negative) {
                 svg.append('path')
                     .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
                     .attr('d', area(args.data[i]));

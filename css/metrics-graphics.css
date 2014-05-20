@@ -254,6 +254,11 @@ text {
     opacity: 0.5;
 }
 
+.year-marker line {
+    stroke: black;
+    opacity: 0.3;
+}
+
 .year-marker-small text {
     font-size: 8px;
 }
