@@ -35,7 +35,7 @@ $(document).ready(function() {
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         moz_chart({
-            title: "Fake Users",
+            title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
             data: data,
             width: torso.width,
@@ -51,16 +51,16 @@ $(document).ready(function() {
             title: "Extended Ticks, Custom Rollover",
             description: "A wider chart with extended horizontal ticks enabled and a custom rollover text.",
             data: data,
-            width: 960,
+            width: 860,
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
             rollover_callback: function(d, i) {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
-                $('.active_datapoint')
+                $('#long .active_datapoint')
                     .html('Day ' + (i+1) + ' &nbsp; '
-                            + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                        + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             height: torso.height,
             right: torso.right,
@@ -76,13 +76,26 @@ $(document).ready(function() {
         };
         
         moz_chart({
-            title:"More Fake Users",
+            title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
             width: torso.width,
             height: torso.height,
             right: torso.right,
             target: '#fake_users2',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        })
+        
+        moz_chart({
+            title:"Multi-line Chart Wide",
+            description: "This line chart contains multiple lines. We're still working out the style details.",
+            area: false,
+            data: data,
+            width: 860,
+            height: 320,
+            right: torso.right,
+            target: '#fake_users3',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -114,10 +127,25 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        moz_chart({
+                title: "Changing Precision 2",
+                description: "Here we set decimals: 0 for percentages.",
+                data: data,
+                decimals: 0,
+                format: 'Percentage',
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_count: 4,
+                target: 'div#precision2',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
     })
     
     d3.json('data/some_currency.json', function(data) {
-        data = convert_dates(data);   
+        data = convert_dates(data);
         moz_chart({
             title: "Some Currency",
             description: "Here is an example that uses custom units for currency.",
@@ -203,7 +231,7 @@ $(document).ready(function() {
         data = convert_dates(data);
         
         moz_chart({
-            title: "area=false",
+            title: "No Area",
             description: "Small check to see that area: false works how we'd expect it.",
             data: data,
             area: false,
@@ -218,8 +246,8 @@ $(document).ready(function() {
         });
         
         moz_chart({
-            title: "small_text=true",
-            description: "by adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
+            title: "Small Text",
+            description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
             data: data,
             width: trunk.width,
             height: trunk.height,
@@ -231,7 +259,62 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
     });
+    d3.json('data/float.json', function(data) {
+        data = convert_dates(data);
+
+        moz_chart({
+                title: "Changing Precision 1",
+                description: "Here we set decimals: 3 to get 3 decimals in the rollover for percentages.",
+                data: data,
+                decimals: 3,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_count: 4,
+                target: 'div#precision1',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
+    });
+    //
+    d3.json('data/neg1.json', function(data) {
+        data = convert_dates(data);
+
+        moz_chart({
+                title: "Negative Values 1",
+                description: "Currently defaults to having no area by default.",
+                data: data,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                target: 'div#neg1',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
+    });
+    d3.json('data/neg2.json', function(data) {
+
+        moz_chart({
+                title: "Negative Values 2",
+                description: "Check for same with two numbers instead of date.",
+                data: data,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                small_text: true,
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                target: 'div#neg2',
+                x_accessor: 'subject',
+                y_accessor: 'measure'
+            });
+    });
 })
+
+
 
 function assignEventListeners() {
     $('#dark-css').click(function () {

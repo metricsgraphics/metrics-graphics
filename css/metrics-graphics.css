@@ -118,6 +118,7 @@ circle {
 h2.chart_title {
     cursor: pointer;
     font-size: 22px;
+    margin-left: 15px;
 }
 
 h2.chart_title .fa {
@@ -254,6 +255,17 @@ text {
     opacity: 0.5;
 }
 
+.year-marker line {
+    stroke: black;
+    opacity: 0.3;
+}
+
 .year-marker-small text {
     font-size: 8px;
+}
+
+div#footer {
+    text-align:center;
+    padding:40px;
+    border-top: 1px solid #cccccc;
 }

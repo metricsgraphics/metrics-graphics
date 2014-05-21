@@ -17,7 +17,7 @@ var each = function(obj, iterator, context) {
     return obj;
 };
 
-function merge_with_defaults(obj){
+function merge_with_defaults(obj) {
     // taken from underscore
     each(Array.prototype.slice.call(arguments, 1), function(source) {
       if (source) {
@@ -30,57 +30,57 @@ function merge_with_defaults(obj){
 };
 
 var charts = {};
-var time_series = true;
 
 function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        area: true,
-        bottom: 30,
-        buffer: 8,
-        chart_type: 'line',
-        data: [],
-        decimal: false,
-        format: 'count',
-        height: 220,
-        inflator: 10/9, // for setting y axis max
-        left: 50,
-        linked: false,
-        list: false,
-        markers: null, // sets the marker lines
+        top: 40,                      // the size of the top margin
+        bottom: 30,                   // the size of the bottom margin
+        right: 10,                    // size of the right margin
+        left: 50,                     // size of the left margin
+        buffer: 8,                    // the buffer between the actual chart area and the margins
+        width: 350,                   // the width of the entire graphic
+        height: 220,                  // the height of the entire graphic
+        small_height_threshold: 120,  // the height threshold for when smaller text appears
+        small_width_threshold: 160,   // the width  threshold for when smaller text appears
+        small_text: false,            // coerces small text regardless of graphic size
+        xax_count: 6,                 // number of x axis ticks
+        xax_tick: 5,                  // x axis tick length
+        yax_count: 5,                 // number of y axis ticks
+        yax_tick: 5,                  // y axis tick length
+        x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
+        y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         max_x: null,
         max_y: null,
         min_x: null,
         min_y: null,
-        rollover_callback: null,
-        right: 10,
-        scalefns: {},
-        scales: {},
-        show_years: true,
-        small_height_threshold: 120,
-        small_text: false,
-        small_width_threshold: 160,
-        target: '#viz',
-        top: 40,
-        width: 350, 
         x_accessor: 'date',
-        xax_count: 6,
+        xax_units: '',
+        x_label: '',
+        y_accessor: 'value',
+        y_label: '',
+        yax_units: '',
+        rollover_callback: null,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
             return df(d);
         },
-        xax_tick: 5,
-        xax_units: '',
-        x_extended_ticks: false,
-        x_label: '',
-        y_accessor: 'value',
-        y_extended_ticks: false,
-        y_label: '',
-        yax_count: 5,
-        yax_tick: 5,
-        yax_units: ''
+
+        area: true,
+        chart_type: 'line',   
+        data: [],
+        decimals: 2,                  // the number of decimals in any rollover
+        format: 'count',
+        inflator: 10/9,               // for setting y axis max
+        linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+        list: false,
+        markers: null,                // sets the marker lines
+        scalefns: {},
+        scales: {},
+        show_years: true,
+        target: '#viz'
     }
 
     var args = arguments[0];
@@ -147,7 +147,16 @@ function xAxis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     
-    args.scales.X = (time_series) 
+    args.x_axis_negative = false;
+    if (!args.time_series) {
+        if (min_x > 0){
+            min_x = 0;
+        } else  {
+            min_x = min_x  - (max_x * (args.inflator-1));
+            args.x_axis_negative = true;
+        }
+    }
+    args.scales.X = (args.time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
         
@@ -179,7 +188,7 @@ function xAxis(args) {
                 return args.x_label;
             })
     }
-
+    
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
         g.append('line')
             .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
@@ -212,7 +221,7 @@ function xAxis(args) {
                 })
         
     //are we adding years to x-axis
-    if (time_series && args.show_years) {
+    if (args.time_series && args.show_years) {
         var min_x;
         var max_x;
 
@@ -256,7 +265,8 @@ function xAxis(args) {
                     .text(function(d) {
                         return yformat(d);
                     });
-    };         
+    };    
+
     return this;
 }
     
@@ -286,9 +296,16 @@ function yAxis(args) {
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
 
-    //todo get ymax from all lines if multiple lines, currently getting it from first line
+    // we are currently saying that if the min val > 0, set 0 as min y.
+    if (min_y > 0){
+        min_y = 0;
+        args.y_axis_negative = false;
+    } else {
+        min_y = min_y  - (max_y * (args.inflator-1));
+        args.y_axis_negative = true;
+    }
     args.scales.Y = d3.scale.linear()
-        .domain([0, max_y * args.inflator])
+        .domain([min_y, max_y * args.inflator])
         .range([args.height - args.bottom - args.buffer, args.top]);
     
     var yax_format;
@@ -383,10 +400,10 @@ function init(args) {
         
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
-        time_series = true;
+        args.time_series = true;
     }
     else {
-        time_series = false;
+        args.time_series = false;
     }
     
     var linked;
@@ -502,7 +519,7 @@ charts.line = function(args) {
             .interpolate('cardinal');
         
         for(var i=args.data.length-1; i>=0; i--) {
-            if (args.area) {
+            if (args.area && !args.y_axis_negative) {
                 svg.append('path')
                     .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
                     .attr('d', area(args.data[i]));
@@ -525,69 +542,99 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         var g;
         
+        //rollover text
+        svg.append('text')
+            .attr('class', 'active_datapoint')
+            .attr('xml:space', 'preserve')
+            .attr('x', args.width - args.right)
+            .attr('y', args.top / 2)
+            .attr('text-anchor', 'end');
+                
         //append circle
         svg.append('circle')
             .attr('cx', 0)
             .attr('cy', 0)
             .attr('r', 0);
 
-        //main rollover, only for first line at the moment for multi-line charts, todo
+        //main rollover
         g = svg.append('g')
             .attr('class', 'transparent-rollover-rect');
-        
-        g.selectAll('.rollover-rects')
-            .data(args.data[0]).enter()
-                .append('rect')
-                    .attr('class', function(d){
-                        if(args.linked) {
-                            var v = d[args.x_accessor];
-                            var formatter = d3.time.format('%Y-%m-%d');
-                            return 'roll_' + formatter(v);
-                        }
-                    })
-                    .attr('x', function(d, i) {
-                        var current_x = d;
-                        var x_coord;
-                    
-                        if (i == 0) {
-                            var next_x = args.data[0][1]; //todo
-                            x_coord = args.scalefns.xf(current_x) 
-                                - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
-                                / 2;
-                        }
-                        else {
-                            var width = args.scalefns.xf(args.data[0][1])
-                                - args.scalefns.xf(args.data[0][0]); //todo
-                            
-                            x_coord = args.scalefns.xf(current_x) - width / 2;
-                        }
+            
+        //main rollover
+        for(var line_i=0; line_i<args.data.length; line_i++) {
+            g.selectAll('.rollover-rects')
+                .data(args.data[line_i]).enter()
+                    .append('rect')
+                        .attr('class', function(d) {
+                            if(args.linked) {
+                                var v = d[args.x_accessor];
+                                var formatter = d3.time.format('%Y-%m-%d');
+                                
+                                return 'line' + (line_i+1) + '-color ' + 'roll_' + formatter(v);
+                            }
+                            else {
+                                return 'line' + (line_i+1) + '-color';
+                            }
+                        })
+                        .attr('x', function(d, i) {
+                            var current_x = d;
+                            var x_coord;
                         
-                        return x_coord;    
-                    })
-                    .attr('y', args.top)
-                    .attr('width', function(d, i) {
-                        if (i != args.data[0].length - 1) { //todo
-                            return args.scalefns.xf(args.data[0][i + 1]) 
-                                - args.scalefns.xf(d); //todo
-                        }
-                        else {
-                            return args.scalefns.xf(args.data[0][1]) //todo
-                                - args.scalefns.xf(args.data[0][0]); //todo
-                        }
-                    })
-                    .attr('height', args.height - args.bottom - args.top - args.buffer)
-                    .attr('opacity', 0)
-                    .on('mouseover', this.rolloverOn(args))
-                    .on('mouseout', this.rolloverOff(args));
+                            if (i == 0) {
+                                var next_x = args.data[line_i][1];
+                                x_coord = args.scalefns.xf(current_x) 
+                                    - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
+                                    / 2;
+                            }
+                            else {
+                                var width = args.scalefns.xf(args.data[line_i][1])
+                                    - args.scalefns.xf(args.data[line_i][0]);
+                                
+                                x_coord = args.scalefns.xf(current_x) - width / 2;
+                            }
+                            
+                            return x_coord;    
+                        })
+                        .attr('y', function(d, i) {
+                            return (args.data.length > 1)
+                                ? args.scalefns.yf(d) - 6 //multi-line chart sensitivity
+                                : args.top;
+                        })
+                        .attr('width', function(d, i) {
+                            if (i != args.data[line_i].length - 1) {
+                                return args.scalefns.xf(args.data[line_i][i + 1]) 
+                                    - args.scalefns.xf(d);
+                            }
+                            else {
+                                return args.scalefns.xf(args.data[line_i][1])
+                                    - args.scalefns.xf(args.data[line_i][0]);
+                            }
+                        })
+                        .attr('height', function(d, i) {
+                            return (args.data.length > 1)
+                                ? 12 //multi-line chart sensitivity
+                                : args.height - args.bottom - args.top - args.buffer;
+                        })
+                        .attr('opacity', 0)
+                        .on('mouseover', this.rolloverOn(args, line_i))
+                        .on('mouseout', this.rolloverOff(args));
+        }
         
         return this;
     }
     
-    this.rolloverOn = function(args) {
+    this.rolloverOn = function(args, line_i) {
         var svg = d3.select(args.target + ' svg');
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
+            //console.log($(this));
+            
+            if(args.data.length <= 1) { 
+                d3.selectAll('circle').style('opacity', 0);
+                d3.selectAll('.active_datapoint').text('');
+            }
+        
             svg.selectAll('circle')
                 .attr('cx', function() {
                     return args.scales.X(d[args.x_accessor]);
@@ -596,9 +643,14 @@ charts.line = function(args) {
                     return args.scales.Y(d[args.y_accessor]);
                 })
                 .attr('r', 2.5)
+                .attr('class', function() {
+                    //console.log('area' + (line_i+1) + '-color');
+                    return 'area' + (line_i+1) + '-color';
+                    
+                })
                 .style('opacity', 1);
      
-            if(args.linked) {    
+            if(args.linked) {
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
             
@@ -619,26 +671,24 @@ charts.line = function(args) {
         
             if (args.format == 'count') {
                 var num = function(d_) {
+                    var is_float = d_ % 1 != 0;
                     var n = d3.format("0,000");
-                    d_ = args.decimal ? d3.round(d_, 2) : d3.round(d_);
+                    d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
             }
             else {
                 var num = function(d_) {
-                    var n = d3.format('%');
+                    var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
+                    var n = d3.format(fmt_string);
                     return n(d_);
                 }
             }
 
-            svg.append('text')
-                .classed('active_datapoint', true)
-                .attr('xml:space', 'preserve')
-                .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
-                .attr('text-anchor', 'end')
+            //update rollover text
+            svg.select('.active_datapoint')
                 .text(function() {
-                    if(time_series) {
+                    if(args.time_series) {
                         var dd = new Date(+d[args.x_accessor]);
                         dd.setDate(dd.getDate());
                         
@@ -660,14 +710,17 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d, i) {
-            svg.selectAll('circle')
-                .style('opacity', 0);
-                
             d3.selectAll('.transparent-rollover-rect rect')
                 .attr('opacity', 0);
-            
-            svg.select('.active_datapoint')
-                .remove();
+                
+            //if multi-line, don't remove active datapoint text on mouse out
+            if(args.data.length <= 1) {
+                svg.selectAll('circle')
+                    .style('opacity', 0);
+
+                svg.select('.active_datapoint')
+                    .text('');
+            }
         }
     }
     
