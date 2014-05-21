@@ -629,6 +629,11 @@ charts.line = function(args) {
 
         return function(d, i) {
             //console.log($(this));
+            
+            if(args.data.length <= 1) { 
+                d3.selectAll('circle').style('opacity', 0);
+                d3.selectAll('.active_datapoint').text('');
+            }
         
             svg.selectAll('circle')
                 .attr('cx', function() {
@@ -709,10 +714,7 @@ charts.line = function(args) {
                 .attr('opacity', 0);
                 
             //if multi-line, don't remove active datapoint text on mouse out
-            if(args.data.length <= 1) { 
-                d3.selectAll('circle').style('opacity', 0);
-                d3.selectAll('.active_datapoint').text('');
-            
+            if(args.data.length <= 1) {
                 svg.selectAll('circle')
                     .style('opacity', 0);
 
