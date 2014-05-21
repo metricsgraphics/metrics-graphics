@@ -628,7 +628,7 @@ charts.line = function(args) {
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
-            console.log($(this));
+            //console.log($(this));
         
             svg.selectAll('circle')
                 .attr('cx', function() {
@@ -639,7 +639,7 @@ charts.line = function(args) {
                 })
                 .attr('r', 2.5)
                 .attr('class', function() {
-                    console.log('area' + (line_i+1) + '-color');
+                    //console.log('area' + (line_i+1) + '-color');
                     return 'area' + (line_i+1) + '-color';
                     
                 })
