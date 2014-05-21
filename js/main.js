@@ -145,7 +145,7 @@ $(document).ready(function() {
     })
     
     d3.json('data/some_currency.json', function(data) {
-        data = convert_dates(data);   
+        data = convert_dates(data);
         moz_chart({
             title: "Some Currency",
             description: "Here is an example that uses custom units for currency.",
