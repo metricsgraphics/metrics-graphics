@@ -118,6 +118,7 @@ circle {
 h2.chart_title {
     cursor: pointer;
     font-size: 22px;
+    margin-left: 15px;
 }
 
 h2.chart_title .fa {
