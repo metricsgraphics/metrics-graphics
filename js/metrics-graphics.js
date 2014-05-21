@@ -615,7 +615,7 @@ charts.line = function(args) {
                                 ? 12 //multi-line chart sensitivity
                                 : args.height - args.bottom - args.top - args.buffer;
                         })
-                        .attr('opacity', 0.8)
+                        .attr('opacity', 0)
                         .on('mouseover', this.rolloverOn(args, line_i))
                         .on('mouseout', this.rolloverOff(args));
         }
