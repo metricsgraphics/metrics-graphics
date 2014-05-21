@@ -709,10 +709,13 @@ charts.line = function(args) {
                 .attr('opacity', 0);
                 
             //if multi-line, don't remove active datapoint text on mouse out
-            if(args.data.length <= 1) {
+            if(args.data.length <= 1) { 
+                d3.selectAll('circle').style('opacity', 0);
+                d3.selectAll('.active_datapoint').text('');
+            
                 svg.selectAll('circle')
                     .style('opacity', 0);
-                
+
                 svg.select('.active_datapoint')
                     .text('');
             }

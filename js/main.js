@@ -51,7 +51,7 @@ $(document).ready(function() {
             title: "Extended Ticks, Custom Rollover",
             description: "A wider chart with extended horizontal ticks enabled and a custom rollover text.",
             data: data,
-            width: 960,
+            width: 860,
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
@@ -83,6 +83,18 @@ $(document).ready(function() {
             height: torso.height,
             right: torso.right,
             target: '#fake_users2',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        })
+        
+        moz_chart({
+            title:"Multi-line Chart Wide",
+            description: "This line chart contains multiple lines. We're still working out the style details.",
+            data: data,
+            width: 860,
+            height: 320,
+            right: torso.right,
+            target: '#fake_users3',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -218,7 +230,7 @@ $(document).ready(function() {
         data = convert_dates(data);
         
         moz_chart({
-            title: "area=false",
+            title: "No Area",
             description: "Small check to see that area: false works how we'd expect it.",
             data: data,
             area: false,
@@ -233,8 +245,8 @@ $(document).ready(function() {
         });
         
         moz_chart({
-            title: "small_text=true",
-            description: "by adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
+            title: "Small Text",
+            description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
             data: data,
             width: trunk.width,
             height: trunk.height,
