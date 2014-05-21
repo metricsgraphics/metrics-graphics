@@ -17,7 +17,7 @@ var each = function(obj, iterator, context) {
     return obj;
 };
 
-function merge_with_defaults(obj){
+function merge_with_defaults(obj) {
     // taken from underscore
     each(Array.prototype.slice.call(arguments, 1), function(source) {
       if (source) {
@@ -561,19 +561,19 @@ charts.line = function(args) {
             .attr('class', 'transparent-rollover-rect');
             
         //main rollover
-        for(var i=0; i<args.data.length; i++) {
+        for(var line_i=0; line_i<args.data.length; line_i++) {
             g.selectAll('.rollover-rects')
-                .data(args.data[i]).enter()
+                .data(args.data[line_i]).enter()
                     .append('rect')
                         .attr('class', function(d) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
                                 
-                                return 'line' + (i+1) + '-color ' + 'roll_' + formatter(v);
+                                return 'line' + (line_i+1) + '-color ' + 'roll_' + formatter(v);
                             }
                             else {
-                                return 'line' + (i+1) + '-color';
+                                return 'line' + (line_i+1) + '-color';
                             }
                         })
                         .attr('x', function(d, i) {
@@ -581,14 +581,14 @@ charts.line = function(args) {
                             var x_coord;
                         
                             if (i == 0) {
-                                var next_x = args.data[0][1]; //todo
+                                var next_x = args.data[line_i][1];
                                 x_coord = args.scalefns.xf(current_x) 
                                     - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
                                     / 2;
                             }
                             else {
-                                var width = args.scalefns.xf(args.data[0][1])
-                                    - args.scalefns.xf(args.data[0][0]); //todo
+                                var width = args.scalefns.xf(args.data[line_i][1])
+                                    - args.scalefns.xf(args.data[line_i][0]);
                                 
                                 x_coord = args.scalefns.xf(current_x) - width / 2;
                             }
@@ -597,26 +597,26 @@ charts.line = function(args) {
                         })
                         .attr('y', function(d, i) {
                             return (args.data.length > 1)
-                                ? args.scalefns.yf(d) - 12 //multi-line chart sensitivity
+                                ? args.scalefns.yf(d) - 6 //multi-line chart sensitivity
                                 : args.top;
                         })
                         .attr('width', function(d, i) {
-                            if (i != args.data[0].length - 1) { //todo
-                                return args.scalefns.xf(args.data[0][i + 1]) 
-                                    - args.scalefns.xf(d); //todo
+                            if (i != args.data[line_i].length - 1) {
+                                return args.scalefns.xf(args.data[line_i][i + 1]) 
+                                    - args.scalefns.xf(d);
                             }
                             else {
-                                return args.scalefns.xf(args.data[0][1]) //todo
-                                    - args.scalefns.xf(args.data[0][0]); //todo
+                                return args.scalefns.xf(args.data[line_i][1])
+                                    - args.scalefns.xf(args.data[line_i][0]);
                             }
                         })
                         .attr('height', function(d, i) {
                             return (args.data.length > 1)
-                                ? 24 //multi-line chart sensitivity
+                                ? 12 //multi-line chart sensitivity
                                 : args.height - args.bottom - args.top - args.buffer;
                         })
-                        .attr('opacity', 0)
-                        .on('mouseover', this.rolloverOn(args, i))
+                        .attr('opacity', 0.8)
+                        .on('mouseover', this.rolloverOn(args, line_i))
                         .on('mouseout', this.rolloverOff(args));
         }
         

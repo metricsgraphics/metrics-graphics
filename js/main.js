@@ -35,7 +35,7 @@ $(document).ready(function() {
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         moz_chart({
-            title: "Fake Users",
+            title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
             data: data,
             width: torso.width,
@@ -58,7 +58,7 @@ $(document).ready(function() {
             rollover_callback: function(d, i) {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
-                $('.active_datapoint')
+                $('#long .active_datapoint')
                     .html('Day ' + (i+1) + ' &nbsp; '
                         + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
@@ -76,7 +76,7 @@ $(document).ready(function() {
         };
         
         moz_chart({
-            title:"More Fake Users",
+            title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
             width: torso.width,
