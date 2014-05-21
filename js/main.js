@@ -93,8 +93,11 @@ $(document).ready(function() {
             area: false,
             data: data,
             width: 860,
-            height: 320,
+            height: 300,
             right: torso.right,
+            show_years: false,
+            xax_tick: 0,
+            y_extended_ticks: true,
             target: '#fake_users3',
             x_accessor: 'date',
             y_accessor: 'value'

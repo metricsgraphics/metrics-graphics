@@ -1,3 +1,4 @@
-#long svg .y-axis line {
+#long svg .y-axis line,
+#fake_users3 svg .y-axis line {
     opacity: 0.1;
 }
