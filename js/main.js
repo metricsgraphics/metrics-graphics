@@ -90,6 +90,7 @@ $(document).ready(function() {
         moz_chart({
             title:"Multi-line Chart Wide",
             description: "This line chart contains multiple lines. We're still working out the style details.",
+            area: false,
             data: data,
             width: 860,
             height: 320,
