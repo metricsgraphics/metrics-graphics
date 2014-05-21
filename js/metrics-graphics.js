@@ -35,6 +35,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        animate_on_load: false,       // animate lines on load
         top: 40,                      // the size of the top margin
         bottom: 30,                   // the size of the bottom margin
         right: 10,                    // size of the right margin
@@ -500,39 +501,61 @@ charts.line = function(args) {
         init(args);
         return this;
     }
-    
+
     this.mainPlot = function() {
         var svg = d3.select(args.target + ' svg');
         var g;
-          
+        var data_median = 0;
+
         // main area
         var area = d3.svg.area()
             .x(args.scalefns.xf)
             .y0(args.scales.Y(0))
             .y1(args.scalefns.yf)
             .interpolate('cardinal');
-    
+
         // main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
             .interpolate('cardinal');
-        
+
+        // animate line on first load
+        var flat_line = d3.svg.line()
+            .x(args.scalefns.xf)
+            .y(function() { return args.scales.Y(data_median); })
+            .interpolate('cardinal');
+
         for(var i=args.data.length-1; i>=0; i--) {
             if (args.area && !args.y_axis_negative) {
                 svg.append('path')
                     .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
                     .attr('d', area(args.data[i]));
             }
-
-            svg.append('path')
-                .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
-                .attr('d', line(args.data[i]));
-        }
             
+            //animate line from its median value
+            if(args.animate_on_load) {
+                data_median = d3.median(args.data[i], function(d) {
+                    return d[args.y_accessor];
+                })
+
+                svg.append('path')
+                    .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                    .attr('d', flat_line(args.data[i]))
+                    .transition()
+                        .duration(1000)
+                        .attr('d', line(args.data[i]));
+            }
+            else {
+                svg.append('path')
+                    .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                    .attr('d', line(args.data[i]));
+            }
+        }
+
         return this;
     }
-    
+
     this.markers = function() {
         markers(args);
         return this;
