@@ -104,3 +104,7 @@ div.trunk-section {
 .year-marker text {
     fill: #fff;
 }
+
+.year-marker line {
+    stroke: #fff;
+}
