@@ -1,13 +1,15 @@
+'use strict';
+
 $(document).ready(function() {
-
+    //json data that we intend to update later on via on-screen controls
+    var split_by_data;
+    
     var torso = {};
-
     torso.width = 375;
     torso.height = 200;
     torso.right = 20;
 
     var trunk = {};
-
     trunk.width = 320;
     trunk.height = 150;
     trunk.left = 35;
@@ -15,7 +17,6 @@ $(document).ready(function() {
     trunk.xax_count = 5;
 
     var small = {};
-
     small.width = 240;
     small.height = 140;
     small.left = 20;
@@ -48,20 +49,13 @@ $(document).ready(function() {
         })
         
         moz_chart({
-            title: "Extended Ticks, Custom Rollover",
-            description: "A wider chart with extended horizontal ticks enabled and a custom rollover text.",
+            title: "Extended Ticks",
+            description: "A wider chart with extended horizontal ticks",
             data: data,
             width: 860,
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
-            rollover_callback: function(d, i) {
-                //custom format the rollover text, show days
-                var prefix = d3.formatPrefix(d.value);
-                $('#long .active_datapoint')
-                    .html('Day ' + (i+1) + ' &nbsp; '
-                        + prefix.scale(d.value).toFixed(2) + prefix.symbol);
-            },
             height: torso.height,
             right: torso.right,
             target: '#long',
@@ -130,6 +124,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        
         moz_chart({
                 title: "Changing Precision 2",
                 description: "Here we set decimals: 0 for percentages.",
@@ -139,9 +134,23 @@ $(document).ready(function() {
                 width: trunk.width,
                 height: trunk.height,
                 right: trunk.right,
-                small_text: true,
                 xax_count: 4,
                 target: 'div#precision2',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
+        moz_chart({
+                title: "... Or No Rollover Text",
+                description: "By setting show_rollover_text: false, you can hide the default rollover text from even appearing. This coupled with the custom callback gives a lot of interesting options for controlling rollovers.",
+                data: data,
+                decimals: 0,
+                show_rollover_text: false,
+                format: 'Percentage',
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                target: 'div#no-rollover-text',
                 x_accessor: 'date',
                 y_accessor: 'value'
             });
@@ -228,15 +237,44 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
-
     });
+    
+    d3.json('data/split_by.json', function(data) {
+        split_by_data = convert_dates(data);
+        
+        moz_chart({
+            title: "Downloads by Channel",
+            description: "The chart is gracefully updated depending on the selected channel.",
+            data: split_by_data,
+            width: trunk.width * 2,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#split_by',
+            x_accessor: 'date',
+            y_accessor: 'release'
+        });
+        
+        moz_chart({
+            title: "Beta Downloads",
+            description: "The chart is gracefully updated depending on the chosen time period.",
+            data: split_by_data,
+            width: trunk.width * 2,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#modify_time_period',
+            x_accessor: 'date',
+            y_accessor: 'beta'
+        });
+    })
     
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
         
         moz_chart({
-            title: "No Area",
-            description: "Small check to see that area: false works how we'd expect it.",
+            title: "Other Linked Chart",
+            description: "Roll over and watch as the chart to the left triggers.",
             data: data,
             area: false,
             linked: true,
@@ -263,6 +301,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
     });
+
     d3.json('data/float.json', function(data) {
         data = convert_dates(data);
 
@@ -274,14 +313,33 @@ $(document).ready(function() {
                 width: trunk.width,
                 height: trunk.height,
                 right: trunk.right,
-                small_text: true,
                 xax_count: 4,
                 target: 'div#precision1',
                 x_accessor: 'date',
                 y_accessor: 'value'
             });
+        //
+        moz_chart({
+                title: "Custom Rollover Text",
+                description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
+                data: data,
+                width: trunk.width,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                rollover_callback: function(d, i) {
+                //custom format the rollover text, show days
+                var prefix = d3.formatPrefix(d.value);
+                $('div#custom-rollover svg .active_datapoint')
+                    .html('Day ' + (i+1) + ' &nbsp; '
+                        + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                },
+                target: 'div#custom-rollover',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            });
     });
-    //
+    
     d3.json('data/neg1.json', function(data) {
         data = convert_dates(data);
 
@@ -297,8 +355,8 @@ $(document).ready(function() {
                 y_accessor: 'value'
             });
     });
+    
     d3.json('data/neg2.json', function(data) {
-
         moz_chart({
                 title: "Negative Values 2",
                 description: "Check for same with two numbers instead of date.",
@@ -306,7 +364,6 @@ $(document).ready(function() {
                 width: trunk.width,
                 height: trunk.height,
                 right: trunk.right,
-                small_text: true,
                 xax_format: function(f) {
                     var pf = d3.formatPrefix(f);
                     return pf.scale(f) + pf.symbol;
@@ -316,40 +373,109 @@ $(document).ready(function() {
                 y_accessor: 'measure'
             });
     });
+
+    d3.json('data/points1.json', function(data) {
+
+        moz_chart({
+                title: "First Scatter",
+                description: "Example of a scatterplot - wip",
+                data: data,
+                chart_type: 'point',
+                width: trunk.width*2,
+                height: trunk.height*2,
+                right: trunk.right,
+                target: 'div#scatter1',
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                x_accessor: 'x',
+                y_accessor: 'y'
+            });
+    });
+
+    function assignEventListeners() {
+        $('#dark-css').click(function () {
+            $('.missing')
+                .css('background-image', 'url(images/missing-data-dark.png)');
+                
+            $('.transparent-rollover-rect')
+                .attr('fill', 'white');
+        
+            $('.pill').removeClass('active');
+            $(this).toggleClass('active');
+            
+            $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
+            
+            return false;
+        });
+        
+        $('#light-css').click(function () {
+            $('.missing')
+                .css('background-image', 'url(images/missing-data.png)');
+                
+            $('.transparent-rollover-rect')
+                .attr('fill', 'black');
+        
+            $('.pill').removeClass('active');
+            $(this).toggleClass('active');
+            
+            $('#dark').attr({href : ''});
+            return false;
+        });
+
+        $('.split-by-controls button').click(function() {
+            var new_y_accessor = $(this).data('y_accessor');
+
+            $(this)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+
+            //update data    
+            moz_chart({
+                title: "Downloads by Channel",
+                description: "The chart is gracefully updated depending on the selected channel.",
+                data: split_by_data,
+                width: trunk.width * 2,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                target: 'div#split_by',
+                x_accessor: 'date',
+                y_accessor: new_y_accessor
+            })
+        })
+        
+        $('.modify-time-period-controls button').click(function() {
+            var past_n_days = $(this).data('time_period');
+            
+            //splice time period
+            var split_by_data_spliced = d3.values($.extend({}, split_by_data));
+            var from = split_by_data_spliced.length - past_n_days;
+            split_by_data_spliced.splice(0,from);
+	
+            $(this)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+
+            //update data    
+            moz_chart({
+                title: "Beta Downloads",
+                description: "The chart is gracefully updated depending on the chosen time period.",
+                data: split_by_data_spliced,
+                width: trunk.width * 2,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                target: 'div#modify_time_period',
+                x_accessor: 'date',
+                y_accessor: 'beta'
+            })
+        })
+    }
 })
-
-
-
-function assignEventListeners() {
-    $('#dark-css').click(function () {
-        $('.missing')
-            .css('background-image', 'url(images/missing-data-dark.png)');
-            
-        $('.transparent-rollover-rect')
-            .attr('fill', 'white');
-    
-        $('.pill').removeClass('active');
-        $(this).toggleClass('active');
-        
-        $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
-        
-        return false;
-    });
-    
-    $('#light-css').click(function () {
-        $('.missing')
-            .css('background-image', 'url(images/missing-data.png)');
-            
-        $('.transparent-rollover-rect')
-            .attr('fill', 'black');
-    
-        $('.pill').removeClass('active');
-        $(this).toggleClass('active');
-        
-        $('#dark').attr({href : ''});
-        return false;
-    });
-}
 
 function convert_dates(data){
     data = data.map(function(d){
@@ -357,6 +483,6 @@ function convert_dates(data){
         d['date'] = fff.parse(d['date']);
         return d;
     });
-    
+
     return data;
 }

@@ -65,6 +65,7 @@ function moz_chart() {
         y_label: '',
         yax_units: '',
         rollover_callback: null,
+        show_rollover_text: true,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
@@ -97,11 +98,15 @@ function moz_chart() {
     }
     
     //build the chart
-    if(args.chart_type == 'missing-data')
+    if(args.chart_type == 'missing-data'){
         charts.missing(args);
-    else
+    }
+    else if(args.chart_type == 'point'){
+        charts.point(args).markers().mainPlot().rollover();
+    }
+    else {
         charts.line(args).markers().mainPlot().rollover();
-    
+    }
 }
 
 function chart_title(args) {
@@ -137,15 +142,21 @@ function xAxis(args) {
     }
     
     var last_i;
-    for(var i=0; i<args.data.length; i++) {
-        last_i = args.data[i].length-1;
+    if (args.chart_type == 'line'){
+        for(var i=0; i<args.data.length; i++) {
+            last_i = args.data[i].length-1;
 
-        if(args.data[i][0][args.x_accessor] < min_x || !min_x)
-            min_x = args.data[i][0][args.x_accessor];
+            if(args.data[i][0][args.x_accessor] < min_x || !min_x)
+                min_x = args.data[i][0][args.x_accessor];
 
-        if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
-            max_x = args.data[i][last_i][args.x_accessor];
+            if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
+                max_x = args.data[i][last_i][args.x_accessor];
+        }    
+    } else if (args.chart_type == 'point') {
+        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
+        min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
+    
 
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
@@ -391,15 +402,18 @@ function yAxis(args) {
 
 function init(args) {
     //do we need to turn json data to 2d array?
+
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
 
     //sort x-axis
+    if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {
             args.data[i].sort(function(a, b) {
                 return a[args.x_accessor] - b[args.x_accessor];
             });
         }
+    }
         
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
@@ -411,8 +425,15 @@ function init(args) {
     
     var linked;
 
+    //make idempotent
+    if(d3.selectAll(args.target).length >= 1) {
+        $(args.target).empty();
+    }
+    
+    //add chart's title
     chart_title(args);
-
+    
+    //add svg
     d3.select(args.target)
         .append('svg')
             .classed('linked', args.linked)
@@ -420,10 +441,11 @@ function init(args) {
             .attr('height', args.height);
     
     //we kind of need axes in all cases
-
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
-            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
-            args.small_text;
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold 
+        && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold 
+        || args.small_text;
     
     xAxis(args);
     yAxis(args);
@@ -692,7 +714,6 @@ charts.line = function(args) {
                     return d == g;
                 })
                 .attr('opacity', 0.3);
-        
             var fmt = d3.time.format('%b %e, %Y');
         
             if (args.format == 'count') {
@@ -712,19 +733,22 @@ charts.line = function(args) {
             }
 
             //update rollover text
-            svg.select('.active_datapoint')
-                .text(function() {
-                    if(args.time_series) {
-                        var dd = new Date(+d[args.x_accessor]);
-                        dd.setDate(dd.getDate());
-                        
-                        return fmt(dd) + '  ' + num(d[args.y_accessor]);
-                    }
-                    else {
-                        return args.x_accessor + ': ' + num(d[args.x_accessor]) 
-                        + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
-                    }
-                });
+            if (args.show_rollover_text){
+                svg.select('.active_datapoint')
+                    .text(function() {
+                        if(args.time_series) {
+                            var dd = new Date(+d[args.x_accessor]);
+                            dd.setDate(dd.getDate());
+                            
+                            return fmt(dd) + '  ' + num(d[args.y_accessor]);
+                        }
+                        else {
+                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
+                            + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
+                        }
+                    });                
+            }
+
 
             if(args.rollover_callback) {
                 args.rollover_callback(d, i);
@@ -770,6 +794,103 @@ charts.line = function(args) {
     
     this.init(args);
     return this;
+}
+
+charts.point = function(args){
+    this.args = args;
+
+    this.init = function(args) {
+        init(args);
+
+        return this;
+    }
+
+    this.markers = function(){
+        markers(args);
+        return this
+    }
+
+    this.mainPlot = function() {
+        var svg = d3.select(args.target + ' svg');
+        var g;
+        // plot the points. Pretty straightforward.
+
+        g = svg.append('g')
+            .classed('points', true);
+        g.selectAll('circle').data(args.data[0])
+            .enter().append('svg:circle')
+            .attr('cx', args.scalefns.xf)
+            .attr('cy', args.scalefns.yf)
+            .attr('r', 2);
+
+
+        return this;
+    }
+
+    this.rollover = function() {
+        var svg = d3.select(args.target + ' svg');
+
+        var clips = svg.append("svg:g").attr("id", "point-clips");
+        var paths = svg.append("svg:g").attr("id", "point-paths");
+
+        clips.selectAll("clipPath")
+              .data(args.data[0])
+            .enter().append("svg:clipPath")
+              .attr("id", function(d, i) { return "clip-"+i;})
+            .append("svg:circle")
+              .attr('cx', args.scalefns.xf)
+              .attr('cy', args.scalefns.yf)
+            .attr('r', 20);
+        //
+        var voronoi = d3.geom.voronoi()
+            .x(args.scalefns.xf)
+            .y(args.scalefns.yf);
+
+        paths.selectAll("path")
+            .data(voronoi(args.data[0]))
+            .enter().append("svg:path")
+              .attr("d", function(d) { 
+                return "M" + d.join(",") + "Z"; })
+              .attr("id", function(d,i) { 
+                   return "path-"+i; })
+              .attr("clip-path", function(d,i) { return "url(#clip-"+i+")"; })
+             .style("fill", d3.rgb(230, 230, 230))
+             .style('fill-opacity', 0)
+             .on('mouseover', this.rolloverOn(args))
+             .on('mouseout', this.rolloverOff(args));
+
+        return this;
+    }
+
+    this.rolloverOn = function(args) {
+        var svg = d3.select(args.target + ' svg');
+
+        return function(d,i){
+            svg.selectAll('.points circle').classed('unselected', true);
+            svg.selectAll('.points circle').filter(function(g,j){return i == j})
+                .classed('unselected', false)
+                .classed('selected', true)
+                .attr('r', 3);
+        }
+    }
+
+    this.rolloverOff = function(args) {
+        var svg = d3.select(args.target + ' svg');
+
+        return function(d,i){
+            svg.selectAll('.points circle')
+                .classed('unselected', false)
+                .classed('selected', false)
+                .attr('r', 2);
+        }
+    }
+
+    this.update = function(args) {
+        return this;
+    }
+    this.init(args);
+    return this;
+
 }
 
 charts.missing = function(args) {
