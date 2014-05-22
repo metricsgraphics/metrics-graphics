@@ -196,6 +196,16 @@ path.main-line {
     fill: #0000ff;
 }
 
+.points circle.selected {
+    r: 3;
+    opacity:1;
+    fill:black;
+}
+
+.points circle.unselected {
+    opacity:.5;
+}
+
 .pill {
     font-family: 'Open Sans', serif;
     font-size: 12px;
