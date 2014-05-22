@@ -684,6 +684,7 @@ charts.line = function(args) {
                     .each(function(d, i){
                         d3.select(this).on('mouseover')(d,i);
                 })
+
             }    
             
             svg.selectAll('text')
