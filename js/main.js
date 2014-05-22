@@ -1,13 +1,15 @@
+'use strict';
+
 $(document).ready(function() {
-
+    //json data that we intend to update later on via on-screen controls
+    var split_by_data;
+    
     var torso = {};
-
     torso.width = 375;
     torso.height = 200;
     torso.right = 20;
 
     var trunk = {};
-
     trunk.width = 320;
     trunk.height = 150;
     trunk.left = 35;
@@ -15,7 +17,6 @@ $(document).ready(function() {
     trunk.xax_count = 5;
 
     var small = {};
-
     small.width = 240;
     small.height = 140;
     small.left = 20;
@@ -130,6 +131,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+        
         moz_chart({
                 title: "Changing Precision 2",
                 description: "Here we set decimals: 0 for percentages.",
@@ -228,8 +230,37 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
-
     });
+    
+    d3.json('data/split_by.json', function(data) {
+        split_by_data = convert_dates(data);
+        
+        moz_chart({
+            title: "Downloads by Channel",
+            description: "The chart is gracefully updated depending on the selected channel.",
+            data: split_by_data,
+            width: trunk.width * 2,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#split_by',
+            x_accessor: 'date',
+            y_accessor: 'release'
+        });
+        
+        moz_chart({
+            title: "Beta Downloads",
+            description: "The chart is gracefully updated depending on the chosen time period.",
+            data: split_by_data,
+            width: trunk.width * 2,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#modify_time_period',
+            x_accessor: 'date',
+            y_accessor: 'beta'
+        });
+    })
     
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
@@ -263,6 +294,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
     });
+    
     d3.json('data/float.json', function(data) {
         data = convert_dates(data);
 
@@ -281,7 +313,7 @@ $(document).ready(function() {
                 y_accessor: 'value'
             });
     });
-    //
+    
     d3.json('data/neg1.json', function(data) {
         data = convert_dates(data);
 
@@ -297,8 +329,8 @@ $(document).ready(function() {
                 y_accessor: 'value'
             });
     });
+    
     d3.json('data/neg2.json', function(data) {
-
         moz_chart({
                 title: "Negative Values 2",
                 description: "Check for same with two numbers instead of date.",
@@ -316,40 +348,92 @@ $(document).ready(function() {
                 y_accessor: 'measure'
             });
     });
+
+
+    function assignEventListeners() {
+        $('#dark-css').click(function () {
+            $('.missing')
+                .css('background-image', 'url(images/missing-data-dark.png)');
+                
+            $('.transparent-rollover-rect')
+                .attr('fill', 'white');
+        
+            $('.pill').removeClass('active');
+            $(this).toggleClass('active');
+            
+            $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
+            
+            return false;
+        });
+        
+        $('#light-css').click(function () {
+            $('.missing')
+                .css('background-image', 'url(images/missing-data.png)');
+                
+            $('.transparent-rollover-rect')
+                .attr('fill', 'black');
+        
+            $('.pill').removeClass('active');
+            $(this).toggleClass('active');
+            
+            $('#dark').attr({href : ''});
+            return false;
+        });
+
+        $('.split-by-controls button').click(function() {
+            var new_y_accessor = $(this).data('y_accessor');
+
+            $(this)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+
+            //update data    
+            moz_chart({
+                title: "Downloads by Channel",
+                description: "The chart is gracefully updated depending on the selected channel.",
+                data: split_by_data,
+                width: trunk.width * 2,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                target: 'div#split_by',
+                x_accessor: 'date',
+                y_accessor: new_y_accessor
+            })
+        })
+        
+        $('.modify-time-period-controls button').click(function() {
+            var past_n_days = $(this).data('time_period');
+            
+            //splice time period
+            var split_by_data_spliced = d3.values($.extend({}, split_by_data));
+            var from = split_by_data_spliced.length - past_n_days;
+            split_by_data_spliced.splice(0,from);
+            
+            console.log(split_by_data_spliced);
+	
+            $(this)
+                .addClass('active')
+                .siblings()
+                .removeClass('active');
+
+            //update data    
+            moz_chart({
+                title: "Beta Downloads",
+                description: "The chart is gracefully updated depending on the chosen time period.",
+                data: split_by_data_spliced,
+                width: trunk.width * 2,
+                height: trunk.height,
+                right: trunk.right,
+                xax_count: 4,
+                target: 'div#modify_time_period',
+                x_accessor: 'date',
+                y_accessor: 'beta'
+            })
+        })
+    }
 })
-
-
-
-function assignEventListeners() {
-    $('#dark-css').click(function () {
-        $('.missing')
-            .css('background-image', 'url(images/missing-data-dark.png)');
-            
-        $('.transparent-rollover-rect')
-            .attr('fill', 'white');
-    
-        $('.pill').removeClass('active');
-        $(this).toggleClass('active');
-        
-        $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
-        
-        return false;
-    });
-    
-    $('#light-css').click(function () {
-        $('.missing')
-            .css('background-image', 'url(images/missing-data.png)');
-            
-        $('.transparent-rollover-rect')
-            .attr('fill', 'black');
-    
-        $('.pill').removeClass('active');
-        $(this).toggleClass('active');
-        
-        $('#dark').attr({href : ''});
-        return false;
-    });
-}
 
 function convert_dates(data){
     data = data.map(function(d){
@@ -357,6 +441,6 @@ function convert_dates(data){
         d['date'] = fff.parse(d['date']);
         return d;
     });
-    
+
     return data;
 }

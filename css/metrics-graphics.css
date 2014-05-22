@@ -24,9 +24,9 @@ div#trunk h2.trunk-title {
 }
 
 div.trunk-section {
-    border-top: 1px solid #cccccc;
-    padding-top: 15px;
+    border-top: 1px solid #ccc;
     padding-bottom: 25px;
+    padding-top: 15px;
 }
 
 a,
@@ -71,9 +71,9 @@ circle {
 
 .markers line {
     opacity: 0.2;
+    shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
 }
 
 .markers text {
@@ -86,9 +86,9 @@ circle {
 
 .baselines line {
     opacity: 0.2;
+    shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
 }
 
 .baselines text {
@@ -122,14 +122,14 @@ h2.chart_title {
 }
 
 h2.chart_title .fa {
-    color: #cccccc;
+    color: #ccc;
     font-size: 14px;
     padding-left: 4px;
     vertical-align: top;
 }
 
 #head {
-    color: #ccccc;
+    color: black;
     margin: auto;
     margin-bottom: 20px;
     width: 80%;
@@ -142,8 +142,8 @@ h2.chart_title .fa {
 }
 
 #head ul {
-    font-size: 14px;
     clear: both;
+    font-size: 14px;
     padding: 10px 0 0 0;
 }
 
@@ -187,8 +187,8 @@ path.main-area {
 }
 
 path.main-line {
-    opacity: 0.8;
     fill: none;
+    opacity: 0.8;
 }
 
 .pill {
@@ -198,8 +198,8 @@ path.main-line {
 }
 
 text {
-    opacity: 0.8;
     fill: black;
+    opacity: 0.8;
 }
 
 .text-center {
@@ -219,9 +219,9 @@ text {
 .x-axis line,
 .y-axis line {
     opacity: 0.3;
+    shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
-    shape-rendering: crispEdges;
 }
 
 .x-axis text,
@@ -256,8 +256,8 @@ text {
 }
 
 .year-marker line {
-    stroke: black;
     opacity: 0.3;
+    stroke: black;
 }
 
 .year-marker-small text {
@@ -265,7 +265,8 @@ text {
 }
 
 div#footer {
-    text-align:center;
+    border-top: 1px solid #ccc;
+    font-size: 11px;
     padding:40px;
-    border-top: 1px solid #cccccc;
+    text-align:center;
 }

@@ -101,7 +101,6 @@ function moz_chart() {
         charts.missing(args);
     else
         charts.line(args).markers().mainPlot().rollover();
-    
 }
 
 function chart_title(args) {
@@ -395,11 +394,11 @@ function init(args) {
         args.data = [args.data];
 
     //sort x-axis
-        for(var i=0; i<args.data.length; i++) {
-            args.data[i].sort(function(a, b) {
-                return a[args.x_accessor] - b[args.x_accessor];
-            });
-        }
+    for(var i=0; i<args.data.length; i++) {
+        args.data[i].sort(function(a, b) {
+            return a[args.x_accessor] - b[args.x_accessor];
+        });
+    }
         
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
@@ -411,8 +410,15 @@ function init(args) {
     
     var linked;
 
+    //make idempotent
+    if(d3.selectAll(args.target).length >= 1) {
+        $(args.target).empty();
+    }
+    
+    //add chart's title
     chart_title(args);
-
+    
+    //add svg
     d3.select(args.target)
         .append('svg')
             .classed('linked', args.linked)
@@ -420,10 +426,11 @@ function init(args) {
             .attr('height', args.height);
     
     //we kind of need axes in all cases
-
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer <= args.small_height_threshold && 
-            args.width - args.left-args.right - args.buffer*2 <= args.small_width_threshold ||
-            args.small_text;
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold 
+        && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold 
+        || args.small_text;
     
     xAxis(args);
     yAxis(args);
@@ -555,6 +562,16 @@ charts.line = function(args) {
             }
         }
 
+        return this;
+    }
+    
+    this.update = function(new_args) {
+        args.x_accessor = new_args.x_accessor;
+        args.y_accessor = new_args.y_accessor;
+        args.data = new_args.data;
+        
+        console.log(args);
+        
         return this;
     }
 
