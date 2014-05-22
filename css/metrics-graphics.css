@@ -202,13 +202,12 @@ path.main-line {
     r: 4;
     fill-opacity:1;
     stroke-opacity:1;
-
     fill:black;
 }
 
 .points circle.unselected {
-    fill-opacity:.2;
-    stroke-opacity:.5;
+/*    fill-opacity:.2;
+    stroke-opacity:.5;*/
 }
 
 .pill {
