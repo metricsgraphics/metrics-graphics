@@ -30,6 +30,8 @@ function merge_with_defaults(obj) {
 };
 
 var charts = {};
+var globals = {};
+globals.link = false;
 
 function moz_chart() {
     var moz = {};
@@ -575,6 +577,7 @@ charts.line = function(args) {
                 
         //append circle
         svg.append('circle')
+            .classed('line_rollover_circle', true)
             .attr('cx', 0)
             .attr('cy', 0)
             .attr('r', 0);
@@ -652,13 +655,16 @@ charts.line = function(args) {
 
         return function(d, i) {
             //console.log($(this));
+            var that = this;
             
             if(args.data.length <= 1) { 
-                d3.selectAll('circle').style('opacity', 0);
-                d3.selectAll('.active_datapoint').text('');
-            }
-        
-            svg.selectAll('circle')
+                svg.selectAll('circle.line_rollover_circle').style('opacity', 0);
+                svg.selectAll('.active_datapoint').text('');
+            };
+            svg.selectAll('circle.line_rollover_circle')
+                .attr('class', "")
+                .attr('class', 'area' + (line_i+1) + '-color')
+                .classed('line_rollover_circle', true)
                 .attr('cx', function() {
                     return args.scales.X(d[args.x_accessor]);
                 })
@@ -666,22 +672,18 @@ charts.line = function(args) {
                     return args.scales.Y(d[args.y_accessor]);
                 })
                 .attr('r', 2.5)
-                .attr('class', function() {
-                    //console.log('area' + (line_i+1) + '-color');
-                    return 'area' + (line_i+1) + '-color';
-                    
-                })
                 .style('opacity', 1);
      
-            if(args.linked) {
+            if(args.linked && !globals.link) {
+                globals.link = true;
+
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
-            
-                d3.selectAll('.transparent-rollover-rect rect')
-                    .attr('opacity', 0);
-                
+
                 d3.selectAll('.roll_' + formatter(v))
-                    .attr('opacity', 0.2)
+                    .each(function(d, i){
+                        d3.select(this).on('mouseover')(d,i);
+                })
             }    
             
             svg.selectAll('text')
@@ -733,12 +735,30 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d, i) {
-            d3.selectAll('.transparent-rollover-rect rect')
-                .attr('opacity', 0);
+            if(args.linked && globals.link) {
+                globals.link = false;
+                //console.log('off', globals.link, args.target)
+                var v = d[args.x_accessor];
+                var formatter = d3.time.format('%Y-%m-%d');
+                // var everyone = d3.selectAll('.transparent-rollover-rect rect')
+                //     .attr('opacity', 0);
+
+                //
+                d3.selectAll('.roll_' + formatter(v))
+                    .each(function(d, i){
+                        //console.log(d3.select(this).on('mouseover'),'sdofinsofi');
+                        d3.select(this).on('mouseout')(d);
+                });
+            }    
+            // if (args.link){
+
+            // }
+            // d3.selectAll('.transparent-rollover-rect rect')
+            //     .attr('opacity', 0);
                 
             //if multi-line, don't remove active datapoint text on mouse out
             if(args.data.length <= 1) {
-                svg.selectAll('circle')
+                svg.selectAll('circle.line_rollover_circle')
                     .style('opacity', 0);
 
                 svg.select('.active_datapoint')
