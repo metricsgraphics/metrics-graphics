@@ -677,10 +677,15 @@ charts.line = function(args) {
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
             
-                d3.selectAll('.transparent-rollover-rect rect')
+                //fixes issue #66 (svg artifacts on screen in firefox)
+                $('svg.linked .transparent-rollover-rect')
+                    .attr('transform', 'translate(0,-1)')
+                    .attr('transform', 'translate(0,1)');
+                    
+                $('svg.linked .transparent-rollover-rect rect')
                     .attr('opacity', 0);
                 
-                d3.selectAll('.roll_' + formatter(v))
+                $('.roll_' + formatter(v))
                     .attr('opacity', 0.2)
             }    
             
