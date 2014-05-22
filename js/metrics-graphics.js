@@ -65,6 +65,7 @@ function moz_chart() {
         y_label: '',
         yax_units: '',
         rollover_callback: null,
+        show_rollover_text: true,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
@@ -712,19 +713,22 @@ charts.line = function(args) {
             }
 
             //update rollover text
-            svg.select('.active_datapoint')
-                .text(function() {
-                    if(args.time_series) {
-                        var dd = new Date(+d[args.x_accessor]);
-                        dd.setDate(dd.getDate());
-                        
-                        return fmt(dd) + '  ' + num(d[args.y_accessor]);
-                    }
-                    else {
-                        return args.x_accessor + ': ' + num(d[args.x_accessor]) 
-                        + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
-                    }
-                });
+            if (args.show_rollover_text){
+                svg.select('.active_datapoint')
+                    .text(function() {
+                        if(args.time_series) {
+                            var dd = new Date(+d[args.x_accessor]);
+                            dd.setDate(dd.getDate());
+                            
+                            return fmt(dd) + '  ' + num(d[args.y_accessor]);
+                        }
+                        else {
+                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
+                            + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
+                        }
+                    });                
+            }
+
 
             if(args.rollover_callback) {
                 args.rollover_callback(d, i);
