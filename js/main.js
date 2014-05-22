@@ -344,6 +344,26 @@ $(document).ready(function() {
                 y_accessor: 'measure'
             });
     });
+    //
+    d3.json('data/points1.json', function(data) {
+
+        moz_chart({
+                title: "First Scatter",
+                description: "Example of a scatterplot - wip",
+                data: data,
+                chart_type: 'point',
+                width: trunk.width*2,
+                height: trunk.height*2,
+                right: trunk.right,
+                target: 'div#scatter1',
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                x_accessor: 'x',
+                y_accessor: 'y'
+            });
+    });
 })
 
 
