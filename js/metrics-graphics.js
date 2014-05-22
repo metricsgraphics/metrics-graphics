@@ -529,7 +529,7 @@ charts.line = function(args) {
             .interpolate('cardinal');
 
         for(var i=args.data.length-1; i>=0; i--) {
-            if (args.area && !args.y_axis_negative) {
+            if (args.area && !args.y_axis_negative && args.data.length <= 1) {
                 svg.append('path')
                     .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
                     .attr('d', area(args.data[i]));
