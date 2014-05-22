@@ -579,16 +579,6 @@ charts.line = function(args) {
 
         return this;
     }
-    
-    this.update = function(new_args) {
-        args.x_accessor = new_args.x_accessor;
-        args.y_accessor = new_args.y_accessor;
-        args.data = new_args.data;
-        
-        console.log(args);
-        
-        return this;
-    }
 
     this.markers = function() {
         markers(args);

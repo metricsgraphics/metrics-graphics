@@ -454,8 +454,6 @@ $(document).ready(function() {
             var split_by_data_spliced = d3.values($.extend({}, split_by_data));
             var from = split_by_data_spliced.length - past_n_days;
             split_by_data_spliced.splice(0,from);
-            
-            console.log(split_by_data_spliced);
 	
             $(this)
                 .addClass('active')
