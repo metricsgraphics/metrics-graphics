@@ -64,6 +64,7 @@ function moz_chart() {
         y_accessor: 'value',
         y_label: '',
         yax_units: '',
+        transition_on_update: true,
         rollover_callback: null,
         show_rollover_text: true,
         xax_format: function(d) {
@@ -159,7 +160,6 @@ function xAxis(args) {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
     
-
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     
@@ -180,7 +180,13 @@ function xAxis(args) {
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right - args.buffer]);
     
-    // x axis
+    //remove the old x-axis, add new one
+    if($(args.target + ' svg .x-axis').length > 0) {
+        $(args.target + ' svg .x-axis')
+            .remove();
+    }
+    
+    //x axis
     g = svg.append('g')
         .classed('x-axis', true)
         .classed('x-axis-small', args.use_small_class);
@@ -258,7 +264,8 @@ function xAxis(args) {
 
         }
 
-        g = svg.append('g')
+        //apend year marker to x-axis group
+        g = g.append('g')
             .classed('year-marker', true)
             .classed('year-marker-small', args.use_small_class); 
         
@@ -338,7 +345,13 @@ function yAxis(args) {
         }
     }
         
-    // y axis
+    //remove the old y-axis, add new one
+    if($(args.target + ' svg .y-axis').length > 0) {
+        $(args.target + ' svg .y-axis')
+            .remove();
+    }
+    
+    //y axis
     g = svg.append('g')
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
@@ -428,19 +441,21 @@ function init(args) {
     var linked;
 
     //make idempotent
-    if(d3.selectAll(args.target).length >= 1) {
+    /*if(d3.selectAll(args.target).length >= 1) {
         $(args.target).empty();
+    }*/
+    
+    //add chart's title, svg, if they don't already exist
+    if($(args.target).is(':empty')) {
+        chart_title(args);
+    
+        //add svg
+        d3.select(args.target)
+            .append('svg')
+                .classed('linked', args.linked)
+                .attr('width', args.width)
+                .attr('height', args.height);
     }
-    
-    //add chart's title
-    chart_title(args);
-    
-    //add svg
-    d3.select(args.target)
-        .append('svg')
-            .classed('linked', args.linked)
-            .attr('width', args.width)
-            .attr('height', args.height);
     
     //we kind of need axes in all cases
     args.use_small_class = args.height - args.top - args.bottom - args.buffer 
@@ -553,29 +568,52 @@ charts.line = function(args) {
             .interpolate('cardinal');
 
         for(var i=args.data.length-1; i>=0; i--) {
-            if (args.area && !args.y_axis_negative && args.data.length <= 1) {
-                svg.append('path')
-                    .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
-                    .attr('d', area(args.data[i]));
+            //add the area
+            if(args.area && !args.y_axis_negative && args.data.length <= 1) {
+                //if area already exists, transition it
+                if($(args.target + ' svg path.area' + (i+1) + '-color').length > 0) {
+                    d3.selectAll(args.target + ' svg path.area' + (i+1) + '-color')
+                        .transition()
+                            .duration(function() {
+                                return (args.transition_on_update) ? 1000 : 0;
+                            })
+                            .attr('d', area(args.data[i]));
+                }
+                else { //otherwise, add the area
+                    svg.append('path')
+                        .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
+                        .attr('d', area(args.data[i]));
+                }
             }
             
-            //animate line from its median value
-            if(args.animate_on_load) {
-                data_median = d3.median(args.data[i], function(d) {
-                    return d[args.y_accessor];
-                })
-
-                svg.append('path')
-                    .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
-                    .attr('d', flat_line(args.data[i]))
+            //add the line, if it already exists, transition the fine gentleman
+            if($(args.target + ' svg path.line' + (i+1) + '-color').length > 0) {
+                d3.selectAll(args.target + ' svg path.line' + (i+1) + '-color')
                     .transition()
-                        .duration(1000)
+                        .duration(function() {
+                            return (args.transition_on_update) ? 1000 : 0;
+                        })
                         .attr('d', line(args.data[i]));
             }
-            else {
-                svg.append('path')
-                    .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
-                    .attr('d', line(args.data[i]));
+            else { //otherwise...
+                //if we're animating on load, animate the line from its median value
+                if(args.animate_on_load) {
+                    data_median = d3.median(args.data[i], function(d) {
+                        return d[args.y_accessor];
+                    })
+
+                    svg.append('path')
+                        .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                        .attr('d', flat_line(args.data[i]))
+                        .transition()
+                            .duration(1000)
+                            .attr('d', line(args.data[i]));
+                }
+                else { //or just add the line
+                    svg.append('path')
+                        .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                        .attr('d', line(args.data[i]));
+                }
             }
         }
 

@@ -3,7 +3,6 @@
 $(document).ready(function() {
     //json data that we intend to update later on via on-screen controls
     var split_by_data;
-    var multi_line_data;
     
     var torso = {};
     torso.width = 375;
@@ -70,7 +69,7 @@ $(document).ready(function() {
             data[i] = convert_dates(data[i]);
         };
         
-        multi_line_data = moz_chart({
+        moz_chart({
             title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
@@ -320,7 +319,7 @@ $(document).ready(function() {
                 x_accessor: 'date',
                 y_accessor: 'value'
             });
-        //
+        
         moz_chart({
                 title: "Custom Rollover Text",
                 description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
@@ -377,7 +376,6 @@ $(document).ready(function() {
     });
 
     d3.json('data/points1.json', function(data) {
-
         moz_chart({
                 title: "First Scatter",
                 description: "Example of a scatterplot - wip",
@@ -436,8 +434,6 @@ $(document).ready(function() {
 
             //update data    
             moz_chart({
-                title: "Downloads by Channel",
-                description: "The chart is gracefully updated depending on the selected channel.",
                 data: split_by_data,
                 width: trunk.width * 2,
                 height: trunk.height,
@@ -460,13 +456,12 @@ $(document).ready(function() {
 
             //update data    
             moz_chart({
-                title: "Beta Downloads",
-                description: "The chart is gracefully updated depending on the chosen time period.",
                 data: data,
                 width: trunk.width * 2,
                 height: trunk.height,
                 right: trunk.right,
                 show_years: false,
+                transition_on_update: false,
                 xax_count: 4,
                 target: 'div#modify_time_period',
                 x_accessor: 'date',
