@@ -126,34 +126,35 @@ $(document).ready(function() {
         });
         
         moz_chart({
-                title: "Changing Precision 2",
-                description: "Here we set decimals: 0 for percentages.",
-                data: data,
-                decimals: 0,
-                format: 'Percentage',
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                xax_count: 4,
-                target: 'div#precision2',
-                x_accessor: 'date',
-                y_accessor: 'value'
-            });
+            title: "Changing Precision 2",
+            description: "Here we set decimals: 0 for percentages.",
+            data: data,
+            decimals: 0,
+            format: 'Percentage',
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#precision2',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+            
         moz_chart({
-                title: "... Or No Rollover Text",
-                description: "By setting show_rollover_text: false, you can hide the default rollover text from even appearing. This coupled with the custom callback gives a lot of interesting options for controlling rollovers.",
-                data: data,
-                decimals: 0,
-                show_rollover_text: false,
-                format: 'Percentage',
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                xax_count: 4,
-                target: 'div#no-rollover-text',
-                x_accessor: 'date',
-                y_accessor: 'value'
-            });
+            title: "... Or No Rollover Text",
+            description: "By setting show_rollover_text: false, you can hide the default rollover text from even appearing. This coupled with the custom callback gives a lot of interesting options for controlling rollovers.",
+            data: data,
+            decimals: 0,
+            show_rollover_text: false,
+            format: 'Percentage',
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#no-rollover-text',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     })
     
     d3.json('data/some_currency.json', function(data) {
@@ -307,91 +308,91 @@ $(document).ready(function() {
         data = convert_dates(data);
 
         moz_chart({
-                title: "Changing Precision 1",
-                description: "Here we set decimals: 3 to get 3 decimals in the rollover for percentages.",
-                data: data,
-                decimals: 3,
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                xax_count: 4,
-                target: 'div#precision1',
-                x_accessor: 'date',
-                y_accessor: 'value'
-            });
+            title: "Changing Precision 1",
+            description: "Here we set decimals: 3 to get 3 decimals in the rollover for percentages.",
+            data: data,
+            decimals: 3,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#precision1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
         
         moz_chart({
-                title: "Custom Rollover Text",
-                description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
-                data: data,
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                xax_count: 4,
-                rollover_callback: function(d, i) {
-                //custom format the rollover text, show days
-                var prefix = d3.formatPrefix(d.value);
-                $('div#custom-rollover svg .active_datapoint')
-                    .html('Day ' + (i+1) + ' &nbsp; '
-                        + prefix.scale(d.value).toFixed(2) + prefix.symbol);
-                },
-                target: 'div#custom-rollover',
-                x_accessor: 'date',
-                y_accessor: 'value'
-            });
+            title: "Custom Rollover Text",
+            description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            rollover_callback: function(d, i) {
+            //custom format the rollover text, show days
+            var prefix = d3.formatPrefix(d.value);
+            $('div#custom-rollover svg .active_datapoint')
+                .html('Day ' + (i+1) + ' &nbsp; '
+                     + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+            },
+            target: 'div#custom-rollover',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     });
     
     d3.json('data/neg1.json', function(data) {
         data = convert_dates(data);
 
         moz_chart({
-                title: "Negative Values 1",
-                description: "Currently defaults to having no area by default.",
-                data: data,
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                target: 'div#neg1',
-                x_accessor: 'date',
-                y_accessor: 'value'
-            });
+            title: "Negative Values 1",
+            description: "Currently defaults to having no area by default.",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            target: 'div#neg1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     });
     
     d3.json('data/neg2.json', function(data) {
         moz_chart({
-                title: "Negative Values 2",
-                description: "Check for same with two numbers instead of date.",
-                data: data,
-                width: trunk.width,
-                height: trunk.height,
-                right: trunk.right,
-                xax_format: function(f) {
-                    var pf = d3.formatPrefix(f);
-                    return pf.scale(f) + pf.symbol;
-                },
-                target: 'div#neg2',
-                x_accessor: 'subject',
-                y_accessor: 'measure'
-            });
+            title: "Negative Values 2",
+            description: "Check for same with two numbers instead of date.",
+            data: data,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            target: 'div#neg2',
+            x_accessor: 'subject',
+            y_accessor: 'measure'
+        });
     });
 
     d3.json('data/points1.json', function(data) {
         moz_chart({
-                title: "First Scatter",
-                description: "Example of a scatterplot - wip",
-                data: data,
-                chart_type: 'point',
-                width: trunk.width*2,
-                height: trunk.height*2,
-                right: trunk.right,
-                target: 'div#scatter1',
-                xax_format: function(f) {
-                    var pf = d3.formatPrefix(f);
-                    return pf.scale(f) + pf.symbol;
-                },
-                x_accessor: 'x',
-                y_accessor: 'y'
-            });
+            title: "First Scatter",
+            description: "Example of a scatterplot - wip",
+            data: data,
+            chart_type: 'point',
+            width: trunk.width*2,
+            height: trunk.height*2,
+            right: trunk.right,
+            target: 'div#scatter1',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y'
+        });
     });
 
     function assignEventListeners() {
