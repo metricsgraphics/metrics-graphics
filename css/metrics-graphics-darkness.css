@@ -31,6 +31,10 @@ circle {
     opacity: 0.1;
 }
 
+div#footer {
+    border-top-color: #3b3b3b;
+}
+
 #head {
     color: #f1f1f1;
 }
