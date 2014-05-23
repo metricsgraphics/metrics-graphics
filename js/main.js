@@ -3,6 +3,7 @@
 $(document).ready(function() {
     //json data that we intend to update later on via on-screen controls
     var split_by_data;
+    var multi_line_data;
     
     var torso = {};
     torso.width = 375;
@@ -69,7 +70,7 @@ $(document).ready(function() {
             data[i] = convert_dates(data[i]);
         };
         
-        moz_chart({
+        multi_line_data = moz_chart({
             title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
             data: data,
@@ -240,12 +241,12 @@ $(document).ready(function() {
     });
     
     d3.json('data/split_by.json', function(data) {
-        split_by_data = convert_dates(data);
+        data = convert_dates(data);
         
-        moz_chart({
+        split_by_data = moz_chart({
             title: "Downloads by Channel",
             description: "The chart is gracefully updated depending on the selected channel.",
-            data: split_by_data,
+            data: data,
             width: trunk.width * 2,
             height: trunk.height,
             right: trunk.right,
@@ -258,10 +259,11 @@ $(document).ready(function() {
         moz_chart({
             title: "Beta Downloads",
             description: "The chart is gracefully updated depending on the chosen time period.",
-            data: split_by_data,
+            data: data,
             width: trunk.width * 2,
             height: trunk.height,
             right: trunk.right,
+            show_years: false,
             xax_count: 4,
             target: 'div#modify_time_period',
             x_accessor: 'date',
@@ -427,8 +429,8 @@ $(document).ready(function() {
         $('.split-by-controls button').click(function() {
             var new_y_accessor = $(this).data('y_accessor');
 
-            $(this)
-                .addClass('active')
+            //change button state
+            $(this).addClass('active')
                 .siblings()
                 .removeClass('active');
 
@@ -448,15 +450,11 @@ $(document).ready(function() {
         })
         
         $('.modify-time-period-controls button').click(function() {
-            var past_n_days = $(this).data('time_period');
+            var past_n_days = $(this).data('time_period');            
+            var data = modify_time_period(split_by_data, past_n_days);
             
-            //splice time period
-            var split_by_data_spliced = d3.values($.extend({}, split_by_data));
-            var from = split_by_data_spliced.length - past_n_days;
-            split_by_data_spliced.splice(0,from);
-	
-            $(this)
-                .addClass('active')
+            //change button state
+            $(this).addClass('active')
                 .siblings()
                 .removeClass('active');
 
@@ -464,10 +462,11 @@ $(document).ready(function() {
             moz_chart({
                 title: "Beta Downloads",
                 description: "The chart is gracefully updated depending on the chosen time period.",
-                data: split_by_data_spliced,
+                data: data,
                 width: trunk.width * 2,
                 height: trunk.height,
                 right: trunk.right,
+                show_years: false,
                 xax_count: 4,
                 target: 'div#modify_time_period',
                 x_accessor: 'date',
@@ -476,13 +475,3 @@ $(document).ready(function() {
         })
     }
 })
-
-function convert_dates(data){
-    data = data.map(function(d){
-        var fff = d3.time.format('%Y-%m-%d');
-        d['date'] = fff.parse(d['date']);
-        return d;
-    });
-
-    return data;
-}
