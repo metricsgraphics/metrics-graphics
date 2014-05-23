@@ -27,8 +27,12 @@ circle {
 }
 
 .divider {
-    color: #fff;
+    color: #f1f1f1;
     opacity: 0.1;
+}
+
+#head {
+    color: #f1f1f1;
 }
 
 .markers line {
@@ -60,7 +64,7 @@ circle {
 }
 
 h2.chart_title span {
-    color: #fff;
+    color: #f1f1f1;
 }
 
 .line1-color {
