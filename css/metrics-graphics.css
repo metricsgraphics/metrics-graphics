@@ -1,34 +1,3 @@
-body {
-    background-color: #fff;
-    color: #000;
-    font-family: 'Open Sans', sans-serif, Arial;
-}
-
-.gr {
-    text-align:center;
-}
-
-
-div#trunk {
-    margin-top:40px;
-}
-
-div#trunk h2 {
-    font-size: 15px;
-}
-
-div#trunk h2.trunk-title {
-    font-size: 25px;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-div.trunk-section {
-    border-top: 1px solid #ccc;
-    padding-bottom: 25px;
-    padding-top: 15px;
-}
-
 a,
 a:active,
 a:visited {
@@ -40,8 +9,10 @@ a:hover {
     text-decoration: underline;
 }
 
-.pill:hover {
-    text-decoration: none;
+.active_datapoint {
+    fill: black;
+    font-size: 11px;
+    font-weight: 400;
 }
 
 a.active {
@@ -64,26 +35,6 @@ a.active {
     fill: #db4437;
 }
 
-circle {
-    fill: #0000ff;
-    opacity: 0.85;
-}
-
-.markers line {
-    opacity: 0.2;
-    shape-rendering: crispEdges;
-    stroke: black;
-    stroke-width: 1;
-}
-
-.markers text {
-    fill: black;
-    font-size: 9px;
-    opacity: 0.5;
-    stroke: none;
-}
-
-
 .baselines line {
     opacity: 0.2;
     shape-rendering: crispEdges;
@@ -98,6 +49,17 @@ circle {
     stroke: none;
 }
 
+body {
+    background-color: #fff;
+    color: #000;
+    font-family: 'Open Sans', sans-serif, Arial;
+}
+
+circle {
+    fill: #0000ff;
+    opacity: 0.85;
+}
+
 #description {
     margin: auto;
     margin-bottom: 50px;
@@ -109,10 +71,15 @@ circle {
     opacity: 0.2;
 }
 
-.active_datapoint {
-    fill: black;
+#footer {
+    border-top: 1px solid #ccc;
     font-size: 11px;
-    font-weight: 400;
+    padding: 40px;
+    text-align: center;
+}
+
+.gr {
+    text-align: center;
 }
 
 h2.chart_title {
@@ -165,6 +132,20 @@ h2.chart_title .fa {
     stroke: #db4437;
 }
 
+.markers line {
+    opacity: 0.2;
+    shape-rendering: crispEdges;
+    stroke: black;
+    stroke-width: 1;
+}
+
+.markers text {
+    fill: black;
+    font-size: 9px;
+    opacity: 0.5;
+    stroke: none;
+}
+
 .missing {
     background-image: url(../images/missing-data.png);
     background-repeat: no-repeat;
@@ -189,6 +170,11 @@ path.main-area {
 path.main-line {
     fill: none;
     opacity: 0.8;
+    stroke-width: 1.1px;
+}
+
+.pill:hover {
+    text-decoration: none;
 }
 
 .points circle {
@@ -233,6 +219,26 @@ text {
 
 #torso div {
     display: inline-block;
+}
+
+#trunk {
+    margin-top:40px;
+}
+
+#trunk h2 {
+    font-size: 15px;
+}
+
+#trunk h2.trunk-title {
+    font-size: 25px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.trunk-section {
+    border-top: 1px solid #ccc;
+    padding-bottom: 25px;
+    padding-top: 15px;
 }
 
 .x-axis line,
@@ -281,11 +287,4 @@ text {
 
 .year-marker-small text {
     font-size: 8px;
-}
-
-div#footer {
-    border-top: 1px solid #ccc;
-    font-size: 11px;
-    padding:40px;
-    text-align:center;
 }
