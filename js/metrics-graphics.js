@@ -107,6 +107,8 @@ function moz_chart() {
     else {
         charts.line(args).markers().mainPlot().rollover();
     }
+    
+    return args.data;
 }
 
 function chart_title(args) {
@@ -925,4 +927,64 @@ charts.missing = function(args) {
     
     this.init(args);
     return this;
+}
+
+
+function modify_time_period(data, past_n_days) {
+    //splice time period
+    var data_spliced = clone(data);
+    if(past_n_days != '') {
+        for(var i=0; i<data_spliced.length; i++) {
+            var from = data_spliced[i].length - past_n_days;
+            data_spliced[i].splice(0,from);
+        }
+    }
+    
+    return data_spliced;
+}
+
+
+function convert_dates(data){
+    data = data.map(function(d){
+        var fff = d3.time.format('%Y-%m-%d');
+        d['date'] = fff.parse(d['date']);
+        return d;
+    });
+
+    return data;
+}
+
+
+//deep copy
+//http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+function clone(obj) {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        var copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+    
+    throw new Error("Unable to copy obj! Its type isn't supported.");
 }
