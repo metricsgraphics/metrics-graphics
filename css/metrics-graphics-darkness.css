@@ -83,6 +83,10 @@ h2.chart_title span {
     stroke: #ff0000;
 }
 
+#logo g path {
+    fill: #fff;
+}
+
 .missing {
     background-image: url(../images/missing-data-dark.png);
 }
