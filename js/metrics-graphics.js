@@ -780,11 +780,13 @@ charts.line = function(args) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
                             
-                            return fmt(dd) + '  ' + num(d[args.y_accessor]);
+                            return fmt(dd) + '  ' + args.yax_units 
+                                + num(d[args.y_accessor]);
                         }
                         else {
                             return args.x_accessor + ': ' + num(d[args.x_accessor]) 
-                            + ', ' + args.y_accessor + ': ' + num(d[args.y_accessor]);
+                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                                + num(d[args.y_accessor]);
                         }
                     });                
             }
