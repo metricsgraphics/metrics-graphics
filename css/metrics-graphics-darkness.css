@@ -5,6 +5,10 @@ a:visited {
     text-decoration: none;
 }
 
+.active_datapoint {
+    fill: #fff;
+}
+
 .area1-color {
     fill: #ffd300;
 }
@@ -15,6 +19,14 @@ a:visited {
 
 .area3-color {
     fill: #ff0000;
+}
+
+.baselines line {
+    stroke: #fff;
+}
+
+.baselines text {
+    fill: #fff;
 }
 
 body {
@@ -31,8 +43,16 @@ circle {
     opacity: 0.1;
 }
 
-div#footer {
+#footer {
     border-top-color: #3b3b3b;
+}
+
+.goal line {
+    stroke: #fff;
+}
+
+.goal text {
+    fill: #fff;
 }
 
 #head {
@@ -44,26 +64,6 @@ div#footer {
 }
 
 .markers text {
-    fill: #fff;
-}
-
-.baselines line {
-    stroke: #fff;
-}
-
-.baselines text {
-    fill: #fff;
-}
-
-.goal line {
-    stroke: #fff;
-}
-
-.goal text {
-    fill: #fff;
-}
-
-.active_datapoint {
     fill: #fff;
 }
 
@@ -95,7 +95,7 @@ text {
     fill: #fff;
 }
 
-div.trunk-section {
+.trunk-section {
     border-top-color: #5e5e5e;
 }
 
