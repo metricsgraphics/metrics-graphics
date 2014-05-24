@@ -1,5 +1,4 @@
-metrics-graphics
-================
+<a href="mozilla.github.io/metrics-graphics/"><img src="http://metrics.mozilla.com/metrics-graphics/images/logo.png" align="left" hspace="8" vspace="2"></a>
 
 Note: While we are currently using semantic versioning, you should consider V0.* to have commits that will break things if you are external to Mozilla. This library is in its pre-Cambrian period of wild ideas, and parts of the API will slowly but surely become solidified as we use this more and more internally.
 
