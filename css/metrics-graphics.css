@@ -132,6 +132,10 @@ h2.chart_title .fa {
     stroke: #db4437;
 }
 
+#logo {
+    margin: 60px 0 0 0;
+}
+
 .markers line {
     opacity: 0.2;
     shape-rendering: crispEdges;
