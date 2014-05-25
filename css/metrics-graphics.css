@@ -287,8 +287,10 @@ text {
 }
 
 .year-marker line {
+    shape-rendering: crispEdges;
     opacity: 0.3;
     stroke: black;
+    stroke-width: 1;
 }
 
 .year-marker-small text {
