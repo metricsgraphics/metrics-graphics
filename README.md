@@ -17,7 +17,7 @@ moz_chart({
 })
 ```
 
-For the complete list of options and for more documentation, please take a look at the [Wiki](https://github.com/mozilla/metrics-graphics/wiki). The documentation is still a work-in-progress and is being tracked by [this issue](https://github.com/mozilla/metrics-graphics/issues/31).
+For the complete list of options, please take a look at the [Wiki](https://github.com/mozilla/metrics-graphics/wiki). The Wiki is still a work-in-progress and is being tracked by [this issue](https://github.com/mozilla/metrics-graphics/issues/31).
 
 While we are currently using semantic versioning, you should consider V0.* to have commits that will break things if you are external to Mozilla. This library is in its pre-Cambrian period of wild ideas, and parts of the API will slowly but surely become solidified as we use this more and more internally.
 
