@@ -131,7 +131,7 @@ $(document).ready(function() {
         }, {
             'date': new Date('2014-03-15'),
             'label': '2nd Milestone'
-        }, ]
+        }]
             
         moz_chart({
             title: "Some Percentages",
@@ -352,11 +352,11 @@ $(document).ready(function() {
             right: trunk.right,
             xax_count: 4,
             rollover_callback: function(d, i) {
-            //custom format the rollover text, show days
-            var prefix = d3.formatPrefix(d.value);
-            $('div#custom-rollover svg .active_datapoint')
-                .html('Day ' + (i+1) + ' &nbsp; '
-                     + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                //custom format the rollover text, show days
+                var prefix = d3.formatPrefix(d.value);
+                $('div#custom-rollover svg .active_datapoint')
+                    .html('Day ' + (i+1) + ' &nbsp; '
+                         + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: 'div#custom-rollover',
             x_accessor: 'date',
