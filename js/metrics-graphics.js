@@ -165,7 +165,7 @@ function xAxis(args) {
     
     args.x_axis_negative = false;
     if (!args.time_series) {
-        if (min_x > 0){
+        if (min_x >= 0){
             min_x = 0;
         } else  {
             min_x = min_x  - (max_x * (args.inflator-1));
@@ -320,7 +320,7 @@ function yAxis(args) {
     max_y = args.max_y ? args.max_y : max_y;
 
     // we are currently saying that if the min val > 0, set 0 as min y.
-    if (min_y > 0){
+    if (min_y >= 0){
         min_y = 0;
         args.y_axis_negative = false;
     } else {
