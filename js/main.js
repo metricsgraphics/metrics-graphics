@@ -111,7 +111,7 @@ $(document).ready(function() {
             target: 'div#confidence_band',
             xax_count: 9,
             show_years: false,
-            show_confidence_band: true,
+            show_confidence_band: ['l', 'u'],
             x_extended_ticks: true,
             min_y: 0,
             max_y: 1,

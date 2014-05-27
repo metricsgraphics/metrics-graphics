@@ -67,7 +67,7 @@ function moz_chart() {
         transition_on_update: true,
         rollover_callback: null,
         show_rollover_text: true,
-        show_confidence_band: false,
+        show_confidence_band: null,   // given [l, u] shows a confidence at each point from l to u
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
@@ -548,30 +548,36 @@ charts.line = function(args) {
         var g;
         var data_median = 0;
 
-        // main area
+        //main area
         var area = d3.svg.area()
             .x(args.scalefns.xf)
             .y0(args.scales.Y(0))
             .y1(args.scalefns.yf)
             .interpolate('cardinal');
 
-        // confidence band
+        //confidence band
         var confidence_area;
         if(args.show_confidence_band) {
             var confidence_area = d3.svg.area()
                 .x(args.scalefns.xf)
-                .y0(function(d) { return args.scales.Y(d.l); })
-                .y1(function(d) { return args.scales.Y(d.u); })
+                .y0(function(d) {
+                    var l = args.show_confidence_band[0];
+                    return args.scales.Y(d[l]);
+                })
+                .y1(function(d) {
+                    var u = args.show_confidence_band[1];
+                    return args.scales.Y(d[u]);
+                })
                 .interpolate("cardinal");
         }
 		    
-        // main line
+        //main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
             .interpolate('cardinal');
 
-        // animate line on first load
+        //animate line on first load
         var flat_line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(function() { return args.scales.Y(data_median); })
