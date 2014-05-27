@@ -173,6 +173,12 @@ path.main-area {
     stroke: none;
 }
 
+path.confidence-band {
+    fill: #ccc;
+    opacity: 0.4;
+    stroke: none;
+}
+
 path.main-line {
     fill: none;
     opacity: 0.8;
