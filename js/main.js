@@ -97,6 +97,28 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
     });
+    
+    d3.json('data/confidence_band.json', function(data) {
+        data = convert_dates(data);
+        moz_chart({
+            title: "Confidence Band",
+            description: "Example of a chart with a confidence band and extended x-axis ticks enabled.",
+            data: data,
+            format: 'percentage',
+            width: 860,
+            height: 300,
+            right: trunk.right,
+            target: 'div#confidence_band',
+            xax_count: 9,
+            show_years: false,
+            show_confidence_band: true,
+            x_extended_ticks: true,
+            min_y: 0,
+            max_y: 1,
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+    });
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
@@ -394,6 +416,7 @@ $(document).ready(function() {
             y_accessor: 'y'
         });
     });
+    
 
     function assignEventListeners() {
         $('#dark-css').click(function () {

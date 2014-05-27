@@ -67,12 +67,12 @@ function moz_chart() {
         transition_on_update: true,
         rollover_callback: null,
         show_rollover_text: true,
+        show_confidence_band: false,
         xax_format: function(d) {
             //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
             return df(d);
         },
-
         area: true,
         chart_type: 'line',   
         data: [],
@@ -555,6 +555,16 @@ charts.line = function(args) {
             .y1(args.scalefns.yf)
             .interpolate('cardinal');
 
+        // confidence band
+        var confidence_area;
+        if(args.show_confidence_band) {
+            var confidence_area = d3.svg.area()
+                .x(args.scalefns.xf)
+                .y0(function(d) { return args.scales.Y(d.l); })
+                .y1(function(d) { return args.scales.Y(d.u); })
+                .interpolate("cardinal");
+        }
+		    
         // main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)
@@ -568,6 +578,13 @@ charts.line = function(args) {
             .interpolate('cardinal');
 
         for(var i=args.data.length-1; i>=0; i--) {
+            //add confidence band
+            if(args.show_confidence_band) {
+                svg.append('path')
+                    .attr('class', 'confidence-band')
+                    .attr('d', confidence_area(args.data[i]));
+            }
+        
             //add the area
             if(args.area && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
@@ -615,7 +632,7 @@ charts.line = function(args) {
                         .attr('d', line(args.data[i]));
                 }
             }
-        }
+        }	    
 
         return this;
     }
