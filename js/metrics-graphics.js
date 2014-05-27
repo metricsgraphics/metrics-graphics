@@ -81,6 +81,7 @@ function moz_chart() {
         inflator: 10/9,               // for setting y axis max
         linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
         list: false,
+        baselines: null,              // sets the baseline lines
         markers: null,                // sets the marker lines
         scalefns: {},
         scales: {},
