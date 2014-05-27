@@ -963,10 +963,10 @@ charts.missing = function(args) {
     this.args = args;
 
     this.init = function(args) {
-        chart_title(args);
-
-        var svg = d3.select(args.target)
-            .append('svg')
+        if($(args.target).is(':empty')){
+            chart_title(args);
+            var svg = d3.select(args.target)
+                .append('svg')
                 .attr('width', args.width)
                 .attr('height', args.height);
                 
@@ -984,7 +984,9 @@ charts.missing = function(args) {
             .attr('text-anchor', 'middle')
             .text(function(d) {
                 return 'Data currently missing or unavailable';
-            })
+            })  
+        }
+
         
         return this;
     }
