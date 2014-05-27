@@ -6,14 +6,14 @@ A sample set of examples may be found in main.js. You can check out the demo pag
 
 ```
 moz_chart({
-    title: "Fake Users", \\ this title gets added as a html header element
-    description: "Here is a description", \\ this gets added as a rollover
-    data: data, \\ this is an array of objects, such as [{value:100,date:...},...]
+    title: "Downloads",
+    description: "This chart shows Firefox GA downloads for the past six months."
+    data: downloads_data, \\ an array of objects, such as [{value:100,date:...},...]
     width: 600,
     height: 250,
-    target: '#fake_users1', \\ this is the html element the svg will be placed in
-    x_accessor: 'date',  \\ this is the key that accesses the x value
-    y_accessor: 'value', \\ this is the key that accesses the y value
+    target: '#downloads', \\ the html element in which the chart is populated
+    x_accessor: 'date',  \\ the key that accesses the x value
+    y_accessor: 'value', \\ the key that accesses the y value
 })
 ```
 
