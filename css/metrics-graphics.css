@@ -271,7 +271,7 @@ text {
 .x-axis .label,
 .y-axis .label {
     font-family: 'PT Serif', serif;
-    font-size: 9.5px;
+    font-size: 9px;
     font-style: italic;
     letter-spacing: 1;
 }
