@@ -477,6 +477,11 @@ function markers(args) {
         var gb;
         
         if(args.markers) {
+            if($(args.target + ' svg .markers').length > 0) {
+                $(args.target + ' svg .markers')
+                    .remove();
+            }
+            
             gm = svg.append('g')
                 .attr('class', 'markers');
             
