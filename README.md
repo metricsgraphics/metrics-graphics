@@ -2,7 +2,7 @@
 
 _metrics-graphics.js_ is a library optimized for visualizing and laying out time-series data. It provides a simple way to produce common types of charts, graphs and other visualizations in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
 
-A sample set of examples may be found in main.js. You can check out the demo page [here](https://metrics.mozilla.com/metrics-graphics/). Here is one example to demonstrate how easy it is to produce a chart. Our stateless charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source.
+A sample set of examples may be found on the [demo page](https://metrics.mozilla.com/metrics-graphics/). The example below demonstrates how easy it is to produce a chart. Our stateless charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, please take a look at the [Wiki](https://github.com/mozilla/metrics-graphics/wiki).
 
 ```
 moz_chart({
@@ -17,8 +17,8 @@ moz_chart({
 })
 ```
 
-For the complete list of options, please take a look at the [Wiki](https://github.com/mozilla/metrics-graphics/wiki). The Wiki is still a work-in-progress and is being tracked by [this issue](https://github.com/mozilla/metrics-graphics/issues/31).
-
 While we are currently using semantic versioning, you should consider V0.* to have commits that will break things if you are external to Mozilla. This library is in its pre-Cambrian period of wild ideas, and parts of the API will slowly but surely become solidified as we use this more and more internally.
 
 Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for other to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We plan on having fuller documentation in the next milestone, as well as a guide to how to contribute to the library in a way that makes us feel warm inside when we accept your pull request.
+
+_metrics-graphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public license</a>.
