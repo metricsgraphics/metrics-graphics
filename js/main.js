@@ -25,14 +25,14 @@ $(document).ready(function() {
     small.xax_count = 5;
 
     assignEventListeners();
-    
+
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {
             var d = data[i];
             d['date'] = fff.parse(d['date']);
         }
-    
+
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         moz_chart({
@@ -47,28 +47,13 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-        
-        moz_chart({
-            title: "Extended Ticks",
-            description: "A wider chart with extended horizontal ticks",
-            data: data,
-            width: trunk.width*3,
-            height: torso.height,
-            right: trunk.right,
-            area: false,
-            xax_tick: 0,
-            y_extended_ticks: true,
-            target: '#long',
-            x_accessor: 'date',
-            y_accessor: 'value'
-        })
     })
-        
+
     d3.json('data/fake_users2.json', function(data) {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i]);
-        };
-        
+        }
+
         moz_chart({
             title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
@@ -80,13 +65,13 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-        
+
         moz_chart({
             title:"Multi-line Chart Wide",
-            description: "This line chart contains multiple lines. We're still working out the style details.",
+            description: "This line chart contains multiple lines and has extended ticks enabled.",
             area: false,
             data: data,
-            width: trunk.width*3,
+            width: trunk.width*2,
             height: torso.height,
             right: trunk.right,
             show_years: false,
@@ -96,8 +81,8 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-    });
-    
+    })
+
     d3.json('data/confidence_band.json', function(data) {
         data = convert_dates(data);
         moz_chart({
@@ -105,11 +90,10 @@ $(document).ready(function() {
             description: "Example of a chart with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
-            width: trunk.width*3,
+            width: trunk.width*2,
             height: torso.height,
             right: trunk.right,
             target: 'div#confidence_band',
-            xax_count: 9,
             show_years: false,
             show_confidence_band: ['l', 'u'],
             x_extended_ticks: true,
@@ -117,8 +101,8 @@ $(document).ready(function() {
             max_y: 1,
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-    });
+        })
+    })
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
@@ -145,8 +129,8 @@ $(document).ready(function() {
             target: 'div#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-        
+        })
+
         moz_chart({
             title: "Changing Precision 2",
             description: "Here we set decimals: 0 for percentages.",
@@ -160,8 +144,8 @@ $(document).ready(function() {
             target: 'div#precision2',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-            
+        })
+
         moz_chart({
             title: "... Or No Rollover Text",
             description: "By setting show_rollover_text: false, you can hide the default rollover text from even appearing. This coupled with the custom callback gives a lot of interesting options for controlling rollovers.",
@@ -176,9 +160,9 @@ $(document).ready(function() {
             target: 'div#no-rollover-text',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
+        })
     })
-    
+
     d3.json('data/some_currency.json', function(data) {
         data = convert_dates(data);
         moz_chart({
@@ -192,9 +176,9 @@ $(document).ready(function() {
             x_accessor: 'date',
             yax_units: '$',
             y_accessor: 'value'
-        });
+        })
     })
-    
+
     d3.json('data/xnotdate.json', function(data) {
         moz_chart({
             left: 80,
@@ -216,9 +200,9 @@ $(document).ready(function() {
             y_accessor: 'females',
             x_label: 'males',
             y_label: 'females',
-        });
-    });
-    
+        })
+    })
+
     moz_chart({
         title: "Glorious Chart",
         chart_type: 'missing-data',
@@ -227,7 +211,7 @@ $(document).ready(function() {
         height: torso.height,
         right: torso.right,
         target: 'div#glorious_chart'
-    });
+    })
 
     // lower section
     d3.json('data/brief-1.json', function(data) {
@@ -245,8 +229,8 @@ $(document).ready(function() {
             target: 'div#briefing-1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-        
+        })
+
         moz_chart({
             title: "Small Text Inferred By Size",
             description: "If the args.width - args.left - args.right is smaller than the args.small_width_threshold (and the flip for the height) then the text size automatically scales to be slightly smaller.",
@@ -259,9 +243,9 @@ $(document).ready(function() {
             target: 'div#small1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-    });
-    
+        })
+    })
+
     d3.json('data/split_by.json', function(data) {
         data = convert_dates(data);
         
@@ -276,8 +260,8 @@ $(document).ready(function() {
             target: 'div#split_by',
             x_accessor: 'date',
             y_accessor: 'release'
-        });
-        
+        })
+
         moz_chart({
             title: "Beta Downloads",
             description: "The chart is gracefully updated depending on the chosen time period.",
@@ -290,9 +274,9 @@ $(document).ready(function() {
             target: 'div#modify_time_period',
             x_accessor: 'date',
             y_accessor: 'beta'
-        });
+        })
     })
-    
+
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data);
         
@@ -309,8 +293,8 @@ $(document).ready(function() {
             target: 'div#briefing-2',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-        
+        })
+
         moz_chart({
             title: "Small Text",
             description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
@@ -323,8 +307,8 @@ $(document).ready(function() {
             target: 'div#small2',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-    });
+        })
+    })
 
     d3.json('data/float.json', function(data) {
         data = convert_dates(data);
@@ -341,8 +325,8 @@ $(document).ready(function() {
             target: 'div#precision1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-        
+        })
+
         moz_chart({
             title: "Custom Rollover Text",
             description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
@@ -361,9 +345,9 @@ $(document).ready(function() {
             target: 'div#custom-rollover',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-    });
-    
+        })
+    })
+
     d3.json('data/neg1.json', function(data) {
         data = convert_dates(data);
 
@@ -377,9 +361,9 @@ $(document).ready(function() {
             target: 'div#neg1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-    });
-    
+        })
+    })
+
     d3.json('data/neg2.json', function(data) {
         moz_chart({
             title: "Negative Values 2",
@@ -395,8 +379,8 @@ $(document).ready(function() {
             target: 'div#neg2',
             x_accessor: 'subject',
             y_accessor: 'measure'
-        });
-    });
+        })
+    })
 
     d3.json('data/points1.json', function(data) {
         moz_chart({
@@ -414,8 +398,8 @@ $(document).ready(function() {
             },
             x_accessor: 'x',
             y_accessor: 'y'
-        });
-    });
+        })
+    })
     
 
     function assignEventListeners() {
@@ -432,8 +416,8 @@ $(document).ready(function() {
             $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
             
             return false;
-        });
-        
+        })
+
         $('#light-css').click(function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data.png)');
@@ -446,7 +430,7 @@ $(document).ready(function() {
             
             $('#dark').attr({href : ''});
             return false;
-        });
+        })
 
         $('.split-by-controls button').click(function() {
             var new_y_accessor = $(this).data('y_accessor');
@@ -493,7 +477,6 @@ $(document).ready(function() {
             })
         })
     }
-    
 
     //replace all SVG images with inline SVG
     //http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
@@ -524,5 +507,5 @@ $(document).ready(function() {
             $img.replaceWith($svg);
 
         }, 'xml');
-    });
+    })
 })
