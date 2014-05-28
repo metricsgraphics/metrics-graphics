@@ -52,12 +52,12 @@ $(document).ready(function() {
             title: "Extended Ticks",
             description: "A wider chart with extended horizontal ticks",
             data: data,
-            width: 860,
+            width: trunk.width*3,
+            height: torso.height,
+            right: trunk.right,
             area: false,
             xax_tick: 0,
             y_extended_ticks: true,
-            height: torso.height,
-            right: torso.right,
             target: '#long',
             x_accessor: 'date',
             y_accessor: 'value'
@@ -86,9 +86,9 @@ $(document).ready(function() {
             description: "This line chart contains multiple lines. We're still working out the style details.",
             area: false,
             data: data,
-            width: 860,
-            height: 300,
-            right: torso.right,
+            width: trunk.width*3,
+            height: torso.height,
+            right: trunk.right,
             show_years: false,
             xax_tick: 0,
             y_extended_ticks: true,
@@ -105,8 +105,8 @@ $(document).ready(function() {
             description: "Example of a chart with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
-            width: 860,
-            height: 300,
+            width: trunk.width*3,
+            height: torso.height,
             right: trunk.right,
             target: 'div#confidence_band',
             xax_count: 9,
@@ -131,7 +131,7 @@ $(document).ready(function() {
         }, {
             'date': new Date('2014-03-15'),
             'label': '2nd Milestone'
-        }, ]
+        }]
             
         moz_chart({
             title: "Some Percentages",
@@ -352,11 +352,11 @@ $(document).ready(function() {
             right: trunk.right,
             xax_count: 4,
             rollover_callback: function(d, i) {
-            //custom format the rollover text, show days
-            var prefix = d3.formatPrefix(d.value);
-            $('div#custom-rollover svg .active_datapoint')
-                .html('Day ' + (i+1) + ' &nbsp; '
-                     + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                //custom format the rollover text, show days
+                var prefix = d3.formatPrefix(d.value);
+                $('div#custom-rollover svg .active_datapoint')
+                    .html('Day ' + (i+1) + ' &nbsp; '
+                         + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: 'div#custom-rollover',
             x_accessor: 'date',

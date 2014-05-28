@@ -120,3 +120,7 @@ text {
 .year-marker line {
     stroke: #fff;
 }
+
+.btn-group, .btn-group-sm {
+    background-color:inherit;
+}

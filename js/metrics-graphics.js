@@ -81,6 +81,7 @@ function moz_chart() {
         inflator: 10/9,               // for setting y axis max
         linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
         list: false,
+        baselines: null,              // sets the baseline lines
         markers: null,                // sets the marker lines
         scalefns: {},
         scales: {},
@@ -165,7 +166,7 @@ function xAxis(args) {
     
     args.x_axis_negative = false;
     if (!args.time_series) {
-        if (min_x > 0){
+        if (min_x >= 0){
             min_x = 0;
         } else  {
             min_x = min_x  - (max_x * (args.inflator-1));
@@ -320,7 +321,7 @@ function yAxis(args) {
     max_y = args.max_y ? args.max_y : max_y;
 
     // we are currently saying that if the min val > 0, set 0 as min y.
-    if (min_y > 0){
+    if (min_y >= 0){
         min_y = 0;
         args.y_axis_negative = false;
     } else {
@@ -476,6 +477,11 @@ function markers(args) {
         var gb;
         
         if(args.markers) {
+            if($(args.target + ' svg .markers').length > 0) {
+                $(args.target + ' svg .markers')
+                    .remove();
+            }
+            
             gm = svg.append('g')
                 .attr('class', 'markers');
             
@@ -962,10 +968,10 @@ charts.missing = function(args) {
     this.args = args;
 
     this.init = function(args) {
-        chart_title(args);
-
-        var svg = d3.select(args.target)
-            .append('svg')
+        if($(args.target).is(':empty')){
+            chart_title(args);
+            var svg = d3.select(args.target)
+                .append('svg')
                 .attr('width', args.width)
                 .attr('height', args.height);
                 
@@ -983,7 +989,9 @@ charts.missing = function(args) {
             .attr('text-anchor', 'middle')
             .text(function(d) {
                 return 'Data currently missing or unavailable';
-            })
+            })  
+        }
+
         
         return this;
     }

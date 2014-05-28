@@ -14,9 +14,9 @@
     <link href="" rel="stylesheet" type="text/css" id="dark">
     <link href="css/metrics-graphics-demo.css" rel="stylesheet" type="text/css">
     
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src='js/d3.min.js'></script>
-    <script src='js/bootstrap.min.js'></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src='js/metrics-graphics.js'></script>
     <script src='js/main.js'></script>
 </head>
@@ -53,11 +53,20 @@
                 <div id='percentage'></div>
                 <div id='currency'></div>
                 <div id='xnotdate'></div>
-                <div id='long'></div>
-                <div id='fake_users3'></div>                
-                <div id='confidence_band'></div>
             </div>
             <div id='trunk'>
+                <div class='row trunk-section'>
+                    <div class='col-lg-12 text-center' id='long'></div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-12 text-center' id='fake_users3'></div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-12 text-center' id='confidence_band'></div>
+                </div>
+            
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Linked Charts</h2>
