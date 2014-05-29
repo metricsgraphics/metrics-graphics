@@ -303,3 +303,22 @@ text {
 .year-marker-small text {
     font-size: 8px;
 }
+
+div#wip {
+    background-color:black;
+    opacity:.5;
+}
+
+div#wip h2 {
+    color:white;
+    font-weight:800;
+    text-transform:uppercase;
+    text-align:center;
+    margin:15px;
+}
+
+div#wip h2 span {
+    font-weight:300;
+    font-size:.9em;
+    padding-left:20px;
+}

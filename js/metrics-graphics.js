@@ -29,6 +29,25 @@ function merge_with_defaults(obj) {
     return obj;
 };
 
+function number_of_values(data, accessor, value){
+    var values = data.filter(function(d){
+        return d[accessor] === value;
+    });
+    return values.length;
+}
+
+function has_values_below(data, accessor, value){
+    var values = data.filter(function(d){
+        return d[accessor] <= value;
+    })
+    return values.length > 0;
+}
+
+function has_too_many_zeros(data, accessor, zero_count){
+    return number_of_values(data, accessor, 0) >= zero_count;
+}
+
+
 var charts = {};
 var globals = {};
 globals.link = false;
@@ -305,6 +324,7 @@ function yAxis(args) {
     }
 
     var current_max, current_min;
+
     for(var i=0; i<args.data.length; i++) {
         if (i == 0){
             max_y = args.data[i][0][args.y_accessor];
@@ -422,6 +442,23 @@ function init(args) {
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
 
+    // this is how we're dealing with passing in a single array of data, but with the intention of 
+    // using multiple values for multilines, etc.
+
+    if ($.isArray(args.y_accessor)){
+        args.data = args.data.map(function(_d){
+            return args.y_accessor.map(function(ya){
+                return _d.map(function(di){
+                    di = clone(di);
+                    di['multiline_y_accessor'] = di[ya];
+                    return di;
+                })
+            })
+        })[0];
+        args.y_accessor = 'multiline_y_accessor';
+    }
+    //console.log(args.data, args.target);
+
     //sort x-axis
     if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {
@@ -464,7 +501,10 @@ function init(args) {
         && args.width - args.left-args.right - args.buffer*2 
             <= args.small_width_threshold 
         || args.small_text;
-    
+    //
+
+    // check for multiline elements in 
+
     xAxis(args);
     yAxis(args);
     
@@ -591,6 +631,8 @@ charts.line = function(args) {
 
         for(var i=args.data.length-1; i>=0; i--) {
             //add confidence band
+            console.log('wtf',i, args.target);
+
             if(args.show_confidence_band) {
                 svg.append('path')
                     .attr('class', 'confidence-band')
@@ -639,6 +681,7 @@ charts.line = function(args) {
                             .attr('d', line(args.data[i]));
                 }
                 else { //or just add the line
+                    console.log(args.data[i][0][args.y_accessor], args.target)
                     svg.append('path')
                         .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
                         .attr('d', line(args.data[i]));
