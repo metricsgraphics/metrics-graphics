@@ -457,7 +457,6 @@ function init(args) {
         })[0];
         args.y_accessor = 'multiline_y_accessor';
     }
-    //console.log(args.data, args.target);
 
     //sort x-axis
     if (args.chart_type == 'line'){
@@ -631,8 +630,6 @@ charts.line = function(args) {
 
         for(var i=args.data.length-1; i>=0; i--) {
             //add confidence band
-            console.log('wtf',i, args.target);
-
             if(args.show_confidence_band) {
                 svg.append('path')
                     .attr('class', 'confidence-band')
