@@ -697,6 +697,12 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         var g;
         
+        //remove the old rollover rects if they already exist
+        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
+            $(args.target + ' svg .transparent-rollover-rect')
+                .remove();
+        }
+    
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
