@@ -71,6 +71,10 @@ h2.chart_title span {
     color: #f1f1f1;
 }
 
+.light-bg {
+    background-color: #3b3b3b;
+}
+
 .line1-color {
     stroke: #ffd300;
 }

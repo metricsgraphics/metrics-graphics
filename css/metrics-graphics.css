@@ -120,6 +120,10 @@ h2.chart_title .fa {
     padding-right: 15px;
 }
 
+.light-bg {
+    background-color: #f1f1f1;
+}
+
 .line1-color {
     stroke: #0000ff;
 }
@@ -302,23 +306,4 @@ text {
 
 .year-marker-small text {
     font-size: 8px;
-}
-
-div#wip {
-    background-color:black;
-    opacity:.5;
-}
-
-div#wip h2 {
-    color:white;
-    font-weight:800;
-    text-transform:uppercase;
-    text-align:center;
-    margin:15px;
-}
-
-div#wip h2 span {
-    font-weight:300;
-    font-size:.9em;
-    padding-left:20px;
 }
