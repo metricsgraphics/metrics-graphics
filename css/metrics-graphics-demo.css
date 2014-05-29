@@ -6,3 +6,9 @@
 #confidence_band svg .x-axis line {
     opacity: 0.1;
 }
+
+.wip {
+    font-size: 15px;
+    margin-top: 15px;
+    padding: 10px;
+}
