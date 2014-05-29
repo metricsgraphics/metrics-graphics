@@ -678,7 +678,6 @@ charts.line = function(args) {
                             .attr('d', line(args.data[i]));
                 }
                 else { //or just add the line
-                    console.log(args.data[i][0][args.y_accessor], args.target)
                     svg.append('path')
                         .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
                         .attr('d', line(args.data[i]));
