@@ -219,7 +219,7 @@ $(document).ready(function() {
         
         moz_chart({
             title: "Linked Charts",
-            description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other. We are still working out how to make the exact same changes in each, but for now the rollovers merely trigger the rect.",
+            description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other.",
             data: data,
             width: trunk.width,
             linked: true,
