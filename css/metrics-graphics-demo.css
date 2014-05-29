@@ -11,4 +11,7 @@
     font-size: 15px;
     margin-top: 60px;
     padding: 10px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    opacity: 0.8;
 }
