@@ -1,4 +1,4 @@
-<a href="mozilla.github.io/metrics-graphics/"><img src="http://mozilla.github.io/metrics-graphics/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
+<a href="mozilla.github.io/metrics-graphics/"><img src="http://mozilla.github.io/metrics-graphics/images/logo.svg?20140528" hspace="0" vspace="0" width="400" height="63"></a>
 
 _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. It provides a simple way to produce common types of charts, graphs and other visualizations in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
 
