@@ -2,7 +2,7 @@
 
 _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At just 16KB in size, it provides a simple way to produce common types of charts in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
 
-A sample set of examples may be found on the [examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our stateless charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, please take a look at the [Wiki](https://github.com/mozilla/metrics-graphics/wiki).
+A sample set of examples may be found on the [examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our stateless charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, please take a look at the [wiki](https://github.com/mozilla/metrics-graphics/wiki).
 
 ```
 moz_chart({
