@@ -47,6 +47,24 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
+        
+        var markers = [{
+            'date': new Date('2014-03-17'),
+            'label': 'Look, a spike!'
+        }]
+        
+        moz_chart({
+            title: "Annotations",
+            description: "By setting the chart's target a class name of main-area-solid, markers don't extend down to the bottom of the chart, which better draws attention to, say, spikes.",
+            data: data,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            markers: markers,
+            target: '#spike',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        })
     })
 
     d3.json('data/fake_users2.json', function(data) {

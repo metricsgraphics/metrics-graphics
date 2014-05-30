@@ -142,6 +142,11 @@ h2.chart_title .fa {
     width: 400px;
 }
 
+.main-area-solid svg .main-area {
+    fill: #ccccff;
+    opacity: 1;
+}
+
 .markers line {
     opacity: 0.2;
     shape-rendering: crispEdges;
