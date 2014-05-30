@@ -105,7 +105,7 @@ $(document).ready(function() {
         data = convert_dates(data);
         moz_chart({
             title: "Confidence Band",
-            description: "Example of a chart with a confidence band and extended x-axis ticks enabled.",
+            description: "This is an example of a chart with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
             width: trunk.width*2,
@@ -224,7 +224,7 @@ $(document).ready(function() {
     moz_chart({
         title: "Glorious Chart",
         chart_type: 'missing-data',
-        description: "Here is an example of a chart whose data is currently missing.",
+        description: "This is an example of a chart whose data is currently missing.",
         width: torso.width,
         height: torso.height,
         right: torso.right,
@@ -402,8 +402,8 @@ $(document).ready(function() {
 
     d3.json('data/points1.json', function(data) {
         moz_chart({
-            title: "First Scatter",
-            description: "Example of a scatterplot - wip",
+            title: "Scatterplot",
+            description: "A first example of a scatterplot.",
             data: data,
             chart_type: 'point',
             width: trunk.width*2,
