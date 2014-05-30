@@ -1,0 +1,33 @@
+{
+  "name": "metrics-graphics",
+  "version": "0.1.0",
+  "main": "metrics-graphics.js",
+  "scripts": [
+    "metrics-graphics.js"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.1",
+    "bootstrap": "~3.1.1",
+    "d3": "~3.4.8"
+  },
+  "ignore": [
+    ".DS_Store",
+    ".git",
+    ".gitignore",
+    "css/metrics-graphics-demo.css",
+    "data",
+    "index.html",
+    "images/og-logo.png",
+    "images/logo.svg"
+  ],
+  "license": "MPL-2.0",
+  "authors": [
+    "Ali Almossawi", "Ali Almossawi (http://github.com/almossawi)>",
+    "Hamilton Ulmer", "Hamilton Ulmer (http://github.com/hulmer)>",
+  ],
+  "homepage": "http://metricsgraphicsjs.org",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mozilla/metrics-graphics.git"
+  }
+}
