@@ -99,6 +99,19 @@ h2.chart_title span {
     background-image: url(../images/missing-data-dark.png);
 }
 
+.points circle {
+    fill: #a89641;
+    fill-opacity: 0.6;
+    stroke: #a89641;
+    stroke-opacity: 1;
+}
+
+.points circle.selected {
+    fill: #a89641;
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
 .popover {
     color: #737373;
 }
