@@ -91,6 +91,10 @@ h2.chart_title span {
     fill: #fff;
 }
 
+.main-area-solid svg .main-area {
+    fill: #52491f;
+}
+
 .missing {
     background-image: url(../images/missing-data-dark.png);
 }
