@@ -25,5 +25,12 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/mozilla/metrics-graphics.git"
-  }
+  },
+  "keywords": [
+    "metrics-graphics",
+    "metricsgraphicsjs",
+    "metricsgraphics",
+    "metricsgraphics.js",
+    "d3 charts"
+  ]
 }
