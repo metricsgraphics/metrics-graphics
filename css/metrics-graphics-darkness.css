@@ -31,7 +31,7 @@ a:visited {
 
 body {
     background-color: #272727;
-    color: #e8e8e8;
+    color: #cfcfcf;
 }
 
 circle {
@@ -88,7 +88,7 @@ h2.chart_title span {
 }
 
 #logo g path {
-    fill: #fff;
+    fill: #e8e8e8;
 }
 
 .main-area-solid svg .main-area {
