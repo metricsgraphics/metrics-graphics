@@ -1,53 +1,5 @@
 'use strict';
 
-var each = function(obj, iterator, context) {
-    // yanked out of underscore
-    if (obj == null) return obj;
-    if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
-      obj.forEach(iterator, context);
-    } else if (obj.length === +obj.length) {
-      for (var i = 0, length = obj.length; i < length; i++) {
-        if (iterator.call(context, obj[i], i, obj) === breaker) return;
-      }
-    } else {
-      for (var k in obj) {
-        if (iterator.call(context, obj[k], k, obj) === breaker) return;
-      }
-    }
-    return obj;
-};
-
-function merge_with_defaults(obj) {
-    // taken from underscore
-    each(Array.prototype.slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          if (obj[prop] === void 0) obj[prop] = source[prop];
-        }
-      }
-    });
-    return obj;
-};
-
-function number_of_values(data, accessor, value){
-    var values = data.filter(function(d){
-        return d[accessor] === value;
-    });
-    return values.length;
-}
-
-function has_values_below(data, accessor, value){
-    var values = data.filter(function(d){
-        return d[accessor] <= value;
-    })
-    return values.length > 0;
-}
-
-function has_too_many_zeros(data, accessor, zero_count){
-    return number_of_values(data, accessor, 0) >= zero_count;
-}
-
-
 var charts = {};
 var globals = {};
 globals.link = false;
@@ -622,7 +574,7 @@ charts.line = function(args) {
             .y(args.scalefns.yf)
             .interpolate('cardinal');
 
-        //animate line on first load
+        //for animating line on first load
         var flat_line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(function() { return args.scales.Y(data_median); })
@@ -1080,6 +1032,60 @@ function convert_dates(data){
     });
 
     return data;
+}
+
+
+var each = function(obj, iterator, context) {
+    // yanked out of underscore
+    if (obj == null) return obj;
+    if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+      obj.forEach(iterator, context);
+    } else if (obj.length === +obj.length) {
+      for (var i = 0, length = obj.length; i < length; i++) {
+        if (iterator.call(context, obj[i], i, obj) === breaker) return;
+      }
+    } else {
+      for (var k in obj) {
+        if (iterator.call(context, obj[k], k, obj) === breaker) return;
+      }
+    }
+    
+    return obj;
+}
+
+function merge_with_defaults(obj) {
+    // taken from underscore
+    each(Array.prototype.slice.call(arguments, 1), function(source) {
+      if (source) {
+        for (var prop in source) {
+          if (obj[prop] === void 0) obj[prop] = source[prop];
+        }
+      }
+    })
+    
+    return obj;
+}
+
+function number_of_values(data, accessor, value) {
+    var values = data.filter(function(d){
+        return d[accessor] === value;
+    })
+    
+    return values.length;
+}
+
+
+function has_values_below(data, accessor, value) {
+    var values = data.filter(function(d){
+        return d[accessor] <= value;
+    })
+    
+    return values.length > 0;
+}
+
+
+function has_too_many_zeros(data, accessor, zero_count) {
+    return number_of_values(data, accessor, 0) >= zero_count;
 }
 
 
