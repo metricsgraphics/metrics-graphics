@@ -683,7 +683,7 @@ charts.line = function(args) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
-                                
+
                                 return 'line' + (line_i+1) + '-color ' + 'roll_' + formatter(v);
                             }
                             else {
@@ -742,12 +742,7 @@ charts.line = function(args) {
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
-            var that = this;
-            
-            if(args.data.length <= 1) { 
-                svg.selectAll('circle.line_rollover_circle').style('opacity', 0);
-                svg.selectAll('.active_datapoint').text('');
-            };
+            //show circle on mouse-overed rect
             svg.selectAll('circle.line_rollover_circle')
                 .attr('class', "")
                 .attr('class', 'area' + (line_i+1) + '-color')
@@ -761,17 +756,18 @@ charts.line = function(args) {
                 .attr('r', 2.5)
                 .style('opacity', 1);
      
+            //trigger mouseover on all rects for this date in .linked charts
             if(args.linked && !globals.link) {
                 globals.link = true;
 
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
 
-                d3.selectAll('.roll_' + formatter(v))
-                    .each(function(d, i){
+                //trigger mouseover on matching line in .linked charts
+                d3.selectAll('.line' + (line_i+1) + '-color.roll_' + formatter(v))
+                    .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
                 })
-
             }    
             
             svg.selectAll('text')
@@ -779,6 +775,7 @@ charts.line = function(args) {
                     return d == g;
                 })
                 .attr('opacity', 0.3);
+                
             var fmt = d3.time.format('%b %e, %Y');
         
             if (args.format == 'count') {
@@ -798,7 +795,7 @@ charts.line = function(args) {
             }
 
             //update rollover text
-            if (args.show_rollover_text){
+            if (args.show_rollover_text) {
                 svg.select('.active_datapoint')
                     .text(function() {
                         if(args.time_series) {
