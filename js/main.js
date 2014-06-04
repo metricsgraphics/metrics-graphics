@@ -113,7 +113,14 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-        
+    })
+    
+    
+    d3.json('data/fake_users3.json', function(data) {  
+        for(var i=0;i<data.length;i++) {
+            data[i] = convert_dates(data[i]);
+        }
+ 
         //linked multi-line charts
         moz_chart({
             title:"Multi-line Linked 2",
@@ -446,6 +453,7 @@ $(document).ready(function() {
             y_accessor: 'y'
         })
     })
+    
     d3.json('data/multiline.json', function(data) {
         data = convert_dates(data);
         
