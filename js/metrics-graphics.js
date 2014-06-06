@@ -567,7 +567,7 @@ charts.line = function(args) {
                 })
                 .interpolate("cardinal");
         }
-		    
+
         //main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)

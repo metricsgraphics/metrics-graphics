@@ -68,7 +68,9 @@ $(document).ready(function() {
     })
 
     d3.json('data/fake_users2.json', function(data) {
-        data = convert_dates(data);
+        for(var i=0;i<data.length;i++) {
+            data[i] = convert_dates(data[i]);
+        }
 
         moz_chart({
             title:"Multi-line Chart",
