@@ -454,22 +454,6 @@ $(document).ready(function() {
         })
     })
     
-    d3.json('data/multiline.json', function(data) {
-        data = convert_dates(data);
-        
-        moz_chart({
-            title: "Multiline Test",
-            description: "",
-            data: data,
-            width: torso.width,
-            height: torso.height,
-            right: torso.right,
-            target: 'div#multiline-accessor',
-            x_accessor: 'date',
-            y_accessor: ['value1', 'value2', 'value3']
-        })
-    })
-    
 
     function assignEventListeners() {
         $('#dark-css').click(function () {
