@@ -675,7 +675,7 @@ charts.line = function(args) {
             .attr('class', 'transparent-rollover-rect');
             
         //main rollover
-        for(var line_i=0; line_i<args.data.length; line_i++) {
+        for(var line_i=args.data.length-1; line_i>=0; line_i--) {
             g.selectAll('.rollover-rects')
                 .data(args.data[line_i]).enter()
                     .append('rect')
