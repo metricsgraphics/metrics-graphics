@@ -649,15 +649,10 @@ charts.line = function(args) {
         var svg = d3.select(args.target + ' svg');
         var g;
         
-        //remove the old rollover rects if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect')
+        //remove the old rollovers if they already exist
+        if($(args.target + ' svg .voronoi').length > 0) {
+            $(args.target + ' svg .voronoi').remove();
         }
-            
-//        if($(args.target + ' svg .voronoi').length > 0) {
-//            $(args.target + ' svg .voronoi')
-//                .remove();
-//        }
     
         //rollover text
         svg.append('text')
@@ -718,7 +713,7 @@ charts.line = function(args) {
                     })
                     .on('mouseover', this.rolloverOn(args))
                     .on('mouseout', this.rolloverOff(args));
-        
+
         return this;
     }
     
