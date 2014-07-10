@@ -261,6 +261,13 @@ text {
     padding-top: 15px;
 }
 
+.voronoi path {
+    fill: none;
+    pointer-events: all;
+    stroke: none;
+    stroke-opacity: 0.1;
+}
+
 .x-axis line,
 .y-axis line {
     opacity: 0.3;

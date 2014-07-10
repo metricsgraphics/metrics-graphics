@@ -652,8 +652,12 @@ charts.line = function(args) {
         //remove the old rollover rects if they already exist
         if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
             $(args.target + ' svg .transparent-rollover-rect')
-                .remove();
         }
+            
+//        if($(args.target + ' svg .voronoi').length > 0) {
+//            $(args.target + ' svg .voronoi')
+//                .remove();
+//        }
     
         //rollover text
         svg.append('text')
@@ -671,73 +675,54 @@ charts.line = function(args) {
             .attr('r', 0);
 
         //main rollover
-        g = svg.append('g')
-            .attr('class', 'transparent-rollover-rect');
-            
-        //main rollover
-        for(var line_i=args.data.length-1; line_i>=0; line_i--) {
-            g.selectAll('.rollover-rects')
-                .data(args.data[line_i]).enter()
-                    .append('rect')
-                        .attr('class', function(d) {
-                            if(args.linked) {
-                                var v = d[args.x_accessor];
-                                var formatter = d3.time.format('%Y-%m-%d');
+        var voronoi = d3.geom.voronoi()
+            .x(function(d) { return args.scales.X(d[args.x_accessor]); })
+            .y(function(d) { return args.scales.Y(d[args.y_accessor]); });
+    
+        var g = svg.append('g')
+            .attr('class', 'voronoi')
 
-                                return 'line' + (line_i+1) + '-color ' + 'roll_' + formatter(v);
-                            }
-                            else {
-                                return 'line' + (line_i+1) + '-color';
-                            }
-                        })
-                        .attr('x', function(d, i) {
-                            var current_x = d;
-                            var x_coord;
-                        
-                            if (i == 0) {
-                                var next_x = args.data[line_i][1];
-                                x_coord = args.scalefns.xf(current_x) 
-                                    - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
-                                    / 2;
-                            }
-                            else {
-                                var width = args.scalefns.xf(args.data[line_i][1])
-                                    - args.scalefns.xf(args.data[line_i][0]);
-                                
-                                x_coord = args.scalefns.xf(current_x) - width / 2;
-                            }
-                            
-                            return x_coord;    
-                        })
-                        .attr('y', function(d, i) {
-                            return (args.data.length > 1)
-                                ? args.scalefns.yf(d) - 6 //multi-line chart sensitivity
-                                : args.top;
-                        })
-                        .attr('width', function(d, i) {
-                            if (i != args.data[line_i].length - 1) {
-                                return args.scalefns.xf(args.data[line_i][i + 1]) 
-                                    - args.scalefns.xf(d);
-                            }
-                            else {
-                                return args.scalefns.xf(args.data[line_i][1])
-                                    - args.scalefns.xf(args.data[line_i][0]);
-                            }
-                        })
-                        .attr('height', function(d, i) {
-                            return (args.data.length > 1)
-                                ? 12 //multi-line chart sensitivity
-                                : args.height - args.bottom - args.top - args.buffer;
-                        })
-                        .attr('opacity', 0)
-                        .on('mouseover', this.rolloverOn(args, line_i))
-                        .on('mouseout', this.rolloverOff(args));
-        }
+        //we'll be using these when constructing the voronoi rollovers
+        var data_nested = d3.nest()
+            .key(function(d) { return args.scales.X(d[args.x_accessor]) + "," + args.scales.Y(d[args.y_accessor]); })
+            .rollup(function(v) { return v[0]; })
+            .entries(d3.merge(args.data.map(function(d) { return d; })))
+            .map(function(d) { return d.values; });
+            
+            
+        //set the line ids
+        var line_id = 1;
+        for(var i=0;i<args.data.length;i++) {
+            for(var j=0;j<args.data[i].length;j++) {
+                args.data[i][j]['line_id'] = line_id;
+            }
+            line_id++;
+        } 
+
+        //add the voronoi rollovers
+        g.selectAll('path')
+            .data(voronoi(data_nested))
+            .enter()
+                .append('path')
+                    .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+                    .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
+                    .attr('class', function(d) {
+                        if(args.linked) {
+                            var v = d[args.x_accessor];
+                            var formatter = d3.time.format('%Y-%m-%d');
+                            return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
+                        }
+                        else {
+                            return 'line' + d['line_id'] + '-color';
+                        }
+                    })
+                    .on('mouseover', this.rolloverOn(args))
+                    .on('mouseout', this.rolloverOff(args));
         
         return this;
     }
     
-    this.rolloverOn = function(args, line_i) {
+    this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
         var x_formatter = d3.time.format('%Y-%m-%d');
 
@@ -745,7 +730,7 @@ charts.line = function(args) {
             //show circle on mouse-overed rect
             svg.selectAll('circle.line_rollover_circle')
                 .attr('class', "")
-                .attr('class', 'area' + (line_i+1) + '-color')
+                .attr('class', 'area' + d['line_id'] + '-color')
                 .classed('line_rollover_circle', true)
                 .attr('cx', function() {
                     return args.scales.X(d[args.x_accessor]);
@@ -764,7 +749,7 @@ charts.line = function(args) {
                 var formatter = d3.time.format('%Y-%m-%d');
 
                 //trigger mouseover on matching line in .linked charts
-                d3.selectAll('.line' + (line_i+1) + '-color.roll_' + formatter(v))
+                d3.selectAll('.line' + d['line_id'] + '-color.roll_' + formatter(v))
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
                 })
@@ -914,7 +899,7 @@ charts.point = function(args){
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf);
-
+            
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
             .enter().append('path')
