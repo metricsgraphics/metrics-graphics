@@ -650,6 +650,9 @@ charts.line = function(args) {
         var g;
         
         //remove the old rollovers if they already exist
+        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
+            $(args.target + ' svg .transparent-rollover-rect').remove();
+        }
         if($(args.target + ' svg .voronoi').length > 0) {
             $(args.target + ' svg .voronoi').remove();
         }
@@ -669,54 +672,121 @@ charts.line = function(args) {
             .attr('cy', 0)
             .attr('r', 0);
 
-        //main rollover
-        var voronoi = d3.geom.voronoi()
-            .x(function(d) { return args.scales.X(d[args.x_accessor]); })
-            .y(function(d) { return args.scales.Y(d[args.y_accessor]); });
-    
-        var g = svg.append('g')
-            .attr('class', 'voronoi')
 
-        //we'll be using these when constructing the voronoi rollovers
-        var data_nested = d3.nest()
-            .key(function(d) { return args.scales.X(d[args.x_accessor]) + "," + args.scales.Y(d[args.y_accessor]); })
-            .rollup(function(v) { return v[0]; })
-            .entries(d3.merge(args.data.map(function(d) { return d; })))
-            .map(function(d) { return d.values; });
-            
-            
-        //set the line ids
+        //update our data by setting a unique line id for each series
         var line_id = 1;
         for(var i=0;i<args.data.length;i++) {
             for(var j=0;j<args.data[i].length;j++) {
                 args.data[i][j]['line_id'] = line_id;
             }
             line_id++;
-        } 
+        }
 
-        //add the voronoi rollovers
-        g.selectAll('path')
-            .data(voronoi(data_nested))
-            .enter()
-                .append('path')
-                    .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
-                    .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
-                    .attr('class', function(d) {
-                        if(args.linked) {
-                            var v = d[args.x_accessor];
-                            var formatter = d3.time.format('%Y-%m-%d');
-                            return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
-                        }
-                        else {
-                            return 'line' + d['line_id'] + '-color';
-                        }
-                    })
-                    .on('mouseover', this.rolloverOn(args))
-                    .on('mouseout', this.rolloverOff(args));
+        //for multi-line, use voronoi
+        if(args.data.length > 1) {
+            //main rollover
+            var voronoi = d3.geom.voronoi()
+                .x(function(d) { return args.scales.X(d[args.x_accessor]); })
+                .y(function(d) { return args.scales.Y(d[args.y_accessor]); });
+        
+            var g = svg.append('g')
+                .attr('class', 'voronoi')
+
+            //we'll be using these when constructing the voronoi rollovers
+            var data_nested = d3.nest()
+                .key(function(d) { return args.scales.X(d[args.x_accessor]) + "," + args.scales.Y(d[args.y_accessor]); })
+                .rollup(function(v) { return v[0]; })
+                .entries(d3.merge(args.data.map(function(d) { return d; })))
+                .map(function(d) { return d.values; });
+
+            //add the voronoi rollovers
+            g.selectAll('path')
+                .data(voronoi(data_nested))
+                .enter()
+                    .append('path')
+                        .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+                        .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
+                        .attr('class', function(d) {
+                            if(args.linked) {
+                                var v = d[args.x_accessor];
+                                var formatter = d3.time.format('%Y-%m-%d');
+                                return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
+                            }
+                            else {
+                                return 'line' + d['line_id'] + '-color';
+                            }
+                        })
+                        .on('mouseover', this.rolloverOn(args))
+                        .on('mouseout', this.rolloverOff(args));
+        }
+        //for single line, use rects
+        else {
+            var line_id = 1;
+
+            var g = svg.append('g')
+                .attr('class', 'transparent-rollover-rect')
+
+            g.selectAll('.rollover-rects')
+                .data(args.data[0]).enter()
+                    .append('rect')
+                        .attr('class', function(d) {
+                            if(args.linked) {
+                                var v = d[args.x_accessor];
+                                var formatter = d3.time.format('%Y-%m-%d');
+
+                                return 'line' + line_id + '-color ' + 'roll_' + formatter(v);
+                            }
+                            else {
+                                return 'line' + line_id + '-color';
+                            }
+                        })
+                        .attr('x', function(d, i) {
+                            var current_x = d;
+                            var x_coord;
+                        
+                            if (i == 0) {
+                                var next_x = args.data[0][1];
+                                x_coord = args.scalefns.xf(current_x) 
+                                    - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
+                                    / 2;
+                            }
+                            else {
+                                var width = args.scalefns.xf(args.data[0][1])
+                                    - args.scalefns.xf(args.data[0][0]);
+                                
+                                x_coord = args.scalefns.xf(current_x) - width / 2;
+                            }
+                            
+                            return x_coord;    
+                        })
+                        .attr('y', function(d, i) {
+                            return (args.data.length > 1)
+                                ? args.scalefns.yf(d) - 6 //multi-line chart sensitivity
+                                : args.top;
+                        })
+                        .attr('width', function(d, i) {
+                            if (i != args.data[0].length - 1) {
+                                return args.scalefns.xf(args.data[0][i + 1]) 
+                                    - args.scalefns.xf(d);
+                            }
+                            else {
+                                return args.scalefns.xf(args.data[0][1])
+                                    - args.scalefns.xf(args.data[0][0]);
+                            }
+                        })
+                        .attr('height', function(d, i) {
+                            return (args.data.length > 1)
+                                ? 12 //multi-line chart sensitivity
+                                : args.height - args.bottom - args.top - args.buffer;
+                        })
+                        .attr('opacity', 0)
+                        .on('mouseover', this.rolloverOn(args))
+                        .on('mouseout', this.rolloverOff(args));
+        }
 
         return this;
     }
-    
+
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
         var x_formatter = d3.time.format('%Y-%m-%d');
@@ -749,7 +819,7 @@ charts.line = function(args) {
                         d3.select(this).on('mouseover')(d,i);
                 })
             }    
-            
+
             svg.selectAll('text')
                 .filter(function(g, j) {
                     return d == g;
@@ -793,13 +863,12 @@ charts.line = function(args) {
                     });                
             }
 
-
             if(args.rollover_callback) {
                 args.rollover_callback(d, i);
             }
         }
     }
-    
+
     this.rolloverOff = function(args) {
         var svg = d3.select(args.target + ' svg');
 
