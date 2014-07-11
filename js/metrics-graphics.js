@@ -868,36 +868,26 @@ charts.line = function(args) {
         return function(d, i) {
             if(args.linked && globals.link) {
                 globals.link = false;
-                //console.log('off', globals.link, args.target)
+
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
-                // var everyone = d3.selectAll('.transparent-rollover-rect rect')
-                //     .attr('opacity', 0);
 
-                //
                 d3.selectAll('.roll_' + formatter(v))
                     .each(function(d, i){
                         //console.log(d3.select(this).on('mouseover'),'sdofinsofi');
                         d3.select(this).on('mouseout')(d);
                 });
             }    
-            // if (args.link){
 
-            // }
-            // d3.selectAll('.transparent-rollover-rect rect')
-            //     .attr('opacity', 0);
-                
-            //if multi-line, don't remove active datapoint text on mouse out
-            if(args.data.length <= 1) {
-                svg.selectAll('circle.line_rollover_circle')
-                    .style('opacity', 0);
+            //remove active datapoint text on mouse out
+            svg.selectAll('circle.line_rollover_circle')
+                .style('opacity', 0);
 
-                svg.select('.active_datapoint')
-                    .text('');
-            }
+            svg.select('.active_datapoint')
+                .text('');
         }
     }
-    
+
     this.init(args);
     return this;
 }
