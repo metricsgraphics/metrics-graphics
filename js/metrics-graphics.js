@@ -429,11 +429,6 @@ function init(args) {
     
     var linked;
 
-    //make idempotent
-    /*if(d3.selectAll(args.target).length >= 1) {
-        $(args.target).empty();
-    }*/
-    
     //add chart's title, svg, if they don't already exist
     if($(args.target).is(':empty')) {
         chart_title(args);
@@ -452,9 +447,7 @@ function init(args) {
         && args.width - args.left-args.right - args.buffer*2 
             <= args.small_width_threshold 
         || args.small_text;
-    //
 
-    // check for multiline elements in 
 
     xAxis(args);
     yAxis(args);
