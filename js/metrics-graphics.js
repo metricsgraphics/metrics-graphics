@@ -25,6 +25,7 @@ function moz_chart() {
         yax_tick: 5,                  // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
         y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
+        y_scale_type: 'linear',
         max_x: null,
         max_y: null,
         min_x: null,
@@ -300,9 +301,29 @@ function yAxis(args) {
         min_y = min_y  - (max_y * (args.inflator-1));
         args.y_axis_negative = true;
     }
-    args.scales.Y = d3.scale.linear()
+
+    if (args.y_scale_type == 'log'){
+        if (min_y <= 0){
+            min_y = 1;
+        }
+        args.scales.Y = d3.scale.log()
         .domain([min_y, max_y * args.inflator])
-        .range([args.height - args.bottom - args.buffer, args.top]);
+        .range([args.height - args.bottom - args.buffer, args.top] );    
+    } else {
+        args.scales.Y = d3.scale.linear()
+            .domain([min_y, max_y * args.inflator])
+            .range([args.height - args.bottom - args.buffer, args.top]);
+    }
+
+    // used for ticks and such, and designed to be paired with log or linear.
+    args.scales.Y_axis = d3.scale.linear()
+            .domain([min_y, max_y * args.inflator])
+            .range([args.height - args.bottom - args.buffer, args.top]);
+
+    
+    // args.scales.Y = d3.scale.linear()
+    //     .domain([min_y, max_y * args.inflator])
+    //     .range([args.height - args.bottom - args.buffer, args.top]);
     
     var yax_format;
     if (args.format == 'count') {
@@ -351,18 +372,39 @@ function yAxis(args) {
             });
     }
 
-    var last_i = args.scales.Y.ticks(args.yax_count).length-1;
+    //if (args.y_scale_type == 'log') args.yax_count = args.yax_count*2;
 
+    var scale_ticks = args.scales.Y.ticks(args.yax_count);
+
+    function log10(val) {
+         //return Math.log(val) / Math.LN10;
+         if (val==1000){
+            return 3;
+         }
+         if (val==1000000){
+            return 7;
+         }
+         return Math.log(val) / Math.LN10;
+    }
+    if (args.y_scale_type == 'log'){
+        // get out only whole logs.
+        scale_ticks = scale_ticks.filter(function(d){
+            return log10(d) % 1 === 0 || log10(d) % 1 < 1-1e6;
+        });
+
+    } 
+
+    var last_i = scale_ticks.length-1;
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
         g.append('line')
             .attr('x1', args.left)
             .attr('x2', args.left)
-            .attr('y1', args.scales.Y(args.scales.Y.ticks(args.yax_count)[0]))
-            .attr('y2', args.scales.Y(args.scales.Y.ticks(args.yax_count)[last_i]));
+            .attr('y1', args.scales.Y(scale_ticks[0]))
+            .attr('y2', args.scales.Y(scale_ticks[last_i]));
     }
-    
+
     g.selectAll('.yax-ticks')
-        .data(args.scales.Y.ticks(args.yax_count)).enter()
+        .data(scale_ticks).enter()
             .append('line')
                 .attr('x1', args.left)
                 .attr('x2', function() {
@@ -374,7 +416,7 @@ function yAxis(args) {
                 .attr('y2', args.scales.Y);
             
     g.selectAll('.yax-labels')
-        .data(args.scales.Y.ticks(args.yax_count)).enter()
+        .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick * 3 / 2)
                 .attr('dx', -3).attr('y', args.scales.Y)
@@ -541,7 +583,7 @@ charts.line = function(args) {
         //main area
         var area = d3.svg.area()
             .x(args.scalefns.xf)
-            .y0(args.scales.Y(0))
+            .y0(args.scales.Y(args.y_scale_type == 'linear' ? 0 : 1))
             .y1(args.scalefns.yf)
             .interpolate('cardinal');
 
@@ -874,7 +916,6 @@ charts.line = function(args) {
 
                 d3.selectAll('.roll_' + formatter(v))
                     .each(function(d, i){
-                        //console.log(d3.select(this).on('mouseover'),'sdofinsofi');
                         d3.select(this).on('mouseout')(d);
                 });
             }    

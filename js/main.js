@@ -46,12 +46,12 @@ $(document).ready(function() {
             target: '#fake_users1',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
         
         var markers = [{
             'date': new Date('2014-03-17'),
             'label': 'Look, a spike!'
-        }]
+        }];
         
         moz_chart({
             title: "Annotations",
@@ -155,6 +155,25 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
+    })
+
+    d3.json('data/log.json', function(data){
+        data = [data];
+        for(var i=0;i<data.length;i++) {
+            data[i] = convert_dates(data[i]);
+        };
+        moz_chart({
+            title: "Log Scale",
+            description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
+            data: data,
+            y_scale_type:'log',
+            width: torso.width*2,
+            height: torso.height,
+            right: torso.right,
+            target: '#log1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     })
 
     d3.json('data/some_percentage.json', function(data) {
