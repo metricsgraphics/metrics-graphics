@@ -328,6 +328,7 @@ $(document).ready(function() {
             width: trunk.width * 2,
             height: trunk.height,
             right: trunk.right,
+            baselines: [{value:50000000, label:'50M'}],
             xax_count: 4,
             target: 'div#split_by',
             x_accessor: 'date',
@@ -519,6 +520,7 @@ $(document).ready(function() {
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
+                baselines: [{value:50000000, label:'50M'}],
                 target: 'div#split_by',
                 x_accessor: 'date',
                 y_accessor: new_y_accessor
