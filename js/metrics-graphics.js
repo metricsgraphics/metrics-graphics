@@ -58,7 +58,8 @@ function moz_chart() {
         scalefns: {},
         scales: {},
         show_years: true,
-        target: '#viz'
+        target: '#viz',
+        interpolate: 'cardinal'       // interpolation method to use when rendering lines
     }
 
     var args = arguments[0];
@@ -586,7 +587,7 @@ charts.line = function(args) {
             .x(args.scalefns.xf)
             .y0(args.scales.Y(args.y_scale_type == 'linear' ? 0 : 1))
             .y1(args.scalefns.yf)
-            .interpolate('cardinal');
+            .interpolate(args.interpolate);
 
         //confidence band
         var confidence_area;
@@ -601,20 +602,20 @@ charts.line = function(args) {
                     var u = args.show_confidence_band[1];
                     return args.scales.Y(d[u]);
                 })
-                .interpolate("cardinal");
+                .interpolate(args.interpolate);
         }
 
         //main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
-            .interpolate('cardinal');
+            .interpolate(args.interpolate);
 
         //for animating line on first load
         var flat_line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(function() { return args.scales.Y(data_median); })
-            .interpolate('cardinal');
+            .interpolate(args.interpolate);
 
         for(var i=args.data.length-1; i>=0; i--) {
             //add confidence band
