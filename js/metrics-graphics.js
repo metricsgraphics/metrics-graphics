@@ -540,6 +540,7 @@ function markers(args) {
         }
 
         if(args.baselines) {
+            svg.selectAll('.baselines').remove();
             gb = svg.append('g')
                 .attr('class', 'baselines');
 
