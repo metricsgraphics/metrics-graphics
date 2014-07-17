@@ -89,7 +89,7 @@ $(document).ready(function() {
             description: "This line chart contains multiple lines and has extended ticks enabled.",
             area: false,
             data: data,
-            width: trunk.width*2,
+            width: torso.width*2,
             height: torso.height,
             right: trunk.right,
             show_years: false,
@@ -143,7 +143,7 @@ $(document).ready(function() {
             description: "This is an example of a chart with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
-            width: trunk.width*2,
+            width: torso.width*2,
             height: torso.height,
             right: trunk.right,
             target: 'div#confidence_band',
@@ -325,7 +325,7 @@ $(document).ready(function() {
             title: "Downloads by Channel",
             description: "The chart is gracefully updated depending on the selected channel.",
             data: data,
-            width: trunk.width * 2,
+            width: torso.width*2,
             height: trunk.height,
             right: trunk.right,
             baselines: [{value:50000000, label:'50M'}],
@@ -339,7 +339,7 @@ $(document).ready(function() {
             title: "Beta Downloads",
             description: "The chart is gracefully updated depending on the chosen time period.",
             data: data,
-            width: trunk.width * 2,
+            width: torso.width*2,
             height: trunk.height,
             right: trunk.right,
             show_years: false,
@@ -516,7 +516,7 @@ $(document).ready(function() {
             //update data    
             moz_chart({
                 data: split_by_data,
-                width: trunk.width * 2,
+                width: trunk.width*2,
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
@@ -539,7 +539,7 @@ $(document).ready(function() {
             //update data    
             moz_chart({
                 data: data,
-                width: trunk.width * 2,
+                width: trunk.width*2,
                 height: trunk.height,
                 right: trunk.right,
                 show_years: false,
