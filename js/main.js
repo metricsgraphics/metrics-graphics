@@ -328,7 +328,6 @@ $(document).ready(function() {
             width: torso.width*2,
             height: trunk.height,
             right: trunk.right,
-            baselines: [{value:50000000, label:'50M'}],
             xax_count: 4,
             target: 'div#split_by',
             x_accessor: 'date',
@@ -516,11 +515,10 @@ $(document).ready(function() {
             //update data    
             moz_chart({
                 data: split_by_data,
-                width: trunk.width*2,
+                width: torso.width*2,
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
-                baselines: [{value:50000000, label:'50M'}],
                 target: 'div#split_by',
                 x_accessor: 'date',
                 y_accessor: new_y_accessor
@@ -539,7 +537,7 @@ $(document).ready(function() {
             //update data    
             moz_chart({
                 data: data,
-                width: trunk.width*2,
+                width: torso.width*2,
                 height: trunk.height,
                 right: trunk.right,
                 show_years: false,
