@@ -256,7 +256,7 @@ function xAxis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.bottom + args.buffer + args.xax_tick + 14)
+                    .attr('y', args.height - args.buffer + args.xax_tick)
                     .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
