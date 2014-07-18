@@ -233,7 +233,7 @@ function xAxis(args) {
         var years = d3.time.years(min_x, max_x);
 
         if (years.length == 0){
-            var first_tick = args.scales.X.ticks(args.xax_tick)[0];
+            var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
 
         }
