@@ -238,7 +238,7 @@ function xAxis(args) {
 
         }
 
-        //apend year marker to x-axis group
+        //append year marker to x-axis group
         g = g.append('g')
             .classed('year-marker', true)
             .classed('year-marker-small', args.use_small_class); 
