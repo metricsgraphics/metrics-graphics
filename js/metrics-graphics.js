@@ -329,8 +329,13 @@ function yAxis(args) {
     var yax_format;
     if (args.format == 'count') {
         yax_format = function(f) {
-            var pf = d3.formatPrefix(f);
-            return args.yax_units + pf.scale(f) + pf.symbol;
+            if (f < 1.0) {
+                // Don't scale tiny values.
+                return args.yax_units + d3.round(f, args.decimals);
+            } else {
+                var pf = d3.formatPrefix(f);
+                return args.yax_units + pf.scale(f) + pf.symbol;
+            }
         };
     }
     else {
