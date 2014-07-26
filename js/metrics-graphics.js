@@ -1126,10 +1126,10 @@ function modify_time_period(data, past_n_days) {
 }
 
 
-function convert_dates(data){
-    data = data.map(function(d){
+function convert_dates(data, x_accessor) {
+    data = data.map(function(d) {
         var fff = d3.time.format('%Y-%m-%d');
-        d['date'] = fff.parse(d['date']);
+        d[x_accessor] = fff.parse(d[x_accessor]);
         return d;
     });
 

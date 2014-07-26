@@ -69,7 +69,7 @@ $(document).ready(function() {
 
     d3.json('data/fake_users2.json', function(data) {
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i]);
+            data[i] = convert_dates(data[i], 'date');
         }
 
         moz_chart({
@@ -118,7 +118,7 @@ $(document).ready(function() {
     
     d3.json('data/fake_users3.json', function(data) {  
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i]);
+            data[i] = convert_dates(data[i], 'date');
         }
  
         //linked multi-line charts
@@ -137,7 +137,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/confidence_band.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
         moz_chart({
             title: "Confidence Band",
             description: "This is an example of a chart with a confidence band and extended x-axis ticks enabled.",
@@ -160,7 +160,7 @@ $(document).ready(function() {
     d3.json('data/log.json', function(data){
         data = [data];
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i]);
+            data[i] = convert_dates(data[i], 'date');
         };
         moz_chart({
             title: "Log Scale",
@@ -178,7 +178,7 @@ $(document).ready(function() {
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i]);
+            data[i] = convert_dates(data[i], 'date');
         };
 
         var markers = [{
@@ -236,7 +236,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/some_currency.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
         moz_chart({
             title: "Some Currency",
             description: "Here is an example that uses custom units for currency.",
@@ -287,7 +287,7 @@ $(document).ready(function() {
 
     // lower section
     d3.json('data/brief-1.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
         
         moz_chart({
             title: "Linked Charts",
@@ -319,7 +319,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/split_by.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
         
         split_by_data = moz_chart({
             title: "Downloads by Channel",
@@ -350,7 +350,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/brief-2.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
         
         moz_chart({
             title: "Other Linked Chart",
@@ -383,7 +383,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/float.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
 
         moz_chart({
             title: "Changing Precision 1",
@@ -421,7 +421,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/neg1.json', function(data) {
-        data = convert_dates(data);
+        data = convert_dates(data, 'date');
 
         moz_chart({
             title: "Negative Values 1",
