@@ -63,7 +63,7 @@ circle {
 #description {
     margin: auto;
     margin-bottom: 50px;
-    width: 80%;
+    width: 100%;
 }
 
 .divider {
@@ -99,7 +99,7 @@ h2.chart_title .fa {
     color: black;
     margin: auto;
     margin-bottom: 20px;
-    width: 80%;
+    width: 100%;
 }
 
 #head h1 {
