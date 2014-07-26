@@ -30,6 +30,7 @@ function moz_chart() {
         max_y: null,
         min_x: null,
         min_y: null,
+        point_size: 2.5,              // the size of the dot that appears on a line on mouse-over
         x_accessor: 'date',
         xax_units: '',
         x_label: '',
@@ -858,7 +859,7 @@ charts.line = function(args) {
                 .attr('cy', function() {
                     return args.scales.Y(d[args.y_accessor]);
                 })
-                .attr('r', 2.5)
+                .attr('r', args.point_size)
                 .style('opacity', 1);
      
             //trigger mouseover on all rects for this date in .linked charts
