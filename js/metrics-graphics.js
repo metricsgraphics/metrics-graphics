@@ -97,9 +97,15 @@ function chart_title(args) {
     args = merge_with_defaults(args, defaults);
     
     if (args.target && args.title) {
+        //only show question mark if there's a description
+        var optional_question_mark = (args.description)
+            ? '<i class="fa fa-question-circle fa-inverse"></i>'
+            : '';
+    
         $(args.target).append('<h2 class="chart_title">' 
-            + args.title + '<i class="fa fa-question-circle fa-inverse"></i></h2>');
+            + args.title + optional_question_mark + '</h2>');
             
+        //activate the question mark if we have a description
         if (args.description){
             $(args.target + ' h2.chart_title')
                 .popover({'content': args.description,
@@ -186,9 +192,12 @@ function xAxis(args) {
     }
     
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
+        //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
             .attr('x1', args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
             .attr('x2', args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
+            //.attr('x1', args.left + args.buffer)
+            //.attr('x2', args.width - args.right - args.buffer)
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
