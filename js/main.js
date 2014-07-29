@@ -49,7 +49,7 @@ $(document).ready(function() {
         });
         
         var markers = [{
-            'date': new Date('2014-03-17'),
+            'date': new Date('2014-03-17 00:00:00'),
             'label': 'Look, a spike!'
         }];
         
@@ -182,10 +182,10 @@ $(document).ready(function() {
         };
 
         var markers = [{
-            'date': new Date('2014-02-01'),
+            'date': new Date('2014-02-01 00:00:00'),
             'label': '1st Milestone'
         }, {
-            'date': new Date('2014-03-15'),
+            'date': new Date('2014-03-15 00:00:00'),
             'label': '2nd Milestone'
         }]
             
