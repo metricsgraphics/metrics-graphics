@@ -455,7 +455,6 @@ function init(args) {
 
     // this is how we're dealing with passing in a single array of data, 
     // but with the intention of using multiple values for multilines, etc.
-
     if ($.isArray(args.y_accessor)){
         args.data = args.data.map(function(_d){
             return args.y_accessor.map(function(ya){
@@ -510,7 +509,20 @@ function init(args) {
 
     xAxis(args);
     yAxis(args);
-    
+
+    //if we're updating an existing chart and we have fewer lines than
+    //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
+    //moz_chart() on the same target with 2 lines, remove the 3rd line
+    if(args.data.length < $(args.target + ' svg .main-line').length) {
+        var num_of_new = args.data.length;
+        var num_of_existing = $(args.target + ' svg .main-line').length;
+
+        for(var i=num_of_existing; i>num_of_new; i--) {
+            console.log(args.target + ' svg .main-line.line' + i + '-color');
+            $(args.target + ' svg .main-line.line' + i + '-color').remove();
+        }
+    }
+
     return this;
 }
 
@@ -640,7 +652,7 @@ charts.line = function(args) {
                     .attr('class', 'confidence-band')
                     .attr('d', confidence_area(args.data[i]));
             }
-        
+
             //add the area
             if(args.area && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
