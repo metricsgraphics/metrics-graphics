@@ -125,7 +125,7 @@ h2.chart_title .fa {
 }
 
 .line1-color {
-    stroke: #0000ff;
+    stroke: #4040e8;
 }
 
 .line2-color {
@@ -276,15 +276,29 @@ text {
     stroke-width: 1;
 }
 
+.histogram .axis path,
+.histogram .axis line {
+    opacity: 0.7;
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #ccc;
+}
+
+.bar rect {
+    shape-rendering: crispEdges;
+}
+
 .x-axis text,
-.y-axis text {
+.y-axis text,
+.histogram .axis text {
     fill: black;
     font-size: 11px;
     opacity: 0.5;
 }
 
 .x-axis .label,
-.y-axis .label {
+.y-axis .label,
+.axis .label {
     font-size: 10px;
     text-transform: uppercase;
     font-weight: 400;

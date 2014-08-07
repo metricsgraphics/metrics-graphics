@@ -87,6 +87,18 @@ h2.chart_title span {
     stroke: #ff0000;
 }
 
+.line1-legend-color {
+    color: #ffd300;
+}
+
+.line2-legend-color {
+    color: #18ff00;
+}
+
+.line3-legend-color {
+    color: #ff0000;
+}
+
 #logo g path {
     fill: #e8e8e8;
 }
@@ -130,7 +142,8 @@ text {
 }
 
 .x-axis text,
-.y-axis text {
+.y-axis text,
+.histogram .axis text {
     fill: #fff;
 }
 
@@ -140,6 +153,20 @@ text {
 
 .year-marker line {
     stroke: #fff;
+}
+
+.histogram .axis path,
+.histogram .axis line {
+    opacity: 0.5;
+    stroke: #ccc;
+}
+
+.histogram .bar text {
+    fill: #fff;
+}
+
+.histogram .axis .tick line {
+    opacity: 0.3;
 }
 
 

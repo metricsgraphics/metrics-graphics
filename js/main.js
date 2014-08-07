@@ -25,6 +25,41 @@ $(document).ready(function() {
     small.xax_count = 5;
 
     assignEventListeners();
+    
+    //generate a Bates distribution of 10 random variables
+    var values = d3.range(1000).map(d3.random.bates(10));
+    var x = d3.scale.linear()
+        .domain([0, 1])
+        .range([0, 350 - 0 - 10]);
+
+    var data = d3.layout.histogram()
+        .bins(x.ticks(20))
+        (values);
+
+    moz_chart({
+        title: "Histogram",
+        description: "A histogram of the buckets for the chosen measure conditioned on release.",
+        data: [data],
+        chart_type: 'histogram',
+        width: torso.width,
+        height: 350,
+        left: torso.left,
+        right: torso.right,
+        rollover_callback: function(d, i) {
+            $('#histogram svg .active_datapoint')
+                .html('Frequency Count: ' + d.y);
+        },
+        target: '#histogram',
+        y_extended_ticks: true,
+        xax_count: 10,
+        xax_tick: 5,
+        x_accessor: 'x',
+        y_accessor: 'y'
+    })
+    
+    //default color for histogram
+    d3.selectAll("#histogram svg .bar rect")
+        .classed('area2-color', true);
 
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
