@@ -517,31 +517,36 @@ function init(args) {
     //moz_chart() on the same target with 2 lines, remove the 3rd line
     if(args.data.length < $(args.target + ' svg .main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
-        //line-color map, instead, see which are the lines to be removed, and delete those
-        var array_full_series = function(len) {
-            var arr = new Array(len);
-            for(var i=0;i<arr.length;i++) { arr[i] = i+1; }
-            return arr;
-        }
-
-        //get an array of lines ids to remove
-        var lines_to_remove = arrDiff(array_full_series(
-            args.custom_line_color_map[args.custom_line_color_map.length-1]), 
-            args.custom_line_color_map);
+        //line-color map, instead, see which are the lines to be removed, and delete those    
+        if(args.custom_line_color_map.length > 0) {
+            var array_full_series = function(len) {
+                var arr = new Array(len);
+                for(var i=0;i<arr.length;i++) { arr[i] = i+1; }
+                return arr;
+            }
         
-        for(var i=0; i<lines_to_remove.length; i++) {
-            $(args.target + ' svg .main-line.line' + lines_to_remove[i] + '-color')
-                .remove();
-        }
-    
-        //if we don't have a customer line-color map, just remove the lines from the end
-        var num_of_new = args.data.length;
-        var num_of_existing = $(args.target + ' svg .main-line').length;
+            //get an array of lines ids to remove
+            var lines_to_remove = arrDiff(
+                array_full_series($(args.target + ' svg .main-line').length), 
+                args.custom_line_color_map);
 
-        for(var i=num_of_existing; i>num_of_new; i--) {
-            $(args.target + ' svg .main-line.line' + line_id + '-color').remove();
+            for(var i=0; i<lines_to_remove.length; i++) {
+                $(args.target + ' svg .main-line.line' + lines_to_remove[i] + '-color')
+                    .remove();
+            }
+        }
+        //if we don't have a customer line-color map, just remove the lines from the end
+        else {
+            var num_of_new = args.data.length;
+            var num_of_existing = $(args.target + ' svg .main-line').length;
+
+            for(var i=num_of_existing; i>num_of_new; i--) {
+                $(args.target + ' svg .main-line.line' + i + '-color').remove();
+            }
         }
     }
+
+    return this;
 
     return this;
 }
