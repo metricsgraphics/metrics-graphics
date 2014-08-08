@@ -60,7 +60,8 @@ function moz_chart() {
         scales: {},
         show_years: true,
         target: '#viz',
-        interpolate: 'cardinal'       // interpolation method to use when rendering lines
+        interpolate: 'cardinal',       // interpolation method to use when rendering lines
+        custom_line_color_map: []      // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
     }
 
     var args = arguments[0];
@@ -510,16 +511,35 @@ function init(args) {
     xAxis(args);
     yAxis(args);
 
+
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
     //moz_chart() on the same target with 2 lines, remove the 3rd line
     if(args.data.length < $(args.target + ' svg .main-line').length) {
+        //now, the thing is we can't just remove, say, line3 if we have a custom
+        //line-color map, instead, see which are the lines to be removed, and delete those
+        var array_full_series = function(len) {
+            var arr = new Array(len);
+            for(var i=0;i<arr.length;i++) { arr[i] = i+1; }
+            return arr;
+        }
+
+        //get an array of lines ids to remove
+        var lines_to_remove = arrDiff(array_full_series(
+            args.custom_line_color_map[args.custom_line_color_map.length-1]), 
+            args.custom_line_color_map);
+        
+        for(var i=0; i<lines_to_remove.length; i++) {
+            $(args.target + ' svg .main-line.line' + lines_to_remove[i] + '-color')
+                .remove();
+        }
+    
+        //if we don't have a customer line-color map, just remove the lines from the end
         var num_of_new = args.data.length;
         var num_of_existing = $(args.target + ' svg .main-line').length;
 
         for(var i=num_of_existing; i>num_of_new; i--) {
-            console.log(args.target + ' svg .main-line.line' + i + '-color');
-            $(args.target + ' svg .main-line.line' + i + '-color').remove();
+            $(args.target + ' svg .main-line.line' + line_id + '-color').remove();
         }
     }
 
@@ -646,6 +666,12 @@ charts.line = function(args) {
             .interpolate(args.interpolate);
 
         for(var i=args.data.length-1; i>=0; i--) {
+            //override increment if we have a custom increment series
+            var line_id = i+1;
+            if(args.custom_line_color_map.length > 0) {
+                line_id = args.custom_line_color_map[i];
+            }
+        
             //add confidence band
             if(args.show_confidence_band) {
                 svg.append('path')
@@ -656,8 +682,8 @@ charts.line = function(args) {
             //add the area
             if(args.area && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target + ' svg path.area' + (i+1) + '-color').length > 0) {
-                    d3.selectAll(args.target + ' svg path.area' + (i+1) + '-color')
+                if($(args.target + ' svg path.area' + (line_id+1) + '-color').length > 0) {
+                    d3.selectAll(args.target + ' svg path.area' + (line_id) + '-color')
                         .transition()
                             .duration(function() {
                                 return (args.transition_on_update) ? 1000 : 0;
@@ -666,14 +692,14 @@ charts.line = function(args) {
                 }
                 else { //otherwise, add the area
                     svg.append('path')
-                        .attr('class', 'main-area ' + 'area' + (i+1) + '-color')
+                        .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
             }
             
             //add the line, if it already exists, transition the fine gentleman
-            if($(args.target + ' svg path.line' + (i+1) + '-color').length > 0) {
-                d3.selectAll(args.target + ' svg path.line' + (i+1) + '-color')
+            if($(args.target + ' svg path.line' + (line_id) + '-color').length > 0) {
+                d3.selectAll(args.target + ' svg path.line' + (line_id) + '-color')
                     .transition()
                         .duration(function() {
                             return (args.transition_on_update) ? 1000 : 0;
@@ -688,7 +714,7 @@ charts.line = function(args) {
                     })
 
                     svg.append('path')
-                        .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                        .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
                         .attr('d', flat_line(args.data[i]))
                         .transition()
                             .duration(1000)
@@ -696,7 +722,7 @@ charts.line = function(args) {
                 }
                 else { //or just add the line
                     svg.append('path')
-                        .attr('class', 'main-line ' + 'line' + (i+1) + '-color')
+                        .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]));
                 }
             }
@@ -739,10 +765,18 @@ charts.line = function(args) {
 
 
         //update our data by setting a unique line id for each series
+        //increment from 1... unless we have a custom increment series
         var line_id = 1;
+
         for(var i=0;i<args.data.length;i++) {
             for(var j=0;j<args.data[i].length;j++) {
-                args.data[i][j]['line_id'] = line_id;
+                //if custom line-color map is set, use that instead of line_id
+                if(args.custom_line_color_map.length > 0) {
+                    args.data[i][j]['line_id'] = args.custom_line_color_map[i];
+                }
+                else {
+                    args.data[i][j]['line_id'] = line_id;
+                }
             }
             line_id++;
         }
@@ -787,7 +821,11 @@ charts.line = function(args) {
         }
         //for single line, use rects
         else {
+            //set to 1 unless we have a custom increment series
             var line_id = 1;
+            if(args.custom_line_color_map.length > 0) {
+                line_id = args.custom_line_color_map[0];
+            }
 
             var g = svg.append('g')
                 .attr('class', 'transparent-rollover-rect')
@@ -1420,4 +1458,19 @@ function clone(obj) {
     }
     
     throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+
+//give us the difference of two int arrays
+//http://stackoverflow.com/questions/1187518/javascript-array-difference
+function arrDiff(a1, a2) {
+  var a=[], diff=[];
+  for(var i=0;i<a1.length;i++)
+    a[a1[i]]=true;
+  for(var i=0;i<a2.length;i++)
+    if(a[a2[i]]) delete a[a2[i]];
+    else a[a2[i]]=true;
+  for(var k in a)
+    diff.push(k);
+  return diff;
 }
