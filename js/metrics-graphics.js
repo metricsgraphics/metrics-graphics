@@ -61,7 +61,8 @@ function moz_chart() {
         show_years: true,
         target: '#viz',
         interpolate: 'cardinal',       // interpolation method to use when rendering lines
-        custom_line_color_map: []      // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
+        custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
+        max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
 
     var args = arguments[0];
@@ -524,10 +525,10 @@ function init(args) {
                 for(var i=0;i<arr.length;i++) { arr[i] = i+1; }
                 return arr;
             }
-        
+
             //get an array of lines ids to remove
             var lines_to_remove = arrDiff(
-                array_full_series($(args.target + ' svg .main-line').length), 
+                array_full_series(args.max_data_size), 
                 args.custom_line_color_map);
 
             for(var i=0; i<lines_to_remove.length; i++) {
@@ -545,8 +546,6 @@ function init(args) {
             }
         }
     }
-
-    return this;
 
     return this;
 }
@@ -701,7 +700,7 @@ charts.line = function(args) {
                         .attr('d', area(args.data[i]));
                 }
             }
-            
+
             //add the line, if it already exists, transition the fine gentleman
             if($(args.target + ' svg path.line' + (line_id) + '-color').length > 0) {
                 d3.selectAll(args.target + ' svg path.line' + (line_id) + '-color')
@@ -1467,15 +1466,13 @@ function clone(obj) {
 
 
 //give us the difference of two int arrays
-//http://stackoverflow.com/questions/1187518/javascript-array-difference
-function arrDiff(a1, a2) {
-  var a=[], diff=[];
-  for(var i=0;i<a1.length;i++)
-    a[a1[i]]=true;
-  for(var i=0;i<a2.length;i++)
-    if(a[a2[i]]) delete a[a2[i]];
-    else a[a2[i]]=true;
-  for(var k in a)
-    diff.push(k);
-  return diff;
+//http://radu.cotescu.com/javascript-diff-function/
+function arrDiff(a,b) {
+    var seen = [], diff = [];
+    for ( var i = 0; i < b.length; i++)
+        seen[b[i]] = true;
+    for ( var i = 0; i < a.length; i++)
+        if (!seen[a[i]])
+            diff.push(a[i]);
+    return diff;
 }
