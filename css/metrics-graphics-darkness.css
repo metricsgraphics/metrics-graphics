@@ -21,6 +21,14 @@ a:visited {
     fill: #ff0000;
 }
 
+.area4-color {
+    fill: #f8b128;
+}
+
+.area5-color {
+    fill: #f7f7f7;
+}
+
 .baselines line {
     stroke: #fff;
 }
@@ -87,6 +95,14 @@ h2.chart_title span {
     stroke: #ff0000;
 }
 
+.line4-color {
+    stroke: #f8b128;
+}
+
+.line5-color {
+    stroke: #f7f7f7;
+}
+
 .line1-legend-color {
     color: #ffd300;
 }
@@ -97,6 +113,14 @@ h2.chart_title span {
 
 .line3-legend-color {
     color: #ff0000;
+}
+
+.line4-legend-color {
+    color: #f8b128;
+}
+
+.line5-legend-color {
+    color: #f7f7f7;
 }
 
 #logo g path {
