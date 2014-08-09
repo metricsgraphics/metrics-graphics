@@ -21,6 +21,6 @@ While we are currently using semantic versioning, you should consider V0.* to ha
 
 Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for other to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We plan on having fuller documentation in the next milestone, as well as a guide to how to contribute to the library in a way that makes us feel warm inside when we accept your pull request.
 
-_MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public license</a>. The icon is from <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>
+_MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public license</a>. The current logo is courtesy of <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>.
 
 http://metricsgraphicsjs.org
