@@ -38,13 +38,12 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram",
-        description: "A histogram of the buckets for the chosen measure conditioned on release.",
+        description: "A sample histogram.",
         data: [data],
         chart_type: 'histogram',
-        width: torso.width,
-        height: 350,
-        left: torso.left,
-        right: torso.right,
+        width: trunk.width*2,
+        height: trunk.height*2,
+        right: trunk.right,
         rollover_callback: function(d, i) {
             $('#histogram svg .active_datapoint')
                 .html('Frequency Count: ' + d.y);
@@ -56,10 +55,6 @@ $(document).ready(function() {
         x_accessor: 'x',
         y_accessor: 'y'
     })
-    
-    //default color for histogram
-    d3.selectAll("#histogram svg .bar rect")
-        .classed('area2-color', true);
 
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
