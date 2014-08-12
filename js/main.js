@@ -70,7 +70,7 @@ $(document).ready(function() {
         x_accessor:'value',
         y_accessor:'count',
         rollover_callback: function(d, i) {
-            $('#histogra2 svg .active_datapoint')
+            $('#histogram2 svg .active_datapoint')
                 .html('Frequency Count: ' + d.y);
         }
     })
@@ -89,7 +89,11 @@ $(document).ready(function() {
         right: trunk.right,
         target: '#histogram3',
         y_extended_ticks: true,
-        x_accessor:'val1'
+        x_accessor:'val1',
+        rollover_callback: function(d, i) {
+            $('#histogram3 svg .active_datapoint')
+                .html('Frequency Count: ' + d.y);
+        }
     })
 
     d3.json('data/fake_users1.json', function(data) {
