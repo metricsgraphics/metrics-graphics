@@ -558,7 +558,6 @@ function process_histogram(args){
 }
 
 function init(args) {
-
     var defaults = {
         target: null,
         title: null,
@@ -568,12 +567,10 @@ function init(args) {
     var args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
+
+    //this is how we're dealing with passing in a single array of data, 
+    //but with the intention of using multiple values for multilines, etc.
     
-
-    // this is how we're dealing with passing in a single array of data, 
-    // but with the intention of using multiple values for multilines, etc.
-
-        
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
         args.time_series = true;
@@ -604,10 +601,9 @@ function init(args) {
             <= args.small_width_threshold 
         || args.small_text;
 
-
+    //draw axes
     xAxis(args);
     yAxis(args);
-
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
@@ -1443,7 +1439,6 @@ charts.missing = function(args) {
             })  
         }
 
-        
         return this;
     }
     
@@ -1451,6 +1446,8 @@ charts.missing = function(args) {
     return this;
 }
 
+
+//a set of helper functions, some that we've written, others that we've borrowed
 
 function modify_time_period(data, past_n_days) {
     //splice time period
@@ -1465,7 +1462,6 @@ function modify_time_period(data, past_n_days) {
     return data_spliced;
 }
 
-
 function convert_dates(data, x_accessor) {
     data = data.map(function(d) {
         var fff = d3.time.format('%Y-%m-%d');
@@ -1475,7 +1471,6 @@ function convert_dates(data, x_accessor) {
 
     return data;
 }
-
 
 var each = function(obj, iterator, context) {
     // yanked out of underscore
@@ -1516,7 +1511,6 @@ function number_of_values(data, accessor, value) {
     return values.length;
 }
 
-
 function has_values_below(data, accessor, value) {
     var values = data.filter(function(d){
         return d[accessor] <= value;
@@ -1529,7 +1523,6 @@ function has_values_below(data, accessor, value) {
 function has_too_many_zeros(data, accessor, zero_count) {
     return number_of_values(data, accessor, 0) >= zero_count;
 }
-
 
 //deep copy
 //http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
@@ -1564,7 +1557,6 @@ function clone(obj) {
     
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
-
 
 //give us the difference of two int arrays
 //http://radu.cotescu.com/javascript-diff-function/
