@@ -448,23 +448,13 @@ function yAxis(args) {
     return this;
 }
 
-function init(args) {
-    var defaults = {
-        target: null,
-        title: null,
-        description: null
-    };
-    
-    var args = arguments[0];
-    if (!args) { args = {}; }
-    args = merge_with_defaults(args, defaults);
-    
+function raw_data_transformation(args){
     //do we need to turn json data to 2d array?
+
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
+    //
 
-    // this is how we're dealing with passing in a single array of data, 
-    // but with the intention of using multiple values for multilines, etc.
     if ($.isArray(args.y_accessor)){
         args.data = args.data.map(function(_d){
             return args.y_accessor.map(function(ya){
@@ -478,7 +468,7 @@ function init(args) {
         args.y_accessor = 'multiline_y_accessor';
     }
 
-    //sort x-axis
+    //sort x-axis data.
     if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {
             args.data[i].sort(function(a, b) {
@@ -486,6 +476,51 @@ function init(args) {
             });
         }
     }
+    return this
+}
+
+function process_line(args){
+    return this;
+}
+
+function process_point(args){
+    return this;
+}
+
+function process_histogram(args){
+    // if args.binned=False, then we need to bin the data appropriately.
+    // if args.binned=True, then we need to make sure to compute the relevant computed data.
+    // the outcome of either of these should be something in args.computed_data.
+    // the histogram plotting function will be looking there for the data to plot.
+
+    // we need to compute an array of objects.
+    // each object has an x, y, and dx.
+
+    if        (args.binned==false){
+        // use d3's built-in layout.histogram functionality to compute what you need.
+    } else if (args.binned==true){
+        // here, we just need to reconstruct the array of objects
+    }
+
+    return this;
+}
+
+function init(args) {
+
+    var defaults = {
+        target: null,
+        title: null,
+        description: null
+    };
+    
+    var args = arguments[0];
+    if (!args) { args = {}; }
+    args = merge_with_defaults(args, defaults);
+    
+
+    // this is how we're dealing with passing in a single array of data, 
+    // but with the intention of using multiple values for multilines, etc.
+
         
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
@@ -634,6 +669,8 @@ charts.line = function(args) {
     this.args = args;
 
     this.init = function(args) {
+        raw_data_transformation(args);
+        process_line(args);
         init(args);
         return this;
     }
@@ -1034,6 +1071,8 @@ charts.histogram = function(args) {
     this.args = args;
 
     this.init = function(args) {
+        raw_data_transformation(args);
+        process_histogram(args);
         init(args);
         return this;
     }
@@ -1217,8 +1256,9 @@ charts.point = function(args) {
     this.args = args;
 
     this.init = function(args) {
+        raw_data_transformation(args);
+        process_point(args);
         init(args);
-
         return this;
     }
 

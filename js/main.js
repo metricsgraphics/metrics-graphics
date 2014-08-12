@@ -33,7 +33,7 @@ $(document).ready(function() {
         .range([0, 350 - 0 - 10]);
 
     var data = d3.layout.histogram()
-        .bins(x.ticks(20))
+        // .bins(x.ticks(20))
         (values);
 
     moz_chart({
