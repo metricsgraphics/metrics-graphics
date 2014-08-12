@@ -1,14 +1,8 @@
-#long svg .y-axis line,
-#fake_users3 svg .y-axis line,
-#histogram svg .y-axis line {
+.extended-y-ticks svg .y-axis line {
     opacity: 0.1;
 }
 
-#histogram svg .bar rect {
-    fill: #aaaaff;
-}
-
-#confidence_band svg .x-axis line {
+.extended-x-ticks svg .x-axis line {
     opacity: 0.1;
 }
 
