@@ -322,6 +322,7 @@ text {
 
 .bar rect {
     shape-rendering: crispEdges;
+    fill: #4040e8;
 }
 
 .x-axis text,

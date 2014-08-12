@@ -64,6 +64,16 @@ function moz_chart() {
         custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
+    moz.defaults.histogram = {
+        rollover_callback: function(d, i) {
+            $('#histogram svg .active_datapoint')
+                .html('Frequency Count: ' + d.y);
+        },
+        binned: false,
+        processed_x_accessor: 'x',
+        processed_y_accessor: 'y',
+        processed_dx_accessor: 'dx'
+    }
 
     var args = arguments[0];
     if (!args) { args = {}; }
@@ -83,6 +93,7 @@ function moz_chart() {
         charts.point(args).markers().mainPlot().rollover();
     }
     else if(args.chart_type == 'histogram'){
+        args = merge_with_defaults(args, moz.defaults.histogram);
         charts.histogram(args).markers().mainPlot().rollover();
     }
     else {
@@ -496,12 +507,53 @@ function process_histogram(args){
     // we need to compute an array of objects.
     // each object has an x, y, and dx.
 
-    if        (args.binned==false){
+    // histogram data is always single dimension
+    var our_data = args.data[0];
+    var extracted_data;
+    if (args.binned==false){
         // use d3's built-in layout.histogram functionality to compute what you need.
-    } else if (args.binned==true){
-        // here, we just need to reconstruct the array of objects
-    }
 
+        if (typeof(our_data[0]) == 'object'){
+            // we are dealing with an array of objects. Extract the data value of interest.
+            extracted_data = our_data
+                .map(function(d){ 
+                    return d[args.x_accessor];
+                });
+        } else if (typeof(our_data[0]) == 'number'){
+            // we are dealing with a simple array of numbers. No extraction needed.
+            extracted_data = our_data;
+        }
+
+        args.processed_data = d3.layout.histogram()
+            (extracted_data)
+            .map(function(d){
+                // extract only the data we need per data point.
+                return {'x': d['x'], 'y':d['y'], 'dx': d['dx']};
+            })
+    } else {
+        // here, we just need to reconstruct the array of objects
+        // take the x accessor and y accessor.
+        // pull the data as x and y. y is count.
+
+        args.processed_data = our_data.map(function(d){
+            return {'x': d[args.x_accessor], 'y': d[args.y_accessor]}
+        });
+        var this_pt;
+        var next_pt;
+        // we still need to compute the dx component for each data point
+        for (var i=0; i < args.processed_data.length; i++){
+            this_pt = args.processed_data[i];
+            if (i == args.processed_data.length-1){
+                this_pt.dx = args.processed_data[i-1].dx;
+            } else {
+                next_pt = args.processed_data[i+1];
+                this_pt.dx = next_pt.x - this_pt.x;
+            }
+        }
+    }
+    args.data = [args.processed_data];
+    args.x_accessor = args.processed_x_accessor;
+    args.y_accessor = args.processed_y_accessor;
     return this;
 }
 

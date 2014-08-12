@@ -32,28 +32,55 @@ $(document).ready(function() {
         .domain([0, 1])
         .range([0, 350 - 0 - 10]);
 
-    var data = d3.layout.histogram()
-        // .bins(x.ticks(20))
-        (values);
 
     moz_chart({
-        title: "Histogram",
-        description: "A sample histogram.",
-        data: [data],
+        title: "Histogram 1",
+        description: "raw data values being fed in",
+        data: values,
         chart_type: 'histogram',
-        width: trunk.width*2,
-        height: trunk.height*2,
+        width: trunk.width,
+        height: trunk.height,
         right: trunk.right,
-        rollover_callback: function(d, i) {
-            $('#histogram svg .active_datapoint')
-                .html('Frequency Count: ' + d.y);
-        },
-        target: '#histogram',
+        target: '#histogram1',
+        y_extended_ticks: true
+    })
+
+    var second = d3.range(1000).map(d3.random.bates(10));
+    second = d3.layout.histogram()(second)
+        .map(function(d){
+            return {'count': d.y, 'value':d.x};
+    });
+
+    moz_chart({
+        title: "Histogram 2",
+        description: "already-binned data being fed in",
+        data: second,
+        binned: true,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram2',
         y_extended_ticks: true,
-        xax_count: 10,
-        xax_tick: 5,
-        x_accessor: 'x',
-        y_accessor: 'y'
+        x_accessor:'value',
+        y_accessor:'count'
+    })
+
+    var third = d3.range(1000).map(d3.random.bates(10));
+    third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
+
+
+    moz_chart({
+        title: "Histogram 3",
+        description: "unbinned, but in same format as other line chart data",
+        data: third,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram3',
+        y_extended_ticks: true,
+        x_accessor:'val1',
     })
 
     d3.json('data/fake_users1.json', function(data) {
