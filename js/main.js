@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 1",
-        description: "raw data values being fed in",
+        description: "Raw data values being fed in.",
         data: values,
         chart_type: 'histogram',
         width: trunk.width,
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 2",
-        description: "already-binned data being fed in",
+        description: "Already-binned data being fed in.",
         data: second,
         binned: true,
         chart_type: 'histogram',
@@ -72,7 +72,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 3",
-        description: "unbinned, but in same format as other line chart data",
+        description: "Unbinned, but in same format as other line chart data.",
         data: third,
         chart_type: 'histogram',
         width: trunk.width,
