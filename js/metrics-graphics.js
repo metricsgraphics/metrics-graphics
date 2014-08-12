@@ -93,14 +93,12 @@ function moz_chart() {
 }
 
 function chart_title(args) {
-    var defaults = {
-        target: null,
-        title: null,
-        description: null
-    };
-    var args = arguments[0];
-    if (!args) { args = {}; }
-    args = merge_with_defaults(args, defaults);
+    //is chart title different than existing, if so, clear the fine 
+    //gentleman, otherwise, move along
+    if(args.title !== $(args.target + ' h2.chart_title').text())
+        $(args.target + ' h2.chart_title').remove();
+    else
+        return;
     
     if (args.target && args.title) {
         //only show question mark if there's a description
@@ -108,7 +106,7 @@ function chart_title(args) {
             ? '<i class="fa fa-question-circle fa-inverse"></i>'
             : '';
     
-        $(args.target).append('<h2 class="chart_title">' 
+        $(args.target).prepend('<h2 class="chart_title">' 
             + args.title + optional_question_mark + '</h2>');
             
         //activate the question mark if we have a description
@@ -451,6 +449,16 @@ function yAxis(args) {
 }
 
 function init(args) {
+    var defaults = {
+        target: null,
+        title: null,
+        description: null
+    };
+    
+    var args = arguments[0];
+    if (!args) { args = {}; }
+    args = merge_with_defaults(args, defaults);
+    
     //do we need to turn json data to 2d array?
     if(!$.isArray(args.data[0]))
         args.data = [args.data];
@@ -489,10 +497,8 @@ function init(args) {
     
     var linked;
 
-    //add chart's title, svg, if they don't already exist
+    //add svg if it doesn't already exist
     if($(args.target).is(':empty')) {
-        chart_title(args);
-    
         //add svg
         d3.select(args.target)
             .append('svg')
@@ -500,6 +506,9 @@ function init(args) {
                 .attr('width', args.width)
                 .attr('height', args.height);
     }
+    
+    //add chart title if it's different than existing one
+    chart_title(args);
     
     //we kind of need axes in all cases
     args.use_small_class = args.height - args.top - args.bottom - args.buffer 
@@ -686,7 +695,7 @@ charts.line = function(args) {
             //add the area
             if(args.area && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target + ' svg path.area' + (line_id) + '-color').length > 0) {
+                if($(args.target + ' svg path.area' + (line_id+1) + '-color').length > 0) {
                     d3.selectAll(args.target + ' svg path.area' + (line_id) + '-color')
                         .transition()
                             .duration(function() {
