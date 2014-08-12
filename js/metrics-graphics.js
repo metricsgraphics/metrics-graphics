@@ -1258,7 +1258,7 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            $('.histogram .bar :eq(' + i + ')')
+            $(args.target + ' svg .bar :eq(' + i + ')')
                 .css('opacity', 0.8);
 
             //update rollover text

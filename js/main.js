@@ -42,8 +42,13 @@ $(document).ready(function() {
         height: trunk.height,
         right: trunk.right,
         target: '#histogram1',
-        y_extended_ticks: true
+        y_extended_ticks: true,
+        rollover_callback: function(d, i) {
+            $('#histogram1 svg .active_datapoint')
+                .html('Frequency Count: ' + d.y);
+        }
     })
+        
 
     var second = d3.range(1000).map(d3.random.bates(10));
     second = d3.layout.histogram()(second)
@@ -63,7 +68,11 @@ $(document).ready(function() {
         target: '#histogram2',
         y_extended_ticks: true,
         x_accessor:'value',
-        y_accessor:'count'
+        y_accessor:'count',
+        rollover_callback: function(d, i) {
+            $('#histogra2 svg .active_datapoint')
+                .html('Frequency Count: ' + d.y);
+        }
     })
 
     var third = d3.range(1000).map(d3.random.bates(10));
@@ -80,7 +89,7 @@ $(document).ready(function() {
         right: trunk.right,
         target: '#histogram3',
         y_extended_ticks: true,
-        x_accessor:'val1',
+        x_accessor:'val1'
     })
 
     d3.json('data/fake_users1.json', function(data) {
