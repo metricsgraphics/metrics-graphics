@@ -95,7 +95,7 @@ function moz_chart() {
 function chart_title(args) {
     //is chart title different than existing, if so, clear the fine 
     //gentleman, otherwise, move along
-    if(args.title !== $(args.target + ' h2.chart_title').text())
+    if(args.title && args.title !== $(args.target + ' h2.chart_title').text())
         $(args.target + ' h2.chart_title').remove();
     else
         return;
@@ -695,7 +695,7 @@ charts.line = function(args) {
             //add the area
             if(args.area && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target + ' svg path.area' + (line_id+1) + '-color').length > 0) {
+                if($(args.target + ' svg path.area' + (line_id) + '-color').length > 0) {
                     d3.selectAll(args.target + ' svg path.area' + (line_id) + '-color')
                         .transition()
                             .duration(function() {
