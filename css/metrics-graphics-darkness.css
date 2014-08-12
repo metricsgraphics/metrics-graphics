@@ -29,6 +29,10 @@ a:visited {
     fill: #f7f7f7;
 }
 
+.bar rect {
+    fill: #ffd300;
+}
+
 .baselines line {
     stroke: #fff;
 }
