@@ -67,20 +67,26 @@ circle {
     fill: #fff;
 }
 
+h2.chart_title span {
+    color: #f1f1f1;
+}
+
 #head {
     color: #f1f1f1;
 }
 
-.markers line {
-    stroke: #fff;
+.histogram .axis path,
+.histogram .axis line {
+    opacity: 0.5;
+    stroke: #ccc;
 }
 
-.markers text {
+.histogram .bar text {
     fill: #fff;
 }
 
-h2.chart_title span {
-    color: #f1f1f1;
+.histogram .axis .tick line {
+    opacity: 0.3;
 }
 
 .light-bg {
@@ -135,6 +141,14 @@ h2.chart_title span {
     fill: #52491f;
 }
 
+.markers line {
+    stroke: #fff;
+}
+
+.markers text {
+    fill: #fff;
+}
+
 .missing {
     background-image: url(../images/missing-data-dark.png);
 }
@@ -182,21 +196,6 @@ text {
 .year-marker line {
     stroke: #fff;
 }
-
-.histogram .axis path,
-.histogram .axis line {
-    opacity: 0.5;
-    stroke: #ccc;
-}
-
-.histogram .bar text {
-    fill: #fff;
-}
-
-.histogram .axis .tick line {
-    opacity: 0.3;
-}
-
 
 /*
     CSS from http://bootswatch.com/slate
