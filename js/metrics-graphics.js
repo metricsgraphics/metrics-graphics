@@ -73,7 +73,8 @@ function moz_chart() {
         bins: null,
         processed_x_accessor: 'x',
         processed_y_accessor: 'y',
-        processed_dx_accessor: 'dx'
+        processed_dx_accessor: 'dx',
+        bar_margin: 1
     }
 
     var args = arguments[0];
@@ -1165,7 +1166,7 @@ charts.histogram = function(args) {
             .attr("width", function(d, i) {
                 return args.scalefns.xf(args.data[0][1])
                     - args.scalefns.xf(args.data[0][0])
-                    - 1;
+                    - args.bar_margin;
             })
             .attr("height", function(d) {
                 if(d[args.y_accessor] == 0)

@@ -42,6 +42,7 @@ $(document).ready(function() {
         height: trunk.height,
         right: trunk.right,
         bins:50,
+        bar_margin:0,
         target: '#histogram1',
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
