@@ -25,13 +25,13 @@ $(document).ready(function() {
     small.xax_count = 5;
 
     assignEventListeners();
-    
+
+
     //generate a Bates distribution of 10 random variables
     var values = d3.range(10000).map(d3.random.bates(10));
     var x = d3.scale.linear()
         .domain([0, 1])
         .range([0, 350 - 0 - 10]);
-
 
     moz_chart({
         title: "Histogram 1",
@@ -49,8 +49,7 @@ $(document).ready(function() {
             $('#histogram1 svg .active_datapoint')
                 .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })
-        
+    })  
 
     var second = d3.range(10000).map(function(d){return Math.random()*10});
     second = d3.layout.histogram()(second)
@@ -80,7 +79,6 @@ $(document).ready(function() {
     var third = d3.range(1000).map(d3.random.bates(10));
     third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
 
-
     moz_chart({
         title: "Histogram 3",
         description: "Unbinned, but in same format as other line chart data.",
@@ -107,6 +105,7 @@ $(document).ready(function() {
 
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
+        //add a line chart
         moz_chart({
             title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
@@ -118,13 +117,14 @@ $(document).ready(function() {
             target: '#fake_users1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
-        
+        })
+
         var markers = [{
             'date': new Date('2014-03-17T00:00:00.000Z'),
             'label': 'Look, a spike!'
         }];
-        
+
+        //add a chart with annotations
         moz_chart({
             title: "Annotations",
             description: "By setting the chart's target a class name of main-area-solid, markers don't extend down to the bottom of the chart, which better draws attention to, say, spikes.",
@@ -144,6 +144,7 @@ $(document).ready(function() {
             data[i] = convert_dates(data[i], 'date');
         }
 
+        //add a multi-line chart
         moz_chart({
             title:"Multi-line Chart",
             description: "This line chart contains multiple lines. We're still working out the style details.",
@@ -156,6 +157,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
+        //add a wide multi-line chart
         moz_chart({
             title:"Multi-line Chart Wide",
             description: "This line chart contains multiple lines and has extended ticks enabled.",
@@ -171,7 +173,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-        
+
         //linked multi-line charts
         moz_chart({
             title:"Multi-line Linked",
@@ -186,8 +188,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
     })
-    
-    
+
     d3.json('data/fake_users3.json', function(data) {  
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i], 'date');
@@ -234,6 +235,8 @@ $(document).ready(function() {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i], 'date');
         };
+
+        //add a chart that has a log scale
         moz_chart({
             title: "Log Scale",
             description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
@@ -245,13 +248,13 @@ $(document).ready(function() {
             target: '#log1',
             x_accessor: 'date',
             y_accessor: 'value'
-        });
+        })
     })
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i], 'date');
-        };
+        }
 
         var markers = [{
             'date': new Date('2014-02-01T00:00:00.000Z'),
@@ -260,7 +263,7 @@ $(document).ready(function() {
             'date': new Date('2014-03-15T00:00:00.000Z'),
             'label': '2nd Milestone'
         }]
-            
+
         moz_chart({
             title: "Some Percentages",
             description: "Here is an example that shows percentages.",
@@ -423,7 +426,7 @@ $(document).ready(function() {
 
     d3.json('data/brief-2.json', function(data) {
         data = convert_dates(data, 'date');
-        
+
         moz_chart({
             title: "Other Linked Chart",
             description: "Roll over and watch as the chart to the left triggers.",
@@ -438,7 +441,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-        
+
         moz_chart({
             title: "Small Text",
             description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
@@ -544,7 +547,6 @@ $(document).ready(function() {
             y_accessor: 'y'
         })
     })
-    
 
     function assignEventListeners() {
         $('#dark-css').click(function () {
@@ -596,11 +598,11 @@ $(document).ready(function() {
                 y_accessor: new_y_accessor
             })
         })
-        
+
         $('.modify-time-period-controls button').click(function() {
             var past_n_days = $(this).data('time_period');            
             var data = modify_time_period(split_by_data, past_n_days);
-            
+
             //change button state
             $(this).addClass('active')
                 .siblings()
