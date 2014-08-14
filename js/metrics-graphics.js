@@ -155,8 +155,10 @@ function xAxis(args) {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
     else if (args.chart_type == 'histogram'){
-        max_x = 1;
-        min_x = 0;
+        // max_x = 1;
+        // min_x = 0;
+        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
+        min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
         
         //force override xax_format
         //todo revisit to see if this makes sense
@@ -1153,7 +1155,7 @@ charts.histogram = function(args) {
             .attr("width", function(d, i) {
                 return args.scalefns.xf(args.data[0][1])
                     - args.scalefns.xf(args.data[0][0])
-                    - 2;
+                    - 1;
             })
             .attr("height", function(d) {
                 if(d[args.y_accessor] == 0)

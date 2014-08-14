@@ -50,11 +50,12 @@ $(document).ready(function() {
     })
         
 
-    var second = d3.range(1000).map(d3.random.bates(10));
+    var second = d3.range(10000).map(function(d){return Math.random()*10});
     second = d3.layout.histogram()(second)
         .map(function(d){
             return {'count': d.y, 'value':d.x};
     });
+    console.log(second);
 
     moz_chart({
         title: "Histogram 2",
