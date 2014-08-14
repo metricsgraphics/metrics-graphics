@@ -21,6 +21,20 @@ While we are currently using semantic versioning, you should consider v0.* to ha
 
 Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for other to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We plan on having fuller documentation in the next milestone, as well as a guide to how to contribute to the library in a way that makes us feel warm inside when we accept your pull request.
 
-_MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License</a>. The current logo is courtesy of <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>.
+_MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License</a>. The current logo is courtesy of <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>. <a href="http://metricsgraphicsjs.org">http://metricsgraphicsjs.org</a>
 
-http://metricsgraphicsjs.org
+## Quick-start guide
+1. Download the latest release from [here](https://github.com/mozilla/metrics-graphics/releases).
+2. Follow the examples in [index.html](https://github.com/mozilla/metrics-graphics/blob/master/index.html) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
+3. Profit!
+
+## Dependencies
+The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations, but may well do away with in the future.
+
+## How to contribute
+We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
+
+## Resources
+* [Examples](http://metricsgraphicsjs.org)
+* [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
+* [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
