@@ -79,7 +79,7 @@ function moz_chart() {
     var args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, moz.defaults.all);
-    
+
     var g = '';
     if (args.list) {
         args.x_accessor = 0;
@@ -100,7 +100,7 @@ function moz_chart() {
     else {
         charts.line(args).markers().mainPlot().rollover();
     }
-    
+
     return args.data;
 }
 
@@ -111,7 +111,7 @@ function chart_title(args) {
         $(args.target + ' h2.chart_title').remove();
     else
         return;
-    
+
     if (args.target && args.title) {
         //only show question mark if there's a description
         var optional_question_mark = (args.description)
@@ -139,7 +139,7 @@ function xAxis(args) {
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
     }
-    
+
     var last_i;
     if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {
@@ -165,10 +165,10 @@ function xAxis(args) {
         //todo revisit to see if this makes sense
         args.xax_format = function(d) { return d; };
     }
-    
+
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
-    
+
     args.x_axis_negative = false;
     if (!args.time_series) {
         if (min_x >= 0){
@@ -185,18 +185,17 @@ function xAxis(args) {
     args.scales.X
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right - args.buffer]);
-    
+
     //remove the old x-axis, add new one
     if($(args.target + ' svg .x-axis').length > 0) {
         $(args.target + ' svg .x-axis')
             .remove();
     }
-    
+
     //x axis
     g = svg.append('g')
         .classed('x-axis', true)
         .classed('x-axis-small', args.use_small_class);
-
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
 
@@ -216,7 +215,7 @@ function xAxis(args) {
                 return args.x_label;
             })
     }
-    
+
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
@@ -225,7 +224,8 @@ function xAxis(args) {
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
-    
+
+    //add x ticks
     g.selectAll('.xax-ticks')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('line')
@@ -236,8 +236,12 @@ function xAxis(args) {
                     return (args.x_extended_ticks)
                         ? args.top
                         : args.height - args.bottom + args.xax_tick;
+                })
+                .attr('class', function() {
+                    if(args.x_extended_ticks)
+                        return 'extended-x-ticks';
                 });
-            
+
     g.selectAll('.xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
@@ -248,7 +252,7 @@ function xAxis(args) {
                 .text(function(d) {
                     return args.xax_units + args.xax_format(d);
                 })
-        
+
     //are we adding years to x-axis
     if (args.time_series && args.show_years) {
         var min_x;
@@ -256,26 +260,25 @@ function xAxis(args) {
 
         for (var i=0; i<args.data.length; i++) {
             last_i = args.data[i].length-1;
-            
+
             if(args.data[i][0][args.x_accessor] < min_x || !min_x)
                 min_x = args.data[i][0][args.x_accessor];
             if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
                 max_x = args.data[i][last_i][args.x_accessor];
         }
-        
+
         var years = d3.time.years(min_x, max_x);
 
         if (years.length == 0){
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
-
         }
 
         //append year marker to x-axis group
         g = g.append('g')
             .classed('year-marker', true)
             .classed('year-marker-small', args.use_small_class); 
-        
+
         g.selectAll('.year_marker')
             .data(years).enter()
                 .append('line')
@@ -283,7 +286,7 @@ function xAxis(args) {
                     .attr('x2', args.scales.X)
                     .attr('y1', args.top)
                     .attr('y2', args.height - args.bottom);
-                
+
         var yformat = d3.time.format('%Y');
         g.selectAll('.year_marker')
             .data(years).enter()
@@ -299,7 +302,7 @@ function xAxis(args) {
 
     return this;
 }
-    
+
 function yAxis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
@@ -353,7 +356,7 @@ function yAxis(args) {
     args.scales.Y_axis = d3.scale.linear()
             .domain([min_y, max_y * args.inflator])
             .range([args.height - args.bottom - args.buffer, args.top]);
-    
+
     var yax_format;
     if (args.format == 'count') {
         yax_format = function(f) {
@@ -372,13 +375,13 @@ function yAxis(args) {
             return n(d_);
         }
     }
-        
+
     //remove the old y-axis, add new one
     if($(args.target + ' svg .y-axis').length > 0) {
         $(args.target + ' svg .y-axis')
             .remove();
     }
-    
+
     //y axis
     g = svg.append('g')
         .classed('y-axis', true)
@@ -435,6 +438,7 @@ function yAxis(args) {
             .attr('y2', args.scales.Y(scale_ticks[last_i]));
     }
 
+    //add y ticks
     g.selectAll('.yax-ticks')
         .data(scale_ticks).enter()
             .append('line')
@@ -445,8 +449,12 @@ function yAxis(args) {
                         : args.left - args.yax_tick;
                 })
                 .attr('y1', args.scales.Y)
-                .attr('y2', args.scales.Y);
-            
+                .attr('y2', args.scales.Y)
+                .attr('class', function() {
+                    if(args.y_extended_ticks)
+                        return 'extended-y-ticks';
+                });
+
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
             .append('text')
@@ -458,7 +466,7 @@ function yAxis(args) {
                     var o = yax_format(d);
                     return o;
                 })
-                
+
     return this;
 }
 
@@ -568,14 +576,14 @@ function init(args) {
         title: null,
         description: null
     };
-    
+
     var args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
 
     //this is how we're dealing with passing in a single array of data, 
     //but with the intention of using multiple values for multilines, etc.
-    
+
     //do we have a time_series?
     if($.type(args.data[0][0][args.x_accessor]) == 'date') {
         args.time_series = true;
@@ -583,7 +591,7 @@ function init(args) {
     else {
         args.time_series = false;
     }
-    
+
     var linked;
 
     //add svg if it doesn't already exist
@@ -595,10 +603,10 @@ function init(args) {
                 .attr('width', args.width)
                 .attr('height', args.height);
     }
-    
+
     //add chart title if it's different than existing one
     chart_title(args);
-    
+
     //we kind of need axes in all cases
     args.use_small_class = args.height - args.top - args.bottom - args.buffer 
             <= args.small_height_threshold 
@@ -651,16 +659,16 @@ function markers(args) {
         var svg = d3.select(args.target + ' svg');
         var gm;
         var gb;
-        
+
         if(args.markers) {
             if($(args.target + ' svg .markers').length > 0) {
                 $(args.target + ' svg .markers')
                     .remove();
             }
-            
+
             gm = svg.append('g')
                 .attr('class', 'markers');
-            
+
             gm.selectAll('.markers')
                 .data(args.markers)
                 .enter().append('line')
@@ -675,7 +683,7 @@ function markers(args) {
                         return args.height - args.bottom - args.buffer;
                     })
                     .attr('stroke-dasharray', '3,1');
-                
+
             gm.selectAll('.markers')
                 .data(args.markers)
                 .enter().append('text')
@@ -702,7 +710,7 @@ function markers(args) {
                     .attr('y1', function(d){
                         return args.scales.Y(d['value'])})
                     .attr('y2', function(d){return args.scales.Y(d['value'])});
-                
+
             gb.selectAll('.baselines')
                 .data(args.baselines)
                 .enter().append('text')
@@ -714,7 +722,7 @@ function markers(args) {
                         return d['label'];
                     });
         }
-        
+
         return this;
     }
     
@@ -774,7 +782,7 @@ charts.line = function(args) {
             if(args.custom_line_color_map.length > 0) {
                 line_id = args.custom_line_color_map[i];
             }
-        
+
             //add confidence band
             if(args.show_confidence_band) {
                 svg.append('path')
@@ -842,7 +850,7 @@ charts.line = function(args) {
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
         var g;
-        
+
         //remove the old rollovers if they already exist
         if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
             $(args.target + ' svg .transparent-rollover-rect').remove();
@@ -850,7 +858,7 @@ charts.line = function(args) {
         if($(args.target + ' svg .voronoi').length > 0) {
             $(args.target + ' svg .voronoi').remove();
         }
-    
+
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
@@ -865,7 +873,6 @@ charts.line = function(args) {
             .attr('cx', 0)
             .attr('cy', 0)
             .attr('r', 0);
-
 
         //update our data by setting a unique line id for each series
         //increment from 1... unless we have a custom increment series
@@ -955,7 +962,7 @@ charts.line = function(args) {
                         .attr('x', function(d, i) {
                             var current_x = d;
                             var x_coord;
-                        
+
                             if (i == 0) {
                                 var next_x = args.data[0][1];
                                 x_coord = args.scalefns.xf(current_x) 
@@ -968,7 +975,7 @@ charts.line = function(args) {
                                 
                                 x_coord = args.scalefns.xf(current_x) - width / 2;
                             }
-                            
+
                             return x_coord;    
                         })
                         .attr('y', function(d, i) {
@@ -1029,7 +1036,7 @@ charts.line = function(args) {
                 var id = (typeof v === 'number')
                         ? i
                         : formatter(v);
-                                        
+
                 //trigger mouseover on matching line in .linked charts
                 d3.selectAll('.line' + d['line_id'] + '-color.roll_' + id)
                     .each(function(d, i) {
@@ -1042,9 +1049,9 @@ charts.line = function(args) {
                     return d == g;
                 })
                 .attr('opacity', 0.3);
-                
+
             var fmt = d3.time.format('%b %e, %Y');
-        
+
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -1068,7 +1075,7 @@ charts.line = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
+
                             return fmt(dd) + '  ' + args.yax_units 
                                 + num(d[args.y_accessor]);
                         }
@@ -1100,12 +1107,12 @@ charts.line = function(args) {
                 var id = (typeof v === 'number')
                         ? i
                         : formatter(v);
-                                        
+
                 d3.selectAll('.roll_' + id)
                     .each(function(d, i){
                         d3.select(this).on('mouseout')(d);
                 });
-            }    
+            }
 
             //remove active datapoint text on mouse out
             svg.selectAll('circle.line_rollover_circle')
@@ -1187,7 +1194,7 @@ charts.histogram = function(args) {
         if($(args.target + ' svg .active_datapoint').length > 0) {
             $(args.target + ' svg .active_datapoint').remove();
         }
-    
+
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
@@ -1228,7 +1235,7 @@ charts.histogram = function(args) {
             .on('mouseover', this.rolloverOn(args))
             .on('mouseout', this.rolloverOff(args));
     }
-    
+
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
         var x_formatter = d3.time.format('%Y-%m-%d');
@@ -1239,7 +1246,7 @@ charts.histogram = function(args) {
                     return d == g;
                 })
                 .attr('opacity', 0.3);
-                
+
             var fmt = d3.time.format('%b %e, %Y');
         
             if (args.format == 'count') {
@@ -1294,7 +1301,7 @@ charts.histogram = function(args) {
             //reset all bars' opacity
             $('.histogram .bar rect')
                 .css('opacity', 1);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
@@ -1324,11 +1331,11 @@ charts.point = function(args) {
     this.mainPlot = function() {
         var svg = d3.select(args.target + ' svg');
         var g;
-        
+
         // plot the points, pretty straight-forward
         g = svg.append('g')
             .classed('points', true);
-            
+
         g.selectAll('circle')
             .data(args.data[0])
             .enter().append('svg:circle')
@@ -1344,7 +1351,7 @@ charts.point = function(args) {
 
         var clips = svg.append('g')
                 .attr('id', 'point-clips');
-                
+
         var paths = svg.append('g')
             .attr('id', 'point-paths');
 
@@ -1360,7 +1367,7 @@ charts.point = function(args) {
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf);
-            
+
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
             .enter().append('path')
@@ -1386,7 +1393,7 @@ charts.point = function(args) {
         return function(d,i){
             svg.selectAll('.points circle')
                 .classed('unselected', true);
-                
+
             svg.selectAll('.points circle')
                 .filter(function(g,j){return i == j})
                 .classed('unselected', false)
@@ -1409,11 +1416,10 @@ charts.point = function(args) {
     this.update = function(args) {
         return this;
     }
-    
-    this.init(args);
-    
-    return this;
 
+    this.init(args);
+
+    return this;
 }
 
 charts.missing = function(args) {
@@ -1426,14 +1432,14 @@ charts.missing = function(args) {
                 .append('svg')
                 .attr('width', args.width)
                 .attr('height', args.height);
-                
+
         svg.append('rect')
             .attr('class', 'missing-pane')
             .attr('x', args.left)
             .attr('y', args.top)
             .attr('width', args.width - (args.left * 2))
             .attr('height', args.height - (args.top * 2));
-            
+
         svg.append('text')
             .attr('x', args.width / 2)
             .attr('y', args.height / 2)
@@ -1446,14 +1452,13 @@ charts.missing = function(args) {
 
         return this;
     }
-    
+
     this.init(args);
     return this;
 }
 
 
 //a set of helper functions, some that we've written, others that we've borrowed
-
 function modify_time_period(data, past_n_days) {
     //splice time period
     var data_spliced = clone(data);
@@ -1463,7 +1468,7 @@ function modify_time_period(data, past_n_days) {
             data_spliced[i].splice(0,from);
         }
     }
-    
+
     return data_spliced;
 }
 

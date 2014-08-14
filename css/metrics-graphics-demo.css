@@ -1,11 +1,3 @@
-.extended-y-ticks svg .y-axis line {
-    opacity: 0.1;
-}
-
-.extended-x-ticks svg .x-axis line {
-    opacity: 0.1;
-}
-
 .wip {
     font-size: 15px;
     margin-top: 60px;

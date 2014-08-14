@@ -84,6 +84,14 @@ circle {
     opacity: 0.2;
 }
 
+.extended-y-ticks svg .y-axis line {
+    opacity: 0.1;
+}
+
+.extended-x-ticks svg .x-axis line {
+    opacity: 0.1;
+}
+
 #footer {
     border-top: 1px solid #ccc;
     font-size: 11px;
