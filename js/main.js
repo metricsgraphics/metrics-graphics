@@ -27,7 +27,7 @@ $(document).ready(function() {
     assignEventListeners();
     
     //generate a Bates distribution of 10 random variables
-    var values = d3.range(1000).map(d3.random.bates(10));
+    var values = d3.range(10000).map(d3.random.bates(10));
     var x = d3.scale.linear()
         .domain([0, 1])
         .range([0, 350 - 0 - 10]);
@@ -41,6 +41,7 @@ $(document).ready(function() {
         width: trunk.width,
         height: trunk.height,
         right: trunk.right,
+        bins:50,
         target: '#histogram1',
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
@@ -55,7 +56,6 @@ $(document).ready(function() {
         .map(function(d){
             return {'count': d.y, 'value':d.x};
     });
-    console.log(second);
 
     moz_chart({
         title: "Histogram 2",

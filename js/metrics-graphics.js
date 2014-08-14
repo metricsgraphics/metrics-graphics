@@ -70,6 +70,7 @@ function moz_chart() {
                 .html('Frequency Count: ' + d.y);
         },
         binned: false,
+        bins: null,
         processed_x_accessor: 'x',
         processed_y_accessor: 'y',
         processed_dx_accessor: 'dx'
@@ -525,9 +526,11 @@ function process_histogram(args){
             // we are dealing with a simple array of numbers. No extraction needed.
             extracted_data = our_data;
         }
-
-        args.processed_data = d3.layout.histogram()
-            (extracted_data)
+        var hist = d3.layout.histogram()
+        if (args.bins){
+            hist = hist.bins(args.bins);
+        }
+        args.processed_data = hist(extracted_data)
             .map(function(d){
                 // extract only the data we need per data point.
                 return {'x': d['x'], 'y':d['y'], 'dx': d['dx']};
