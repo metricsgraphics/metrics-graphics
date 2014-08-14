@@ -46,7 +46,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
             $('#histogram1 svg .active_datapoint')
-                .html('Frequency Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
         
@@ -72,7 +72,7 @@ $(document).ready(function() {
         y_accessor:'count',
         rollover_callback: function(d, i) {
             $('#histogram2 svg .active_datapoint')
-                .html('Frequency Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
         x_accessor:'val1',
         rollover_callback: function(d, i) {
             $('#histogram3 svg .active_datapoint')
-                .html('Frequency Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
