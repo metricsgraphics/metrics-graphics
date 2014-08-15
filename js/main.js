@@ -35,14 +35,14 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 1",
-        description: "Raw data values being fed in.",
+        description: "Raw data values being fed in. Here, we specify the number of bins to be 50.",
         data: values,
         chart_type: 'histogram',
         width: trunk.width,
         height: trunk.height,
         right: trunk.right,
-        bins:50,
-        bar_margin:0,
+        bins: 50,
+        bar_margin: 0,
         target: '#histogram1',
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
@@ -59,7 +59,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 2",
-        description: "Already-binned data being fed in.",
+        description: "Already binned data being fed in.",
         data: second,
         binned: true,
         chart_type: 'histogram',
