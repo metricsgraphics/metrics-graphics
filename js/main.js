@@ -96,6 +96,27 @@ $(document).ready(function() {
         }
     })
 
+    // check for negative values, for sanity.
+    var fourth = d3.range(1000).map(d3.random.bates(10));
+    fourth = fourth.map(function(d,i){return d-.5});
+
+    moz_chart({
+        title: "Histogram 4",
+        description: "Sanity-checking negative data",
+        data: fourth,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram4',
+        y_extended_ticks: true,
+        x_accessor:'val1',
+        rollover_callback: function(d, i) {
+            $('#histogram4 svg .active_datapoint')
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+        }
+    })
+
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {

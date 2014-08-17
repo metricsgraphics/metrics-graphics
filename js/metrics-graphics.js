@@ -532,10 +532,11 @@ function process_histogram(args){
         } else if (typeof(our_data[0]) == 'number'){
             // we are dealing with a simple array of numbers. No extraction needed.
             extracted_data = our_data;
-        } else if (typeof(our_data[0]) == 'string'){
-            // convert string -> number
-            extracted_data = our_data.map(function(d) { return +d; });
-        }
+        } 
+        // else if (typeof(our_data[0]) == 'string'){
+        //     // convert string -> number --- pull request by tlatorre-uchicago.
+        //     extracted_data = our_data.map(function(d) { return +d; });
+        // }
         var hist = d3.layout.histogram()
         if (args.bins){
             hist = hist.bins(args.bins);
