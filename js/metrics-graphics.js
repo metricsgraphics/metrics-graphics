@@ -172,9 +172,7 @@ function xAxis(args) {
 
     args.x_axis_negative = false;
     if (!args.time_series) {
-        if (min_x >= 0){
-            min_x = 0;
-        } else  {
+        if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));
             args.x_axis_negative = true;
         }
