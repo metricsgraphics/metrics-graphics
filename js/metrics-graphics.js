@@ -611,7 +611,7 @@ function init(args) {
     // remove missing class
     svg.classed('missing', false);
     // remove missing text
-    svg.selectAll('.missing_text').remove();
+    svg.selectAll('.missing-text').remove();
 
     //add chart title if it's different than existing one
     chart_title(args);
