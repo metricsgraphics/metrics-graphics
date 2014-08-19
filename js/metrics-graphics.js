@@ -157,14 +157,21 @@ function xAxis(args) {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
     else if (args.chart_type == 'histogram'){
-        // max_x = 1;
-        // min_x = 0;
-        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
+        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         
         //force override xax_format
-        //todo revisit to see if this makes sense
-        args.xax_format = function(d) { return d; };
+        //todo revisit to see if this makes sense        
+        args.xax_format = function(f) {
+            if (f < 1.0) {
+                //don't scale tiny values
+                return args.yax_units + d3.round(f, args.decimals);
+            }
+            else {
+                var pf = d3.formatPrefix(f);
+                return args.xax_units + pf.scale(f) + pf.symbol;
+            }
+        }
     }
 
     min_x = args.min_x ? args.min_x : min_x;
