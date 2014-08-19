@@ -1315,7 +1315,7 @@ charts.histogram = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d, i) {
-            //reset all bars' opacity
+            //reset active bar
             d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
                 .classed('active', false);
             
