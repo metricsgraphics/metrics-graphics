@@ -57,11 +57,6 @@ a.active {
     stroke: none;
 }
 
-.bar rect {
-    shape-rendering: crispEdges;
-    fill: #9d9dff;
-}
-
 body {
     background-color: #fff;
     color: #000;
@@ -147,6 +142,15 @@ h2.chart_title .fa {
     fill: none;
     shape-rendering: crispEdges;
     stroke: #ccc;
+}
+
+.histogram .bar rect {
+    shape-rendering: crispEdges;
+    fill: #b6b6fc;
+}
+
+.histogram .bar rect.active {
+    fill: #9e9efc;
 }
 
 .light-bg {

@@ -1283,8 +1283,8 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            $(args.target + ' svg .bar :eq(' + i + ')')
-                .css('opacity', 0.8);
+            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+                .classed('active', true);
 
             //update rollover text
             if (args.show_rollover_text) {
@@ -1316,9 +1316,9 @@ charts.histogram = function(args) {
 
         return function(d, i) {
             //reset all bars' opacity
-            $('.histogram .bar rect')
-                .css('opacity', 1);
-
+            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+                .classed('active', false);
+            
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');

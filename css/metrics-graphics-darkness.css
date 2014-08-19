@@ -29,10 +29,6 @@ a:visited {
     fill: #f7f7f7;
 }
 
-.bar rect {
-    fill: #ffd300;
-}
-
 .baselines line {
     stroke: #fff;
 }
@@ -79,6 +75,14 @@ h2.chart_title span {
 .histogram .axis line {
     opacity: 0.5;
     stroke: #ccc;
+}
+
+.histogram .bar rect {
+    fill: #d8b307;
+}
+
+.histogram .bar rect.active {
+    fill: #b3960f;
 }
 
 .histogram .bar text {
