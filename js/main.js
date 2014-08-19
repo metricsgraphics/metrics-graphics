@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 1",
-        description: "Raw data values being fed in. Here, we specify the number of bins to be 50.",
+        description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0.",
         data: values,
         chart_type: 'histogram',
         width: trunk.width,
