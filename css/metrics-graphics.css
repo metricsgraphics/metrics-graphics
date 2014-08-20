@@ -273,7 +273,7 @@ path.main-line {
 }
 
 .points circle.selected {
-    fill: #3b3b3b;
+    fill: #fff;
     fill-opacity: 1;
     stroke-opacity: 1;
 }
