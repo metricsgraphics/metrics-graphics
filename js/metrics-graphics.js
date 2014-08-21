@@ -351,8 +351,8 @@ function yAxis(args) {
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
 
-    // we are currently saying that if the min val > 0, set 0 as min y.
     if (args.y_scale_type != 'log') {
+        // we are currently saying that if the min val > 0, set 0 as min y.
         if (min_y >= 0){
             min_y = 0;
             args.y_axis_negative = false;
@@ -363,12 +363,12 @@ function yAxis(args) {
     }
 
     if (args.y_scale_type == 'log'){
-        if (min_y <= 0){
-            if (args.chart_type == 'histogram') {
-                // set below 1 so that bins with single counts
-                // are visible
-                min_y = 0.1;
-            } else {
+        if (args.chart_type == 'histogram') {
+            // log histogram plots should start just below 1
+            // so that bins with single counts are visible
+            min_y = 0.2;
+        } else {
+            if (min_y <= 0) {
                 min_y = 1;
             }
         }
