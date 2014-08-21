@@ -454,7 +454,7 @@ function yAxis(args) {
     if (args.y_scale_type == 'log'){
         // get out only whole logs.
         scale_ticks = scale_ticks.filter(function(d){
-            return Math.abs(log10(d)) % 1 === 0 || Math.abs((Math.abs(log10(d)) % 1) - 1) < 1e-6;
+            return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
         });
 
     } 
