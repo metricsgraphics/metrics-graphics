@@ -26,7 +26,6 @@ $(document).ready(function() {
 
     assignEventListeners();
 
-
     //generate a Bates distribution of 10 random variables
     var values = d3.range(10000).map(d3.random.bates(10));
     var x = d3.scale.linear()
@@ -550,6 +549,27 @@ $(document).ready(function() {
         })
     })
 
+
+    var bar_data = [];
+    d3.range(5).map(function(d){
+        return Math.floor(d3.random.logNormal()()*100)
+    }).forEach(function(d,i){
+        d3.range(d).forEach(function(di,ii){
+            bar_data.push('factor'+(i+1))
+        })
+    })
+
+    moz_chart({
+        title:'Bar Prototype',
+        description:'work in progress',
+        data: bar_data,
+        chart_type: 'bar',
+        width:trunk.width,
+        height:trunk.height*2,
+        right:trunk.right,
+        target: '#bar1'
+    })
+
     d3.json('data/points1.json', function(data) {
         moz_chart({
             title: "Scatterplot",
@@ -568,6 +588,8 @@ $(document).ready(function() {
             y_accessor: 'y'
         })
     })
+
+
 
     function assignEventListeners() {
         $('#dark-css').click(function () {

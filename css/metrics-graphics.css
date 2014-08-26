@@ -144,6 +144,15 @@ h2.chart_title .fa {
     stroke: #ccc;
 }
 
+.barplot rect.bar {
+    shape-rendering: crispEdges;
+    fill: #b6b6fc;
+}
+
+.barplot rect.bar .active {
+    fill: #9e9efc;
+}
+
 .histogram .bar rect {
     shape-rendering: crispEdges;
     fill: #b6b6fc;
