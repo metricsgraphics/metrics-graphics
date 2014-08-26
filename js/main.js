@@ -576,10 +576,44 @@ $(document).ready(function() {
             description: "A first example of a scatterplot.",
             data: data,
             chart_type: 'point',
-            width: trunk.width*2,
-            height: trunk.height*2,
+            width: trunk.width,
+            height: trunk.height,
             right: trunk.right,
             target: 'div#scatter1',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y'
+        })
+        moz_chart({
+            title: "Least Squares",
+            description: "least squares line: use argument least_squares: true",
+            data: data,
+            least_squares: true,
+            chart_type: 'point',
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            target: 'div#scatter2',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y'
+        })
+         moz_chart({
+            title: "Lowess",
+            description: "use lowess: true",
+            data: data,
+            lowess: true,
+            chart_type: 'point',
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            target: 'div#scatter3',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
