@@ -1310,23 +1310,12 @@ charts.line = function(args) {
                             }
                         })
                         .attr('x', function(d, i) {
-                            var current_x = d;
-                            var x_coord;
-
                             if (i == 0) {
-                                var next_x = args.data[0][1];
-                                x_coord = args.scalefns.xf(current_x) 
-                                    - (args.scalefns.xf(next_x) - args.scalefns.xf(current_x))
-                                    / 2;
+                                return args.scalefns.xf(d);
+                            } else {
+                                var prev = args.scalefns.xf(args.data[0][i-1]);
+                                return (prev + args.scalefns.xf(d))/2;
                             }
-                            else {
-                                var width = args.scalefns.xf(args.data[0][1])
-                                    - args.scalefns.xf(args.data[0][0]);
-                                
-                                x_coord = args.scalefns.xf(current_x) - width / 2;
-                            }
-
-                            return x_coord;    
                         })
                         .attr('y', function(d, i) {
                             return (args.data.length > 1)
@@ -1334,13 +1323,16 @@ charts.line = function(args) {
                                 : args.top;
                         })
                         .attr('width', function(d, i) {
-                            if (i != args.data[0].length - 1) {
-                                return args.scalefns.xf(args.data[0][i + 1]) 
-                                    - args.scalefns.xf(d);
-                            }
-                            else {
-                                return args.scalefns.xf(args.data[0][1])
-                                    - args.scalefns.xf(args.data[0][0]);
+                            if (i == 0) {
+                                var next = args.scalefns.xf(args.data[0][i+1]);
+                                return (next - args.scalefns.xf(d))/2;
+                            } else if (i == args.data[0].length - 1) {
+                                var prev = args.scalefns.xf(args.data[0][i-1]);
+                                return (args.scalefns.xf(d) - prev)/2;
+                            } else {
+                                var next = args.scalefns.xf(args.data[0][i+1]);
+                                var prev = args.scalefns.xf(args.data[0][i-1]);
+                                return (next-prev)/2;
                             }
                         })
                         .attr('height', function(d, i) {
