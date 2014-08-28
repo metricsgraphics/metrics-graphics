@@ -1288,7 +1288,9 @@ charts.line = function(args) {
             }
 
             var g = svg.append('g')
-                .attr('class', 'transparent-rollover-rect')
+            .attr('class', 'transparent-rollover-rect')
+
+            var xf = args.data[0].map(args.scalefns.xf);
 
             g.selectAll('.rollover-rects')
                 .data(args.data[0]).enter()
@@ -1311,10 +1313,9 @@ charts.line = function(args) {
                         })
                         .attr('x', function(d, i) {
                             if (i == 0) {
-                                return args.scalefns.xf(d);
+                                return xf[i];
                             } else {
-                                var prev = args.scalefns.xf(args.data[0][i-1]);
-                                return (prev + args.scalefns.xf(d))/2;
+                                return (xf[i-1] + xf[i])/2;
                             }
                         })
                         .attr('y', function(d, i) {
@@ -1324,15 +1325,11 @@ charts.line = function(args) {
                         })
                         .attr('width', function(d, i) {
                             if (i == 0) {
-                                var next = args.scalefns.xf(args.data[0][i+1]);
-                                return (next - args.scalefns.xf(d))/2;
-                            } else if (i == args.data[0].length - 1) {
-                                var prev = args.scalefns.xf(args.data[0][i-1]);
-                                return (args.scalefns.xf(d) - prev)/2;
+                                return (xf[i+1] - xf[i])/2;
+                            } else if (i == xf.length - 1) {
+                                return (xf[i] - xf[i-1])/2;
                             } else {
-                                var next = args.scalefns.xf(args.data[0][i+1]);
-                                var prev = args.scalefns.xf(args.data[0][i-1]);
-                                return (next-prev)/2;
+                                return (xf[i+1] - xf[i-1])/2;
                             }
                         })
                         .attr('height', function(d, i) {
