@@ -1288,7 +1288,7 @@ charts.line = function(args) {
             }
 
             var g = svg.append('g')
-            .attr('class', 'transparent-rollover-rect')
+                .attr('class', 'transparent-rollover-rect')
 
             var xf = args.data[0].map(args.scalefns.xf);
 
