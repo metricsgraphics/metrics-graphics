@@ -91,6 +91,14 @@ function moz_chart() {
         height:500,
         top:20
     }
+    moz.defaults.missing = {
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        width: 350,
+        height: 220
+    }
 
     var args = arguments[0];
     if (!args) { args = {}; }
@@ -104,6 +112,7 @@ function moz_chart() {
     
     //build the chart
     if(args.chart_type == 'missing-data'){
+        args = merge_with_defaults(moz.defaults.missing, args);
         charts.missing(args);
     }
     else if(args.chart_type == 'point'){

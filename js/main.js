@@ -391,9 +391,6 @@ $(document).ready(function() {
         title: "Glorious Chart",
         chart_type: 'missing-data',
         description: "This is an example of a chart whose data is currently missing.",
-        width: torso.width,
-        height: torso.height,
-        right: torso.right,
         target: 'div#glorious_chart'
     })
 
