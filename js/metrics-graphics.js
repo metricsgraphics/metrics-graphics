@@ -457,12 +457,22 @@ function xAxis(args) {
             args.x_axis_negative = true;
         }
     }
+
+    // this is for some charts that might need additional buffer, such as the bar chart.
+    var additional_buffer;
+
+    if (args.chart_type == 'bar'){
+        additional_buffer = args.buffer*5;
+    } else {
+        additional_buffer = 0;
+    }
+
     args.scales.X = (args.time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
     args.scales.X
         .domain([min_x, max_x])
-        .range([args.left + args.buffer, args.width - args.right - args.buffer]);
+        .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
     if($(args.target + ' svg .x-axis').length > 0) {
