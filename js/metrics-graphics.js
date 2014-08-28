@@ -34,6 +34,8 @@ function moz_chart() {
         x_accessor: 'date',
         xax_units: '',
         x_label: '',
+        x_axis: true,
+        y_axis: true,
         y_accessor: 'value',
         y_label: '',
         yax_units: '',
@@ -85,9 +87,9 @@ function moz_chart() {
         x_accessor: 'value',
         binned: false,
         padding_percentage: .1,
-        outer_padding_percentage: .5,
+        outer_padding_percentage: .1,
         height:500,
-        top:20,
+        top:20
     }
 
     var args = arguments[0];
@@ -468,12 +470,15 @@ function xAxis(args) {
             .remove();
     }
 
+    if (!args.x_axis) return this;
+
     //x axis
     g = svg.append('g')
         .classed('x-axis', true)
         .classed('x-axis-small', args.use_small_class);
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
+
 
     //are we adding a label?
     if(args.x_label) {
@@ -492,7 +497,7 @@ function xAxis(args) {
             })
     }
 
-    if((args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks)) {
+    if(args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
             .attr('x1', 
@@ -599,6 +604,9 @@ function yAxis_categorical(args) {
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
 
+
+    if (!args.y_axis) return this;
+
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
         .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 })
@@ -689,6 +697,8 @@ function yAxis(args) {
         $(args.target + ' svg .y-axis')
             .remove();
     }
+
+    if (!args.y_axis) return this;
 
     //y axis
     g = svg.append('g')
@@ -1887,6 +1897,7 @@ charts.bar = function(args) {
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
+            .attr('dy', '.35em')
             .attr('text-anchor', 'end');
 
         var g = svg.append('g')
@@ -1953,9 +1964,7 @@ charts.bar = function(args) {
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
-                                + d[args.y_accessor];
+                            return d[args.y_accessor] + ':   ' + num(d[args.x_accessor]);
                         }
                     });                
             }

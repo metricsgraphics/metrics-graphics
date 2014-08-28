@@ -139,6 +139,23 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
+        moz_chart({
+            title: "No X Axis",
+            description: "Here is an example hiding the x axis.",
+            data: data,
+            decimals: 0,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#hidden1',
+            x_accessor: 'date',
+            y_accessor: 'value',
+            area: false,
+            x_axis: false,
+            small_text: true
+        })
+
         var markers = [{
             'date': new Date('2014-03-17T00:00:00.000Z'),
             'label': 'Look, a spike!'
@@ -410,6 +427,23 @@ $(document).ready(function() {
             target: 'div#small1',
             x_accessor: 'date',
             y_accessor: 'value'
+        });
+
+        moz_chart({
+            title: "No Y Axis",
+            description: "Here is an example hiding the y axis.",
+            data: data,
+            decimals: 0,
+            width: trunk.width,
+            height: trunk.height,
+            right: trunk.right,
+            xax_count: 4,
+            target: 'div#hidden2',
+            x_accessor: 'date',
+            area: false,
+            y_accessor: 'value',
+            small_text: true,
+            y_axis: false
         })
     })
 
@@ -549,15 +583,15 @@ $(document).ready(function() {
         })
     })
 
-
+    var names = ['first', 'second', 'third', 'fourth', 'fifth']
     var bar_data = [];
     d3.range(5).map(function(d){
         return Math.floor(d3.random.logNormal()()*100)
     }).forEach(function(d,i){
         d3.range(d).forEach(function(di,ii){
-            bar_data.push('factor'+(i+1))
+            bar_data.push(names[i])
         })
-    })
+    });
 
     moz_chart({
         title:'Bar Prototype',
@@ -565,9 +599,21 @@ $(document).ready(function() {
         data: bar_data,
         chart_type: 'bar',
         width:trunk.width,
-        height:trunk.height*2,
+        height:trunk.height,
         right:trunk.right,
         target: '#bar1'
+    })
+
+    moz_chart({
+        title:'No Axis',
+        description:'work in progress',
+        data: bar_data,
+        chart_type: 'bar',
+        width:trunk.width,
+        height:trunk.height,
+        right:trunk.right,
+        target: '#bar2',
+        x_axis: false
     })
 
     d3.json('data/points1.json', function(data) {
