@@ -604,23 +604,23 @@ $(document).ready(function() {
             x_accessor: 'x',
             y_accessor: 'y'
         })
-         moz_chart({
-            title: "Lowess",
-            description: "use lowess: true",
-            data: data,
-            lowess: true,
-            chart_type: 'point',
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
-            target: 'div#scatter3',
-            xax_format: function(f) {
-                var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
-            },
-            x_accessor: 'x',
-            y_accessor: 'y'
-        })
+        //  moz_chart({
+        //     title: "Lowess",
+        //     description: "use lowess: true",
+        //     data: data,
+        //     lowess: true,
+        //     chart_type: 'point',
+        //     width: trunk.width,
+        //     height: trunk.height,
+        //     right: trunk.right,
+        //     target: 'div#scatter3',
+        //     xax_format: function(f) {
+        //         var pf = d3.formatPrefix(f);
+        //         return pf.scale(f) + pf.symbol;
+        //     },
+        //     x_accessor: 'x',
+        //     y_accessor: 'y'
+        // })
     })
 
 
