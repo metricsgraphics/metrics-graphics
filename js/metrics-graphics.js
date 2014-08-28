@@ -109,16 +109,16 @@ function moz_chart() {
     else if(args.chart_type == 'point'){
         var a = merge_with_defaults(moz.defaults.point, moz.defaults.all);
         args = merge_with_defaults(args, a);
-        charts.point(args).markers().mainPlot().rollover();
+        charts.point(args).mainPlot().markers().rollover();
     }
     else if(args.chart_type == 'histogram'){
         var a = merge_with_defaults(moz.defaults.histogram, moz.defaults.all);
         args = merge_with_defaults(args, a);
-        charts.histogram(args).markers().mainPlot().rollover();
+        charts.histogram(args).mainPlot().markers().rollover();
     } else if (args.chart_type == 'bar'){
         var a = merge_with_defaults(moz.defaults.bar, moz.defaults.all);
         args = merge_with_defaults(args, a);
-        charts.bar(args).markers().mainPlot().rollover();
+        charts.bar(args).mainPlot().markers().rollover();
     }
     else {
         args = merge_with_defaults(args, moz.defaults.all);
