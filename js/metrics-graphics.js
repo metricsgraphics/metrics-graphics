@@ -492,11 +492,17 @@ function xAxis(args) {
             })
     }
 
-    if(!args.x_extended_ticks && !args.y_extended_ticks) {
+    if((args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks)) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
-            .attr('x1', args.left + args.buffer)
-            .attr('x2', args.width - args.right - args.buffer)
+            .attr('x1', 
+                args.concise == false ?
+                args.left + args.buffer :
+                args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
+            .attr('x2', 
+                args.concise == false ? 
+                args.width - args.right - args.buffer :
+                args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
@@ -744,6 +750,7 @@ function yAxis(args) {
     g.selectAll('.yax-ticks')
         .data(scale_ticks).enter()
             .append('line')
+                .classed('extended-y-ticks', args.y_extended_ticks)
                 .attr('x1', args.left)
                 .attr('x2', function() {
                     return (args.y_extended_ticks)
@@ -751,11 +758,7 @@ function yAxis(args) {
                         : args.left - args.yax_tick;
                 })
                 .attr('y1', args.scales.Y)
-                .attr('y2', args.scales.Y)
-                .attr('class', function() {
-                    if(args.y_extended_ticks)
-                        return 'extended-y-ticks';
-                });
+                .attr('y2', args.scales.Y);
 
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
