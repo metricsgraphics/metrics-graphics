@@ -648,39 +648,63 @@ function yAxis(args) {
         return args.scales.Y(di[args.y_accessor]);
     }
 
-    var current_max, current_min;
+    var min_y, max_y;
 
-    for(var i=0; i<args.data.length; i++) {
-        if (i == 0){
-            max_y = args.data[i][0][args.y_accessor];
-            min_y = args.data[i][0][args.y_accessor];
+    var _set = false;
+    for (var i=0; i < args.data.length; i++) {
+        var a = args.data[i];
+
+        if (args.y_scale_type == 'log') {
+            // filter positive values
+            a = a.filter(function(d) { return d[args.y_accessor] > 0; });
         }
-        current_min = d3.min(args.data[i], function(d){return d[args.y_accessor]})
-        current_max = d3.max(args.data[i], function(d){return d[args.y_accessor]})
 
-        max_y = Math.max(max_y, current_max);
-        min_y = Math.min(min_y, current_min);
+        if (a.length > 0) {
+            // get min/max in one pass
+            var extent = d3.extent(a,function(d) {
+                return d[args.y_accessor];
+            });
+
+            if (!_set) {
+                // min_y and max_y haven't been set
+                min_y = extent[0];
+                max_y = extent[1];
+                _set = true;
+            } else {
+                min_y = Math.min(extent[0], min_y);
+                max_y = Math.max(extent[1], max_y);
+            }
+        }
     }
 
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
 
-    // we are currently saying that if the min val > 0, set 0 as min y.
-    if (min_y >= 0){
-        min_y = 0;
-        args.y_axis_negative = false;
-    } else {
-        min_y = min_y  - (max_y * (args.inflator-1));
-        args.y_axis_negative = true;
+    if (args.y_scale_type != 'log') {
+        // we are currently saying that if the min val > 0, set 0 as min y.
+        if (min_y >= 0){
+            min_y = 0;
+            args.y_axis_negative = false;
+        } else {
+            min_y = min_y  - (max_y * (args.inflator-1));
+            args.y_axis_negative = true;
+        }
     }
 
     if (args.y_scale_type == 'log'){
-        if (min_y <= 0){
-            min_y = 1;
+        if (args.chart_type == 'histogram') {
+            // log histogram plots should start just below 1
+            // so that bins with single counts are visible
+            min_y = 0.2;
+        } else {
+            if (min_y <= 0) {
+                min_y = 1;
+            }
         }
         args.scales.Y = d3.scale.log()
         .domain([min_y, max_y * args.inflator])
-        .range([args.height - args.bottom - args.buffer, args.top]);
+        .range([args.height - args.bottom - args.buffer, args.top])
+        .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
             .domain([min_y, max_y * args.inflator])
@@ -761,7 +785,7 @@ function yAxis(args) {
     if (args.y_scale_type == 'log'){
         // get out only whole logs.
         scale_ticks = scale_ticks.filter(function(d){
-            return log10(d) % 1 === 0 || log10(d) % 1 < 1-1e6;
+            return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
         });
 
     } 
@@ -1129,7 +1153,7 @@ charts.line = function(args) {
         //main area
         var area = d3.svg.area()
             .x(args.scalefns.xf)
-            .y0(args.scales.Y(args.y_scale_type == 'linear' ? 0 : 1))
+            .y0(args.scales.Y.range()[0])
             .y1(args.scalefns.yf)
             .interpolate(args.interpolate);
 
