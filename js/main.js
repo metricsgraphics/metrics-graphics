@@ -389,6 +389,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Glorious Chart",
+        error: 'This data is blocked by Lorem Ipsum. Get your stuff together, Ipsum.',
         chart_type: 'missing-data',
         description: "This is an example of a chart whose data is currently missing.",
         target: '#glorious_chart'

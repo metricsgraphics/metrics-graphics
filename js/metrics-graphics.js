@@ -8,6 +8,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        error: '',                    // if set, a graph will show an error icon and log the error to the console
         animate_on_load: false,       // animate lines on load
         top: 40,                      // the size of the top margin
         bottom: 30,                   // the size of the bottom margin
@@ -256,12 +257,16 @@ function chart_title(args) {
                     'trigger':'hover', 'placement': 'top'});
         }   
     }
+    
+    if(args.error) {
+        error(args);
+    }
 }
 
 //call this to add a warning icon to a graph and log an error to the console
-function error(args, msg) {
+function error(args) {
     var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
-    console.log(msg);
+    console.log('ERROR : ', args.target, ' : ', args.error);
     
     $(args.target + ' .chart_title').append(error);
 }
