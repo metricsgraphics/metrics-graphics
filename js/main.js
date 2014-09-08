@@ -101,7 +101,7 @@ $(document).ready(function() {
 
     moz_chart({
         title: "Histogram 4",
-        description: "Sanity-checking negative data",
+        description: "Sanity-checking negative data.",
         data: fourth,
         chart_type: 'histogram',
         width: trunk.width,
@@ -148,7 +148,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#hidden1',
+            target: '#hidden1',
             x_accessor: 'date',
             y_accessor: 'value',
             area: false,
@@ -256,7 +256,7 @@ $(document).ready(function() {
             width: torso.width*2,
             height: torso.height,
             right: trunk.right,
-            target: 'div#confidence_band',
+            target: '#confidence_band',
             show_years: false,
             show_confidence_band: ['l', 'u'],
             x_extended_ticks: true,
@@ -310,7 +310,7 @@ $(document).ready(function() {
             right: torso.right,
             markers: markers,
             format: 'percentage',
-            target: 'div#percentage',
+            target: '#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -325,7 +325,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#precision2',
+            target: '#precision2',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -341,7 +341,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#no-rollover-text',
+            target: '#no-rollover-text',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -356,7 +356,7 @@ $(document).ready(function() {
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            target: 'div#currency',
+            target: '#currency',
             x_accessor: 'date',
             yax_units: '$',
             y_accessor: 'value'
@@ -375,7 +375,7 @@ $(document).ready(function() {
             width: torso.width,
             height: torso.height,
             right: trunk.right,
-            target: 'div#xnotdate',
+            target: '#xnotdate',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
@@ -391,7 +391,7 @@ $(document).ready(function() {
         title: "Glorious Chart",
         chart_type: 'missing-data',
         description: "This is an example of a chart whose data is currently missing.",
-        target: 'div#glorious_chart'
+        target: '#glorious_chart'
     })
 
     // lower section
@@ -407,7 +407,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#briefing-1',
+            target: '#briefing-1',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -421,7 +421,7 @@ $(document).ready(function() {
             right: small.right,
             top: small.top,
             xax_count: 4,
-            target: 'div#small1',
+            target: '#small1',
             x_accessor: 'date',
             y_accessor: 'value'
         });
@@ -435,7 +435,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#hidden2',
+            target: '#hidden2',
             x_accessor: 'date',
             area: false,
             y_accessor: 'value',
@@ -455,7 +455,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#split_by',
+            target: '#split_by',
             x_accessor: 'date',
             y_accessor: 'release'
         })
@@ -469,7 +469,7 @@ $(document).ready(function() {
             right: trunk.right,
             show_years: false,
             xax_count: 4,
-            target: 'div#modify_time_period',
+            target: '#modify_time_period',
             x_accessor: 'date',
             y_accessor: 'beta'
         })
@@ -488,7 +488,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#briefing-2',
+            target: '#briefing-2',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -502,7 +502,7 @@ $(document).ready(function() {
             right: trunk.right,
             small_text: true,
             xax_count: 4,
-            target: 'div#small2',
+            target: '#small2',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -520,7 +520,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            target: 'div#precision1',
+            target: '#precision1',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -536,11 +536,11 @@ $(document).ready(function() {
             rollover_callback: function(d, i) {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
-                $('div#custom-rollover svg .active_datapoint')
+                $('#custom-rollover svg .active_datapoint')
                     .html('Day ' + (i+1) + ' &nbsp; '
                          + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
-            target: 'div#custom-rollover',
+            target: '#custom-rollover',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -556,7 +556,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
-            target: 'div#neg1',
+            target: '#neg1',
             x_accessor: 'date',
             y_accessor: 'value'
         })
@@ -574,7 +574,7 @@ $(document).ready(function() {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
             },
-            target: 'div#neg2',
+            target: '#neg2',
             x_accessor: 'subject',
             y_accessor: 'measure'
         })
@@ -622,7 +622,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
-            target: 'div#scatter1',
+            target: '#scatter1',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
@@ -632,14 +632,14 @@ $(document).ready(function() {
         })
         moz_chart({
             title: "Least Squares",
-            description: "least squares line: use argument least_squares: true",
+            description: "Least squares line. To get that, set least_squares to true.",
             data: data,
             least_squares: true,
             chart_type: 'point',
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
-            target: 'div#scatter2',
+            target: '#scatter2',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
@@ -656,7 +656,7 @@ $(document).ready(function() {
         //     width: trunk.width,
         //     height: trunk.height,
         //     right: trunk.right,
-        //     target: 'div#scatter3',
+        //     target: '#scatter3',
         //     xax_format: function(f) {
         //         var pf = d3.formatPrefix(f);
         //         return pf.scale(f) + pf.symbol;
@@ -713,7 +713,7 @@ $(document).ready(function() {
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
-                target: 'div#split_by',
+                target: '#split_by',
                 x_accessor: 'date',
                 y_accessor: new_y_accessor
             })
@@ -737,7 +737,7 @@ $(document).ready(function() {
                 show_years: false,
                 transition_on_update: false,
                 xax_count: 4,
-                target: 'div#modify_time_period',
+                target: '#modify_time_period',
                 x_accessor: 'date',
                 y_accessor: 'beta'
             })
