@@ -43,6 +43,15 @@ a.active {
     fill: #5c5c5c;
 }
 
+.barplot rect.bar {
+    shape-rendering: crispEdges;
+    fill: #b6b6fc;
+}
+
+.barplot rect.bar.active {
+    fill: #9e9efc;
+}
+
 .baselines line {
     opacity: 0.2;
     shape-rendering: crispEdges;
@@ -142,15 +151,6 @@ h2.chart_title .fa {
     fill: none;
     shape-rendering: crispEdges;
     stroke: #ccc;
-}
-
-.barplot rect.bar {
-    shape-rendering: crispEdges;
-    fill: #b6b6fc;
-}
-
-.barplot rect.bar .active {
-    fill: #9e9efc;
 }
 
 .histogram .bar rect {

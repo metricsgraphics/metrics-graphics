@@ -2041,17 +2041,14 @@ charts.bar = function(args) {
         //draw rollover bars
         var bar = g.selectAll(".bar")
             .data(args.data[0])
-                .enter().append("g")
-                    .attr("class", "rollover-rects");
-
-        bar.append("rect")
-            .attr("x", args.scales.X(0))
-            .attr("y", args.scalefns.yf)
-            .attr('width', args.width)
-            .attr('height', args.scales.Y.rangeBand())
-            .attr('opacity', 0)
-            .on('mouseover', this.rolloverOn(args))
-            .on('mouseout', this.rolloverOff(args));
+                .enter().append("rect")
+                    .attr("x", args.scales.X(0))
+                    .attr("y", args.scalefns.yf)
+                    .attr('width', args.width)
+                    .attr('height', args.scales.Y.rangeBand()+2)
+                    .attr('opacity', 0)
+                    .on('mouseover', this.rolloverOn(args))
+                    .on('mouseout', this.rolloverOff(args));
     }
 
     this.rolloverOn = function(args) {
@@ -2084,7 +2081,7 @@ charts.bar = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target + ' svg g.barplot rect.bar :eq(' + i + ')'))
+            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', true);
 
             //update rollover text
@@ -2115,7 +2112,7 @@ charts.bar = function(args) {
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
             
             //reset active data point text
