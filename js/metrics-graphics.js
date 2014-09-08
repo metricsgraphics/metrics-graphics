@@ -258,6 +258,7 @@ function chart_title(args) {
     }
 }
 
+//call this to add a warning icon to a graph and log an error to the console
 function error(args, msg) {
     var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
     console.log(msg);
@@ -498,7 +499,7 @@ function process_point(args){
 
 }
 
-function xAxis(args) {
+function x_axis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
     var min_x;
@@ -707,8 +708,8 @@ function xAxis(args) {
     return this;
 }
 
-function yAxis_categorical(args) {
-    // first, come up with yAxis 
+function y_axis_categorical(args) {
+    // first, come up with y_axis 
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
         .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
@@ -737,7 +738,7 @@ function yAxis_categorical(args) {
     return this;
 }
 
-function yAxis(args) {
+function y_axis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
 
@@ -1237,8 +1238,8 @@ charts.line = function(args) {
         raw_data_transformation(args);
         process_line(args);
         init(args);
-        xAxis(args);
-        yAxis(args);
+        x_axis(args);
+        y_axis(args);
         return this;
     }
 
@@ -1629,8 +1630,8 @@ charts.histogram = function(args) {
         raw_data_transformation(args);
         process_histogram(args);
         init(args);
-        xAxis(args);
-        yAxis(args);
+        x_axis(args);
+        y_axis(args);
         return this;
     }
 
@@ -1847,8 +1848,8 @@ charts.point = function(args) {
         raw_data_transformation(args);
         process_point(args);
         init(args);
-        xAxis(args);
-        yAxis(args);
+        x_axis(args);
+        y_axis(args);
         return this;
     }
 
@@ -1974,8 +1975,8 @@ charts.bar = function(args) {
         raw_data_transformation(args);
         process_categorical_variables(args);
         init(args);
-        xAxis(args);
-        yAxis_categorical(args);
+        x_axis(args);
+        y_axis_categorical(args);
         return this;
     }
 
