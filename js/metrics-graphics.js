@@ -124,7 +124,8 @@ function moz_chart() {
         var a = merge_with_defaults(moz.defaults.histogram, moz.defaults.all);
         args = merge_with_defaults(args, a);
         charts.histogram(args).mainPlot().markers().rollover();
-    } else if (args.chart_type == 'bar'){
+    }
+    else if (args.chart_type == 'bar'){
         var a = merge_with_defaults(moz.defaults.bar, moz.defaults.all);
         args = merge_with_defaults(args, a);
         charts.bar(args).mainPlot().markers().rollover();
@@ -255,9 +256,14 @@ function chart_title(args) {
                     'trigger':'hover', 'placement': 'top'});
         }   
     }
-
 }
 
+function error(args, msg) {
+    var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
+    console.log(msg);
+    
+    $(args.target + ' .chart_title').append(error);
+}
 
 function _pow_weight(u, w){
     if (u >= 0 && u <= 1) {
@@ -491,7 +497,6 @@ function process_point(args){
     return this;
 
 }
-
 
 function xAxis(args) {
     var svg = d3.select(args.target + ' svg');
@@ -956,8 +961,6 @@ function raw_data_transformation(args){
 function process_line(args){
     return this;
 }
-
-
 
 function process_histogram(args){
     // if args.binned=False, then we need to bin the data appropriately.

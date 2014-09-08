@@ -329,6 +329,13 @@ text {
     stroke-opacity: 0.1;
 }
 
+h2.chart_title .fa.warning {
+    color: red;
+    cursor: pointer;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
 .x-axis line,
 .y-axis line {
     opacity: 0.3;
