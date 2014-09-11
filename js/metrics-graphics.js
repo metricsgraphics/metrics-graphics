@@ -139,100 +139,6 @@ function moz_chart() {
     return args.data;
 }
 
-
-var button_layout = function(target){
-    this.target = target;
-    this.feature_set = {};
-    this.public_name = {};
-    this.sorters = {};
-
-    this.data = function(data){
-        this._data = data;
-        return this;
-    }
-
-    this.button = function(feature){
-        var sorter, the_label;
-        if (arguments.length>1) {
-            this.public_name[feature] = arguments[1];
-        } 
-        if (arguments.length>2) {
-            this.sorters[feature] = arguments[2];
-        }
-
-        this.feature_set[feature] = [];
-        return this;
-    }
-
-    this.callback = function(callback){
-        this._callback = callback;
-        return this;
-    }
-
-    this.display = function(){
-        var callback = this._callback;
-        var d,f, features, feat;
-        features = Object.keys(this.feature_set);
-        // build out this.feature_set with this.data.
-        for (var i=0; i < this._data.length; i++){
-            d = this._data[i];
-            f = features.map(function(f){return d[f]});
-            for (var j=0;j<features.length;j++){
-                feat=features[j]; 
-                //if (!this.feature_set.hasOwnProperty(feat))     this.feature_set[feat]=[];
-                if (this.feature_set[feat].indexOf(f[j])==-1)   this.feature_set[feat].push(f[j]);
-            }
-        }
-        for (var feat in this.feature_set){
-            if (this.sorters.hasOwnProperty(feat)){
-                this.feature_set[feat].sort(this.sorters[feat]);
-            }
-        }
-        // for (var k in Object.keys(this.sorters)){
-        //     if (this.sorters[k] != null){
-        //         // this.feature_set.
-        //     }
-        // }
-        $(this.target).empty();
-        
-        $(this.target).append("<div class='col-lg-12 segments text-center'></>");
-        for (var feature in this.feature_set){
-            features = this.feature_set[feature];
-            $(this.target + ' div.segments').append(
-                '<div class="btn-group '+strip_punctuation(feature)+'-btns text-left">'+
-                    '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
-                        "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) +"</span>" +
-                        "<span class='title'>all</span>" +
-                        '<span class="caret"></span>' + 
-                    '</button>' +
-                    '<ul class="dropdown-menu" role="menu">' +
-                        '<li><a href="#" data-feature="'+feature+'" data-key="all">All</a></li>' +
-                        '<li class="divider"></li>' +
-                    '</ul>'
-            + '</div>');
-            for (var i=0;i<features.length;i++){
-                if (features[i] != 'all'){
-                    $(this.target + ' div.' + strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
-                    '<li><a href="#" data-feature="' + strip_punctuation(feature) + '" data-key="' + features[i] + '">' 
-                        + features[i] + '</a></li>'
-                    ); 
-                }
-            };
-            $('.'+ strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', function() {
-                var k = $(this).data('key'); 
-                var feature = $(this).data('feature');
-                $('.' + strip_punctuation(feature) + '-btns button.btn span.title').html(k);
-                callback(feature, k);
-                return false;
-            })
-        }
-
-        return this;
-    }
-
-    return this
-}
-
 function chart_title(args) {
     //is chart title different than existing, if so, clear the fine 
     //gentleman, otherwise, move along
@@ -263,245 +169,224 @@ function chart_title(args) {
     }
 }
 
-//call this to add a warning icon to a graph and log an error to the console
-function error(args) {
-    var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
-    console.log('ERROR : ', args.target, ' : ', args.error);
-    
-    $(args.target + ' .chart_title').append(error);
-}
+function y_axis(args) {
+    var svg = d3.select(args.target + ' svg');
+    var g;
 
-function _pow_weight(u, w){
-    if (u >= 0 && u <= 1) {
-        return Math.pow(1 - Math.pow(u,w), w)
+    var min_y, max_y;
+
+    args.scalefns.yf = function(di) {
+        return args.scales.Y(di[args.y_accessor]);
+    }
+
+    var min_y, max_y;
+
+    var _set = false;
+    for (var i=0; i < args.data.length; i++) {
+        var a = args.data[i];
+
+        if (args.y_scale_type == 'log') {
+            // filter positive values
+            a = a.filter(function(d) { return d[args.y_accessor] > 0; });
+        }
+
+        if (a.length > 0) {
+            // get min/max in one pass
+            var extent = d3.extent(a,function(d) {
+                return d[args.y_accessor];
+            });
+
+            if (!_set) {
+                // min_y and max_y haven't been set
+                min_y = extent[0];
+                max_y = extent[1];
+                _set = true;
+            } else {
+                min_y = Math.min(extent[0], min_y);
+                max_y = Math.max(extent[1], max_y);
+            }
+        }
+    }
+
+    min_y = args.min_y ? args.min_y : min_y;
+    max_y = args.max_y ? args.max_y : max_y;
+
+    if (args.y_scale_type != 'log') {
+        // we are currently saying that if the min val > 0, set 0 as min y.
+        if (min_y >= 0){
+            min_y = 0;
+            args.y_axis_negative = false;
+        } else {
+            min_y = min_y  - (max_y * (args.inflator-1));
+            args.y_axis_negative = true;
+        }
+    }
+
+    if (args.y_scale_type == 'log'){
+        if (args.chart_type == 'histogram') {
+            // log histogram plots should start just below 1
+            // so that bins with single counts are visible
+            min_y = 0.2;
+        } else {
+            if (min_y <= 0) {
+                min_y = 1;
+            }
+        }
+        args.scales.Y = d3.scale.log()
+        .domain([min_y, max_y * args.inflator])
+        .range([args.height - args.bottom - args.buffer, args.top])
+        .clamp(true);
     } else {
-        return 0
-    }
-}
-
-function _bisquare_weight(u){
-    return _pow_weight(u, 2);
-}
-
-function _tricube_weight(u){
-    return _pow_weight(u, 3);
-}
-
-function _neighborhood_width(x0, xis){
-    return Array.max(xis.map(function(xi){
-        return Math.abs(x0 - xi)
-    }))
-}
-
-function _manhattan(x1,x2){
-    return Math.abs(x1-x2)
-}
-
-function _weighted_means(wxy){
-    var wsum = d3.sum(wxy.map(function(wxyi){return wxyi.w}));
-    
-    return {
-        xbar:d3.sum(wxy.map(function(wxyi){
-            return wxyi.w * wxyi.x
-        })) / wsum,
-        ybar:d3.sum(wxy.map(function(wxyi){
-            return wxyi.w * wxyi.y
-        })) / wsum
-    }
-}
-
-function _weighted_beta(wxy, xbar, ybar){
-    var num = d3.sum(wxy.map(function(wxyi){
-        return Math.pow(wxyi.w, 2) * (wxyi.x - xbar) * (wxyi.y - ybar)
-    }))
-    var denom = d3.sum(wxy.map(function(wxyi){
-        return Math.pow(wxyi.w, 2) * (Math.pow(wxyi.x - xbar), 2)
-    }))
-    return num / denom;
-}
-
-function _weighted_least_squares(wxy){
-
-    var ybar, xbar, beta_i, x0;
-
-    var _wm = _weighted_means(wxy);
-
-    xbar = _wm.xbar;
-    ybar = _wm.ybar;
-
-    var beta = _weighted_beta(wxy, xbar, ybar)
-
-    return {
-        beta : beta,
-        xbar : xbar,
-        ybar : ybar,
-        x0   : ybar - beta * xbar
-
-    }
-    return num / denom
-}
-
-function _calculate_lowess_fit(x, y, alpha, inc, residuals){
-    // alpha - smoothing factor. 0 < alpha < 1/
-    // 
-    //
-    var k = Math.floor(x.length * alpha);
-
-    var sorted_x = x.slice();
-
-    sorted_x.sort(function(a,b){
-        if (a < b) {return -1}
-        else if (a > b) {return 1}
-        return 0
-    });
-    var x_max = d3.quantile(sorted_x, .98);
-    var x_min = d3.quantile(sorted_x, .02); 
-
-    var xy = d3.zip(x, y, residuals).sort();
-
-    var size = Math.abs(x_max - x_min) / inc;
-
-    var smallest = x_min// - size;
-    var largest = x_max// + size;
-    var x_proto = d3.range(smallest, largest, size);
-    
-    var xi_neighbors;
-    var x_i, beta_i, x0_i, delta_i, xbar, ybar;
-
-    // for each prototype, find its fit.
-    var y_proto = [];
-
-    for (var i = 0; i < x_proto.length; i += 1){
-
-        x_i = x_proto[i]
-
-        // get k closest neighbors.
-        xi_neighbors = xy.map(function(xyi){
-            return [
-                Math.abs(xyi[0] - x_i), 
-                xyi[0], 
-                xyi[1],
-                xyi[2]]
-        }).sort().slice(0, k)
-
-        // Get the largest distance in the neighbor set.
-        delta_i = d3.max(xi_neighbors)[0]
-
-        // Prepare the weights for mean calculation and WLS.
-
-        xi_neighbors = xi_neighbors.map(function(wxy){
-            return {
-                w : _tricube_weight(wxy[0] / delta_i) * wxy[3], 
-                x : wxy[1], 
-                y  :wxy[2]
-            }})
-        
-        // Find the weighted least squares, obviously.
-        var _output = _weighted_least_squares(xi_neighbors)
-
-        x0_i = _output.x0;
-        beta_i = _output.beta;
-
-        // 
-        y_proto.push(x0_i + beta_i * x_i)
-    }
-    return {x:x_proto, y:y_proto};
-}
-
-/* Here are the functions you are looking for. */
-
-function lowess_robust(x, y, alpha, inc){
-    // Used http://www.unc.edu/courses/2007spring/biol/145/001/docs/lectures/Oct27.html
-    // for the clear explanation of robust lowess.
-
-    // calculate the the first pass.
-    var _l;
-    var r = [];
-    var yhat = d3.mean(y);
-    for (var i = 0; i < x.length; i += 1) {r.push(1)};
-    _l = _calculate_lowess_fit(x,y,alpha, inc, r);
-    var x_proto = _l.x;
-    var y_proto = _l.y;
-
-    // Now, take the fit, recalculate the weights, and re-run LOWESS using r*w instead of w.
-
-    for (var i = 0; i < 100; i += 1){
-
-        r = d3.zip(y_proto, y).map(function(yi){
-        return Math.abs(yi[1] - yi[0])
-        })
-
-        var q = d3.quantile(r.sort(), .5)
-
-        r = r.map(function(ri){
-            return _bisquare_weight(ri / (6 * q))
-        })
-
-        _l = _calculate_lowess_fit(x,y,alpha,inc, r);
-        x_proto = _l.x;
-        y_proto = _l.y;
+        args.scales.Y = d3.scale.linear()
+            .domain([min_y, max_y * args.inflator])
+            .range([args.height - args.bottom - args.buffer, args.top]);
     }
 
-    return d3.zip(x_proto, y_proto).map(function(d){
-        var p = {};
-        p.x = d[0];
-        p.y = d[1];
-        return p;
-    });
+    // used for ticks and such, and designed to be paired with log or linear.
+    args.scales.Y_axis = d3.scale.linear()
+            .domain([min_y, max_y * args.inflator])
+            .range([args.height - args.bottom - args.buffer, args.top]);
 
-}
-
-function lowess(x, y, alpha, inc){
-    var r = [];
-    for (var i = 0; i < x.length; i += 1) {r.push(1)}
-    var _l = _calculate_lowess_fit(x, y, alpha, inc, r);
-
-}
-
-function least_squares(x, y) {
-    var xi, yi,
-        _x  = 0,
-        _y  = 0,
-        _xy = 0,
-        _xx = 0;
-
-    var n = x.length;
-
-    var xhat = d3.mean(x);
-    var yhat = d3.mean(y);
-    var numerator = 0, denominator = 0;
-    var xi, yi;
-    for (var i=0; i < x.length; i++){
-        xi = x[i];
-        yi = y[i];
-        numerator += (xi - xhat) * (yi - yhat);
-        denominator += (xi - xhat) * (xi - xhat)
+    var yax_format;
+    if (args.format == 'count') {
+        yax_format = function(f) {
+            if (f < 1.0) {
+                // Don't scale tiny values.
+                return args.yax_units + d3.round(f, args.decimals);
+            } else {
+                var pf = d3.formatPrefix(f);
+                return args.yax_units + pf.scale(f) + pf.symbol;
+            }
+        };
+    }
+    else {
+        yax_format = function(d_) {
+            var n = d3.format('%p');
+            return n(d_);
+        }
     }
 
-    var beta = numerator / denominator;
-    var x0 = yhat - beta * xhat;
-
-
-    return {
-        x0:x0, 
-        beta:beta, 
-        fit:function(x){
-            return x0 + x * beta;
-    }}
-}
-
-function process_point(args){
-
-    var data = args.data[0];
-    var x = data.map(function(d){return d[args.x_accessor]});
-    var y = data.map(function(d){return d[args.y_accessor]});
-    if (args.least_squares){
-        args.ls_line = least_squares(x,y);    
+    //remove the old y-axis, add new one
+    if($(args.target + ' svg .y-axis').length > 0) {
+        $(args.target + ' svg .y-axis')
+            .remove();
     }
-    
-    //args.lowess_line = lowess_robust(x,y, .5, 100)
+
+    if (!args.y_axis) return this;
+
+    //y axis
+    g = svg.append('g')
+        .classed('y-axis', true)
+        .classed('y-axis-small', args.use_small_class);
+
+    //are we adding a label?
+    if(args.y_label) {
+        g.append('text')
+            .attr('class', 'label')
+            .attr('x', function() {
+                return -1 * (args.top + args.buffer + 
+                        ((args.height - args.bottom - args.buffer)
+                            - (args.top + args.buffer)) / 2);
+            })
+            .attr('y', function() {
+                return args.left / 2;
+            })
+            .attr("dy", "0.4em")
+            .attr('text-anchor', 'middle')
+            .text(function(d) {
+                return args.y_label;
+            })
+            .attr("transform", function(d) {
+                return "rotate(-90)";
+            });
+    }
+
+    var scale_ticks = args.scales.Y.ticks(args.yax_count);
+
+    function log10(val) {
+         //return Math.log(val) / Math.LN10;
+         if (val==1000){
+            return 3;
+         }
+         if (val==1000000){
+            return 7;
+         }
+         return Math.log(val) / Math.LN10;
+    }
+    if (args.y_scale_type == 'log'){
+        // get out only whole logs.
+        scale_ticks = scale_ticks.filter(function(d){
+            return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
+        });
+
+    } 
+
+    var last_i = scale_ticks.length-1;
+    if(!args.x_extended_ticks && !args.y_extended_ticks) {
+        g.append('line')
+            .attr('x1', args.left)
+            .attr('x2', args.left)
+            .attr('y1', args.scales.Y(scale_ticks[0]))
+            .attr('y2', args.scales.Y(scale_ticks[last_i]));
+    }
+
+    //add y ticks
+    g.selectAll('.yax-ticks')
+        .data(scale_ticks).enter()
+            .append('line')
+                .classed('extended-y-ticks', args.y_extended_ticks)
+                .attr('x1', args.left)
+                .attr('x2', function() {
+                    return (args.y_extended_ticks)
+                        ? args.width - args.right
+                        : args.left - args.yax_tick;
+                })
+                .attr('y1', args.scales.Y)
+                .attr('y2', args.scales.Y);
+
+    g.selectAll('.yax-labels')
+        .data(scale_ticks).enter()
+            .append('text')
+                .attr('x', args.left - args.yax_tick * 3 / 2)
+                .attr('dx', -3).attr('y', args.scales.Y)
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'end')
+                .text(function(d, i) {
+                    var o = yax_format(d);
+                    return o;
+                })
+
     return this;
+}
 
+function y_axis_categorical(args) {
+    // first, come up with y_axis 
+    args.scales.Y = d3.scale.ordinal()
+        .domain(args.categorical_variables)
+        .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
+
+    args.scalefns.yf = function(di) {
+        return args.scales.Y(di[args.y_accessor]);
+    }
+
+    var svg = d3.select(args.target + ' svg');
+    var g = svg.append('g')
+        .classed('y-axis', true)
+        .classed('y-axis-small', args.use_small_class);
+
+
+    if (!args.y_axis) return this;
+
+    g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+        .attr('x', args.left)
+        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 })
+        .attr('dy', '.35em')
+        .attr('text-anchor', 'end')
+        .text(String)
+    // plot labels
+
+
+    return this;
 }
 
 function x_axis(args) {
@@ -713,367 +598,6 @@ function x_axis(args) {
     return this;
 }
 
-function y_axis_categorical(args) {
-    // first, come up with y_axis 
-    args.scales.Y = d3.scale.ordinal()
-        .domain(args.categorical_variables)
-        .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
-
-    args.scalefns.yf = function(di) {
-        return args.scales.Y(di[args.y_accessor]);
-    }
-
-    var svg = d3.select(args.target + ' svg');
-    var g = svg.append('g')
-        .classed('y-axis', true)
-        .classed('y-axis-small', args.use_small_class);
-
-
-    if (!args.y_axis) return this;
-
-    g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-        .attr('x', args.left)
-        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 })
-        .attr('dy', '.35em')
-        .attr('text-anchor', 'end')
-        .text(String)
-    // plot labels
-
-
-    return this;
-}
-
-function y_axis(args) {
-    var svg = d3.select(args.target + ' svg');
-    var g;
-
-    var min_y, max_y;
-
-    args.scalefns.yf = function(di) {
-        return args.scales.Y(di[args.y_accessor]);
-    }
-
-    var min_y, max_y;
-
-    var _set = false;
-    for (var i=0; i < args.data.length; i++) {
-        var a = args.data[i];
-
-        if (args.y_scale_type == 'log') {
-            // filter positive values
-            a = a.filter(function(d) { return d[args.y_accessor] > 0; });
-        }
-
-        if (a.length > 0) {
-            // get min/max in one pass
-            var extent = d3.extent(a,function(d) {
-                return d[args.y_accessor];
-            });
-
-            if (!_set) {
-                // min_y and max_y haven't been set
-                min_y = extent[0];
-                max_y = extent[1];
-                _set = true;
-            } else {
-                min_y = Math.min(extent[0], min_y);
-                max_y = Math.max(extent[1], max_y);
-            }
-        }
-    }
-
-    min_y = args.min_y ? args.min_y : min_y;
-    max_y = args.max_y ? args.max_y : max_y;
-
-    if (args.y_scale_type != 'log') {
-        // we are currently saying that if the min val > 0, set 0 as min y.
-        if (min_y >= 0){
-            min_y = 0;
-            args.y_axis_negative = false;
-        } else {
-            min_y = min_y  - (max_y * (args.inflator-1));
-            args.y_axis_negative = true;
-        }
-    }
-
-    if (args.y_scale_type == 'log'){
-        if (args.chart_type == 'histogram') {
-            // log histogram plots should start just below 1
-            // so that bins with single counts are visible
-            min_y = 0.2;
-        } else {
-            if (min_y <= 0) {
-                min_y = 1;
-            }
-        }
-        args.scales.Y = d3.scale.log()
-        .domain([min_y, max_y * args.inflator])
-        .range([args.height - args.bottom - args.buffer, args.top])
-        .clamp(true);
-    } else {
-        args.scales.Y = d3.scale.linear()
-            .domain([min_y, max_y * args.inflator])
-            .range([args.height - args.bottom - args.buffer, args.top]);
-    }
-
-    // used for ticks and such, and designed to be paired with log or linear.
-    args.scales.Y_axis = d3.scale.linear()
-            .domain([min_y, max_y * args.inflator])
-            .range([args.height - args.bottom - args.buffer, args.top]);
-
-    var yax_format;
-    if (args.format == 'count') {
-        yax_format = function(f) {
-            if (f < 1.0) {
-                // Don't scale tiny values.
-                return args.yax_units + d3.round(f, args.decimals);
-            } else {
-                var pf = d3.formatPrefix(f);
-                return args.yax_units + pf.scale(f) + pf.symbol;
-            }
-        };
-    }
-    else {
-        yax_format = function(d_) {
-            var n = d3.format('%p');
-            return n(d_);
-        }
-    }
-
-    //remove the old y-axis, add new one
-    if($(args.target + ' svg .y-axis').length > 0) {
-        $(args.target + ' svg .y-axis')
-            .remove();
-    }
-
-    if (!args.y_axis) return this;
-
-    //y axis
-    g = svg.append('g')
-        .classed('y-axis', true)
-        .classed('y-axis-small', args.use_small_class);
-
-    //are we adding a label?
-    if(args.y_label) {
-        g.append('text')
-            .attr('class', 'label')
-            .attr('x', function() {
-                return -1 * (args.top + args.buffer + 
-                        ((args.height - args.bottom - args.buffer)
-                            - (args.top + args.buffer)) / 2);
-            })
-            .attr('y', function() {
-                return args.left / 2;
-            })
-            .attr("dy", "0.4em")
-            .attr('text-anchor', 'middle')
-            .text(function(d) {
-                return args.y_label;
-            })
-            .attr("transform", function(d) {
-                return "rotate(-90)";
-            });
-    }
-
-    var scale_ticks = args.scales.Y.ticks(args.yax_count);
-
-    function log10(val) {
-         //return Math.log(val) / Math.LN10;
-         if (val==1000){
-            return 3;
-         }
-         if (val==1000000){
-            return 7;
-         }
-         return Math.log(val) / Math.LN10;
-    }
-    if (args.y_scale_type == 'log'){
-        // get out only whole logs.
-        scale_ticks = scale_ticks.filter(function(d){
-            return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
-        });
-
-    } 
-
-    var last_i = scale_ticks.length-1;
-    if(!args.x_extended_ticks && !args.y_extended_ticks) {
-        g.append('line')
-            .attr('x1', args.left)
-            .attr('x2', args.left)
-            .attr('y1', args.scales.Y(scale_ticks[0]))
-            .attr('y2', args.scales.Y(scale_ticks[last_i]));
-    }
-
-    //add y ticks
-    g.selectAll('.yax-ticks')
-        .data(scale_ticks).enter()
-            .append('line')
-                .classed('extended-y-ticks', args.y_extended_ticks)
-                .attr('x1', args.left)
-                .attr('x2', function() {
-                    return (args.y_extended_ticks)
-                        ? args.width - args.right
-                        : args.left - args.yax_tick;
-                })
-                .attr('y1', args.scales.Y)
-                .attr('y2', args.scales.Y);
-
-    g.selectAll('.yax-labels')
-        .data(scale_ticks).enter()
-            .append('text')
-                .attr('x', args.left - args.yax_tick * 3 / 2)
-                .attr('dx', -3).attr('y', args.scales.Y)
-                .attr('dy', '.35em')
-                .attr('text-anchor', 'end')
-                .text(function(d, i) {
-                    var o = yax_format(d);
-                    return o;
-                })
-
-    return this;
-}
-
-function raw_data_transformation(args){
-    //do we need to turn json data to 2d array?
-
-    if(!$.isArray(args.data[0]))
-        args.data = [args.data];
-    //
-
-    if ($.isArray(args.y_accessor)){
-        args.data = args.data.map(function(_d){
-            return args.y_accessor.map(function(ya){
-                return _d.map(function(di){
-                    di = clone(di);
-                    di['multiline_y_accessor'] = di[ya];
-                    return di;
-                })
-            })
-        })[0];
-        args.y_accessor = 'multiline_y_accessor';
-    }
-
-    //sort x-axis data.
-    if (args.chart_type == 'line'){
-        for(var i=0; i<args.data.length; i++) {
-            args.data[i].sort(function(a, b) {
-                return a[args.x_accessor] - b[args.x_accessor];
-            });
-        }
-    }
-    return this
-}
-
-function process_line(args){
-    return this;
-}
-
-function process_histogram(args){
-    // if args.binned=False, then we need to bin the data appropriately.
-    // if args.binned=True, then we need to make sure to compute the relevant computed data.
-    // the outcome of either of these should be something in args.computed_data.
-    // the histogram plotting function will be looking there for the data to plot.
-
-    // we need to compute an array of objects.
-    // each object has an x, y, and dx.
-
-    // histogram data is always single dimension
-    var our_data = args.data[0];
-    var extracted_data;
-    if (args.binned==false){
-        // use d3's built-in layout.histogram functionality to compute what you need.
-
-        if (typeof(our_data[0]) == 'object'){
-            // we are dealing with an array of objects. Extract the data value of interest.
-            extracted_data = our_data
-                .map(function(d){ 
-                    return d[args.x_accessor];
-                });
-        } else if (typeof(our_data[0]) == 'number'){
-            // we are dealing with a simple array of numbers. No extraction needed.
-            extracted_data = our_data;
-        } 
-        else {
-            console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
-            return;
-        }
-
-        var hist = d3.layout.histogram()
-        if (args.bins){
-            hist = hist.bins(args.bins);
-        }
-        args.processed_data = hist(extracted_data)
-            .map(function(d){
-                // extract only the data we need per data point.
-                return {'x': d['x'], 'y':d['y'], 'dx': d['dx']};
-            })
-    } else {
-        // here, we just need to reconstruct the array of objects
-        // take the x accessor and y accessor.
-        // pull the data as x and y. y is count.
-
-        args.processed_data = our_data.map(function(d){
-            return {'x': d[args.x_accessor], 'y': d[args.y_accessor]}
-        });
-        var this_pt;
-        var next_pt;
-        // we still need to compute the dx component for each data point
-        for (var i=0; i < args.processed_data.length; i++){
-            this_pt = args.processed_data[i];
-            if (i == args.processed_data.length-1){
-                this_pt.dx = args.processed_data[i-1].dx;
-            } else {
-                next_pt = args.processed_data[i+1];
-                this_pt.dx = next_pt.x - this_pt.x;
-            }
-        }
-    }
-    args.data = [args.processed_data];
-    args.x_accessor = args.processed_x_accessor;
-    args.y_accessor = args.processed_y_accessor;
-    return this;
-}
-
-
-function process_categorical_variables(args){
-    // For use with bar charts, etc.
-
-    var extracted_data, processed_data={}, pd=[];
-    var our_data = args.data[0];
-    args.categorical_variables = [];
-
-    if (args.binned == false){
-        if (typeof(our_data[0]) == 'object') {
-            // we are dealing with an array of objects. Extract the data value of interest.
-            extracted_data = our_data
-                .map(function(d){ 
-                    return d[args.y_accessor];
-                });
-        } else {
-            extracted_data = our_data;
-        }
-        var this_dp;
-        for (var i=0; i< extracted_data.length; i++){
-            this_dp=extracted_data[i];
-            if (args.categorical_variables.indexOf(this_dp) == -1) args.categorical_variables.push(this_dp)
-            if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp]=0;
-            
-            processed_data[this_dp]+=1;
-        }
-        processed_data = Object.keys(processed_data).map(function(d){
-            var obj = {};
-            obj[args.x_accessor] = processed_data[d];
-            obj[args.y_accessor] = d;
-            return obj;
-        })
-    } else {
-        // nothing needs to really happen here.
-        processed_data = our_data;
-    }
-    args.data = [processed_data];
-    return this;
-}
-
 function init(args) {
     var defaults = {
         target: null,
@@ -1166,76 +690,169 @@ function init(args) {
 }
 
 function markers(args) {
-        var svg = d3.select(args.target + ' svg');
-        var gm;
-        var gb;
+    var svg = d3.select(args.target + ' svg');
+    var gm;
+    var gb;
 
-        if(args.markers) {
-            if($(args.target + ' svg .markers').length > 0) {
-                $(args.target + ' svg .markers')
-                    .remove();
-            }
-
-            gm = svg.append('g')
-                .attr('class', 'markers');
-
-            gm.selectAll('.markers')
-                .data(args.markers)
-                .enter().append('line')
-                    .attr('x1', function(d) {
-                        return args.scales.X(d[args.x_accessor])
-                    })
-                    .attr('x2', function(d) {
-                        return args.scales.X(d[args.x_accessor])
-                    })
-                    .attr('y1', args.top)
-                    .attr('y2', function() {
-                        return args.height - args.bottom - args.buffer;
-                    })
-                    .attr('stroke-dasharray', '3,1');
-
-            gm.selectAll('.markers')
-                .data(args.markers)
-                .enter().append('text')
-                    .attr('x', function(d) {
-                        return args.scales.X(d[args.x_accessor])
-                    })
-                    .attr('y', args.top - 8)
-                    .attr('text-anchor', 'middle')
-                    .text(function(d) {
-                        return d['label'];
-                    });
+    if(args.markers) {
+        if($(args.target + ' svg .markers').length > 0) {
+            $(args.target + ' svg .markers')
+                .remove();
         }
 
-        if(args.baselines) {
-            svg.selectAll('.baselines').remove();
-            gb = svg.append('g')
-                .attr('class', 'baselines');
+        gm = svg.append('g')
+            .attr('class', 'markers');
 
-            gb.selectAll('.baselines')
-                .data(args.baselines)
-                .enter().append('line')
-                    .attr('x1', args.left + args.buffer)
-                    .attr('x2', args.width-args.right-args.buffer)
-                    .attr('y1', function(d){
-                        return args.scales.Y(d['value'])})
-                    .attr('y2', function(d){return args.scales.Y(d['value'])});
+        gm.selectAll('.markers')
+            .data(args.markers)
+            .enter().append('line')
+                .attr('x1', function(d) {
+                    return args.scales.X(d[args.x_accessor])
+                })
+                .attr('x2', function(d) {
+                    return args.scales.X(d[args.x_accessor])
+                })
+                .attr('y1', args.top)
+                .attr('y2', function() {
+                    return args.height - args.bottom - args.buffer;
+                })
+                .attr('stroke-dasharray', '3,1');
 
-            gb.selectAll('.baselines')
-                .data(args.baselines)
-                .enter().append('text')
-                    .attr('x', args.width-args.right - args.buffer)
-                    .attr('y', function(d){return args.scales.Y(d['value'])})
-                    .attr('dy', -3)
-                    .attr('text-anchor', 'end')
-                    .text(function(d) {
-                        return d['label'];
-                    });
+        gm.selectAll('.markers')
+            .data(args.markers)
+            .enter().append('text')
+                .attr('x', function(d) {
+                    return args.scales.X(d[args.x_accessor])
+                })
+                .attr('y', args.top - 8)
+                .attr('text-anchor', 'middle')
+                .text(function(d) {
+                    return d['label'];
+                });
+    }
+
+    if(args.baselines) {
+        svg.selectAll('.baselines').remove();
+        gb = svg.append('g')
+            .attr('class', 'baselines');
+
+        gb.selectAll('.baselines')
+            .data(args.baselines)
+            .enter().append('line')
+                .attr('x1', args.left + args.buffer)
+                .attr('x2', args.width-args.right-args.buffer)
+                .attr('y1', function(d){
+                    return args.scales.Y(d['value'])})
+                .attr('y2', function(d){return args.scales.Y(d['value'])});
+
+        gb.selectAll('.baselines')
+            .data(args.baselines)
+            .enter().append('text')
+                .attr('x', args.width-args.right - args.buffer)
+                .attr('y', function(d){return args.scales.Y(d['value'])})
+                .attr('dy', -3)
+                .attr('text-anchor', 'end')
+                .text(function(d) {
+                    return d['label'];
+                });
+    }
+
+    return this;
+}
+
+var button_layout = function(target){
+    this.target = target;
+    this.feature_set = {};
+    this.public_name = {};
+    this.sorters = {};
+
+    this.data = function(data){
+        this._data = data;
+        return this;
+    }
+
+    this.button = function(feature){
+        var sorter, the_label;
+        if (arguments.length>1) {
+            this.public_name[feature] = arguments[1];
+        } 
+        if (arguments.length>2) {
+            this.sorters[feature] = arguments[2];
+        }
+
+        this.feature_set[feature] = [];
+        return this;
+    }
+
+    this.callback = function(callback){
+        this._callback = callback;
+        return this;
+    }
+
+    this.display = function(){
+        var callback = this._callback;
+        var d,f, features, feat;
+        features = Object.keys(this.feature_set);
+        // build out this.feature_set with this.data.
+        for (var i=0; i < this._data.length; i++){
+            d = this._data[i];
+            f = features.map(function(f){return d[f]});
+            for (var j=0;j<features.length;j++){
+                feat=features[j]; 
+                //if (!this.feature_set.hasOwnProperty(feat))     this.feature_set[feat]=[];
+                if (this.feature_set[feat].indexOf(f[j])==-1)   this.feature_set[feat].push(f[j]);
+            }
+        }
+        for (var feat in this.feature_set){
+            if (this.sorters.hasOwnProperty(feat)){
+                this.feature_set[feat].sort(this.sorters[feat]);
+            }
+        }
+        // for (var k in Object.keys(this.sorters)){
+        //     if (this.sorters[k] != null){
+        //         // this.feature_set.
+        //     }
+        // }
+        $(this.target).empty();
+        
+        $(this.target).append("<div class='col-lg-12 segments text-center'></>");
+        for (var feature in this.feature_set){
+            features = this.feature_set[feature];
+            $(this.target + ' div.segments').append(
+                '<div class="btn-group '+strip_punctuation(feature)+'-btns text-left">'+
+                    '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
+                        "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) +"</span>" +
+                        "<span class='title'>all</span>" +
+                        '<span class="caret"></span>' + 
+                    '</button>' +
+                    '<ul class="dropdown-menu" role="menu">' +
+                        '<li><a href="#" data-feature="'+feature+'" data-key="all">All</a></li>' +
+                        '<li class="divider"></li>' +
+                    '</ul>'
+            + '</div>');
+            for (var i=0;i<features.length;i++){
+                if (features[i] != 'all'){
+                    $(this.target + ' div.' + strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
+                    '<li><a href="#" data-feature="' + strip_punctuation(feature) + '" data-key="' + features[i] + '">' 
+                        + features[i] + '</a></li>'
+                    ); 
+                }
+            };
+            $('.'+ strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', function() {
+                var k = $(this).data('key'); 
+                var feature = $(this).data('feature');
+                $('.' + strip_punctuation(feature) + '-btns button.btn span.title').html(k);
+                callback(feature, k);
+                return false;
+            })
         }
 
         return this;
     }
-    
+
+    return this
+}
+
 charts.line = function(args) {
     this.args = args;
 
@@ -1815,37 +1432,6 @@ charts.histogram = function(args) {
     return this;
 }
 
-function add_ls(args){
-    var svg = d3.select(args.target + ' svg');
-    var data = args.data[0];
-    //var min_x = d3.min(data, function(d){return d[args.x_accessor]});
-    //var max_x = d3.max(data, function(d){return d[args.x_accessor]});
-    var min_x = args.scales.X.ticks(args.xax_count)[0];
-    var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length-1];
-    
-    svg.append('svg:line')
-        .attr('x1', args.scales.X(min_x))
-        .attr('x2', args.scales.X(max_x))
-        .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
-        .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
-        .attr('stroke-width', 1)
-        .attr('stroke', 'red');
-}
-
-function add_lowess(args){
-    var svg = d3.select(args.target + ' svg');
-    var lowess = args.lowess_line;
-
-    var line = d3.svg.line()
-        .x(function(d){return args.scales.X(d.x)})
-        .y(function(d){return args.scales.Y(d.y)})
-            .interpolate(args.interpolate);
-    svg.append('path')
-        .attr('d', line(lowess))
-        .attr('stroke', 'red')
-        .attr('fill', 'none');
-}
-
 charts.point = function(args) {
     this.args = args;
 
@@ -1963,16 +1549,12 @@ charts.point = function(args) {
     return this;
 }
 
-
 // BARCHART:
 // x - function that processes data
 //     - pass in a feature name, get a count
 //     - have raw feature: value function
 // - need a way of changing the y axis and x axis
 // - need to sort out rollovers
-
-
-
 charts.bar = function(args) {
     this.args = args;
 
@@ -2171,6 +1753,407 @@ charts.missing = function(args) {
     return this;
 }
 
+function raw_data_transformation(args){
+    //do we need to turn json data to 2d array?
+
+    if(!$.isArray(args.data[0]))
+        args.data = [args.data];
+    //
+
+    if ($.isArray(args.y_accessor)){
+        args.data = args.data.map(function(_d){
+            return args.y_accessor.map(function(ya){
+                return _d.map(function(di){
+                    di = clone(di);
+                    di['multiline_y_accessor'] = di[ya];
+                    return di;
+                })
+            })
+        })[0];
+        args.y_accessor = 'multiline_y_accessor';
+    }
+
+    //sort x-axis data.
+    if (args.chart_type == 'line'){
+        for(var i=0; i<args.data.length; i++) {
+            args.data[i].sort(function(a, b) {
+                return a[args.x_accessor] - b[args.x_accessor];
+            });
+        }
+    }
+    return this
+}
+
+function process_line(args){
+    return this;
+}
+
+function process_histogram(args){
+    // if args.binned=False, then we need to bin the data appropriately.
+    // if args.binned=True, then we need to make sure to compute the relevant computed data.
+    // the outcome of either of these should be something in args.computed_data.
+    // the histogram plotting function will be looking there for the data to plot.
+
+    // we need to compute an array of objects.
+    // each object has an x, y, and dx.
+
+    // histogram data is always single dimension
+    var our_data = args.data[0];
+    var extracted_data;
+    if (args.binned==false){
+        // use d3's built-in layout.histogram functionality to compute what you need.
+
+        if (typeof(our_data[0]) == 'object'){
+            // we are dealing with an array of objects. Extract the data value of interest.
+            extracted_data = our_data
+                .map(function(d){ 
+                    return d[args.x_accessor];
+                });
+        } else if (typeof(our_data[0]) == 'number'){
+            // we are dealing with a simple array of numbers. No extraction needed.
+            extracted_data = our_data;
+        } 
+        else {
+            console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
+            return;
+        }
+
+        var hist = d3.layout.histogram()
+        if (args.bins){
+            hist = hist.bins(args.bins);
+        }
+        args.processed_data = hist(extracted_data)
+            .map(function(d){
+                // extract only the data we need per data point.
+                return {'x': d['x'], 'y':d['y'], 'dx': d['dx']};
+            })
+    } else {
+        // here, we just need to reconstruct the array of objects
+        // take the x accessor and y accessor.
+        // pull the data as x and y. y is count.
+
+        args.processed_data = our_data.map(function(d){
+            return {'x': d[args.x_accessor], 'y': d[args.y_accessor]}
+        });
+        var this_pt;
+        var next_pt;
+        // we still need to compute the dx component for each data point
+        for (var i=0; i < args.processed_data.length; i++){
+            this_pt = args.processed_data[i];
+            if (i == args.processed_data.length-1){
+                this_pt.dx = args.processed_data[i-1].dx;
+            } else {
+                next_pt = args.processed_data[i+1];
+                this_pt.dx = next_pt.x - this_pt.x;
+            }
+        }
+    }
+    args.data = [args.processed_data];
+    args.x_accessor = args.processed_x_accessor;
+    args.y_accessor = args.processed_y_accessor;
+    return this;
+}
+
+function process_categorical_variables(args){
+    // For use with bar charts, etc.
+
+    var extracted_data, processed_data={}, pd=[];
+    var our_data = args.data[0];
+    args.categorical_variables = [];
+
+    if (args.binned == false){
+        if (typeof(our_data[0]) == 'object') {
+            // we are dealing with an array of objects. Extract the data value of interest.
+            extracted_data = our_data
+                .map(function(d){ 
+                    return d[args.y_accessor];
+                });
+        } else {
+            extracted_data = our_data;
+        }
+        var this_dp;
+        for (var i=0; i< extracted_data.length; i++){
+            this_dp=extracted_data[i];
+            if (args.categorical_variables.indexOf(this_dp) == -1) args.categorical_variables.push(this_dp)
+            if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp]=0;
+            
+            processed_data[this_dp]+=1;
+        }
+        processed_data = Object.keys(processed_data).map(function(d){
+            var obj = {};
+            obj[args.x_accessor] = processed_data[d];
+            obj[args.y_accessor] = d;
+            return obj;
+        })
+    } else {
+        // nothing needs to really happen here.
+        processed_data = our_data;
+    }
+    args.data = [processed_data];
+    return this;
+}
+
+function process_point(args){
+
+    var data = args.data[0];
+    var x = data.map(function(d){return d[args.x_accessor]});
+    var y = data.map(function(d){return d[args.y_accessor]});
+    if (args.least_squares){
+        args.ls_line = least_squares(x,y);    
+    }
+    
+    //args.lowess_line = lowess_robust(x,y, .5, 100)
+    return this;
+
+}
+
+function add_ls(args){
+    var svg = d3.select(args.target + ' svg');
+    var data = args.data[0];
+    //var min_x = d3.min(data, function(d){return d[args.x_accessor]});
+    //var max_x = d3.max(data, function(d){return d[args.x_accessor]});
+    var min_x = args.scales.X.ticks(args.xax_count)[0];
+    var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length-1];
+    
+    svg.append('svg:line')
+        .attr('x1', args.scales.X(min_x))
+        .attr('x2', args.scales.X(max_x))
+        .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
+        .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
+        .attr('stroke-width', 1)
+        .attr('stroke', 'red');
+}
+
+function add_lowess(args){
+    var svg = d3.select(args.target + ' svg');
+    var lowess = args.lowess_line;
+
+    var line = d3.svg.line()
+        .x(function(d){return args.scales.X(d.x)})
+        .y(function(d){return args.scales.Y(d.y)})
+            .interpolate(args.interpolate);
+    svg.append('path')
+        .attr('d', line(lowess))
+        .attr('stroke', 'red')
+        .attr('fill', 'none');
+}
+
+function lowess_robust(x, y, alpha, inc){
+    // Used http://www.unc.edu/courses/2007spring/biol/145/001/docs/lectures/Oct27.html
+    // for the clear explanation of robust lowess.
+
+    // calculate the the first pass.
+    var _l;
+    var r = [];
+    var yhat = d3.mean(y);
+    for (var i = 0; i < x.length; i += 1) {r.push(1)};
+    _l = _calculate_lowess_fit(x,y,alpha, inc, r);
+    var x_proto = _l.x;
+    var y_proto = _l.y;
+
+    // Now, take the fit, recalculate the weights, and re-run LOWESS using r*w instead of w.
+
+    for (var i = 0; i < 100; i += 1){
+
+        r = d3.zip(y_proto, y).map(function(yi){
+        return Math.abs(yi[1] - yi[0])
+        })
+
+        var q = d3.quantile(r.sort(), .5)
+
+        r = r.map(function(ri){
+            return _bisquare_weight(ri / (6 * q))
+        })
+
+        _l = _calculate_lowess_fit(x,y,alpha,inc, r);
+        x_proto = _l.x;
+        y_proto = _l.y;
+    }
+
+    return d3.zip(x_proto, y_proto).map(function(d){
+        var p = {};
+        p.x = d[0];
+        p.y = d[1];
+        return p;
+    });
+
+}
+
+function lowess(x, y, alpha, inc){
+    var r = [];
+    for (var i = 0; i < x.length; i += 1) {r.push(1)}
+    var _l = _calculate_lowess_fit(x, y, alpha, inc, r);
+
+}
+
+function least_squares(x, y) {
+    var xi, yi,
+        _x  = 0,
+        _y  = 0,
+        _xy = 0,
+        _xx = 0;
+
+    var n = x.length;
+
+    var xhat = d3.mean(x);
+    var yhat = d3.mean(y);
+    var numerator = 0, denominator = 0;
+    var xi, yi;
+    for (var i=0; i < x.length; i++){
+        xi = x[i];
+        yi = y[i];
+        numerator += (xi - xhat) * (yi - yhat);
+        denominator += (xi - xhat) * (xi - xhat)
+    }
+
+    var beta = numerator / denominator;
+    var x0 = yhat - beta * xhat;
+
+
+    return {
+        x0:x0, 
+        beta:beta, 
+        fit:function(x){
+            return x0 + x * beta;
+    }}
+}
+
+function _pow_weight(u, w){
+    if (u >= 0 && u <= 1) {
+        return Math.pow(1 - Math.pow(u,w), w)
+    } else {
+        return 0
+    }
+}
+
+function _bisquare_weight(u){
+    return _pow_weight(u, 2);
+}
+
+function _tricube_weight(u){
+    return _pow_weight(u, 3);
+}
+
+function _neighborhood_width(x0, xis){
+    return Array.max(xis.map(function(xi){
+        return Math.abs(x0 - xi)
+    }))
+}
+
+function _manhattan(x1,x2){
+    return Math.abs(x1-x2)
+}
+
+function _weighted_means(wxy){
+    var wsum = d3.sum(wxy.map(function(wxyi){return wxyi.w}));
+    
+    return {
+        xbar:d3.sum(wxy.map(function(wxyi){
+            return wxyi.w * wxyi.x
+        })) / wsum,
+        ybar:d3.sum(wxy.map(function(wxyi){
+            return wxyi.w * wxyi.y
+        })) / wsum
+    }
+}
+
+function _weighted_beta(wxy, xbar, ybar){
+    var num = d3.sum(wxy.map(function(wxyi){
+        return Math.pow(wxyi.w, 2) * (wxyi.x - xbar) * (wxyi.y - ybar)
+    }))
+    var denom = d3.sum(wxy.map(function(wxyi){
+        return Math.pow(wxyi.w, 2) * (Math.pow(wxyi.x - xbar), 2)
+    }))
+    return num / denom;
+}
+
+function _weighted_least_squares(wxy){
+
+    var ybar, xbar, beta_i, x0;
+
+    var _wm = _weighted_means(wxy);
+
+    xbar = _wm.xbar;
+    ybar = _wm.ybar;
+
+    var beta = _weighted_beta(wxy, xbar, ybar)
+
+    return {
+        beta : beta,
+        xbar : xbar,
+        ybar : ybar,
+        x0   : ybar - beta * xbar
+
+    }
+    return num / denom
+}
+
+function _calculate_lowess_fit(x, y, alpha, inc, residuals){
+    // alpha - smoothing factor. 0 < alpha < 1/
+    // 
+    //
+    var k = Math.floor(x.length * alpha);
+
+    var sorted_x = x.slice();
+
+    sorted_x.sort(function(a,b){
+        if (a < b) {return -1}
+        else if (a > b) {return 1}
+        return 0
+    });
+    var x_max = d3.quantile(sorted_x, .98);
+    var x_min = d3.quantile(sorted_x, .02); 
+
+    var xy = d3.zip(x, y, residuals).sort();
+
+    var size = Math.abs(x_max - x_min) / inc;
+
+    var smallest = x_min// - size;
+    var largest = x_max// + size;
+    var x_proto = d3.range(smallest, largest, size);
+    
+    var xi_neighbors;
+    var x_i, beta_i, x0_i, delta_i, xbar, ybar;
+
+    // for each prototype, find its fit.
+    var y_proto = [];
+
+    for (var i = 0; i < x_proto.length; i += 1){
+
+        x_i = x_proto[i]
+
+        // get k closest neighbors.
+        xi_neighbors = xy.map(function(xyi){
+            return [
+                Math.abs(xyi[0] - x_i), 
+                xyi[0], 
+                xyi[1],
+                xyi[2]]
+        }).sort().slice(0, k)
+
+        // Get the largest distance in the neighbor set.
+        delta_i = d3.max(xi_neighbors)[0]
+
+        // Prepare the weights for mean calculation and WLS.
+
+        xi_neighbors = xi_neighbors.map(function(wxy){
+            return {
+                w : _tricube_weight(wxy[0] / delta_i) * wxy[3], 
+                x : wxy[1], 
+                y  :wxy[2]
+            }})
+        
+        // Find the weighted least squares, obviously.
+        var _output = _weighted_least_squares(xi_neighbors)
+
+        x0_i = _output.x0;
+        beta_i = _output.beta;
+
+        // 
+        y_proto.push(x0_i + beta_i * x_i)
+    }
+    return {x:x_proto, y:y_proto};
+}
 
 //a set of helper functions, some that we've written, others that we've borrowed
 function modify_time_period(data, past_n_days) {
@@ -2293,3 +2276,12 @@ function arrDiff(a,b) {
             diff.push(a[i]);
     return diff;
 }
+
+//call this to add a warning icon to a graph and log an error to the console
+function error(args) {
+    var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
+    console.log('ERROR : ', args.target, ' : ', args.error);
+    
+    $(args.target + ' .chart_title').append(error);
+}
+
