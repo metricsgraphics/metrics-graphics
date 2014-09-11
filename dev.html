@@ -1,0 +1,345 @@
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta property="og:title" content="MetricsGraphics.js" />
+    <meta property="og:description" content="MetricsGraphics.js is a library optimized 
+        for visualizing and laying out time-series data. It provides a simple way to produce 
+        common types of charts in a principled, consistent and responsive way." />
+    <meta property="og:image" content="http://metricsgraphicsjs.org/images/og-logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://metricsgraphicsjs.org/" />
+    <meta property="og:site_name" content="MetricsGraphics.js" />
+    
+    <title>MetricsGraphics.js (DEV)</title>
+    
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' 
+        rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' 
+        rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" 
+        rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" id="light">
+    <link href="css/metrics-graphics.css" rel="stylesheet" type="text/css" id="light">
+    <link href="" rel="stylesheet" type="text/css" id="dark">
+    <link href="css/metrics-graphics-demo.css" rel="stylesheet" type="text/css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js" charset="utf-8"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+
+    <!-- dev start -->
+    <script src='src/common/moz_chart.js'></script>
+    <script src='src/common/chart_title.js'></script>
+    <script src='src/common/y_axis.js'></script>
+    <script src='src/common/x_axis.js'></script>
+    <script src='src/common/init.js'></script>
+    <script src='src/common/markers.js'></script>
+    <script src='src/layout/button.js'></script>
+    <script src='src/charts/line.js'></script>
+    <script src='src/charts/histogram.js'></script>
+    <script src='src/charts/point.js'></script>
+    <script src='src/charts/bar.js'></script>
+    <script src='src/charts/missing.js'></script>
+    <script src='src/misc/process.js'></script>
+    <script src='src/misc/smoothers.js'></script>
+    <script src='src/misc/utility.js'></script>
+    <script src='src/misc/error.js'></script>
+    <!-- dev end -->
+
+
+    <script src='js/main.js'></script>
+    
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51487512-1', 'metricsgraphicsjs.org');
+  ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <div id='container' class='container'>
+        <div id='content-body'>
+            <div id='head'>
+                <ul>
+                    <li><a href='https://github.com/mozilla/metrics-graphics#quick-start-guide'>Download</a></li>
+                    <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
+                    <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
+                    <li class='divider'>|</li>
+                    <li><a href="#" id="light-css" class="pill active">Light style</a></li>
+                    <li><a href="#" id="dark-css" class="pill">Dark style</a></li>
+                </ul>
+                
+                <img src="images/logo.svg" id="logo" class="svg" />
+            </div>
+
+            <div id='description'>
+                <p><i>MetricsGraphics.js</i> is a library optimized for visualizing and 
+                laying out time-series data. At just 20KB in size (minified), it provides a simple 
+                way to produce common types of charts in a principled, consistent and 
+                responsive way. The library currently supports a wide variety of line 
+                charts, as demonstrated below. Take a look at 
+                <a href='https://github.com/mozilla/metrics-graphics#quick-start-guide'>
+                the project's page on GitHub</a> for more. The data here is synthetic and 
+                is generated using the included <i>make_fake_data.py</i> script.</p>
+            </div>
+
+            <div id='torso'>
+                <div id='fake_users1'></div>
+                <div id='fake_users2'></div>
+                <div id='spike' class='main-area-solid'></div>
+                <div id='percentage'></div>
+                <div id='currency'></div>
+                <div id='xnotdate'></div>
+                <div id='linked_multi1'></div>
+                <div id='linked_multi2'></div>
+                <div id='glorious_chart' class='missing'></div>
+            </div>
+            <div id='trunk'>
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Hassle-Free Layouts</h2>
+                        <p>We use Bootstrap's grid template to lay out charts. This means 
+                        that it is ridiculously easy to create grids of arbitrary sizes 
+                        and place charts and their corresponding prose or associated 
+                        charts wherever and however one pleases.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 gr extended-y-ticks' id='fake_users3'></div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Confidence Band</h2>
+                        <p>We regularly make use of confidence bands with forecasts. One 
+                        can easily specify a confidence band by enabling the option and 
+                        specifying the elements that contain the lower and upper values 
+                        for each data point.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 gr extended-x-ticks' id='confidence_band'></div>
+                       </div>
+                    </div>
+                </div>
+            
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Linked Charts</h2>
+                        <p>It can be useful to have two charts linked together&mdash;when 
+                        a rollover in one is triggered, the same rollover is triggered on 
+                        the same date or data point in the other.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='briefing-1'></div>
+                            <div class='col-lg-6 gr' id='briefing-2'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Update Chart Data</h2>
+                        <p>We sometimes have the need to split the data and then 
+                        gracefully update the chart with the newly selected subset of 
+                        data.</p>
+                        <div class="btn-group btn-group-sm text-center split-by-controls">
+                            <button type="button" class="btn btn-default active" 
+                                data-y_accessor="release">Release</button>
+                            <button type="button" class="btn btn-default" 
+                                data-y_accessor="beta">Beta</button>
+                            <button type="button" class="btn btn-default" 
+                                data-y_accessor="alpha">Alpha</button>
+                        </div>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 gr' id='split_by'></div>
+                       </div>
+                    </div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Modify Time Period</h2>
+                        <p>We sometimes have the need to view data for just the past n days. 
+                        Here, the <i>transition_on_update</i> option is set to false.</p>
+                        <div class="btn-group btn-group-sm text-center 
+                            modify-time-period-controls">
+                            <button type="button" class="btn btn-default active" 
+                                data-time_period="">All time</button>
+                            <button type="button" class="btn btn-default" 
+                                data-time_period="61">Past 2 months</button>
+                            <button type="button" class="btn btn-default" 
+                                data-time_period="31">Past month</button>
+                        </div>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 gr' id='modify_time_period'></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Small Charts</h2>
+                        <p>At 150px, we change the font sizes for rollovers and axes.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='small1'></div>
+                            <div class='col-lg-6 gr' id='small2'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Hiding Axes</h2>
+                        <p>Either axis can be hidden with an argument.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='hidden1'></div>
+                            <div class='col-lg-6 gr' id='hidden2'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Rollover Text Formatting</h2>
+                        <p>We can change the precision if the axis data type is a float. 
+                        We can also change both the formatting, or hide the rollover text 
+                        altogether.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='precision1'></div>
+                            <div class='col-lg-6 gr' id='precision2'></div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='custom-rollover'></div>
+                            <div class='col-lg-6 gr' id='no-rollover-text'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Logarithmic Scales</h2>
+                        <p>One can change the y-axis' scale to logarithmic by setting 
+                        <i>y_scale_type</i> to <i>log</i>.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 gr' id='log1'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Min / Max Numbers on Y Axis</h2>
+                        <p>Currently this lib will default to 0 on the y axis as min if 
+                        there are no negative numbers. If there are negatives, should 
+                        provide some buffer below.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='neg1'></div>
+                            <div class='col-lg-6 gr' id='neg2'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Histograms</h2>
+                        <p>We use histograms a lot, particularly in <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>. We'll be 
+                        adding histogram binning as a helper soon using an algorithm such as 
+                        <a href="http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule">
+                        this one</a>.
+                        </p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr extended-y-ticks' id='histogram1'></div>
+                            <div class='col-lg-6 gr extended-y-ticks' id='histogram2'></div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 gr extended-y-ticks' id='histogram3'></div>
+                            <div class='col-lg-6 gr extended-y-ticks' id='histogram4'></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class='row wip light-bg'>
+                    <div class='col-lg-12 text-center'>
+                        <i class="fa fa-wrench"></i> <strong>Works in Progress</strong> 
+                        subject to drastic change
+                    </div>
+                </div>
+                
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Barplots</h2>
+                        <p>Work in progress for barplots.
+                        </p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='bar1'></div>
+                            <div class='col-lg-6 gr' id='bar2'></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Scatterplots</h2>
+                        <p>An example of a scatterplot that uses a voronoi layout to make
+                        it easier to select the data points. We have not yet decided on 
+                        styling, options, smoothers, or rug plots.</p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='scatter1'></div>
+                            <div class='col-lg-6 gr' id='scatter2'></div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 gr' id='scatter3'></div>
+                            <div class='col-lg-6'></div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+        <div id='footer'>
+            <a href="http://metricsgraphicsjs.org">MetricsGraphics.js 0.4</a>
+            <br />Created by <a href='https://github.com/almossawi'>Ali Almossawi</a>,  
+            <a href="https://github.com/hamilton">Hamilton Ulmer</a> and 
+            <a href="https://github.com/mozilla/metrics-graphics/graphs/contributors">
+            others</a>
+            <br />2014 &middot; Shared under a <a href="http://www.mozilla.org/MPL/2.0/">
+            Mozilla Public License</a>
+            <br /><a href="https://github.com/mozilla/metrics-graphics">
+                <i class="fa fa-github fa-3x" style="line-height:42px"></i>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
