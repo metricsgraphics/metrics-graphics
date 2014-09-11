@@ -58,7 +58,7 @@ function moz_chart() {
         chart_type: 'line',   
         data: [],
         decimals: 2,                  // the number of decimals in any rollover
-        format: 'count',
+        format: 'count',              // format = {count, percentage}
         inflator: 10/9,               // for setting y axis max
         linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
         list: false,

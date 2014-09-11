@@ -343,7 +343,7 @@ charts.line = function(args) {
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
+                            return args.x_accessor + ': ' + d[args.x_accessor] 
                                 + ', ' + args.y_accessor + ': ' + args.yax_units 
                                 + num(d[args.y_accessor]);
                         }
