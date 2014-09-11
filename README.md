@@ -36,6 +36,8 @@ The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap]
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
 
+As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.html`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metrics-graphics.js`` file.
+
 ## Resources
 * [Examples](http://metricsgraphicsjs.org)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
