@@ -376,10 +376,6 @@ $(document).ready(function() {
             height: torso.height,
             right: trunk.right,
             target: '#xnotdate',
-            xax_format: function(f) {
-                var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
-            },
             x_accessor: 'males',
             y_accessor: 'females',
             x_label: 'males',
