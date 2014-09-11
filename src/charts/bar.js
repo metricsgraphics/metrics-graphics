@@ -127,7 +127,7 @@ charts.bar = function(args) {
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return d[args.y_accessor] + ':   ' + num(d[args.x_accessor]);
+                            return d[args.y_accessor] + ': ' + num(d[args.x_accessor]);
                         }
                     });                
             }

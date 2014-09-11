@@ -45,15 +45,20 @@ function moz_chart() {
         show_rollover_text: true,
         show_confidence_band: null,   // given [l, u] shows a confidence at each point from l to u
         xax_format: function(d) {
-            //assume date by default, user can pass in custom function
             var df = d3.time.format('%b %d');
-            return df(d);
+            var pf = d3.formatPrefix(d);
+
+            // format as date or not, of course user can pass in 
+            // a custom function if desired
+            return (this.x_accessor == 'date') 
+                ? df(d)
+                : pf.scale(d) + pf.symbol;
         },
         area: true,
         chart_type: 'line',   
         data: [],
         decimals: 2,                  // the number of decimals in any rollover
-        format: 'count',
+        format: 'count',              // format = {count, percentage}
         inflator: 10/9,               // for setting y axis max
         linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
         list: false,
@@ -500,7 +505,7 @@ function x_axis(args) {
             })
             .attr('y', args.height - args.bottom / 2)
             .attr('dy', '.50em')
-            .attr('text-anchor', 'end')
+            .attr('text-anchor', 'middle')
             .text(function(d) {
                 return args.x_label;
             })
@@ -1198,7 +1203,7 @@ charts.line = function(args) {
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
+                            return args.x_accessor + ': ' + d[args.x_accessor] 
                                 + ', ' + args.y_accessor + ': ' + args.yax_units 
                                 + num(d[args.y_accessor]);
                         }
