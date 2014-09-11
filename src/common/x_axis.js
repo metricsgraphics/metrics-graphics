@@ -109,7 +109,7 @@ function x_axis(args) {
             })
             .attr('y', args.height - args.bottom / 2)
             .attr('dy', '.50em')
-            .attr('text-anchor', 'end')
+            .attr('text-anchor', 'middle')
             .text(function(d) {
                 return args.x_label;
             })
