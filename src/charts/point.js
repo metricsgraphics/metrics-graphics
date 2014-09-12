@@ -48,6 +48,19 @@ charts.point = function(args) {
         var paths = svg.append('g')
             .attr('id', 'point-paths');
 
+        //remove rollover text if it already exists
+        if($(args.target + ' svg .active_datapoint').length > 0) {
+            $(args.target + ' svg .active_datapoint').remove();
+        }
+        
+        //add rollover text
+        svg.append('text')
+            .attr('class', 'active_datapoint')
+            .attr('xml:space', 'preserve')
+            .attr('x', args.width - args.right)
+            .attr('y', args.top / 2)
+            .attr('text-anchor', 'end');
+        
         clips.selectAll('clipPath')
             .data(args.data[0])
                 .enter().append('clipPath')
@@ -83,15 +96,53 @@ charts.point = function(args) {
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
 
-        return function(d,i){
+        return function(d, i){
             svg.selectAll('.points circle')
                 .classed('unselected', true);
 
+            var fmt = d3.time.format('%b %e, %Y');
+        
+            if (args.format == 'count') {
+                var num = function(d_) {
+                    var is_float = d_ % 1 != 0;
+                    var n = d3.format("0,000");
+                    d_ = is_float ? d3.round(d_, args.decimals) : d_;
+                    return n(d_);
+                }
+            }
+            else {
+                var num = function(d_) {
+                    var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
+                    var n = d3.format(fmt_string);
+                    return n(d_);
+                }
+            }
+
+            //highlight active point
             svg.selectAll('.points circle')
                 .filter(function(g,j){return i == j})
                 .classed('unselected', false)
                 .classed('selected', true)
                 .attr('r', 3);
+
+            //update rollover text
+            if (args.show_rollover_text) {
+                svg.select('.active_datapoint')
+                    .text(function() {
+                        if(args.time_series) {
+                            var dd = new Date(+d['point'][args.x_accessor]);
+                            dd.setDate(dd.getDate());
+                            
+                            return fmt(dd) + '  ' + args.yax_units 
+                                + num(d['point'][args.y_accessor]);
+                        }
+                        else {
+                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor]) 
+                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                                + num(d['point'][args.y_accessor]);
+                        }
+                    });                
+            }
         }
     }
 
@@ -99,10 +150,15 @@ charts.point = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d,i){
+            //reset active point
             svg.selectAll('.points circle')
                 .classed('unselected', false)
                 .classed('selected', false)
                 .attr('r', 2);
+
+            //reset active data point text
+            svg.select('.active_datapoint')
+                .text('');
         }
     }
 
