@@ -29,6 +29,7 @@ charts.bar = function(args) {
         var data = args.data[0];
         var g = svg.append('g')
             .classed('barplot', true);
+
         g.selectAll('.bar')
             .data(data).enter().append('rect')
             .classed('bar', true)
