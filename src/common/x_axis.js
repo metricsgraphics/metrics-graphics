@@ -119,13 +119,15 @@ function x_axis(args) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
             .attr('x1', 
-                args.concise == false ?
-                args.left + args.buffer :
-                args.scales.X(args.scales.X.ticks(args.xax_count)[0]))
+                (args.concise == false || args.xax_count == 0)
+                    ? args.left + args.buffer
+                    : args.scales.X(args.scales.X.ticks(args.xax_count)[0])
+            )
             .attr('x2', 
-                args.concise == false ? 
-                args.width - args.right - args.buffer :
-                args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]))
+                (args.concise == false || args.xax_count == 0)
+                    ? args.width - args.right - args.buffer
+                    : args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])
+            )
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
