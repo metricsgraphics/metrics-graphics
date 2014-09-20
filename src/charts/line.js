@@ -170,7 +170,8 @@ charts.line = function(args) {
             //main rollover
             var voronoi = d3.geom.voronoi()
                 .x(function(d) { return args.scales.X(d[args.x_accessor]); })
-                .y(function(d) { return args.scales.Y(d[args.y_accessor]); });
+                .y(function(d) { return args.scales.Y(d[args.y_accessor]); })
+                .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
         
             var g = svg.append('g')
                 .attr('class', 'voronoi')
