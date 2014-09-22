@@ -119,7 +119,7 @@ function moz_chart() {
     
     //build the chart
     if(args.chart_type == 'missing-data'){
-        args = merge_with_defaults(moz.defaults.missing, args);
+        args = merge_with_defaults(args, moz.defaults.missing);
         charts.missing(args);
     }
     else if(args.chart_type == 'point'){
