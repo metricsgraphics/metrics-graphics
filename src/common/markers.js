@@ -13,8 +13,11 @@ function markers(args) {
             .attr('class', 'markers');
 
         gm.selectAll('.markers')
-            .data(args.markers)
-            .enter().append('line')
+            .data(args.markers.filter(function(d){
+                return args.scales.X(d[args.x_accessor]) > args.buffer + args.left;
+            }))
+            .enter()
+            .append('line')
                 .attr('x1', function(d) {
                     return args.scales.X(d[args.x_accessor])
                 })
@@ -28,8 +31,11 @@ function markers(args) {
                 .attr('stroke-dasharray', '3,1');
 
         gm.selectAll('.markers')
-            .data(args.markers)
-            .enter().append('text')
+            .data(args.markers.filter(function(d){
+                return args.scales.X(d[args.x_accessor]) > args.buffer + args.left;
+            }))
+            .enter()
+            .append('text')
                 .attr('x', function(d) {
                     return args.scales.X(d[args.x_accessor])
                 })
