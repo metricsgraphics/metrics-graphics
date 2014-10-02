@@ -132,6 +132,14 @@ charts.line = function(args) {
         if($(args.target + ' svg .voronoi').length > 0) {
             $(args.target + ' svg .voronoi').remove();
         }
+        
+        //remove the old rollover text and circle if they already exist
+        if($(args.target + ' svg .active_datapoint').length > 0) {
+            $(args.target + ' svg .active_datapoint').remove();
+        }
+        if($(args.target + ' svg .line_rollover_circle').length > 0) {
+            $(args.target + ' svg .line_rollover_circle').remove();
+        }
 
         //rollover text
         svg.append('text')
