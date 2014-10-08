@@ -14,7 +14,8 @@ function markers(args) {
 
         gm.selectAll('.markers')
             .data(args.markers.filter(function(d){
-                return args.scales.X(d[args.x_accessor]) > args.buffer + args.left;
+                return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+                    && (args.scales.X(d[args.x_accessor]) < args.buffer + args.width - args.right);
             }))
             .enter()
             .append('line')
@@ -32,7 +33,8 @@ function markers(args) {
 
         gm.selectAll('.markers')
             .data(args.markers.filter(function(d){
-                return args.scales.X(d[args.x_accessor]) > args.buffer + args.left;
+                return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+                    && (args.scales.X(d[args.x_accessor]) < args.buffer + args.width - args.right);
             }))
             .enter()
             .append('text')
