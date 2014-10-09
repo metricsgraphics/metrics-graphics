@@ -319,7 +319,7 @@ $(document).ready(function() {
 
         moz_chart({
             title: "Changing Precision 2",
-            description: "Here we set decimals: 0 for percentages.",
+            description: "Here we set <i>decimals: 0</i> for percentages.",
             data: data,
             decimals: 0,
             format: 'Percentage',
@@ -512,7 +512,7 @@ $(document).ready(function() {
 
         moz_chart({
             title: "Changing Precision 1",
-            description: "Here we set decimals: 3 to get 3 decimals in the rollover for percentages.",
+            description: "Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
             data: data,
             decimals: 3,
             width: trunk.width,
