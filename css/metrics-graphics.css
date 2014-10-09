@@ -206,10 +206,9 @@ h2.chart_title .fa {
     color: #5c5c5c;
 }
 
-#logo {
-    margin: 60px 0 30px 0;
-    height: 79px;
-    width: 400px;
+.legend {
+    font-size: 11px;
+    padding: 25px 0 15px 0;
 }
 
 .main-area-solid svg .main-area {

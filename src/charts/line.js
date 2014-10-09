@@ -50,6 +50,10 @@ charts.line = function(args) {
             .y(function() { return args.scales.Y(data_median); })
             .interpolate(args.interpolate);
 
+
+        //for building the optional legend
+        var legend = '';
+            
         for(var i=args.data.length-1; i>=0; i--) {
             //override increment if we have a custom increment series
             var line_id = i+1;
@@ -111,7 +115,16 @@ charts.line = function(args) {
                         .attr('d', line(args.data[i]));
                 }
             }
-        }	    
+            
+            //build legend
+            if(args.legend) {
+                legend += "<span class='line" + (i+1)  + "-legend-color'>&mdash; " + args.legend[i] + "&nbsp; </span>";
+            }
+        }
+        
+        if(args.legend) {
+            $(args.legend_target).html(legend);
+        }
 
         return this;
     }

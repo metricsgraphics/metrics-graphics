@@ -199,6 +199,8 @@ $(document).ready(function() {
             title:"Multi-line Chart Wide",
             description: "This line chart contains multiple lines and has extended ticks enabled.",
             area: false,
+            legend: ['Line 3','Line 2','Line 1'],
+            legend_target: '.legend',
             data: data,
             width: torso.width*2,
             height: torso.height,

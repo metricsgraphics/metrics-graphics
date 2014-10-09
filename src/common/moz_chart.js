@@ -9,6 +9,8 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        legend: '' ,                  // an array identifying the labels for a chart's lines
+        legend_target: '',            // if set, the specified element is populated with a legend
         error: '',                    // if set, a graph will show an error icon and log the error to the console
         animate_on_load: false,       // animate lines on load
         top: 40,                      // the size of the top margin
