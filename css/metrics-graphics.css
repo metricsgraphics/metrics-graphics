@@ -286,6 +286,10 @@ path.main-line {
     stroke-opacity: 1;
 }
 
+.popover-content {
+    cursor: auto;
+}
+
 text {
     fill: black;
     opacity: 0.8;
