@@ -288,6 +288,7 @@ path.main-line {
 
 .popover-content {
     cursor: auto;
+    line-height: 17px;
 }
 
 text {
