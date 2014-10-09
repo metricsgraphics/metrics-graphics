@@ -18,8 +18,10 @@ function chart_title(args) {
         //activate the question mark if we have a description
         if (args.description){
             $(args.target + ' h2.chart_title')
-                .popover({'content': args.description,
-                    'trigger':'hover', 'placement': 'top'});
+                .popover({html: true,
+                    'content': args.description,
+                    'trigger':'hover',
+                    'placement': 'top'});
         }   
     }
     
