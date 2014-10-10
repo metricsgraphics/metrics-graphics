@@ -25,7 +25,6 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js" charset="utf-8"></script>
-    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src='js/metrics-graphics.min.js'></script>
     <script src='js/main.js'></script>
     
@@ -76,7 +75,7 @@
                 <div id='xnotdate'></div>
                 <div id='linked_multi1'></div>
                 <div id='linked_multi2'></div>
-                <div id='glorious_chart' class='missing'></div>
+                <div id='glorious_chart'></div>
             </div>
             <div id='trunk'>
                 <div class='row trunk-section'>
@@ -86,6 +85,9 @@
                         that it is ridiculously easy to create grids of arbitrary sizes 
                         and place charts and their corresponding prose or associated 
                         charts wherever and however one pleases.</p>
+                        <p>Setting <i>legend</i> and <i>legend_target</i> allows you to 
+                        generate a key to go with the chart.</p>
+                        <div class='legend'></div>
                     </div>
                     <div class='col-lg-8'>
                         <div class='row'>
@@ -307,7 +309,7 @@
 
         </div>
         <div id='footer'>
-            <a href="http://metricsgraphicsjs.org">MetricsGraphics.js 0.4</a>
+            <a href="http://metricsgraphicsjs.org">MetricsGraphics.js 0.5</a>
             <br />Created by <a href='https://github.com/almossawi'>Ali Almossawi</a>,  
             <a href="https://github.com/hamilton">Hamilton Ulmer</a> and 
             <a href="https://github.com/mozilla/metrics-graphics/graphs/contributors">
