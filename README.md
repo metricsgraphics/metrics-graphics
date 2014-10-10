@@ -31,7 +31,7 @@ _MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/"
 3. Profit!
 
 ## Dependencies
-The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations, but may well do away with in the future.
+The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap's stylesheet](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
 
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
