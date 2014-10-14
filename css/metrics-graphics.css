@@ -124,9 +124,10 @@ circle {
 }
 
 h2.chart_title {
-    cursor: pointer;
+    cursor: default;
     font-size: 22px;
     margin-left: 15px;
+    padding-top: 8px;
 }
 
 h2.chart_title .fa {
@@ -302,9 +303,17 @@ path.main-line {
     stroke-opacity: 1;
 }
 
+.popover {
+    font-size: 12px;
+}
+
 .popover-content {
     cursor: auto;
     line-height: 17px;
+}
+
+.popover.top {
+    margin-top: 0;
 }
 
 text {
@@ -351,7 +360,6 @@ text {
 
 h2.chart_title .fa.warning {
     color: red;
-    cursor: pointer;
     font-weight: 300;
     opacity: 0.8;
 }

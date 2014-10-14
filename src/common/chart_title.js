@@ -21,6 +21,7 @@ function chart_title(args) {
 
             $(args.target + ' h2.chart_title')
                 .popover({html: true,
+                    'animation': false,
                     'content': args.description,
                     'trigger': 'hover',
                     'placement': 'top',
