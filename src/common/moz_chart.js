@@ -3,7 +3,7 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "0.5";
+globals.version = "0.5.1";
 
 function moz_chart() {
     var moz = {};
