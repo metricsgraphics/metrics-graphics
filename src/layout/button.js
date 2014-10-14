@@ -23,7 +23,8 @@ var button_layout = function(target) {
         var sorter, the_label;
         if (arguments.length>1) {
             this.public_name[feature] = arguments[1];
-        } 
+        }
+
         if (arguments.length>2) {
             this.sorters[feature] = arguments[2];
         }
