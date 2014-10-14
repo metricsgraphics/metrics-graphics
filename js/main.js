@@ -128,7 +128,7 @@ $(document).ready(function() {
         //add a line chart
         moz_chart({
             title: "Line Chart",
-            description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
+            description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
             data: data,
             width: torso.width,
             height: torso.height,
@@ -278,7 +278,7 @@ $(document).ready(function() {
         //add a chart that has a log scale
         moz_chart({
             title: "Log Scale",
-            description: "This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.",
+            description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
             data: data,
             y_scale_type:'log',
             width: torso.width*2,
@@ -334,7 +334,7 @@ $(document).ready(function() {
 
         moz_chart({
             title: "... Or No Rollover Text",
-            description: "By setting show_rollover_text: false, you can hide the default rollover text from even appearing. This coupled with the custom callback gives a lot of interesting options for controlling rollovers.",
+            description: "By setting <i>show_rollover_text: false</i>, you can hide the default rollover text from even appearing. This, coupled with the custom callback, gives a lot of interesting options for controlling rollovers.",
             data: data,
             decimals: 0,
             show_rollover_text: false,
@@ -415,7 +415,7 @@ $(document).ready(function() {
 
         moz_chart({
             title: "Small Text Inferred By Size",
-            description: "If the args.width - args.left - args.right is smaller than the args.small_width_threshold (and the flip for the height) then the text size automatically scales to be slightly smaller.",
+            description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i> (and the flip for the height) then the text size automatically scales to be slightly smaller.",
             data: data,
             width: small.width,
             height: small.height,
@@ -633,7 +633,7 @@ $(document).ready(function() {
         })
         moz_chart({
             title: "Least Squares",
-            description: "Least squares line. To get that, set least_squares to true.",
+            description: "Least squares line. To get that, set <i>least_squares</i> to true.",
             data: data,
             least_squares: true,
             chart_type: 'point',
