@@ -49,7 +49,6 @@ scripts = [
     'src/misc/smoothers.js',
     'src/misc/utility.js',
     'src/misc/error.js',
-    'src/misc/tooltip.js'
     ]
     
 scripts_out_debug = 'js/metrics-graphics.js'
