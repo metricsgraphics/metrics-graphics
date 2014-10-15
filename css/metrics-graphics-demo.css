@@ -1,7 +1,82 @@
+#footer {
+    font-size: 11px;
+    padding: 40px;
+    text-align: center;
+}
+
+#head {
+    color: black;
+    margin: auto;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+#head h1 {
+    font-size: 50px;
+    font-weight: 300;
+    margin: 45px 0 0 0;
+}
+
+#head ul {
+    clear: both;
+    font-size: 14px;
+    padding: 10px 0 0 0;
+}
+
+#head ul li {
+    display: inline;
+    list-style: none;
+    padding-right: 15px;
+}
+
 #logo {
     margin: 60px 0 30px 0;
     height: 79px;
     width: 400px;
+}
+
+.light-bg {
+    background-color: #f1f1f1;
+}
+
+.pill:hover {
+    text-decoration: none;
+}
+
+.pill {
+    font-family: 'Open Sans', serif;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+#torso {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+#torso div {
+    display: inline-block;
+}
+
+#trunk {
+    margin-top:40px;
+}
+
+#trunk h2 {
+    font-size: 15px;
+}
+
+#trunk h2.trunk-title {
+    font-size: 25px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.trunk-section {
+    border-top: 1px solid #ccc;
+    padding-bottom: 25px;
+    padding-top: 15px;
 }
 
 .wip {

@@ -1,14 +1,3 @@
-a,
-a:active,
-a:visited {
-    color: #4a87ba;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .active_datapoint {
     fill: black;
     font-size: 11px;
@@ -88,6 +77,39 @@ body {
     margin-right: 8px;
 }
 
+.chart_title .popover {
+    font-size: 12px;
+}
+
+.chart_title .popover-content {
+    cursor: auto;
+    line-height: 17px;
+}
+
+.chart_title .popover.top {
+    margin-top: 0;
+}
+
+.chart_title {
+    cursor: default;
+    font-size: 22px;
+    margin-left: 15px;
+    padding-top: 8px;
+}
+
+.chart_title .fa {
+    color: #ccc;
+    font-size: 14px;
+    padding-left: 4px;
+    vertical-align: top;
+}
+
+.chart_title .fa.warning {
+    color: red;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
 circle {
     fill: #0000ff;
     opacity: 0.85;
@@ -112,56 +134,6 @@ circle {
     opacity: 0.1;
 }
 
-#footer {
-    border-top: 1px solid #ccc;
-    font-size: 11px;
-    padding: 40px;
-    text-align: center;
-}
-
-.gr {
-    text-align: center;
-}
-
-h2.chart_title {
-    cursor: default;
-    font-size: 22px;
-    margin-left: 15px;
-    padding-top: 8px;
-}
-
-h2.chart_title .fa {
-    color: #ccc;
-    font-size: 14px;
-    padding-left: 4px;
-    vertical-align: top;
-}
-
-#head {
-    color: black;
-    margin: auto;
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-#head h1 {
-    font-size: 50px;
-    font-weight: 300;
-    margin: 45px 0 0 0;
-}
-
-#head ul {
-    clear: both;
-    font-size: 14px;
-    padding: 10px 0 0 0;
-}
-
-#head ul li {
-    display: inline;
-    list-style: none;
-    padding-right: 15px;
-}
-
 .histogram .axis path,
 .histogram .axis line {
     opacity: 0.7;
@@ -177,10 +149,6 @@ h2.chart_title .fa {
 
 .histogram .bar rect.active {
     fill: #9e9efc;
-}
-
-.light-bg {
-    background-color: #f1f1f1;
 }
 
 .line1-color {
@@ -280,16 +248,6 @@ path.main-line {
     stroke-width: 1.1px;
 }
 
-.pill:hover {
-    text-decoration: none;
-}
-
-.pill {
-    font-family: 'Open Sans', serif;
-    font-size: 12px;
-    text-transform: uppercase;
-}
-
 .points circle {
     fill: #0000ff;
     fill-opacity: 0.4;
@@ -303,52 +261,9 @@ path.main-line {
     stroke-opacity: 1;
 }
 
-.popover {
-    font-size: 12px;
-}
-
-.popover-content {
-    cursor: auto;
-    line-height: 17px;
-}
-
-.popover.top {
-    margin-top: 0;
-}
-
 text {
     fill: black;
     opacity: 0.8;
-}
-
-#torso {
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-}
-
-#torso div {
-    display: inline-block;
-}
-
-#trunk {
-    margin-top:40px;
-}
-
-#trunk h2 {
-    font-size: 15px;
-}
-
-#trunk h2.trunk-title {
-    font-size: 25px;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-.trunk-section {
-    border-top: 1px solid #ccc;
-    padding-bottom: 25px;
-    padding-top: 15px;
 }
 
 .voronoi path {
@@ -356,12 +271,6 @@ text {
     pointer-events: all;
     stroke: none;
     stroke-opacity: 0.1;
-}
-
-h2.chart_title .fa.warning {
-    color: red;
-    font-weight: 300;
-    opacity: 0.8;
 }
 
 .x-axis line,

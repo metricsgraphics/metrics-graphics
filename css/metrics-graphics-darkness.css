@@ -51,10 +51,6 @@ circle {
     opacity: 0.1;
 }
 
-#footer {
-    border-top-color: #3b3b3b;
-}
-
 .goal line {
     stroke: #fff;
 }
@@ -68,10 +64,6 @@ h1 {
 }
 
 h2.chart_title span {
-    color: #f1f1f1;
-}
-
-#head {
     color: #f1f1f1;
 }
 
