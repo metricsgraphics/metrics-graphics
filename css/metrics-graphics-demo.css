@@ -1,3 +1,11 @@
+a.active {
+    background-color: steelblue;
+    border: 0;
+    border-radius: 4px;
+    color: #fff;
+    padding: 5px;
+}
+
 #footer {
     font-size: 11px;
     padding: 40px;
@@ -33,10 +41,6 @@
     margin: 60px 0 30px 0;
     height: 79px;
     width: 400px;
-}
-
-.light-bg {
-    background-color: #f1f1f1;
 }
 
 .pill:hover {
@@ -80,6 +84,7 @@
 }
 
 .wip {
+    background-color: #f1f1f1;
     font-size: 15px;
     margin-top: 60px;
     padding: 10px;

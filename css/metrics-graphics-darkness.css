@@ -2,7 +2,10 @@ a,
 a:active,
 a:visited {
     color: #71b4eb;
-    text-decoration: none;
+}
+
+a:hover {
+    color: #71b4eb;
 }
 
 .active_datapoint {
@@ -89,10 +92,6 @@ h2.chart_title span {
 
 .histogram .axis .tick line {
     opacity: 0.3;
-}
-
-.light-bg {
-    background-color: #3b3b3b;
 }
 
 .line1-color {

@@ -677,6 +677,9 @@ $(document).ready(function() {
             $('.transparent-rollover-rect')
                 .attr('fill', 'white');
         
+            $('.wip')
+                .css('background-color', '#3b3b3b');
+        
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             
