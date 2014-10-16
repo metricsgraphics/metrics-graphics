@@ -232,6 +232,7 @@ circle {
 p {
     font-family: 'PT Serif', serif;
     font-size: 16px;
+    line-height: 24px;
 }
 
 path.main-area {
