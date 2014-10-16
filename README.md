@@ -42,6 +42,7 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 * [Examples](http://metricsgraphicsjs.org)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
 * [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
+* [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Release process
 1. Copy over any changes made in ``dev.html`` to ``index.html``
