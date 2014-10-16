@@ -96,8 +96,8 @@ body {
 .chart_title {
     cursor: default;
     font-size: 22px;
-    margin-left: 15px;
     padding-top: 8px;
+    text-align: center;
 }
 
 .chart_title .fa {
