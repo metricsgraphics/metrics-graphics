@@ -673,16 +673,15 @@ $(document).ready(function() {
         $('#dark-css').click(function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data-dark.png)');
-                
+
             $('.transparent-rollover-rect')
                 .attr('fill', 'white');
-        
+
             $('.wip')
                 .css('background-color', '#3b3b3b');
-        
+
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
-            
             $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
             
             return false;
@@ -691,14 +690,17 @@ $(document).ready(function() {
         $('#light-css').click(function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data.png)');
-                
+
             $('.transparent-rollover-rect')
                 .attr('fill', 'black');
-        
+
+            $('.wip')
+                .css('background-color', '#f1f1f1');
+
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
-            
             $('#dark').attr({href : ''});
+
             return false;
         })
 
