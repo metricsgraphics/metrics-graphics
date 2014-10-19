@@ -26,6 +26,38 @@ $(document).ready(function() {
 
     assignEventListeners();
 
+
+    d3.json('data/missing-y.json', function(data) {
+        var fff = d3.time.format('%Y-%m-%d');
+        for(var i=0;i<data.length;i++) {
+            var d = data[i];
+            d['date'] = fff.parse(d['date']);
+        }
+
+        //add a line chart that has a few observations
+        moz_chart({
+            title: "Few Observations",
+            description: "We sometimes have only a few observations. By setting <i>missing_y_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've override the rollover callback to show 'no date' for missing observations.",
+            data: data,
+            interpolate: 'basic',
+            missing_y_is_zero: true,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            target: '#missing-y',
+            x_accessor: 'date',
+            y_accessor: 'value',
+            rollover_callback: function(d, i) {
+                var df = d3.time.format('%b %d, %Y');
+                var date = df(d['date']);
+                var y_val = (d.value == 0) ? 'no data' : d.value;
+
+                $('#missing-y svg .active_datapoint')
+                    .html(date +  '   ' + y_val);
+            }
+        })
+    });
+        
     //generate a Bates distribution of 10 random variables
     var values = d3.range(10000).map(d3.random.bates(10));
     var x = d3.scale.linear()
@@ -184,7 +216,7 @@ $(document).ready(function() {
         //add a multi-line chart
         moz_chart({
             title:"Multi-line Chart",
-            description: "This line chart contains multiple lines. We're still working out the style details.",
+            description: "This line chart contains multiple lines.",
             data: data,
             width: torso.width,
             height: torso.height,

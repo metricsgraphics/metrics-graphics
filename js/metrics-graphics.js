@@ -3,12 +3,13 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "0.5";
+globals.version = "0.6";
 
 function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
+        missing_y_is_zero: true,     // if true, missing values of y will be treated as zeros
         legend: '' ,                  // an array identifying the labels for a chart's lines
         legend_target: '',            // if set, the specified element is populated with a legend
         error: '',                    // if set, a graph will show an error icon and log the error to the console
@@ -722,7 +723,7 @@ function markers(args) {
         gm.selectAll('.markers')
             .data(args.markers.filter(function(d){
                 return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                    && (args.scales.X(d[args.x_accessor]) < args.buffer + args.width - args.right);
+                    && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
             }))
             .enter()
             .append('line')
@@ -741,7 +742,7 @@ function markers(args) {
         gm.selectAll('.markers')
             .data(args.markers.filter(function(d){
                 return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                    && (args.scales.X(d[args.x_accessor]) < args.buffer + args.width - args.right);
+                    && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
             }))
             .enter()
             .append('text')
@@ -789,9 +790,19 @@ var button_layout = function(target) {
     this.feature_set = {};
     this.public_name = {};
     this.sorters = {};
+    this.manual = [];
+    this.manual_map = {};
+    this.manual_callback = {};
 
     this.data = function(data) {
         this._data = data;
+        return this;
+    }
+
+    this.manual_button = function(feature, feature_set, callback) {
+        this.feature_set[feature]=feature_set;
+        this.manual_map[strip_punctuation(feature)] = feature;
+        this.manual_callback[feature]=callback;// the default is going to be the first feature.
         return this;
     }
 
@@ -799,13 +810,13 @@ var button_layout = function(target) {
         var sorter, the_label;
         if (arguments.length>1) {
             this.public_name[feature] = arguments[1];
-        } 
+        }
+
         if (arguments.length>2) {
             this.sorters[feature] = arguments[2];
         }
 
         this.feature_set[feature] = [];
-
         return this;
     }
 
@@ -816,68 +827,68 @@ var button_layout = function(target) {
 
     this.display = function() {
         var callback = this._callback;
+        var manual_callback = this.manual_callback;
+        var manual_map = this.manual_map;
+
         var d,f, features, feat;
         features = Object.keys(this.feature_set);
         
-        // build out this.feature_set with this.data
-        for (var i=0; i<this._data.length; i++) {
+        // build out this.feature_set with this.data.
+        for (var i=0; i < this._data.length; i++) {
             d = this._data[i];
-            f = features.map(function(f) { return d[f] });
-            
-            for (var j=0; j<features.length; j++) {
-                feat = features[j]; 
-                if(this.feature_set[feat].indexOf(f[j]) == -1)
-                    this.feature_set[feat].push(f[j]);
+            f = features.map(function(f) {return d[f]});
+            for (var j=0;j<features.length;j++) {
+                feat=features[j]; 
+                if (this.feature_set[feat].indexOf(f[j])==-1)   this.feature_set[feat].push(f[j]);
             }
         }
-        
         for (var feat in this.feature_set) {
             if (this.sorters.hasOwnProperty(feat)) {
                 this.feature_set[feat].sort(this.sorters[feat]);
             }
         }
-        
+
         $(this.target).empty();
         
-        $(this.target).append("<div class='col-lg-12 segments text-center'></>");
+        $(this.target).append("<div class='col-lg-12 segments text-center'></div>");
+        var the_string = '';
+
         for (var feature in this.feature_set) {
             features = this.feature_set[feature];
             $(this.target + ' div.segments').append(
-                "<div class='btn-group " + strip_punctuation(feature) + "-btns text-left'>"
-                + "<button type='button' class='btn btn-default btn-lg dropdown-toggle' data-toggle='dropdown'>"
-                + "<span class='which-button'>" 
-                + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) 
-                + "</span>"
-                + "<span class='title'>all</span>"
-                + "<span class='caret'></span>"
-                + "</button>"
-                + "<ul class='dropdown-menu' role='menu'>"
-                + "<li><a href='#' data-feature='" + feature + "' data-key='all'>All</a></li>"
-                + "<li class='divider'></li>"
-                + "</ul>"
-                + "</div>"
-            );
-            
-            for (var i=0; i<features.length; i++) {
-                if (features[i] != 'all') {
+                    '<div class="btn-group '+strip_punctuation(feature)+'-btns text-left">' + // This never changes.
+                    '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
+                        "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) +"</span>" +
+                        "<span class='title'>" + (this.manual_callback.hasOwnProperty(feature) ? this.feature_set[feature][0] : 'all') +  "</span>" + // if a manual button, don't default to all in label.
+                        '<span class="caret"></span>' + 
+                    '</button>' +
+                    '<ul class="dropdown-menu" role="menu">' +
+                        (!this.manual_callback.hasOwnProperty(feature) ? '<li><a href="#" data-feature="'+feature+'" data-key="all">All</a></li>' : "") +
+                        (!this.manual_callback.hasOwnProperty(feature) ? '<li class="divider"></li>' : "") +
+                    '</ul>'
+            + '</div>');
+
+            for (var i=0;i<features.length;i++) {
+                if (features[i] != 'all' && features[i]!=undefined) { // strange bug with undefined being added to manual buttons.
                     $(this.target + ' div.' + strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
-                        "<li><a href='#' data-feature='" + strip_punctuation(feature) 
-                        + "' data-key='" + features[i] + "'>"
-                        + features[i] + "</a></li>"
+                    '<li><a href="#" data-feature="' + strip_punctuation(feature) + '" data-key="' + features[i] + '">' 
+                        + features[i] + '</a></li>'
                     ); 
                 }
             }
-            
-            $('.'+ strip_punctuation(feature) + '-btns .dropdown-menu li a')
-                    .on('click', function() {
+
+            $('.' + strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', function() {
                 var k = $(this).data('key'); 
                 var feature = $(this).data('feature');
-
-                $('.' + strip_punctuation(feature) + '-btns button.btn span.title')
-                    .html(k);
-
-                callback(feature, k);
-
+                var manual_feature;
+                $('.' + strip_punctuation(feature) + '-btns button.btn span.title').html(k);
+                if (!manual_map.hasOwnProperty(feature)) {
+                    callback(feature, k);    
+                } else {
+                    manual_feature = manual_map[feature];
+                    manual_callback[manual_feature](k);
+                }
+                
                 return false;
             })
         }
@@ -887,7 +898,6 @@ var button_layout = function(target) {
 
     return this
 }
-
 charts.line = function(args) {
     this.args = args;
 
@@ -1895,10 +1905,23 @@ function raw_data_transformation(args){
             });
         }
     }
+
     return this
 }
 
-function process_line(args){
+//todo, do it for multi-line too
+function process_line(args) {
+    //are we replacing missing y values with zeros?
+    console.log(args.time_series);
+    if(args.missing_y_is_zero && args.chart_type == 'line' && args.time_series) {
+        //todo get date series from date at args.data[0] to args.data[args.data.length-1]
+        var first_date = args.data[0];
+        var last_date = args.data[args.data.length-1];
+        console.log(first_date, last_date);
+
+        //todo
+    }
+
     return this;
 }
 

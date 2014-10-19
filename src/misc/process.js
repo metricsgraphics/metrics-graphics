@@ -26,10 +26,65 @@ function raw_data_transformation(args){
             });
         }
     }
+
     return this
 }
 
-function process_line(args){
+function process_line(args) {
+    //are we replacing missing y values with zeros?
+    
+    //do we have a time-series?
+    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) == 'date')
+            ? true
+            : false;
+
+    if(args.missing_y_is_zero && args.chart_type == 'line' && is_time_series) {
+        for(var i=0;i<args.data.length;i++) {
+            var first = args.data[i][0];
+            var last = args.data[i][args.data[i].length-1];
+
+            //initialize our new array for storing the processed data
+            processed_data = [];
+            processed_data.push(clone(args.data[i][0]));
+
+            //we'll be starting from the day after our first date
+            var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
+
+            for (var d = new Date(start_date); d <= last['date']; d.setDate(d.getDate() + 1)) {
+                var o = {};
+ 
+                //check to see if we already have this date in our data object
+                var existing_o = null;
+                $.each(args.data[i], function(i, val) {
+                    
+                    if(Date.parse(val.date) == Date.parse(new Date(d))) {
+                        existing_o = val;
+                        //console.log("exists: ", val.date);
+
+                        return false;
+                    }
+                });
+
+                //if we don't have this date in our data object, add it and set it to zero
+                if(!existing_o) {            
+                    o['date'] = new Date(d);
+                    o[args.y_accessor] = 0;
+                    processed_data.push(o);
+                }
+                //otherwise, use the existing object for that date
+                else {
+                    processed_data.push(existing_o);
+                }
+            }
+
+            //add the last data item
+            processed_data.push(last);
+
+            //update our date object
+            args.data[i] = processed_data;
+        }
+    }
+
     return this;
 }
 

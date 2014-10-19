@@ -6,6 +6,10 @@ a.active {
     padding: 5px;
 }
 
+.chart_title {
+    margin-left: 30px;
+}
+
 #footer {
     font-size: 11px;
     padding: 40px;
