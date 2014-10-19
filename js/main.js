@@ -27,6 +27,7 @@ $(document).ready(function() {
     assignEventListeners();
 
 
+    //add the Few Observations chart
     d3.json('data/missing-y.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {
@@ -57,96 +58,6 @@ $(document).ready(function() {
             }
         })
     });
-        
-    //generate a Bates distribution of 10 random variables
-    var values = d3.range(10000).map(d3.random.bates(10));
-    var x = d3.scale.linear()
-        .domain([0, 1])
-        .range([0, 350 - 0 - 10]);
-
-    moz_chart({
-        title: "Histogram 1",
-        description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0.",
-        data: values,
-        chart_type: 'histogram',
-        width: trunk.width,
-        height: trunk.height,
-        right: trunk.right,
-        bins: 50,
-        bar_margin: 0,
-        target: '#histogram1',
-        y_extended_ticks: true,
-        rollover_callback: function(d, i) {
-            $('#histogram1 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
-        }
-    })  
-
-    var second = d3.range(10000).map(function(d){return Math.random()*10});
-    second = d3.layout.histogram()(second)
-        .map(function(d){
-            return {'count': d.y, 'value':d.x};
-    });
-
-    moz_chart({
-        title: "Histogram 2",
-        description: "Already binned data being fed in.",
-        data: second,
-        binned: true,
-        chart_type: 'histogram',
-        width: trunk.width,
-        height: trunk.height,
-        right: trunk.right,
-        target: '#histogram2',
-        y_extended_ticks: true,
-        x_accessor:'value',
-        y_accessor:'count',
-        rollover_callback: function(d, i) {
-            $('#histogram2 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
-        }
-    })
-
-    var third = d3.range(1000).map(d3.random.bates(10));
-    third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
-
-    moz_chart({
-        title: "Histogram 3",
-        description: "Unbinned, but in same format as other line chart data.",
-        data: third,
-        chart_type: 'histogram',
-        width: trunk.width,
-        height: trunk.height,
-        right: trunk.right,
-        target: '#histogram3',
-        y_extended_ticks: true,
-        x_accessor:'val1',
-        rollover_callback: function(d, i) {
-            $('#histogram3 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
-        }
-    })
-
-    // check for negative values, for sanity.
-    var fourth = d3.range(1000).map(d3.random.bates(10));
-    fourth = fourth.map(function(d,i){return d-.5});
-
-    moz_chart({
-        title: "Histogram 4",
-        description: "Sanity-checking negative data.",
-        data: fourth,
-        chart_type: 'histogram',
-        width: trunk.width,
-        height: trunk.height,
-        right: trunk.right,
-        target: '#histogram4',
-        y_extended_ticks: true,
-        x_accessor:'val1',
-        rollover_callback: function(d, i) {
-            $('#histogram4 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
-        }
-    })
 
     d3.json('data/fake_users1.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
@@ -613,6 +524,95 @@ $(document).ready(function() {
         })
     })
 
+    //add histograms
+    //generate a Bates distribution of 10 random variables
+    var values = d3.range(10000).map(d3.random.bates(10));
+
+    moz_chart({
+        title: "Histogram 1",
+        description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0.",
+        data: values,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        bins: 50,
+        bar_margin: 0,
+        target: '#histogram1',
+        y_extended_ticks: true,
+        rollover_callback: function(d, i) {
+            $('#histogram1 svg .active_datapoint')
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+        }
+    })  
+
+    var second = d3.range(10000).map(function(d){return Math.random()*10});
+    second = d3.layout.histogram()(second)
+        .map(function(d){
+            return {'count': d.y, 'value':d.x};
+    });
+
+    moz_chart({
+        title: "Histogram 2",
+        description: "Already binned data being fed in.",
+        data: second,
+        binned: true,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram2',
+        y_extended_ticks: true,
+        x_accessor:'value',
+        y_accessor:'count',
+        rollover_callback: function(d, i) {
+            $('#histogram2 svg .active_datapoint')
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+        }
+    })
+
+    var third = d3.range(1000).map(d3.random.bates(10));
+    third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
+
+    moz_chart({
+        title: "Histogram 3",
+        description: "Unbinned, but in same format as other line chart data.",
+        data: third,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram3',
+        y_extended_ticks: true,
+        x_accessor:'val1',
+        rollover_callback: function(d, i) {
+            $('#histogram3 svg .active_datapoint')
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+        }
+    })
+
+    // check for negative values, for sanity.
+    var fourth = d3.range(1000).map(d3.random.bates(10));
+    fourth = fourth.map(function(d,i){return d-.5});
+
+    moz_chart({
+        title: "Histogram 4",
+        description: "Sanity-checking negative data.",
+        data: fourth,
+        chart_type: 'histogram',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        target: '#histogram4',
+        y_extended_ticks: true,
+        x_accessor:'val1',
+        rollover_callback: function(d, i) {
+            $('#histogram4 svg .active_datapoint')
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+        }
+    })
+
+    //add bar charts
     var names = ['first', 'second', 'third', 'fourth', 'fifth']
     var bar_data = [];
     d3.range(5).map(function(d){
@@ -646,6 +646,7 @@ $(document).ready(function() {
         x_axis: false
     })
 
+    //add scatterplots
     d3.json('data/points1.json', function(data) {
         moz_chart({
             title: "Scatterplot",
@@ -698,8 +699,6 @@ $(document).ready(function() {
         //     y_accessor: 'y'
         // })
     })
-
-
 
     function assignEventListeners() {
         $('#dark-css').click(function () {
