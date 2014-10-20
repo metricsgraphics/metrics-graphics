@@ -32,7 +32,7 @@ function raw_data_transformation(args){
 
 function process_line(args) {
     //are we replacing missing y values with zeros?
-    
+
     //do we have a time-series?
     var is_time_series = ($.type(args.data[0][0][args.x_accessor]) == 'date')
             ? true
@@ -52,11 +52,10 @@ function process_line(args) {
 
             for (var d = new Date(start_date); d <= last['date']; d.setDate(d.getDate() + 1)) {
                 var o = {};
- 
+
                 //check to see if we already have this date in our data object
                 var existing_o = null;
                 $.each(args.data[i], function(i, val) {
-                    
                     if(Date.parse(val.date) == Date.parse(new Date(d))) {
                         existing_o = val;
                         //console.log("exists: ", val.date);
