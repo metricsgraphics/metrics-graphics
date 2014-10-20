@@ -68,7 +68,7 @@ $(document).ready(function() {
 
         //small range
         moz_chart({
-            title: "Small Range of Ints",
+            title: "Small Range of Integers",
             description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
             data: data,
             interpolate: 'basic',
