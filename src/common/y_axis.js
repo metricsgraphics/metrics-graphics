@@ -142,13 +142,34 @@ function y_axis(args) {
          }
          return Math.log(val) / Math.LN10;
     }
+
     if (args.y_scale_type == 'log'){
         // get out only whole logs.
         scale_ticks = scale_ticks.filter(function(d){
             return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
         });
+    }
 
-    } 
+    //filter out fraction ticks if our data is ints and if ymax > number of generated ticks
+    var number_of_ticks = args.scales.Y.ticks(args.yax_count).length;
+    
+    //is our data object all ints?
+    var data_is_int = true;
+    $.each(args.data, function(i, d) {
+        $.each(d, function(i, d) {
+            if(d[args.y_accessor] % 1 !== 0) {
+                data_is_int = false;
+                return false;
+            }
+        });
+    });
+
+    if(data_is_int && number_of_ticks > max_y && args.format == 'count') {
+        //remove non-integer ticks
+        scale_ticks = scale_ticks.filter(function(d){
+            return d % 1 === 0;
+        });
+    }
 
     var last_i = scale_ticks.length-1;
     if(!args.x_extended_ticks && !args.y_extended_ticks) {

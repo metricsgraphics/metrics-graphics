@@ -78,6 +78,7 @@ function x_axis(args) {
     args.scales.X = (args.time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
+
     args.scales.X
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
@@ -96,7 +97,6 @@ function x_axis(args) {
         .classed('x-axis-small', args.use_small_class);
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
-
 
     //are we adding a label?
     if(args.x_label) {
@@ -148,6 +148,7 @@ function x_axis(args) {
                     if(args.x_extended_ticks)
                         return 'extended-x-ticks';
                 });
+
     g.selectAll('.xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')

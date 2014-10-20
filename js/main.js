@@ -27,7 +27,7 @@ $(document).ready(function() {
     assignEventListeners();
 
 
-    //add the Few Observations chart
+    //few observations
     d3.json('data/missing-y.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');
         for(var i=0;i<data.length;i++) {
@@ -56,6 +56,28 @@ $(document).ready(function() {
                 $('#missing-y svg .active_datapoint')
                     .html(date +  '   ' + y_val);
             }
+        })
+    });
+
+    d3.json('data/small-range.json', function(data) {
+        var fff = d3.time.format('%Y-%m-%d');
+        for(var i=0;i<data.length;i++) {
+            var d = data[i];
+            d['date'] = fff.parse(d['date']);
+        }
+
+        //small range
+        moz_chart({
+            title: "Small Range",
+            description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+            data: data,
+            interpolate: 'basic',
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            target: '#small-range',
+            x_accessor: 'date',
+            y_accessor: 'value'
         })
     });
 
