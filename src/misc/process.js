@@ -38,7 +38,7 @@ function process_line(args) {
             ? true
             : false;
 
-    if(args.missing_y_is_zero && args.chart_type == 'line' && is_time_series) {
+    if(args.missing_is_zero && args.chart_type == 'line' && is_time_series) {
         for(var i=0;i<args.data.length;i++) {
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
