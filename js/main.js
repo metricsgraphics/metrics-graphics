@@ -332,7 +332,7 @@ $(document).ready(function() {
         title: "Glorious Chart",
         error: 'This data is blocked by Lorem Ipsum. Get your stuff together, Ipsum.',
         chart_type: 'missing-data',
-        description: "This is an example of a chart whose data is currently missing.",
+        description: "This is an example of a chart whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
         target: '#glorious_chart',
         width: torso.width,
         height: torso.height

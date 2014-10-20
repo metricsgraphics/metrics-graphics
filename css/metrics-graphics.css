@@ -108,9 +108,7 @@ body {
 }
 
 .chart_title .fa.warning {
-    color: red;
     font-weight: 300;
-    opacity: 0.8;
 }
 
 circle {
