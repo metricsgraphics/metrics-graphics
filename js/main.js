@@ -334,7 +334,7 @@ $(document).ready(function() {
         moz_chart({
             left: 80,
             bottom: 50,
-            title: "X-axis Not Time, Animated",
+            title: "X-Axis Not Time, Animated",
             description: "A chart where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load.",
             data: data,
             animate_on_load: true,
