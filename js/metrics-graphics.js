@@ -9,7 +9,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        missing_y_is_zero: true,     // if true, missing values of y will be treated as zeros
+        missing_is_zero: false,     // if true, missing values will be treated as zeros
         legend: '' ,                  // an array identifying the labels for a chart's lines
         legend_target: '',            // if set, the specified element is populated with a legend
         error: '',                    // if set, a graph will show an error icon and log the error to the console
@@ -328,13 +328,34 @@ function y_axis(args) {
          }
          return Math.log(val) / Math.LN10;
     }
+
     if (args.y_scale_type == 'log'){
         // get out only whole logs.
         scale_ticks = scale_ticks.filter(function(d){
             return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
         });
+    }
 
-    } 
+    //filter out fraction ticks if our data is ints and if ymax > number of generated ticks
+    var number_of_ticks = args.scales.Y.ticks(args.yax_count).length;
+    
+    //is our data object all ints?
+    var data_is_int = true;
+    $.each(args.data, function(i, d) {
+        $.each(d, function(i, d) {
+            if(d[args.y_accessor] % 1 !== 0) {
+                data_is_int = false;
+                return false;
+            }
+        });
+    });
+
+    if(data_is_int && number_of_ticks > max_y && args.format == 'count') {
+        //remove non-integer ticks
+        scale_ticks = scale_ticks.filter(function(d){
+            return d % 1 === 0;
+        });
+    }
 
     var last_i = scale_ticks.length-1;
     if(!args.x_extended_ticks && !args.y_extended_ticks) {
@@ -484,6 +505,7 @@ function x_axis(args) {
     args.scales.X = (args.time_series) 
         ? d3.time.scale() 
         : d3.scale.linear();
+
     args.scales.X
         .domain([min_x, max_x])
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
@@ -502,7 +524,6 @@ function x_axis(args) {
         .classed('x-axis-small', args.use_small_class);
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
-
 
     //are we adding a label?
     if(args.x_label) {
@@ -554,6 +575,7 @@ function x_axis(args) {
                     if(args.x_extended_ticks)
                         return 'extended-x-ticks';
                 });
+
     g.selectAll('.xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
@@ -1909,17 +1931,58 @@ function raw_data_transformation(args){
     return this
 }
 
-//todo, do it for multi-line too
 function process_line(args) {
     //are we replacing missing y values with zeros?
-    console.log(args.time_series);
-    if(args.missing_y_is_zero && args.chart_type == 'line' && args.time_series) {
-        //todo get date series from date at args.data[0] to args.data[args.data.length-1]
-        var first_date = args.data[0];
-        var last_date = args.data[args.data.length-1];
-        console.log(first_date, last_date);
 
-        //todo
+    //do we have a time-series?
+    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) == 'date')
+            ? true
+            : false;
+
+    if(args.missing_is_zero && args.chart_type == 'line' && is_time_series) {
+        for(var i=0;i<args.data.length;i++) {
+            var first = args.data[i][0];
+            var last = args.data[i][args.data[i].length-1];
+
+            //initialize our new array for storing the processed data
+            var processed_data = [];
+            processed_data.push(clone(args.data[i][0]));
+
+            //we'll be starting from the day after our first date
+            var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
+
+            for (var d = new Date(start_date); d <= last['date']; d.setDate(d.getDate() + 1)) {
+                var o = {};
+
+                //check to see if we already have this date in our data object
+                var existing_o = null;
+                $.each(args.data[i], function(i, val) {
+                    if(Date.parse(val.date) == Date.parse(new Date(d))) {
+                        existing_o = val;
+                        //console.log("exists: ", val.date);
+
+                        return false;
+                    }
+                });
+
+                //if we don't have this date in our data object, add it and set it to zero
+                if(!existing_o) {            
+                    o['date'] = new Date(d);
+                    o[args.y_accessor] = 0;
+                    processed_data.push(o);
+                }
+                //otherwise, use the existing object for that date
+                else {
+                    processed_data.push(existing_o);
+                }
+            }
+
+            //add the last data item
+            processed_data.push(last);
+
+            //update our date object
+            args.data[i] = processed_data;
+        }
     }
 
     return this;

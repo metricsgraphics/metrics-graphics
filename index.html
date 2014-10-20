@@ -1,31 +1,31 @@
-<html lang="en">
+<html lang='en'>
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <meta property="og:title" content="MetricsGraphics.js" />
-    <meta property="og:description" content="MetricsGraphics.js is a library optimized 
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta property='og:title' content='MetricsGraphics.js' />
+    <meta property='og:description' content='MetricsGraphics.js is a library optimized 
         for visualizing and laying out time-series data. It provides a simple way to produce 
-        common types of charts in a principled, consistent and responsive way." />
-    <meta property="og:image" content="http://metricsgraphicsjs.org/images/og-logo.png" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="http://metricsgraphicsjs.org/" />
-    <meta property="og:site_name" content="MetricsGraphics.js" />
+        common types of charts in a principled, consistent and responsive way.' />
+    <meta property='og:image' content='http://metricsgraphicsjs.org/images/og-logo.png' />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content='http://metricsgraphicsjs.org/' />
+    <meta property='og:site_name' content='MetricsGraphics.js' />
     
-    <link rel="icon" type="image/png" href="images/og-logo.png" />
+    <link href='images/og-logo.png' rel='icon' type='image/png' />
 
     <title>MetricsGraphics.js</title>
     
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
     
-    <link href="css/metrics-graphics.css" rel="stylesheet" type="text/css" id="light">
-    <link href="" rel="stylesheet" type="text/css" id="dark">
-    <link href="css/metrics-graphics-demo.css" rel="stylesheet" type="text/css">
+    <link href='css/metrics-graphics.css' rel='stylesheet' type='text/css' id='light'>
+    <link href='' rel='stylesheet' type='text/css' id='dark'>
+    <link href='css/metrics-graphics-demo.css' rel='stylesheet' type='text/css'>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js" charset="utf-8"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
     <script src='js/metrics-graphics.min.js'></script>
     <script src='js/main.js'></script>
     
@@ -49,11 +49,11 @@
                     <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
                     <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
                     <li class='divider'>|</li>
-                    <li><a href="#" id="light-css" class="pill active">Light style</a></li>
-                    <li><a href="#" id="dark-css" class="pill">Dark style</a></li>
+                    <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
+                    <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
                 </ul>
                 
-                <img src="images/logo.svg" id="logo" class="svg" />
+                <img src='images/logo.svg' id='logo' class='svg' />
             </div>
 
             <div id='description'>
@@ -70,13 +70,15 @@
             <div id='torso'>
                 <div id='fake_users1'></div>
                 <div id='fake_users2'></div>
+                <div id='missing-y'></div>
+                <div id='small-range'></div>
                 <div id='spike' class='main-area-solid'></div>
                 <div id='percentage'></div>
                 <div id='currency'></div>
                 <div id='xnotdate'></div>
+                <div id='glorious_chart'></div>
                 <div id='linked_multi1'></div>
                 <div id='linked_multi2'></div>
-                <div id='glorious_chart'></div>
             </div>
             <div id='trunk'>
                 <div class='row trunk-section'>
@@ -133,13 +135,13 @@
                         <p>We sometimes have the need to split the data and then 
                         gracefully update the chart with the newly selected subset of 
                         data.</p>
-                        <div class="btn-group btn-group-sm text-center split-by-controls">
-                            <button type="button" class="btn btn-default active" 
-                                data-y_accessor="release">Release</button>
-                            <button type="button" class="btn btn-default" 
-                                data-y_accessor="beta">Beta</button>
-                            <button type="button" class="btn btn-default" 
-                                data-y_accessor="alpha">Alpha</button>
+                        <div class='btn-group btn-group-sm text-center split-by-controls'>
+                            <button type='button' class='btn btn-default active' 
+                                data-y_accessor='release'>Release</button>
+                            <button type='button' class='btn btn-default' 
+                                data-y_accessor='beta'>Beta</button>
+                            <button type='button' class='btn btn-default' 
+                                data-y_accessor='alpha'>Alpha</button>
                         </div>
                     </div>
                     <div class='col-lg-8'>
@@ -154,14 +156,14 @@
                         <h2 class='trunk-title'>Modify Time Period</h2>
                         <p>We sometimes have the need to view data for just the past n days. 
                         Here, the <i>transition_on_update</i> option is set to false.</p>
-                        <div class="btn-group btn-group-sm text-center 
-                            modify-time-period-controls">
-                            <button type="button" class="btn btn-default active" 
-                                data-time_period="">All time</button>
-                            <button type="button" class="btn btn-default" 
-                                data-time_period="61">Past 2 months</button>
-                            <button type="button" class="btn btn-default" 
-                                data-time_period="31">Past month</button>
+                        <div class='btn-group btn-group-sm text-center 
+                            modify-time-period-controls'>
+                            <button type='button' class='btn btn-default active' 
+                                data-time_period=''>All time</button>
+                            <button type='button' class='btn btn-default' 
+                                data-time_period='61'>Past 2 months</button>
+                            <button type='button' class='btn btn-default' 
+                                data-time_period='31'>Past month</button>
                         </div>
                     </div>
                     <div class='col-lg-8'>
@@ -249,7 +251,7 @@
                         <h2 class='trunk-title'>Histograms</h2>
                         <p>We use histograms a lot, particularly in <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>. We'll be 
                         adding histogram binning as a helper soon using an algorithm such as 
-                        <a href="http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule">
+                        <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>
                         this one</a>.
                         </p>
                     </div>
@@ -265,9 +267,11 @@
                     </div>
                 </div>
 
-                <div class='row wip'>
+
+
+                <div class='row wip light-bg'>
                     <div class='col-lg-12 text-center'>
-                        <i class="fa fa-wrench"></i> <strong>Works in Progress</strong> 
+                        <i class='fa fa-wrench'></i> <strong>Works in Progress</strong> 
                         subject to drastic change
                     </div>
                 </div>
@@ -308,15 +312,15 @@
 
         </div>
         <div id='footer'>
-            <a href="http://metricsgraphicsjs.org">MetricsGraphics.js 0.5.1</a>
+            <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 0.6</a>
             <br />Created by <a href='https://github.com/almossawi'>Ali Almossawi</a>,  
-            <a href="https://github.com/hamilton">Hamilton Ulmer</a> and 
-            <a href="https://github.com/mozilla/metrics-graphics/graphs/contributors">
+            <a href='https://github.com/hamilton'>Hamilton Ulmer</a> and 
+            <a href='https://github.com/mozilla/metrics-graphics/graphs/contributors'>
             others</a>
-            <br />2014 &middot; Shared under a <a href="http://www.mozilla.org/MPL/2.0/">
+            <br />2014 &middot; Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
             Mozilla Public License</a>
-            <br /><a href="https://github.com/mozilla/metrics-graphics">
-                <i class="fa fa-github fa-3x" style="line-height:42px"></i>
+            <br /><a href='https://github.com/mozilla/metrics-graphics'>
+                <i class='fa fa-github fa-3x' style='line-height:42px'></i>
             </a>
         </div>
     </div>

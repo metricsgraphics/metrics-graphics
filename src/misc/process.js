@@ -44,7 +44,7 @@ function process_line(args) {
             var last = args.data[i][args.data[i].length-1];
 
             //initialize our new array for storing the processed data
-            processed_data = [];
+            var processed_data = [];
             processed_data.push(clone(args.data[i][0]));
 
             //we'll be starting from the day after our first date
