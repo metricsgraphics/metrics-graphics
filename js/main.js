@@ -68,7 +68,7 @@ $(document).ready(function() {
 
         //small range
         moz_chart({
-            title: "Small Range",
+            title: "Small Range of Ints",
             description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
             data: data,
             interpolate: 'basic',
@@ -148,7 +148,7 @@ $(document).ready(function() {
 
         //add a multi-line chart
         moz_chart({
-            title:"Multi-line Chart",
+            title:"Multi-Line Chart",
             description: "This line chart contains multiple lines.",
             data: data,
             width: torso.width,
@@ -161,7 +161,7 @@ $(document).ready(function() {
 
         //add a wide multi-line chart
         moz_chart({
-            title:"Multi-line Chart Wide",
+            title:"Multi-Line Chart Wide",
             description: "This line chart contains multiple lines and has extended ticks enabled.",
             area: false,
             legend: ['Line 3','Line 2','Line 1'],
@@ -180,7 +180,7 @@ $(document).ready(function() {
 
         //linked multi-line charts
         moz_chart({
-            title:"Multi-line Linked",
+            title:"Multi-Line Linked",
             description: "Demoing linked multi-line charts.",
             data: data,
             width: torso.width,
@@ -200,7 +200,7 @@ $(document).ready(function() {
  
         //linked multi-line charts
         moz_chart({
-            title:"Multi-line Linked 2",
+            title:"Multi-Line Linked 2",
             description: "Demoing linked multi-line charts.",
             data: data,
             width: torso.width,
