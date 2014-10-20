@@ -94,6 +94,10 @@ h2.chart_title span {
     opacity: 0.3;
 }
 
+li {
+    color: #cfcfcf;
+}
+
 .line1-color {
     stroke: #ffd300;
 }
