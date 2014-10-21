@@ -676,7 +676,7 @@ $(document).ready(function() {
             data: data,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height,
+            height: trunk.height*1.5,
             right: trunk.right,
             target: '#scatter1',
             xax_format: function(f) {
@@ -687,13 +687,13 @@ $(document).ready(function() {
             y_accessor: 'y'
         })
         moz_chart({
-            title: "Least Squares",
-            description: "Least squares line. To get that, set <i>least_squares</i> to true.",
+            title: "Simple Line of Best Fit",
+            description: "For any scatterplot, set <i>least_squares</i> to true to add",
             data: data,
             least_squares: true,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height,
+            height: trunk.height*1.5,
             right: trunk.right,
             target: '#scatter2',
             xax_format: function(f) {
