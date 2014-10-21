@@ -9,7 +9,7 @@ function moz_chart() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
-        missing_is_zero: false,     // if true, missing values will be treated as zeros
+        missing_is_zero: false,       // if true, missing values will be treated as zeros
         legend: '' ,                  // an array identifying the labels for a chart's lines
         legend_target: '',            // if set, the specified element is populated with a legend
         error: '',                    // if set, a graph will show an error icon and log the error to the console
@@ -436,7 +436,8 @@ function x_axis(args) {
     }
 
     var last_i;
-    if (args.chart_type == 'line'){
+
+    if(args.chart_type == 'line') {
         for(var i=0; i<args.data.length; i++) {
             last_i = args.data[i].length-1;
 
@@ -445,12 +446,13 @@ function x_axis(args) {
 
             if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
                 max_x = args.data[i][last_i][args.x_accessor];
-        }    
-    } else if (args.chart_type == 'point') {
+        }
+    }
+    else if(args.chart_type == 'point') {
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
-    else if (args.chart_type == 'histogram') {
+    else if(args.chart_type == 'histogram') {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         
@@ -466,8 +468,8 @@ function x_axis(args) {
                 return args.xax_units + pf.scale(f) + pf.symbol;
             }
         }
-    } else if (args.chart_type = 'bar') {
-
+    }
+    else if(args.chart_type = 'bar') {
         //min_x = d3.min(args.data[0], function(d){return d[args.value_accessor]});
         min_x = 0; // TODO: think about what actually makes sense.
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
@@ -486,6 +488,7 @@ function x_axis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     args.x_axis_negative = false;
+
     if (!args.time_series) {
         if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));
@@ -1946,13 +1949,22 @@ function process_line(args) {
 
             //initialize our new array for storing the processed data
             var processed_data = [];
-            processed_data.push(clone(args.data[i][0]));
 
             //we'll be starting from the day after our first date
             var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
 
-            for (var d = new Date(start_date); d <= last['date']; d.setDate(d.getDate() + 1)) {
+            //if we've set a max_x, add data points up to there
+            var from = (args.min_x) ? args.min_x : start_date;
+            var upto = (args.max_x) ? args.max_x : last['date'];
+            for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                 var o = {};
+                d.setHours(0, 0, 0, 0);
+
+                //add the first date item (judge me not, world)
+                //we'll be starting from the day after our first date
+                if(Date.parse(d) == Date.parse(new Date(start_date))) {
+                    processed_data.push(clone(args.data[i][0]));
+                }
 
                 //check to see if we already have this date in our data object
                 var existing_o = null;
@@ -1963,7 +1975,7 @@ function process_line(args) {
 
                         return false;
                     }
-                });
+                })
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if(!existing_o) {            
@@ -1975,10 +1987,12 @@ function process_line(args) {
                 else {
                     processed_data.push(existing_o);
                 }
+                
+                //add the last data item
+                if(Date.parse(d) == Date.parse(new Date(last['date']))) {
+                    processed_data.push(last);
+                }
             }
-
-            //add the last data item
-            processed_data.push(last);
 
             //update our date object
             args.data[i] = processed_data;
