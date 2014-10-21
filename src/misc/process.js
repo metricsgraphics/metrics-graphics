@@ -45,13 +45,22 @@ function process_line(args) {
 
             //initialize our new array for storing the processed data
             var processed_data = [];
-            processed_data.push(clone(args.data[i][0]));
 
             //we'll be starting from the day after our first date
             var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
 
-            for (var d = new Date(start_date); d <= last['date']; d.setDate(d.getDate() + 1)) {
+            //if we've set a max_x, add data points up to there
+            var from = (args.min_x) ? args.min_x : start_date;
+            var upto = (args.max_x) ? args.max_x : last['date'];
+            for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                 var o = {};
+                d.setHours(0, 0, 0, 0);
+
+                //add the first date item (judge me not, world)
+                //we'll be starting from the day after our first date
+                if(Date.parse(d) == Date.parse(new Date(start_date))) {
+                    processed_data.push(clone(args.data[i][0]));
+                }
 
                 //check to see if we already have this date in our data object
                 var existing_o = null;
@@ -62,7 +71,7 @@ function process_line(args) {
 
                         return false;
                     }
-                });
+                })
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if(!existing_o) {            
@@ -74,10 +83,12 @@ function process_line(args) {
                 else {
                     processed_data.push(existing_o);
                 }
+                
+                //add the last data item
+                if(Date.parse(d) == Date.parse(new Date(last['date']))) {
+                    processed_data.push(last);
+                }
             }
-
-            //add the last data item
-            processed_data.push(last);
 
             //update our date object
             args.data[i] = processed_data;
