@@ -48,8 +48,6 @@ function process_line(args) {
 
             //we'll be starting from the day after our first date
             var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
-            //start_date = new Date(start_date);
-            //start_date.setHours(0, 0, 0, 0);
 
             //if we've set a max_x, add data points up to there
             var from = (args.min_x) ? args.min_x : start_date;
