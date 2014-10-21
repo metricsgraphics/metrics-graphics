@@ -694,7 +694,7 @@ $(document).ready(function() {
 
         moz_chart({
             title: "Simple Line of Best Fit",
-            description: "For any scatterplot, set <i>least_squares</i> to true to add",
+            description: "For any scatterplot, set <i>least_squares</i> to true to add.",
             data: data,
             least_squares: true,
             chart_type: 'point',
