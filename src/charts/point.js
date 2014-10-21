@@ -47,25 +47,34 @@ charts.point = function(args) {
         } else {
             pts.attr('r', 2);
         }
-
+        var rug;
         if (args.x_rug){
             //var data = args.data[0].map(function(d){return d[args.x_accessor]});
-            g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
+            rug=g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
                 .attr('x1', args.scalefns.xf)
                 .attr('x2', args.scalefns.xf)
                 .attr('y1', args.height-args.top+args.buffer)
                 .attr('y2', args.height-args.top)
-                .attr('stroke', 'black')
-                .attr('opacity', .2);
+                .attr('opacity', .3);
+            if (args.color_accessor){
+                rug.attr('stroke', args.scalefns.color);
+            } else {
+                rug.attr('stroke', 'black');
+            }
         }
         if (args.y_rug){
-            g.selectAll('line.y_rug').data(args.data[0]).enter().append('svg:line')
+            rug=g.selectAll('line.y_rug').data(args.data[0]).enter().append('svg:line')
                 .attr('x1', args.left+1)
                 .attr('x2', args.left+args.buffer)
                 .attr('y1', args.scalefns.yf)
                 .attr('y2', args.scalefns.yf)
                 .attr('stroke', 'black')
                 .attr('opacity', .2);
+            if (args.color_accessor){
+                rug.attr('stroke', args.scalefns.color);
+            } else {
+                rug.attr('stroke', 'black');
+            }
         }
 
         return this;
