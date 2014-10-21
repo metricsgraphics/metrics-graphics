@@ -71,7 +71,7 @@ function process_line(args) {
 
                         return false;
                     }
-                });
+                })
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if(!existing_o) {            
