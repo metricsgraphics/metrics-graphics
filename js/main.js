@@ -687,7 +687,9 @@ $(document).ready(function() {
             x_accessor: 'x',
             y_accessor: 'y',
             color_accessor:'z',
-            size_accessor:'w'
+            size_accessor:'w',
+            x_rug: true,
+            y_rug: true
         });
 
         moz_chart({
