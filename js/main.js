@@ -668,11 +668,10 @@ $(document).ready(function() {
         x_axis: false
     })
 
-    //add scatterplots
     d3.json('data/points1.json', function(data) {
         moz_chart({
-            title: "Scatterplot",
-            description: "A first example of a scatterplot.",
+            title: "Scatterplot with Size & Color",
+            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges.",
             data: data,
             chart_type: 'point',
             width: trunk.width,
@@ -684,8 +683,11 @@ $(document).ready(function() {
                 return pf.scale(f) + pf.symbol;
             },
             x_accessor: 'x',
-            y_accessor: 'y'
-        })
+            y_accessor: 'y',
+            color_accessor:'z',
+            size_accessor:'w'
+        });
+
         moz_chart({
             title: "Simple Line of Best Fit",
             description: "For any scatterplot, set <i>least_squares</i> to true to add",
@@ -702,7 +704,8 @@ $(document).ready(function() {
             },
             x_accessor: 'x',
             y_accessor: 'y'
-        })
+        });
+
         //  moz_chart({
         //     title: "Lowess",
         //     description: "use lowess: true",

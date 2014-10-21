@@ -29,13 +29,24 @@ charts.point = function(args) {
         g = svg.append('g')
             .classed('points', true);
 
-        g.selectAll('circle')
+        var pts = g.selectAll('circle')
             .data(args.data[0])
             .enter().append('svg:circle')
                 .attr('cx', args.scalefns.xf)
-                .attr('cy', args.scalefns.yf)
-                .attr('r', 2);
+                .attr('cy', args.scalefns.yf);
 
+        if (args.color_accessor!=null){
+            pts.attr('fill',   args.scalefns.color);
+            pts.attr('stroke', args.scalefns.color);
+        } else {
+            pts.attr('fill',   '#0000ff');
+            pts.attr('stroke', '#0000ff');
+        }
+        if (args.size_accessor!=null){
+            pts.attr('r', args.scalefns.size);
+        } else {
+            pts.attr('r', 2);
+        }
         return this;
     }
 
@@ -119,11 +130,16 @@ charts.point = function(args) {
             }
 
             //highlight active point
-            svg.selectAll('.points circle')
+            var pts = svg.selectAll('.points circle')
                 .filter(function(g,j){return i == j})
                 .classed('unselected', false)
-                .classed('selected', true)
-                .attr('r', 3);
+                .classed('selected', true);
+
+            if (args.size_accessor){
+                pts.attr('r', function(di){return args.scalefns.size(di)+1});
+            } else {
+                pts.attr('r', 3);
+            }
 
             //update rollover text
             if (args.show_rollover_text) {
@@ -151,10 +167,15 @@ charts.point = function(args) {
 
         return function(d,i){
             //reset active point
-            svg.selectAll('.points circle')
+            var pts = svg.selectAll('.points circle')
                 .classed('unselected', false)
-                .classed('selected', false)
-                .attr('r', 2);
+                .classed('selected', false);
+
+            if (args.size_accessor){
+                pts.attr('r', args.scalefns.size);
+            } else {
+                pts.attr('r', 2);
+            }
 
             //reset active data point text
             svg.select('.active_datapoint')

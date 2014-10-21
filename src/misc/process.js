@@ -199,7 +199,7 @@ function process_point(args){
     var y = data.map(function(d){return d[args.y_accessor]});
     if (args.least_squares){
         args.ls_line = least_squares(x,y);    
-    }
+    };
     
     //args.lowess_line = lowess_robust(x,y, .5, 100)
     return this;

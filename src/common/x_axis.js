@@ -8,6 +8,53 @@ function x_axis(args) {
         return args.scales.X(di[args.x_accessor]);
     }
 
+    if (args.chart_type=='point'){
+        // figure out 
+        var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
+        if (args.color_accessor!=null){
+            if (args.color_domain==null){
+
+                min_color=d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                max_color=d3.max(args.data[0], function(d){return d[args.color_accessor]});    
+                color_domain = [min_color, max_color];
+            } else {
+                color_domain = args.color_domain;
+            }
+            if (args.color_range==null){
+                color_range = ['blue', 'red'];
+            } else {
+                color_range = args.color_range;
+            }
+            
+            args.scales.color=d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+
+            args.scalefns.color=function(di){
+                return args.scales.color(di[args.color_accessor]);
+            };
+        }
+        if (args.size_accessor!=null){
+
+            if (args.size_domain==null){
+                min_size=d3.min(args.data[0], function(d){return d[args.size_accessor]});
+                max_size=d3.max(args.data[0], function(d){return d[args.size_accessor]});
+                size_domain = [min_size, max_size];
+            } else {
+                size_domain = args.size_domain;
+            }
+            if (args.size_range==null){
+                size_range = [1,5];//args.size_domain;
+            } else {
+                size_range = args.size_range;
+            }
+            
+            args.scales.size=d3.scale.linear().domain(size_domain).range(size_range).clamp(true);
+
+            args.scalefns.size=function(di){
+                return args.scales.size(di[args.size_accessor]);
+            };
+        }
+    }
+
     var last_i;
     if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {

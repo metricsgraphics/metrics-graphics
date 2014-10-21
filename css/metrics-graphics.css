@@ -112,7 +112,7 @@ body {
 }
 
 circle {
-    fill: #0000ff;
+    /*fill: #0000ff;*/
     opacity: 0.85;
 }
 
@@ -251,14 +251,13 @@ path.main-line {
 }
 
 .points circle {
-    fill: #0000ff;
+/*    fill: #0000ff;
+    stroke: #0000ff;*/
     fill-opacity: 0.4;
-    stroke: #0000ff;
     stroke-opacity: 1;
 }
 
 .points circle.selected {
-    fill: #fff;
     fill-opacity: 1;
     stroke-opacity: 1;
 }

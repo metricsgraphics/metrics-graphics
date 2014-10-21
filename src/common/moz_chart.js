@@ -78,7 +78,13 @@ function moz_chart() {
     }
     moz.defaults.point = {
         ls: false,
-        lowess: false
+        lowess: false,
+        size_accessor: null,
+        color_accessor: null,
+        size_range: null,//[1,5]
+        color_range: null,//['blue', 'red']
+        size_domain: null,
+        color_domain: null
     }
     moz.defaults.histogram = {
         rollover_callback: function(d, i) {
