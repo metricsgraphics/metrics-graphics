@@ -78,7 +78,13 @@ function moz_chart() {
     }
     moz.defaults.point = {
         ls: false,
-        lowess: false
+        lowess: false,
+        size_accessor: null,
+        color_accessor: null,
+        size_range: null,//[1,5]
+        color_range: null,//['blue', 'red']
+        size_domain: null,
+        color_domain: null
     }
     moz.defaults.histogram = {
         rollover_callback: function(d, i) {
@@ -433,6 +439,53 @@ function x_axis(args) {
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
+    }
+
+    if (args.chart_type=='point'){
+        // figure out 
+        var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
+        if (args.color_accessor!=null){
+            if (args.color_domain==null){
+
+                min_color=d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                max_color=d3.max(args.data[0], function(d){return d[args.color_accessor]});    
+                color_domain = [min_color, max_color];
+            } else {
+                color_domain = args.color_domain;
+            }
+            if (args.color_range==null){
+                color_range = ['blue', 'red'];
+            } else {
+                color_range = args.color_range;
+            }
+            
+            args.scales.color=d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+
+            args.scalefns.color=function(di){
+                return args.scales.color(di[args.color_accessor]);
+            };
+        }
+        if (args.size_accessor!=null){
+
+            if (args.size_domain==null){
+                min_size=d3.min(args.data[0], function(d){return d[args.size_accessor]});
+                max_size=d3.max(args.data[0], function(d){return d[args.size_accessor]});
+                size_domain = [min_size, max_size];
+            } else {
+                size_domain = args.size_domain;
+            }
+            if (args.size_range==null){
+                size_range = [1,5];//args.size_domain;
+            } else {
+                size_range = args.size_range;
+            }
+            
+            args.scales.size=d3.scale.linear().domain(size_domain).range(size_range).clamp(true);
+
+            args.scalefns.size=function(di){
+                return args.scales.size(di[args.size_accessor]);
+            };
+        }
     }
 
     var last_i;
@@ -1555,12 +1608,53 @@ charts.point = function(args) {
         g = svg.append('g')
             .classed('points', true);
 
-        g.selectAll('circle')
+        var pts = g.selectAll('circle')
             .data(args.data[0])
             .enter().append('svg:circle')
                 .attr('cx', args.scalefns.xf)
-                .attr('cy', args.scalefns.yf)
-                .attr('r', 2);
+                .attr('cy', args.scalefns.yf);
+
+        if (args.color_accessor!=null){
+            pts.attr('fill',   args.scalefns.color);
+            pts.attr('stroke', args.scalefns.color);
+        } else {
+            pts.attr('fill',   '#0000ff');
+            pts.attr('stroke', '#0000ff');
+        }
+        if (args.size_accessor!=null){
+            pts.attr('r', args.scalefns.size);
+        } else {
+            pts.attr('r', 2);
+        }
+        var rug;
+        if (args.x_rug){
+            //var data = args.data[0].map(function(d){return d[args.x_accessor]});
+            rug=g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
+                .attr('x1', args.scalefns.xf)
+                .attr('x2', args.scalefns.xf)
+                .attr('y1', args.height-args.top+args.buffer)
+                .attr('y2', args.height-args.top)
+                .attr('opacity', .3);
+            if (args.color_accessor){
+                rug.attr('stroke', args.scalefns.color);
+            } else {
+                rug.attr('stroke', 'black');
+            }
+        }
+        if (args.y_rug){
+            rug=g.selectAll('line.y_rug').data(args.data[0]).enter().append('svg:line')
+                .attr('x1', args.left+1)
+                .attr('x2', args.left+args.buffer)
+                .attr('y1', args.scalefns.yf)
+                .attr('y2', args.scalefns.yf)
+                .attr('stroke', 'black')
+                .attr('opacity', .2);
+            if (args.color_accessor){
+                rug.attr('stroke', args.scalefns.color);
+            } else {
+                rug.attr('stroke', 'black');
+            }
+        }
 
         return this;
     }
@@ -1645,11 +1739,16 @@ charts.point = function(args) {
             }
 
             //highlight active point
-            svg.selectAll('.points circle')
+            var pts = svg.selectAll('.points circle')
                 .filter(function(g,j){return i == j})
                 .classed('unselected', false)
-                .classed('selected', true)
-                .attr('r', 3);
+                .classed('selected', true);
+
+            if (args.size_accessor){
+                pts.attr('r', function(di){return args.scalefns.size(di)+1});
+            } else {
+                pts.attr('r', 3);
+            }
 
             //update rollover text
             if (args.show_rollover_text) {
@@ -1677,10 +1776,15 @@ charts.point = function(args) {
 
         return function(d,i){
             //reset active point
-            svg.selectAll('.points circle')
+            var pts = svg.selectAll('.points circle')
                 .classed('unselected', false)
-                .classed('selected', false)
-                .attr('r', 2);
+                .classed('selected', false);
+
+            if (args.size_accessor){
+                pts.attr('r', args.scalefns.size);
+            } else {
+                pts.attr('r', 2);
+            }
 
             //reset active data point text
             svg.select('.active_datapoint')
@@ -2114,7 +2218,7 @@ function process_point(args){
     var y = data.map(function(d){return d[args.y_accessor]});
     if (args.least_squares){
         args.ls_line = least_squares(x,y);    
-    }
+    };
     
     //args.lowess_line = lowess_robust(x,y, .5, 100)
     return this;
