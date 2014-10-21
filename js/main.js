@@ -38,13 +38,15 @@ $(document).ready(function() {
         //add a line chart that has a few observations
         moz_chart({
             title: "Few Observations",
-            description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've override the rollover callback to show 'no date' for missing observations.",
+            description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've override the rollover callback to show 'no date' for missing observations and have set <i>min_x</i> and <i>max_x</i> to dates beyond our date range.",
             data: data,
             interpolate: 'basic',
             missing_is_zero: true,
             width: torso.width,
             height: torso.height,
             right: torso.right,
+            min_x: new Date('2014-01-01'),
+            max_x: new Date('2014-06-01'),
             target: '#missing-y',
             x_accessor: 'date',
             y_accessor: 'value',

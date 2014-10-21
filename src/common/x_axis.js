@@ -9,7 +9,8 @@ function x_axis(args) {
     }
 
     var last_i;
-    if (args.chart_type == 'line'){
+
+    if(args.chart_type == 'line') {
         for(var i=0; i<args.data.length; i++) {
             last_i = args.data[i].length-1;
 
@@ -18,12 +19,13 @@ function x_axis(args) {
 
             if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
                 max_x = args.data[i][last_i][args.x_accessor];
-        }    
-    } else if (args.chart_type == 'point') {
+        }
+    }
+    else if(args.chart_type == 'point') {
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
     }
-    else if (args.chart_type == 'histogram') {
+    else if(args.chart_type == 'histogram') {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         
@@ -39,8 +41,8 @@ function x_axis(args) {
                 return args.xax_units + pf.scale(f) + pf.symbol;
             }
         }
-    } else if (args.chart_type = 'bar') {
-
+    }
+    else if(args.chart_type = 'bar') {
         //min_x = d3.min(args.data[0], function(d){return d[args.value_accessor]});
         min_x = 0; // TODO: think about what actually makes sense.
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
@@ -59,6 +61,7 @@ function x_axis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     args.x_axis_negative = false;
+
     if (!args.time_series) {
         if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));
