@@ -673,7 +673,7 @@ $(document).ready(function() {
     d3.json('data/points1.json', function(data) {
         moz_chart({
             title: "Scatterplot with Size & Color",
-            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges.",
+            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. In this example, we have enabled rug plots by setting the <i>x_rug</i> and <i>y_rug</i> options to true.",
             data: data,
             chart_type: 'point',
             width: trunk.width,
