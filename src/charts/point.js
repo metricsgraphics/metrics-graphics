@@ -110,7 +110,8 @@ charts.point = function(args) {
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
             .enter().append('path')
-                .attr('d', function(d) { 
+                .attr('d', function(d) {
+                    if(d == undefined) return;
                     return 'M' + d.join(',') + 'Z';
                 })
                 .attr('id', function(d,i) { 
