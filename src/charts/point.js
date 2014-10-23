@@ -101,15 +101,6 @@ charts.point = function(args) {
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
-        
-        clips.selectAll('clipPath')
-            .data(args.data[0])
-                .enter().append('clipPath')
-                    .attr('id', function(d, i) { return 'clip-'+i;})
-                    .append('circle')
-                        .attr('cx', args.scalefns.xf)
-                        .attr('cy', args.scalefns.yf)
-                        .attr('r', 20);
 
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
