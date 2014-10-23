@@ -86,9 +86,6 @@ charts.point = function(args) {
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
 
-        var paths = svg.append('g')
-            .attr('class', 'voronoi');
-
         //remove rollover text if it already exists
         if($(args.target + ' svg .active_datapoint').length > 0) {
             $(args.target + ' svg .active_datapoint').remove();
@@ -106,6 +103,9 @@ charts.point = function(args) {
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
             .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+
+        var paths = svg.append('g')
+            .attr('class', 'voronoi');
 
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
