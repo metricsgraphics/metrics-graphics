@@ -129,10 +129,30 @@ charts.point = function(args) {
 
         return function(d, i){
             svg.selectAll('.points circle')
-                .classed('unselected', true);
+                .classed('selected', false);
+
+            //highlight active point
+            var pts = svg.selectAll('.points circle.path-' + i)
+                .classed('selected', true);
+
+            if (args.size_accessor){
+                pts.attr('r', function(di){return args.scalefns.size(di)+1});
+            } else {
+                pts.attr('r', 3);
+            }
+
+            //trigger mouseover on all points for this class name in .linked charts
+            if(args.linked && !globals.link) {
+                globals.link = true;
+
+                //trigger mouseover on matching point in .linked charts
+                d3.selectAll('.voronoi .path-' + i)
+                    .each(function() {
+                        d3.select(this).on('mouseover')(d,i);
+                })
+            }
 
             var fmt = d3.time.format('%b %e, %Y');
-        
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -147,18 +167,6 @@ charts.point = function(args) {
                     var n = d3.format(fmt_string);
                     return n(d_);
                 }
-            }
-
-            //highlight active point
-            var pts = svg.selectAll('.points circle')
-                .filter(function(g,j){return i == j})
-                .classed('unselected', false)
-                .classed('selected', true);
-
-            if (args.size_accessor){
-                pts.attr('r', function(di){return args.scalefns.size(di)+1});
-            } else {
-                pts.attr('r', 3);
             }
 
             //update rollover text
@@ -190,6 +198,15 @@ charts.point = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         return function(d,i){
+            if(args.linked && globals.link) {
+                globals.link = false;
+
+                d3.selectAll('.voronoi .path-' + i)
+                    .each(function() {
+                        d3.select(this).on('mouseout')(d,i);
+                })
+            }
+
             //reset active point
             var pts = svg.selectAll('.points circle')
                 .classed('unselected', false)
@@ -198,7 +215,7 @@ charts.point = function(args) {
             if (args.size_accessor){
                 pts.attr('r', args.scalefns.size);
             } else {
-                pts.attr('r', 2);
+                pts.attr('r', 3);
             }
 
             //reset active data point text
