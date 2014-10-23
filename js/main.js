@@ -143,8 +143,8 @@ $(document).ready(function() {
         });
 
         moz_chart({
-            title: "sls with a time series",
-            description: "test",
+            title: "Another Least Squares Example",
+            description: "Least squares effortlessly works with dates or times on axes.",
             data: data,
             chart_type: 'point',
             width: torso.width,
