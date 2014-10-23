@@ -183,6 +183,11 @@ text {
     border-top-color: #5e5e5e;
 }
 
+.x_rug,
+.y_rug {
+    stroke: #cfcfcf;
+}
+
 .x-axis line,
 .y-axis line {
     stroke: #fff;

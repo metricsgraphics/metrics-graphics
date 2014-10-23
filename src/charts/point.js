@@ -138,7 +138,7 @@ charts.point = function(args) {
             if (args.size_accessor){
                 pts.attr('r', function(di){return args.scalefns.size(di)+1});
             } else {
-                pts.attr('r', 3);
+                pts.attr('r', args.point_size);
             }
 
             //trigger mouseover on all points for this class name in .linked charts
@@ -215,7 +215,7 @@ charts.point = function(args) {
             if (args.size_accessor){
                 pts.attr('r', args.scalefns.size);
             } else {
-                pts.attr('r', 3);
+                pts.attr('r', args.point_size);
             }
 
             //reset active data point text

@@ -79,6 +79,7 @@ function moz_chart() {
     moz.defaults.point = {
         ls: false,
         lowess: false,
+        point_size: 3,
         size_accessor: null,
         color_accessor: null,
         size_range: null,//[1,5]

@@ -152,6 +152,16 @@ circle {
     fill: #9e9efc;
 }
 
+.least-squares-line {
+    stroke-width: 1;
+    stroke: red;
+}
+
+.lowess-line {
+    stroke: red;
+    fill: none;
+}
+
 .line1-color {
     stroke: #4040e8;
 }
@@ -272,6 +282,11 @@ text {
     pointer-events: all;
     stroke: none;
     stroke-opacity: 0.1;
+}
+
+.x_rug,
+.y_rug {
+    stroke: black;
 }
 
 .x-axis line,
