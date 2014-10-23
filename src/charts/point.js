@@ -182,6 +182,10 @@ charts.point = function(args) {
                         }
                     });                
             }
+
+            if(args.rollover_callback) {
+                args.rollover_callback(d, i);
+            }
         }
     }
 
