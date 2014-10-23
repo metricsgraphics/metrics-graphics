@@ -113,7 +113,8 @@ charts.point = function(args) {
 
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
-            .y(args.scalefns.yf);
+            .y(args.scalefns.yf)
+            .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
