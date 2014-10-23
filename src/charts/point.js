@@ -114,7 +114,7 @@ charts.point = function(args) {
                     if(d == undefined) return;
                     return 'M' + d.join(',') + 'Z';
                 })
-                .attr('id', function(d,i) { 
+                .attr('class', function(d,i) { 
                     return 'path-' + i;
                 })
                 .attr('clip-path', function(d,i) {
