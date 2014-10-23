@@ -140,7 +140,21 @@ $(document).ready(function() {
             target: '#spike',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
+
+        moz_chart({
+            title: "sls with a time series",
+            description: "test",
+            data: data,
+            chart_type: 'point',
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            least_squares: true,
+            target: '#sls-time-series',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     })
 
     d3.json('data/fake_users2.json', function(data) {

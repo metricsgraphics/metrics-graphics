@@ -77,14 +77,29 @@ function lowess(x, y, alpha, inc){
 
 }
 
-function least_squares(x, y) {
-    var xi, yi,
+function least_squares(x_, y_) {
+    var x, y, xi, yi,
         _x  = 0,
         _y  = 0,
         _xy = 0,
         _xx = 0;
 
-    var n = x.length;
+    var n = x_.length;
+    if (x_[0] instanceof Date){
+        x = x_.map(function(d){
+            return d.getTime();
+        });
+    } else {
+        x = x_;
+    };
+
+    if (y_[0] instanceof Date){
+        y = y_.map(function(d){
+            return d.getTime();
+        });
+    } else {
+        y = y_;
+    };
 
     var xhat = d3.mean(x);
     var yhat = d3.mean(y);
@@ -99,7 +114,6 @@ function least_squares(x, y) {
 
     var beta = numerator / denominator;
     var x0 = yhat - beta * xhat;
-
 
     return {
         x0:x0, 
