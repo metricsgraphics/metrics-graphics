@@ -284,8 +284,8 @@ text {
     stroke-opacity: 0.1;
 }
 
-.x_rug,
-.y_rug {
+.x-rug-mono,
+.y-rug-mono {
     stroke: black;
 }
 

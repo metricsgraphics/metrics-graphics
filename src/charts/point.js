@@ -15,9 +15,6 @@ charts.point = function(args) {
         if (args.least_squares){
             add_ls(args);
         }
-        // if (args.lowess){
-        //     add_lowess(args);
-        // }
         return this
     }
 
@@ -32,6 +29,7 @@ charts.point = function(args) {
         var pts = g.selectAll('circle')
             .data(args.data[0])
             .enter().append('svg:circle')
+                .attr('class', function(d, i) { return 'path-' + i; })
                 .attr('cx', args.scalefns.xf)
                 .attr('cy', args.scalefns.yf);
 
@@ -45,21 +43,24 @@ charts.point = function(args) {
         if (args.size_accessor!=null){
             pts.attr('r', args.scalefns.size);
         } else {
-            pts.attr('r', 2);
+            pts.attr('r', args.point_size);
         }
+
         var rug;
         if (args.x_rug){
-            //var data = args.data[0].map(function(d){return d[args.x_accessor]});
             rug=g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
                 .attr('x1', args.scalefns.xf)
                 .attr('x2', args.scalefns.xf)
                 .attr('y1', args.height-args.top+args.buffer)
                 .attr('y2', args.height-args.top)
-                .attr('opacity', .3);
+                .attr('class', 'x-rug')
+                .attr('opacity', 0.3);
+
             if (args.color_accessor){
                 rug.attr('stroke', args.scalefns.color);
-            } else {
-                rug.attr('stroke', 'black');
+            }
+            else {
+                rug.classed('x-rug-mono', true);
             }
         }
         if (args.y_rug){
@@ -68,12 +69,14 @@ charts.point = function(args) {
                 .attr('x2', args.left+args.buffer)
                 .attr('y1', args.scalefns.yf)
                 .attr('y2', args.scalefns.yf)
-                .attr('stroke', 'black')
-                .attr('opacity', .2);
+                .attr('class', 'y-rug')
+                .attr('opacity', 0.3);
+
             if (args.color_accessor){
                 rug.attr('stroke', args.scalefns.color);
-            } else {
-                rug.attr('stroke', 'black');
+            }
+            else {
+                rug.classed('y-rug-mono', true);
             }
         }
 
@@ -84,7 +87,7 @@ charts.point = function(args) {
         var svg = d3.select(args.target + ' svg');
 
         var paths = svg.append('g')
-            .attr('id', 'point-paths');
+            .attr('class', 'voronoi');
 
         //remove rollover text if it already exists
         if($(args.target + ' svg .active_datapoint').length > 0) {
@@ -108,14 +111,11 @@ charts.point = function(args) {
             .data(voronoi(args.data[0]))
             .enter().append('path')
                 .attr('d', function(d) {
-                    if(d == undefined) return;
+                    if(d == undefined) return; 
                     return 'M' + d.join(',') + 'Z';
                 })
                 .attr('class', function(d,i) { 
                     return 'path-' + i;
-                })
-                .attr('clip-path', function(d,i) {
-                    return 'url(#clip-'+i+')';
                 })
                 .style('fill-opacity', 0)
                 .on('mouseover', this.rolloverOn(args))

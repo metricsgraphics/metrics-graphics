@@ -686,6 +686,24 @@ $(document).ready(function() {
 
     d3.json('data/points1.json', function(data) {
         moz_chart({
+            title: "Simple Scatterplot",
+            description: "This is an example of a simple scatterplot with <i>y_rug</i> enabled.",
+            data: data,
+            chart_type: 'point',
+            width: trunk.width,
+            height: trunk.height*1.5,
+            right: trunk.right,
+            target: '#scatter-simple',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y',
+            y_rug: true
+        });
+        
+        moz_chart({
             title: "Scatterplot with Size & Color",
             description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. In this example, we have enabled rug plots by setting the <i>x_rug</i> and <i>y_rug</i> options to true.",
             data: data,
@@ -693,7 +711,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height*1.5,
             right: trunk.right,
-            target: '#scatter1',
+            target: '#scatter-size-and-color',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
@@ -715,7 +733,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height*1.5,
             right: trunk.right,
-            target: '#scatter2',
+            target: '#scatter-line-best-fit',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
