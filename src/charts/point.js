@@ -83,9 +83,6 @@ charts.point = function(args) {
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
 
-        var clips = svg.append('g')
-                .attr('id', 'point-clips');
-
         var paths = svg.append('g')
             .attr('id', 'point-paths');
 
