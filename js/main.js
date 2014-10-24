@@ -687,7 +687,7 @@ $(document).ready(function() {
     d3.json('data/points1.json', function(data) {
         moz_chart({
             title: "Simple Scatterplot",
-            description: "This is an example of a simple scatterplot with <i>y_rug</i> enabled.",
+            description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
             data: data,
             chart_type: 'point',
             width: trunk.width,
@@ -704,8 +704,8 @@ $(document).ready(function() {
         });
         
         moz_chart({
-            title: "Scatterplot with Size & Color",
-            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. In this example, we have enabled rug plots by setting the <i>x_rug</i> and <i>y_rug</i> options to true.",
+            title: "Scatterplot with Size and Color",
+            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>.",
             data: data,
             chart_type: 'point',
             width: trunk.width,
