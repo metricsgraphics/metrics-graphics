@@ -270,6 +270,7 @@ circle.points-mono {
     stroke: #0000ff;
 }
 
+/* a selected point in a scatterplot */
 .points circle.selected {
     fill-opacity: 1;
     stroke-opacity: 1;
@@ -278,6 +279,36 @@ circle.points-mono {
 text {
     fill: black;
     opacity: 0.8;
+}
+
+#torso {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+#torso div {
+    display: inline-block;
+}
+
+#trunk {
+    margin-top: 40px;
+}
+
+#trunk h2 {
+    font-size: 15px;
+}
+
+#trunk h2.trunk-title {
+    font-size: 25px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.trunk-section {
+    border-top: 1px solid #ccc;
+    padding-bottom: 25px;
+    padding-top: 15px;
 }
 
 .voronoi path {

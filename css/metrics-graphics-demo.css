@@ -57,36 +57,6 @@ a.active {
     text-transform: uppercase;
 }
 
-#torso {
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-}
-
-#torso div {
-    display: inline-block;
-}
-
-#trunk {
-    margin-top:40px;
-}
-
-#trunk h2 {
-    font-size: 15px;
-}
-
-#trunk h2.trunk-title {
-    font-size: 25px;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-.trunk-section {
-    border-top: 1px solid #ccc;
-    padding-bottom: 25px;
-    padding-top: 15px;
-}
-
 .wip {
     background-color: #f1f1f1;
     font-size: 15px;

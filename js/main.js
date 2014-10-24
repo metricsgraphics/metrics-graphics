@@ -703,27 +703,6 @@ $(document).ready(function() {
             y_accessor: 'y',
             y_rug: true
         });
-        
-        moz_chart({
-            title: "Scatterplot with Size and Color",
-            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>.",
-            data: data,
-            chart_type: 'point',
-            width: trunk.width,
-            height: trunk.height*1.5,
-            right: trunk.right,
-            target: '#scatter-size-and-color',
-            xax_format: function(f) {
-                var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
-            },
-            x_accessor: 'x',
-            y_accessor: 'y',
-            color_accessor:'z',
-            size_accessor:'w',
-            x_rug: true,
-            y_rug: true
-        });
 
         moz_chart({
             title: "Simple Line of Best Fit",
@@ -761,14 +740,45 @@ $(document).ready(function() {
         //     y_accessor: 'y'
         // })
     })
+    
+    //add this scatterplot and color the groups based on the theme
+    addScatterplotSizeAndColor('light');
+    
+    function addScatterplotSizeAndColor(theme) {
+        var color_range = (theme == 'light')
+                ? null
+                : ['white','yellow'];
+        
+        //call moz_chart again since we need to use a different color_range for the dark theme
+        d3.json('data/points1.json', function(data) {
+            moz_chart({
+                title: "Scatterplot with Size and Color",
+                description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+                data: data,
+                chart_type: 'point',
+                width: trunk.width,
+                height: trunk.height*1.5,
+                right: trunk.right,
+                target: '#scatter-size-and-color',
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                x_accessor: 'x',
+                y_accessor: 'y',
+                color_accessor:'z',
+                color_range: color_range,
+                size_accessor:'w',
+                x_rug: true,
+                y_rug: true
+            }); 
+        });
+    }
 
     function assignEventListeners() {
         $('#dark-css').click(function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data-dark.png)');
-
-            $('.transparent-rollover-rect')
-                .attr('fill', 'white');
 
             $('.wip')
                 .css('background-color', '#3b3b3b');
@@ -776,7 +786,10 @@ $(document).ready(function() {
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
-            
+
+            //add this scatterplot and color the groups based on the theme
+            addScatterplotSizeAndColor('dark');
+
             return false;
         })
 
@@ -784,15 +797,15 @@ $(document).ready(function() {
             $('.missing')
                 .css('background-image', 'url(images/missing-data.png)');
 
-            $('.transparent-rollover-rect')
-                .attr('fill', 'black');
-
             $('.wip')
                 .css('background-color', '#f1f1f1');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
+
+            //add this scatterplot and color the groups based on the theme
+            addScatterplotSizeAndColor('light');
 
             return false;
         })

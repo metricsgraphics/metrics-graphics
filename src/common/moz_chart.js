@@ -82,8 +82,8 @@ function moz_chart() {
         point_size: 2.5,
         size_accessor: null,
         color_accessor: null,
-        size_range: null,//[1,5]
-        color_range: null,//['blue', 'red']
+        size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
+        color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
         color_domain: null
     }

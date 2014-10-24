@@ -12,9 +12,10 @@ charts.point = function(args) {
 
     this.markers = function() {
         markers(args);
-        if (args.least_squares){
+        if (args.least_squares) {
             add_ls(args);
         }
+
         return this
     }
 
@@ -42,39 +43,44 @@ charts.point = function(args) {
             pts.classed('points-mono', true);
         }
 
-        if (args.size_accessor!=null){
+        if (args.size_accessor != null) {
             pts.attr('r', args.scalefns.size);
-        } else {
+        }
+        else {
             pts.attr('r', args.point_size);
         }
 
+        //are we adding rug plots?
         var rug;
-        if (args.x_rug){
-            rug=g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
-                .attr('x1', args.scalefns.xf)
-                .attr('x2', args.scalefns.xf)
-                .attr('y1', args.height-args.top+args.buffer)
-                .attr('y2', args.height-args.top)
-                .attr('class', 'x-rug')
-                .attr('opacity', 0.3);
+        if (args.x_rug) {
+            rug = g.selectAll('line.x_rug').data(args.data[0])
+                .enter().append('svg:line')
+                    .attr('x1', args.scalefns.xf)
+                    .attr('x2', args.scalefns.xf)
+                    .attr('y1', args.height-args.top+args.buffer)
+                    .attr('y2', args.height-args.top)
+                    .attr('class', 'x-rug')
+                    .attr('opacity', 0.3);
 
-            if (args.color_accessor){
+            if (args.color_accessor) {
                 rug.attr('stroke', args.scalefns.color);
             }
             else {
                 rug.classed('x-rug-mono', true);
             }
         }
-        if (args.y_rug){
-            rug=g.selectAll('line.y_rug').data(args.data[0]).enter().append('svg:line')
-                .attr('x1', args.left+1)
-                .attr('x2', args.left+args.buffer)
-                .attr('y1', args.scalefns.yf)
-                .attr('y2', args.scalefns.yf)
-                .attr('class', 'y-rug')
-                .attr('opacity', 0.3);
 
-            if (args.color_accessor){
+        if (args.y_rug) {
+            rug = g.selectAll('line.y_rug').data(args.data[0])
+                .enter().append('svg:line')
+                    .attr('x1', args.left+1)
+                    .attr('x2', args.left+args.buffer)
+                    .attr('y1', args.scalefns.yf)
+                    .attr('y2', args.scalefns.yf)
+                    .attr('class', 'y-rug')
+                    .attr('opacity', 0.3);
+
+            if (args.color_accessor) {
                 rug.attr('stroke', args.scalefns.color);
             }
             else {
@@ -101,6 +107,7 @@ charts.point = function(args) {
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
 
+        //add rollover paths
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
@@ -129,7 +136,7 @@ charts.point = function(args) {
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
 
-        return function(d, i){
+        return function(d, i) {
             svg.selectAll('.points circle')
                 .classed('selected', false);
 
@@ -137,8 +144,10 @@ charts.point = function(args) {
             var pts = svg.selectAll('.points circle.path-' + i)
                 .classed('selected', true);
 
-            if (args.size_accessor){
-                pts.attr('r', function(di){return args.scalefns.size(di)+1});
+            if (args.size_accessor) {
+                pts.attr('r', function(di) {
+                    return args.scalefns.size(di) + 1
+                });
             } else {
                 pts.attr('r', args.point_size);
             }
@@ -199,7 +208,7 @@ charts.point = function(args) {
     this.rolloverOff = function(args) {
         var svg = d3.select(args.target + ' svg');
 
-        return function(d,i){
+        return function(d,i) {
             if(args.linked && globals.link) {
                 globals.link = false;
 
@@ -214,9 +223,10 @@ charts.point = function(args) {
                 .classed('unselected', false)
                 .classed('selected', false);
 
-            if (args.size_accessor){
+            if (args.size_accessor) {
                 pts.attr('r', args.scalefns.size);
-            } else {
+            }
+            else {
                 pts.attr('r', args.point_size);
             }
 
