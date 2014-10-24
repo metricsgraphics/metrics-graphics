@@ -149,6 +149,7 @@ $(document).ready(function() {
             chart_type: 'point',
             width: trunk.width,
             height: trunk.height*1.5,
+            left: 60,
             right: trunk.right,
             least_squares: true,
             target: '#sls-time-series',
