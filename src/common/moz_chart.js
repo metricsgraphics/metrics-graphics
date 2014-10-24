@@ -105,8 +105,8 @@ function moz_chart() {
         binned: false,
         padding_percentage: .1,
         outer_padding_percentage: .1,
-        height:500,
-        top:20
+        height: 500,
+        top: 20
     }
     moz.defaults.missing = {
         top: 0,
