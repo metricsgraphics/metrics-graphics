@@ -33,13 +33,15 @@ charts.point = function(args) {
                 .attr('cx', args.scalefns.xf)
                 .attr('cy', args.scalefns.yf);
 
-        if (args.color_accessor!=null){
+        //are we coloring our points, or just using the default color?
+        if (args.color_accessor!=null) {
             pts.attr('fill',   args.scalefns.color);
             pts.attr('stroke', args.scalefns.color);
-        } else {
-            pts.attr('fill',   '#0000ff');
-            pts.attr('stroke', '#0000ff');
         }
+        else {
+            pts.classed('points-mono', true);
+        }
+
         if (args.size_accessor!=null){
             pts.attr('r', args.scalefns.size);
         } else {

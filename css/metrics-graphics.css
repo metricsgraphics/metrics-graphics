@@ -260,9 +260,9 @@ path.main-line {
     stroke-width: 1.1px;
 }
 
-.points circle {
-/*    fill: #0000ff;
-    stroke: #0000ff;*/
+circle.points-mono {
+    fill: #0000ff;
+    stroke: #0000ff;
     fill-opacity: 0.4;
     stroke-opacity: 1;
 }

@@ -45,10 +45,6 @@ body {
     color: #cfcfcf;
 }
 
-circle {
-    fill: #ffcb00;
-}
-
 .divider {
     color: #f1f1f1;
     opacity: 0.1;
@@ -162,14 +158,14 @@ li {
     background-image: url(../images/missing-data-dark.png);
 }
 
-.points circle {
-    fill: #a89641;
+circle.points-mono {
     fill-opacity: 0.6;
     stroke: #a89641;
+    fill: #a89641;
     stroke-opacity: 1;
 }
 
-.points circle.selected {
+circle.points-mono.selected {
     fill: #a89641;
     fill-opacity: 1;
     stroke-opacity: 1;
