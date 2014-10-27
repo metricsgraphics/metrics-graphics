@@ -28,7 +28,6 @@ _MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/"
 ## Quick-start guide
 1. Download the latest release from [here](https://github.com/mozilla/metrics-graphics/releases).
 2. Follow the examples in [index.html](https://github.com/mozilla/metrics-graphics/blob/master/index.html) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
-3. Profit!
 
 ## Dependencies
 The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
