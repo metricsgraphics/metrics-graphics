@@ -26,7 +26,6 @@ $(document).ready(function() {
 
     assignEventListeners();
 
-
     //few observations
     d3.json('data/missing-y.json', function(data) {
         var fff = d3.time.format('%Y-%m-%d');

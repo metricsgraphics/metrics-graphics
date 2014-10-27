@@ -189,7 +189,7 @@ function y_axis(args) {
                 .attr('x2', function() {
                     return (args.y_extended_ticks)
                         ? args.width - args.right
-                        : args.left - args.yax_tick;
+                        : args.left - args.yax_tick_length;
                 })
                 .attr('y1', args.scales.Y)
                 .attr('y2', args.scales.Y);
@@ -197,7 +197,7 @@ function y_axis(args) {
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
             .append('text')
-                .attr('x', args.left - args.yax_tick * 3 / 2)
+                .attr('x', args.left - args.yax_tick_length * 3 / 2)
                 .attr('dx', -3).attr('y', args.scales.Y)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')

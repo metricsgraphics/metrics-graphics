@@ -25,9 +25,9 @@ function moz_chart() {
         small_width_threshold: 160,   // the width  threshold for when smaller text appears
         small_text: false,            // coerces small text regardless of graphic size
         xax_count: 6,                 // number of x axis ticks
-        xax_tick: 5,                  // x axis tick length
+        xax_tick_length: 5,           // x axis tick length
         yax_count: 5,                 // number of y axis ticks
-        yax_tick: 5,                  // y axis tick length
+        yax_tick_length: 5,           // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
         y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         y_scale_type: 'linear',

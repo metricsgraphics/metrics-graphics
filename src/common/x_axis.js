@@ -194,7 +194,7 @@ function x_axis(args) {
                 .attr('y2', function() {
                     return (args.x_extended_ticks)
                         ? args.top
-                        : args.height - args.bottom + args.xax_tick;
+                        : args.height - args.bottom + args.xax_tick_length;
                 })
                 .attr('class', function() {
                     if(args.x_extended_ticks)
@@ -205,7 +205,7 @@ function x_axis(args) {
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
+                .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 3)
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
@@ -251,7 +251,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.buffer + args.xax_tick)
+                    .attr('y', args.height - args.buffer + args.xax_tick_length)
                     .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
