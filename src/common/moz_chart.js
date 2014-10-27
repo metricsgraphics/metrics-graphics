@@ -54,7 +54,7 @@ function moz_chart() {
 
             // format as date or not, of course user can pass in 
             // a custom function if desired
-            return (this.x_accessor == 'date') 
+            return ($.type(args.data[0][0][args.x_accessor]) == 'date')
                 ? df(d)
                 : pf.scale(d) + pf.symbol;
         },
