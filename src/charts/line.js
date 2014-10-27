@@ -157,6 +157,7 @@ charts.line = function(args) {
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
+            .classed('active-datapoint-small', args.use_small_class)
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)

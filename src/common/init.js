@@ -42,15 +42,10 @@ function init(args) {
     //add chart title if it's different than existing one
     chart_title(args);
 
-    //we kind of need axes in all cases
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold 
-        && args.width - args.left-args.right - args.buffer*2 
-            <= args.small_width_threshold 
-        || args.small_text;
-
     //draw axes
-
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling

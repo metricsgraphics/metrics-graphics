@@ -348,7 +348,8 @@ text {
 }
 
 .x-axis-small text,
-.y-axis-small text {
+.y-axis-small text,
+.active-datapoint-small {
     font-size: 8px;
 }
 
