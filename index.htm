@@ -100,7 +100,7 @@
 
         <h1>Creating your first chart</h1>
         <p>Here's a quick tutorial to get you started. Say that we have some data on a scholarly topic like <a href='http://geocommons.com/overlays/134594'>UFO sightings</a>. We decide that we're interested in creating a line chart of sightings in the US.</p>
-        <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, where we aggregate daily sightings. The data doesn't have to be JSON of course, but that will mean less work later on.</p>
+        <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, where we aggregate yearly sightings. The data doesn't have to be JSON of course, but that will mean less work later on.</p>
         <p>The next thing we do is load the data:</p>
 
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
@@ -117,7 +117,7 @@
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
     moz_chart({
         title: "UFO Sightings in the US",
-        description: "Daily UFO sightings in the US from 1910 to 2010.",
+        description: "Yearly UFO sightings in the US from 1910 to 2010.",
         data: data,
         width: 650,
         height: 150,
@@ -140,7 +140,8 @@
  
     <div class='container footer'>
         Created by <a href='https://github.com/almossawi'>Ali Almossawi</a> and 
-        <a href='https://github.com/hamilton'>Hamilton Ulmer</a>. 
+        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> on the Metrics Team at 
+        <a href='https://www.mozilla.org/en-US/'>Mozilla</a>. 
         Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
         Mozilla Public License</a>.
     </div>
@@ -151,7 +152,7 @@
         d3.json('data/ufo-sightings.json', function(data) {
             moz_chart({
                 title: "UFO Sightings in the US",
-                description: "Daily UFO sightings in the US.",
+                description: "Yearly UFO sightings in the US from the year 1910 to 2010.",
                 data: data,
                 markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}],
                 width: 650,
