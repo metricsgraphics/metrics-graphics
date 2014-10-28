@@ -3,7 +3,7 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "0.6";
+globals.version = "1.0";
 
 function moz_chart() {
     var moz = {};
@@ -25,9 +25,9 @@ function moz_chart() {
         small_width_threshold: 160,   // the width  threshold for when smaller text appears
         small_text: false,            // coerces small text regardless of graphic size
         xax_count: 6,                 // number of x axis ticks
-        xax_tick: 5,                  // x axis tick length
+        xax_tick_length: 5,           // x axis tick length
         yax_count: 5,                 // number of y axis ticks
-        yax_tick: 5,                  // y axis tick length
+        yax_tick_length: 5,           // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
         y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         y_scale_type: 'linear',
@@ -54,9 +54,16 @@ function moz_chart() {
 
             // format as date or not, of course user can pass in 
             // a custom function if desired
-            return (this.x_accessor == 'date') 
-                ? df(d)
-                : pf.scale(d) + pf.symbol;
+            switch($.type(args.data[0][0][args.x_accessor])) {
+                case 'date':
+                    return df(d);
+                    break;
+                case 'number':
+                    return pf.scale(d) + pf.symbol;
+                    break;
+                default:
+                    return d;
+            }
         },
         area: true,
         chart_type: 'line',   
@@ -105,8 +112,8 @@ function moz_chart() {
         binned: false,
         padding_percentage: .1,
         outer_padding_percentage: .1,
-        height:500,
-        top:20
+        height: 500,
+        top: 20
     }
     moz.defaults.missing = {
         top: 0,
@@ -382,7 +389,7 @@ function y_axis(args) {
                 .attr('x2', function() {
                     return (args.y_extended_ticks)
                         ? args.width - args.right
-                        : args.left - args.yax_tick;
+                        : args.left - args.yax_tick_length;
                 })
                 .attr('y1', args.scales.Y)
                 .attr('y2', args.scales.Y);
@@ -390,7 +397,7 @@ function y_axis(args) {
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
             .append('text')
-                .attr('x', args.left - args.yax_tick * 3 / 2)
+                .attr('x', args.left - args.yax_tick_length * 3 / 2)
                 .attr('dx', -3).attr('y', args.scales.Y)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
@@ -628,7 +635,7 @@ function x_axis(args) {
                 .attr('y2', function() {
                     return (args.x_extended_ticks)
                         ? args.top
-                        : args.height - args.bottom + args.xax_tick;
+                        : args.height - args.bottom + args.xax_tick_length;
                 })
                 .attr('class', function() {
                     if(args.x_extended_ticks)
@@ -639,7 +646,7 @@ function x_axis(args) {
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
+                .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 3)
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
@@ -685,7 +692,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.buffer + args.xax_tick)
+                    .attr('y', args.height - args.buffer + args.xax_tick_length)
                     .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
@@ -740,15 +747,10 @@ function init(args) {
     //add chart title if it's different than existing one
     chart_title(args);
 
-    //we kind of need axes in all cases
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold 
-        && args.width - args.left-args.right - args.buffer*2 
-            <= args.small_width_threshold 
-        || args.small_text;
-
     //draw axes
-
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
@@ -1138,6 +1140,7 @@ charts.line = function(args) {
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
+            .classed('active-datapoint-small', args.use_small_class)
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
