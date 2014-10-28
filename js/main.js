@@ -854,6 +854,25 @@ $(document).ready(function() {
             })
         })
     }
+    
+    document.body.addEventListener('mouseover', function(e) {
+  var target = e.target, item;
+  
+  var upfrontRemover = function() {
+    item.classList.remove('item--upfront');
+    item.removeEventListener('transitionend', upfrontRemover, false);
+  };
+  
+  if(target.classList.contains('hexagon__content')) {
+    item = target.parentNode.parentNode.parentNode;
+        item.addEventListener('transitionend', upfrontRemover, false);
+    
+    if(!item.classList.contains('item--upfront')) {
+      item.classList.add('item--upfront');
+    }
+  }
+}, false);
+
 
     //replace all SVG images with inline SVG
     //http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg

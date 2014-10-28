@@ -10,32 +10,44 @@ a.active {
     margin-left: 30px;
 }
 
-#footer {
+.head ul li.no-padding {
+    padding: 0;
+}
+ 
+.pill.examples-options {
+    font-size: 10px;
+}
+
+.float-right {
+    float: right;
+}
+
+.footer {
     font-size: 11px;
     padding: 40px;
     text-align: center;
 }
 
-#head {
+.head {
     color: black;
     margin: auto;
     margin-bottom: 20px;
     width: 100%;
 }
 
-#head h1 {
+.head h1 {
     font-size: 50px;
     font-weight: 300;
     margin: 45px 0 0 0;
 }
 
-#head ul {
+.head ul {
     clear: both;
     font-size: 14px;
     padding: 10px 0 0 0;
 }
 
-#head ul li {
+.head ul li {
     display: inline;
     list-style: none;
     padding-right: 15px;
