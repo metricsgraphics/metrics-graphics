@@ -26,7 +26,9 @@
 
     <script src='js/highlight.pack.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='js/metricsgraphics.min.js'></script>
 
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -92,6 +94,41 @@
         <p>The library is data-source agnostic. While it provides a number of convenience functions and options that allow for charts to better handle things like missing observations, it doesn't care where the data comes from.</p>
         <p>The library makes it easy to construct narratives by providing a layout template based on Bootstrap. Take a look at <a href='examples.htm'>the examples</a> to see that in action.</p>
         <p>MetricsGraphics.js <a href='https://www.youtube.com/watch?v=ZmkeAlut7KI#t=399'>takes the misery out of</a> creating beautiful interactive graphics. 
+
+        <h1>Creating your first chart</h1>
+        <p>Here's a quick tutorial to get you started. Say that we have some data on a scholarly topic like <a href='http://geocommons.com/overlays/134594'>UFO sightings</a>. We decide that we're interested in creating a line chart of sightings in the US.</p>
+        <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, which aggregates daily sightings. The data doesn't have to be stored as JSON of course.</p>
+        <p>The next thing we do is load the data:</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+})</code></pre>
+
+        <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps, so let's do that now.</p>
+        
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    data = convert_dates(data, 'date');
+})</code></pre>
+
+        <p>Finally, we create the chart and place it in the HTML element specified in <i>target</i>.</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    data = convert_dates(data, 'date');
+    
+    moz_chart({
+        title: "UFO Sightings in the US",
+        description: "Daily UFO sightings in the US.",
+        data: data,
+        width: 650,
+        height: 150,
+        target: '#ufo-sightings',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    })
+})</code></pre>
+
+        <p>And this is what we end up with.</p>
+        <div id='ufo-sightings'></div>
+        <p class='hightop'>It's as easy as that. If for whatever reason why decide to update the data in the chart, we call the same <i>moz_chart</i> function with the update data object on the same target element. The library will gracefully transition the existing plot to the new one.</p>
     </div>
     
     <div class='container text-center social-buttons'>
@@ -108,6 +145,20 @@
     
     <script>
         hljs.initHighlightingOnLoad();
+        
+        d3.json('data/ufo-sightings.json', function(data) {
+            data = convert_dates(data, 'date');
+            moz_chart({
+                title: "UFO Sightings in the US",
+                description: "Daily UFO sightings in the US.",
+                data: data,
+                width: 650,
+                height: 150,
+                target: '#ufo-sightings',
+                x_accessor: 'date',
+                y_accessor: 'value'
+            })
+        })
     </script>
 </body>
 </html>

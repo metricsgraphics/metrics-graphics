@@ -10,24 +10,8 @@ body {
     border-bottom: 1px solid #ccc;
 }
 
-.api-example pre {
-    background-color: #f1f1f1;
-    border: none;
-    margin: 0 0 0 0 ;
-}
-
 .container {
     width: 680px;
-}
-
-.fa {
-    background-color: #044f89;
-    color: transparent;
-    text-shadow: 0px 1px 1px rgba(255,255,255,0.5);
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    padding: 10px;
 }
 
 #fb-block {
@@ -39,8 +23,27 @@ body {
     width: 60px;
 }
 
+h1 {
+    font-size: 24px;
+    padding-top: 40px;
+}
+
+.highbottom {
+    margin-bottom: 40px;
+}
+
+.hightop {
+    margin-top: 40px;
+}
+
 p {
     padding-top: 6px;
+}
+
+pre {
+    background-color: #f1f1f1;
+    border: none;
+    margin: 0 0 0 0 ;
 }
 
 .social-buttons {
@@ -56,6 +59,16 @@ p {
 
 .thumb a {
     color: steelblue;
+}
+
+.thumb a i.fa {
+    background-color: #044f89;
+    color: transparent;
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    padding: 10px;
 }
 
 .thumb a span.text {

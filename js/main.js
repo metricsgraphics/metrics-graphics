@@ -26,13 +26,24 @@ $(document).ready(function() {
 
     assignEventListeners();
 
+d3.json('data/ufo-sightings.json', function(data) {
+    data = convert_dates(data, 'date');
+    
+    moz_chart({
+        title: "UFO Sightings in the US",
+        description: "Daily UFO sightings in the US.",
+        data: data,
+        width: 600,
+        height: 250,
+        target: '#ufo-sightings',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    })
+})
+
     //few observations
     d3.json('data/missing-y.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         //add a line chart that has a few observations
         moz_chart({
@@ -61,11 +72,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/small-range.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         //small range
         moz_chart({
@@ -83,11 +90,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users1.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
