@@ -26,21 +26,6 @@ $(document).ready(function() {
 
     assignEventListeners();
 
-d3.json('data/ufo-sightings.json', function(data) {
-    data = convert_dates(data, 'date');
-    
-    moz_chart({
-        title: "UFO Sightings in the US",
-        description: "Daily UFO sightings in the US.",
-        data: data,
-        width: 600,
-        height: 250,
-        target: '#ufo-sightings',
-        x_accessor: 'date',
-        y_accessor: 'value'
-    })
-})
-
     //few observations
     d3.json('data/missing-y.json', function(data) {
         data = convert_dates(data, 'date');
