@@ -55,7 +55,7 @@ p {
 }
 
 .thumb a {
-    color: #044f89;
+    color: steelblue;
 }
 
 .thumb a span.text {
@@ -65,7 +65,7 @@ p {
 }
 
 .thumb a:hover span.text {
-    border-bottom: 1px solid #044f89;
+    border-bottom: 1px solid steelblue;
 }
 
 .thumb a:hover {

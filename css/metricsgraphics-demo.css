@@ -6,15 +6,19 @@ a.active {
     padding: 5px;
 }
 
+a.examples-options.selected {
+    font-weight: bold;
+}
+
+a:hover.examples-options {
+    text-decoration: none;
+}
+
 .chart_title {
     margin-left: 30px;
 }
-
-.head ul li.no-padding {
-    padding: 0;
-}
  
-.pill.examples-options {
+.examples-options {
     font-size: 10px;
 }
 
@@ -53,20 +57,24 @@ a.active {
     padding-right: 15px;
 }
 
+.head ul li.no-padding {
+    padding: 0;
+}
+
 #logo {
     margin: 60px 0 30px 0;
     height: 79px;
     width: 400px;
 }
 
-.pill:hover {
-    text-decoration: none;
-}
-
 .pill {
     font-family: 'Open Sans', serif;
     font-size: 12px;
     text-transform: uppercase;
+}
+
+.pill:hover {
+    text-decoration: none;
 }
 
 .wip {
