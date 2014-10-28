@@ -47,4 +47,15 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 1. Copy over any changes made in ``dev.html`` to ``index.html``
 2. Run ``make.py``
 3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``index.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
-4. Deploy all files to metricsgraphicsjs.org
+4. Deploy all files to metricsgraphicsjs.org 
+
+## Directory structure
+The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are:
+
+1. js/metricsgraphics.min.js
+2. css/metricsgraphics.css
+3. css/metricsgraphics-dark.css
+4. images/missing-data.png
+5. images/missing-data-dark.png
+ 
+Remember to include the calls to the third-party libraries, as they appear in the code for the examples pages.
