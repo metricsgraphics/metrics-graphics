@@ -149,16 +149,6 @@
         hljs.initHighlightingOnLoad();
         
         d3.json('data/ufo-sightings.json', function(data) {
-            /*var years = {};
-            $.each(data, function(i, d) {
-                if(years[d.date_sighted] == undefined)
-                    years[d.date_sighted] = 0
-                else
-                    years[d.date_sighted] = years[d.date_sighted] + 1;
-            })
-            console.log(years);*/
-        
-            //data = convert_dates(data, 'date');
             moz_chart({
                 title: "UFO Sightings in the US",
                 description: "Daily UFO sightings in the US.",
