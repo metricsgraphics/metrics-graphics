@@ -95,6 +95,9 @@
         <p>The library makes it easy to construct narratives by providing a layout template based on Bootstrap. Take a look at <a href='examples.htm'>the examples</a> to see that in action.</p>
         <p>MetricsGraphics.js <a href='https://www.youtube.com/watch?v=ZmkeAlut7KI#t=399'>takes the misery out of</a> creating beautiful interactive graphics. 
 
+        <h1>A bit about the library's design philosophy</h1>
+        <p>Philosophizing goes here.</p>
+
         <h1>Creating your first chart</h1>
         <p>Here's a quick tutorial to get you started. Say that we have some data on a scholarly topic like <a href='http://geocommons.com/overlays/134594'>UFO sightings</a>. We decide that we're interested in creating a line chart of sightings in the US.</p>
         <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, where we aggregate daily sightings. The data doesn't have to be JSON of course, but that will mean less work later on.</p>
@@ -103,30 +106,29 @@
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
 })</code></pre>
 
-        <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps, so let's do that now.</p>
+        <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
         
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
-    data = convert_dates(data, 'date');
+    data = convert_dates(data, 'year');
 })</code></pre>
 
         <p>Finally, we create the chart and place it in the HTML element specified in <i>target</i>.</p>
 
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
-    data = convert_dates(data, 'date');
-    
     moz_chart({
         title: "UFO Sightings in the US",
-        description: "Daily UFO sightings in the US.",
+        description: "Daily UFO sightings in the US from 1910 to 2010.",
         data: data,
         width: 650,
         height: 150,
         target: '#ufo-sightings',
-        x_accessor: 'date',
-        y_accessor: 'value'
+        x_accessor: 'year',
+        y_accessor: 'sightings',
+        markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}]
     })
 })</code></pre>
 
-        <p class='highbottom'>And this is what we end up with.</p>
+        <p class='highbottom'>And this is what we end up with. In this example, we're adding a marker to draw attention to a particular data point. This is optional of course.</p>
         <div id='ufo-sightings'></div>
         <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the chart, we call <i>moz_chart</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the chart by setting one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
     </div>
@@ -147,16 +149,26 @@
         hljs.initHighlightingOnLoad();
         
         d3.json('data/ufo-sightings.json', function(data) {
-            data = convert_dates(data, 'date');
+            /*var years = {};
+            $.each(data, function(i, d) {
+                if(years[d.date_sighted] == undefined)
+                    years[d.date_sighted] = 0
+                else
+                    years[d.date_sighted] = years[d.date_sighted] + 1;
+            })
+            console.log(years);*/
+        
+            //data = convert_dates(data, 'date');
             moz_chart({
                 title: "UFO Sightings in the US",
                 description: "Daily UFO sightings in the US.",
                 data: data,
+                markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}],
                 width: 650,
                 height: 150,
                 target: '#ufo-sightings',
-                x_accessor: 'date',
-                y_accessor: 'value'
+                x_accessor: 'year',
+                y_accessor: 'sightings'
             })
         })
     </script>
