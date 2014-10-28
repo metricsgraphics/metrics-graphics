@@ -44,9 +44,9 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Release process
-1. Copy over any changes made in ``dev.html`` to ``index.html``
+1. Copy over any changes made in ``dev.html`` to ``examples.html``
 2. Run ``make.py``
-3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``index.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
+3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``examples.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
 4. Deploy all files to metricsgraphicsjs.org 
 
 ## Directory structure
