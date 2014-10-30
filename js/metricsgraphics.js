@@ -727,6 +727,14 @@ function init(args) {
 
     var linked;
 
+    //remove the svg if the chart type has changed
+    if(($(args.target + ' svg .main-line').length > 0 && args.chart_type != 'line')
+            || ($(args.target + ' svg .points').length > 0 && args.chart_type != 'point')
+            || ($(args.target + ' svg .histogram').length > 0 && args.chart_type != 'histogram')
+        ) {
+        $(args.target).empty();
+    }
+     
     //add svg if it doesn't already exist
     if($(args.target).is(':empty')) {
         //add svg
@@ -738,6 +746,13 @@ function init(args) {
     }
 
     var svg = d3.select(args.target).selectAll('svg');
+
+    //has the width or height changed?
+    if(args.width != Number(svg.attr('width')))
+        svg.attr('width', args.width)
+
+    if(args.height != Number(svg.attr('height')))
+        svg.attr('height', args.height)
 
     // remove missing class
     svg.classed('missing', false);
