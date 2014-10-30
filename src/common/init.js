@@ -28,6 +28,14 @@ function init(args) {
     if (args.chart_type=='bar' && svg_height == null){
         svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
     }
+    //remove the svg if the chart type has changed
+    if(($(args.target + ' svg .main-line').length > 0 && args.chart_type != 'line')
+            || ($(args.target + ' svg .points').length > 0 && args.chart_type != 'point')
+            || ($(args.target + ' svg .histogram').length > 0 && args.chart_type != 'histogram')
+        ) {
+        $(args.target).empty();
+
+    }
 
     //add svg if it doesn't already exist
     if($(args.target).is(':empty')) {
