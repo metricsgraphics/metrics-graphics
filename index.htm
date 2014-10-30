@@ -63,7 +63,7 @@
                 currently supports line charts, scatterplots and histograms as well as 
                 features like rug plots and basic linear regression.</p>
             </div>
-            
+
             <div id='torso'>
                 <div class='thumb'><a href='https://github.com/mozilla/metrics-graphics#quick-start-guide'><i class="fa fa-download fa-4x"></i><br /><span class='text'>Download</span></a></div>
                 <div class='thumb'><a href='examples.htm'><i class="fa fa-area-chart fa-4x"></i><br /><span class='text'>Examples</span></a></div>
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class='api-example'>
         <div class='container'>
 
@@ -107,7 +107,7 @@
 })</code></pre>
 
         <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
-        
+
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
     data = convert_dates(data, 'year');
 })</code></pre>
@@ -131,24 +131,25 @@
         <p class='highbottom'>And this is what we end up with. In this example, we're adding a marker to draw attention to a particular data point. This is optional of course.</p>
         <div id='ufo-sightings'></div>
         <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the chart, we call <i>moz_chart</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the chart by setting one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
+        <p>Take the library out for a spin, file bugs and don't forget to star the project on Github!</p>
     </div>
-    
+
     <div class='container text-center social-buttons'>
         <div id='twitter-block'><a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-url="http://metricsgraphicsjs.org">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>
         <div id='fb-block'><div class="fb-like" data-href="http://metricsgraphicsjs.org" data-layout="button" data-action="like" data-show-faces="false" data-share="false"></div></div>
     </div>
- 
+
     <div class='container footer'>
-        Created by <a href='https://github.com/almossawi'>Ali Almossawi</a> and 
-        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> on the Metrics Team at 
+        Created by <a href='https://github.com/almossawi'>Ali Almossawi</a>,  
+        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> and the Metrics Team at 
         <a href='https://www.mozilla.org/en-US/'>Mozilla</a>. 
-        Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
+        <br />Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
         Mozilla Public License</a>.
     </div>
-    
+
     <script>
         hljs.initHighlightingOnLoad();
-        
+
         d3.json('data/ufo-sightings.json', function(data) {
             moz_chart({
                 title: "UFO Sightings",

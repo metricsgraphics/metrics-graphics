@@ -26,6 +26,7 @@ $(document).ready(function() {
 
     assignEventListeners();
 
+
     //few observations
     d3.json('data/missing-y.json', function(data) {
         data = convert_dates(data, 'date');

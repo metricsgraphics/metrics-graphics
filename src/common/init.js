@@ -34,6 +34,13 @@ function init(args) {
 
     var svg = d3.select(args.target).selectAll('svg');
 
+    //has the width or height changed?
+    if(args.width != Number(svg.attr('width')))
+        svg.attr('width', args.width)
+
+    if(args.height != Number(svg.attr('height')))
+        svg.attr('height', args.height)
+
     // remove missing class
     svg.classed('missing', false);
     // remove missing text
