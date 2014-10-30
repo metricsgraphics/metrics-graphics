@@ -734,7 +734,7 @@ function init(args) {
         ) {
         $(args.target).empty();
     }
-     
+
     //add svg if it doesn't already exist
     if($(args.target).is(':empty')) {
         //add svg
