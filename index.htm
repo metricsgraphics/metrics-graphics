@@ -1,0 +1,168 @@
+<html lang='en'>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta property='og:title' content='MetricsGraphics.js' />
+    <meta property='og:description' content='MetricsGraphics.js is a library optimized 
+        for visualizing and laying out time-series data. It provides a simple way to produce 
+        common types of charts in a principled, consistent and responsive way.' />
+    <meta property='og:image' content='http://metricsgraphicsjs.org/images/og-logo.png' />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content='http://metricsgraphicsjs.org/' />
+    <meta property='og:site_name' content='MetricsGraphics.js' />
+
+    <link href='images/og-logo.png' rel='icon' type='image/png' />
+
+    <title>MetricsGraphics.js - a library based on D3.js, optimized for visualizing and laying out time-series data</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+    <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
+    <link href='css/metricsgraphics-demo-index.css' rel='stylesheet' type='text/css'>
+    <link href='css/highlightjs-default.css' rel='stylesheet' type='text/css'>
+
+    <script src='js/highlight.pack.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='js/metricsgraphics.min.js'></script>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51487512-1', 'metricsgraphicsjs.org');
+  ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1570736809816152&version=v2.0";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+    <div class='container'>
+        <div id='content-body'>
+            <img src='images/logo.svg' id='logo' class='svg' />
+
+            <div id='description'>
+                <p><i>MetricsGraphics.js</i> is a library built on top of 
+                <a href='http://d3js.org/'>D3.js</a> that is optimized for visualizing and 
+                laying out time-series data. It provides a simple way to produce common types of 
+                charts in a principled, consistent and responsive way. The library 
+                currently supports line charts, scatterplots and histograms as well as 
+                features like rug plots and basic linear regression.</p>
+            </div>
+
+            <div id='torso'>
+                <div class='thumb'><a href='https://github.com/mozilla/metrics-graphics#quick-start-guide'><i class="fa fa-download fa-4x"></i><br /><span class='text'>Download</span></a></div>
+                <div class='thumb'><a href='examples.htm'><i class="fa fa-area-chart fa-4x"></i><br /><span class='text'>Examples</span></a></div>
+                <div class='thumb'><a href='https://github.com/mozilla/metrics-graphics'><i class="fa fa-github fa-4x"></i><br /><span class='text'>Github</span></a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class='api-example'>
+        <div class='container'>
+
+<pre><code class='javascript'>moz_chart({
+    title: "Downloads",
+    description: "This chart shows a time-series of downloads."
+    data: [{'date':'2014-11-01',value:12},{'date':'2014-11-02',value:18}],
+    width: 600,
+    height: 250,
+    target: '#downloads',
+    x_accessor: 'date',
+    y_accessor: 'value',
+})</code></pre>
+
+        </div>
+    </div>
+
+    <div class='container'>
+        <p>The API is simple. All that's needed to create a chart is to specify a few default parameters and then, if desired, override one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>optional parameters on offer</a>. We don't maintain state. To update a chart, one would call <i>moz_chart</i> on the same target element.</p>
+        <p>The library is data-source agnostic. While it provides a number of convenience functions and options that allow for charts to better handle things like missing observations, it doesn't care where the data comes from.</p>
+        <p>The library makes it easy to construct narratives by providing a layout template based on Bootstrap. Take a look at <a href='examples.htm'>the examples</a> to see that in action.</p>
+        <p>MetricsGraphics.js <a href='https://www.youtube.com/watch?v=ZmkeAlut7KI#t=399'>takes the misery out of</a> creating beautiful interactive graphics. The first public release is scheduled for November 10, 2014.</p>
+
+        <h1>A bit about the library's design philosophy</h1>
+        <p>Philosophizing goes here.</p>
+
+        <h1>Creating your first chart</h1>
+        <p>Here's a quick tutorial to get you started. Say that we have some data on a scholarly topic like <a href='http://geocommons.com/overlays/134594'>UFO sightings</a>. We decide that we're interested in creating a line chart of yearly sightings.</p>
+        <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, where we aggregate yearly sightings. The data doesn't have to be JSON of course, but that will mean less work later on.</p>
+        <p>The next thing we do is load the data:</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+})</code></pre>
+
+        <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    data = convert_dates(data, 'year');
+})</code></pre>
+
+        <p>Finally, we create the chart and place it in the HTML element specified in <i>target</i>.</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    moz_chart({
+        title: "UFO Sightings",
+        description: "Yearly UFO sightings from the year 1910 to 2010.",
+        data: data,
+        width: 650,
+        height: 150,
+        target: '#ufo-sightings',
+        x_accessor: 'year',
+        y_accessor: 'sightings',
+        markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}]
+    })
+})</code></pre>
+
+        <p class='highbottom'>And this is what we end up with. In this example, we're adding a marker to draw attention to a particular data point. This is optional of course.</p>
+        <div id='ufo-sightings'></div>
+        <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the chart, we call <i>moz_chart</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the chart by setting one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
+        <p>Take the library out for a spin, file bugs and don't forget to star the project on Github!</p>
+    </div>
+
+    <div class='container text-center social-buttons'>
+        <div id='twitter-block'><a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-url="http://metricsgraphicsjs.org">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>
+        <div id='fb-block'><div class="fb-like" data-href="http://metricsgraphicsjs.org" data-layout="button" data-action="like" data-show-faces="false" data-share="false"></div></div>
+    </div>
+
+    <div class='container footer'>
+        Created by <a href='https://github.com/almossawi'>Ali Almossawi</a>,  
+        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> and the Metrics Team at 
+        <a href='https://www.mozilla.org/en-US/'>Mozilla</a>. 
+        <br />Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
+        Mozilla Public License</a>.
+    </div>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+
+        d3.json('data/ufo-sightings.json', function(data) {
+            moz_chart({
+                title: "UFO Sightings",
+                description: "Yearly UFO sightings from the year 1910 to 2010.",
+                data: data,
+                markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}],
+                width: 650,
+                height: 150,
+                target: '#ufo-sightings',
+                x_accessor: 'year',
+                y_accessor: 'sightings'
+            })
+        })
+    </script>
+</body>
+</html>

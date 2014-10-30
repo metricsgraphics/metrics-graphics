@@ -2,7 +2,7 @@
 
 _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At just 47KB (minified), it provides a simple way to produce common types of charts in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
 
-A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our stateless charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/mozilla/metrics-graphics/wiki).
+A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/mozilla/metrics-graphics/wiki).
 
 ```
 moz_chart({
@@ -28,7 +28,6 @@ _MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/"
 ## Quick-start guide
 1. Download the latest release from [here](https://github.com/mozilla/metrics-graphics/releases).
 2. Follow the examples in [index.html](https://github.com/mozilla/metrics-graphics/blob/master/index.html) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
-3. Profit!
 
 ## Dependencies
 The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
@@ -45,7 +44,18 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Release process
-1. Copy over any changes made in ``dev.html`` to ``index.html``
+1. Copy over any changes made in ``dev.html`` to ``examples.html``
 2. Run ``make.py``
-3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``index.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
-4. Deploy all files to metricsgraphicsjs.org
+3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``examples.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
+4. Deploy all files to metricsgraphicsjs.org 
+
+## Directory structure
+The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are:
+
+1. js/metricsgraphics.min.js
+2. css/metricsgraphics.css
+3. css/metricsgraphics-dark.css
+4. images/missing-data.png
+5. images/missing-data-dark.png
+ 
+Remember to include the calls to the third-party libraries, as they appear in the code for the examples pages.

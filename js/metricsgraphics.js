@@ -3,7 +3,7 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "0.6";
+globals.version = "1.0";
 
 function moz_chart() {
     var moz = {};
@@ -25,9 +25,9 @@ function moz_chart() {
         small_width_threshold: 160,   // the width  threshold for when smaller text appears
         small_text: false,            // coerces small text regardless of graphic size
         xax_count: 6,                 // number of x axis ticks
-        xax_tick: 5,                  // x axis tick length
+        xax_tick_length: 5,           // x axis tick length
         yax_count: 5,                 // number of y axis ticks
-        yax_tick: 5,                  // y axis tick length
+        yax_tick_length: 5,           // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
         y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         y_scale_type: 'linear',
@@ -54,9 +54,16 @@ function moz_chart() {
 
             // format as date or not, of course user can pass in 
             // a custom function if desired
-            return (this.x_accessor == 'date') 
-                ? df(d)
-                : pf.scale(d) + pf.symbol;
+            switch($.type(args.data[0][0][args.x_accessor])) {
+                case 'date':
+                    return df(d);
+                    break;
+                case 'number':
+                    return pf.scale(d) + pf.symbol;
+                    break;
+                default:
+                    return d;
+            }
         },
         area: true,
         chart_type: 'line',   
@@ -79,10 +86,11 @@ function moz_chart() {
     moz.defaults.point = {
         ls: false,
         lowess: false,
+        point_size: 2.5,
         size_accessor: null,
         color_accessor: null,
-        size_range: null,//[1,5]
-        color_range: null,//['blue', 'red']
+        size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
+        color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
         color_domain: null
     }
@@ -104,8 +112,8 @@ function moz_chart() {
         binned: false,
         padding_percentage: .1,
         outer_padding_percentage: .1,
-        height:500,
-        top:20
+        height: 500,
+        top: 20
     }
     moz.defaults.missing = {
         top: 0,
@@ -381,7 +389,7 @@ function y_axis(args) {
                 .attr('x2', function() {
                     return (args.y_extended_ticks)
                         ? args.width - args.right
-                        : args.left - args.yax_tick;
+                        : args.left - args.yax_tick_length;
                 })
                 .attr('y1', args.scales.Y)
                 .attr('y2', args.scales.Y);
@@ -389,7 +397,7 @@ function y_axis(args) {
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
             .append('text')
-                .attr('x', args.left - args.yax_tick * 3 / 2)
+                .attr('x', args.left - args.yax_tick_length * 3 / 2)
                 .attr('dx', -3).attr('y', args.scales.Y)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
@@ -441,40 +449,42 @@ function x_axis(args) {
         return args.scales.X(di[args.x_accessor]);
     }
 
-    if (args.chart_type=='point'){
+    if (args.chart_type == 'point') {
         // figure out 
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
-        if (args.color_accessor!=null){
-            if (args.color_domain==null){
+        if (args.color_accessor != null){
+            if (args.color_domain == null){
 
-                min_color=d3.min(args.data[0], function(d){return d[args.color_accessor]});
-                max_color=d3.max(args.data[0], function(d){return d[args.color_accessor]});    
+                min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});    
                 color_domain = [min_color, max_color];
             } else {
                 color_domain = args.color_domain;
             }
-            if (args.color_range==null){
+
+            if (args.color_range == null){
                 color_range = ['blue', 'red'];
             } else {
                 color_range = args.color_range;
             }
             
-            args.scales.color=d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+            args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
 
-            args.scalefns.color=function(di){
+            args.scalefns.color = function(di){
                 return args.scales.color(di[args.color_accessor]);
             };
         }
-        if (args.size_accessor!=null){
 
-            if (args.size_domain==null){
-                min_size=d3.min(args.data[0], function(d){return d[args.size_accessor]});
-                max_size=d3.max(args.data[0], function(d){return d[args.size_accessor]});
+        if (args.size_accessor != null) {
+
+            if (args.size_domain == null){
+                min_size = d3.min(args.data[0], function(d){return d[args.size_accessor]});
+                max_size = d3.max(args.data[0], function(d){return d[args.size_accessor]});
                 size_domain = [min_size, max_size];
             } else {
                 size_domain = args.size_domain;
             }
-            if (args.size_range==null){
+            if (args.size_range == null){
                 size_range = [1,5];//args.size_domain;
             } else {
                 size_range = args.size_range;
@@ -482,7 +492,7 @@ function x_axis(args) {
             
             args.scales.size=d3.scale.linear().domain(size_domain).range(size_range).clamp(true);
 
-            args.scalefns.size=function(di){
+            args.scalefns.size = function(di){
                 return args.scales.size(di[args.size_accessor]);
             };
         }
@@ -625,7 +635,7 @@ function x_axis(args) {
                 .attr('y2', function() {
                     return (args.x_extended_ticks)
                         ? args.top
-                        : args.height - args.bottom + args.xax_tick;
+                        : args.height - args.bottom + args.xax_tick_length;
                 })
                 .attr('class', function() {
                     if(args.x_extended_ticks)
@@ -636,7 +646,7 @@ function x_axis(args) {
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
+                .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 3)
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
@@ -682,7 +692,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.buffer + args.xax_tick)
+                    .attr('y', args.height - args.buffer + args.xax_tick_length)
                     .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
@@ -737,15 +747,10 @@ function init(args) {
     //add chart title if it's different than existing one
     chart_title(args);
 
-    //we kind of need axes in all cases
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold 
-        && args.width - args.left-args.right - args.buffer*2 
-            <= args.small_width_threshold 
-        || args.small_text;
-
     //draw axes
-
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
@@ -1135,6 +1140,7 @@ charts.line = function(args) {
         //rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
+            .classed('active-datapoint-small', args.use_small_class)
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
@@ -1591,12 +1597,10 @@ charts.point = function(args) {
 
     this.markers = function() {
         markers(args);
-        if (args.least_squares){
+        if (args.least_squares) {
             add_ls(args);
         }
-        // if (args.lowess){
-        //     add_lowess(args);
-        // }
+
         return this
     }
 
@@ -1611,48 +1615,61 @@ charts.point = function(args) {
         var pts = g.selectAll('circle')
             .data(args.data[0])
             .enter().append('svg:circle')
+                .attr('class', function(d, i) { return 'path-' + i; })
                 .attr('cx', args.scalefns.xf)
                 .attr('cy', args.scalefns.yf);
 
-        if (args.color_accessor!=null){
+        //are we coloring our points, or just using the default color?
+        if (args.color_accessor!=null) {
             pts.attr('fill',   args.scalefns.color);
             pts.attr('stroke', args.scalefns.color);
-        } else {
-            pts.attr('fill',   '#0000ff');
-            pts.attr('stroke', '#0000ff');
         }
-        if (args.size_accessor!=null){
+        else {
+            pts.classed('points-mono', true);
+        }
+
+        if (args.size_accessor != null) {
             pts.attr('r', args.scalefns.size);
-        } else {
-            pts.attr('r', 2);
         }
+        else {
+            pts.attr('r', args.point_size);
+        }
+
+        //are we adding rug plots?
         var rug;
-        if (args.x_rug){
-            //var data = args.data[0].map(function(d){return d[args.x_accessor]});
-            rug=g.selectAll('line.x_rug').data(args.data[0]).enter().append('svg:line')
-                .attr('x1', args.scalefns.xf)
-                .attr('x2', args.scalefns.xf)
-                .attr('y1', args.height-args.top+args.buffer)
-                .attr('y2', args.height-args.top)
-                .attr('opacity', .3);
-            if (args.color_accessor){
+        if (args.x_rug) {
+            rug = g.selectAll('line.x_rug').data(args.data[0])
+                .enter().append('svg:line')
+                    .attr('x1', args.scalefns.xf)
+                    .attr('x2', args.scalefns.xf)
+                    .attr('y1', args.height-args.top+args.buffer)
+                    .attr('y2', args.height-args.top)
+                    .attr('class', 'x-rug')
+                    .attr('opacity', 0.3);
+
+            if (args.color_accessor) {
                 rug.attr('stroke', args.scalefns.color);
-            } else {
-                rug.attr('stroke', 'black');
+            }
+            else {
+                rug.classed('x-rug-mono', true);
             }
         }
-        if (args.y_rug){
-            rug=g.selectAll('line.y_rug').data(args.data[0]).enter().append('svg:line')
-                .attr('x1', args.left+1)
-                .attr('x2', args.left+args.buffer)
-                .attr('y1', args.scalefns.yf)
-                .attr('y2', args.scalefns.yf)
-                .attr('stroke', 'black')
-                .attr('opacity', .2);
-            if (args.color_accessor){
+
+        if (args.y_rug) {
+            rug = g.selectAll('line.y_rug').data(args.data[0])
+                .enter().append('svg:line')
+                    .attr('x1', args.left+1)
+                    .attr('x2', args.left+args.buffer)
+                    .attr('y1', args.scalefns.yf)
+                    .attr('y2', args.scalefns.yf)
+                    .attr('class', 'y-rug')
+                    .attr('opacity', 0.3);
+
+            if (args.color_accessor) {
                 rug.attr('stroke', args.scalefns.color);
-            } else {
-                rug.attr('stroke', 'black');
+            }
+            else {
+                rug.classed('y-rug-mono', true);
             }
         }
 
@@ -1661,12 +1678,6 @@ charts.point = function(args) {
 
     this.rollover = function() {
         var svg = d3.select(args.target + ' svg');
-
-        var clips = svg.append('g')
-                .attr('id', 'point-clips');
-
-        var paths = svg.append('g')
-            .attr('id', 'point-paths');
 
         //remove rollover text if it already exists
         if($(args.target + ' svg .active_datapoint').length > 0) {
@@ -1680,31 +1691,25 @@ charts.point = function(args) {
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
-        
-        clips.selectAll('clipPath')
-            .data(args.data[0])
-                .enter().append('clipPath')
-                    .attr('id', function(d, i) { return 'clip-'+i;})
-                    .append('circle')
-                        .attr('cx', args.scalefns.xf)
-                        .attr('cy', args.scalefns.yf)
-                        .attr('r', 20);
 
+        //add rollover paths
         var voronoi = d3.geom.voronoi()
             .x(args.scalefns.xf)
-            .y(args.scalefns.yf);
+            .y(args.scalefns.yf)
+            .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+
+        var paths = svg.append('g')
+            .attr('class', 'voronoi');
 
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
             .enter().append('path')
-                .attr('d', function(d) { 
+                .attr('d', function(d) {
+                    if(d == undefined) return; 
                     return 'M' + d.join(',') + 'Z';
                 })
-                .attr('id', function(d,i) { 
+                .attr('class', function(d,i) { 
                     return 'path-' + i;
-                })
-                .attr('clip-path', function(d,i) {
-                    return 'url(#clip-'+i+')';
                 })
                 .style('fill-opacity', 0)
                 .on('mouseover', this.rolloverOn(args))
@@ -1716,12 +1721,34 @@ charts.point = function(args) {
     this.rolloverOn = function(args) {
         var svg = d3.select(args.target + ' svg');
 
-        return function(d, i){
+        return function(d, i) {
             svg.selectAll('.points circle')
-                .classed('unselected', true);
+                .classed('selected', false);
+
+            //highlight active point
+            var pts = svg.selectAll('.points circle.path-' + i)
+                .classed('selected', true);
+
+            if (args.size_accessor) {
+                pts.attr('r', function(di) {
+                    return args.scalefns.size(di) + 1
+                });
+            } else {
+                pts.attr('r', args.point_size);
+            }
+
+            //trigger mouseover on all points for this class name in .linked charts
+            if(args.linked && !globals.link) {
+                globals.link = true;
+
+                //trigger mouseover on matching point in .linked charts
+                d3.selectAll('.voronoi .path-' + i)
+                    .each(function() {
+                        d3.select(this).on('mouseover')(d,i);
+                })
+            }
 
             var fmt = d3.time.format('%b %e, %Y');
-        
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -1736,18 +1763,6 @@ charts.point = function(args) {
                     var n = d3.format(fmt_string);
                     return n(d_);
                 }
-            }
-
-            //highlight active point
-            var pts = svg.selectAll('.points circle')
-                .filter(function(g,j){return i == j})
-                .classed('unselected', false)
-                .classed('selected', true);
-
-            if (args.size_accessor){
-                pts.attr('r', function(di){return args.scalefns.size(di)+1});
-            } else {
-                pts.attr('r', 3);
             }
 
             //update rollover text
@@ -1768,22 +1783,36 @@ charts.point = function(args) {
                         }
                     });                
             }
+
+            if(args.rollover_callback) {
+                args.rollover_callback(d, i);
+            }
         }
     }
 
     this.rolloverOff = function(args) {
         var svg = d3.select(args.target + ' svg');
 
-        return function(d,i){
+        return function(d,i) {
+            if(args.linked && globals.link) {
+                globals.link = false;
+
+                d3.selectAll('.voronoi .path-' + i)
+                    .each(function() {
+                        d3.select(this).on('mouseout')(d,i);
+                })
+            }
+
             //reset active point
             var pts = svg.selectAll('.points circle')
                 .classed('unselected', false)
                 .classed('selected', false);
 
-            if (args.size_accessor){
+            if (args.size_accessor) {
                 pts.attr('r', args.scalefns.size);
-            } else {
-                pts.attr('r', 2);
+            }
+            else {
+                pts.attr('r', args.point_size);
             }
 
             //reset active data point text
@@ -2238,8 +2267,7 @@ function add_ls(args){
         .attr('x2', args.scales.X(max_x))
         .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
         .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
-        .attr('stroke-width', 1)
-        .attr('stroke', 'red');
+        .attr('class', 'least-squares-line')
 }
 
 function add_lowess(args){
@@ -2250,10 +2278,10 @@ function add_lowess(args){
         .x(function(d){return args.scales.X(d.x)})
         .y(function(d){return args.scales.Y(d.y)})
             .interpolate(args.interpolate);
+
     svg.append('path')
         .attr('d', line(lowess))
-        .attr('stroke', 'red')
-        .attr('fill', 'none');
+        .attr('class', 'lowess-line')
 }
 
 function lowess_robust(x, y, alpha, inc){
@@ -2304,14 +2332,29 @@ function lowess(x, y, alpha, inc){
 
 }
 
-function least_squares(x, y) {
-    var xi, yi,
+function least_squares(x_, y_) {
+    var x, y, xi, yi,
         _x  = 0,
         _y  = 0,
         _xy = 0,
         _xx = 0;
 
-    var n = x.length;
+    var n = x_.length;
+    if (x_[0] instanceof Date){
+        x = x_.map(function(d){
+            return d.getTime();
+        });
+    } else {
+        x = x_;
+    };
+
+    if (y_[0] instanceof Date){
+        y = y_.map(function(d){
+            return d.getTime();
+        });
+    } else {
+        y = y_;
+    };
 
     var xhat = d3.mean(x);
     var yhat = d3.mean(y);
@@ -2326,7 +2369,6 @@ function least_squares(x, y) {
 
     var beta = numerator / denominator;
     var x0 = yhat - beta * xhat;
-
 
     return {
         x0:x0, 

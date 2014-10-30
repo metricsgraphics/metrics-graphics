@@ -8,40 +8,42 @@ function x_axis(args) {
         return args.scales.X(di[args.x_accessor]);
     }
 
-    if (args.chart_type=='point'){
+    if (args.chart_type == 'point') {
         // figure out 
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
-        if (args.color_accessor!=null){
-            if (args.color_domain==null){
+        if (args.color_accessor != null){
+            if (args.color_domain == null){
 
-                min_color=d3.min(args.data[0], function(d){return d[args.color_accessor]});
-                max_color=d3.max(args.data[0], function(d){return d[args.color_accessor]});    
+                min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});    
                 color_domain = [min_color, max_color];
             } else {
                 color_domain = args.color_domain;
             }
-            if (args.color_range==null){
+
+            if (args.color_range == null){
                 color_range = ['blue', 'red'];
             } else {
                 color_range = args.color_range;
             }
             
-            args.scales.color=d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+            args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
 
-            args.scalefns.color=function(di){
+            args.scalefns.color = function(di){
                 return args.scales.color(di[args.color_accessor]);
             };
         }
-        if (args.size_accessor!=null){
 
-            if (args.size_domain==null){
-                min_size=d3.min(args.data[0], function(d){return d[args.size_accessor]});
-                max_size=d3.max(args.data[0], function(d){return d[args.size_accessor]});
+        if (args.size_accessor != null) {
+
+            if (args.size_domain == null){
+                min_size = d3.min(args.data[0], function(d){return d[args.size_accessor]});
+                max_size = d3.max(args.data[0], function(d){return d[args.size_accessor]});
                 size_domain = [min_size, max_size];
             } else {
                 size_domain = args.size_domain;
             }
-            if (args.size_range==null){
+            if (args.size_range == null){
                 size_range = [1,5];//args.size_domain;
             } else {
                 size_range = args.size_range;
@@ -49,7 +51,7 @@ function x_axis(args) {
             
             args.scales.size=d3.scale.linear().domain(size_domain).range(size_range).clamp(true);
 
-            args.scalefns.size=function(di){
+            args.scalefns.size = function(di){
                 return args.scales.size(di[args.size_accessor]);
             };
         }
@@ -205,7 +207,7 @@ function x_axis(args) {
                 .attr('y2', function() {
                     return (args.x_extended_ticks)
                         ? args.top
-                        : args.height - args.bottom + args.xax_tick;
+                        : args.height - args.bottom + args.xax_tick_length;
                 })
                 .attr('class', function() {
                     if(args.x_extended_ticks)
@@ -216,7 +218,7 @@ function x_axis(args) {
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + args.xax_tick * 7 / 3)
+                .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 3)
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
@@ -262,7 +264,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.buffer + args.xax_tick)
+                    .attr('y', args.height - args.buffer + args.xax_tick_length)
                     .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {

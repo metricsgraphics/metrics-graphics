@@ -29,11 +29,7 @@ $(document).ready(function() {
 
     //few observations
     d3.json('data/missing-y.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         //add a line chart that has a few observations
         moz_chart({
@@ -62,11 +58,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/small-range.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         //small range
         moz_chart({
@@ -84,11 +76,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users1.json', function(data) {
-        var fff = d3.time.format('%Y-%m-%d');
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            d['date'] = fff.parse(d['date']);
-        }
+        data = convert_dates(data, 'date');
 
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
@@ -147,9 +135,10 @@ $(document).ready(function() {
             description: "Least squares effortlessly works with dates or times on axes.",
             data: data,
             chart_type: 'point',
-            width: torso.width,
-            height: torso.height,
-            right: torso.right,
+            width: trunk.width,
+            height: trunk.height*1.5,
+            left: 60,
+            right: trunk.right,
             least_squares: true,
             target: '#sls-time-series',
             x_accessor: 'date',
@@ -705,23 +694,20 @@ $(document).ready(function() {
 
     d3.json('data/points1.json', function(data) {
         moz_chart({
-            title: "Scatterplot with Size & Color",
-            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. In this example, we have enabled rug plots by setting the <i>x_rug</i> and <i>y_rug</i> options to true.",
+            title: "Simple Scatterplot",
+            description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
             data: data,
             chart_type: 'point',
             width: trunk.width,
             height: trunk.height*1.5,
             right: trunk.right,
-            target: '#scatter1',
+            target: '#scatter-simple',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
             },
             x_accessor: 'x',
             y_accessor: 'y',
-            color_accessor:'z',
-            size_accessor:'w',
-            x_rug: true,
             y_rug: true
         });
 
@@ -734,7 +720,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height*1.5,
             right: trunk.right,
-            target: '#scatter2',
+            target: '#scatter-line-best-fit',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
                 return pf.scale(f) + pf.symbol;
@@ -761,22 +747,56 @@ $(document).ready(function() {
         //     y_accessor: 'y'
         // })
     })
+    
+    //add this scatterplot and color the groups based on the theme
+    addScatterplotSizeAndColor('light');
+    
+    function addScatterplotSizeAndColor(theme) {
+        var color_range = (theme == 'light')
+                ? null
+                : ['white','yellow'];
+        
+        //call moz_chart again since we need to use a different color_range for the dark theme
+        d3.json('data/points1.json', function(data) {
+            moz_chart({
+                title: "Scatterplot with Size and Color",
+                description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+                data: data,
+                chart_type: 'point',
+                width: trunk.width,
+                height: trunk.height*1.5,
+                right: trunk.right,
+                target: '#scatter-size-and-color',
+                xax_format: function(f) {
+                    var pf = d3.formatPrefix(f);
+                    return pf.scale(f) + pf.symbol;
+                },
+                x_accessor: 'x',
+                y_accessor: 'y',
+                color_accessor:'z',
+                color_range: color_range,
+                size_accessor:'w',
+                x_rug: true,
+                y_rug: true
+            }); 
+        });
+    }
 
     function assignEventListeners() {
         $('#dark-css').click(function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data-dark.png)');
 
-            $('.transparent-rollover-rect')
-                .attr('fill', 'white');
-
             $('.wip')
                 .css('background-color', '#3b3b3b');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
-            $('#dark').attr({href : 'css/metrics-graphics-darkness.css'});
-            
+            $('#dark').attr({href : 'css/metricsgraphics-dark.css'});
+
+            //add this scatterplot and color the groups based on the theme
+            addScatterplotSizeAndColor('dark');
+
             return false;
         })
 
@@ -784,15 +804,15 @@ $(document).ready(function() {
             $('.missing')
                 .css('background-image', 'url(images/missing-data.png)');
 
-            $('.transparent-rollover-rect')
-                .attr('fill', 'black');
-
             $('.wip')
                 .css('background-color', '#f1f1f1');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
+
+            //add this scatterplot and color the groups based on the theme
+            addScatterplotSizeAndColor('light');
 
             return false;
         })
@@ -842,6 +862,25 @@ $(document).ready(function() {
             })
         })
     }
+    
+    document.body.addEventListener('mouseover', function(e) {
+  var target = e.target, item;
+  
+  var upfrontRemover = function() {
+    item.classList.remove('item--upfront');
+    item.removeEventListener('transitionend', upfrontRemover, false);
+  };
+  
+  if(target.classList.contains('hexagon__content')) {
+    item = target.parentNode.parentNode.parentNode;
+        item.addEventListener('transitionend', upfrontRemover, false);
+    
+    if(!item.classList.contains('item--upfront')) {
+      item.classList.add('item--upfront');
+    }
+  }
+}, false);
+
 
     //replace all SVG images with inline SVG
     //http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg

@@ -11,8 +11,7 @@ function add_ls(args){
         .attr('x2', args.scales.X(max_x))
         .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
         .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
-        .attr('stroke-width', 1)
-        .attr('stroke', 'red');
+        .attr('class', 'least-squares-line')
 }
 
 function add_lowess(args){
@@ -23,10 +22,10 @@ function add_lowess(args){
         .x(function(d){return args.scales.X(d.x)})
         .y(function(d){return args.scales.Y(d.y)})
             .interpolate(args.interpolate);
+
     svg.append('path')
         .attr('d', line(lowess))
-        .attr('stroke', 'red')
-        .attr('fill', 'none');
+        .attr('class', 'lowess-line')
 }
 
 function lowess_robust(x, y, alpha, inc){

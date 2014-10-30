@@ -51,8 +51,8 @@ scripts = [
     'src/misc/error.js',
     ]
     
-scripts_out_debug = 'js/metrics-graphics.js'
-scripts_out = 'js/metrics-graphics.min.js'
+scripts_out_debug = 'js/metricsgraphics.js'
+scripts_out = 'js/metricsgraphics.min.js'
 
 
 def jsmin(js):

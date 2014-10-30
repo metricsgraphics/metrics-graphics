@@ -3,7 +3,7 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "0.6";
+globals.version = "1.0";
 
 function moz_chart() {
     var moz = {};
@@ -25,9 +25,9 @@ function moz_chart() {
         small_width_threshold: 160,   // the width  threshold for when smaller text appears
         small_text: false,            // coerces small text regardless of graphic size
         xax_count: 6,                 // number of x axis ticks
-        xax_tick: 5,                  // x axis tick length
+        xax_tick_length: 5,           // x axis tick length
         yax_count: 5,                 // number of y axis ticks
-        yax_tick: 5,                  // y axis tick length
+        yax_tick_length: 5,           // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
         y_extended_ticks: false,      // extends y axis ticks across chart - useful for long charts
         y_scale_type: 'linear',
@@ -54,9 +54,16 @@ function moz_chart() {
 
             // format as date or not, of course user can pass in 
             // a custom function if desired
-            return (this.x_accessor == 'date') 
-                ? df(d)
-                : pf.scale(d) + pf.symbol;
+            switch($.type(args.data[0][0][args.x_accessor])) {
+                case 'date':
+                    return df(d);
+                    break;
+                case 'number':
+                    return pf.scale(d) + pf.symbol;
+                    break;
+                default:
+                    return d;
+            }
         },
         area: true,
         chart_type: 'line',   
@@ -79,10 +86,11 @@ function moz_chart() {
     moz.defaults.point = {
         ls: false,
         lowess: false,
+        point_size: 2.5,
         size_accessor: null,
         color_accessor: null,
-        size_range: null,//[1,5]
-        color_range: null,//['blue', 'red']
+        size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
+        color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
         color_domain: null
     }

@@ -21,7 +21,7 @@ a:hover {
 }
 
 .area3-color {
-    fill: #ff0000;
+    fill: #f57070;
 }
 
 .area4-color {
@@ -43,10 +43,6 @@ a:hover {
 body {
     background-color: #272727;
     color: #cfcfcf;
-}
-
-circle {
-    fill: #ffcb00;
 }
 
 .divider {
@@ -94,6 +90,10 @@ h2.chart_title span {
     opacity: 0.3;
 }
 
+.least-squares-line {
+    stroke: #f57070;
+}
+
 li {
     color: #cfcfcf;
 }
@@ -107,7 +107,7 @@ li {
 }
 
 .line3-color {
-    stroke: #ff0000;
+    stroke: #f57070;
 }
 
 .line4-color {
@@ -127,7 +127,7 @@ li {
 }
 
 .line3-legend-color {
-    color: #ff0000;
+    color: #f57070;
 }
 
 .line4-legend-color {
@@ -158,14 +158,14 @@ li {
     background-image: url(../images/missing-data-dark.png);
 }
 
-.points circle {
-    fill: #a89641;
+circle.points-mono {
     fill-opacity: 0.6;
     stroke: #a89641;
+    fill: #a89641;
     stroke-opacity: 1;
 }
 
-.points circle.selected {
+circle.points-mono.selected {
     fill: #a89641;
     fill-opacity: 1;
     stroke-opacity: 1;
@@ -181,6 +181,11 @@ text {
 
 .trunk-section {
     border-top-color: #5e5e5e;
+}
+
+.x-rug-mono,
+.y-rug-mono {
+    stroke: #cfcfcf;
 }
 
 .x-axis line,

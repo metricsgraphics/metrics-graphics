@@ -153,6 +153,16 @@ circle {
     fill: #9e9efc;
 }
 
+.least-squares-line {
+    stroke-width: 1;
+    stroke: red;
+}
+
+.lowess-line {
+    stroke: red;
+    fill: none;
+}
+
 .line1-color {
     stroke: #4040e8;
 }
@@ -252,12 +262,16 @@ path.main-line {
 }
 
 .points circle {
-/*    fill: #0000ff;
-    stroke: #0000ff;*/
     fill-opacity: 0.4;
     stroke-opacity: 1;
 }
 
+circle.points-mono {
+    fill: #0000ff;
+    stroke: #0000ff;
+}
+
+/* a selected point in a scatterplot */
 .points circle.selected {
     fill-opacity: 1;
     stroke-opacity: 1;
@@ -268,11 +282,46 @@ text {
     opacity: 0.8;
 }
 
+#torso {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+#torso div {
+    display: inline-block;
+}
+
+#trunk {
+    margin-top: 40px;
+}
+
+#trunk h2 {
+    font-size: 15px;
+}
+
+#trunk h2.trunk-title {
+    font-size: 25px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.trunk-section {
+    border-top: 1px solid #ccc;
+    padding-bottom: 25px;
+    padding-top: 15px;
+}
+
 .voronoi path {
     fill: none;
     pointer-events: all;
     stroke: none;
     stroke-opacity: 0.1;
+}
+
+.x-rug-mono,
+.y-rug-mono {
+    stroke: black;
 }
 
 .x-axis line,
@@ -300,7 +349,8 @@ text {
 }
 
 .x-axis-small text,
-.y-axis-small text {
+.y-axis-small text,
+.active-datapoint-small {
     font-size: 8px;
 }
 

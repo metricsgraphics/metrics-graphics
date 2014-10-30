@@ -41,6 +41,13 @@ function init(args) {
 
     var svg = d3.select(args.target).selectAll('svg');
 
+    //has the width or height changed?
+    if(args.width != Number(svg.attr('width')))
+        svg.attr('width', args.width)
+
+    if(args.height != Number(svg.attr('height')))
+        svg.attr('height', args.height)
+
     // remove missing class
     svg.classed('missing', false);
     // remove missing text
@@ -49,15 +56,10 @@ function init(args) {
     //add chart title if it's different than existing one
     chart_title(args);
 
-    //we kind of need axes in all cases
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold 
-        && args.width - args.left-args.right - args.buffer*2 
-            <= args.small_width_threshold 
-        || args.small_text;
-
     //draw axes
-
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
