@@ -211,6 +211,11 @@ function y_axis(args) {
 
 function y_axis_categorical(args) {
     // first, come up with y_axis 
+    var svg_height = args.height;
+    if (args.chart_type=='bar' && svg_height==null){
+        // we need to set a new height variable.
+    }
+
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
         .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
@@ -220,6 +225,7 @@ function y_axis_categorical(args) {
     }
 
     var svg = d3.select(args.target + ' svg');
+
     var g = svg.append('g')
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
@@ -229,7 +235,7 @@ function y_axis_categorical(args) {
 
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
-        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 })
+        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 +(args.buffer)*args.outer_padding_percentage  })
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String)

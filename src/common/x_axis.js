@@ -89,10 +89,24 @@ function x_axis(args) {
             }
         }
     }
-    else if(args.chart_type = 'bar') {
+    else if(args.chart_type == 'bar') {
         //min_x = d3.min(args.data[0], function(d){return d[args.value_accessor]});
+
         min_x = 0; // TODO: think about what actually makes sense.
-        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
+        max_x = d3.max(args.data[0], function(d){
+            var trio = [];
+            trio.push(d[args.x_accessor]);
+
+            if (args.baseline_accessor!=null){
+                trio.push(d[args.baseline_accessor]);
+            };
+
+            if (args.predictor_accessor!=null){
+                trio.push(d[args.predictor_accessor]);
+            }
+
+            return Math.max.apply(null, trio);
+        }); //
         args.xax_format = function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
@@ -108,7 +122,6 @@ function x_axis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     args.x_axis_negative = false;
-
     if (!args.time_series) {
         if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));

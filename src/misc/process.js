@@ -198,6 +198,10 @@ function process_categorical_variables(args){
     } else {
         // nothing needs to really happen here.
         processed_data = our_data;
+        args.categorical_variables = d3.set(processed_data.map(function(d){
+            return d[args.y_accessor];
+        })).values();
+        args.categorical_variables.reverse();
     }
     args.data = [processed_data];
     return this;

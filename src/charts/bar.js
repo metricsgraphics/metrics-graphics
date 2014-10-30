@@ -17,7 +17,9 @@ charts.bar = function(args) {
     }
 
     this.mainPlot = function() {
+
         var svg = d3.select(args.target + ' svg');
+
         var g;
 
         //remove the old histogram, add new one
@@ -27,17 +29,52 @@ charts.bar = function(args) {
         }
 
         var data = args.data[0];
+
         var g = svg.append('g')
             .classed('barplot', true);
 
+        var appropriate_height = args.scales.Y.rangeBand()/1.5;
         g.selectAll('.bar')
             .data(data).enter().append('rect')
             .classed('bar', true)
             .attr('x', args.scales.X(0))
-            .attr('y', args.scalefns.yf)
-            .attr('height', args.scales.Y.rangeBand())
+            .attr('y', function(d){
+                return args.scalefns.yf(d) + appropriate_height/2;
+            })
+            .attr('height', appropriate_height)
             .attr('width', function(d){ return args.scalefns.xf(d) - args.scales.X(0)});
-
+        if (args.predictor_accessor){
+            var pp=args.predictor_proportion;
+            var pp0 = pp-1;
+            // thick line  through bar;
+            g.selectAll('.prediction')
+                .data(data)
+                .enter().append("rect")
+                    .attr('x', args.scales.X(0))
+                    .attr('y', function(d){
+                        return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
+                    })
+                    .attr('height', appropriate_height/pp)
+                    .attr('width', function(d){
+                        return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
+                    })
+                    .attr('fill', '#36454f');
+        }
+        if (args.baseline_accessor){
+            g.selectAll('.baseline')
+                .data(data)
+                .enter().append("line")
+                    .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
+                    .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
+                    .attr('y1', function(d){
+                        return args.scalefns.yf(d)+appropriate_height/2-appropriate_height/pp + appropriate_height/2;
+                    })
+                    .attr('y2', function(d){
+                        return args.scalefns.yf(d)+appropriate_height/2+appropriate_height/pp + appropriate_height/2;
+                    })
+                    .attr('stroke-width', 2)
+                    .attr('stroke', '#36454f');
+        }
         return this;
     }
 

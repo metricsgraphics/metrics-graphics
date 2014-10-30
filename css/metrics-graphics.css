@@ -37,7 +37,8 @@ a:hover {
 
 .barplot rect.bar {
     shape-rendering: crispEdges;
-    fill: #b6b6fc;
+        fill: #b6b6fc;
+
 }
 
 .barplot rect.bar.active {

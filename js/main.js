@@ -651,25 +651,43 @@ $(document).ready(function() {
     })
 
     //add bar charts
-    var names = ['first', 'second', 'third', 'fourth', 'fifth']
-    var bar_data = [];
-    d3.range(5).map(function(d){
-        return Math.floor(d3.random.logNormal()()*100)
-    }).forEach(function(d,i){
-        d3.range(d).forEach(function(di,ii){
-            bar_data.push(names[i])
-        })
-    });
+    // var names = ['first', 'second', 'third', 'fourth', 'fifth']
+    // var bar_data = [];
+    // d3.range(5).map(function(d){
+    //     return Math.floor(d3.random.logNormal()()*100);
+    // }).forEach(function(d,i){
+    //     d3.range(d).forEach(function(di,ii){
+    //         bar_data.push(names[i]);
+    //     })
+    // });
+
+    var bar_data = [
+        {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
+        {'label': 'second', 'value':2.1, 'baseline':3.1, 'prediction': 3},
+        {'label': 'third', 'value':6.3, 'baseline':6.3, 'prediction': 4},
+        {'label': 'fourth', 'value':5.7, 'baseline':3.2, 'prediction': 5},
+        {'label': 'fifth', 'value':5, 'baseline':4.2, 'prediction': 3},
+        {'label': 'sixth', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+        {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+        {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+        {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
+    ]
+
 
     moz_chart({
         title:'Bar Prototype',
         description:'work in progress',
         data: bar_data,
+        x_accessor: 'value',
+        y_accessor: 'label',
+        baseline_accessor:'baseline',
+        predictor_accessor:'prediction',
         chart_type: 'bar',
         width:trunk.width,
-        height:trunk.height,
         right:trunk.right,
-        target: '#bar1'
+        target: '#bar1',
+        x_axis: false
+
     })
 
     moz_chart({
@@ -677,11 +695,12 @@ $(document).ready(function() {
         description:'work in progress',
         data: bar_data,
         chart_type: 'bar',
+        x_accessor: 'value',
+        y_accessor: 'label',
         width:trunk.width,
         height:trunk.height,
         right:trunk.right,
         target: '#bar2',
-        x_axis: false
     })
 
     d3.json('data/points1.json', function(data) {

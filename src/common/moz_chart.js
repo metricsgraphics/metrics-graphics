@@ -101,11 +101,18 @@ function moz_chart() {
     moz.defaults.bar = {
         y_accessor: 'factor',
         x_accessor: 'value',
-        binned: false,
+        baseline_accessor: null,
+        predictor_accessor: null,
+        predictor_proportion: 5,
+        dodge_acessor: null,
+        binned: true,
         padding_percentage: .1,
         outer_padding_percentage: .1,
         height:500,
-        top:20
+        top:20,
+        bar_height:20,
+        height:null,
+        left:70
     }
     moz.defaults.missing = {
         top: 0,

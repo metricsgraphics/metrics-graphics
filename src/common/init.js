@@ -22,14 +22,21 @@ function init(args) {
 
     var linked;
 
+    var svg_width = args.width;
+    var svg_height = args.height;
+
+    if (args.chart_type=='bar' && svg_height == null){
+        svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
+    }
+
     //add svg if it doesn't already exist
     if($(args.target).is(':empty')) {
         //add svg
         d3.select(args.target)
             .append('svg')
                 .classed('linked', args.linked)
-                .attr('width', args.width)
-                .attr('height', args.height);
+                .attr('width', svg_width)
+                .attr('height', svg_height);
     }
 
     var svg = d3.select(args.target).selectAll('svg');
