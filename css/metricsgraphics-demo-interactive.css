@@ -1,6 +1,3 @@
-#logo {
-    margin: 15px 0 10px 0;
-}
 
 body {
     background-color: #fcfcfc;
@@ -11,16 +8,6 @@ body {
     min-width: 960px;
 }
 
-.hightop {
-    margin-top: 40px;
-}
-
-.main-windows .data,
-.main-windows .js,
-.main-windows .result {
-    height: 400px;
-}
-
 .data textarea,
 .js textarea {
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
@@ -29,15 +16,25 @@ body {
     width: 100%;
 }
 
+.footer {
+    background-image: url(../images/divider.png);
+    background-repeat: no-repeat;
+    background-position: center 115px;
+    padding-top: 70px;
+    margin-bottom: 20px;
+}
+
 .js textarea {
     font-size: 12px;
     line-height: 22px;
 }
 
-textarea {
-    border-color: #ccc;
-    border-radius: 3px;
-    padding: 10px;
+.hightop {
+    margin-top: 40px;
+}
+
+#logo {
+    margin: 15px 0 10px 0;
 }
 
 .main-windows-titles {
@@ -54,8 +51,26 @@ textarea {
     margin: 7px 15px 0 0;
 }
 
+.main-windows .data,
+.main-windows .js,
+.main-windows .result {
+    height: 400px;
+}
+
 p {
     padding-top: 6px;
+}
+
+textarea {
+    border-radius: 3px;
+    border: none;
+    overflow: auto;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 
 .update-row {

@@ -22,9 +22,7 @@
     <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
     <link href='css/metricsgraphics-demo-interactive.css' rel='stylesheet' type='text/css'>
-    <link href='css/highlightjs-default.css' rel='stylesheet' type='text/css'>
 
-    <script src='js/highlight.pack.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
@@ -116,8 +114,6 @@
     </div>
 
     <script>
-        hljs.initHighlightingOnLoad();
-
         d3.json('data/ufo-sightings.json', function(data) {
             $('.data textarea').val(JSON.stringify(data, null, 2));
             eval($('.js textarea').val());
