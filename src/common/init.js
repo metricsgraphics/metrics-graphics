@@ -71,7 +71,7 @@ function init(args) {
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
-    //moz_chart() on the same target with 2 lines, remove the 3rd line
+    //data_graphic() on the same target with 2 lines, remove the 3rd line
     if(args.data.length < $(args.target + ' svg .main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
         //line-color map, instead, see which are the lines to be removed, and delete those    

@@ -74,7 +74,7 @@
     <div class='api-example'>
         <div class='container'>
 
-<pre><code class='javascript'>moz_chart({
+<pre><code class='javascript'>data_graphic({
     title: "Downloads",
     description: "This chart shows a time-series of downloads."
     data: [{'date':'2014-11-01',value:12},{'date':'2014-11-02',value:18}],
@@ -89,7 +89,7 @@
     </div>
 
     <div class='container'>
-        <p>The API is simple. All that's needed to create a chart is to specify a few default parameters and then, if desired, override one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>optional parameters on offer</a>. We don't maintain state. To update a chart, one would call <i>moz_chart</i> on the same target element.</p>
+        <p>The API is simple. All that's needed to create a chart is to specify a few default parameters and then, if desired, override one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>optional parameters on offer</a>. We don't maintain state. To update a chart, one would call <i>data_graphic</i> on the same target element.</p>
         <p>The library is data-source agnostic. While it provides a number of convenience functions and options that allow for charts to better handle things like missing observations, it doesn't care where the data comes from.</p>
         <p>The library makes it easy to construct narratives by providing a layout template based on Bootstrap. Take a look at <a href='examples.htm'>the examples</a> to see that in action.</p>
         <p>MetricsGraphics.js <a href='https://www.youtube.com/watch?v=ZmkeAlut7KI#t=399'>takes the misery out of</a> creating beautiful interactive graphics. The first public release is scheduled for November 10, 2014.</p>
@@ -105,7 +105,7 @@
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
 })</code></pre>
 
-        <p><i>moz_chart</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
+        <p><i>data_graphic</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
 
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
     data = convert_dates(data, 'year');
@@ -114,7 +114,7 @@
         <p>Finally, we create the chart and place it in the HTML element specified in <i>target</i>.</p>
 
 <pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
-    moz_chart({
+    data_graphic({
         title: "UFO Sightings",
         description: "Yearly UFO sightings from the year 1910 to 2010.",
         data: data,
@@ -129,7 +129,7 @@
 
         <p class='highbottom'>And this is what we end up with. In this example, we're adding a marker to draw attention to a particular data point. This is optional of course.</p>
         <div id='ufo-sightings'></div>
-        <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the chart, we call <i>moz_chart</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the chart by setting one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
+        <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the chart, we call <i>data_graphic</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the chart by setting one or more of the <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
         
         <h1>Still not convinced?</h1>
         <p>We've set up an interactive version of this example that you can play around with, without the need to download anything. <a href='interactive-demo.htm'>Check it out</a>.</p>
@@ -251,7 +251,7 @@
         hljs.initHighlightingOnLoad();
 
         d3.json('data/ufo-sightings.json', function(data) {
-            moz_chart({
+            data_graphic({
                 title: "UFO Sightings",
                 description: "Yearly UFO sightings from the year 1910 to 2010.",
                 data: data,

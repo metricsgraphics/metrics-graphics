@@ -33,7 +33,7 @@ import os, os.path, shutil
 from StringIO import StringIO
 
 scripts = [
-    'src/common/moz_chart.js',
+    'src/common/data_graphic.js',
     'src/common/chart_title.js',
     'src/common/y_axis.js',
     'src/common/x_axis.js',

@@ -5,7 +5,7 @@ var globals = {};
 globals.link = false;
 globals.version = "1.0";
 
-function moz_chart() {
+function data_graphic() {
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
