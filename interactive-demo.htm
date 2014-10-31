@@ -21,7 +21,6 @@
 
     <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
-    <link href='css/metricsgraphics-demo-interactive.css' rel='stylesheet' type='text/css'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
@@ -113,6 +112,95 @@
         Mozilla Public License</a>.
     </div>
 
+
+    <style>
+        body {
+            background-color: #fcfcfc;
+        }
+
+        .container {
+            width: 90%;
+            min-width: 960px;
+        }
+
+        .data textarea,
+        .js textarea {
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+            font-size: 11px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .footer {
+            background-image: url(../images/divider.png);
+            background-repeat: no-repeat;
+            background-position: center 115px;
+            padding-top: 70px;
+            margin-bottom: 20px;
+        }
+
+        .js textarea {
+            font-size: 12px;
+            line-height: 22px;
+        }
+
+        .hightop {
+            margin-top: 40px;
+        }
+
+        #logo {
+            margin: 15px 0 10px 0;
+        }
+
+        .main-windows-titles {
+            color: #3b3b3b;
+            font-size: 16px;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .main-windows-titles .js-title a {
+            position: absolute;
+            right: 0;
+            font-size: 70%;
+            margin: 7px 15px 0 0;
+        }
+
+        .main-windows .data,
+        .main-windows .js,
+        .main-windows .result {
+            height: 400px;
+        }
+
+        p {
+            padding-top: 6px;
+        }
+
+        textarea {
+            border-radius: 3px;
+            border: none;
+            overflow: auto;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .update-row {
+            background: #fcfcfc; /* Old browsers */
+            background: -moz-linear-gradient(left,  #fcfcfc 0%, #f0f0f0 52%, #fcfcfc 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right top, color-stop(0%,#fcfcfc), color-stop(52%,#f0f0f0), color-stop(100%,#fcfcfc)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(left,  #fcfcfc 0%,#f0f0f0 52%,#fcfcfc 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(left,  #fcfcfc 0%,#f0f0f0 52%,#fcfcfc 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(left,  #fcfcfc 0%,#f0f0f0 52%,#fcfcfc 100%); /* IE10+ */
+            background: linear-gradient(to right,  #fcfcfc 0%,#f0f0f0 52%,#fcfcfc 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#fcfcfc',GradientType=1 ); /* IE6-9 */
+            padding: 6px 0 6px 0;
+            margin-bottom: 40px;
+        }
+    </style>
     <script>
         d3.json('data/ufo-sightings.json', function(data) {
             $('.data textarea').val(JSON.stringify(data, null, 2));
