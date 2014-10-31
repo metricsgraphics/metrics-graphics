@@ -27,7 +27,7 @@ _MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/"
 
 ## Quick-start guide
 1. Download the latest release from [here](https://github.com/mozilla/metrics-graphics/releases).
-2. Follow the examples in [index.html](https://github.com/mozilla/metrics-graphics/blob/master/index.html) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
+2. Follow the examples in [index.htm](https://github.com/mozilla/metrics-graphics/blob/master/index.htm) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
 
 ## Dependencies
 The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
@@ -35,7 +35,7 @@ The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap]
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
 
-As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.html`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metricsgraphics.js`` file.
+As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.htm`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metricsgraphics.js`` file.
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org)
@@ -44,9 +44,9 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Release process
-1. Copy over any changes made in ``dev.html`` to ``examples.html``
+1. Copy over any changes made in ``dev.htm`` to ``examples.htm``
 2. Run ``make.py``
-3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
+3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.htm`` (if applicable) with a message such as, “v0.5 prepared files for release”
 4. Deploy all files to metricsgraphicsjs.org 
 
 ## Directory structure
