@@ -109,11 +109,17 @@ function moz_chart() {
     moz.defaults.bar = {
         y_accessor: 'factor',
         x_accessor: 'value',
-        binned: false,
+        baseline_accessor: null,
+        predictor_accessor: null,
+        predictor_proportion: 5,
+        dodge_acessor: null,
+        binned: true,
         padding_percentage: .1,
         outer_padding_percentage: .1,
         height: 500,
-        top: 20
+        top: 20,
+        bar_height: 20,
+        left: 70
     }
     moz.defaults.missing = {
         top: 0,
@@ -411,6 +417,11 @@ function y_axis(args) {
 
 function y_axis_categorical(args) {
     // first, come up with y_axis 
+    var svg_height = args.height;
+    if (args.chart_type=='bar' && svg_height==null){
+        // we need to set a new height variable.
+    }
+
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
         .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
@@ -420,6 +431,7 @@ function y_axis_categorical(args) {
     }
 
     var svg = d3.select(args.target + ' svg');
+
     var g = svg.append('g')
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
@@ -429,7 +441,7 @@ function y_axis_categorical(args) {
 
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
-        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 })
+        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 +(args.buffer)*args.outer_padding_percentage  })
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String)
@@ -532,10 +544,24 @@ function x_axis(args) {
             }
         }
     }
-    else if(args.chart_type = 'bar') {
+    else if(args.chart_type == 'bar') {
         //min_x = d3.min(args.data[0], function(d){return d[args.value_accessor]});
+
         min_x = 0; // TODO: think about what actually makes sense.
-        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
+        max_x = d3.max(args.data[0], function(d){
+            var trio = [];
+            trio.push(d[args.x_accessor]);
+
+            if (args.baseline_accessor!=null){
+                trio.push(d[args.baseline_accessor]);
+            };
+
+            if (args.predictor_accessor!=null){
+                trio.push(d[args.predictor_accessor]);
+            }
+
+            return Math.max.apply(null, trio);
+        }); //
         args.xax_format = function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
@@ -551,7 +577,6 @@ function x_axis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     args.x_axis_negative = false;
-
     if (!args.time_series) {
         if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));
@@ -727,12 +752,19 @@ function init(args) {
 
     var linked;
 
+    var svg_width = args.width;
+    var svg_height = args.height;
+
+    if (args.chart_type=='bar' && svg_height == null){
+        svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
+    }
     //remove the svg if the chart type has changed
     if(($(args.target + ' svg .main-line').length > 0 && args.chart_type != 'line')
             || ($(args.target + ' svg .points').length > 0 && args.chart_type != 'point')
             || ($(args.target + ' svg .histogram').length > 0 && args.chart_type != 'histogram')
         ) {
         $(args.target).empty();
+
     }
 
     //add svg if it doesn't already exist
@@ -741,8 +773,8 @@ function init(args) {
         d3.select(args.target)
             .append('svg')
                 .classed('linked', args.linked)
-                .attr('width', args.width)
-                .attr('height', args.height);
+                .attr('width', svg_width)
+                .attr('height', svg_height);
     }
 
     var svg = d3.select(args.target).selectAll('svg');
@@ -1864,7 +1896,9 @@ charts.bar = function(args) {
     }
 
     this.mainPlot = function() {
+
         var svg = d3.select(args.target + ' svg');
+
         var g;
 
         //remove the old histogram, add new one
@@ -1874,17 +1908,52 @@ charts.bar = function(args) {
         }
 
         var data = args.data[0];
+
         var g = svg.append('g')
             .classed('barplot', true);
 
+        var appropriate_height = args.scales.Y.rangeBand()/1.5;
         g.selectAll('.bar')
             .data(data).enter().append('rect')
             .classed('bar', true)
             .attr('x', args.scales.X(0))
-            .attr('y', args.scalefns.yf)
-            .attr('height', args.scales.Y.rangeBand())
+            .attr('y', function(d){
+                return args.scalefns.yf(d) + appropriate_height/2;
+            })
+            .attr('height', appropriate_height)
             .attr('width', function(d){ return args.scalefns.xf(d) - args.scales.X(0)});
-
+        if (args.predictor_accessor){
+            var pp=args.predictor_proportion;
+            var pp0 = pp-1;
+            // thick line  through bar;
+            g.selectAll('.prediction')
+                .data(data)
+                .enter().append("rect")
+                    .attr('x', args.scales.X(0))
+                    .attr('y', function(d){
+                        return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
+                    })
+                    .attr('height', appropriate_height/pp)
+                    .attr('width', function(d){
+                        return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
+                    })
+                    .attr('fill', '#36454f');
+        }
+        if (args.baseline_accessor){
+            g.selectAll('.baseline')
+                .data(data)
+                .enter().append("line")
+                    .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
+                    .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
+                    .attr('y1', function(d){
+                        return args.scalefns.yf(d)+appropriate_height/2-appropriate_height/pp + appropriate_height/2;
+                    })
+                    .attr('y2', function(d){
+                        return args.scalefns.yf(d)+appropriate_height/2+appropriate_height/pp + appropriate_height/2;
+                    })
+                    .attr('stroke-width', 2)
+                    .attr('stroke', '#36454f');
+        }
         return this;
     }
 
@@ -2250,6 +2319,10 @@ function process_categorical_variables(args){
     } else {
         // nothing needs to really happen here.
         processed_data = our_data;
+        args.categorical_variables = d3.set(processed_data.map(function(d){
+            return d[args.y_accessor];
+        })).values();
+        args.categorical_variables.reverse();
     }
     args.data = [processed_data];
     return this;
