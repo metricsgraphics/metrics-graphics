@@ -35,7 +35,7 @@ The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap]
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
 
-As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.html`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metrics-graphics.js`` file.
+As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.html`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metricsgraphics.js`` file.
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org)
@@ -46,7 +46,7 @@ As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/
 ## Release process
 1. Copy over any changes made in ``dev.html`` to ``examples.html``
 2. Run ``make.py``
-3. Commit newly generated ``js/metrics-graphics.js`` and ``js/metrics-graphics.min.js`` files and ``examples.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
+3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.html`` (if applicable) with a message such as, “v0.5 prepared files for release”
 4. Deploy all files to metricsgraphicsjs.org 
 
 ## Directory structure
