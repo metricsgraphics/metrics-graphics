@@ -5,7 +5,7 @@ _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-
 A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/mozilla/metrics-graphics/wiki).
 
 ```
-moz_chart({
+data_graphic({
     title: "Downloads",
     description: "This chart shows Firefox GA downloads for the past six months."
     data: downloads_data, \\ an array of objects, such as [{value:100,date:...},...]
