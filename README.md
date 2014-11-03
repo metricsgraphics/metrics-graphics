@@ -39,7 +39,7 @@ Changes should be made to the files under ``src`` rather than to ``js/metrics-gr
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
-* [Interactive Demo](http://metricsgraphicsjs.org/interactive-demo.htm)
+* [Interactive demo](http://metricsgraphicsjs.org/interactive-demo.htm)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
 * [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
