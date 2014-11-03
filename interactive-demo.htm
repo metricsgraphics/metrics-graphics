@@ -79,19 +79,21 @@
     </div>
 
     <div class='container'>
-        <div class='row update-row text-center'>
+        <!--<div class='row update-row text-center'>
             <button type='button' class='update btn'>Run Code</button>
-        </div>
+        </div>-->
         <div class='row main-windows-titles'>
             <div class='col-xs-2'>Data</div>
-            <div class='js-title col-xs-5'>JavaScript <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options#list-of-options' target='_blank'>See Full List of Options</a></div>
+            <div class='js-title col-xs-5'>
+                JavaScript <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options#list-of-options' target='_blank'>See Full List of Options</a>
+                <button type='button' class='update btn'>Run</button>
+            </div>
         </div>
         <div class='row main-windows'>
             <div class='data col-xs-2'>
                 <textarea></textarea>
             </div>
-            <div class='js col-xs-5' id='editor'>
-            </div>
+            <div class='js col-xs-5' id='editor'></div>
             <div class='result text-center col-xs-5'></div>
         </div>
     </div>
@@ -178,15 +180,21 @@
         .btn.update {
             background-color: steelblue;
             color: white;
+            margin-top: 34px;
+            outline: none;
+            position: absolute;
+            right: 7px;
+            z-index: 99;
         }
 
         .btn.update:hover,
         .btn.update:active,
         .btn.update:visited {
             color: #efefef;
+            outline: none;
         }
 
-        .update-row {
+        /*.update-row {
             background: #fcfcfc; /* Old browsers */
             background: -moz-linear-gradient(left,  #fcfcfc 0%, #f0f0f0 52%, #fcfcfc 100%); /* FF3.6+ */
             background: -webkit-gradient(linear, left top, right top, color-stop(0%,#fcfcfc), color-stop(52%,#f0f0f0), color-stop(100%,#fcfcfc)); /* Chrome,Safari4+ */
@@ -197,7 +205,7 @@
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#fcfcfc',GradientType=1 ); /* IE6-9 */
             padding: 6px 0 6px 0;
             margin-bottom: 40px;
-        }
+        }*/
     </style>
     <script>
         var default_call = "data_graphic({\n"
