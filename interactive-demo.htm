@@ -206,14 +206,13 @@
             + '  x_accessor: "year",\n'
             + '  y_accessor: "sightings",\n'
             + '  interpolate: "monotone"\n'
-            + '})\n';
+            + '});';
 
         var editor = ace.edit("editor");
         editor.getSession().setMode("ace/mode/javascript");
         editor.setValue(default_call);
-        editor.gotoLine(1);
-        
-        
+        editor.gotoLine(1);editor.setHighlightActiveLine(false);
+
         d3.json('data/ufo-sightings.json', function(data) {
             $('.data textarea').val(JSON.stringify(data, null, 2));
             eval(editor.getValue());
