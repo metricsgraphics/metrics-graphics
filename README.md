@@ -38,7 +38,8 @@ We're grateful for anyone wishing to contribute to the library. Feel free to for
 As of v0.4 ([see issue #133](https://github.com/mozilla/metrics-graphics/issues/133#issuecomment-55292161)), changes should be made to the files under ``src`` rather than to ``js/metrics-graphics.js``. Please use ``dev.htm`` to test changes locally. Once a release, we regenerate the raw and minified versions of the ``js/metricsgraphics.js`` file.
 
 ## Resources
-* [Examples](http://metricsgraphicsjs.org)
+* [Examples](http://metricsgraphicsjs.org/examples.htm)
+* [Interactive Demo](http://metricsgraphicsjs.org/interactive-demo.htm)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
 * [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
