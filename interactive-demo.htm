@@ -39,6 +39,10 @@
 </head>
 
 <body>
+    <script src="js/lib/ace.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="src/theme-twilight.js" type="text/javascript" charset="utf-8"></script>-->
+
+    
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
@@ -76,7 +80,7 @@
 
     <div class='container'>
         <div class='row update-row text-center'>
-            <button type='button' class='update btn btn-default' >Update Chart</button>
+            <button type='button' class='update btn btn-default' >Run Code</button>
         </div>
         <div class='row main-windows-titles'>
             <div class='col-xs-2'>Data</div>
@@ -86,19 +90,7 @@
             <div class='data col-xs-2'>
                 <textarea></textarea>
             </div>
-            <div class='js col-xs-5'>
-                <textarea class='javascript'>data_graphic({
-  title: "UFO Sightings",
-  description: "Yearly UFO sightings from 1910 to 2010.",
-  data: JSON.parse($('.data textarea').val()),
-  markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}],
-  width: 400,
-  height: 250,
-  target: ".result",
-  x_accessor: "year",
-  y_accessor: "sightings",
-  interpolate: "monotone"
-})</textarea>
+            <div class='js col-xs-5' id='editor'>
             </div>
             <div class='result text-center col-xs-5'></div>
         </div>
@@ -123,8 +115,7 @@
             min-width: 960px;
         }
 
-        .data textarea,
-        .js textarea {
+        .data textarea {
             font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
             font-size: 11px;
             height: 100%;
@@ -137,11 +128,6 @@
             background-position: center 115px;
             padding-top: 70px;
             margin-bottom: 20px;
-        }
-
-        .js textarea {
-            font-size: 12px;
-            line-height: 22px;
         }
 
         .hightop {
@@ -163,7 +149,7 @@
             position: absolute;
             right: 0;
             font-size: 70%;
-            margin: 7px 15px 0 0;
+            margin: 7px 1px 0 0;
         }
 
         .main-windows .data,
@@ -176,7 +162,8 @@
             padding-top: 6px;
         }
 
-        textarea {
+        textarea,
+        #editor {
             border-radius: 3px;
             border: none;
             overflow: auto;
@@ -202,13 +189,32 @@
         }
     </style>
     <script>
+        var default_call = "data_graphic({\n"
+            + '  title: "UFO Sightings",\n'
+            + '  description: "Yearly UFO sightings from 1910 to 2010.",\n'
+            + '  data: JSON.parse($(\'.data textarea\').val()),\n'
+            + '  markers: [{\'year\': 1964, \'label\': \'"The Creeping Terror" released\'}],\n'
+            + '  width: 400,\n'
+            + '  height: 250,\n'
+            + '  target: ".result",\n'
+            + '  x_accessor: "year",\n'
+            + '  y_accessor: "sightings",\n'
+            + '  interpolate: "monotone"\n'
+            + '})\n';
+
+        var editor = ace.edit("editor");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setValue(default_call);
+        editor.gotoLine(1);
+        
+        
         d3.json('data/ufo-sightings.json', function(data) {
             $('.data textarea').val(JSON.stringify(data, null, 2));
-            eval($('.js textarea').val());
+            eval(editor.getValue());
         })
         
         $('.update').on('click', function() {
-            eval($('.js textarea').val());
+            eval(editor.getValue());
         })
     </script>
 </body>
