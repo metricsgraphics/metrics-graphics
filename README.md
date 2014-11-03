@@ -50,7 +50,7 @@ Changes should be made to the files under ``src`` rather than to ``js/metrics-gr
 3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.htm`` (if applicable) with a message such as, “v0.5 prepared files for release”
 4. Deploy all files to metricsgraphicsjs.org 
 
-## Directory structure
+## A note about the download package
 The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are:
 
 1. js/metricsgraphics.min.js
