@@ -10,11 +10,21 @@ function raw_data_transformation(args){
             return args.y_accessor.map(function(ya){
                 return _d.map(function(di){
                     di = clone(di);
+                    if (di[ya]==undefined){
+                        return undefined;
+                    }
                     di['multiline_y_accessor'] = di[ya];
                     return di;
+                }).filter(function(di){
+                    return di != undefined;
                 })
             })
         })[0];
+        // args.data = args.data.map(function(_d){
+        //     return _d.filter(function(di){
+        //         return di != undefined;
+        //     });
+        // })[0];
         args.y_accessor = 'multiline_y_accessor';
     }
 
@@ -42,7 +52,6 @@ function process_line(args) {
         for(var i=0;i<args.data.length;i++) {
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
-
             //initialize our new array for storing the processed data
             var processed_data = [];
 
@@ -67,7 +76,6 @@ function process_line(args) {
                 $.each(args.data[i], function(i, val) {
                     if(Date.parse(val.date) == Date.parse(new Date(d))) {
                         existing_o = val;
-                        //console.log("exists: ", val.date);
 
                         return false;
                     }

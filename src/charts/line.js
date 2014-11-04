@@ -53,8 +53,11 @@ charts.line = function(args) {
 
         //for building the optional legend
         var legend = '';
+        var this_data;
             
         for(var i=args.data.length-1; i>=0; i--) {
+            this_data = args.data[i];
+
             //override increment if we have a custom increment series
             var line_id = i+1;
             if(args.custom_line_color_map.length > 0) {

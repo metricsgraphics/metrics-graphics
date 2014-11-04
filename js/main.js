@@ -195,7 +195,38 @@ $(document).ready(function() {
             linked: true,
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
+
+        // missing data in one of a multi-line chart.
+        var all_the_data = clone(data[0]);
+        for (var i = 1; i < data.length; i ++){
+            for (var j=0; j < data[i].length; j++){
+                if (i==2 && all_the_data[j]['date'] < new Date('2014-02-01')){
+                    // pass
+                } else if (i==1 && all_the_data[j]['date'] > new Date('2014-03-22')) {
+                    // pass
+                } else {
+                    all_the_data[j]['value'+(i+1)] = data[i][j].value;    
+
+                }
+            }
+        }
+        data_graphic({
+            title:"Handling Different Sized Lines in A Single Array",
+            description: "How do you handle data with multiple implied time series lengths?",
+            data: all_the_data,
+            width: torso.width*2,
+            height: torso.height,
+            right: torso.right,
+            target: '#missing1',
+            linked: true,
+            y_extended_ticks: true,
+            x_accessor: 'date',
+            y_accessor: ['value', 'value2', 'value3']
+        });
+
+
+
     })
 
     d3.json('data/fake_users3.json', function(data) {  
