@@ -1,17 +1,17 @@
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
-_MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At just 47KB (minified), it provides a simple way to produce common types of charts in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
+_MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At just 47KB (minified), it provides a simple way to produce common types of graphics in a principled, consistent and responsive way. The library currently supports a wide variety of line charts, with additional chart types in the works. 
 
-A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a chart. Our charting function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive charts, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/mozilla/metrics-graphics/wiki).
+A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a graphic. Our graphics function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive graphics, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/mozilla/metrics-graphics/wiki).
 
 ```
 data_graphic({
     title: "Downloads",
-    description: "This chart shows Firefox GA downloads for the past six months."
+    description: "This graphics shows Firefox GA downloads for the past six months."
     data: downloads_data, \\ an array of objects, such as [{value:100,date:...},...]
     width: 600,
     height: 250,
-    target: '#downloads', \\ the html element in which the chart is populated
+    target: '#downloads', \\ the html element that the graphic is inserted in
     x_accessor: 'date',  \\ the key that accesses the x value
     y_accessor: 'value', \\ the key that accesses the y value
 })
@@ -27,10 +27,10 @@ _MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/"
 
 ## Quick-start guide
 1. Download the latest release from [here](https://github.com/mozilla/metrics-graphics/releases).
-2. Follow the examples in [index.htm](https://github.com/mozilla/metrics-graphics/blob/master/index.htm) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how charts are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
+2. Follow the examples in [index.htm](https://github.com/mozilla/metrics-graphics/blob/master/index.htm) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how graphics are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
 
 ## Dependencies
-The library depends on [D3](http://d3js.org) to facilitate charting, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
+The library depends on [D3](http://d3js.org) for binding data to DOM elements, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
 
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
