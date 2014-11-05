@@ -401,7 +401,7 @@ $(document).ready(function() {
         data = convert_dates(data, 'date');
         
         data_graphic({
-            title: "Linked Graphics",
+            title: "Linked Graphic",
             description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
             data: data,
             width: trunk.width,
@@ -481,7 +481,7 @@ $(document).ready(function() {
         data = convert_dates(data, 'date');
 
         data_graphic({
-            title: "Other Linked Graphics",
+            title: "Other Linked Graphic",
             description: "Roll over and watch as the graphic to the left triggers.",
             data: data,
             area: false,
