@@ -4,25 +4,25 @@
     <meta property='og:title' content='MetricsGraphics.js' />
     <meta property='og:description' content='MetricsGraphics.js is a library optimized 
         for visualizing and laying out time-series data. It provides a simple way to produce 
-        common types of charts in a principled, consistent and responsive way.' />
+        common types of graphics in a principled, consistent and responsive way.' />
     <meta property='og:image' content='http://metricsgraphicsjs.org/images/og-logo.png' />
     <meta property='og:type' content='website' />
     <meta property='og:url' content='http://metricsgraphicsjs.org/' />
     <meta property='og:site_name' content='MetricsGraphics.js' />
-    
+
     <link rel='icon' type='image/png' href='images/og-logo.png' />
-    
+
     <title>MetricsGraphics.js (DEV)</title>
-    
+
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
     <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    
+
     <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css' id='light'>
     <link href='' rel='stylesheet' type='text/css' id='dark'>
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
-    
+
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
@@ -49,7 +49,7 @@
 
 
     <script src='js/main.js'></script>
-    
+
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -98,19 +98,19 @@
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Hassle-Free Layouts</h2>
-                        <p>We use Bootstrap's grid template to lay out charts. This means 
+                        <p>We use Bootstrap's grid template to lay out graphics. This means 
                         that it is ridiculously easy to create grids of arbitrary sizes 
-                        and place charts and their corresponding prose or associated 
-                        charts wherever and however one pleases.</p>
+                        and place graphics and their corresponding prose or associated 
+                        graphics wherever and however one pleases.</p>
                         <p>Setting <i>legend</i> and <i>legend_target</i> allows you to 
-                        generate a key to go with the chart.</p>
+                        generate a key to go with the graphic.</p>
                         <div class='legend'></div>
                     </div>
                     <div class='col-lg-8'>
                         <div class='col-lg-12 text-center extended-y-ticks' id='fake_users3'></div>
                     </div>
                 </div>
-                
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Confidence Band</h2>
@@ -123,11 +123,11 @@
                         <div class='text-center extended-x-ticks' id='confidence_band'></div>
                     </div>
                 </div>
-            
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Linked Charts</h2>
-                        <p>It can be useful to have two charts linked together&mdash;when 
+                        <h2 class='trunk-title'>Linked Graphics</h2>
+                        <p>It can be useful to have two graphics linked together&mdash;when 
                         a rollover in one is triggered, the same rollover is triggered on 
                         the same date or data point in the other.</p>
                     </div>
@@ -141,9 +141,9 @@
 
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Update Chart Data</h2>
+                        <h2 class='trunk-title'>Update Graphic Data</h2>
                         <p>We sometimes have the need to split the data and then 
-                        gracefully update the chart with the newly selected subset of 
+                        gracefully update the graphic with the newly selected subset of 
                         data.</p>
                         <div class='btn-group btn-group-sm text-center split-by-controls'>
                             <button type='button' class='btn btn-default active' 
@@ -158,7 +158,7 @@
                             <div id='split_by'></div>
                     </div>
                 </div>
-                
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Modify Time Period</h2>
@@ -181,7 +181,7 @@
                 
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Small Charts</h2>
+                        <h2 class='trunk-title'>Small Graphics</h2>
                         <p>At 150px, we change the font sizes for rollovers and axes.</p>
                     </div>
                     <div class='col-lg-8'>
@@ -250,13 +250,11 @@
                     </div>
                 </div>
 
-
-
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Scatterplots</h2>
-                        <p>A few examples of scatterplots that demonstrate the chart 
-                        type's options, smoothers and rug plots.</p>
+                        <p>A few examples of scatterplots that demonstrate the graphic 
+                        type's options, smoothers and rug&nbsp;plots.</p>
                     </div>
                     <div class='col-lg-8'>
                         <div class='row'>
@@ -314,7 +312,7 @@
                     <div class='col-lg-8'>
                         <div class='row'>
                             <div class='col-lg-12 text-center extended-y-ticks' id='missing1'></div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -332,7 +330,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class='footer'>
             <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 1.0</a>
