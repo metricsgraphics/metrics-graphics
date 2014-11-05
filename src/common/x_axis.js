@@ -285,7 +285,7 @@ function x_axis(args) {
                 .append('text')
                     .attr('x', args.scales.X)
                     .attr('y', args.height - args.buffer + args.xax_tick_length)
-                    .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
+                    .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return yformat(d);
