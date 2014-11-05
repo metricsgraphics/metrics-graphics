@@ -84,6 +84,7 @@ function data_graphic() {
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
     moz.defaults.point = {
+        buffer:16,
         ls: false,
         lowess: false,
         point_size: 2.5,
@@ -92,7 +93,8 @@ function data_graphic() {
         size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
         color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
-        color_domain: null
+        color_domain: null,
+        color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
     }
     moz.defaults.histogram = {
         rollover_callback: function(d, i) {
@@ -466,21 +468,41 @@ function x_axis(args) {
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
         if (args.color_accessor != null){
             if (args.color_domain == null){
-
-                min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
-                max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});    
-                color_domain = [min_color, max_color];
+                if (args.color_type=='number'){
+                    min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                    max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});        
+                    color_domain = [min_color, max_color];
+                } else if (args.color_type=='category'){
+                    color_domain = d3.set(args.data[0].map(function(d){
+                        return d[args.color_accessor];
+                    })).values();
+                    color_domain.sort();
+                }
             } else {
                 color_domain = args.color_domain;
             }
 
             if (args.color_range == null){
-                color_range = ['blue', 'red'];
+                if (args.color_type=='number'){
+                    color_range = ['blue', 'red'];    
+                } else {
+                    color_range = null;
+                }
+                
             } else {
                 color_range = args.color_range;
             }
             
-            args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+
+            if (args.color_type=='number'){
+                args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);    
+            } else {
+                args.scales.color = args.color_range != null ? d3.scale.ordinal().range(color_range) : (color_domain.length > 10 ? d3.scale.category20() : d3.scale.category10() );
+                args.scales.color.domain(color_domain);
+                
+            }
+
+            
 
             args.scalefns.color = function(di){
                 return args.scales.color(di[args.color_accessor]);
@@ -718,7 +740,7 @@ function x_axis(args) {
                 .append('text')
                     .attr('x', args.scales.X)
                     .attr('y', args.height - args.buffer + args.xax_tick_length)
-                    .attr('dy', args.use_small_class ? -3 : (args.y_extended_ticks) ? -6 : 0 )
+                    .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return yformat(d);
@@ -1083,8 +1105,11 @@ charts.line = function(args) {
 
         //for building the optional legend
         var legend = '';
+        var this_data;
             
         for(var i=args.data.length-1; i>=0; i--) {
+            this_data = args.data[i];
+
             //override increment if we have a custom increment series
             var line_id = i+1;
             if(args.custom_line_color_map.length > 0) {
@@ -1689,7 +1714,7 @@ charts.point = function(args) {
                 .enter().append('svg:line')
                     .attr('x1', args.scalefns.xf)
                     .attr('x2', args.scalefns.xf)
-                    .attr('y1', args.height-args.top+args.buffer)
+                    .attr('y1', args.height-args.top+args.buffer/2)
                     .attr('y2', args.height-args.top)
                     .attr('class', 'x-rug')
                     .attr('opacity', 0.3);
@@ -1706,7 +1731,7 @@ charts.point = function(args) {
             rug = g.selectAll('line.y_rug').data(args.data[0])
                 .enter().append('svg:line')
                     .attr('x1', args.left+1)
-                    .attr('x2', args.left+args.buffer)
+                    .attr('x2', args.left+args.buffer/2)
                     .attr('y1', args.scalefns.yf)
                     .attr('y2', args.scalefns.yf)
                     .attr('class', 'y-rug')
@@ -2131,11 +2156,21 @@ function raw_data_transformation(args){
             return args.y_accessor.map(function(ya){
                 return _d.map(function(di){
                     di = clone(di);
+                    if (di[ya]==undefined){
+                        return undefined;
+                    }
                     di['multiline_y_accessor'] = di[ya];
                     return di;
+                }).filter(function(di){
+                    return di != undefined;
                 })
             })
         })[0];
+        // args.data = args.data.map(function(_d){
+        //     return _d.filter(function(di){
+        //         return di != undefined;
+        //     });
+        // })[0];
         args.y_accessor = 'multiline_y_accessor';
     }
 
@@ -2163,7 +2198,6 @@ function process_line(args) {
         for(var i=0;i<args.data.length;i++) {
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
-
             //initialize our new array for storing the processed data
             var processed_data = [];
 
@@ -2188,7 +2222,6 @@ function process_line(args) {
                 $.each(args.data[i], function(i, val) {
                     if(Date.parse(val.date) == Date.parse(new Date(d))) {
                         existing_o = val;
-                        //console.log("exists: ", val.date);
 
                         return false;
                     }

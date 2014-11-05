@@ -53,8 +53,8 @@
                     <li class='divider'>|</li>
                     <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
                     <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
-                    <li class='float-right no-padding'><a class='examples-options' href='dev.htm'>DEV</a></li>
-                    <li class='float-right'><a class='selected examples-options' href='examples.htm'>RELEASE</a></li>
+                    <li class='float-right no-padding'><a class='selected examples-options' href='dev.htm'>DEV</a></li>
+                    <li class='float-right'><a class='examples-options' href='examples.htm'>RELEASE</a></li>
                 </ul>
 
                 <img src='images/logo.svg' id='logo' class='svg' />
@@ -72,7 +72,6 @@
                 <div id='glorious_chart'></div>
                 <div id='linked_multi1'></div>
                 <div id='linked_multi2'></div>
-                <div id='ufo_sightings'></div>
             </div>
             <div id='trunk'>
                 <div class='row trunk-section'>
@@ -90,7 +89,7 @@
                         <div class='col-lg-12 text-center extended-y-ticks' id='fake_users3'></div>
                     </div>
                 </div>
-                
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Confidence Band</h2>
@@ -103,7 +102,7 @@
                         <div class='text-center extended-x-ticks' id='confidence_band'></div>
                     </div>
                 </div>
-            
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Linked Graphics</h2>
@@ -138,7 +137,7 @@
                             <div id='split_by'></div>
                     </div>
                 </div>
-                
+
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Modify Time Period</h2>
@@ -161,7 +160,7 @@
                 
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Small Graphicss</h2>
+                        <h2 class='trunk-title'>Small Graphics</h2>
                         <p>At 150px, we change the font sizes for rollovers and axes.</p>
                     </div>
                     <div class='col-lg-8'>
@@ -243,7 +242,11 @@
                         </div>
                         <div class='row'>
                             <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
-                            <div class='col-lg-6' id='sls-time-series'></div>
+                            <div class='col-lg-6'             id='sls-time-series'></div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-lg-6 text-center' id='categorical1'></div>
+                            <div class='col-lg-6' id='categorical2'></div>
                         </div>
                     </div>
                 </div>
@@ -266,6 +269,9 @@
                             <div class='col-lg-6 text-center extended-y-ticks' id='histogram3'></div>
                             <div class='col-lg-6 text-center extended-y-ticks' id='histogram4'></div>
                         </div>
+                        <div class='row'>
+                            <div class='col-lg-12 text-center extended-y-ticks' id='ufos'></div>
+                        </div>
                     </div>
                 </div>
 
@@ -275,7 +281,20 @@
                         subject to drastic change
                     </div>
                 </div>
+                <div class='row trunk-section'>
+                    <div class='col-lg-4'>
+                        <h2 class='trunk-title'>Handling Missing Data</h2>
+                        <p>
+                            MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps. 
+                        </p>
+                    </div>
+                    <div class='col-lg-8'>
+                        <div class='row'>
+                            <div class='col-lg-12 text-center extended-y-ticks' id='missing1'></div>
 
+                        </div>
+                    </div>
+                </div>
                 <div class='row trunk-section'>
                     <div class='col-lg-4'>
                         <h2 class='trunk-title'>Barplots</h2>
@@ -290,7 +309,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class='footer'>
             <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 1.0</a>
