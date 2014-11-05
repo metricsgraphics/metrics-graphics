@@ -84,6 +84,7 @@ function data_graphic() {
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
     moz.defaults.point = {
+        buffer:16,
         ls: false,
         lowess: false,
         point_size: 2.5,
@@ -92,7 +93,8 @@ function data_graphic() {
         size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
         color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
-        color_domain: null
+        color_domain: null,
+        color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
     }
     moz.defaults.histogram = {
         rollover_callback: function(d, i) {

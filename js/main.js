@@ -743,6 +743,48 @@ $(document).ready(function() {
         });
 
         data_graphic({
+            title: "Automatic Category Coloring",
+            description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+            data: data,
+            chart_type: 'point',
+            width: trunk.width,
+            height: trunk.height*1.5,
+            right: trunk.right,
+            target: '#categorical1',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y',
+            color_accessor:'v',
+            color_type:'category',
+            y_rug: true
+        });
+
+        data_graphic({
+            title: "Custom Category Color Mapping",
+            description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
+            data: data,
+            chart_type: 'point',
+            width: trunk.width,
+            height: trunk.height*1.5,
+            right: trunk.right,
+            target: '#categorical2',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return pf.scale(f) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y',
+            color_accessor:'v',
+            color_domain:['cat_0', 'cat_1', 'other'],
+            color_range:['blue', 'gray', 'black'],
+            color_type:'category',
+            x_rug: true
+        });
+
+        data_graphic({
             title: "Simple Line of Best Fit",
             description: "For any scatterplot, set <i>least_squares</i> to true to add.",
             data: data,

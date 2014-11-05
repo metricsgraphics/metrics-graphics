@@ -13,21 +13,41 @@ function x_axis(args) {
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
         if (args.color_accessor != null){
             if (args.color_domain == null){
-
-                min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
-                max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});    
-                color_domain = [min_color, max_color];
+                if (args.color_type=='number'){
+                    min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
+                    max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});        
+                    color_domain = [min_color, max_color];
+                } else if (args.color_type=='category'){
+                    color_domain = d3.set(args.data[0].map(function(d){
+                        return d[args.color_accessor];
+                    })).values();
+                    color_domain.sort();
+                }
             } else {
                 color_domain = args.color_domain;
             }
 
             if (args.color_range == null){
-                color_range = ['blue', 'red'];
+                if (args.color_type=='number'){
+                    color_range = ['blue', 'red'];    
+                } else {
+                    color_range = null;
+                }
+                
             } else {
                 color_range = args.color_range;
             }
             
-            args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);
+
+            if (args.color_type=='number'){
+                args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);    
+            } else {
+                args.scales.color = args.color_range != null ? d3.scale.ordinal().range(color_range) : (color_domain.length > 10 ? d3.scale.category20() : d3.scale.category10() );
+                args.scales.color.domain(color_domain);
+                
+            }
+
+            
 
             args.scalefns.color = function(di){
                 return args.scales.color(di[args.color_accessor]);
