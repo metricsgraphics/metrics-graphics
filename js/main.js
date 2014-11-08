@@ -893,6 +893,9 @@ $(document).ready(function() {
             $('.wip')
                 .css('background-color', '#3b3b3b');
 
+            $('.trunk-section')
+                .css('border-top-color', '#5e5e5e');
+
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-dark.css'});
@@ -909,6 +912,9 @@ $(document).ready(function() {
 
             $('.wip')
                 .css('background-color', '#f1f1f1');
+
+            $('.trunk-section')
+                .css('border-top-color', '#ccc');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
