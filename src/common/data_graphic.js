@@ -84,7 +84,7 @@ function data_graphic() {
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
     moz.defaults.point = {
-        buffer:16,
+        buffer: 16,
         ls: false,
         lowess: false,
         point_size: 2.5,

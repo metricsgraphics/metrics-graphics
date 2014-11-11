@@ -140,7 +140,6 @@ $(document).ready(function() {
             left: 60,
             right: trunk.right,
             least_squares: true,
-            show_years: false,
             target: '#sls-time-series',
             x_accessor: 'date',
             y_accessor: 'value'
