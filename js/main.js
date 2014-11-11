@@ -607,11 +607,15 @@ $(document).ready(function() {
     d3.csv('data/ufo_dates.csv', function(ufos){
         var data = ufos.map(function(d){
             return parseInt(d['value'])/30;
-        })
+        });
+        data.sort();
+        var p75 = data[Math.floor(data.length*3/4)];
+        console.log(p75);
         data_graphic({
             title: "Difference in UFO Sighting and Reporting Dates (in months)",
             description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
             data: data,
+            markers:[{'label':'75% of reports come <' + d3.round(p75/12) +' years after the initial sighting', 'value':p75}],
             chart_type: 'histogram',
             width: trunk.width*2,
             height: trunk.height*1.5,
