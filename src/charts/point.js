@@ -1,3 +1,6 @@
+
+
+
 charts.point = function(args) {
     this.args = args;
 
@@ -48,44 +51,6 @@ charts.point = function(args) {
         }
         else {
             pts.attr('r', args.point_size);
-        }
-
-        //are we adding rug plots?
-        var rug;
-        if (args.x_rug) {
-            rug = g.selectAll('line.x_rug').data(args.data[0])
-                .enter().append('svg:line')
-                    .attr('x1', args.scalefns.xf)
-                    .attr('x2', args.scalefns.xf)
-                    .attr('y1', args.height-args.top+args.buffer/2)
-                    .attr('y2', args.height-args.top)
-                    .attr('class', 'x-rug')
-                    .attr('opacity', 0.3);
-
-            if (args.color_accessor) {
-                rug.attr('stroke', args.scalefns.color);
-            }
-            else {
-                rug.classed('x-rug-mono', true);
-            }
-        }
-
-        if (args.y_rug) {
-            rug = g.selectAll('line.y_rug').data(args.data[0])
-                .enter().append('svg:line')
-                    .attr('x1', args.left+1)
-                    .attr('x2', args.left+args.buffer/2)
-                    .attr('y1', args.scalefns.yf)
-                    .attr('y2', args.scalefns.yf)
-                    .attr('class', 'y-rug')
-                    .attr('opacity', 0.3);
-
-            if (args.color_accessor) {
-                rug.attr('stroke', args.scalefns.color);
-            }
-            else {
-                rug.classed('y-rug-mono', true);
-            }
         }
 
         return this;

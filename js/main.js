@@ -220,6 +220,7 @@ $(document).ready(function() {
             right: torso.right,
             target: '#missing1',
             linked: true,
+            y_rug:true,
             y_extended_ticks: true,
             x_accessor: 'date',
             y_accessor: ['value', 'value2', 'value3']
