@@ -1,4 +1,7 @@
 function x_rug(args){
+
+    var buffer_size = args.chart_type =='point' ? args.buffer/2 : args.buffer;
+
     var svg = d3.select(args.target + ' svg');
     var all_data=[];
     for (var i=0; i<args.data.length;i++){
@@ -10,7 +13,7 @@ function x_rug(args){
         .enter().append('svg:line')
             .attr('x1', args.scalefns.xf)
             .attr('x2', args.scalefns.xf)
-            .attr('y1', args.height-args.top+args.buffer/2)
+            .attr('y1', args.height-args.top+buffer_size)
             .attr('y2', args.height-args.top)
             .attr('class', 'x-rug')
             .attr('opacity', 0.3);

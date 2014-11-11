@@ -1,5 +1,7 @@
 function y_rug(args){
     var svg = d3.select(args.target + ' svg');
+    var buffer_size = args.chart_type =='point' ? args.buffer/2 : args.buffer*2/3;
+
     var all_data = [];
     for (var i=0; i<args.data.length;i++){
         for (var j=0;j<args.data[i].length;j++){
@@ -9,7 +11,7 @@ function y_rug(args){
     var rug = svg.selectAll('line.y_rug').data(all_data)
         .enter().append('svg:line')
             .attr('x1', args.left+1)
-            .attr('x2', args.left+args.buffer/2)
+            .attr('x2', args.left+buffer_size)
             .attr('y1', args.scalefns.yf)
             .attr('y2', args.scalefns.yf)
             .attr('class', 'y-rug')

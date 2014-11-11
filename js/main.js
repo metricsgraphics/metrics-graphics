@@ -103,6 +103,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
+            y_rug: true,
             target: '#hidden1',
             x_accessor: 'date',
             y_accessor: 'value',
@@ -611,7 +612,6 @@ $(document).ready(function() {
         });
         data.sort();
         var p75 = data[Math.floor(data.length*3/4)];
-        console.log(p75);
         data_graphic({
             title: "Difference in UFO Sighting and Reporting Dates (in months)",
             description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
