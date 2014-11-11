@@ -119,7 +119,7 @@ $(document).ready(function() {
         //add a chart with annotations
         data_graphic({
             title: "Annotations",
-            description: "By setting the chart's target a class name of main-area-solid, markers don't extend down to the bottom of the chart, which better draws attention to, say, spikes.",
+            description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
             data: data,
             width: torso.width,
             height: torso.height,
@@ -140,6 +140,7 @@ $(document).ready(function() {
             left: 60,
             right: trunk.right,
             least_squares: true,
+            show_years: false,
             target: '#sls-time-series',
             x_accessor: 'date',
             y_accessor: 'value'
@@ -212,7 +213,7 @@ $(document).ready(function() {
             }
         }
         data_graphic({
-            title:"Handling Different Sized Lines in A Single Array",
+            title:"Handling Different Sized Lines in a Single Array",
             description: "How do you handle data with multiple implied time series lengths?",
             data: all_the_data,
             width: torso.width*2,
@@ -253,7 +254,7 @@ $(document).ready(function() {
         data = convert_dates(data, 'date');
         data_graphic({
             title: "Confidence Band",
-            description: "This is an example of a chart with a confidence band and extended x-axis ticks enabled.",
+            description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
             width: torso.width*2,
@@ -371,7 +372,7 @@ $(document).ready(function() {
             left: 80,
             bottom: 50,
             title: "X-Axis Not Time, Animated",
-            description: "A chart where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load.",
+            description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load.",
             data: data,
             animate_on_load: true,
             area: false,
@@ -387,10 +388,10 @@ $(document).ready(function() {
     })
 
     data_graphic({
-        title: "Glorious Chart",
+        title: "Glorious Graphic",
         error: 'This data is blocked by Lorem Ipsum. Get your stuff together, Ipsum.',
         chart_type: 'missing-data',
-        description: "This is an example of a chart whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
+        description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
         target: '#glorious_chart',
         width: torso.width,
         height: torso.height
@@ -401,8 +402,8 @@ $(document).ready(function() {
         data = convert_dates(data, 'date');
         
         data_graphic({
-            title: "Linked Charts",
-            description: "The two charts in this section are linked together. A rollover in one causes a rollover in the other.",
+            title: "Linked Graphic",
+            description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
             data: data,
             width: trunk.width,
             linked: true,
@@ -451,7 +452,7 @@ $(document).ready(function() {
         
         split_by_data = data_graphic({
             title: "Downloads by Channel",
-            description: "The chart is gracefully updated depending on the selected channel.",
+            description: "The graphic is gracefully updated depending on the selected channel.",
             data: data,
             width: torso.width*2,
             height: trunk.height,
@@ -464,7 +465,7 @@ $(document).ready(function() {
 
         data_graphic({
             title: "Beta Downloads",
-            description: "The chart is gracefully updated depending on the chosen time period.",
+            description: "The graphic is gracefully updated depending on the chosen time period.",
             data: data,
             width: torso.width*2,
             height: trunk.height,
@@ -481,8 +482,8 @@ $(document).ready(function() {
         data = convert_dates(data, 'date');
 
         data_graphic({
-            title: "Other Linked Chart",
-            description: "Roll over and watch as the chart to the left triggers.",
+            title: "Other Linked Graphic",
+            description: "Roll over and watch as the graphic to the left triggers.",
             data: data,
             area: false,
             linked: true,
@@ -862,7 +863,7 @@ $(document).ready(function() {
         var color_range = (theme == 'light')
                 ? null
                 : ['white','yellow'];
-        
+
         //call data_graphic again since we need to use a different color_range for the dark theme
         d3.json('data/points1.json', function(data) {
             data_graphic({
@@ -897,6 +898,9 @@ $(document).ready(function() {
             $('.wip')
                 .css('background-color', '#3b3b3b');
 
+            $('.trunk-section')
+                .css('border-top-color', '#5e5e5e');
+
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-dark.css'});
@@ -913,6 +917,9 @@ $(document).ready(function() {
 
             $('.wip')
                 .css('background-color', '#f1f1f1');
+
+            $('.trunk-section')
+                .css('border-top-color', '#ccc');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
