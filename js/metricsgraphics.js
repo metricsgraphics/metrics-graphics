@@ -84,7 +84,7 @@ function data_graphic() {
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
     moz.defaults.point = {
-        buffer:16,
+        buffer: 16,
         ls: false,
         lowess: false,
         point_size: 2.5,
@@ -739,7 +739,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.buffer + args.xax_tick_length)
+                    .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 1.3)
                     .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
