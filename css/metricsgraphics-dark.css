@@ -32,6 +32,14 @@ a:hover {
     fill: #f7f7f7;
 }
 
+.barplot .bar-prediction {
+    fill: #5b5b5b;
+}
+
+.barplot .bar-baseline {
+    stroke: #5b5b5b;
+}
+
 .baselines line {
     stroke: #fff;
 }

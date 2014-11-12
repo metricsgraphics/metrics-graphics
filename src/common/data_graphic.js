@@ -118,7 +118,7 @@ function data_graphic() {
         predictor_proportion: 5,
         dodge_acessor: null,
         binned: true,
-        padding_percentage: .1,
+        padding_percentage: 0,
         outer_padding_percentage: .1,
         height: 500,
         top: 20,

@@ -45,6 +45,14 @@ a:hover {
     fill: #9e9efc;
 }
 
+.barplot .bar-prediction {
+    fill: #5b5b5b;
+}
+
+.barplot .bar-baseline {
+    stroke: #5b5b5b;
+}
+
 .baselines line {
     opacity: 0.2;
     shape-rendering: crispEdges;

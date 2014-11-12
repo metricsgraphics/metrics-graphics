@@ -50,6 +50,7 @@ charts.bar = function(args) {
             g.selectAll('.prediction')
                 .data(data)
                 .enter().append("rect")
+                    .attr('class', 'bar-prediction')
                     .attr('x', args.scales.X(0))
                     .attr('y', function(d){
                         return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
@@ -57,13 +58,13 @@ charts.bar = function(args) {
                     .attr('height', appropriate_height/pp)
                     .attr('width', function(d){
                         return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
-                    })
-                    .attr('fill', '#36454f');
+                    });
         }
         if (args.baseline_accessor){
             g.selectAll('.baseline')
                 .data(data)
                 .enter().append("line")
+                    .attr('class', 'bar-baseline')
                     .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
                     .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
                     .attr('y1', function(d){
@@ -72,8 +73,7 @@ charts.bar = function(args) {
                     .attr('y2', function(d){
                         return args.scalefns.yf(d)+appropriate_height/2+appropriate_height/pp + appropriate_height/2;
                     })
-                    .attr('stroke-width', 2)
-                    .attr('stroke', '#36454f');
+                    .attr('stroke-width', 2);
         }
         return this;
     }
