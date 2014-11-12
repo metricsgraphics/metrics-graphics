@@ -72,8 +72,7 @@ charts.bar = function(args) {
                     })
                     .attr('y2', function(d){
                         return args.scalefns.yf(d)+appropriate_height/2+appropriate_height/pp + appropriate_height/2;
-                    })
-                    .attr('stroke-width', 2);
+                    });
         }
         return this;
     }

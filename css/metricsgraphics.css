@@ -51,6 +51,7 @@ a:hover {
 
 .barplot .bar-baseline {
     stroke: #5b5b5b;
+    stroke-width: 2;
 }
 
 .baselines line {
