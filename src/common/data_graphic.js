@@ -44,6 +44,8 @@ function data_graphic() {
         y_accessor: 'value',
         y_label: '',
         yax_units: '',
+        x_rug: false,
+        y_rug: false,
         transition_on_update: true,
         rollover_callback: null,
         show_rollover_text: true,
