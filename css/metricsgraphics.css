@@ -375,3 +375,35 @@ text {
 .year-marker-small text {
     font-size: 8px;
 }
+
+tr.header-row {
+    margin-bottom:10px;
+}
+
+
+table.data-table {
+    margin:auto;
+}
+
+th.data-table-th {
+    text-align:right;
+    font-weight:300;
+    border-bottom:1px solid darkgray;
+    margin:2px;
+    margin-bottom:10px;
+
+}
+
+div.secondary-title {
+    color:darkgray;
+}
+
+td.data-table {
+    margin:2px;
+    vertical-align:top;
+    padding:5px;
+}
+
+.table-number {
+
+}
