@@ -859,8 +859,8 @@ $(document).ready(function() {
     // data tables
 
     var table_data = [
-        {'year': 1852,'value1': 10.2, 'value2': 1004.43, 'geo': 'United Kingdom', 'description': "Here is the first thing."},
-        {'year': 1901,'value1': 10.1, 'value2': 543.23, 'geo': 'United States', 'description': "You Ess of Eh."},
+        {'year': 1852,'value1': 10.2, 'value2': 1004.43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful."},
+        {'year': 1901,'value1': 10.1, 'value2': 543.23, 'geo': 'United States', 'description': "Here is some text about the United States. These made-up numbers."},
         {'year': 1732,'value1': 4.3, 'value2': 14.92, 'geo': 'France', 'description': "France has small numbers."},
         {'year': 1945,'value1': 2.9, 'value2': 243.11, 'geo': 'Brazil', 'description': "Brazil, Brazil."},
         {'year': 1910,'value1': 1.0, 'value2': 5432.3, 'geo': 'India', 'description': "Last description in the whole thing."}
@@ -875,6 +875,7 @@ $(document).ready(function() {
         .title( {accessor: 'geo', secondary_accessor:'year', label: 'country'})
         .number({accessor: 'value1', label: 'size'})
         .number({accessor: 'value2', label: 'score'})
+        .text({accessor: 'description', width:240})
         .display();
 
 

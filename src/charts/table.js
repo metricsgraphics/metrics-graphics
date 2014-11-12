@@ -35,6 +35,7 @@ function data_table(args){
 		var args = merge_with_defaults(clone(arguments[0]), clone(this.args.standard_col));
 		args.type='text';
 		this.args.columns.push(args);
+		return this;
 	}
 	this.bullet = function(){
 		/*
@@ -112,7 +113,7 @@ function data_table(args){
 					.classed('table-text',   td_type=='text')
 					.style('width', args.columns[j].width)
 					.style('font-size', args.columns[j].font_size)
-					.style('text-align', td_type=='title' ? 'left' : 'right');
+					.style('text-align', td_type=='title' || td_type=='text' ? 'left' : 'right');
 
 				if (td_type=='title'){
 					td.append('div').text(td_text);

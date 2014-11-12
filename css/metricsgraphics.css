@@ -407,3 +407,9 @@ td.data-table {
 .table-number {
 
 }
+
+td.table-text {
+    padding-left:30px;
+    font-style:italic;
+    opacity:.8;
+}
