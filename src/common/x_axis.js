@@ -67,16 +67,19 @@ function x_axis(args) {
                 color_range = args.color_range;
             }
             
-
             if (args.color_type=='number'){
-                args.scales.color = d3.scale.linear().domain(color_domain).range(color_range).clamp(true);    
+                args.scales.color = d3.scale.linear()
+                    .domain(color_domain)
+                    .range(color_range)
+                    .clamp(true);    
             } else {
-                args.scales.color = args.color_range != null ? d3.scale.ordinal().range(color_range) : (color_domain.length > 10 ? d3.scale.category20() : d3.scale.category10() );
-                args.scales.color.domain(color_domain);
-                
-            }
+                args.scales.color = args.color_range != null 
+                    ? d3.scale.ordinal().range(color_range) 
+                    : (color_domain.length > 10 
+                        ? d3.scale.category20() : d3.scale.category10());
 
-            
+                args.scales.color.domain(color_domain);
+            }
 
             args.scalefns.color = function(di){
                 return args.scales.color(di[args.color_accessor]);
@@ -84,7 +87,6 @@ function x_axis(args) {
         }
 
         if (args.size_accessor != null) {
-
             if (args.size_domain == null){
                 min_size = d3.min(args.data[0], function(d){return d[args.size_accessor]});
                 max_size = d3.max(args.data[0], function(d){return d[args.size_accessor]});
@@ -98,7 +100,10 @@ function x_axis(args) {
                 size_range = args.size_range;
             }
             
-            args.scales.size=d3.scale.linear().domain(size_domain).range(size_range).clamp(true);
+            args.scales.size=d3.scale.linear()
+                .domain(size_domain)
+                .rangeRound(size_range)
+                .clamp(true);
 
             args.scalefns.size = function(di){
                 return args.scales.size(di[args.size_accessor]);
@@ -195,7 +200,7 @@ function x_axis(args) {
 
     args.scales.X
         .domain([min_x, max_x])
-        .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
+        .rangeRound([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
     if($(args.target + ' svg .x-axis').length > 0) {
@@ -221,7 +226,7 @@ function x_axis(args) {
                     + ((args.width - args.right - args.buffer)
                         - (args.left + args.buffer)) / 2;
             })
-            .attr('y', args.height - args.bottom / 2)
+            .attr('y', (args.height - args.bottom / 2).toFixed(2))
             .attr('dy', '.50em')
             .attr('text-anchor', 'middle')
             .text(function(d) {
@@ -267,7 +272,7 @@ function x_axis(args) {
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', args.scales.X)
-                .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 3)
+                .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
@@ -313,7 +318,7 @@ function x_axis(args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', args.scales.X)
-                    .attr('y', args.height - args.bottom + args.xax_tick_length * 7 / 1.3)
+                    .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))
                     .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
                     .attr('text-anchor', 'middle')
                     .text(function(d) {

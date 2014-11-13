@@ -25,7 +25,6 @@ function y_rug(args){
     }
 }
 
-
 function y_axis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
@@ -90,19 +89,19 @@ function y_axis(args) {
             }
         }
         args.scales.Y = d3.scale.log()
-        .domain([min_y, max_y * args.inflator])
-        .range([args.height - args.bottom - args.buffer, args.top])
-        .clamp(true);
+            .domain([min_y, max_y * args.inflator])
+            .rangeRound([args.height - args.bottom - args.buffer, args.top])
+            .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
             .domain([min_y, max_y * args.inflator])
-            .range([args.height - args.bottom - args.buffer, args.top]);
+            .rangeRound([args.height - args.bottom - args.buffer, args.top]);
     }
 
     // used for ticks and such, and designed to be paired with log or linear.
     args.scales.Y_axis = d3.scale.linear()
-            .domain([min_y, max_y * args.inflator])
-            .range([args.height - args.bottom - args.buffer, args.top]);
+        .domain([min_y, max_y * args.inflator])
+        .rangeRound([args.height - args.bottom - args.buffer, args.top]);
 
     var yax_format;
     if (args.format == 'count') {
@@ -204,8 +203,8 @@ function y_axis(args) {
         g.append('line')
             .attr('x1', args.left)
             .attr('x2', args.left)
-            .attr('y1', args.scales.Y(scale_ticks[0]))
-            .attr('y2', args.scales.Y(scale_ticks[last_i]));
+            .attr('y1', args.scales.Y(scale_ticks[0]).toFixed(2))
+            .attr('y2', args.scales.Y(scale_ticks[last_i]).toFixed(2));
     }
 
     //add y ticks
@@ -267,7 +266,10 @@ function y_axis_categorical(args) {
 
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
-        .attr('y', function(d){return args.scales.Y(d) + args.scales.Y.rangeBand()/2 +(args.buffer)*args.outer_padding_percentage  })
+        .attr('y', function(d){
+            return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 
+                + (args.buffer)*args.outer_padding_percentage;
+        })
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String)

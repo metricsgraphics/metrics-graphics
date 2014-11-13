@@ -20,10 +20,10 @@ function markers(args) {
             .enter()
             .append('line')
                 .attr('x1', function(d) {
-                    return args.scales.X(d[args.x_accessor])
+                    return args.scales.X(d[args.x_accessor]).toFixed(2);
                 })
                 .attr('x2', function(d) {
-                    return args.scales.X(d[args.x_accessor])
+                    return args.scales.X(d[args.x_accessor]).toFixed(2);
                 })
                 .attr('y1', args.top)
                 .attr('y2', function() {
@@ -59,14 +59,19 @@ function markers(args) {
                 .attr('x1', args.left + args.buffer)
                 .attr('x2', args.width-args.right-args.buffer)
                 .attr('y1', function(d){
-                    return args.scales.Y(d['value'])})
-                .attr('y2', function(d){return args.scales.Y(d['value'])});
+                    return args.scales.Y(d['value']).toFixed(2);
+                })
+                .attr('y2', function(d){
+                    return args.scales.Y(d['value']).toFixed(2);
+                });
 
         gb.selectAll('.baselines')
             .data(args.baselines)
             .enter().append('text')
                 .attr('x', args.width-args.right - args.buffer)
-                .attr('y', function(d){return args.scales.Y(d['value'])})
+                .attr('y', function(d){
+                    return args.scales.Y(d['value']).toFixed(2);
+                })
                 .attr('dy', -3)
                 .attr('text-anchor', 'end')
                 .text(function(d) {

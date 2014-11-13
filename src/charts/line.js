@@ -194,8 +194,8 @@ charts.line = function(args) {
         if(args.data.length > 1) {
             //main rollover
             var voronoi = d3.geom.voronoi()
-                .x(function(d) { return args.scales.X(d[args.x_accessor]); })
-                .y(function(d) { return args.scales.Y(d[args.y_accessor]); })
+                .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
+                .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
                 .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
         
             var g = svg.append('g')
@@ -263,9 +263,9 @@ charts.line = function(args) {
                         })
                         .attr('x', function(d, i) {
                             if (i == 0) {
-                                return xf[i];
+                                return xf[i].toFixed(2);
                             } else {
-                                return (xf[i-1] + xf[i])/2;
+                                return ((xf[i-1] + xf[i])/2).toFixed(2);
                             }
                         })
                         .attr('y', function(d, i) {
@@ -275,11 +275,13 @@ charts.line = function(args) {
                         })
                         .attr('width', function(d, i) {
                             if (i == 0) {
-                                return (xf[i+1] - xf[i])/2;
-                            } else if (i == xf.length - 1) {
-                                return (xf[i] - xf[i-1])/2;
-                            } else {
-                                return (xf[i+1] - xf[i-1])/2;
+                                return ((xf[i+1] - xf[i]) / 2).toFixed(2);
+                            }
+                            else if (i == xf.length - 1) {
+                                return ((xf[i] - xf[i-1]) / 2).toFixed(2);
+                            }
+                            else {
+                                return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
                             }
                         })
                         .attr('height', function(d, i) {
@@ -306,10 +308,10 @@ charts.line = function(args) {
                 .attr('class', 'area' + d['line_id'] + '-color')
                 .classed('line_rollover_circle', true)
                 .attr('cx', function() {
-                    return args.scales.X(d[args.x_accessor]);
+                    return args.scales.X(d[args.x_accessor]).toFixed(2);
                 })
                 .attr('cy', function() {
-                    return args.scales.Y(d[args.y_accessor]);
+                    return args.scales.Y(d[args.y_accessor]).toFixed(2);
                 })
                 .attr('r', args.point_size)
                 .style('opacity', 1);
