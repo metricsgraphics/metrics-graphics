@@ -102,7 +102,7 @@ function x_axis(args) {
             
             args.scales.size=d3.scale.linear()
                 .domain(size_domain)
-                .rangeRound(size_range)
+                .range(size_range)
                 .clamp(true);
 
             args.scalefns.size = function(di){
@@ -200,7 +200,7 @@ function x_axis(args) {
 
     args.scales.X
         .domain([min_x, max_x])
-        .rangeRound([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
+        .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
     if($(args.target + ' svg .x-axis').length > 0) {
@@ -240,12 +240,12 @@ function x_axis(args) {
             .attr('x1', 
                 (args.concise == false || args.xax_count == 0)
                     ? args.left + args.buffer
-                    : args.scales.X(args.scales.X.ticks(args.xax_count)[0])
+                    : (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
             )
             .attr('x2', 
                 (args.concise == false || args.xax_count == 0)
                     ? args.width - args.right - args.buffer
-                    : args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])
+                    : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
             )
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
@@ -255,8 +255,8 @@ function x_axis(args) {
     g.selectAll('.xax-ticks')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('line')
-                .attr('x1', args.scales.X)
-                .attr('x2', args.scales.X)
+                .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
+                .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
                 .attr('y1', args.height - args.bottom)
                 .attr('y2', function() {
                     return (args.x_extended_ticks)
@@ -271,7 +271,7 @@ function x_axis(args) {
     g.selectAll('.xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
-                .attr('x', args.scales.X)
+                .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
                 .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
@@ -308,8 +308,8 @@ function x_axis(args) {
         g.selectAll('.year_marker')
             .data(years).enter()
                 .append('line')
-                    .attr('x1', args.scales.X)
-                    .attr('x2', args.scales.X)
+                    .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
+                    .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
                     .attr('y1', args.top)
                     .attr('y2', args.height - args.bottom);
 
@@ -317,7 +317,7 @@ function x_axis(args) {
         g.selectAll('.year_marker')
             .data(years).enter()
                 .append('text')
-                    .attr('x', args.scales.X)
+                    .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
                     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))
                     .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
                     .attr('text-anchor', 'middle')

@@ -90,18 +90,18 @@ function y_axis(args) {
         }
         args.scales.Y = d3.scale.log()
             .domain([min_y, max_y * args.inflator])
-            .rangeRound([args.height - args.bottom - args.buffer, args.top])
+            .range([args.height - args.bottom - args.buffer, args.top])
             .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
             .domain([min_y, max_y * args.inflator])
-            .rangeRound([args.height - args.bottom - args.buffer, args.top]);
+            .range([args.height - args.bottom - args.buffer, args.top]);
     }
 
     // used for ticks and such, and designed to be paired with log or linear.
     args.scales.Y_axis = d3.scale.linear()
         .domain([min_y, max_y * args.inflator])
-        .rangeRound([args.height - args.bottom - args.buffer, args.top]);
+        .range([args.height - args.bottom - args.buffer, args.top]);
 
     var yax_format;
     if (args.format == 'count') {
@@ -218,14 +218,14 @@ function y_axis(args) {
                         ? args.width - args.right
                         : args.left - args.yax_tick_length;
                 })
-                .attr('y1', args.scales.Y)
-                .attr('y2', args.scales.Y);
+                .attr('y1', function(d) { return args.scales.Y(d).toFixed(2); })
+                .attr('y2', function(d) { return args.scales.Y(d).toFixed(2); });
 
     g.selectAll('.yax-labels')
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                .attr('dx', -3).attr('y', args.scales.Y)
+                .attr('dx', -3).attr('y', function(d) { return args.scales.Y(d).toFixed(2); })
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
                 .text(function(d, i) {
