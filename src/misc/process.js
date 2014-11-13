@@ -20,15 +20,11 @@ function raw_data_transformation(args){
                 })
             })
         })[0];
-        // args.data = args.data.map(function(_d){
-        //     return _d.filter(function(di){
-        //         return di != undefined;
-        //     });
-        // })[0];
+
         args.y_accessor = 'multiline_y_accessor';
     }
 
-    //sort x-axis data.
+    //sort x-axis data
     if (args.chart_type == 'line'){
         for(var i=0; i<args.data.length; i++) {
             args.data[i].sort(function(a, b) {

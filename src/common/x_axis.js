@@ -1,14 +1,17 @@
-function x_rug(args){
+function x_rug(args) {
 
-    var buffer_size = args.chart_type =='point' ? args.buffer/2 : args.buffer;
+    var buffer_size = args.chart_type =='point' 
+        ? args.buffer / 2 
+        : args.buffer;
 
     var svg = d3.select(args.target + ' svg');
     var all_data=[];
-    for (var i=0; i<args.data.length;i++){
-        for (var j=0;j<args.data[i].length;j++){
+    for (var i=0; i<args.data.length; i++) {
+        for (var j=0; j<args.data[i].length; j++) {
             all_data.push(args.data[i][j]);
         }
     }
+
     var rug = svg.selectAll('line.x_rug').data(all_data)
         .enter().append('svg:line')
             .attr('x1', args.scalefns.xf)
@@ -26,7 +29,6 @@ function x_rug(args){
     }
 }
 
-
 function x_axis(args) {
     var svg = d3.select(args.target + ' svg');
     var g;
@@ -40,24 +42,35 @@ function x_axis(args) {
     if (args.chart_type == 'point') {
         // figure out 
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
-        if (args.color_accessor != null){
-            if (args.color_domain == null){
-                if (args.color_type=='number'){
-                    min_color = d3.min(args.data[0], function(d){return d[args.color_accessor]});
-                    max_color = d3.max(args.data[0], function(d){return d[args.color_accessor]});        
+        if (args.color_accessor != null) {
+            if (args.color_domain == null) {
+                if (args.color_type=='number') {
+                    min_color = d3.min(args.data[0], function(d) {
+                        return d[args.color_accessor]
+                    });
+
+                    max_color = d3.max(args.data[0], function(d){
+                        return d[args.color_accessor]
+                    });
+
                     color_domain = [min_color, max_color];
-                } else if (args.color_type=='category'){
-                    color_domain = d3.set(args.data[0].map(function(d){
-                        return d[args.color_accessor];
-                    })).values();
+                }
+                else if (args.color_type == 'category') {
+                    color_domain = d3.set(args.data[0]
+                        .map(function(d) {
+                            return d[args.color_accessor];
+                        }))
+                        .values();
+
                     color_domain.sort();
                 }
-            } else {
+            }
+            else {
                 color_domain = args.color_domain;
             }
 
             if (args.color_range == null){
-                if (args.color_type=='number'){
+                if (args.color_type=='number') {
                     color_range = ['blue', 'red'];    
                 } else {
                     color_range = null;
@@ -66,8 +79,8 @@ function x_axis(args) {
             } else {
                 color_range = args.color_range;
             }
-            
-            if (args.color_type=='number'){
+
+            if (args.color_type=='number') {
                 args.scales.color = d3.scale.linear()
                     .domain(color_domain)
                     .range(color_range)
@@ -81,31 +94,37 @@ function x_axis(args) {
                 args.scales.color.domain(color_domain);
             }
 
-            args.scalefns.color = function(di){
+            args.scalefns.color = function(di) {
                 return args.scales.color(di[args.color_accessor]);
             };
         }
 
         if (args.size_accessor != null) {
-            if (args.size_domain == null){
-                min_size = d3.min(args.data[0], function(d){return d[args.size_accessor]});
-                max_size = d3.max(args.data[0], function(d){return d[args.size_accessor]});
+            if (args.size_domain == null) {
+                min_size = d3.min(args.data[0], function(d){
+                    return d[args.size_accessor]
+                });
+
+                max_size = d3.max(args.data[0], function(d){
+                    return d[args.size_accessor];
+                });
+
                 size_domain = [min_size, max_size];
             } else {
                 size_domain = args.size_domain;
             }
-            if (args.size_range == null){
+            if (args.size_range == null) {
                 size_range = [1,5];//args.size_domain;
             } else {
                 size_range = args.size_range;
             }
-            
+
             args.scales.size=d3.scale.linear()
                 .domain(size_domain)
                 .range(size_range)
                 .clamp(true);
 
-            args.scalefns.size = function(di){
+            args.scalefns.size = function(di) {
                 return args.scales.size(di[args.size_accessor]);
             };
         }
@@ -162,7 +181,8 @@ function x_axis(args) {
             }
 
             return Math.max.apply(null, trio);
-        }); //
+        });
+
         args.xax_format = function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
@@ -178,6 +198,7 @@ function x_axis(args) {
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
     args.x_axis_negative = false;
+
     if (!args.time_series) {
         if (min_x < 0){
             min_x = min_x  - (max_x * (args.inflator-1));

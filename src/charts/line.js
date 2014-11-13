@@ -121,7 +121,8 @@ charts.line = function(args) {
             
             //build legend
             if(args.legend) {
-                legend += "<span class='line" + (i+1)  + "-legend-color'>&mdash; " + args.legend[i] + "&nbsp; </span>";
+                legend += "<span class='line" + (i+1)  + "-legend-color'>&mdash; " 
+                        + args.legend[i] + "&nbsp; </span>";
             }
         }
         
@@ -203,7 +204,10 @@ charts.line = function(args) {
 
             //we'll be using these when constructing the voronoi rollovers
             var data_nested = d3.nest()
-                .key(function(d) { return args.scales.X(d[args.x_accessor]) + "," + args.scales.Y(d[args.y_accessor]); })
+                .key(function(d) { 
+                    return args.scales.X(d[args.x_accessor]) + "," 
+                        + args.scales.Y(d[args.y_accessor]);
+                })
                 .rollup(function(v) { return v[0]; })
                 .entries(d3.merge(args.data.map(function(d) { return d; })))
                 .map(function(d) { return d.values; });
@@ -400,7 +404,7 @@ charts.line = function(args) {
                         : formatter(v);
 
                 d3.selectAll('.roll_' + id)
-                    .each(function(d, i){
+                    .each(function(d, i) {
                         d3.select(this).on('mouseout')(d);
                 });
             }

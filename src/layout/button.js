@@ -46,7 +46,7 @@ var button_layout = function(target) {
         var d,f, features, feat;
         features = Object.keys(this.feature_set);
         
-        // build out this.feature_set with this.data.
+        // build out this.feature_set with this.data
         for (var i=0; i < this._data.length; i++) {
             d = this._data[i];
             f = features.map(function(f) {return d[f]});

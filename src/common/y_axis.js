@@ -1,16 +1,18 @@
-function y_rug(args){
+function y_rug(args) {
     var svg = d3.select(args.target + ' svg');
-    var buffer_size = args.chart_type =='point' ? args.buffer/2 : args.buffer*2/3;
+    var buffer_size = args.chart_type == 'point' 
+        ? args.buffer / 2 
+        : args.buffer * 2 / 3;
 
     var all_data = [];
-    for (var i=0; i<args.data.length;i++){
-        for (var j=0;j<args.data[i].length;j++){
+    for (var i=0; i<args.data.length; i++) {
+        for (var j=0; j<args.data[i].length; j++) {
             all_data.push(args.data[i][j]);
         }
     }
     var rug = svg.selectAll('line.y_rug').data(all_data)
         .enter().append('svg:line')
-            .attr('x1', args.left+1)
+            .attr('x1', args.left + 1)
             .attr('x2', args.left+buffer_size)
             .attr('y1', args.scalefns.yf)
             .attr('y2', args.scalefns.yf)
@@ -38,7 +40,7 @@ function y_axis(args) {
     var min_y, max_y;
 
     var _set = false;
-    for (var i=0; i < args.data.length; i++) {
+    for (var i=0; i<args.data.length; i++) {
         var a = args.data[i];
 
         if (args.y_scale_type == 'log') {
@@ -161,17 +163,17 @@ function y_axis(args) {
 
     function log10(val) {
          //return Math.log(val) / Math.LN10;
-         if (val==1000){
+         if (val == 1000){
             return 3;
          }
-         if (val==1000000){
+         if (val == 1000000) {
             return 7;
          }
          return Math.log(val) / Math.LN10;
     }
 
-    if (args.y_scale_type == 'log'){
-        // get out only whole logs.
+    if (args.y_scale_type == 'log') {
+        // get out only whole logs
         scale_ticks = scale_ticks.filter(function(d){
             return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
         });
@@ -225,7 +227,9 @@ function y_axis(args) {
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                .attr('dx', -3).attr('y', function(d) { return args.scales.Y(d).toFixed(2); })
+                .attr('dx', -3).attr('y', function(d) { 
+                    return args.scales.Y(d).toFixed(2);
+                })
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
                 .text(function(d, i) {
@@ -233,7 +237,7 @@ function y_axis(args) {
                     return o;
                 })
 
-    if (args.y_rug){
+    if (args.y_rug) {
         y_rug(args);
     }
 
@@ -243,7 +247,7 @@ function y_axis(args) {
 function y_axis_categorical(args) {
     // first, come up with y_axis 
     var svg_height = args.height;
-    if (args.chart_type=='bar' && svg_height==null){
+    if (args.chart_type == 'bar' && svg_height == null){
         // we need to set a new height variable.
     }
 
@@ -261,20 +265,17 @@ function y_axis_categorical(args) {
         .classed('y-axis', true)
         .classed('y-axis-small', args.use_small_class);
 
-
     if (!args.y_axis) return this;
 
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
-        .attr('y', function(d){
+        .attr('y', function(d) {
             return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 
                 + (args.buffer)*args.outer_padding_percentage;
         })
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String)
-    // plot labels
-
 
     return this;
 }

@@ -66,7 +66,7 @@ function init(args) {
 
     //draw axes
     args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer*2 
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer * 2 
             <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
@@ -78,7 +78,7 @@ function init(args) {
         if(args.custom_line_color_map.length > 0) {
             var array_full_series = function(len) {
                 var arr = new Array(len);
-                for(var i=0;i<arr.length;i++) { arr[i] = i+1; }
+                for(var i=0;i<arr.length;i++) { arr[i] = i + 1; }
                 return arr;
             }
 

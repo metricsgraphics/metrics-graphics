@@ -1,6 +1,3 @@
-
-
-
 charts.point = function(args) {
     this.args = args;
 
@@ -63,7 +60,7 @@ charts.point = function(args) {
         if($(args.target + ' svg .active_datapoint').length > 0) {
             $(args.target + ' svg .active_datapoint').remove();
         }
-        
+
         //add rollover text
         svg.append('text')
             .attr('class', 'active_datapoint')
