@@ -24,6 +24,7 @@
     "js/metricsgraphics.js",
     "js/lib",
     "src",
+    "make.py",
     "index.htm",
     "dev.htm",
     "examples.htm",
