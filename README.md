@@ -21,8 +21,6 @@ While we are currently using semantic versioning, you should consider v0.* to ha
 
 Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for other to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We plan on having fuller documentation in the next milestone, as well as a guide to how to contribute to the library in a way that makes us feel warm inside when we accept your pull request.
 
-_MetricsGraphics.js_ is shared under a <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License</a>. The current logo is courtesy of <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a>.
-
 <a href="http://metricsgraphicsjs.org">http://metricsgraphicsjs.org</a>
 
 ## Quick-start guide
@@ -48,7 +46,7 @@ Changes should be made to the files under ``src`` rather than to ``js/metrics-gr
 1. Copy over any changes made in ``dev.htm`` to ``examples.htm``
 2. Run ``make.py``
 3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.htm`` (if applicable) with a message such as, “v0.5 prepared files for release”
-4. Deploy all files to metricsgraphicsjs.org 
+4. Deploy all files to metricsgraphicsjs.org
 
 ## Download package
 The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are:
@@ -58,5 +56,9 @@ The download package includes everything that you see on [metricsgraphicsjs.org]
 3. css/metricsgraphics-dark.css
 4. images/missing-data.png
 5. images/missing-data-dark.png
- 
+
 Remember to include the calls to the third-party libraries, as they appear in the code for the examples pages.
+
+## License
+
+The __MetricsGraphics.js__ code is shared under the terms of the [Mozilla Public License v2.0](http://www.mozilla.org/MPL/2.0/). See the `LICENSE` file at the root of the repository. The current logo is courtesy of [Font Awesome](http://fortawesome.github.io/Font-Awesome/).
