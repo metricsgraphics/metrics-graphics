@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "metrics-graphics.js",
   "scripts": [
-    "metrics-graphics.js"
+    "js/metricsgraphics.js"
   ],
   "dependencies": {
     "jquery": "~1.11.1",
@@ -24,7 +24,7 @@
   "license": "MPL-2.0",
   "authors": [
     "Ali Almossawi", "Ali Almossawi (http://github.com/almossawi)>",
-    "Hamilton Ulmer", "Hamilton Ulmer (http://github.com/hulmer)>"
+    "Hamilton Ulmer", "Hamilton Ulmer (http://github.com/hamilton)>"
   ],
   "homepage": "http://metricsgraphicsjs.org",
   "repository": {
