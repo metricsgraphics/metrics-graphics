@@ -1,7 +1,7 @@
 {
   "name": "metrics-graphics",
   "version": "0.1.0",
-  "main": "metrics-graphics.js",
+  "main": "js/metricsgraphics.js",
   "scripts": [
     "js/metricsgraphics.js"
   ],
