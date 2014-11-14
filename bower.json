@@ -1,9 +1,9 @@
 {
   "name": "metrics-graphics",
-  "version": "0.1.0",
-  "main": "js/metricsgraphics.js",
+  "version": "1.0.0",
+  "main": "js/metricsgraphics.min.js",
   "scripts": [
-    "js/metricsgraphics.js"
+    "js/metricsgraphics.min.js"
   ],
   "dependencies": {
     "jquery": "~1.11.1",
@@ -15,15 +15,23 @@
     ".git",
     ".gitignore",
     "css/metrics-graphics-demo.css",
+    "css/highlightjs-default.css",
     "data",
-    "js/main.js",
-    "index.html",
+    "images/divider.png",
     "images/og-logo.png",
-    "images/logo.svg"
+    "images/logo.svg",
+    "js/main.js",
+    "js/metricsgraphics.js",
+    "js/lib",
+    "src",
+    "index.htm",
+    "dev.htm",
+    "examples.htm",
+    "interactive-demo.htm"
   ],
   "license": "MPL-2.0",
   "authors": [
-    "Ali Almossawi", "Ali Almossawi (http://github.com/almossawi)>",
+    "Ali Almossawi", "Ali Almossawi (http://twitter.com/alialmossawi)>",
     "Hamilton Ulmer", "Hamilton Ulmer (http://github.com/hamilton)>"
   ],
   "homepage": "http://metricsgraphicsjs.org",
