@@ -1,10 +1,10 @@
 {
   "name": "metrics-graphics",
   "version": "1.0.0",
-  "main": "js/metricsgraphics.min.js",
-  "scripts": [
-    "js/metricsgraphics.min.js"
-  ],
+  "main": [
+    "js/metricsgraphics.min.js",
+    "css/metricsgraphics.css"
+  ]
   "dependencies": {
     "jquery": "~1.11.1",
     "bootstrap": "~3.1.1",
