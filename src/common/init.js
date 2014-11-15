@@ -38,7 +38,8 @@ function init(args) {
     }
 
     //add svg if it doesn't already exist
-    if($(args.target).is(':empty')) {
+    //using trim on html rather than :empty to ignore white spaces if they exist
+    if($.trim($(args.target).html()) == '') {
         //add svg
         d3.select(args.target)
             .append('svg')
