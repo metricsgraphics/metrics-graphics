@@ -375,8 +375,8 @@ text {
 }
 
 .year-marker line {
-    shape-rendering: crispEdges;
     opacity: 0.2;
+    shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
 }
@@ -385,40 +385,35 @@ text {
     font-size: 8px;
 }
 
+/* data tables */
 tr.header-row {
     margin-bottom:10px;
 }
-
 
 table.data-table {
     margin:auto;
 }
 
 th.data-table-th {
-    text-align:right;
-    font-weight:300;
-    border-bottom:1px solid darkgray;
-    margin:2px;
-    margin-bottom:10px;
-
+    border-bottom: 1px solid darkgray;
+    font-weight: 300;
+    margin: 2px;
+    margin-bottom: 10px;
+    text-align: right;
 }
 
 div.secondary-title {
-    color:darkgray;
+    color: darkgray;
 }
 
 td.data-table {
-    margin:2px;
-    vertical-align:top;
-    padding:5px;
-}
-
-.table-number {
-
+    margin: 2px;
+    padding: 5px;
+    vertical-align: top;
 }
 
 td.table-text {
-    padding-left:30px;
-    font-style:italic;
-    opacity:.8;
+    font-style: italic;
+    opacity: 0.8;
+    padding-left: 30px;
 }
