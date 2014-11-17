@@ -634,10 +634,9 @@ $(document).ready(function() {
                 }
                 $('#ufos svg .active_datapoint')
                     .html(string +   '       Volume: ' + d.y);
-        }
-    })  
+            }
+        })
     })
-
 
     var second = d3.range(10000).map(function(d){return Math.random()*10});
     second = d3.layout.histogram()(second)
@@ -728,7 +727,6 @@ $(document).ready(function() {
         {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
     ]
 
-
     data_graphic({
         title:'Bar Prototype',
         description:'work in progress',
@@ -742,7 +740,6 @@ $(document).ready(function() {
         right:trunk.right,
         target: '#bar1',
         x_axis: false
-
     })
 
     data_graphic({
@@ -878,9 +875,6 @@ $(document).ready(function() {
         .text({accessor: 'description', width:240})
         .display();
 
-
-
-    
     //add this scatterplot and color the groups based on the theme
     addScatterplotSizeAndColor('light');
     
@@ -1001,25 +995,6 @@ $(document).ready(function() {
             })
         })
     }
-    
-    document.body.addEventListener('mouseover', function(e) {
-  var target = e.target, item;
-  
-  var upfrontRemover = function() {
-    item.classList.remove('item--upfront');
-    item.removeEventListener('transitionend', upfrontRemover, false);
-  };
-  
-  if(target.classList.contains('hexagon__content')) {
-    item = target.parentNode.parentNode.parentNode;
-        item.addEventListener('transitionend', upfrontRemover, false);
-    
-    if(!item.classList.contains('item--upfront')) {
-      item.classList.add('item--upfront');
-    }
-  }
-}, false);
-
 
     //replace all SVG images with inline SVG
     //http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
