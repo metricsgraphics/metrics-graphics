@@ -66,19 +66,29 @@ function y_axis(args) {
         }
     }
 
+    if (min_y >=0 && !args.min_y && !args.use_data_y_min){
+        min_y=0;
+    }
+
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
 
     if (args.y_scale_type != 'log') {
         // we are currently saying that if the min val > 0, set 0 as min y.
         if (min_y >= 0){
-            min_y = 0;
+            //min_y = 0;
             args.y_axis_negative = false;
         } else {
             min_y = min_y  - (max_y * (args.inflator-1));
             args.y_axis_negative = true;
         }
     }
+
+    max_y = max_y * args.inflator;
+    if (!args.min_y && args.use_data_y_min){
+        min_y = min_y / args.inflator;    
+    }
+    
 
     if (args.y_scale_type == 'log'){
         if (args.chart_type == 'histogram') {
@@ -91,18 +101,18 @@ function y_axis(args) {
             }
         }
         args.scales.Y = d3.scale.log()
-            .domain([min_y, max_y * args.inflator])
+            .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top])
             .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
-            .domain([min_y, max_y * args.inflator])
+            .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top]);
     }
 
     // used for ticks and such, and designed to be paired with log or linear.
     args.scales.Y_axis = d3.scale.linear()
-        .domain([min_y, max_y * args.inflator])
+        .domain([min_y, max_y])
         .range([args.height - args.bottom - args.buffer, args.top]);
 
     var yax_format;
