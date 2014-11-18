@@ -6,9 +6,9 @@
     "css/metricsgraphics.css"
   ],
   "dependencies": {
-    "jquery": "~1.11.1",
-    "bootstrap": "~3.1.1",
-    "d3": "~3.4.8"
+    "jquery": ">=1.11.1",
+    "bootstrap": ">=3.1.1",
+    "d3": ">=3.4.8"
   },
   "ignore": [
     ".DS_Store",
