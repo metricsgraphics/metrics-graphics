@@ -565,12 +565,13 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        var data2 = data.map(function(d){
+        var data2 = data.map(function(d) {
             d.value = d.value + 550;
             return d;
         });
+
         data_graphic({
-            title: "Letting the y-axis begin above 0.",
+            title: "Y-Axis Not Zero",
             description: "We should have an option for letting the y-axis be some natural value other than 0, set by the data rather than the user.",
             data: data2,
             width: trunk.width,
@@ -582,8 +583,6 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         })
-
-
     })
 
     d3.json('data/neg2.json', function(data) {
