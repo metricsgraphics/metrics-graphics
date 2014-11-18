@@ -1,0 +1,31 @@
+a,
+a:active,
+a:visited {
+    color: #71b4eb;
+}
+
+a:hover {
+    color: #71b4eb;
+}
+
+body {
+    background-color: #272727;
+    color: #cfcfcf;
+}
+
+.divider {
+    color: #f1f1f1;
+    opacity: 0.1;
+}
+
+h1 {
+    color: #f1f1f1;
+}
+
+h2.chart_title span {
+    color: #f1f1f1;
+}
+
+li {
+    color: #cfcfcf;
+}

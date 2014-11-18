@@ -17,7 +17,13 @@ a:hover.examples-options {
 .chart_title {
     margin-left: 30px;
 }
- 
+
+#description {
+    margin: auto;
+    margin-bottom: 50px;
+    width: 100%;
+}
+
 .examples-options {
     font-size: 10px;
 }

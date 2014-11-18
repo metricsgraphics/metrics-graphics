@@ -20,7 +20,10 @@
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 
     <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css' id='light'>
+    <link href='css/metricsgraphics-layout.css' rel='stylesheet' type='text/css' id='light-layout'>
     <link href='' rel='stylesheet' type='text/css' id='dark'>
+    <link href='' rel='stylesheet' type='text/css' id='dark-layout'>
+
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
@@ -63,292 +66,290 @@
 </head>
 
 <body>
-    <div id='container' class='container'>
-        <div id='content-body'>
-            <div class='head'>
-                <ul>
-                    <li><a href='http://metricsgraphicsjs.org/'>Home</a></li>
-                    <li><a href='https://github.com/mozilla/metrics-graphics/releases'>Download</a></li>
-                    <li><a href='interactive-demo.htm'>Interactive</a></li>
-                    <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
-                    <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
-                    <li class='divider'>|</li>
-                    <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
-                    <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
-                    <li class='float-right no-padding'><a class='selected examples-options' href='dev.htm'>DEV</a></li>
-                    <li class='float-right'><a class='examples-options' href='examples.htm'>RELEASE</a></li>
-                </ul>
+    <div class='container'>
+        <div class='head'>
+            <ul>
+                <li><a href='http://metricsgraphicsjs.org/'>Home</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics/releases'>Download</a></li>
+                <li><a href='interactive-demo.htm'>Interactive</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
+                <li class='divider'>|</li>
+                <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
+                <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
+                <li class='float-right no-padding'><a class='selected examples-options' href='dev.htm'>DEV</a></li>
+                <li class='float-right'><a class='examples-options' href='examples.htm'>RELEASE</a></li>
+            </ul>
 
-                <img src='images/logo.svg' id='logo' class='svg' />
+            <img src='images/logo.svg' id='logo' class='svg' />
+        </div>
+
+        <div id='torso'>
+            <div id='fake_users1'></div>
+            <div id='fake_users2'></div>
+            <div id='missing-y'></div>
+            <div id='small-range'></div>
+            <div id='spike' class='main-area-solid'></div>
+            <div id='percentage'></div>
+            <div id='currency'></div>
+            <div id='xnotdate'></div>
+            <div id='glorious_chart'></div>
+            <div id='linked_multi1'></div>
+            <div id='linked_multi2'></div>
+        </div>
+        <div id='trunk'>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Hassle-Free Layouts</h2>
+                    <p>We use Bootstrap's grid template to lay out graphics. This means 
+                    that it is ridiculously easy to create grids of arbitrary sizes 
+                    and place graphics and their corresponding prose or associated 
+                    graphics wherever and however one pleases.</p>
+                    <p>Setting <i>legend</i> and <i>legend_target</i> allows you to 
+                    generate a key to go with the graphic.</p>
+                    <div class='legend'></div>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='col-lg-12 text-center extended-y-ticks' id='fake_users3'>
+                        
+                           
+                    </div>
+                </div>
             </div>
 
-            <div id='torso'>
-                <div id='fake_users1'></div>
-                <div id='fake_users2'></div>
-                <div id='missing-y'></div>
-                <div id='small-range'></div>
-                <div id='spike' class='main-area-solid'></div>
-                <div id='percentage'></div>
-                <div id='currency'></div>
-                <div id='xnotdate'></div>
-                <div id='glorious_chart'></div>
-                <div id='linked_multi1'></div>
-                <div id='linked_multi2'></div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Confidence Band</h2>
+                    <p>We regularly make use of confidence bands with forecasts. One 
+                    can easily specify a confidence band by enabling the option and 
+                    specifying the elements that contain the lower and upper values 
+                    for each data point.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='text-center extended-x-ticks' id='confidence_band'></div>
+                </div>
             </div>
-            <div id='trunk'>
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Hassle-Free Layouts</h2>
-                        <p>We use Bootstrap's grid template to lay out graphics. This means 
-                        that it is ridiculously easy to create grids of arbitrary sizes 
-                        and place graphics and their corresponding prose or associated 
-                        graphics wherever and however one pleases.</p>
-                        <p>Setting <i>legend</i> and <i>legend_target</i> allows you to 
-                        generate a key to go with the graphic.</p>
-                        <div class='legend'></div>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='col-lg-12 text-center extended-y-ticks' id='fake_users3'>
-                            
-                               
-                        </div>
-                    </div>
-                </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Confidence Band</h2>
-                        <p>We regularly make use of confidence bands with forecasts. One 
-                        can easily specify a confidence band by enabling the option and 
-                        specifying the elements that contain the lower and upper values 
-                        for each data point.</p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='text-center extended-x-ticks' id='confidence_band'></div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Linked Graphics</h2>
+                    <p>It can be useful to have two graphics linked together&mdash;when 
+                    a rollover in one is triggered, the same rollover is triggered on 
+                    the same date or data point in the other.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='briefing-1'></div>
+                        <div class='col-lg-6 text-center' id='briefing-2'></div>
                     </div>
                 </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Linked Graphics</h2>
-                        <p>It can be useful to have two graphics linked together&mdash;when 
-                        a rollover in one is triggered, the same rollover is triggered on 
-                        the same date or data point in the other.</p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='briefing-1'></div>
-                            <div class='col-lg-6 text-center' id='briefing-2'></div>
-                        </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Update Graphic Data</h2>
+                    <p>We sometimes have the need to split the data and then 
+                    gracefully update the graphic with the newly selected subset of 
+                    data.</p>
+                    <div class='btn-group btn-group-sm text-center split-by-controls'>
+                        <button type='button' class='btn btn-default active' 
+                            data-y_accessor='release'>Release</button>
+                        <button type='button' class='btn btn-default' 
+                            data-y_accessor='beta'>Beta</button>
+                        <button type='button' class='btn btn-default' 
+                            data-y_accessor='alpha'>Alpha</button>
                     </div>
                 </div>
+                <div class='col-lg-8'>
+                        <div id='split_by'></div>
+                </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Update Graphic Data</h2>
-                        <p>We sometimes have the need to split the data and then 
-                        gracefully update the graphic with the newly selected subset of 
-                        data.</p>
-                        <div class='btn-group btn-group-sm text-center split-by-controls'>
-                            <button type='button' class='btn btn-default active' 
-                                data-y_accessor='release'>Release</button>
-                            <button type='button' class='btn btn-default' 
-                                data-y_accessor='beta'>Beta</button>
-                            <button type='button' class='btn btn-default' 
-                                data-y_accessor='alpha'>Alpha</button>
-                        </div>
-                    </div>
-                    <div class='col-lg-8'>
-                            <div id='split_by'></div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Modify Time Period</h2>
+                    <p>We sometimes have the need to view data for just the past n days. 
+                    Here, the <i>transition_on_update</i> option is set to false.</p>
+                    <div class='btn-group btn-group-sm text-center 
+                        modify-time-period-controls'>
+                        <button type='button' class='btn btn-default active' 
+                            data-time_period=''>All time</button>
+                        <button type='button' class='btn btn-default' 
+                            data-time_period='61'>Past 2 months</button>
+                        <button type='button' class='btn btn-default' 
+                            data-time_period='31'>Past month</button>
                     </div>
                 </div>
+                <div class='col-lg-8'>
+                    <div id='modify_time_period'></div>
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Small Graphics</h2>
+                    <p>At 150px, we change the font sizes for rollovers and axes.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='small1'></div>
+                        <div class='col-lg-6 text-center' id='small2'></div>
+                    </div>
+                </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Modify Time Period</h2>
-                        <p>We sometimes have the need to view data for just the past n days. 
-                        Here, the <i>transition_on_update</i> option is set to false.</p>
-                        <div class='btn-group btn-group-sm text-center 
-                            modify-time-period-controls'>
-                            <button type='button' class='btn btn-default active' 
-                                data-time_period=''>All time</button>
-                            <button type='button' class='btn btn-default' 
-                                data-time_period='61'>Past 2 months</button>
-                            <button type='button' class='btn btn-default' 
-                                data-time_period='31'>Past month</button>
-                        </div>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div id='modify_time_period'></div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Hiding Axes</h2>
+                    <p>Either axis can be hidden with an argument.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='hidden1'></div>
+                        <div class='col-lg-6 text-center' id='hidden2'></div>
                     </div>
                 </div>
-                
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Small Graphics</h2>
-                        <p>At 150px, we change the font sizes for rollovers and axes.</p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='small1'></div>
-                            <div class='col-lg-6 text-center' id='small2'></div>
-                        </div>
-                    </div>
-                </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Hiding Axes</h2>
-                        <p>Either axis can be hidden with an argument.</p>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Rollover Text Formatting</h2>
+                    <p>We can change the precision if the axis data type is a float. 
+                    We can also change both the formatting, or hide the rollover text 
+                    altogether.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='precision1'></div>
+                        <div class='col-lg-6 text-center' id='precision2'></div>
                     </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='hidden1'></div>
-                            <div class='col-lg-6 text-center' id='hidden2'></div>
-                        </div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='custom-rollover'></div>
+                        <div class='col-lg-6 text-center' id='no-rollover-text'></div>
                     </div>
                 </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Rollover Text Formatting</h2>
-                        <p>We can change the precision if the axis data type is a float. 
-                        We can also change both the formatting, or hide the rollover text 
-                        altogether.</p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='precision1'></div>
-                            <div class='col-lg-6 text-center' id='precision2'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='custom-rollover'></div>
-                            <div class='col-lg-6 text-center' id='no-rollover-text'></div>
-                        </div>
-                    </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Logarithmic Scales</h2>
+                    <p>One can change the y-axis' scale to logarithmic by setting 
+                    <i>y_scale_type</i> to <i>log</i>.</p>
                 </div>
+                <div class='col-lg-8'>
+                    <div id='log1'></div>
+                </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Logarithmic Scales</h2>
-                        <p>One can change the y-axis' scale to logarithmic by setting 
-                        <i>y_scale_type</i> to <i>log</i>.</p>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Min / Max Numbers on Y-Axis</h2>
+                    <p>Currently this lib will default to 0 on the y-axis as min if 
+                    there are no negative numbers. If there are negatives, should 
+                    provide some buffer below.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='neg1'></div>
+                        <div class='col-lg-6 text-center' id='neg2'></div>
                     </div>
-                    <div class='col-lg-8'>
-                        <div id='log1'></div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='y-axis-not-zero'></div>
+                        <div class='col-lg-6 text-center'></div>
                     </div>
                 </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Min / Max Numbers on Y-Axis</h2>
-                        <p>Currently this lib will default to 0 on the y-axis as min if 
-                        there are no negative numbers. If there are negatives, should 
-                        provide some buffer below.</p>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Scatterplots</h2>
+                    <p>A few examples of scatterplots that demonstrate the graphic 
+                    type's options, smoothers and rug&nbsp;plots.</p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='scatter-simple'></div>
+                        <div class='col-lg-6 text-center' id='scatter-size-and-color'></div>
                     </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='neg1'></div>
-                            <div class='col-lg-6 text-center' id='neg2'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='y-axis-not-zero'></div>
-                            <div class='col-lg-6 text-center'></div>
-                        </div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
+                        <div class='col-lg-6 text-center' id='sls-time-series'></div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='categorical1'></div>
+                        <div class='col-lg-6 text-center' id='categorical2'></div>
                     </div>
                 </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Scatterplots</h2>
-                        <p>A few examples of scatterplots that demonstrate the graphic 
-                        type's options, smoothers and rug&nbsp;plots.</p>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Histograms</h2>
+                    <p>We use histograms a lot, particularly in 
+                    <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>. 
+                    The histogram graphic type includes the ability to 
+                    <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>
+                    bin data</a>.
+                    </p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center extended-y-ticks' id='histogram1'></div>
+                        <div class='col-lg-6 text-center extended-y-ticks' id='histogram2'></div>
                     </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='scatter-simple'></div>
-                            <div class='col-lg-6 text-center' id='scatter-size-and-color'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
-                            <div class='col-lg-6 text-center' id='sls-time-series'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='categorical1'></div>
-                            <div class='col-lg-6 text-center' id='categorical2'></div>
-                        </div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center extended-y-ticks' id='histogram3'></div>
+                        <div class='col-lg-6 text-center extended-y-ticks' id='histogram4'></div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center extended-y-ticks' id='ufos'></div>
                     </div>
                 </div>
+            </div>
 
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Histograms</h2>
-                        <p>We use histograms a lot, particularly in 
-                        <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>. 
-                        The histogram graphic type includes the ability to 
-                        <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>
-                        bin data</a>.
-                        </p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center extended-y-ticks' id='histogram1'></div>
-                            <div class='col-lg-6 text-center extended-y-ticks' id='histogram2'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center extended-y-ticks' id='histogram3'></div>
-                            <div class='col-lg-6 text-center extended-y-ticks' id='histogram4'></div>
-                        </div>
-                        <div class='row'>
-                            <div class='col-lg-12 text-center extended-y-ticks' id='ufos'></div>
-                        </div>
-                    </div>
+            <div class='row wip light-bg'>
+                <div class='col-lg-12 text-center'>
+                    <i class='fa fa-wrench'></i> <strong>Works in Progress</strong> 
+                    subject to drastic change
                 </div>
+            </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Handling Missing Data</h2>
+                    <p>
+                        MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps. 
+                    </p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center extended-y-ticks' id='missing1'></div>
 
-                <div class='row wip light-bg'>
-                    <div class='col-lg-12 text-center'>
-                        <i class='fa fa-wrench'></i> <strong>Works in Progress</strong> 
-                        subject to drastic change
                     </div>
                 </div>
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Handling Missing Data</h2>
-                        <p>
-                            MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps. 
-                        </p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-12 text-center extended-y-ticks' id='missing1'></div>
-
-                        </div>
+            </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Data Tables</h2>
+                    <p>
+                        Sometimes the easiest and most appropriate way to display data is to make a table. MetricsGraphics.js aims to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.
+                    </p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='table1'></div>
                     </div>
                 </div>
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Data Tables</h2>
-                        <p>
-                            Sometimes the easiest and most appropriate way to display data is to make a table. MetricsGraphics.js aims to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.
-                        </p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-12 text-center' id='table1'></div>
-                        </div>
-                    </div>
+            </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Barplots</h2>
+                    <p>Two examples of barplots. These are still works-in-progress.
+                    </p>
                 </div>
-                <div class='row trunk-section'>
-                    <div class='col-lg-4'>
-                        <h2 class='trunk-title'>Barplots</h2>
-                        <p>Two examples of barplots. These are still works-in-progress.
-                        </p>
-                    </div>
-                    <div class='col-lg-8'>
-                        <div class='row'>
-                            <div class='col-lg-6 text-center' id='bar1'></div>
-                            <div class='col-lg-6 text-center' id='bar2'></div>
-                        </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='bar1'></div>
+                        <div class='col-lg-6 text-center' id='bar2'></div>
                     </div>
                 </div>
             </div>

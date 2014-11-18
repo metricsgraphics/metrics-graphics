@@ -852,29 +852,10 @@ $(document).ready(function() {
             x_accessor: 'x',
             y_accessor: 'y'
         });
-
-        //  data_graphic({
-        //     title: "Lowess",
-        //     description: "use lowess: true",
-        //     data: data,
-        //     lowess: true,
-        //     chart_type: 'point',
-        //     width: trunk.width,
-        //     height: trunk.height,
-        //     right: trunk.right,
-        //     target: '#scatter3',
-        //     xax_format: function(f) {
-        //         var pf = d3.formatPrefix(f);
-        //         return pf.scale(f) + pf.symbol;
-        //     },
-        //     x_accessor: 'x',
-        //     y_accessor: 'y'
-        // })
     })
 
     // data tables
-
-    var table_data = [
+    /*var table_data = [
         {'year': 1852,'value1': 10.2, 'value2': 1004.43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful."},
         {'year': 1901,'value1': 10.1, 'value2': 543.23, 'geo': 'United States', 'description': "Here is some text about the United States. These made-up numbers."},
         {'year': 1732,'value1': 4.3, 'value2': 14.92, 'geo': 'France', 'description': "France has small numbers."},
@@ -887,12 +868,12 @@ $(document).ready(function() {
         title: 'First Table',
         description: 'A table has many of the same properties as a data_graphic.'
     })
-        .target('div#table1')
+        .target('#table1')
         .title( {accessor: 'geo', secondary_accessor:'year', label: 'country'})
         .number({accessor: 'value1', label: 'size'})
         .number({accessor: 'value2', label: 'score'})
         .text({accessor: 'description', width:240})
-        .display();
+        .display();*/
 
     //add this scatterplot and color the groups based on the theme
     addScatterplotSizeAndColor('light');
@@ -942,6 +923,7 @@ $(document).ready(function() {
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-dark.css'});
+            $('#dark-layout').attr({href : 'css/metricsgraphics-dark-layout.css'});
 
             //add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('dark');
@@ -962,6 +944,7 @@ $(document).ready(function() {
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
+            $('#dark-layout').attr({href : ''});
 
             //add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('light');
