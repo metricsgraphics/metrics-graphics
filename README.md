@@ -54,8 +54,8 @@ _Note: The js file will be regenerated between releases any time we add a new ch
 The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are:
 
 1. js/metricsgraphics.min.js
-2. css/metricsgraphics.css
-3. css/metricsgraphics-dark.css
+2. {css/metricsgraphics.css, css/metricsgraphics-layout.css}
+3. {css/metricsgraphics-dark.css, css/metricsgraphics-dark-layout.css}
 4. images/missing-data.png
 5. images/missing-data-dark.png
 
