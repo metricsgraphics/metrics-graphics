@@ -44,6 +44,7 @@ scripts = [
     'src/charts/histogram.js',
     'src/charts/point.js',
     'src/charts/bar.js',
+    'src/charts/table.js',
     'src/charts/missing.js',
     'src/misc/process.js',
     'src/misc/smoothers.js',

@@ -855,7 +855,7 @@ $(document).ready(function() {
     })
 
     // data tables
-    /*var table_data = [
+    var table_data = [
         {'year': 1852,'value1': 10.2, 'value2': 1004.43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful."},
         {'year': 1901,'value1': 10.1, 'value2': 543.23, 'geo': 'United States', 'description': "Here is some text about the United States. These made-up numbers."},
         {'year': 1732,'value1': 4.3, 'value2': 14.92, 'geo': 'France', 'description': "France has small numbers."},
@@ -873,7 +873,7 @@ $(document).ready(function() {
         .number({accessor: 'value1', label: 'size'})
         .number({accessor: 'value2', label: 'score'})
         .text({accessor: 'description', width:240})
-        .display();*/
+        .display();
 
     //add this scatterplot and color the groups based on the theme
     addScatterplotSizeAndColor('light');
