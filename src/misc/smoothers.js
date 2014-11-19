@@ -1,5 +1,5 @@
 function add_ls(args){
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var data = args.data[0];
     //var min_x = d3.min(data, function(d){return d[args.x_accessor]});
     //var max_x = d3.max(data, function(d){return d[args.x_accessor]});
@@ -15,7 +15,7 @@ function add_ls(args){
 }
 
 function add_lowess(args){
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var lowess = args.lowess_line;
 
     var line = d3.svg.line()

@@ -11,14 +11,11 @@ charts.histogram = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
 
         //remove the old histogram, add new one
-        if($(args.target + ' svg .histogram').length > 0) {
-            $(args.target + ' svg .histogram')
-                .remove();
-        }
+        $(svg).find('.histogram').remove();
 
         var g = svg.append("g")
             .attr("class", "histogram");
@@ -57,16 +54,12 @@ charts.histogram = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        $(svg).find('.transparent-rollover-rect').remove();
+        $(svg).find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -110,7 +103,7 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -139,7 +132,7 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find(' svg .bar :eq(' + i + ')'))
                 .classed('active', true);
 
             //update rollover text
@@ -168,11 +161,11 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
                 .classed('active', false);
             
             //reset active data point text
