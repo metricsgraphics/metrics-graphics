@@ -1,4 +1,4 @@
-'use strict';
+
 
 var charts = {};
 var globals = {};
@@ -6,6 +6,7 @@ globals.link = false;
 globals.version = "1.0";
 
 function data_graphic() {
+    'use strict';
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {
@@ -176,12 +177,15 @@ function data_graphic() {
 function chart_title(args) {
     //is chart title different than existing, if so, clear the fine 
     //gentleman, otherwise, move along
-    if(args.title && args.title !== $(args.target + ' h2.chart_title').text())
-        $(args.target + ' h2.chart_title').remove();
+    'use strict';
+    var currentTitle = $(args.target).find('h2.chart_title');
+    if(args.title && args.title !== currentTitle.text())
+        currentTitle.remove();
     else
         return;
 
     if (args.target && args.title) {
+        var newTitle;
         //only show question mark if there's a description
         var optional_question_mark = (args.description)
             ? '<i class="fa fa-question-circle fa-inverse"></i>'
@@ -192,15 +196,15 @@ function chart_title(args) {
             
         //activate the question mark if we have a description
         if (args.description){
-            var $elem = $(this);
-
-            $(args.target + ' h2.chart_title')
-                .popover({html: true,
-                    'animation': false,
-                    'content': args.description,
-                    'trigger': 'hover',
-                    'placement': 'top',
-                    'container': $(args.target + ' h2.chart_title')});
+            newTitle = $(args.target).find('h2.chart_title');
+                newTitle.popover({
+                    html: true,
+                    animation: false,
+                    content: args.description,
+                    trigger: 'hover',
+                    placement: 'top',
+                    container: newTitle
+                });
         }   
     }
     
@@ -210,7 +214,8 @@ function chart_title(args) {
 }
 
 function y_rug(args) {
-    var svg = d3.select(args.target + ' svg');
+    'use strict';
+    var svg = d3.select($(args.target).find('svg').get(0));
     var buffer_size = args.chart_type == 'point' 
         ? args.buffer / 2 
         : args.buffer * 2 / 3;
@@ -239,7 +244,7 @@ function y_rug(args) {
 }
 
 function y_axis(args) {
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var g;
 
     var min_y, max_y;
@@ -348,10 +353,7 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    if($(args.target + ' svg .y-axis').length > 0) {
-        $(args.target + ' svg .y-axis')
-            .remove();
-    }
+    $(args.target).find('svg .y-axis').remove();
 
     if (!args.y_axis) return this;
 
@@ -482,7 +484,7 @@ function y_axis_categorical(args) {
         return args.scales.Y(di[args.y_accessor]);
     }
 
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
 
     var g = svg.append('g')
         .classed('y-axis', true)
@@ -504,12 +506,12 @@ function y_axis_categorical(args) {
 }
 
 function x_rug(args) {
-
+    'use strict';
     var buffer_size = args.chart_type =='point' 
         ? args.buffer / 2 
         : args.buffer;
 
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var all_data=[];
     for (var i=0; i<args.data.length; i++) {
         for (var j=0; j<args.data[i].length; j++) {
@@ -535,7 +537,8 @@ function x_rug(args) {
 }
 
 function x_axis(args) {
-    var svg = d3.select(args.target + ' svg');
+    'use strict';
+    var svg = d3.select($(args.target).find('svg').get(0));
     var g;
     var min_x;
     var max_x;
@@ -729,10 +732,7 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    if($(args.target + ' svg .x-axis').length > 0) {
-        $(args.target + ' svg .x-axis')
-            .remove();
-    }
+    $(args.target).find('svg .x-axis').remove();
 
     if (!args.x_axis) return this;
 
@@ -860,6 +860,7 @@ function x_axis(args) {
 }
 
 function init(args) {
+    'use strict';
     var defaults = {
         target: null,
         title: null,
@@ -890,9 +891,10 @@ function init(args) {
         svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
     }
     //remove the svg if the chart type has changed
-    if(($(args.target + ' svg .main-line').length > 0 && args.chart_type != 'line')
-            || ($(args.target + ' svg .points').length > 0 && args.chart_type != 'point')
-            || ($(args.target + ' svg .histogram').length > 0 && args.chart_type != 'histogram')
+    var svg = $(args.target).find('svg');
+    if((svg.find('.main-line').length > 0 && args.chart_type != 'line')
+            || (svg.find('.points').length > 0 && args.chart_type != 'point')
+            || (svg.find('.histogram').length > 0 && args.chart_type != 'histogram')
         ) {
         $(args.target).empty();
 
@@ -934,7 +936,7 @@ function init(args) {
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
     //data_graphic() on the same target with 2 lines, remove the 3rd line
-    if(args.data.length < $(args.target + ' svg .main-line').length) {
+    if(args.data.length < $(args.target).find('svg .main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
         //line-color map, instead, see which are the lines to be removed, and delete those    
         if(args.custom_line_color_map.length > 0) {
@@ -950,17 +952,17 @@ function init(args) {
                 args.custom_line_color_map);
 
             for(var i=0; i<lines_to_remove.length; i++) {
-                $(args.target + ' svg .main-line.line' + lines_to_remove[i] + '-color')
+                $(args.target).find('svg .main-line.line' + lines_to_remove[i] + '-color')
                     .remove();
             }
         }
         //if we don't have a customer line-color map, just remove the lines from the end
         else {
             var num_of_new = args.data.length;
-            var num_of_existing = $(args.target + ' svg .main-line').length;
+            var num_of_existing = $(args.target).find('svg .main-line').length;
 
             for(var i=num_of_existing; i>num_of_new; i--) {
-                $(args.target + ' svg .main-line.line' + i + '-color').remove();
+                $(args.target).find('svg .main-line.line' + i + '-color').remove();
             }
         }
     }
@@ -969,15 +971,13 @@ function init(args) {
 }
 
 function markers(args) {
-    var svg = d3.select(args.target + ' svg');
+    'use strict';
+    var svg = d3.select($(args.target).find('svg').get(0));
     var gm;
     var gb;
 
     if(args.markers) {
-        if($(args.target + ' svg .markers').length > 0) {
-            $(args.target + ' svg .markers')
-                .remove();
-        }
+        $(args.target).find('svg .markers').remove();
 
         gm = svg.append('g')
             .attr('class', 'markers');
@@ -1053,6 +1053,7 @@ function markers(args) {
 }
 
 var button_layout = function(target) {
+    'use strict';
     this.target = target;
     this.feature_set = {};
     this.public_name = {};
@@ -1167,6 +1168,7 @@ var button_layout = function(target) {
 }
 
 charts.line = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
@@ -1179,7 +1181,7 @@ charts.line = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         var data_median = 0;
 
@@ -1242,8 +1244,8 @@ charts.line = function(args) {
             //add the area
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target + ' svg path.area' + (line_id) + '-color').length > 0) {
-                    d3.selectAll(args.target + ' svg path.area' + (line_id) + '-color')
+                if($(args.target).find('svg path.area' + (line_id) + '-color').length > 0) {
+                    d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
                         .transition()
                             .duration(function() {
                                 return (args.transition_on_update) ? 1000 : 0;
@@ -1258,8 +1260,8 @@ charts.line = function(args) {
             }
 
             //add the line, if it already exists, transition the fine gentleman
-            if($(args.target + ' svg path.line' + (line_id) + '-color').length > 0) {
-                d3.selectAll(args.target + ' svg path.line' + (line_id) + '-color')
+            if($(args.target).find('svg path.line' + (line_id) + '-color').length > 0) {
+                d3.selectAll($(args.target).find('svg path.line' + (line_id) + '-color'))
                     .transition()
                         .duration(function() {
                             return (args.transition_on_update) ? 1000 : 0;
@@ -1307,24 +1309,17 @@ charts.line = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $(svg);
         var g;
 
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .voronoi').length > 0) {
-            $(args.target + ' svg .voronoi').remove();
-        }
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.voronoi').remove();
         
         //remove the old rollover text and circle if they already exist
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
-        if($(args.target + ' svg .line_rollover_circle').length > 0) {
-            $(args.target + ' svg .line_rollover_circle').remove();
-        }
+        $svg.find('.active_datapoint').remove();
+        $svg.find('.line_rollover_circle').remove();
 
         //rollover text
         svg.append('text')
@@ -1470,7 +1465,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -1557,7 +1552,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             if(args.linked && globals.link) {
@@ -1591,6 +1586,7 @@ charts.line = function(args) {
 }
 
 charts.histogram = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
@@ -1603,14 +1599,11 @@ charts.histogram = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
 
         //remove the old histogram, add new one
-        if($(args.target + ' svg .histogram').length > 0) {
-            $(args.target + ' svg .histogram')
-                .remove();
-        }
+        $(svg).find('.histogram').remove();
 
         var g = svg.append("g")
             .attr("class", "histogram");
@@ -1649,16 +1642,12 @@ charts.histogram = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        $(svg).find('.transparent-rollover-rect').remove();
+        $(svg).find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -1702,7 +1691,7 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -1731,7 +1720,7 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find(' svg .bar :eq(' + i + ')'))
                 .classed('active', true);
 
             //update rollover text
@@ -1760,11 +1749,11 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target + ' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
                 .classed('active', false);
             
             //reset active data point text
@@ -1778,6 +1767,7 @@ charts.histogram = function(args) {
 }
 
 charts.point = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
@@ -1799,7 +1789,7 @@ charts.point = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
 
         // plot the points, pretty straight-forward
@@ -1833,7 +1823,7 @@ charts.point = function(args) {
     }
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         //remove rollover text if it already exists
         if($(args.target + ' svg .active_datapoint').length > 0) {
@@ -1875,7 +1865,7 @@ charts.point = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             svg.selectAll('.points circle')
@@ -1947,7 +1937,7 @@ charts.point = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d,i) {
             if(args.linked && globals.link) {
@@ -1993,6 +1983,7 @@ charts.point = function(args) {
 // - need a way of changing the y axis and x axis
 // - need to sort out rollovers
 charts.bar = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
@@ -2006,15 +1997,12 @@ charts.bar = function(args) {
 
     this.mainPlot = function() {
 
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         var g;
 
         //remove the old histogram, add new one
-        if($(args.target + ' svg .barplot').length > 0) {
-            $(args.target + ' svg .barplot')
-                .remove();
-        }
+        $(svg).find('.barplot').remove();
 
         var data = args.data[0];
 
@@ -2071,16 +2059,13 @@ charts.bar = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        
+        $(svg).find('.transparent-rollover-rect').remove();
+        $(svg).find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -2108,7 +2093,7 @@ charts.bar = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -2164,11 +2149,11 @@ charts.bar = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
             
             //reset active data point text
@@ -2198,6 +2183,7 @@ var table = New data_table(data)
 */
 
 function data_table(args){
+	'use strict';
 	this.args = args;
 	this.args.standard_col = {width:150, font_size:12};
 	this.args.columns = [];
@@ -2320,6 +2306,7 @@ function data_table(args){
 
 
 charts.missing = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
@@ -2364,6 +2351,7 @@ charts.missing = function(args) {
 }
 
 function raw_data_transformation(args){
+    'use strict';
     //do we need to turn json data to 2d array?
 
     if(!$.isArray(args.data[0]))
@@ -2402,6 +2390,7 @@ function raw_data_transformation(args){
 }
 
 function process_line(args) {
+    'use strict';
     //are we replacing missing y values with zeros?
 
     //do we have a time-series?
@@ -2468,6 +2457,7 @@ function process_line(args) {
 }
 
 function process_histogram(args){
+    'use strict';
     // if args.binned=False, then we need to bin the data appropriately.
     // if args.binned=True, then we need to make sure to compute the relevant computed data.
     // the outcome of either of these should be something in args.computed_data.
@@ -2535,7 +2525,7 @@ function process_histogram(args){
 
 function process_categorical_variables(args){
     // For use with bar charts, etc.
-
+    'use strict';
     var extracted_data, processed_data={}, pd=[];
     var our_data = args.data[0];
     args.categorical_variables = [];
@@ -2577,7 +2567,7 @@ function process_categorical_variables(args){
 }
 
 function process_point(args){
-
+    'use strict';
     var data = args.data[0];
     var x = data.map(function(d){return d[args.x_accessor]});
     var y = data.map(function(d){return d[args.y_accessor]});
@@ -2591,7 +2581,7 @@ function process_point(args){
 }
 
 function add_ls(args){
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var data = args.data[0];
     //var min_x = d3.min(data, function(d){return d[args.x_accessor]});
     //var max_x = d3.max(data, function(d){return d[args.x_accessor]});
@@ -2607,7 +2597,7 @@ function add_ls(args){
 }
 
 function add_lowess(args){
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var lowess = args.lowess_line;
 
     var line = d3.svg.line()
@@ -2979,6 +2969,6 @@ function error(args) {
     var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
     console.log('ERROR : ', args.target, ' : ', args.error);
     
-    $(args.target + ' .chart_title').append(error);
+    $(args.target).find('.chart_title').append(error);
 }
 
