@@ -6,14 +6,14 @@ A sample set of examples may be found on [the examples page](http://metricsgraph
 
 ```
 data_graphic({
-    title: "Downloads",
-    description: "This graphics shows Firefox GA downloads for the past six months."
+    title: 'Downloads',
+    description: 'This graphics shows Firefox GA downloads for the past six months.',
     data: downloads_data, \\ an array of objects, such as [{value:100,date:...},...]
     width: 600,
     height: 250,
     target: '#downloads', \\ the html element that the graphic is inserted in
     x_accessor: 'date',  \\ the key that accesses the x value
-    y_accessor: 'value', \\ the key that accesses the y value
+    y_accessor: 'value' \\ the key that accesses the y value
 })
 ```
 
