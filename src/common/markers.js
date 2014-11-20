@@ -1,4 +1,5 @@
 function markers(args) {
+    'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
     var gm;
     var gb;

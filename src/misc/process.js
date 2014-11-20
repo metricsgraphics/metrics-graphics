@@ -1,4 +1,5 @@
 function raw_data_transformation(args){
+    'use strict';
     //do we need to turn json data to 2d array?
 
     if(!$.isArray(args.data[0]))
@@ -37,6 +38,7 @@ function raw_data_transformation(args){
 }
 
 function process_line(args) {
+    'use strict';
     //are we replacing missing y values with zeros?
 
     //do we have a time-series?
@@ -103,6 +105,7 @@ function process_line(args) {
 }
 
 function process_histogram(args){
+    'use strict';
     // if args.binned=False, then we need to bin the data appropriately.
     // if args.binned=True, then we need to make sure to compute the relevant computed data.
     // the outcome of either of these should be something in args.computed_data.
@@ -170,7 +173,7 @@ function process_histogram(args){
 
 function process_categorical_variables(args){
     // For use with bar charts, etc.
-
+    'use strict';
     var extracted_data, processed_data={}, pd=[];
     var our_data = args.data[0];
     args.categorical_variables = [];
@@ -212,7 +215,7 @@ function process_categorical_variables(args){
 }
 
 function process_point(args){
-
+    'use strict';
     var data = args.data[0];
     var x = data.map(function(d){return d[args.x_accessor]});
     var y = data.map(function(d){return d[args.y_accessor]});

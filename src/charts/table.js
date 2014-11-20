@@ -15,6 +15,7 @@ var table = New data_table(data)
 */
 
 function data_table(args){
+	'use strict';
 	this.args = args;
 	this.args.standard_col = {width:150, font_size:12};
 	this.args.columns = [];

@@ -1,4 +1,5 @@
 function y_rug(args) {
+    'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
     var buffer_size = args.chart_type == 'point' 
         ? args.buffer / 2 

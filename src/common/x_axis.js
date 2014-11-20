@@ -1,5 +1,5 @@
 function x_rug(args) {
-
+    'use strict';
     var buffer_size = args.chart_type =='point' 
         ? args.buffer / 2 
         : args.buffer;
@@ -30,6 +30,7 @@ function x_rug(args) {
 }
 
 function x_axis(args) {
+    'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
     var g;
     var min_x;

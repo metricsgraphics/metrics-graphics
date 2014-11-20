@@ -1,6 +1,7 @@
 function chart_title(args) {
     //is chart title different than existing, if so, clear the fine 
     //gentleman, otherwise, move along
+    'use strict';
     var currentTitle = $(args.target).find('h2.chart_title');
     if(args.title && args.title !== currentTitle.text())
         currentTitle.remove();

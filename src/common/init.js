@@ -1,4 +1,5 @@
 function init(args) {
+    'use strict';
     var defaults = {
         target: null,
         title: null,

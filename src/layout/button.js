@@ -1,4 +1,5 @@
 var button_layout = function(target) {
+    'use strict';
     this.target = target;
     this.feature_set = {};
     this.public_name = {};

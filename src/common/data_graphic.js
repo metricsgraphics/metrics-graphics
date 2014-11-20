@@ -1,4 +1,4 @@
-'use strict';
+
 
 var charts = {};
 var globals = {};
@@ -6,6 +6,7 @@ globals.link = false;
 globals.version = "1.0";
 
 function data_graphic() {
+    'use strict';
     var moz = {};
     moz.defaults = {};
     moz.defaults.all = {

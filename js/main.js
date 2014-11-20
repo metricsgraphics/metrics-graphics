@@ -1,6 +1,5 @@
-'use strict';
-
 $(document).ready(function() {
+    'use strict';
     //json data that we intend to update later on via on-screen controls
     var split_by_data;
     
@@ -30,7 +29,6 @@ $(document).ready(function() {
     //few observations
     d3.json('data/missing-y.json', function(data) {
         data = convert_dates(data, 'date');
-
         //add a line chart that has a few observations
         data_graphic({
             title: "Few Observations",
@@ -392,6 +390,7 @@ $(document).ready(function() {
         title: "Glorious Graphic",
         error: 'This data is blocked by Lorem Ipsum. Get your stuff together, Ipsum.',
         chart_type: 'missing-data',
+        missing_text: 'This is an example of a missing chart',
         description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
         target: '#glorious_chart',
         width: torso.width,

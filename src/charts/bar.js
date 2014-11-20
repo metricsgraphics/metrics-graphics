@@ -5,6 +5,7 @@
 // - need a way of changing the y axis and x axis
 // - need to sort out rollovers
 charts.bar = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {

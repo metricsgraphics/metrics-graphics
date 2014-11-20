@@ -1,4 +1,5 @@
 charts.line = function(args) {
+    'use strict';
     this.args = args;
 
     this.init = function(args) {
