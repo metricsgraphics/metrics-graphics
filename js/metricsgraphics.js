@@ -1288,8 +1288,8 @@ charts.line = function(args) {
             
             //build legend
             if(args.legend) {
-                legend += "<span class='line" + (i+1)  + "-legend-color'>&mdash; " 
-                        + args.legend[i] + "&nbsp; </span>";
+                legend = "<span class='line" + line_id  + "-legend-color'>&mdash; "
+                        + args.legend[i] + "&nbsp; </span>" + legend;
             }
         }
         
