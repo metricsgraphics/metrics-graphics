@@ -1,13 +1,10 @@
 function markers(args) {
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var gm;
     var gb;
 
     if(args.markers) {
-        if($(args.target + ' svg .markers').length > 0) {
-            $(args.target + ' svg .markers')
-                .remove();
-        }
+        $(args.target).find('svg .markers').remove();
 
         gm = svg.append('g')
             .attr('class', 'markers');

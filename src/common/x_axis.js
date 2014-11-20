@@ -4,7 +4,7 @@ function x_rug(args) {
         ? args.buffer / 2 
         : args.buffer;
 
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var all_data=[];
     for (var i=0; i<args.data.length; i++) {
         for (var j=0; j<args.data[i].length; j++) {
@@ -30,7 +30,7 @@ function x_rug(args) {
 }
 
 function x_axis(args) {
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var g;
     var min_x;
     var max_x;
@@ -224,10 +224,7 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    if($(args.target + ' svg .x-axis').length > 0) {
-        $(args.target + ' svg .x-axis')
-            .remove();
-    }
+    $(args.target).find('svg .x-axis').remove();
 
     if (!args.x_axis) return this;
 

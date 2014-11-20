@@ -20,7 +20,7 @@ charts.point = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
 
         // plot the points, pretty straight-forward
@@ -54,7 +54,7 @@ charts.point = function(args) {
     }
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         //remove rollover text if it already exists
         if($(args.target + ' svg .active_datapoint').length > 0) {
@@ -96,7 +96,7 @@ charts.point = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             svg.selectAll('.points circle')
@@ -168,7 +168,7 @@ charts.point = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d,i) {
             if(args.linked && globals.link) {

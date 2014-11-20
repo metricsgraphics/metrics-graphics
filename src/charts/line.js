@@ -11,7 +11,7 @@ charts.line = function(args) {
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         var data_median = 0;
 
@@ -74,8 +74,8 @@ charts.line = function(args) {
             //add the area
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target + ' svg path.area' + (line_id) + '-color').length > 0) {
-                    d3.selectAll(args.target + ' svg path.area' + (line_id) + '-color')
+                if($(args.target).find('svg path.area' + (line_id) + '-color').length > 0) {
+                    d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
                         .transition()
                             .duration(function() {
                                 return (args.transition_on_update) ? 1000 : 0;
@@ -90,8 +90,8 @@ charts.line = function(args) {
             }
 
             //add the line, if it already exists, transition the fine gentleman
-            if($(args.target + ' svg path.line' + (line_id) + '-color').length > 0) {
-                d3.selectAll(args.target + ' svg path.line' + (line_id) + '-color')
+            if($(args.target).find('svg path.line' + (line_id) + '-color').length > 0) {
+                d3.selectAll($(args.target).find('svg path.line' + (line_id) + '-color'))
                     .transition()
                         .duration(function() {
                             return (args.transition_on_update) ? 1000 : 0;
@@ -139,24 +139,17 @@ charts.line = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $(svg);
         var g;
 
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .voronoi').length > 0) {
-            $(args.target + ' svg .voronoi').remove();
-        }
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.voronoi').remove();
         
         //remove the old rollover text and circle if they already exist
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
-        if($(args.target + ' svg .line_rollover_circle').length > 0) {
-            $(args.target + ' svg .line_rollover_circle').remove();
-        }
+        $svg.find('.active_datapoint').remove();
+        $svg.find('.line_rollover_circle').remove();
 
         //rollover text
         svg.append('text')
@@ -302,7 +295,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -389,7 +382,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             if(args.linked && globals.link) {

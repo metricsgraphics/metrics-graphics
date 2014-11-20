@@ -18,15 +18,12 @@ charts.bar = function(args) {
 
     this.mainPlot = function() {
 
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         var g;
 
         //remove the old histogram, add new one
-        if($(args.target + ' svg .barplot').length > 0) {
-            $(args.target + ' svg .barplot')
-                .remove();
-        }
+        $(svg).find('.barplot').remove();
 
         var data = args.data[0];
 
@@ -83,16 +80,13 @@ charts.bar = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        if($(args.target + ' svg .transparent-rollover-rect').length > 0) {
-            $(args.target + ' svg .transparent-rollover-rect').remove();
-        }
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        
+        $(svg).find('.transparent-rollover-rect').remove();
+        $(svg).find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -120,7 +114,7 @@ charts.bar = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -176,11 +170,11 @@ charts.bar = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select(args.target + ' svg');
+        var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
             
             //reset active data point text

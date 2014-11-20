@@ -1,5 +1,5 @@
 function y_rug(args) {
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var buffer_size = args.chart_type == 'point' 
         ? args.buffer / 2 
         : args.buffer * 2 / 3;
@@ -28,7 +28,7 @@ function y_rug(args) {
 }
 
 function y_axis(args) {
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
     var g;
 
     var min_y, max_y;
@@ -137,10 +137,7 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    if($(args.target + ' svg .y-axis').length > 0) {
-        $(args.target + ' svg .y-axis')
-            .remove();
-    }
+    $(args.target).find('svg .y-axis').remove();
 
     if (!args.y_axis) return this;
 
@@ -271,7 +268,7 @@ function y_axis_categorical(args) {
         return args.scales.Y(di[args.y_accessor]);
     }
 
-    var svg = d3.select(args.target + ' svg');
+    var svg = d3.select($(args.target).find('svg').get(0));
 
     var g = svg.append('g')
         .classed('y-axis', true)

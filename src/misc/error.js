@@ -3,5 +3,5 @@ function error(args) {
     var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
     console.log('ERROR : ', args.target, ' : ', args.error);
     
-    $(args.target + ' .chart_title').append(error);
+    $(args.target).find('.chart_title').append(error);
 }
