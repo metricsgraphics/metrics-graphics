@@ -34,6 +34,7 @@ from StringIO import StringIO
 
 scripts = [
     'src/common/data_graphic.js',
+    'src/common/bootstrap-tooltip-popover.js',
     'src/common/chart_title.js',
     'src/common/y_axis.js',
     'src/common/x_axis.js',
