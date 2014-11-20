@@ -132,7 +132,8 @@ function data_graphic() {
         right: 0,
         left: 0,
         width: 350,
-        height: 220
+        height: 220,
+        missing_text: 'Data currently missing or unavailable'
     }
 
     var args = arguments[0];

@@ -26,17 +26,15 @@ charts.missing = function(args) {
             .attr('width', args.width - (args.left * 2))
             .attr('height', args.height - (args.top * 2));
 
-        var missing_text = 'Data currently missing or unavailable';
-
         // add missing text
-        svg.selectAll('.missing_text').data([missing_text])
+        svg.selectAll('.missing_text').data([args.missing_text])
           .enter().append('text')
             .attr('class', 'missing-text')
             .attr('x', args.width / 2)
             .attr('y', args.height / 2)
             .attr('dy', '.50em')
             .attr('text-anchor', 'middle')
-            .text(missing_text)  
+            .text(args.missing_text)
 
         return this;
     }
