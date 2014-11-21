@@ -2807,6 +2807,13 @@ function data_table(args){
 	this.args.standard_col = {width:150, font_size:12};
 	this.args.columns = [];
 
+	this._add_column = function(_args, arg_type){
+		var standard_column = this.args.standard_col;
+		var args = merge_with_defaults(clone(_args), clone(standard_column));
+		args.type=arg_type;
+		this.args.columns.push(args);
+	}
+
 	this.target = function(){
 		var target = arguments[0];
 		this.args.target = target;
@@ -2814,15 +2821,11 @@ function data_table(args){
 	}
 
 	this.title = function(){
-		var args = merge_with_defaults(clone(arguments[0]), clone(this.args.standard_col));
-		args.type='title';
-		this.args.columns.push(args);
+		this._add_column(arguments[0], 'title');
 		return this;
 	}
 	this.text = function(){
-		var args = merge_with_defaults(clone(arguments[0]), clone(this.args.standard_col));
-		args.type='text';
-		this.args.columns.push(args);
+		this._add_column(arguments[0], 'text');
 		return this;
 	}
 	this.bullet = function(){
@@ -2845,9 +2848,7 @@ function data_table(args){
 		return this;
 	}
 	this.number = function(){
-		var args = merge_with_defaults(clone(arguments[0]), clone(this.args.standard_col));
-		args.type='number';
-		this.args.columns.push(args);
+		this._add_column(arguments[0], 'number');
 		return this;
 	}
 
@@ -2863,6 +2864,7 @@ function data_table(args){
 		var thead = table.append('thead').classed('data-table-thead', true);
 		var tbody = table.append('tbody');
 
+		var this_column;
 		var tr, th, td_accessor, td_type, th_text, td_text, td;
 		var col;
 
@@ -2877,9 +2879,7 @@ function data_table(args){
 				.style('width', this_col.width)
 				.style('text-align', td_type=='title' ? 'left' : 'right')
 				.text(th_text);
-
 		}
-
 
 		for (var h=0;h<args.columns.length;h++){
 			col = colgroup.append('col');
@@ -2891,9 +2891,42 @@ function data_table(args){
 		for (var i=0;i<args.data.length;i++){
 			tr = tbody.append('tr');
 			for (var j=0;j<args.columns.length;j++){
-				td_accessor = args.columns[j].accessor;
+				this_column = args.columns[j];
+				td_accessor = this_column.accessor;
 				td_text = args.data[i][td_accessor];
-				td_type     = args.columns[j].type;
+				td_type     = this_column.type;
+
+				if (td_type=='number'){
+					//td_text may need to be rounded.
+					if (this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')){
+						// round according to the number value in this_column.round.
+						//td_text = d3.round(td_text, this_column.round);
+						td_text = d3.format('0,.'+this_column.round+'f')(td_text);
+					}
+					if (this_column.hasOwnProperty('value_formatter')){
+						// provide a function that formats the text according to the function this_column.format.
+						td_text = this_column.value_formatter(td_text);
+
+					} if (this_column.hasOwnProperty('format')){
+						// this is a shorthand for percentage formatting, and others if need be.
+						// supported: 'percentage', 'count', 'temperature'
+						
+						if (this_column.round) td_text = d3.round(td_text, this_column.round);
+						var this_format = this_column.format;
+						var formatter;
+
+						if (this_format=='percentage')  formatter = d3.format('%p');
+						if (this_format=='count')       formatter = d3.format("0,000");
+						if (this_format=='temperature') formatter = function(t){return t +'º'};
+						
+						td_text = formatter(td_text);
+
+					} if (this_column.hasOwnProperty('currency')){
+						// this is another shorthand for formatting according to a currency amount, which gets appended to front of number.
+						td_text = this_column.currency + td_text;
+					}
+				}
+
 				td = tr.append('td')
 					.classed('data-table', true)
 					.classed('table-number', td_type=='number')
