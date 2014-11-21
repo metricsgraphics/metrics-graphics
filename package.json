@@ -1,0 +1,35 @@
+{
+  "name": "metrics-graphics",
+  "version": "1.0.0",
+  "description": "A library optimized for concise, principled data graphics and layouts",
+  "main": "js/metricsgraphics.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mozilla/metrics-graphics.git"
+  },
+  "keywords": [
+    "metrics-graphics",
+    "metricsgraphicsjs",
+    "metricsgraphics",
+    "metricsgraphics.js",
+    "d3 charts"
+  ],
+  "author": "Mozilla",
+  "contributors": [
+    "Ali Almossawi (http://twitter.com/alialmossawi)>",
+    "Hamilton Ulmer (http://github.com/hamilton)>"
+  ],
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla/metrics-graphics/issues"
+  },
+  "homepage": "http://metricsgraphicsjs.org",
+  "dependencies": {
+    "jquery": ">=1.11.1",
+    "bootstrap": ">=3.1.1",
+    "d3": ">=3.4.8"
+  }
+}
