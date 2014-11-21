@@ -25,7 +25,6 @@ $(document).ready(function() {
 
     assignEventListeners();
 
-
     //few observations
     d3.json('data/missing-y.json', function(data) {
         data = convert_dates(data, 'date');
@@ -852,6 +851,23 @@ $(document).ready(function() {
             y_accessor: 'y'
         });
     })
+
+
+    //
+    var bdata = [
+        {a:'apples', b:'quartz'},
+        {a:'bananas', b:'pyrite'},
+        {a:'durian', b:'obsidian'}
+    ]
+    var resolution_features = ['weekly', 'monthly']
+
+    var buttons = new button_layout('div#buttons')
+        .data(bdata)
+        .manual_button('Time Scale', resolution_features, function(){console.log('switched time scales.')})
+        .button('a', 'Fruit')
+        .button('b', 'Rock')
+        .callback(function(){console.log('made it')})
+        .display();
 
     // data tables
     var table_data = [

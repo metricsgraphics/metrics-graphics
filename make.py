@@ -40,6 +40,7 @@ scripts = [
     'src/common/x_axis.js',
     'src/common/init.js',
     'src/common/markers.js',
+    'src/layout/bootstrap_dropdown.js',
     'src/layout/button.js',
     'src/charts/line.js',
     'src/charts/histogram.js',
