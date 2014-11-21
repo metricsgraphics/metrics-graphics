@@ -27,5 +27,9 @@
     "url": "https://github.com/mozilla/metrics-graphics/issues"
   },
   "homepage": "http://metricsgraphicsjs.org",
-  "dependencies": { }
+  "dependencies": {
+    "jquery": ">=1.11.1",
+    "bootstrap": ">=3.1.1",
+    "d3": ">=3.4.8"
+  }
 }
