@@ -17,6 +17,7 @@
     "metricsgraphics.js",
     "d3 charts"
   ],
+  "author": "Mozilla",
   "contributors": [
     "Ali Almossawi (http://twitter.com/alialmossawi)>",
     "Hamilton Ulmer (http://github.com/hamilton)>"
