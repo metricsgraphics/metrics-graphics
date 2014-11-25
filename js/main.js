@@ -884,7 +884,11 @@ $(document).ready(function() {
         description: 'A table has many of the same properties as a data_graphic.'
     })
         .target('#table1')
-        .title( {accessor: 'geo', secondary_accessor:'year', label: 'Country'})
+        .title( {
+            accessor: 'geo', 
+            secondary_accessor:'year', 
+            label: 'Country',
+            description: 'These are arbitrary countries I thought of, on the spot, with arbitrary years underneath.'})
         .number({accessor: 'value1', label: 'Size', value_formatter:function(d){return d+' yrds'}})
         .number({accessor: 'value2', label: 'Score', round:2,  font_weight: 'bold'})
         .number({accessor: 'temp', label: 'Temp.',   format:'temperature',              width:100, color: 'gray'})

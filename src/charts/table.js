@@ -107,11 +107,21 @@ function data_table(args){
 			td_type = this_col.type;
 			th_text=this_col.label;
 			th_text =th_text == undefined ? '' : th_text;
-			tr.append('th')
+			th = tr.append('th')
 				.classed('data-table-th', true)
 				.style('width', this_col.width)
 				.style('text-align', td_type=='title' ? 'left' : 'right')
 				.text(th_text);
+			// TODO - fix this.
+			// if (args.description){
+			// 	apply_popover_to({
+			// 		dom_element: 'th',
+			// 		class: 'column-title',
+			// 		target: th[0],
+			// 		title: th_text,
+			// 		description: this_col.description
+			// 	})
+			// }
 		}
 
 		for (var h=0;h<args.columns.length;h++){
