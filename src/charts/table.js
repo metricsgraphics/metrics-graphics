@@ -112,16 +112,20 @@ function data_table(args){
 				.style('width', this_col.width)
 				.style('text-align', td_type=='title' ? 'left' : 'right')
 				.text(th_text);
-			// TODO - fix this.
-			// if (args.description){
-			// 	apply_popover_to({
-			// 		dom_element: 'th',
-			// 		class: 'column-title',
-			// 		target: th[0],
-			// 		title: th_text,
-			// 		description: this_col.description
-			// 	})
-			// }
+			if (this_col.description){
+				th.append('i')
+					.classed('fa', true)
+					.classed('fa-question-circle', true)
+					.classed('fa-inverse', true);
+				$(th[0]).popover({
+                    html: true,
+                    animation: false,
+                    content: this_col.description,
+                    trigger: 'hover',
+                    placement: 'top',
+                    container: $(th[0])
+                 })
+			}
 		}
 
 		for (var h=0;h<args.columns.length;h++){

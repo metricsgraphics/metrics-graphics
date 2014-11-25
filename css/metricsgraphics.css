@@ -322,6 +322,33 @@ th.data-table-th {
     text-align: right;
 }
 
+th.data-table-th .fa {
+    color: #ccc;
+    font-size: 14px;
+    padding-left: 4px;
+    vertical-align: top;
+}
+
+th.data-table-th .popover {
+    font-size: 12px;
+    font-weight:normal;
+}
+
+th.data-table-th .popover-content {
+    cursor: auto;
+    line-height: 17px;
+}
+
+th.data-table-th .popover.top {
+    margin-top: 0;
+}
+
+th.data-table-th
+
+.chart_title .fa.warning {
+    font-weight: 300;
+}
+
 .data-table .secondary-title {
     color: darkgray;
 }
@@ -336,3 +363,4 @@ td.table-text {
     opacity: 0.8;
     padding-left: 30px;
 }
+
