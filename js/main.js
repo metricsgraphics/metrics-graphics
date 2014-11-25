@@ -871,10 +871,10 @@ $(document).ready(function() {
 
     // data tables
     var table_data = [
-        {'year': 1852,'value1': 10.2, 'value2': 1030004.43423,'share':.12, 'total':3403400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful."},
-        {'year': 1901,'value1': 10.1, 'value2': 54003.223, 'share':.11, 'total':43002100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers."},
+        {'year': 1852,'value1': 10.2, 'value2': 1030004.43423,'share':.12, 'total':34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful."},
+        {'year': 1901,'value1': 10.1, 'value2': 54003.223, 'share':.11, 'total':4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers."},
         {'year': 1732,'value1': 4.3, 'value2': 1004.91422,   'share':.14, 'total':4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column."},
-        {'year': 1945,'value1': 2.9, 'value2': 2430.121,  'share':.23, 'total':2400000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil."},
+        {'year': 1945,'value1': 2.9, 'value2': 2430.121,  'share':.23, 'total':24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil."},
         {'year': 1910,'value1': 1.0, 'value2': 5432.3,  'share':.19, 'total':130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing."}
     ]
 
@@ -886,11 +886,18 @@ $(document).ready(function() {
         .target('#table1')
         .title( {accessor: 'geo', secondary_accessor:'year', label: 'Country'})
         .number({accessor: 'value1', label: 'Size', value_formatter:function(d){return d+' yrds'}})
-        .number({accessor: 'value2', label: 'Score', round:2})
-        .number({accessor: 'temp', label: 'Temp.',   format:'temperature',              width:100})
-        .number({accessor: 'total', label: 'Volume', format:'count', currency:'$',      width:100})
+        .number({accessor: 'value2', label: 'Score', round:2,  font_weight: 'bold'})
+        .number({accessor: 'temp', label: 'Temp.',   format:'temperature',              width:100, color: 'gray'})
+        .number({
+            accessor: 'total', 
+            label: 'Volume', 
+            format:'count', currency:'$', 
+            width:100, 
+            font_weight: function(d){return d < 5000000 ? 'bold' : '300'},
+            color:       function(d){return d < 5000000 ? '#b20000' : 'black'}
+        })
         .number({accessor: 'share', label: 'Share', format:'percentage',                width:100})
-        .text({accessor: 'description', width:240})
+        .text({accessor: 'description', width:240, font_style: 'italic'})
         .display();
 
     //add this scatterplot and color the groups based on the theme

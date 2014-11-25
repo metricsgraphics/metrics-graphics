@@ -9,10 +9,10 @@ var button_layout = function(target) {
     this.manual_callback = {};
 
     this._strip_punctuation = function(s){
-    var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
-    var finalString = punctuationless.replace(/ +?/g, "");
-    return finalString;
-}
+        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var finalString = punctuationless.replace(/ +?/g, "");
+        return finalString;
+    }
 
     this.data = function(data) {
         this._data = data;

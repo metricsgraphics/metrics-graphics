@@ -17,8 +17,27 @@ var table = New data_table(data)
 function data_table(args){
 	'use strict';
 	this.args = args;
-	this.args.standard_col = {width:150, font_size:12};
+	this.args.standard_col = {width:150, font_size:12, font_weight:'normal'};
 	this.args.columns = [];
+	this.formatting_options = [['color', 'color'], ['font-weight', 'font_weight'], ['font-style', 'font_style'], ['font-size', 'font_size']];
+
+	this._strip_punctuation = function(s){
+        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var finalString = punctuationless.replace(/ +?/g, "");
+        return finalString;
+    }
+
+    this._format_element = function(element, value, args){
+    	this.formatting_options.forEach(function(fo){
+			var attr = fo[0];
+			var key = fo[1];
+			if (args[key]) element.style(attr, 
+				typeof args[key] == 'string' || 
+				typeof args[key] == 'number' ? 
+					args[key] : args[key](value));
+		});
+
+    }
 
 	this._add_column = function(_args, arg_type){
 		var standard_column = this.args.standard_col;
@@ -66,6 +85,7 @@ function data_table(args){
 	}
 
 	this.display = function(){
+
 		var this_column;
 		var args = this.args;
 
@@ -77,8 +97,8 @@ function data_table(args){
 		var thead = table.append('thead').classed('data-table-thead', true);
 		var tbody = table.append('tbody');
 
-		var this_column;
-		var tr, th, td_accessor, td_type, th_text, td_text, td;
+		var this_column, this_title;
+		var tr, th, td_accessor, td_type, td_value, th_text, td_text, td;
 		var col;
 
 		tr = thead.append('tr').classed('header-row', true);
@@ -106,7 +126,7 @@ function data_table(args){
 			for (var j=0;j<args.columns.length;j++){
 				this_column = args.columns[j];
 				td_accessor = this_column.accessor;
-				td_text = args.data[i][td_accessor];
+				td_value = td_text = args.data[i][td_accessor];
 				td_type     = this_column.type;
 
 				if (td_type=='number'){
@@ -142,15 +162,17 @@ function data_table(args){
 
 				td = tr.append('td')
 					.classed('data-table', true)
-					.classed('table-number', td_type=='number')
-					.classed('table-title',  td_type=='type')
-					.classed('table-text',   td_type=='text')
-					.style('width', args.columns[j].width)
-					.style('font-size', args.columns[j].font_size)
+					.classed('table-' + td_type, true)
+					.classed('table-' + td_type + '-' + this._strip_punctuation(td_accessor), true)
+					.attr('data-value', td_value)
+					.style('width',       this_column.width)
 					.style('text-align', td_type=='title' || td_type=='text' ? 'left' : 'right');
 
+				this._format_element(td, td_value, this_column);
+
 				if (td_type=='title'){
-					td.append('div').text(td_text);
+					this_title = td.append('div').text(td_text);
+					this._format_element(this_title, td_text, this_column);
 					if (args.columns[j].hasOwnProperty('secondary_accessor')){
 						td.append('div')
 							.text(args.data[i][args.columns[j].secondary_accessor])
