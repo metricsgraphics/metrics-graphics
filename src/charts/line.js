@@ -55,7 +55,7 @@ charts.line = function(args) {
         //for building the optional legend
         var legend = '';
         var this_data;
-            
+
         for(var i=args.data.length-1; i>=0; i--) {
             this_data = args.data[i];
 
@@ -73,9 +73,10 @@ charts.line = function(args) {
             }
 
             //add the area
+            var $area = $(args.target).find('svg path.area' + (line_id) + '-color');
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target).find('svg path.area' + (line_id) + '-color').length > 0) {
+                if($area.length > 0) {
                     d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
                         .transition()
                             .duration(function() {
@@ -88,6 +89,8 @@ charts.line = function(args) {
                         .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
+            } else if ($area.length > 0) {
+              $area.remove();
             }
 
             //add the line, if it already exists, transition the fine gentleman
@@ -119,14 +122,14 @@ charts.line = function(args) {
                         .attr('d', line(args.data[i]));
                 }
             }
-            
+
             //build legend
             if(args.legend) {
                 legend = "<span class='line" + line_id  + "-legend-color'>&mdash; "
                         + args.legend[i] + "&nbsp; </span>" + legend;
             }
         }
-        
+
         if(args.legend) {
             $(args.legend_target).html(legend);
         }
@@ -147,7 +150,7 @@ charts.line = function(args) {
         //remove the old rollovers if they already exist
         $svg.find('.transparent-rollover-rect').remove();
         $svg.find('.voronoi').remove();
-        
+
         //remove the old rollover text and circle if they already exist
         $svg.find('.active_datapoint').remove();
         $svg.find('.line_rollover_circle').remove();
@@ -160,7 +163,7 @@ charts.line = function(args) {
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
-                
+
         //append circle
         svg.append('circle')
             .classed('line_rollover_circle', true)
@@ -192,14 +195,14 @@ charts.line = function(args) {
                 .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
                 .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
                 .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
-        
+
             var g = svg.append('g')
                 .attr('class', 'voronoi')
 
             //we'll be using these when constructing the voronoi rollovers
             var data_nested = d3.nest()
-                .key(function(d) { 
-                    return args.scales.X(d[args.x_accessor]) + "," 
+                .key(function(d) {
+                    return args.scales.X(d[args.x_accessor]) + ","
                         + args.scales.Y(d[args.y_accessor]);
                 })
                 .rollup(function(v) { return v[0]; })
@@ -217,7 +220,7 @@ charts.line = function(args) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
-                                
+
                                 return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
                             }
                             else {
@@ -247,12 +250,12 @@ charts.line = function(args) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
-                                
+
                                 //only format when y-axis is date
                                 var id = (typeof v === 'number')
                                         ? i
                                         : formatter(v);
-                                        
+
                                 return 'line' + line_id + '-color ' + 'roll_' + id;
                             }
                             else {
@@ -313,7 +316,7 @@ charts.line = function(args) {
                 })
                 .attr('r', args.point_size)
                 .style('opacity', 1);
-     
+
             //trigger mouseover on all rects for this date in .linked charts
             if(args.linked && !globals.link) {
                 globals.link = true;
@@ -331,7 +334,7 @@ charts.line = function(args) {
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
                 })
-            }    
+            }
 
             svg.selectAll('text')
                 .filter(function(g, j) {
@@ -365,15 +368,15 @@ charts.line = function(args) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
-                            return fmt(dd) + '  ' + args.yax_units 
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + d[args.x_accessor] 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                            return args.x_accessor + ': ' + d[args.x_accessor]
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
