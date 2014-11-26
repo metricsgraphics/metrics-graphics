@@ -117,7 +117,7 @@ function data_graphic() {
         baseline_accessor: null,
         predictor_accessor: null,
         predictor_proportion: 5,
-        dodge_acessor: null,
+        dodge_accessor: null,
         binned: true,
         padding_percentage: 0,
         outer_padding_percentage: .1,
