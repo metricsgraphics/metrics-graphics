@@ -221,7 +221,12 @@ charts.line = function(args) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
 
-                                return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
+                                //only format when x-axis is date
+                                var id = (typeof v === 'number')
+                                        ? i
+                                        : formatter(v);
+
+                                return 'line' + d['line_id'] + '-color ' + 'roll_' + id;
                             }
                             else {
                                 return 'line' + d['line_id'] + '-color';
@@ -251,7 +256,7 @@ charts.line = function(args) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
 
-                                //only format when y-axis is date
+                                //only format when x-axis is date
                                 var id = (typeof v === 'number')
                                         ? i
                                         : formatter(v);
