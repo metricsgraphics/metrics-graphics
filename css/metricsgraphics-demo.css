@@ -63,7 +63,7 @@ body {
 }
 
 .examples-options {
-    font-size: 10px;
+    font-size: 0.8rem;
 }
 
 .float-right {
@@ -71,7 +71,7 @@ body {
 }
 
 .footer {
-    font-size: 11px;
+    font-size: 0.9rem;
     padding: 40px;
     text-align: center;
 }
@@ -84,14 +84,14 @@ body {
 }
 
 .head h1 {
-    font-size: 50px;
+    font-size: 4.1rem;
     font-weight: 300;
     margin: 45px 0 0 0;
 }
 
 .head ul {
     clear: both;
-    font-size: 14px;
+    font-size: 1.2rem;
     padding: 10px 0 0 0;
 }
 
@@ -117,13 +117,13 @@ html {
 
 p {
     font-family: 'PT Serif', serif;
-    font-size: 16px;
+    font-size: 1.3rem;
     line-height: 24px;
 }
 
 .pill {
     font-family: 'Open Sans', serif;
-    font-size: 12px;
+    font-size: 1rem;
     text-transform: uppercase;
 }
 
@@ -146,11 +146,11 @@ p {
 }
 
 #trunk h2 {
-    font-size: 15px;
+    font-size: 1.2rem;
 }
 
 #trunk h2.trunk-title {
-    font-size: 25px;
+    font-size: 2.2rem;
     font-weight: 300;
     text-transform: uppercase;
 }
@@ -163,7 +163,7 @@ p {
 
 .wip {
     background-color: #f1f1f1;
-    font-size: 15px;
+    font-size: 1.3rem;
     margin-top: 60px;
     padding: 10px;
     border-top-left-radius: 6px;
