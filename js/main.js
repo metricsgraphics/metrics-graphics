@@ -951,8 +951,7 @@ $(document).ready(function() {
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
-            $('#dark').attr({href : 'css/metricsgraphics-dark.css'});
-            $('#dark-layout').attr({href : 'css/metricsgraphics-dark-layout.css'});
+            $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
 
             //add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('dark');

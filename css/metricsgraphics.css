@@ -1,6 +1,6 @@
 .active_datapoint {
     fill: black;
-    font-size: 11px;
+    font-size: 0.9rem;
     font-weight: 400;
 }
 
@@ -52,13 +52,13 @@
 
 .baselines text {
     fill: black;
-    font-size: 9px;
+    font-size: 0.7rem;
     opacity: 0.5;
     stroke: none;
 }
 
 .chart_title .popover {
-    font-size: 12px;
+    font-size: 0.95rem;
 }
 
 .chart_title .popover-content {
@@ -72,14 +72,14 @@
 
 .chart_title {
     cursor: default;
-    font-size: 22px;
+    font-size: 1.8rem;
     padding-top: 8px;
     text-align: center;
 }
 
 .chart_title .fa {
     color: #ccc;
-    font-size: 14px;
+    font-size: 1.2rem;
     padding-left: 4px;
     vertical-align: top;
 }
@@ -169,7 +169,7 @@ circle {
 }
 
 .legend {
-    font-size: 11px;
+    font-size: 0.9rem;
     padding: 25px 0 15px 0;
 }
 
@@ -187,7 +187,7 @@ circle {
 
 .markers text {
     fill: black;
-    font-size: 9px;
+    font-size: 0.7rem;
     opacity: 0.5;
     stroke: none;
 }
@@ -265,14 +265,14 @@ text {
 .y-axis text,
 .histogram .axis text {
     fill: black;
-    font-size: 11px;
+    font-size: 0.9rem;
     opacity: 0.5;
 }
 
 .x-axis .label,
 .y-axis .label,
 .axis .label {
-    font-size: 10px;
+    font-size: 0.8rem;
     text-transform: uppercase;
     font-weight: 400;
 }
@@ -280,17 +280,17 @@ text {
 .x-axis-small text,
 .y-axis-small text,
 .active-datapoint-small {
-    font-size: 8px;
+    font-size: 0.6rem;
 }
 
 .x-axis-small .label,
 .y-axis-small .label {
-    font-size: 8.5px;
+    font-size: 0.65rem;
 }
 
 .year-marker text {
     fill: black;
-    font-size: 9px;
+    font-size: 0.7rem;
     opacity: 0.5;
 }
 
@@ -302,7 +302,7 @@ text {
 }
 
 .year-marker-small text {
-    font-size: 8px;
+    font-size: 0.6rem;
 }
 
 /* data tables */
