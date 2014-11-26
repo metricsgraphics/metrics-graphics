@@ -54,11 +54,11 @@ function process_line(args) {
             var processed_data = [];
 
             //we'll be starting from the day after our first date
-            var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
+            var start_date = clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
             //if we've set a max_x, add data points up to there
             var from = (args.min_x) ? args.min_x : start_date;
-            var upto = (args.max_x) ? args.max_x : last['date'];
+            var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
             for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                 var o = {};
                 d.setHours(0, 0, 0, 0);
@@ -81,7 +81,7 @@ function process_line(args) {
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if(!existing_o) {            
-                    o['date'] = new Date(d);
+                    o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
                     processed_data.push(o);
                 }
@@ -91,7 +91,7 @@ function process_line(args) {
                 }
                 
                 //add the last data item
-                if(Date.parse(d) == Date.parse(new Date(last['date']))) {
+                if(Date.parse(d) == Date.parse(new Date(last[args.x_accessor]))) {
                     processed_data.push(last);
                 }
             }
