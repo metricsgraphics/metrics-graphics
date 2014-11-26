@@ -19,6 +19,10 @@ charts.missing = function(args) {
         // add missing class
         svg.classed('missing', true);
 
+        // do we need to clear the legend?
+        if(args.legend_target)
+            $(args.legend_target).html('');
+
         svg.append('rect')
             .attr('class', 'missing-pane')
             .attr('x', args.left)
