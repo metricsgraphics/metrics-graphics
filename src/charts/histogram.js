@@ -13,10 +13,12 @@ charts.histogram = function(args) {
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
+
         var g;
 
         //remove the old histogram, add new one
-        $(svg).find('.histogram').remove();
+        $svg.find('.histogram').remove();
 
         var g = svg.append("g")
             .attr("class", "histogram");
@@ -56,11 +58,12 @@ charts.histogram = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        $(svg).find('.transparent-rollover-rect').remove();
-        $(svg).find('.active_datapoint').remove();
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')

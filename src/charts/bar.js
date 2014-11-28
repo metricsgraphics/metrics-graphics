@@ -18,13 +18,12 @@ charts.bar = function(args) {
     }
 
     this.mainPlot = function() {
-
         var svg = d3.select($(args.target).find('svg').get(0));
-
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
-        //remove the old histogram, add new one
-        $(svg).find('.barplot').remove();
+        //remove the old barplot, add new one
+        $svg.find('.barplot').remove();
 
         var data = args.data[0];
 
@@ -82,12 +81,12 @@ charts.bar = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
-        
+
         //remove the old rollovers if they already exist
-        
-        $(svg).find('.transparent-rollover-rect').remove();
-        $(svg).find('.active_datapoint').remove();
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')

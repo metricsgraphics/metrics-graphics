@@ -30,6 +30,7 @@ function y_rug(args) {
 
 function y_axis(args) {
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
     var g;
 
     var min_y, max_y;
@@ -138,7 +139,7 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    $(args.target).find('svg .y-axis').remove();
+    $svg.find('.y-axis').remove();
 
     if (!args.y_axis) return this;
 
@@ -270,6 +271,10 @@ function y_axis_categorical(args) {
     }
 
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
+
+    //remove the old y-axis, add new one
+    $svg.find('.y-axis').remove();
 
     var g = svg.append('g')
         .classed('y-axis', true)

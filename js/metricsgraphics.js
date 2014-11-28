@@ -864,6 +864,7 @@ function y_rug(args) {
 
 function y_axis(args) {
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
     var g;
 
     var min_y, max_y;
@@ -972,7 +973,7 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    $(args.target).find('svg .y-axis').remove();
+    $svg.find('.y-axis').remove();
 
     if (!args.y_axis) return this;
 
@@ -1104,6 +1105,10 @@ function y_axis_categorical(args) {
     }
 
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
+
+    //remove the old y-axis, add new one
+    $svg.find('.y-axis').remove();
 
     var g = svg.append('g')
         .classed('y-axis', true)
@@ -1158,6 +1163,8 @@ function x_rug(args) {
 function x_axis(args) {
     'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
+
     var g;
     var min_x;
     var max_x;
@@ -1351,7 +1358,7 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    $(args.target).find('svg .x-axis').remove();
+    $svg.find('.x-axis').remove();
 
     if (!args.x_axis) return this;
 
@@ -1514,6 +1521,7 @@ function init(args) {
     if((svg.find('.main-line').length > 0 && args.chart_type != 'line')
             || (svg.find('.points').length > 0 && args.chart_type != 'point')
             || (svg.find('.histogram').length > 0 && args.chart_type != 'histogram')
+            || (svg.find('.barplot').length > 0 && args.chart_type != 'bar')
         ) {
         $(args.target).empty();
 
@@ -2415,10 +2423,12 @@ charts.histogram = function(args) {
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
+
         var g;
 
         //remove the old histogram, add new one
-        $(svg).find('.histogram').remove();
+        $svg.find('.histogram').remove();
 
         var g = svg.append("g")
             .attr("class", "histogram");
@@ -2458,11 +2468,12 @@ charts.histogram = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        $(svg).find('.transparent-rollover-rect').remove();
-        $(svg).find('.active_datapoint').remove();
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -2605,8 +2616,12 @@ charts.point = function(args) {
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
+        //remove the old points, add new one
+        $svg.find('.points').remove();
+        
         // plot the points, pretty straight-forward
         g = svg.append('g')
             .classed('points', true);
@@ -2639,11 +2654,13 @@ charts.point = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
 
-        //remove rollover text if it already exists
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        //remove the old rollovers if they already exist
+        $svg.find('.voronoi').remove();
+
+        //remove the old rollover text and circle if they already exist
+        $svg.find('.active_datapoint').remove();
 
         //add rollover text
         svg.append('text')
@@ -2811,13 +2828,12 @@ charts.bar = function(args) {
     }
 
     this.mainPlot = function() {
-
         var svg = d3.select($(args.target).find('svg').get(0));
-
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
-        //remove the old histogram, add new one
-        $(svg).find('.barplot').remove();
+        //remove the old barplot, add new one
+        $svg.find('.barplot').remove();
 
         var data = args.data[0];
 
@@ -2875,12 +2891,12 @@ charts.bar = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
-        
+
         //remove the old rollovers if they already exist
-        
-        $(svg).find('.transparent-rollover-rect').remove();
-        $(svg).find('.active_datapoint').remove();
+        $svg.find('.transparent-rollover-rect').remove();
+        $svg.find('.active_datapoint').remove();
 
         //rollover text
         svg.append('text')

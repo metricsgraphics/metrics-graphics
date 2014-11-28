@@ -22,8 +22,12 @@ charts.point = function(args) {
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
+        //remove the old points, add new one
+        $svg.find('.points').remove();
+        
         // plot the points, pretty straight-forward
         g = svg.append('g')
             .classed('points', true);
@@ -56,11 +60,13 @@ charts.point = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
 
-        //remove rollover text if it already exists
-        if($(args.target + ' svg .active_datapoint').length > 0) {
-            $(args.target + ' svg .active_datapoint').remove();
-        }
+        //remove the old rollovers if they already exist
+        $svg.find('.voronoi').remove();
+
+        //remove the old rollover text and circle if they already exist
+        $svg.find('.active_datapoint').remove();
 
         //add rollover text
         svg.append('text')

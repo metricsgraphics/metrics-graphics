@@ -32,6 +32,8 @@ function x_rug(args) {
 function x_axis(args) {
     'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
+
     var g;
     var min_x;
     var max_x;
@@ -225,7 +227,7 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    $(args.target).find('svg .x-axis').remove();
+    $svg.find('.x-axis').remove();
 
     if (!args.x_axis) return this;
 

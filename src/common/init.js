@@ -34,6 +34,7 @@ function init(args) {
     if((svg.find('.main-line').length > 0 && args.chart_type != 'line')
             || (svg.find('.points').length > 0 && args.chart_type != 'point')
             || (svg.find('.histogram').length > 0 && args.chart_type != 'histogram')
+            || (svg.find('.barplot').length > 0 && args.chart_type != 'bar')
         ) {
         $(args.target).empty();
 
