@@ -125,7 +125,7 @@ charts.bar = function(args) {
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
-        
+
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -153,14 +153,14 @@ charts.bar = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
                             return d[args.y_accessor] + ': ' + num(d[args.x_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -176,10 +176,14 @@ charts.bar = function(args) {
             //reset active bar
             d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 

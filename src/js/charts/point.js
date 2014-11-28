@@ -27,7 +27,7 @@ charts.point = function(args) {
 
         //remove the old points, add new one
         $svg.find('.points').remove();
-        
+
         // plot the points, pretty straight-forward
         g = svg.append('g')
             .classed('points', true);
@@ -89,10 +89,10 @@ charts.point = function(args) {
             .data(voronoi(args.data[0]))
             .enter().append('path')
                 .attr('d', function(d) {
-                    if(d == undefined) return; 
+                    if(d == undefined) return;
                     return 'M' + d.join(',') + 'Z';
                 })
-                .attr('class', function(d,i) { 
+                .attr('class', function(d,i) {
                     return 'path-' + i;
                 })
                 .style('fill-opacity', 0)
@@ -156,16 +156,16 @@ charts.point = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d['point'][args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d['point'][args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor]) 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor])
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
                                 + num(d['point'][args.y_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -202,6 +202,10 @@ charts.point = function(args) {
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 

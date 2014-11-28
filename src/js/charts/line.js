@@ -420,6 +420,10 @@ charts.line = function(args) {
 
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 
