@@ -117,7 +117,7 @@ function data_graphic() {
         baseline_accessor: null,
         predictor_accessor: null,
         predictor_proportion: 5,
-        dodge_acessor: null,
+        dodge_accessor: null,
         binned: true,
         padding_percentage: 0,
         outer_padding_percentage: .1,
@@ -131,6 +131,7 @@ function data_graphic() {
         bottom: 0,
         right: 0,
         left: 0,
+        legend_target: '',
         width: 350,
         height: 220,
         missing_text: 'Data currently missing or unavailable'
@@ -831,7 +832,6 @@ function chart_title(args) {
         error(args);
     }
 }
-
 function y_rug(args) {
     'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
@@ -1864,10 +1864,10 @@ var button_layout = function(target) {
     this.manual_callback = {};
 
     this._strip_punctuation = function(s){
-    var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
-    var finalString = punctuationless.replace(/ +?/g, "");
-    return finalString;
-}
+        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var finalString = punctuationless.replace(/ +?/g, "");
+        return finalString;
+    }
 
     this.data = function(data) {
         this._data = data;
@@ -2031,7 +2031,7 @@ charts.line = function(args) {
         //for building the optional legend
         var legend = '';
         var this_data;
-            
+
         for(var i=args.data.length-1; i>=0; i--) {
             this_data = args.data[i];
 
@@ -2049,9 +2049,10 @@ charts.line = function(args) {
             }
 
             //add the area
+            var $area = $(args.target).find('svg path.area' + (line_id) + '-color');
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
-                if($(args.target).find('svg path.area' + (line_id) + '-color').length > 0) {
+                if($area.length > 0) {
                     d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
                         .transition()
                             .duration(function() {
@@ -2064,6 +2065,8 @@ charts.line = function(args) {
                         .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
+            } else if ($area.length > 0) {
+              $area.remove();
             }
 
             //add the line, if it already exists, transition the fine gentleman
@@ -2095,14 +2098,14 @@ charts.line = function(args) {
                         .attr('d', line(args.data[i]));
                 }
             }
-            
+
             //build legend
             if(args.legend) {
                 legend = "<span class='line" + line_id  + "-legend-color'>&mdash; "
                         + args.legend[i] + "&nbsp; </span>" + legend;
             }
         }
-        
+
         if(args.legend) {
             $(args.legend_target).html(legend);
         }
@@ -2117,13 +2120,13 @@ charts.line = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $(svg);
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old rollovers if they already exist
         $svg.find('.transparent-rollover-rect').remove();
         $svg.find('.voronoi').remove();
-        
+
         //remove the old rollover text and circle if they already exist
         $svg.find('.active_datapoint').remove();
         $svg.find('.line_rollover_circle').remove();
@@ -2136,7 +2139,7 @@ charts.line = function(args) {
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
-                
+
         //append circle
         svg.append('circle')
             .classed('line_rollover_circle', true)
@@ -2168,14 +2171,14 @@ charts.line = function(args) {
                 .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
                 .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
                 .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
-        
+
             var g = svg.append('g')
                 .attr('class', 'voronoi')
 
             //we'll be using these when constructing the voronoi rollovers
             var data_nested = d3.nest()
-                .key(function(d) { 
-                    return args.scales.X(d[args.x_accessor]) + "," 
+                .key(function(d) {
+                    return args.scales.X(d[args.x_accessor]) + ","
                         + args.scales.Y(d[args.y_accessor]);
                 })
                 .rollup(function(v) { return v[0]; })
@@ -2193,8 +2196,13 @@ charts.line = function(args) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
-                                
-                                return 'line' + d['line_id'] + '-color ' + 'roll_' + formatter(v);
+
+                                //only format when x-axis is date
+                                var id = (typeof v === 'number')
+                                        ? i
+                                        : formatter(v);
+
+                                return 'line' + d['line_id'] + '-color ' + 'roll_' + id;
                             }
                             else {
                                 return 'line' + d['line_id'] + '-color';
@@ -2223,12 +2231,12 @@ charts.line = function(args) {
                             if(args.linked) {
                                 var v = d[args.x_accessor];
                                 var formatter = d3.time.format('%Y-%m-%d');
-                                
-                                //only format when y-axis is date
+
+                                //only format when x-axis is date
                                 var id = (typeof v === 'number')
                                         ? i
                                         : formatter(v);
-                                        
+
                                 return 'line' + line_id + '-color ' + 'roll_' + id;
                             }
                             else {
@@ -2289,7 +2297,7 @@ charts.line = function(args) {
                 })
                 .attr('r', args.point_size)
                 .style('opacity', 1);
-     
+
             //trigger mouseover on all rects for this date in .linked charts
             if(args.linked && !globals.link) {
                 globals.link = true;
@@ -2307,7 +2315,7 @@ charts.line = function(args) {
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
                 })
-            }    
+            }
 
             svg.selectAll('text')
                 .filter(function(g, j) {
@@ -2341,15 +2349,15 @@ charts.line = function(args) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
-                            return fmt(dd) + '  ' + args.yax_units 
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + d[args.x_accessor] 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                            return args.x_accessor + ': ' + d[args.x_accessor]
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -2992,8 +3000,27 @@ var table = New data_table(data)
 function data_table(args){
 	'use strict';
 	this.args = args;
-	this.args.standard_col = {width:150, font_size:12};
+	this.args.standard_col = {width:150, font_size:12, font_weight:'normal'};
 	this.args.columns = [];
+	this.formatting_options = [['color', 'color'], ['font-weight', 'font_weight'], ['font-style', 'font_style'], ['font-size', 'font_size']];
+
+	this._strip_punctuation = function(s){
+        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var finalString = punctuationless.replace(/ +?/g, "");
+        return finalString;
+    }
+
+    this._format_element = function(element, value, args){
+    	this.formatting_options.forEach(function(fo){
+			var attr = fo[0];
+			var key = fo[1];
+			if (args[key]) element.style(attr, 
+				typeof args[key] == 'string' || 
+				typeof args[key] == 'number' ? 
+					args[key] : args[key](value));
+		});
+
+    }
 
 	this._add_column = function(_args, arg_type){
 		var standard_column = this.args.standard_col;
@@ -3041,6 +3068,7 @@ function data_table(args){
 	}
 
 	this.display = function(){
+
 		var this_column;
 		var args = this.args;
 
@@ -3052,8 +3080,8 @@ function data_table(args){
 		var thead = table.append('thead').classed('data-table-thead', true);
 		var tbody = table.append('tbody');
 
-		var this_column;
-		var tr, th, td_accessor, td_type, th_text, td_text, td;
+		var this_column, this_title;
+		var tr, th, td_accessor, td_type, td_value, th_text, td_text, td;
 		var col;
 
 		tr = thead.append('tr').classed('header-row', true);
@@ -3062,11 +3090,25 @@ function data_table(args){
 			td_type = this_col.type;
 			th_text=this_col.label;
 			th_text =th_text == undefined ? '' : th_text;
-			tr.append('th')
+			th = tr.append('th')
 				.classed('data-table-th', true)
 				.style('width', this_col.width)
 				.style('text-align', td_type=='title' ? 'left' : 'right')
 				.text(th_text);
+			if (this_col.description){
+				th.append('i')
+					.classed('fa', true)
+					.classed('fa-question-circle', true)
+					.classed('fa-inverse', true);
+				$(th[0]).popover({
+                    html: true,
+                    animation: false,
+                    content: this_col.description,
+                    trigger: 'hover',
+                    placement: 'top',
+                    container: $(th[0])
+                 })
+			}
 		}
 
 		for (var h=0;h<args.columns.length;h++){
@@ -3081,7 +3123,7 @@ function data_table(args){
 			for (var j=0;j<args.columns.length;j++){
 				this_column = args.columns[j];
 				td_accessor = this_column.accessor;
-				td_text = args.data[i][td_accessor];
+				td_value = td_text = args.data[i][td_accessor];
 				td_type     = this_column.type;
 
 				if (td_type=='number'){
@@ -3117,15 +3159,17 @@ function data_table(args){
 
 				td = tr.append('td')
 					.classed('data-table', true)
-					.classed('table-number', td_type=='number')
-					.classed('table-title',  td_type=='type')
-					.classed('table-text',   td_type=='text')
-					.style('width', args.columns[j].width)
-					.style('font-size', args.columns[j].font_size)
+					.classed('table-' + td_type, true)
+					.classed('table-' + td_type + '-' + this._strip_punctuation(td_accessor), true)
+					.attr('data-value', td_value)
+					.style('width',       this_column.width)
 					.style('text-align', td_type=='title' || td_type=='text' ? 'left' : 'right');
 
+				this._format_element(td, td_value, this_column);
+
 				if (td_type=='title'){
-					td.append('div').text(td_text);
+					this_title = td.append('div').text(td_text);
+					this._format_element(this_title, td_text, this_column);
 					if (args.columns[j].hasOwnProperty('secondary_accessor')){
 						td.append('div')
 							.text(args.data[i][args.columns[j].secondary_accessor])
@@ -3165,6 +3209,10 @@ charts.missing = function(args) {
 
         // add missing class
         svg.classed('missing', true);
+
+        // do we need to clear the legend?
+        if(args.legend_target)
+            $(args.legend_target).html('');
 
         svg.append('rect')
             .attr('class', 'missing-pane')
@@ -3246,11 +3294,11 @@ function process_line(args) {
             var processed_data = [];
 
             //we'll be starting from the day after our first date
-            var start_date = clone(first['date']).setDate(first['date'].getDate() + 1);
+            var start_date = clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
             //if we've set a max_x, add data points up to there
             var from = (args.min_x) ? args.min_x : start_date;
-            var upto = (args.max_x) ? args.max_x : last['date'];
+            var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
             for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                 var o = {};
                 d.setHours(0, 0, 0, 0);
@@ -3273,7 +3321,7 @@ function process_line(args) {
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if(!existing_o) {            
-                    o['date'] = new Date(d);
+                    o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
                     processed_data.push(o);
                 }
@@ -3283,7 +3331,7 @@ function process_line(args) {
                 }
                 
                 //add the last data item
-                if(Date.parse(d) == Date.parse(new Date(last['date']))) {
+                if(Date.parse(d) == Date.parse(new Date(last[args.x_accessor]))) {
                     processed_data.push(last);
                 }
             }
