@@ -2411,6 +2411,10 @@ charts.line = function(args) {
 
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 
@@ -2448,7 +2452,7 @@ charts.histogram = function(args) {
                 .enter().append("g")
                     .attr("class", "bar")
                     .attr("transform", function(d) {
-                        return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2) 
+                        return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2)
                             + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
                         });
 
@@ -2464,7 +2468,7 @@ charts.histogram = function(args) {
                 if(d[args.y_accessor] == 0)
                     return 0;
 
-                return (args.height - args.bottom - args.buffer 
+                return (args.height - args.bottom - args.buffer
                     - args.scales.Y(d[args.y_accessor])).toFixed(2);
             });
 
@@ -2480,7 +2484,7 @@ charts.histogram = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
         var g;
-        
+
         //remove the old rollovers if they already exist
         $svg.find('.transparent-rollover-rect').remove();
         $svg.find('.active_datapoint').remove();
@@ -2510,7 +2514,7 @@ charts.histogram = function(args) {
             .attr("y", 0)
             .attr("width", function(d, i) {
                 if (i != args.data[0].length - 1) {
-                    return (args.scalefns.xf(args.data[0][i + 1]) 
+                    return (args.scalefns.xf(args.data[0][i + 1])
                         - args.scalefns.xf(d)).toFixed(2);
                 }
                 else {
@@ -2538,7 +2542,7 @@ charts.histogram = function(args) {
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
-        
+
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -2566,16 +2570,16 @@ charts.histogram = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d[args.x_accessor]) 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                            return args.x_accessor + ': ' + num(d[args.x_accessor])
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -2591,10 +2595,14 @@ charts.histogram = function(args) {
             //reset active bar
             d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
                 .classed('active', false);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 
@@ -2631,7 +2639,7 @@ charts.point = function(args) {
 
         //remove the old points, add new one
         $svg.find('.points').remove();
-        
+
         // plot the points, pretty straight-forward
         g = svg.append('g')
             .classed('points', true);
@@ -2693,10 +2701,10 @@ charts.point = function(args) {
             .data(voronoi(args.data[0]))
             .enter().append('path')
                 .attr('d', function(d) {
-                    if(d == undefined) return; 
+                    if(d == undefined) return;
                     return 'M' + d.join(',') + 'Z';
                 })
-                .attr('class', function(d,i) { 
+                .attr('class', function(d,i) {
                     return 'path-' + i;
                 })
                 .style('fill-opacity', 0)
@@ -2760,16 +2768,16 @@ charts.point = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d['point'][args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d['point'][args.y_accessor]);
                         }
                         else {
-                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor]) 
-                                + ', ' + args.y_accessor + ': ' + args.yax_units 
+                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor])
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
                                 + num(d['point'][args.y_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -2806,6 +2814,10 @@ charts.point = function(args) {
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 
@@ -2945,7 +2957,7 @@ charts.bar = function(args) {
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
-        
+
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -2973,14 +2985,14 @@ charts.bar = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
                             return d[args.y_accessor] + ': ' + num(d[args.x_accessor]);
                         }
-                    });                
+                    });
             }
 
             if(args.rollover_callback) {
@@ -2996,10 +3008,14 @@ charts.bar = function(args) {
             //reset active bar
             d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.rollout_callback) {
+                args.rollout_callback(d, i);
+            }
         }
     }
 
