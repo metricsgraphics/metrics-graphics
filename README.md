@@ -63,7 +63,7 @@ The download package includes everything that you see on [metricsgraphicsjs.org]
   * missing-data.png
   * missing-data-dark.png
 
-Remember to include the calls to the third-party libraries, as they appear in the code for the examples pages.
+Remember to load the set of third-party libraries that are there in the examples pages. If your project uses Bootstrap, make sure you load MetricsGraphics.js after it.
 
 ## License
 
