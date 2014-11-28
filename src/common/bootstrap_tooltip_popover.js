@@ -30,6 +30,9 @@ if (typeof jQuery === 'undefined') {
 
 +function ($) {
   'use strict';
+  
+  if(typeof $().tooltip == 'function')
+    return true;
 
   // TOOLTIP PUBLIC CLASS DEFINITION
   // ===============================
@@ -509,6 +512,9 @@ if (typeof jQuery === 'undefined') {
 +function ($) {
   'use strict';
 
+  if(typeof $().popover == 'function')
+    return true;
+      
   // POPOVER PUBLIC CLASS DEFINITION
   // ===============================
 

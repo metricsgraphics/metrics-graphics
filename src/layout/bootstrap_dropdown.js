@@ -30,6 +30,9 @@ if (typeof jQuery === 'undefined') {
 +function ($) {
   'use strict';
 
+  if(typeof $().dropdown == 'function')
+    return true;
+
   // DROPDOWN CLASS DEFINITION
   // =========================
 
