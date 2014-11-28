@@ -202,6 +202,3 @@ function data_table(args){
 
 	return this;
 }
-
-
-
