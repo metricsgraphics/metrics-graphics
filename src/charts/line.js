@@ -144,7 +144,7 @@ charts.line = function(args) {
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $(svg);
+        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old rollovers if they already exist
