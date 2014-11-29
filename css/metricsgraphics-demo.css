@@ -131,6 +131,10 @@ p {
     text-decoration: none;
 }
 
+#table1 .chart_title {
+    margin-left: 0;
+}
+
 #torso {
     margin: 0 auto;
     text-align: center;

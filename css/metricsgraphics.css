@@ -66,7 +66,8 @@
     line-height: 17px;
 }
 
-.chart_title .popover.top {
+.chart_title .popover.top,
+.data-table .popover.top {
     margin-top: 0;
 }
 
@@ -89,8 +90,45 @@
 }
 
 circle {
-    /*fill: #0000ff;*/
     opacity: 0.85;
+}
+
+.data-table {
+    margin-top: 30px;
+}
+
+.data-table thead tr th {
+    border-bottom: 1px solid darkgray;
+    cursor: default;
+    font-size: 1.1rem;
+    font-weight: normal;
+    padding: 5px 5px 8px 5px;
+    text-align: right;
+}
+
+.data-table thead tr th .fa {
+    color: #ccc;
+    padding-left: 4px;
+}
+
+.data-table thead tr th .popover {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.data-table .secondary-title {
+    color: darkgray;
+}
+
+.data-table tbody tr td {
+    margin: 2px;
+    padding: 5px;
+    vertical-align: top;
+}
+
+.data-table  tbody tr td.table-text {
+    opacity: 0.8;
+    padding-left: 30px;
 }
 
 .extended-y-ticks svg .y-axis line {
@@ -304,63 +342,3 @@ text {
 .year-marker-small text {
     font-size: 0.6rem;
 }
-
-/* data tables */
-tr.header-row {
-    margin-bottom:10px;
-}
-
-table.data-table {
-    margin:auto;
-}
-
-th.data-table-th {
-    border-bottom: 1px solid darkgray;
-    font-weight: 300;
-    margin: 2px;
-    margin-bottom: 10px;
-    text-align: right;
-}
-
-th.data-table-th .fa {
-    color: #ccc;
-    font-size: 14px;
-    padding-left: 4px;
-    vertical-align: top;
-}
-
-th.data-table-th .popover {
-    font-size: 12px;
-    font-weight:normal;
-}
-
-th.data-table-th .popover-content {
-    cursor: auto;
-    line-height: 17px;
-}
-
-th.data-table-th .popover.top {
-    margin-top: 0;
-}
-
-th.data-table-th
-
-.chart_title .fa.warning {
-    font-weight: 300;
-}
-
-.data-table .secondary-title {
-    color: darkgray;
-}
-
-td.data-table {
-    margin: 2px;
-    padding: 5px;
-    vertical-align: top;
-}
-
-td.table-text {
-    opacity: 0.8;
-    padding-left: 30px;
-}
-

@@ -36,7 +36,6 @@ function data_table(args){
 				typeof args[key] == 'number' ? 
 					args[key] : args[key](value));
 		});
-
     }
 
 	this._add_column = function(_args, arg_type){
@@ -94,21 +93,21 @@ function data_table(args){
 		var target = args.target;
 		var table = d3.select(target).append('table').classed('data-table', true);
 		var colgroup = table.append('colgroup');
-		var thead = table.append('thead').classed('data-table-thead', true);
+		var thead = table.append('thead');
 		var tbody = table.append('tbody');
 
 		var this_column, this_title;
 		var tr, th, td_accessor, td_type, td_value, th_text, td_text, td;
 		var col;
 
-		tr = thead.append('tr').classed('header-row', true);
+		tr = thead.append('tr');
+
 		for (var h=0;h<args.columns.length;h++){
 			var this_col = args.columns[h];
 			td_type = this_col.type;
 			th_text=this_col.label;
 			th_text =th_text == undefined ? '' : th_text;
 			th = tr.append('th')
-				.classed('data-table-th', true)
 				.style('width', this_col.width)
 				.style('text-align', td_type=='title' ? 'left' : 'right')
 				.text(th_text);
@@ -175,11 +174,10 @@ function data_table(args){
 				}
 
 				td = tr.append('td')
-					.classed('data-table', true)
 					.classed('table-' + td_type, true)
 					.classed('table-' + td_type + '-' + this._strip_punctuation(td_accessor), true)
 					.attr('data-value', td_value)
-					.style('width',       this_column.width)
+					.style('width', this_column.width)
 					.style('text-align', td_type=='title' || td_type=='text' ? 'left' : 'right');
 
 				this._format_element(td, td_value, this_column);
@@ -197,6 +195,7 @@ function data_table(args){
 				}
 			}
 		}
+
 		return this;
 	}
 
