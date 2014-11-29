@@ -559,7 +559,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        var data2 = data.map(function(d) {
+        var data2 = clone(data).map(function(d) {
             d.value = d.value + 550;
             return d;
         });
