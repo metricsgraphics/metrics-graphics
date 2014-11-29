@@ -3,7 +3,7 @@
 var charts = {};
 var globals = {};
 globals.link = false;
-globals.version = "1.0";
+globals.version = "1.1";
 
 function data_graphic() {
     'use strict';
