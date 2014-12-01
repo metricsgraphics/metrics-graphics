@@ -35,7 +35,8 @@ function data_graphic() {
         max_x: null,
         max_y: null,
         min_x: null,
-        min_y: null,
+        min_y: null,                  // if set, y axis starts at an arbitrary value
+        min_y_from_data: false,       // if set, y axis will start at minimum value rather than at 0
         point_size: 2.5,              // the size of the dot that appears on a line on mouse-over
         x_accessor: 'date',
         xax_units: '',
@@ -910,7 +911,7 @@ function y_axis(args) {
 
     // the default cause is for the y-axis to start at 0, unless we explicitly want it
     // to start at ab arbitrary number or from the data's minimum value
-    if (min_y >= 0 && !args.min_y && !args.use_data_y_min){
+    if (min_y >= 0 && !args.min_y && !args.min_y_from_data){
         min_y = 0;
     }
 
@@ -929,7 +930,7 @@ function y_axis(args) {
     }
 
     max_y = max_y * args.inflator;
-    if (!args.min_y && args.use_data_y_min){
+    if (!args.min_y && args.min_y_from_data){
         min_y = min_y / args.inflator;    
     }
 
