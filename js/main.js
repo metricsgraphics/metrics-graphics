@@ -850,7 +850,10 @@ $(document).ready(function() {
         .manual_button('Time Scale', resolution_features, function(){console.log('switched time scales.')})
         .button('a', 'Fruit')
         .button('b', 'Rock')
-        .callback(function(){console.log('made it')})
+        .callback(function(){
+            console.log('made it');
+            return false;
+        })
         .display();
 
     // data tables
