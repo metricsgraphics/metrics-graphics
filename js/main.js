@@ -571,7 +571,7 @@ $(document).ready(function() {
             width: trunk.width,
             height: trunk.height,
             right: trunk.right,
-            use_data_y_min: true,
+            min_y_from_data: true,
             yax_units: '$',
             target: '#y-axis-not-zero',
             x_accessor: 'date',

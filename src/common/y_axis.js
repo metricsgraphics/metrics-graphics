@@ -70,7 +70,7 @@ function y_axis(args) {
 
     // the default cause is for the y-axis to start at 0, unless we explicitly want it
     // to start at ab arbitrary number or from the data's minimum value
-    if (min_y >= 0 && !args.min_y && !args.use_data_y_min){
+    if (min_y >= 0 && !args.min_y && !args.min_y_from_data){
         min_y = 0;
     }
 
@@ -89,7 +89,7 @@ function y_axis(args) {
     }
 
     max_y = max_y * args.inflator;
-    if (!args.min_y && args.use_data_y_min){
+    if (!args.min_y && args.min_y_from_data){
         min_y = min_y / args.inflator;    
     }
 
