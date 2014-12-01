@@ -101,7 +101,7 @@ var button_layout = function(target) {
                 var k = $(this).data('key'); 
                 var feature = $(this).data('feature');
                 var manual_feature;
-                $('.' + this._strip_punctuation(feature) + '-btns button.btn span.title').html(k);
+                $('.' + feature + '-btns button.btn span.title').html(k);
                 if (!manual_map.hasOwnProperty(feature)) {
                     callback(feature, k);    
                 } else {
