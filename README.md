@@ -51,7 +51,7 @@ Changes should be made to the files under ``src`` rather than to ``js/metrics-gr
 2. Run ``make.py``
 3. Commit newly generated ``js/metricsgraphics.js`` and ``js/metricsgraphics.min.js`` files and ``examples.htm`` (if applicable) with a message such as, “v0.5 prepared files for release”
 4. Deploy all files to metricsgraphicsjs.org
-5. Update version number in bower.json. Make sure Github release tag uses a lowercase ``v`` prefix
+5. Update version number in bower.json and package.json. Make sure Github release tag uses a lowercase ``v`` prefix
 
 _Note: The js file will be regenerated between releases any time we add a new chart type._
 
