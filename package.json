@@ -1,6 +1,6 @@
 {
   "name": "metrics-graphics",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "js/metricsgraphics.js",
   "scripts": {
