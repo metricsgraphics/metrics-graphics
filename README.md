@@ -32,7 +32,7 @@ Though originally envisioned for Mozilla Metrics dashboard projects, we are maki
 2. Follow the examples in [index.htm](https://github.com/mozilla/metrics-graphics/blob/master/index.htm) and [main.js](https://github.com/mozilla/metrics-graphics/blob/master/js/main.js) to see how graphics are laid out and built. The examples use json data from [/data](https://github.com/mozilla/metrics-graphics/blob/master/data), though you may easily pull data from elsewhere.
 
 ## Dependencies
-The library depends on [D3](http://d3js.org) for binding data to DOM elements, [Bootstrap](http://getbootstrap.com/) to facilitate layout and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations.
+The library depends on [D3](http://d3js.org) for binding data to DOM elements and [jQuery](http://jquery.com/), which we're currently using to facilitate DOM manipulations. [Bootstrap's](http://getbootstrap.com/) stylesheet is used in the demo only to facilitate layout.
 
 ## How to contribute
 We're grateful for anyone wishing to contribute to the library. Feel free to fork the project and submit your changes as Pull Requests. If both of us r+ the Pull Request, we'll merge it into the master branch.
