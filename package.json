@@ -29,7 +29,6 @@
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
     "jquery": ">=1.11.1",
-    "bootstrap": ">=3.1.1",
     "d3": ">=3.4.8"
   },
   "devDependencies": {
