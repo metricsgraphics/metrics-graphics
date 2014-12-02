@@ -28,7 +28,10 @@
     "index.htm",
     "dev.htm",
     "examples.htm",
-    "interactive-demo.htm"
+    "interactive-demo.htm",
+    "node_modules",
+    "package.json",
+    "gulpfile.js"
   ],
   "license": "MPL-2.0",
   "authors": [
