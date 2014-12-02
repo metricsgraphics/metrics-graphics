@@ -8,11 +8,12 @@ charts.line = function(args) {
         init(args);
         x_axis(args);
         y_axis(args);
+        this.$svg = document.querySelector(args.target + ' svg')
         return this;
     }
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = d3.select(this.$svg);
         var g;
         var data_median = 0;
 
@@ -73,11 +74,11 @@ charts.line = function(args) {
             }
 
             //add the area
-            var $area = $(args.target).find('svg path.area' + (line_id) + '-color');
+            var $area = document.querySelectorAll(args.target + ' svg path.area' + (line_id) + '-color');
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
                 if($area.length > 0) {
-                    d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
+                    d3.selectAll($area)
                         .transition()
                             .duration(function() {
                                 return (args.transition_on_update) ? 1000 : 0;
@@ -93,9 +94,10 @@ charts.line = function(args) {
               $area.remove();
             }
 
+            var $lines = document.querySelectorAll(args.target + ' svg path.line' + (line_id) + '-color')
             //add the line, if it already exists, transition the fine gentleman
-            if($(args.target).find('svg path.line' + (line_id) + '-color').length > 0) {
-                d3.selectAll($(args.target).find('svg path.line' + (line_id) + '-color'))
+            if($lines.length > 0) {
+                d3.selectAll($lines)
                     .transition()
                         .duration(function() {
                             return (args.transition_on_update) ? 1000 : 0;
@@ -131,7 +133,7 @@ charts.line = function(args) {
         }
 
         if(args.legend) {
-            $(args.legend_target).html(legend);
+            document.querySelector(args.legend_target).innerHTML = legend;
         }
 
         return this;
@@ -143,17 +145,21 @@ charts.line = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $($(args.target).find('svg').get(0));
+        var svg = d3.select(this.$svg);
         var g;
 
-        //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.voronoi').remove();
-
         //remove the old rollover text and circle if they already exist
-        $svg.find('.active_datapoint').remove();
-        $svg.find('.line_rollover_circle').remove();
+        [
+          this.$svg.querySelector('.transparent-rollover-rect'),
+          this.$svg.querySelector('.voronoi'),
+          this.$svg.querySelector('.active_datapoint'),
+          this.$svg.querySelector('.line_rollover_circle')
+        ].forEach(function(e, i) {
+          if(!e)
+            return;
+
+          e.parentNode.removeChild(e);
+        })
 
         //rollover text
         svg.append('text')
