@@ -77,7 +77,8 @@ charts.line = function(args) {
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
                 if($area.length > 0) {
-                    d3.selectAll($(args.target).find('svg path.area' + (line_id) + '-color'))
+                    $(svg.node()).find('.y-axis').after($area.detach());
+                    d3.select($area.get(0))
                         .transition()
                             .duration(function() {
                                 return (args.transition_on_update) ? 1000 : 0;
