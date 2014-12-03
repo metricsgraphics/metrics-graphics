@@ -66,7 +66,9 @@ The download package includes everything that you see on [metricsgraphicsjs.org]
 
 Remember to load the set of third-party libraries that are there in the examples pages. If your project uses Bootstrap, make sure you load MetricsGraphics.js after it.
 
-## What does MetricsGraphics.js do that library x doesn't do?
+## Frequently asked question
+__What does MetricsGraphics.js do that library x doesn't do?__
+
 If library x works for you, you should keep using it. We're not aiming to be competitive with libraries that already exist. We're aiming to make a library that meets our needs. We also happen to think that the world _needs_ a principled data presentation library, and that many of our needs are the same as other folks'.
 
 ## License
