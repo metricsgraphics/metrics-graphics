@@ -94,8 +94,10 @@ charts.line = function(args) {
             }
 
             //add the line, if it already exists, transition the fine gentleman
-            if($(args.target).find('svg path.line' + (line_id) + '-color').length > 0) {
-                d3.selectAll($(args.target).find('svg path.line' + (line_id) + '-color'))
+            var $existing_line = $(args.target).find('svg path.main-line.line' + (line_id) + '-color').first();
+            if($existing_line.length > 0) {
+                $(svg.node()).find('.y-axis').after($existing_line.detach());
+                d3.select($existing_line.get(0))
                     .transition()
                         .duration(function() {
                             return (args.transition_on_update) ? 1000 : 0;
