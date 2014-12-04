@@ -154,22 +154,28 @@ function data_graphic() {
 
     // check for deprecated parameters
     for (var key in deprecations) {
-        if (deprecations.hasOwnProperty(key)) {
+        if (args.hasOwnProperty(key)) {
             var deprecation = deprecations[key],
-                message,
-                replacement,
+                message = 'Use of `args.' + key + '` has been deprecated',
+                replacement = deprecation.replacement,
                 version;
 
-            if (deprecation.warned) continue;
+            // transparently alias the deprecated
+            if (replacement) {
+                if (args[replacement]) {
+                    message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.';
+                } else {
+                    args[replacement] = args[key];
+                }
+            }
 
-            message = 'Use of `args.' + key + '` has been deprecated';
-            replacement = deprecation.replacement;
+            if (deprecation.warned) continue;
+            deprecation.warned = true;
 
             if (replacement) {
                 message += ' in favor of `args.' + replacement + '`'
             }
 
-            deprecation.warned = true;
             warnDeprecation(message, deprecation.version);
         }
     }

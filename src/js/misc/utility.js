@@ -123,5 +123,6 @@ function arrDiff(a,b) {
 
 
 function warnDeprecation(message, untilVersion) {
-  console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : '.'));
+  console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'));
+  console.trace();
 }
