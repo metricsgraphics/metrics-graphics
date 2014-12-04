@@ -103,7 +103,8 @@ charts.histogram = function(args) {
             })
             .attr('opacity', 0)
             .on('mouseover', this.rolloverOn(args))
-            .on('mouseout', this.rolloverOff(args));
+            .on('mouseout', this.rolloverOff(args))
+            .on('mousemove', this.rolloverMove(args));
     }
 
     this.rolloverOn = function(args) {
@@ -178,6 +179,14 @@ charts.histogram = function(args) {
 
             if(args.mouseout) {
                 args.mouseout(d, i);
+            }
+        }
+    }
+
+    this.rolloverMove = function(args) {
+        return function(d, i) {
+            if(args.mousemove) {
+                args.mousemove(d, i);
             }
         }
     }
