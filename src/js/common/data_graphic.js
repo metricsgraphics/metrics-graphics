@@ -2,6 +2,10 @@
 
 var charts = {};
 var globals = {};
+var deprecations = {
+    rollover_callback: { replacement: 'mouseover', version: '2.0' },
+    rollout_callback: { replacement: 'mouseout', version: '2.0' }
+};
 globals.link = false;
 globals.version = "1.1";
 
@@ -146,6 +150,28 @@ function data_graphic() {
     if (args.list) {
         args.x_accessor = 0;
         args.y_accessor = 1;
+    }
+
+    // check for deprecated parameters
+    for (var key in deprecations) {
+        if (deprecations.hasOwnProperty(key)) {
+            var deprecation = deprecations[key],
+                message,
+                replacement,
+                version;
+
+            if (deprecation.warned) continue;
+
+            message = 'Use of `args.' + key + '` has been deprecated';
+            replacement = deprecation.replacement;
+
+            if (replacement) {
+                message += ' in favor of `args.' + replacement + '`'
+            }
+
+            deprecation.warned = true;
+            warnDeprecation(message, deprecation.version);
+        }
     }
 
     //build the chart

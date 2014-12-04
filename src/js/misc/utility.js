@@ -37,7 +37,7 @@ var each = function(obj, iterator, context) {
         if (iterator.call(context, obj[k], k, obj) === breaker) return;
       }
     }
-    
+
     return obj;
 }
 
@@ -50,7 +50,7 @@ function merge_with_defaults(obj) {
         }
       }
     })
-    
+
     return obj;
 }
 
@@ -58,7 +58,7 @@ function number_of_values(data, accessor, value) {
     var values = data.filter(function(d){
         return d[accessor] === value;
     })
-    
+
     return values.length;
 }
 
@@ -66,7 +66,7 @@ function has_values_below(data, accessor, value) {
     var values = data.filter(function(d){
         return d[accessor] <= value;
     })
-    
+
     return values.length > 0;
 }
 
@@ -105,7 +105,7 @@ function clone(obj) {
         }
         return copy;
     }
-    
+
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
@@ -119,4 +119,9 @@ function arrDiff(a,b) {
         if (!seen[a[i]])
             diff.push(a[i]);
     return diff;
+}
+
+
+function warnDeprecation(message, untilVersion) {
+  console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : '.'));
 }
