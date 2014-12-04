@@ -163,8 +163,8 @@ charts.bar = function(args) {
                     });
             }
 
-            if(args.rollover_callback) {
-                args.rollover_callback(d, i);
+            if(args.mouseover) {
+                args.mouseover(d, i);
             }
         }
     }
@@ -181,8 +181,8 @@ charts.bar = function(args) {
             svg.select('.active_datapoint')
                 .text('');
 
-            if(args.rollout_callback) {
-                args.rollout_callback(d, i);
+            if(args.mouseout) {
+                args.mouseout(d, i);
             }
         }
     }
