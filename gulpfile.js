@@ -8,6 +8,7 @@ var
 //sass = require('gulp-sass'), // for building css from scss
 //minifycss = require('gulp-minify-css'), // for minifiing css
   jslint = require('gulp-jslint');
+  testem = require('gulp-testem');
 
 // paths
 var
@@ -65,5 +66,12 @@ gulp.task('jslint', function () {
     .pipe(jslint({
       predef: ["window", '$', 'd3'], // used globals
       nomen: false // true if there are variable names with leading _
+    }));
+});
+
+gulp.task('test', function() {
+  return gulp.src([''])
+    .pipe(testem({
+      configFile: 'testem.json'
     }));
 });
