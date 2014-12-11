@@ -1,6 +1,6 @@
 function y_rug(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = d3.select(document.querySelector(args.target + ' svg'));
     var buffer_size = args.chart_type == 'point' 
         ? args.buffer / 2 
         : args.buffer * 2 / 3;
@@ -29,8 +29,8 @@ function y_rug(args) {
 }
 
 function y_axis(args) {
-    var svg = d3.select($(args.target).find('svg').get(0));
-    var $svg = $($(args.target).find('svg').get(0));
+    var $svg = document.querySelector(args.target + ' svg');
+    var svg = d3.select($svg);
     var g;
 
     var min_y, max_y;
@@ -139,7 +139,11 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    $svg.find('.y-axis').remove();
+    var yaxis = $svg.querySelector('.y-axis');
+
+    if(yaxis) {
+      yaxis.parentNode.removeChild(yaxis);
+    }
 
     if (!args.y_axis) return this;
 
@@ -195,8 +199,8 @@ function y_axis(args) {
     
     //is our data object all ints?
     var data_is_int = true;
-    $.each(args.data, function(i, d) {
-        $.each(d, function(i, d) {
+    args.data.forEach(function(d, i) {
+        d.forEach(function(d, i) {
             if(d[args.y_accessor] % 1 !== 0) {
                 data_is_int = false;
                 return false;
@@ -259,7 +263,8 @@ function y_axis_categorical(args) {
     // first, come up with y_axis 
     var svg_height = args.height;
     if (args.chart_type == 'bar' && svg_height == null){
-        // we need to set a new height variable.
+      //@todo ? no code here
+      // we need to set a new height variable.
     }
 
     args.scales.Y = d3.scale.ordinal()
@@ -270,11 +275,15 @@ function y_axis_categorical(args) {
         return args.scales.Y(di[args.y_accessor]);
     }
 
-    var svg = d3.select($(args.target).find('svg').get(0));
-    var $svg = $($(args.target).find('svg').get(0));
+    var $svg = document.querySelector(args.target + ' svg');
+    var svg = d3.select($svg);
 
     //remove the old y-axis, add new one
-    $svg.find('.y-axis').remove();
+    var yaxis = $svg.querySelector('.y-axis');
+
+    if(yaxis) {
+      yaxis.parentNode.removeChild(yaxis);
+    }
 
     var g = svg.append('g')
         .classed('y-axis', true)

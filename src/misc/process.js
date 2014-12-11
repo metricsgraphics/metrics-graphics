@@ -2,11 +2,11 @@ function raw_data_transformation(args){
     'use strict';
     //do we need to turn json data to 2d array?
 
-    if(!$.isArray(args.data[0]))
+    if(!isArray(args.data[0]))
         args.data = [args.data];
     //
 
-    if ($.isArray(args.y_accessor)){
+    if (isArray(args.y_accessor)){
         args.data = args.data.map(function(_d){
             return args.y_accessor.map(function(ya){
                 return _d.map(function(di){
@@ -42,7 +42,7 @@ function process_line(args) {
     //are we replacing missing y values with zeros?
 
     //do we have a time-series?
-    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) == 'date')
+    var is_time_series = (args.data[0][0][args.x_accessor] instanceof Date)
             ? true
             : false;
 
@@ -71,7 +71,7 @@ function process_line(args) {
 
                 //check to see if we already have this date in our data object
                 var existing_o = null;
-                $.each(args.data[i], function(i, val) {
+                args.data[i].forEach(function(val, i) {
                     if(Date.parse(val.date) == Date.parse(new Date(d))) {
                         existing_o = val;
 

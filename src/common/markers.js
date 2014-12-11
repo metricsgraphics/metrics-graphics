@@ -1,11 +1,15 @@
 function markers(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = d3.select(document.querySelector(args.target + ' svg'));
     var gm;
     var gb;
 
     if(args.markers) {
-        $(args.target).find('svg .markers').remove();
+        var oldMarkers = document.querySelector(args.target + ' svg .markers');
+
+        if(oldMarkers) {
+          oldMarkers.parentNode.removeChild(oldMarkers); 
+        }
 
         gm = svg.append('g')
             .attr('class', 'markers');

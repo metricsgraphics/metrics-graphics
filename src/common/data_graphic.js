@@ -58,15 +58,12 @@ function data_graphic() {
 
             // format as date or not, of course user can pass in 
             // a custom function if desired
-            switch($.type(args.data[0][0][args.x_accessor])) {
-                case 'date':
-                    return df(d);
-                    break;
-                case 'number':
-                    return pf.scale(d) + pf.symbol;
-                    break;
-                default:
-                    return d;
+            if(args.data[0][0][args.x_accessor] instanceof Date) {
+              return df(d);
+            } else if(typeof args.data[0][0][args.x_accessor] == 'number') {
+              return pf.scale(d) + pf.symbol; 
+            } else {
+              return d; 
             }
         },
         area: true,
@@ -102,8 +99,10 @@ function data_graphic() {
     }
     moz.defaults.histogram = {
         rollover_callback: function(d, i) {
-            $('#histogram svg .active_datapoint')
-                .html('Frequency Count: ' + d.y);
+            document.querySelectorAll('#histogram svg .active_datapoint')
+            .forEach(function(e, i) {
+              e.innerHTML = 'Frequency Count: ' + d.y;
+            })
         },
         binned: false,
         bins: null,

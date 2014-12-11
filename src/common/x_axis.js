@@ -4,7 +4,7 @@ function x_rug(args) {
         ? args.buffer / 2 
         : args.buffer;
 
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = d3.select(document.querySelector(args.target + ' svg'));
     var all_data=[];
     for (var i=0; i<args.data.length; i++) {
         for (var j=0; j<args.data[i].length; j++) {
@@ -31,8 +31,8 @@ function x_rug(args) {
 
 function x_axis(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
-    var $svg = $($(args.target).find('svg').get(0));
+    var $svg = document.querySelector(args.target + ' svg');
+    var svg = d3.select($svg);
 
     var g;
     var min_x;
@@ -155,7 +155,7 @@ function x_axis(args) {
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
         
         //force override xax_format
-        //todo revisit to see if this makes sense        
+        //@todo revisit to see if this makes sense        
         args.xax_format = function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
@@ -170,7 +170,7 @@ function x_axis(args) {
     else if(args.chart_type == 'bar') {
         //min_x = d3.min(args.data[0], function(d){return d[args.value_accessor]});
 
-        min_x = 0; // TODO: think about what actually makes sense.
+        min_x = 0; //@todo: think about what actually makes sense.
         max_x = d3.max(args.data[0], function(d){
             var trio = [];
             trio.push(d[args.x_accessor]);
@@ -227,7 +227,11 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    $svg.find('.x-axis').remove();
+    var xaxis = $svg.querySelector('.x-axis');
+
+    if(xaxis) {
+      xaxis.parentNode.removeChild(xaxis);
+    }
 
     if (!args.x_axis) return this;
 
