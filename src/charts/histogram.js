@@ -8,19 +8,21 @@ charts.histogram = function(args) {
         init(args);
         x_axis(args);
         y_axis(args);
+        this.$svg = document.querySelector(args.target + ' svg');
+        this.svg = d3.select(this.$svg);
         return this;
     }
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $($(args.target).find('svg').get(0));
-
         var g;
 
         //remove the old histogram, add new one
-        $svg.find('.histogram').remove();
+        var oldHistogram = this.$svg.querySelector('.histogram');
 
-        var g = svg.append("g")
+        if(oldHistogram)
+          oldHistogram.parentNode.removeChild(oldHistogram);
+
+        var g = this.svg.append("g")
             .attr("class", "histogram");
 
         var bar = g.selectAll(".bar")
@@ -57,23 +59,29 @@ charts.histogram = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
         
         //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.active_datapoint').remove();
+        [
+          this.$svg.querySelector('.transparent-rollover-rect'),
+          this.$svg.querySelector('.active_datapoint')
+        ].forEach(function(e, i) {
+        
+          if(!e)
+            return;
 
+          e.parentNode.removeChild(e);
+        })
+         
         //rollover text
-        svg.append('text')
+        this.svg.append('text')
             .attr('class', 'active_datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
 
-        var g = svg.append('g')
+        var g = this.svg.append('g')
             .attr('class', 'transparent-rollover-rect')
 
         //draw rollover bars
@@ -107,7 +115,7 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -136,7 +144,9 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target).find(' svg .bar :eq(' + i + ')'))
+            var el = document.querySelectorAll(args.target + ' svg .bar')[i]
+
+            d3.selectAll(el.childNodes)
                 .classed('active', true);
 
             //update rollover text
@@ -165,13 +175,16 @@ charts.histogram = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
 
         return function(d, i) {
+
+            var el = document.querySelectorAll(args.target + ' svg .bar')[i]
+
             //reset active bar
-            d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
+            d3.selectAll(el.childNodes)
                 .classed('active', false);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');

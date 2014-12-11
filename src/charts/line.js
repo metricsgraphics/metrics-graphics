@@ -9,11 +9,11 @@ charts.line = function(args) {
         x_axis(args);
         y_axis(args);
         this.$svg = document.querySelector(args.target + ' svg')
+        this.svg = d3.select(this.$svg)
         return this;
     }
 
     this.mainPlot = function() {
-        var svg = d3.select(this.$svg);
         var g;
         var data_median = 0;
 
@@ -68,7 +68,7 @@ charts.line = function(args) {
 
             //add confidence band
             if(args.show_confidence_band) {
-                svg.append('path')
+                this.svg.append('path')
                     .attr('class', 'confidence-band')
                     .attr('d', confidence_area(args.data[i]));
             }
@@ -86,12 +86,12 @@ charts.line = function(args) {
                             .attr('d', area(args.data[i]));
                 }
                 else { //otherwise, add the area
-                    svg.append('path')
+                    this.svg.append('path')
                         .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
             } else if ($area.length > 0) {
-              $area.remove();
+              $area.parentNode.removeChild($area);
             }
 
             var $lines = document.querySelectorAll(args.target + ' svg path.line' + (line_id) + '-color')
@@ -111,7 +111,7 @@ charts.line = function(args) {
                         return d[args.y_accessor];
                     })
 
-                    svg.append('path')
+                    this.svg.append('path')
                         .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
                         .attr('d', flat_line(args.data[i]))
                         .transition()
@@ -119,7 +119,7 @@ charts.line = function(args) {
                             .attr('d', line(args.data[i]));
                 }
                 else { //or just add the line
-                    svg.append('path')
+                    this.svg.append('path')
                         .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]));
                 }
@@ -145,7 +145,6 @@ charts.line = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select(this.$svg);
         var g;
 
         //remove the old rollover text and circle if they already exist
@@ -162,7 +161,7 @@ charts.line = function(args) {
         })
 
         //rollover text
-        svg.append('text')
+        this.svg.append('text')
             .attr('class', 'active_datapoint')
             .classed('active-datapoint-small', args.use_small_class)
             .attr('xml:space', 'preserve')
@@ -171,7 +170,7 @@ charts.line = function(args) {
             .attr('text-anchor', 'end');
 
         //append circle
-        svg.append('circle')
+        this.svg.append('circle')
             .classed('line_rollover_circle', true)
             .attr('cx', 0)
             .attr('cy', 0)
@@ -202,7 +201,7 @@ charts.line = function(args) {
                 .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
                 .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
-            var g = svg.append('g')
+            var g = this.svg.append('g')
                 .attr('class', 'voronoi')
 
             //we'll be using these when constructing the voronoi rollovers
@@ -249,7 +248,7 @@ charts.line = function(args) {
                 line_id = args.custom_line_color_map[0];
             }
 
-            var g = svg.append('g')
+            var g = this.svg.append('g')
                 .attr('class', 'transparent-rollover-rect')
 
             var xf = args.data[0].map(args.scalefns.xf);
@@ -310,7 +309,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -397,7 +396,7 @@ charts.line = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
 
         return function(d, i) {
             if(args.linked && globals.link) {

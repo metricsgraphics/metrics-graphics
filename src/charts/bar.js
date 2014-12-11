@@ -14,20 +14,23 @@ charts.bar = function(args) {
         init(args);
         x_axis(args);
         y_axis_categorical(args);
+        this.$svg = document.querySelector(args.target + ' svg');
+        this.svg = d3.select(this.$svg);
         return this;
     }
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old barplot, add new one
-        $svg.find('.barplot').remove();
+        var oldBarplot = this.$svg.querySelector('.barplot');
+
+        if(oldBarplot) 
+          oldBarplot.parentNode.removeChild(oldBarplot); 
 
         var data = args.data[0];
 
-        var g = svg.append('g')
+        var g = this.svg.append('g')
             .classed('barplot', true);
 
         var appropriate_height = args.scales.Y.rangeBand()/1.5;
@@ -80,16 +83,21 @@ charts.bar = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.active_datapoint').remove();
+        [
+          this.$svg.querySelector('.transparent-rollover-rect'),
+          this.$svg.querySelector('.active_datapoint')
+        ].forEach(function(e, i) {
+          if(!e)
+            return;
+
+          e.parentNode.removeChild(e);
+        })
 
         //rollover text
-        svg.append('text')
+        this.svg.append('text')
             .attr('class', 'active_datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
@@ -97,7 +105,7 @@ charts.bar = function(args) {
             .attr('dy', '.35em')
             .attr('text-anchor', 'end');
 
-        var g = svg.append('g')
+        var g = this.svg.append('g')
             .attr('class', 'transparent-rollover-rect')
 
         //draw rollover bars
@@ -114,7 +122,7 @@ charts.bar = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -142,8 +150,10 @@ charts.bar = function(args) {
                 }
             }
 
+            var el = document.querySelectorAll(args.target + ' svg g.barplot .bar')[i]
+
             //highlight active bar
-            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
+            d3.select(el)
                 .classed('active', true);
 
             //update rollover text
@@ -170,11 +180,12 @@ charts.bar = function(args) {
     }
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = this.svg;
 
         return function(d, i) {
+            var el = document.querySelectorAll(args.target + ' svg g.barplot .bar')[i]
             //reset active bar
-            d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
+            d3.select(el)
                 .classed('active', false);
             
             //reset active data point text
