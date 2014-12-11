@@ -1,12 +1,36 @@
+
+
 function raw_data_transformation(args){
     'use strict';
-    //do we need to turn json data to 2d array?
 
-    if(!$.isArray(args.data[0]))
-        args.data = [args.data];
-    //
+    function nonarray_obj(d){
+        return (d instanceof Object && !(d instanceof Array));
+    }
+    
+    // 
+    if (args.chart_type == 'line'){
+        var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
+        var is_unnested_array_of_arrays = (
+            args.data[0] instanceof Array && 
+            !(args.data[0][0] instanceof Object &&
+            !(args.data[0][0] instanceof Date)));
 
-    if ($.isArray(args.y_accessor)){
+        
+
+        if(
+            is_unnested_obj_array || is_unnested_array_of_arrays){
+            // && (!(args.data[0][0] instanceof Array) || args.data[0] instanceof Object ) 
+            args.data = [args.data];
+        }         
+    } else {
+        if (!(args.data[0] instanceof Array)){
+            args.data = [args.data];
+        }
+    }
+
+
+
+    if (args.y_accessor instanceof Array){
         args.data = args.data.map(function(_d){
             return args.y_accessor.map(function(ya){
                 return _d.map(function(di){
