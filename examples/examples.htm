@@ -2,8 +2,8 @@
 <head>
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta property='og:title' content='MetricsGraphics.js' />
-    <meta property='og:description' content='MetricsGraphics.js is a library optimized 
-        for visualizing and laying out time-series data. It provides a simple way to produce 
+    <meta property='og:description' content='MetricsGraphics.js is a library optimized
+        for visualizing and laying out time-series data. It provides a simple way to produce
         common types of graphics in a principled, consistent and responsive way.' />
     <meta property='og:image' content='http://metricsgraphicsjs.org/images/og-logo.png' />
     <meta property='og:type' content='website' />
@@ -19,13 +19,13 @@
     <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 
-    <link href='css/metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <link href='../lib/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css' id='light'>
     <link href='' rel='stylesheet' type='text/css' id='dark'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
-    <script src='js/metricsgraphics.min.js'></script>
+    <script src='../lib/metricsgraphics.min.js'></script>
     <script src='js/main.js'></script>
 
     <script>
@@ -75,18 +75,18 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Hassle-Free Layouts</h2>
-                    <p>We use Bootstrap's grid template to lay out graphics. This means 
-                    that it is ridiculously easy to create grids of arbitrary sizes 
-                    and place graphics and their corresponding prose or associated 
+                    <p>We use Bootstrap's grid template to lay out graphics. This means
+                    that it is ridiculously easy to create grids of arbitrary sizes
+                    and place graphics and their corresponding prose or associated
                     graphics wherever and however one pleases.</p>
-                    <p>Setting <i>legend</i> and <i>legend_target</i> allows you to 
+                    <p>Setting <i>legend</i> and <i>legend_target</i> allows you to
                     generate a key to go with the graphic.</p>
                     <div class='legend'></div>
                 </div>
                 <div class='col-lg-8'>
                     <div class='col-lg-12 text-center extended-y-ticks' id='fake_users3'>
-                        
-                           
+
+
                     </div>
                 </div>
             </div>
@@ -94,9 +94,9 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Confidence Band</h2>
-                    <p>We regularly make use of confidence bands with forecasts. One 
-                    can easily specify a confidence band by enabling the option and 
-                    specifying the elements that contain the lower and upper values 
+                    <p>We regularly make use of confidence bands with forecasts. One
+                    can easily specify a confidence band by enabling the option and
+                    specifying the elements that contain the lower and upper values
                     for each data point.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -107,8 +107,8 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Linked Graphics</h2>
-                    <p>It can be useful to have two graphics linked together&mdash;when 
-                    a rollover in one is triggered, the same rollover is triggered on 
+                    <p>It can be useful to have two graphics linked together&mdash;when
+                    a rollover in one is triggered, the same rollover is triggered on
                     the same date or data point in the other.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -122,15 +122,15 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Update Graphic Data</h2>
-                    <p>We sometimes have the need to split the data and then 
-                    gracefully update the graphic with the newly selected subset of 
+                    <p>We sometimes have the need to split the data and then
+                    gracefully update the graphic with the newly selected subset of
                     data.</p>
                     <div class='btn-group btn-group-sm text-center split-by-controls'>
-                        <button type='button' class='btn btn-default active' 
+                        <button type='button' class='btn btn-default active'
                             data-y_accessor='release'>Release</button>
-                        <button type='button' class='btn btn-default' 
+                        <button type='button' class='btn btn-default'
                             data-y_accessor='beta'>Beta</button>
-                        <button type='button' class='btn btn-default' 
+                        <button type='button' class='btn btn-default'
                             data-y_accessor='alpha'>Alpha</button>
                     </div>
                 </div>
@@ -142,15 +142,15 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Modify Time Period</h2>
-                    <p>We sometimes have the need to view data for just the past n days. 
+                    <p>We sometimes have the need to view data for just the past n days.
                     Here, the <i>transition_on_update</i> option is set to false.</p>
-                    <div class='btn-group btn-group-sm text-center 
+                    <div class='btn-group btn-group-sm text-center
                         modify-time-period-controls'>
-                        <button type='button' class='btn btn-default active' 
+                        <button type='button' class='btn btn-default active'
                             data-time_period=''>All time</button>
-                        <button type='button' class='btn btn-default' 
+                        <button type='button' class='btn btn-default'
                             data-time_period='61'>Past 2 months</button>
-                        <button type='button' class='btn btn-default' 
+                        <button type='button' class='btn btn-default'
                             data-time_period='31'>Past month</button>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                     <div id='modify_time_period'></div>
                 </div>
             </div>
-            
+
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Small Graphics</h2>
@@ -188,8 +188,8 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Rollover Text Formatting</h2>
-                    <p>We can change the precision if the axis data type is a float. 
-                    We can also change both the formatting, or hide the rollover text 
+                    <p>We can change the precision if the axis data type is a float.
+                    We can also change both the formatting, or hide the rollover text
                     altogether.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -207,7 +207,7 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Logarithmic Scales</h2>
-                    <p>One can change the y-axis' scale to logarithmic by setting 
+                    <p>One can change the y-axis' scale to logarithmic by setting
                     <i>y_scale_type</i> to <i>log</i>.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -218,8 +218,8 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Min and Max Numbers on Y-Axis</h2>
-                    <p>Currently this lib will default to 0 on the y-axis as min if 
-                    there are no negative numbers. If there are negatives, should 
+                    <p>Currently this lib will default to 0 on the y-axis as min if
+                    there are no negative numbers. If there are negatives, should
                     provide some buffer below.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -237,7 +237,7 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Scatterplots</h2>
-                    <p>A few examples of scatterplots that demonstrate the graphic 
+                    <p>A few examples of scatterplots that demonstrate the graphic
                     type's options, smoothers and rug&nbsp;plots.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -259,9 +259,9 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Histograms</h2>
-                    <p>We use histograms a lot, particularly in 
-                    <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>. 
-                    The histogram graphic type includes the ability to 
+                    <p>We use histograms a lot, particularly in
+                    <a href='https://wiki.mozilla.org/Telemetry' target='_blank'>Telemetry</a>.
+                    The histogram graphic type includes the ability to
                     <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>
                     bin data</a>.
                     </p>
@@ -283,7 +283,7 @@
 
             <div class='row wip light-bg'>
                 <div class='col-lg-12 text-center'>
-                    <i class='fa fa-wrench'></i> <strong>Works in Progress</strong> 
+                    <i class='fa fa-wrench'></i> <strong>Works in Progress</strong>
                     subject to drastic change
                 </div>
             </div>
@@ -291,7 +291,7 @@
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Handling Missing Data</h2>
                     <p>
-                        MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps. 
+                        MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps.
                     </p>
                 </div>
                 <div class='col-lg-8'>
@@ -325,7 +325,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Barplots</h2>
@@ -343,7 +343,7 @@
 
         <div class='footer'>
             <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 1.1</a>
-            <br />Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a> and 
+            <br />Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a> and
             <a href='https://github.com/hamilton'>Hamilton Ulmer</a>
             <br />2014 &middot; Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
             Mozilla Public License</a>
