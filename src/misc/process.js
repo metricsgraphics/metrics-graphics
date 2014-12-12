@@ -3,11 +3,11 @@
 function raw_data_transformation(args){
     'use strict';
 
-    function nonarray_obj(d){
-        return (d instanceof Object && !(d instanceof Array));
-    }
-    
-    // 
+    // We need to account for a few data format cases:
+    // 1. [{key:__, value:__}, ...]                              // unnested obj-arrays
+    // 2. [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
+    // 3. [[4323, 2343],..]                                      // unnested 2d array
+    // 4. [[[4323, 2343],..] , [[4323, 2343],..]]                // nested 2d array
     if (args.chart_type == 'line'){
         var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
         var is_unnested_array_of_arrays = (
@@ -15,11 +15,8 @@ function raw_data_transformation(args){
             !(args.data[0][0] instanceof Object &&
             !(args.data[0][0] instanceof Date)));
 
-        
-
         if(
             is_unnested_obj_array || is_unnested_array_of_arrays){
-            // && (!(args.data[0][0] instanceof Array) || args.data[0] instanceof Object ) 
             args.data = [args.data];
         }         
     } else {
