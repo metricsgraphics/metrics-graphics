@@ -12,19 +12,25 @@ function x_rug(args) {
         }
     }
 
-    var rug = svg.selectAll('line.x_rug').data(all_data)
-        .enter().append('svg:line')
-            .attr('x1', args.scalefns.xf)
-            .attr('x2', args.scalefns.xf)
-            .attr('y1', args.height-args.top+buffer_size)
-            .attr('y2', args.height-args.top)
-            .attr('class', 'x-rug')
-            .attr('opacity', 0.3);
+    var rug = svg.selectAll('line.x-rug').data(all_data);
+
+    rug.enter().append('svg:line')
+        .attr('class', 'x-rug')
+        .attr('opacity', 0.3);
+
+    rug.exit().remove();
+
+    rug.attr('x1', args.scalefns.xf)
+        .attr('x2', args.scalefns.xf)
+        .attr('y1', args.height-args.top+buffer_size)
+        .attr('y2', args.height-args.top);
 
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
+        rug.classed('x-rug-mono', false);
     }
     else {
+        rug.attr('stroke', null);
         rug.classed('x-rug-mono', true);
     }
 }
