@@ -1,0 +1,30 @@
+{
+  "framework": "qunit",
+  "src_files": [
+    "node_modules/jquery/dist/jquery.js",
+    "node_modules/d3/d3.js",
+
+    "src/common/data_graphic.js",
+    "src/common/chart_title.js",
+    "src/common/y_axis.js",
+    "src/common/x_axis.js",
+    "src/common/init.js",
+    "src/common/markers.js",
+    "src/layout/button.js",
+    "src/charts/line.js",
+    "src/charts/histogram.js",
+    "src/charts/point.js",
+    "src/charts/bar.js",
+    "src/charts/table.js",
+    "src/charts/missing.js",
+    "src/misc/process.js",
+    "src/misc/smoothers.js",
+    "src/misc/utility.js",
+    "src/misc/error.js",
+
+    "tests/**/*_test.js"
+  ],
+  "launch_in_dev": [
+    "PhantomJS"
+  ]
+}
