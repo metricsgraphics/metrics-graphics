@@ -16,7 +16,7 @@ var
 //scss = './scss/',
 //scssFiles = [],
 //scssDependencies = [],
-  dist = './lib/',
+  dist = './dist/',
   jsFiles = [
     src + 'common/data_graphic.js',
     src + 'common/bootstrap_tooltip_popover.js',
