@@ -49,7 +49,7 @@ $(document).ready(function() {
                 var y_val = (d.value == 0) ? 'no data' : d.value;
 
                 $('#missing-y svg .active_datapoint')
-                    .html(date +  '   ' + y_val);
+                    .text(date +  '   ' + y_val);
             }
         })
     });
@@ -535,7 +535,7 @@ $(document).ready(function() {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
                 $('#custom-rollover svg .active_datapoint')
-                    .html('Day ' + (i+1) + ' &nbsp; '
+                    .text('Day ' + (i+1) + '   '
                          + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: '#custom-rollover',
@@ -615,7 +615,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
             $('#histogram1 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })  
 
@@ -646,7 +646,7 @@ $(document).ready(function() {
                     string = d3.round(d.x,2) + ' Months';
                 }
                 $('#ufos svg .active_datapoint')
-                    .html(string +   '       Volume: ' + d.y);
+                    .text(string +   '       Volume: ' + d.y);
             }
         })
     })
@@ -672,7 +672,7 @@ $(document).ready(function() {
         y_accessor:'count',
         rollover_callback: function(d, i) {
             $('#histogram2 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -692,7 +692,7 @@ $(document).ready(function() {
         x_accessor:'val1',
         rollover_callback: function(d, i) {
             $('#histogram3 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -713,7 +713,7 @@ $(document).ready(function() {
         x_accessor:'val1',
         rollover_callback: function(d, i) {
             $('#histogram4 svg .active_datapoint')
-                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 

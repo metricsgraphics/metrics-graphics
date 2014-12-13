@@ -18,11 +18,13 @@ var
   dist = './js/',
   jsFiles = [
     src + 'common/data_graphic.js',
+    src + 'common/bootstrap_tooltip_popover.js',
     src + 'common/chart_title.js',
     src + 'common/y_axis.js',
     src + 'common/x_axis.js',
     src + 'common/init.js',
     src + 'common/markers.js',
+    src + 'layout/bootstrap_dropdown.js',
     src + 'layout/button.js',
     src + 'charts/line.js',
     src + 'charts/histogram.js',
