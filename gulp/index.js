@@ -8,6 +8,7 @@ var
 //sass = require('gulp-sass'), // for building css from scss
 //minifycss = require('gulp-minify-css'), // for minifiing css
   jslint = require('gulp-jslint');
+  testem = require('gulp-testem');
 
 // paths
 var
@@ -18,11 +19,13 @@ var
   dist = './lib/',
   jsFiles = [
     src + 'common/data_graphic.js',
+    src + 'common/bootstrap_tooltip_popover.js',
     src + 'common/chart_title.js',
     src + 'common/y_axis.js',
     src + 'common/x_axis.js',
     src + 'common/init.js',
     src + 'common/markers.js',
+    src + 'layout/bootstrap_dropdown.js',
     src + 'layout/button.js',
     src + 'charts/line.js',
     src + 'charts/histogram.js',
@@ -65,5 +68,12 @@ gulp.task('jslint', function () {
     .pipe(jslint({
       predef: ["window", '$', 'd3'], // used globals
       nomen: false // true if there are variable names with leading _
+    }));
+});
+
+gulp.task('test', function() {
+  return gulp.src([''])
+    .pipe(testem({
+      configFile: 'testem.json'
     }));
 });
