@@ -2,7 +2,7 @@ $(document).ready(function() {
     'use strict';
     //json data that we intend to update later on via on-screen controls
     var split_by_data;
-    
+
     var torso = {};
     torso.width = 375;
     torso.height = 200;
@@ -49,7 +49,7 @@ $(document).ready(function() {
                 var y_val = (d.value == 0) ? 'no data' : d.value;
 
                 $('#missing-y svg .active_datapoint')
-                    .text(date +  '   ' + y_val);
+                    .html(date +  '   ' + y_val);
             }
         })
     });
@@ -204,7 +204,7 @@ $(document).ready(function() {
                 } else if (i==1 && all_the_data[j]['date'] > new Date('2014-03-22')) {
                     // pass
                 } else {
-                    all_the_data[j]['value'+(i+1)] = data[i][j].value;    
+                    all_the_data[j]['value'+(i+1)] = data[i][j].value;
 
                 }
             }
@@ -224,11 +224,11 @@ $(document).ready(function() {
         });
     })
 
-    d3.json('data/fake_users3.json', function(data) {  
+    d3.json('data/fake_users3.json', function(data) {
         for(var i=0;i<data.length;i++) {
             data[i] = convert_dates(data[i], 'date');
         }
- 
+
         //linked multi-line charts
         data_graphic({
             title:"Multi-Line Linked 2",
@@ -395,7 +395,7 @@ $(document).ready(function() {
     // lower section
     d3.json('data/brief-1.json', function(data) {
         data = convert_dates(data, 'date');
-        
+
         data_graphic({
             title: "Linked Graphic",
             description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
@@ -444,7 +444,7 @@ $(document).ready(function() {
 
     d3.json('data/split_by.json', function(data) {
         data = convert_dates(data, 'date');
-        
+
         split_by_data = data_graphic({
             title: "Downloads by Channel",
             description: "The graphic is gracefully updated depending on the selected channel.",
@@ -535,7 +535,7 @@ $(document).ready(function() {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
                 $('#custom-rollover svg .active_datapoint')
-                    .text('Day ' + (i+1) + '   '
+                    .html('Day ' + (i+1) + ' &nbsp; '
                          + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: '#custom-rollover',
@@ -615,9 +615,9 @@ $(document).ready(function() {
         y_extended_ticks: true,
         rollover_callback: function(d, i) {
             $('#histogram1 svg .active_datapoint')
-                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })  
+    })
 
     d3.csv('data/ufo_dates.csv', function(ufos){
         var data = ufos.map(function(d){
@@ -646,7 +646,7 @@ $(document).ready(function() {
                     string = d3.round(d.x,2) + ' Months';
                 }
                 $('#ufos svg .active_datapoint')
-                    .text(string +   '       Volume: ' + d.y);
+                    .html(string +   '       Volume: ' + d.y);
             }
         })
     })
@@ -672,7 +672,7 @@ $(document).ready(function() {
         y_accessor:'count',
         rollover_callback: function(d, i) {
             $('#histogram2 svg .active_datapoint')
-                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -692,7 +692,7 @@ $(document).ready(function() {
         x_accessor:'val1',
         rollover_callback: function(d, i) {
             $('#histogram3 svg .active_datapoint')
-                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -713,7 +713,7 @@ $(document).ready(function() {
         x_accessor:'val1',
         rollover_callback: function(d, i) {
             $('#histogram4 svg .active_datapoint')
-                .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+                .html('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
 
@@ -872,8 +872,8 @@ $(document).ready(function() {
         })
         .target('#table1')
         .title({
-            accessor: 'geo', 
-            secondary_accessor:'year', 
+            accessor: 'geo',
+            secondary_accessor:'year',
             label: 'Country',
             description: 'These are arbitrary countries with arbitrary years underneath.'
         })
@@ -881,10 +881,10 @@ $(document).ready(function() {
         .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
         .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
         .number({
-            accessor: 'total', 
-            label: 'Volume', 
-            format: 'count', currency: '$', 
-            width: 100, 
+            accessor: 'total',
+            label: 'Volume',
+            format: 'count', currency: '$',
+            width: 100,
             font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal' },
             color: function(d){ return d < 5000000 ? '#f70101' : 'auto' }
         })
@@ -895,7 +895,7 @@ $(document).ready(function() {
 
     //add this scatterplot and color the groups based on the theme
     addScatterplotSizeAndColor('light');
-    
+
     function addScatterplotSizeAndColor(theme) {
         var color_range = (theme == 'light')
                 ? null
@@ -923,7 +923,7 @@ $(document).ready(function() {
                 size_accessor:'w',
                 x_rug: true,
                 y_rug: true
-            }); 
+            });
         });
     }
 
@@ -977,7 +977,7 @@ $(document).ready(function() {
                 .siblings()
                 .removeClass('active');
 
-            //update data    
+            //update data
             data_graphic({
                 data: split_by_data,
                 width: torso.width*2,
@@ -991,7 +991,7 @@ $(document).ready(function() {
         })
 
         $('.modify-time-period-controls button').click(function() {
-            var past_n_days = $(this).data('time_period');            
+            var past_n_days = $(this).data('time_period');
             var data = modify_time_period(split_by_data, past_n_days);
 
             //change button state
@@ -999,7 +999,7 @@ $(document).ready(function() {
                 .siblings()
                 .removeClass('active');
 
-            //update data    
+            //update data
             data_graphic({
                 data: data,
                 width: torso.width*2,
