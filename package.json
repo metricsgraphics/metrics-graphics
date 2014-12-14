@@ -32,7 +32,7 @@
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
     "jquery": ">=1.11.1",
-    "d3": ">=3.5.2"
+    "d3": ">=3.4.8"
   },
   "devDependencies": {
     "browser-sync": "^1.7.3",
