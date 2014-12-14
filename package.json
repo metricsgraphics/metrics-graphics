@@ -32,19 +32,22 @@
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
     "jquery": ">=1.11.1",
-    "d3": ">=3.4.8"
+    "d3": ">=3.5.2"
   },
   "devDependencies": {
+    "browser-sync": "^1.7.3",
     "gulp": "^3.8.10",
     "gulp-concat": "^2.4.2",
+    "gulp-csso": "^0.2.9",
     "gulp-jslint": "^0.2.1",
+    "gulp-load-plugins": "^0.8.0",
+    "gulp-notify": "^2.1.0",
     "gulp-rename": "^1.2.0",
     "gulp-rimraf": "^0.1.1",
     "gulp-testem": "0.0.1",
     "gulp-uglify": "^1.0.2",
     "gulp-util": "^3.0.1",
     "qunitjs": "^1.16.0",
-    "require-dir": "^0.1.0",
-    "testem": "^0.6.23"
+    "testem": "^0.6.24"
   }
 }

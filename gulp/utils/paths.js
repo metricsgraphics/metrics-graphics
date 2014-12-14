@@ -1,4 +1,4 @@
-// setup paths
+// paths config for gulp tasks
 
 module.exports = {
   src: {
