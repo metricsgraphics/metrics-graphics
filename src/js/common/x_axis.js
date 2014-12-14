@@ -24,6 +24,8 @@ function x_rug(args) {
     rug.exit().remove();
 
     //set coordinates of new rug elements
+    rug.exit().remove();
+
     rug.attr('x1', args.scalefns.xf)
         .attr('x2', args.scalefns.xf)
         .attr('y1', args.height-args.top+buffer_size)

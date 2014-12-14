@@ -23,6 +23,8 @@ function y_rug(args) {
     rug.exit().remove();
 
     //set coordinates of new rug elements
+    rug.exit().remove();
+
     rug.attr('x1', args.left + 1)
         .attr('x2', args.left+buffer_size)
         .attr('y1', args.scalefns.yf)
