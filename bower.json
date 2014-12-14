@@ -13,6 +13,8 @@
     ".DS_Store",
     ".git",
     ".gitignore",
+    "dist/metricsgraphics.js",
+    "dist/metricsgraphics.css",
     "examples",
     "gulp",
     "gulpfile.js",
