@@ -104,6 +104,7 @@ charts.bar = function(args) {
         var bar = g.selectAll(".bar")
             .data(args.data[0])
                 .enter().append("rect")
+                    .attr('class', 'bar-rollover')
                     .attr("x", args.scales.X(0))
                     .attr("y", args.scalefns.yf)
                     .attr('width', args.width)
