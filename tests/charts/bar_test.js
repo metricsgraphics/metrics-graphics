@@ -1,17 +1,5 @@
 module('Bar Chart');
 
-function extend(a, b){
-  var c = {};
-  for(var p in a)    c[p] = (b[p] == null) ? a[p] : b[p];
-  return c;
-}
-
-function mouseEvent(type) {
-  var event = document.createEvent('MouseEvent');
-  event.initEvent(type, true, true);
-  return event;
-}
-
 var target = '#qunit-fixture',
   defaults = {
     target: target,
@@ -54,13 +42,13 @@ test('triggers callbacks when provided', function() {
 
   var bar = document.getElementsByClassName('bar-rollover')[0];
 
-  bar.dispatchEvent(mouseEvent('mouseover'));
+  bar.dispatchEvent(generateMouseEvent('mouseover'));
   equal(mouseoverCalled, true, 'mouseover was called');
 
-  bar.dispatchEvent(mouseEvent('mousemove'));
+  bar.dispatchEvent(generateMouseEvent('mousemove'));
   equal(mousemoveCalled, true, 'mousemove was called');
 
-  bar.dispatchEvent(mouseEvent('mouseout'));
+  bar.dispatchEvent(generateMouseEvent('mouseout'));
   equal(mouseoutCalled, true, 'mouseout was called');
 });
 
@@ -83,11 +71,11 @@ test('triggers callbacks when using 1.x-style method names', function() {
 
   var bar = document.getElementsByClassName('bar-rollover')[0];
 
-  bar.dispatchEvent(mouseEvent('mouseover'));
-  equal(mouseoverCalled, true, 'mouseover was called');
+  bar.dispatchEvent(generateMouseEvent('mouseover'));
+  equal(mouseoverCalled, true, 'rollover_callback was called');
 
-  bar.dispatchEvent(mouseEvent('mouseout'));
-  equal(mouseoutCalled, true, 'mouseout was called');
+  bar.dispatchEvent(generateMouseEvent('mouseout'));
+  equal(mouseoutCalled, true, 'rollout_callback was called');
 
   ok(window.deprecations.rollover_callback.warned, 'rollover_callback deprecation notice displayed');
   ok(window.deprecations.rollout_callback.warned, 'rollout_callback deprecation notice displayed');

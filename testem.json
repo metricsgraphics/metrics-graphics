@@ -22,6 +22,8 @@
     "src/js/misc/utility.js",
     "src/js/misc/error.js",
 
+    "tests/helpers.js",
+
     "tests/**/*_test.js"
   ],
   "launch_in_dev": [
