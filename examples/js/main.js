@@ -741,12 +741,15 @@ $(document).ready(function() {
         width:trunk.width,
         right:trunk.right,
         target: '#bar1',
+        animate_on_load: true,
         x_axis: false
     })
 
     MG.data_graphic({
         title:'No Axis',
         description:'work in progress',
+        baseline_accessor:'baseline',
+        predictor_accessor:'prediction',
         data: bar_data,
         chart_type: 'bar',
         x_accessor: 'value',
@@ -754,8 +757,26 @@ $(document).ready(function() {
         width:trunk.width,
         height:trunk.height,
         right:trunk.right,
+        animate_on_load: true,
         target: '#bar2',
     })
+
+    data_graphic({
+        title: 'Vertical Bars',
+        chart_type: 'bar',
+        description: 'work in progress',
+        data: bar_data,
+        bar_orientation: 'vertical',
+        y_accessor: 'value',
+        x_accessor: 'label',
+        baseline_accessor: 'baseline',
+        predictor_accessor: 'prediction',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        animate_on_load: true,
+        target: "#bar3"
+    });
 
     d3.json('data/points1.json', function(data) {
         MG.data_graphic({

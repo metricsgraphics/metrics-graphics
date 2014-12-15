@@ -118,7 +118,37 @@ function arrDiff(a,b) {
 }
 
 
+/**
+    Print warning message to the console when a feature has been scheduled for removal
+
+    @author Dan de Havilland (github.com/dandehavilland)
+    @date 2014-12
+*/
 function warnDeprecation(message, untilVersion) {
   console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'));
   console.trace();
+}
+
+/**
+    Truncate a string to fit within an SVG text node
+    CSS text-overlow doesn't apply to SVG <= 1.2
+
+    @author Dan de Havilland (github.com/dandehavilland)
+    @date 2014-12-02
+*/
+function truncate_text(textObj, textString, width) {
+  var bbox,
+    position = 0;
+
+  textObj.textContent = textString;
+  bbox = textObj.getBBox();
+
+  while (bbox.width > width) {
+    textObj.textContent = textString.slice(0, --position) + '...';
+    bbox = textObj.getBBox();
+
+    if (textObj.textContent === '...') {
+      break;
+    }
+  }
 }

@@ -5,8 +5,16 @@ function generateMouseEvent(type) {
 }
 
 // essentially the same as $.extend
-function extend(a, b){
-  var c = {};
-  for(var p in a)    c[p] = (b[p] == null) ? a[p] : b[p];
-  return c;
+function extend(){
+  var result = {},
+    $__arguments = [].slice.call(arguments);
+
+  $__arguments.forEach(function(obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        result[prop] = obj[prop];
+      }
+    }
+  });
+  return result;
 }

@@ -1,8 +1,8 @@
 function y_rug(args) {
     'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
-    var buffer_size = args.chart_type == 'point' 
-        ? args.buffer / 2 
+    var buffer_size = args.chart_type == 'point'
+        ? args.buffer / 2
         : args.buffer * 2 / 3;
 
     var all_data = [];
@@ -86,6 +86,24 @@ function y_axis(args) {
         min_y = 0;
     }
 
+    if(args.chart_type == 'bar') {
+        min_y = 0;
+        max_y = d3.max(args.data[0], function(d){
+            var trio = [];
+            trio.push(d[args.y_accessor]);
+
+            if (args.baseline_accessor!=null){
+                trio.push(d[args.baseline_accessor]);
+            };
+
+            if (args.predictor_accessor!=null){
+                trio.push(d[args.predictor_accessor]);
+            }
+
+            return Math.max.apply(null, trio);
+        });
+    }
+
     //if a min_y or max_y have been set, use those instead
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y;
@@ -102,7 +120,7 @@ function y_axis(args) {
 
     max_y = max_y * args.inflator;
     if (!args.min_y && args.min_y_from_data){
-        min_y = min_y / args.inflator;    
+        min_y = min_y / args.inflator;
     }
 
     if (args.y_scale_type == 'log'){
@@ -131,22 +149,24 @@ function y_axis(args) {
         .domain([min_y, max_y])
         .range([args.height - args.bottom - args.buffer, args.top]);
 
-    var yax_format;
-    if (args.format == 'count') {
-        yax_format = function(f) {
-            if (f < 1.0) {
-                // Don't scale tiny values.
-                return args.yax_units + d3.round(f, args.decimals);
-            } else {
-                var pf = d3.formatPrefix(f);
-                return args.yax_units + pf.scale(f) + pf.symbol;
+    var yax_format = args.yax_format;
+    if (!yax_format) {
+        if (args.format == 'count') {
+            yax_format = function(f) {
+                if (f < 1.0) {
+                    // Don't scale tiny values.
+                    return args.yax_units + d3.round(f, args.decimals);
+                } else {
+                    var pf = d3.formatPrefix(f);
+                    return args.yax_units + pf.scale(f) + pf.symbol;
+                }
+            };
+        }
+        else {
+            yax_format = function(d_) {
+                var n = d3.format('%p');
+                return n(d_);
             }
-        };
-    }
-    else {
-        yax_format = function(d_) {
-            var n = d3.format('%p');
-            return n(d_);
         }
     }
 
@@ -165,7 +185,7 @@ function y_axis(args) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return -1 * (args.top + args.buffer + 
+                return -1 * (args.top + args.buffer +
                         ((args.height - args.bottom - args.buffer)
                             - (args.top + args.buffer)) / 2);
             })
@@ -204,7 +224,7 @@ function y_axis(args) {
 
     //filter out fraction ticks if our data is ints and if ymax > number of generated ticks
     var number_of_ticks = args.scales.Y.ticks(args.yax_count).length;
-    
+
     //is our data object all ints?
     var data_is_int = true;
     $.each(args.data, function(i, d) {
@@ -250,7 +270,7 @@ function y_axis(args) {
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                .attr('dx', -3).attr('y', function(d) { 
+                .attr('dx', -3).attr('y', function(d) {
                     return args.scales.Y(d).toFixed(2);
                 })
                 .attr('dy', '.35em')
@@ -268,7 +288,7 @@ function y_axis(args) {
 }
 
 function y_axis_categorical(args) {
-    // first, come up with y_axis 
+    // first, come up with y_axis
     var svg_height = args.height;
     if (args.chart_type == 'bar' && svg_height == null){
         // we need to set a new height variable.
@@ -297,7 +317,7 @@ function y_axis_categorical(args) {
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
         .attr('y', function(d) {
-            return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 
+            return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
                 + (args.buffer)*args.outer_padding_percentage;
         })
         .attr('dy', '.35em')
