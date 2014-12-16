@@ -104,13 +104,15 @@ charts.bar = function(args) {
         var bar = g.selectAll(".bar")
             .data(args.data[0])
                 .enter().append("rect")
+                    .attr('class', 'bar-rollover')
                     .attr("x", args.scales.X(0))
                     .attr("y", args.scalefns.yf)
                     .attr('width', args.width)
                     .attr('height', args.scales.Y.rangeBand()+2)
                     .attr('opacity', 0)
                     .on('mouseover', this.rolloverOn(args))
-                    .on('mouseout', this.rolloverOff(args));
+                    .on('mouseout', this.rolloverOff(args))
+                    .on('mousemove', this.rolloverMove(args));
     }
 
     this.rolloverOn = function(args) {
@@ -125,7 +127,7 @@ charts.bar = function(args) {
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
-        
+
             if (args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
@@ -153,18 +155,18 @@ charts.bar = function(args) {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
-                            
-                            return fmt(dd) + '  ' + args.yax_units 
+
+                            return fmt(dd) + '  ' + args.yax_units
                                 + num(d[args.y_accessor]);
                         }
                         else {
                             return d[args.y_accessor] + ': ' + num(d[args.x_accessor]);
                         }
-                    });                
+                    });
             }
 
-            if(args.rollover_callback) {
-                args.rollover_callback(d, i);
+            if(args.mouseover) {
+                args.mouseover(d, i);
             }
         }
     }
@@ -176,10 +178,22 @@ charts.bar = function(args) {
             //reset active bar
             d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
                 .classed('active', false);
-            
+
             //reset active data point text
             svg.select('.active_datapoint')
                 .text('');
+
+            if(args.mouseout) {
+                args.mouseout(d, i);
+            }
+        }
+    }
+
+    this.rolloverMove = function(args) {
+        return function(d, i) {
+            if(args.mousemove) {
+                args.mousemove(d, i);
+            }
         }
     }
 

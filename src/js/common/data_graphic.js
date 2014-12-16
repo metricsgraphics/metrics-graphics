@@ -2,6 +2,10 @@
 
 var charts = {};
 var globals = {};
+var deprecations = {
+    rollover_callback: { replacement: 'mouseover', version: '2.0' },
+    rollout_callback: { replacement: 'mouseout', version: '2.0' }
+};
 globals.link = false;
 globals.version = "1.1";
 
@@ -49,14 +53,14 @@ function data_graphic() {
         x_rug: false,
         y_rug: false,
         transition_on_update: true,
-        rollover_callback: null,
+        mouseover: null,
         show_rollover_text: true,
         show_confidence_band: null,   // given [l, u] shows a confidence at each point from l to u
         xax_format: function(d) {
             var df = d3.time.format('%b %d');
             var pf = d3.formatPrefix(d);
 
-            // format as date or not, of course user can pass in 
+            // format as date or not, of course user can pass in
             // a custom function if desired
             switch($.type(args.data[0][0][args.x_accessor])) {
                 case 'date':
@@ -70,7 +74,7 @@ function data_graphic() {
             }
         },
         area: true,
-        chart_type: 'line',   
+        chart_type: 'line',
         data: [],
         decimals: 2,                  // the number of decimals in any rollover
         format: 'count',              // format = {count, percentage}
@@ -101,7 +105,7 @@ function data_graphic() {
         color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
     }
     moz.defaults.histogram = {
-        rollover_callback: function(d, i) {
+        mouseover: function(d, i) {
             $('#histogram svg .active_datapoint')
                 .html('Frequency Count: ' + d.y);
         },
@@ -147,7 +151,35 @@ function data_graphic() {
         args.x_accessor = 0;
         args.y_accessor = 1;
     }
-    
+
+    // check for deprecated parameters
+    for (var key in deprecations) {
+        if (args.hasOwnProperty(key)) {
+            var deprecation = deprecations[key],
+                message = 'Use of `args.' + key + '` has been deprecated',
+                replacement = deprecation.replacement,
+                version;
+
+            // transparently alias the deprecated
+            if (replacement) {
+                if (args[replacement]) {
+                    message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.';
+                } else {
+                    args[replacement] = args[key];
+                }
+            }
+
+            if (deprecation.warned) continue;
+            deprecation.warned = true;
+
+            if (replacement) {
+                message += ' in favor of `args.' + replacement + '`'
+            }
+
+            warnDeprecation(message, deprecation.version);
+        }
+    }
+
     //build the chart
     if(args.chart_type == 'missing-data'){
         args = merge_with_defaults(args, moz.defaults.missing);

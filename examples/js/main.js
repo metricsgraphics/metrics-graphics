@@ -43,7 +43,7 @@ $(document).ready(function() {
             target: '#missing-y',
             x_accessor: 'date',
             y_accessor: 'value',
-            rollover_callback: function(d, i) {
+            mouseover: function(d, i) {
                 var df = d3.time.format('%b %d, %Y');
                 var date = df(d['date']);
                 var y_val = (d.value == 0) ? 'no data' : d.value;
@@ -531,7 +531,7 @@ $(document).ready(function() {
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
-            rollover_callback: function(d, i) {
+            mouseover: function(d, i) {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
                 $('#custom-rollover svg .active_datapoint')
@@ -613,7 +613,7 @@ $(document).ready(function() {
         bar_margin: 0,
         target: '#histogram1',
         y_extended_ticks: true,
-        rollover_callback: function(d, i) {
+        mouseover: function(d, i) {
             $('#histogram1 svg .active_datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
@@ -638,7 +638,7 @@ $(document).ready(function() {
             bins:150,
             target: '#ufos',
             y_extended_ticks: true,
-            rollover_callback: function(d, i) {
+            mouseover: function(d, i) {
                 var string;
                 if (d.x < 12) {
                     string = d3.round(d.x,2) + ' Months';
@@ -670,7 +670,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         x_accessor:'value',
         y_accessor:'count',
-        rollover_callback: function(d, i) {
+        mouseover: function(d, i) {
             $('#histogram2 svg .active_datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
@@ -690,7 +690,7 @@ $(document).ready(function() {
         target: '#histogram3',
         y_extended_ticks: true,
         x_accessor:'val1',
-        rollover_callback: function(d, i) {
+        mouseover: function(d, i) {
             $('#histogram3 svg .active_datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
@@ -711,7 +711,7 @@ $(document).ready(function() {
         target: '#histogram4',
         y_extended_ticks: true,
         x_accessor:'val1',
-        rollover_callback: function(d, i) {
+        mouseover: function(d, i) {
             $('#histogram4 svg .active_datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
