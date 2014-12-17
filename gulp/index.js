@@ -18,6 +18,7 @@ var
 //scssDependencies = [],
   dist = './dist/',
   jsFiles = [
+    src + 'MG.js',
     src + 'common/data_graphic.js',
     src + 'common/bootstrap_tooltip_popover.js',
     src + 'common/chart_title.js',
@@ -36,7 +37,8 @@ var
     src + 'misc/process.js',
     src + 'misc/smoothers.js',
     src + 'misc/utility.js',
-    src + 'misc/error.js'
+    src + 'misc/error.js',
+    src + 'end.js'
   ];
 
 gulp.task('clean', function () {
@@ -56,6 +58,9 @@ gulp.task('clean', function () {
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
     .pipe(concat('metricsgraphics.js'))
+     .pipe(es6transpiler({
+        type: "plain"
+    }))
     .pipe(gulp.dest(dist))
     .pipe(rename('metricsgraphics.min.js'))
     .pipe(uglify())
