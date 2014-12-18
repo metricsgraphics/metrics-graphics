@@ -26,7 +26,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js' charset='utf-8'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
     <script src="js/lib/ace.js" charset="utf-8"></script>
-    <script src='../dist/metricsgraphics.min.js'></script>
+    <script src='../dist/metricsgraphics.js'></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -73,7 +73,7 @@
             <p>This demo allows you to play around with the library without having to
             download it. Try doubling the number of sightings in, say, 1995 and see
             how that affects the graphic. Or how about changing any of the options in
-            <i>data_graphic</i>? Or perhaps change the chart type to a scatterplot by
+            <i>MG.data_graphic</i>? Or perhaps change the chart type to a scatterplot by
             setting <code>chart_type:'point'</code>? The data object is set to the
             contents of the <i>Data</i> text area. Errors are logged to the
             console.</p>
@@ -195,7 +195,7 @@
     </style>
     <script>
         var default_call = '//modify away!\n'
-            + 'data_graphic({\n'
+            + 'MG.data_graphic({\n'
             + '  title: "UFO Sightings",\n'
             + '  description: "Yearly UFO sightings from 1945 to 2010.",\n'
             + '  data: JSON.parse($(\'.data textarea\').val()),\n'
