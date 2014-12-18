@@ -115,6 +115,13 @@ html {
     width: 400px;
 }
 
+.missing {
+    background-image: url(../images/missing-data.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 90% 90%;
+}
+
 p {
     font-family: 'PT Serif', serif;
     font-size: 1.3rem;

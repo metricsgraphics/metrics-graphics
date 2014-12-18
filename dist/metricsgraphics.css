@@ -230,13 +230,6 @@ circle {
     stroke: none;
 }
 
-.missing {
-    background-image: url(../images/missing-data.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 90% 90%;
-}
-
 .missing-pane {
     fill: none;
 }
