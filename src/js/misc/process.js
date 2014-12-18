@@ -31,7 +31,7 @@ function raw_data_transformation(args){
         args.data = args.data.map(function(_d){
             return args.y_accessor.map(function(ya){
                 return _d.map(function(di){
-                    di = clone(di);
+                    di = MG.clone(di);
                     if (di[ya]==undefined){
                         return undefined;
                     }
@@ -75,7 +75,7 @@ function process_line(args) {
             var processed_data = [];
 
             //we'll be starting from the day after our first date
-            var start_date = clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
+            var start_date = MG.clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
             //if we've set a max_x, add data points up to there
             var from = (args.min_x) ? args.min_x : start_date;
@@ -87,7 +87,7 @@ function process_line(args) {
                 //add the first date item (judge me not, world)
                 //we'll be starting from the day after our first date
                 if(Date.parse(d) == Date.parse(new Date(start_date))) {
-                    processed_data.push(clone(args.data[i][0]));
+                    processed_data.push(MG.clone(args.data[i][0]));
                 }
 
                 //check to see if we already have this date in our data object

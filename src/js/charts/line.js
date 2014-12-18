@@ -327,8 +327,8 @@ charts.line = function(args) {
                 .style('opacity', 1);
 
             //trigger mouseover on all rects for this date in .linked charts
-            if(args.linked && !globals.link) {
-                globals.link = true;
+            if(args.linked && !MG.globals.link) {
+                MG.globals.link = true;
 
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');
@@ -398,8 +398,8 @@ charts.line = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
-            if(args.linked && globals.link) {
-                globals.link = false;
+            if(args.linked && MG.globals.link) {
+                MG.globals.link = false;
 
                 var v = d[args.x_accessor];
                 var formatter = d3.time.format('%Y-%m-%d');

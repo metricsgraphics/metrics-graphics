@@ -1,19 +1,19 @@
 
 
 var charts = {};
-var globals = {};
-var deprecations = {
+
+MG.globals = {};
+MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
     rollout_callback: { replacement: 'mouseout', version: '2.0' }
 };
-globals.link = false;
-globals.version = "1.1";
+MG.globals.link = false;
+MG.globals.version = "1.1";
 
-function data_graphic() {
+MG.data_graphic = function() {
     'use strict';
-    var moz = {};
-    moz.defaults = {};
-    moz.defaults.all = {
+    var defaults = {};
+    defaults.all = {
         missing_is_zero: false,       // if true, missing values will be treated as zeros
         legend: '' ,                  // an array identifying the labels for a chart's lines
         legend_target: '',            // if set, the specified element is populated with a legend
@@ -91,7 +91,7 @@ function data_graphic() {
         custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
     }
-    moz.defaults.point = {
+    defaults.point = {
         buffer: 16,
         ls: false,
         lowess: false,
@@ -104,7 +104,7 @@ function data_graphic() {
         color_domain: null,
         color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
     }
-    moz.defaults.histogram = {
+    defaults.histogram = {
         mouseover: function(d, i) {
             $('#histogram svg .active_datapoint')
                 .html('Frequency Count: ' + d.y);
@@ -116,7 +116,7 @@ function data_graphic() {
         processed_dx_accessor: 'dx',
         bar_margin: 1
     }
-    moz.defaults.bar = {
+    defaults.bar = {
         y_accessor: 'factor',
         x_accessor: 'value',
         baseline_accessor: null,
@@ -131,7 +131,7 @@ function data_graphic() {
         bar_height: 20,
         left: 70
     }
-    moz.defaults.missing = {
+    defaults.missing = {
         top: 0,
         bottom: 0,
         right: 0,
@@ -153,9 +153,9 @@ function data_graphic() {
     }
 
     // check for deprecated parameters
-    for (var key in deprecations) {
+    for (var key in MG.deprecations) {
         if (args.hasOwnProperty(key)) {
-            var deprecation = deprecations[key],
+            var deprecation = MG.deprecations[key],
                 message = 'Use of `args.' + key + '` has been deprecated',
                 replacement = deprecation.replacement,
                 version;
@@ -182,26 +182,26 @@ function data_graphic() {
 
     //build the chart
     if(args.chart_type == 'missing-data'){
-        args = merge_with_defaults(args, moz.defaults.missing);
+        args = merge_with_defaults(args, defaults.missing);
         charts.missing(args);
     }
     else if(args.chart_type == 'point'){
-        var a = merge_with_defaults(moz.defaults.point, moz.defaults.all);
+        var a = merge_with_defaults(defaults.point, defaults.all);
         args = merge_with_defaults(args, a);
         charts.point(args).mainPlot().markers().rollover();
     }
     else if(args.chart_type == 'histogram'){
-        var a = merge_with_defaults(moz.defaults.histogram, moz.defaults.all);
+        var a = merge_with_defaults(defaults.histogram, defaults.all);
         args = merge_with_defaults(args, a);
         charts.histogram(args).mainPlot().markers().rollover();
     }
     else if (args.chart_type == 'bar'){
-        var a = merge_with_defaults(moz.defaults.bar, moz.defaults.all);
+        var a = merge_with_defaults(defaults.bar, defaults.all);
         args = merge_with_defaults(args, a);
         charts.bar(args).mainPlot().markers().rollover();
     }
     else {
-        args = merge_with_defaults(args, moz.defaults.all);
+        args = merge_with_defaults(args, defaults.all);
         charts.line(args).markers().mainPlot().rollover();
     }
 

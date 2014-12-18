@@ -1,7 +1,28 @@
 //a set of helper functions, some that we've written, others that we've borrowed
+
+MG.convert = {};
+MG.convert.date = function(data, accessor, time_format){
+    time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
+    data = data.map(function(d) {
+        var fff = d3.time.format(time_format);
+        d[accessor] = fff.parse(d[accessor]);
+        return d;
+    });
+
+    return data;
+}
+MG.convert.number = function(data, accessor){
+    data = data.map(function(d){
+        d[accessor] = Number(d[accessor]);
+        return d;
+    });
+    return data;
+}
+
+
 function modify_time_period(data, past_n_days) {
     //splice time period
-    var data_spliced = clone(data);
+    var data_spliced = MG.clone(data);
     if(past_n_days != '') {
         for(var i=0; i<data_spliced.length; i++) {
             var from = data_spliced[i].length - past_n_days;
@@ -13,14 +34,7 @@ function modify_time_period(data, past_n_days) {
 }
 
 function convert_dates(data, x_accessor, time_format) {
-    time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
-    data = data.map(function(d) {
-        var fff = d3.time.format(time_format);
-        d[x_accessor] = fff.parse(d[x_accessor]);
-        return d;
-    });
 
-    return data;
 }
 
 var each = function(obj, iterator, context) {
@@ -77,7 +91,7 @@ function has_too_many_zeros(data, accessor, zero_count) {
 
 //deep copy
 //http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
-function clone(obj) {
+MG.clone = function(obj) {
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
 
@@ -92,7 +106,7 @@ function clone(obj) {
     if (obj instanceof Array) {
         var copy = [];
         for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = clone(obj[i]);
+            copy[i] = MG.clone(obj[i]);
         }
         return copy;
     }
@@ -101,7 +115,7 @@ function clone(obj) {
     if (obj instanceof Object) {
         var copy = {};
         for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+            if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
         }
         return copy;
     }

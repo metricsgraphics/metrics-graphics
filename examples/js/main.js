@@ -27,9 +27,9 @@ $(document).ready(function() {
 
     //few observations
     d3.json('data/missing-y.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
         //add a line chart that has a few observations
-        data_graphic({
+        MG.data_graphic({
             title: "Few Observations",
             description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no date' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
             data: data,
@@ -55,10 +55,10 @@ $(document).ready(function() {
     });
 
     d3.json('data/small-range.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
         //small range
-        data_graphic({
+        MG.data_graphic({
             title: "Small Range of Integers",
             description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
             data: data,
@@ -73,12 +73,12 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users1.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
         var fake_baselines = [{value:160000000, label:'a baseline'}]
 
         //add a line chart
-        data_graphic({
+        MG.data_graphic({
             title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
             data: data,
@@ -91,7 +91,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "No X Axis",
             description: "Here is an example hiding the x axis.",
             data: data,
@@ -115,7 +115,7 @@ $(document).ready(function() {
         }];
 
         //add a chart with annotations
-        data_graphic({
+        MG.data_graphic({
             title: "Annotations",
             description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
             data: data,
@@ -128,7 +128,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "Another Least Squares Example",
             description: "Least squares effortlessly works with dates or times on axes.",
             data: data,
@@ -146,11 +146,11 @@ $(document).ready(function() {
 
     d3.json('data/fake_users2.json', function(data) {
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i], 'date');
+            data[i] = MG.convert.date(data[i], 'date');
         }
 
         //add a multi-line chart
-        data_graphic({
+        MG.data_graphic({
             title:"Multi-Line Chart",
             description: "This line chart contains multiple lines.",
             data: data,
@@ -163,7 +163,7 @@ $(document).ready(function() {
         })
 
         //add a wide multi-line chart
-        data_graphic({
+        MG.data_graphic({
             title:"Multi-Line Chart Wide",
             description: "This line chart contains multiple lines and has extended ticks enabled.",
             area: false,
@@ -182,7 +182,7 @@ $(document).ready(function() {
         })
 
         //linked multi-line charts
-        data_graphic({
+        MG.data_graphic({
             title:"Multi-Line Linked",
             description: "Demoing linked multi-line charts.",
             data: data,
@@ -196,7 +196,7 @@ $(document).ready(function() {
         });
 
         // missing data in one of a multi-line chart.
-        var all_the_data = clone(data[0]);
+        var all_the_data = MG.clone(data[0]);
         for (var i = 1; i < data.length; i ++){
             for (var j=0; j < data[i].length; j++){
                 if (i==2 && all_the_data[j]['date'] < new Date('2014-02-01')){
@@ -209,7 +209,7 @@ $(document).ready(function() {
                 }
             }
         }
-        data_graphic({
+        MG.data_graphic({
             title:"Handling Different Sized Lines in a Single Array",
             description: "How do you handle data with multiple implied time series lengths?",
             data: all_the_data,
@@ -226,11 +226,11 @@ $(document).ready(function() {
 
     d3.json('data/fake_users3.json', function(data) {
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i], 'date');
+            data[i] = MG.convert.date(data[i], 'date');
         }
 
         //linked multi-line charts
-        data_graphic({
+        MG.data_graphic({
             title:"Multi-Line Linked 2",
             description: "Demoing linked multi-line charts.",
             data: data,
@@ -245,8 +245,8 @@ $(document).ready(function() {
     })
 
     d3.json('data/confidence_band.json', function(data) {
-        data = convert_dates(data, 'date');
-        data_graphic({
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
             title: "Confidence Band",
             description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
             data: data,
@@ -268,11 +268,11 @@ $(document).ready(function() {
     d3.json('data/log.json', function(data){
         data = [data];
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i], 'date');
+            data[i] = MG.convert.date(data[i], 'date');
         };
 
         //add a chart that has a log scale
-        data_graphic({
+        MG.data_graphic({
             title: "Log Scale",
             description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
             data: data,
@@ -288,7 +288,7 @@ $(document).ready(function() {
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
-            data[i] = convert_dates(data[i], 'date');
+            data[i] = MG.convert.date(data[i], 'date');
         }
 
         var markers = [{
@@ -299,7 +299,7 @@ $(document).ready(function() {
             'label': '2nd Milestone'
         }]
 
-        data_graphic({
+        MG.data_graphic({
             title: "Some Percentages",
             description: "Here is an example that shows percentages.",
             data: data,
@@ -313,7 +313,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "Changing Precision 2",
             description: "Here we set <i>decimals: 0</i> for percentages.",
             data: data,
@@ -328,7 +328,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "... Or No Rollover Text",
             description: "By setting <i>show_rollover_text: false</i>, you can hide the default rollover text from even appearing. This, coupled with the custom callback, gives a lot of interesting options for controlling rollovers.",
             data: data,
@@ -346,8 +346,8 @@ $(document).ready(function() {
     })
 
     d3.json('data/some_currency.json', function(data) {
-        data = convert_dates(data, 'date');
-        data_graphic({
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
             title: "Some Currency",
             description: "Here is an example that uses custom units for currency.",
             data: data,
@@ -362,7 +362,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/xnotdate.json', function(data) {
-        data_graphic({
+        MG.data_graphic({
             left: 80,
             bottom: 50,
             title: "X-Axis Not Time, Animated",
@@ -381,7 +381,7 @@ $(document).ready(function() {
         })
     })
 
-    data_graphic({
+    MG.data_graphic({
         title: "Glorious Graphic",
         error: 'This data is blocked by Lorem Ipsum. Get your stuff together, Ipsum.',
         chart_type: 'missing-data',
@@ -394,9 +394,9 @@ $(document).ready(function() {
 
     // lower section
     d3.json('data/brief-1.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
-        data_graphic({
+        MG.data_graphic({
             title: "Linked Graphic",
             description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
             data: data,
@@ -410,7 +410,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "Small Text Inferred By Size",
             description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i> (and the flip for the height) then the text size automatically scales to be slightly smaller.",
             data: data,
@@ -424,7 +424,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "No Y Axis",
             description: "Here is an example hiding the y axis.",
             data: data,
@@ -443,9 +443,9 @@ $(document).ready(function() {
     })
 
     d3.json('data/split_by.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
-        split_by_data = data_graphic({
+        split_by_data = MG.data_graphic({
             title: "Downloads by Channel",
             description: "The graphic is gracefully updated depending on the selected channel.",
             data: data,
@@ -458,7 +458,7 @@ $(document).ready(function() {
             y_accessor: 'release'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "Beta Downloads",
             description: "The graphic is gracefully updated depending on the chosen time period.",
             data: data,
@@ -474,9 +474,9 @@ $(document).ready(function() {
     })
 
     d3.json('data/brief-2.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
-        data_graphic({
+        MG.data_graphic({
             title: "Other Linked Graphic",
             description: "Roll over and watch as the graphic to the left triggers.",
             data: data,
@@ -491,7 +491,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "Small Text",
             description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
             data: data,
@@ -507,9 +507,9 @@ $(document).ready(function() {
     })
 
     d3.json('data/float.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
-        data_graphic({
+        MG.data_graphic({
             title: "Changing Precision 1",
             description: "Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
             data: data,
@@ -523,7 +523,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         })
 
-        data_graphic({
+        MG.data_graphic({
             title: "Custom Rollover Text",
             description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
             data: data,
@@ -545,9 +545,9 @@ $(document).ready(function() {
     })
 
     d3.json('data/neg1.json', function(data) {
-        data = convert_dates(data, 'date');
+        data = MG.convert.date(data, 'date');
 
-        data_graphic({
+        MG.data_graphic({
             title: "Negative Values 1",
             description: "Currently defaults to having no area by default.",
             data: data,
@@ -559,12 +559,12 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        var data2 = clone(data).map(function(d) {
+        var data2 = MG.clone(data).map(function(d) {
             d.value = d.value + 550;
             return d;
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "Y-Axis Not Zero",
             description: "We should have an option for letting the y-axis be some natural value other than 0, set by the data rather than the user.",
             data: data2,
@@ -580,7 +580,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/neg2.json', function(data) {
-        data_graphic({
+        MG.data_graphic({
             title: "Negative Values 2",
             description: "Check for same with two numbers instead of date.",
             data: data,
@@ -601,7 +601,7 @@ $(document).ready(function() {
     //generate a Bates distribution of 10 random variables
     var values = d3.range(10000).map(d3.random.bates(10));
 
-    data_graphic({
+    MG.data_graphic({
         title: "Histogram 1",
         description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0.",
         data: values,
@@ -625,7 +625,7 @@ $(document).ready(function() {
         });
         data.sort();
         var p75 = data[Math.floor(data.length*3/4)];
-        data_graphic({
+        MG.data_graphic({
             title: "Difference in UFO Sighting and Reporting Dates (in months)",
             description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
             data: data,
@@ -657,7 +657,7 @@ $(document).ready(function() {
             return {'count': d.y, 'value':d.x};
     });
 
-    data_graphic({
+    MG.data_graphic({
         title: "Histogram 2",
         description: "Already binned data being fed in.",
         data: second,
@@ -679,7 +679,7 @@ $(document).ready(function() {
     var third = d3.range(1000).map(d3.random.bates(10));
     third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
 
-    data_graphic({
+    MG.data_graphic({
         title: "Histogram 3",
         description: "Unbinned, but in same format as other line chart data.",
         data: third,
@@ -700,7 +700,7 @@ $(document).ready(function() {
     var fourth = d3.range(1000).map(d3.random.bates(10));
     fourth = fourth.map(function(d,i){return d-.5});
 
-    data_graphic({
+    MG.data_graphic({
         title: "Histogram 4",
         description: "Sanity-checking negative data.",
         data: fourth,
@@ -729,7 +729,7 @@ $(document).ready(function() {
         {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
     ]
 
-    data_graphic({
+    MG.data_graphic({
         title:'Bar Prototype',
         description:'work in progress',
         data: bar_data,
@@ -744,7 +744,7 @@ $(document).ready(function() {
         x_axis: false
     })
 
-    data_graphic({
+    MG.data_graphic({
         title:'No Axis',
         description:'work in progress',
         data: bar_data,
@@ -758,7 +758,7 @@ $(document).ready(function() {
     })
 
     d3.json('data/points1.json', function(data) {
-        data_graphic({
+        MG.data_graphic({
             title: "Simple Scatterplot",
             description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
             data: data,
@@ -776,7 +776,7 @@ $(document).ready(function() {
             y_rug: true
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "Automatic Category Coloring",
             description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
             data: data,
@@ -796,7 +796,7 @@ $(document).ready(function() {
             y_rug: true
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "Custom Category Color Mapping",
             description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
             data: data,
@@ -818,7 +818,7 @@ $(document).ready(function() {
             x_rug: true
         });
 
-        data_graphic({
+        MG.data_graphic({
             title: "Simple Line of Best Fit",
             description: "For any scatterplot, set <i>least_squares</i> to true to add.",
             data: data,
@@ -845,7 +845,7 @@ $(document).ready(function() {
     ]
     var resolution_features = ['weekly', 'monthly']
 
-    var buttons = new button_layout('div#buttons')
+    var buttons = MG.button_layout('div#buttons')
         .data(bdata)
         .manual_button('Time Scale', resolution_features, function(){console.log('switched time scales.')})
         .button('a', 'Fruit')
@@ -865,7 +865,7 @@ $(document).ready(function() {
         { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': .19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
     ]
 
-    var table1 = new data_table({
+    var table1 = MG.data_table({
             data: table_data,
             title: 'A Data Table',
             description: 'A table has many of the same properties as any other data graphic.'
@@ -903,7 +903,7 @@ $(document).ready(function() {
 
         //call data_graphic again since we need to use a different color_range for the dark theme
         d3.json('data/points1.json', function(data) {
-            data_graphic({
+            MG.data_graphic({
                 title: "Scatterplot with Size and Color",
                 description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
                 data: data,
@@ -978,7 +978,7 @@ $(document).ready(function() {
                 .removeClass('active');
 
             //update data
-            data_graphic({
+            MG.data_graphic({
                 data: split_by_data,
                 width: torso.width*2,
                 height: trunk.height,
@@ -1000,7 +1000,7 @@ $(document).ready(function() {
                 .removeClass('active');
 
             //update data
-            data_graphic({
+            MG.data_graphic({
                 data: data,
                 width: torso.width*2,
                 height: trunk.height,

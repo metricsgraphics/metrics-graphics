@@ -1,4 +1,4 @@
-var button_layout = function(target) {
+MG.button_layout = function(target) {
     'use strict';
     this.target = target;
     this.feature_set = {};

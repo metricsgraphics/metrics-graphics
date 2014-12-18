@@ -7,8 +7,9 @@ var
   rename = require('gulp-rename'),
 //sass = require('gulp-sass'), // for building css from scss
 //minifycss = require('gulp-minify-css'), // for minifiing css
-  jslint = require('gulp-jslint');
-  testem = require('gulp-testem');
+  jslint = require('gulp-jslint'),
+  testem = require('gulp-testem'),
+  es6ModuleTranspiler = require("gulp-es6-module-transpiler");
 
 // paths
 var
@@ -58,7 +59,7 @@ gulp.task('clean', function () {
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
     .pipe(concat('metricsgraphics.js'))
-     .pipe(es6transpiler({
+     .pipe(es6ModuleTranspiler({
         type: "plain"
     }))
     .pipe(gulp.dest(dist))

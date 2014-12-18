@@ -14,7 +14,7 @@ var table = New data_table(data)
 
 */
 
-function data_table(args){
+MG.data_table = function(args){
 	'use strict';
 	this.args = args;
 	this.args.standard_col = {width:150, font_size:12, font_weight:'normal'};
@@ -40,7 +40,7 @@ function data_table(args){
 
 	this._add_column = function(_args, arg_type){
 		var standard_column = this.args.standard_col;
-		var args = merge_with_defaults(clone(_args), clone(standard_column));
+		var args = merge_with_defaults(MG.clone(_args), MG.clone(standard_column));
 		args.type=arg_type;
 		this.args.columns.push(args);
 	}
