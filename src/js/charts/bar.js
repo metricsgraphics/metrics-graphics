@@ -22,18 +22,18 @@ charts.bar = function(args) {
         var $svg = $($(args.target).find('svg').get(0));
         var g;
 
-        //remove the old barplot, add new one
-        $svg.find('.barplot').remove();
+        //remove the old mg-barplot, add new one
+        $svg.find('.mg-barplot').remove();
 
         var data = args.data[0];
 
         var g = svg.append('g')
-            .classed('barplot', true);
+            .classed('mg-barplot', true);
 
         var appropriate_height = args.scales.Y.rangeBand()/1.5;
-        g.selectAll('.bar')
+        g.selectAll('.mg-bar')
             .data(data).enter().append('rect')
-            .classed('bar', true)
+            .classed('mg-bar', true)
             .attr('x', args.scales.X(0))
             .attr('y', function(d){
                 return args.scalefns.yf(d) + appropriate_height/2;
@@ -44,10 +44,10 @@ charts.bar = function(args) {
             var pp=args.predictor_proportion;
             var pp0 = pp-1;
             // thick line  through bar;
-            g.selectAll('.prediction')
+            g.selectAll('.mg-prediction')
                 .data(data)
                 .enter().append("rect")
-                    .attr('class', 'bar-prediction')
+                    .attr('class', 'mg-bar-prediction')
                     .attr('x', args.scales.X(0))
                     .attr('y', function(d){
                         return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
@@ -58,10 +58,10 @@ charts.bar = function(args) {
                     });
         }
         if (args.baseline_accessor){
-            g.selectAll('.baseline')
+            g.selectAll('.mg-baseline')
                 .data(data)
                 .enter().append("line")
-                    .attr('class', 'bar-baseline')
+                    .attr('class', 'mg-bar-baseline')
                     .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
                     .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
                     .attr('y1', function(d){
@@ -85,12 +85,12 @@ charts.bar = function(args) {
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.active_datapoint').remove();
+        $svg.find('.mg-rollover-rect').remove();
+        $svg.find('.mg-active-datapoint').remove();
 
         //rollover text
         svg.append('text')
-            .attr('class', 'active_datapoint')
+            .attr('class', 'mg-active-datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
@@ -98,15 +98,15 @@ charts.bar = function(args) {
             .attr('text-anchor', 'end');
 
         var g = svg.append('g')
-            .attr('class', 'transparent-rollover-rect')
+            .attr('class', 'mg-rollover-rect')
 
         //draw rollover bars
-        var bar = g.selectAll(".bar")
+        var bar = g.selectAll('.mg-bar')
             .data(args.data[0])
                 .enter().append("rect")
                     .attr('class', 'bar-rollover')
-                    .attr("x", args.scales.X(0))
-                    .attr("y", args.scalefns.yf)
+                    .attr('x', args.scales.X(0))
+                    .attr('y', args.scalefns.yf)
                     .attr('width', args.width)
                     .attr('height', args.scales.Y.rangeBand()+2)
                     .attr('opacity', 0)
@@ -145,12 +145,12 @@ charts.bar = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
+            d3.selectAll($(args.target + ' svg g.mg-barplot .mg-bar:eq(' + i + ')'))
                 .classed('active', true);
 
             //update rollover text
             if (args.show_rollover_text) {
-                svg.select('.active_datapoint')
+                svg.select('.mg-active-datapoint')
                     .text(function() {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
@@ -176,11 +176,11 @@ charts.bar = function(args) {
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg g.mg-barplot .mg-bar:eq(' + i + ')'))
                 .classed('active', false);
 
             //reset active data point text
-            svg.select('.active_datapoint')
+            svg.select('.mg-active-datapoint')
                 .text('');
 
             if(args.mouseout) {

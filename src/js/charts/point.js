@@ -26,11 +26,11 @@ charts.point = function(args) {
         var g;
 
         //remove the old points, add new one
-        $svg.find('.points').remove();
+        $svg.find('.mg-points').remove();
 
         // plot the points, pretty straight-forward
         g = svg.append('g')
-            .classed('points', true);
+            .classed('mg-points', true);
 
         var pts = g.selectAll('circle')
             .data(args.data[0])
@@ -45,7 +45,7 @@ charts.point = function(args) {
             pts.attr('stroke', args.scalefns.color);
         }
         else {
-            pts.classed('points-mono', true);
+            pts.classed('mg-points-mono', true);
         }
 
         if (args.size_accessor != null) {
@@ -63,14 +63,14 @@ charts.point = function(args) {
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old rollovers if they already exist
-        $svg.find('.voronoi').remove();
+        $svg.find('.mg-voronoi').remove();
 
         //remove the old rollover text and circle if they already exist
-        $svg.find('.active_datapoint').remove();
+        $svg.find('.mg-active-datapoint').remove();
 
         //add rollover text
         svg.append('text')
-            .attr('class', 'active_datapoint')
+            .attr('class', 'mg-active-datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
@@ -83,7 +83,7 @@ charts.point = function(args) {
             .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
         var paths = svg.append('g')
-            .attr('class', 'voronoi');
+            .attr('class', 'mg-voronoi');
 
         paths.selectAll('path')
             .data(voronoi(args.data[0]))
@@ -107,11 +107,11 @@ charts.point = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
-            svg.selectAll('.points circle')
+            svg.selectAll('.mg-points circle')
                 .classed('selected', false);
 
             //highlight active point
-            var pts = svg.selectAll('.points circle.path-' + i)
+            var pts = svg.selectAll('.mg-points circle.path-' + i)
                 .classed('selected', true);
 
             if (args.size_accessor) {
@@ -127,7 +127,7 @@ charts.point = function(args) {
                 globals.link = true;
 
                 //trigger mouseover on matching point in .linked charts
-                d3.selectAll('.voronoi .path-' + i)
+                d3.selectAll('.mg-voronoi .path-' + i)
                     .each(function() {
                         d3.select(this).on('mouseover')(d,i);
                 })
@@ -152,7 +152,7 @@ charts.point = function(args) {
 
             //update rollover text
             if (args.show_rollover_text) {
-                svg.select('.active_datapoint')
+                svg.select('.mg-active-datapoint')
                     .text(function() {
                         if(args.time_series) {
                             var dd = new Date(+d['point'][args.x_accessor]);
@@ -182,14 +182,14 @@ charts.point = function(args) {
             if(args.linked && globals.link) {
                 globals.link = false;
 
-                d3.selectAll('.voronoi .path-' + i)
+                d3.selectAll('.mg-voronoi .path-' + i)
                     .each(function() {
                         d3.select(this).on('mouseout')(d,i);
                 })
             }
 
             //reset active point
-            var pts = svg.selectAll('.points circle')
+            var pts = svg.selectAll('.mg-points circle')
                 .classed('unselected', false)
                 .classed('selected', false);
 
@@ -201,7 +201,7 @@ charts.point = function(args) {
             }
 
             //reset active data point text
-            svg.select('.active_datapoint')
+            svg.select('.mg-active-datapoint')
                 .text('');
 
             if(args.mouseout) {

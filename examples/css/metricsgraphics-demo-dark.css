@@ -12,43 +12,43 @@ a.active {
     color: #fff;
 }
 
-.active_datapoint {
+.mg-active-datapoint {
     fill: #fff;
 }
 
-.area1-color {
+.mg-area1-color {
     fill: #ffd300;
 }
 
-.area2-color {
+.mg-area2-color {
     fill: #18ff00;
 }
 
-.area3-color {
+.mg-area3-color {
     fill: #f57070;
 }
 
-.area4-color {
+.mg-area4-color {
     fill: #f8b128;
 }
 
-.area5-color {
+.mg-area5-color {
     fill: #f7f7f7;
 }
 
-.barplot .bar-prediction {
+.mg-barplot .mg-bar-prediction {
     fill: #5b5b5b;
 }
 
-.barplot .bar-baseline {
+.mg-barplot .mg-bar-baseline {
     stroke: #5b5b5b;
 }
 
-.baselines line {
+.mg-baselines line {
     stroke: #fff;
 }
 
-.baselines text {
+.mg-baselines text {
     fill: #fff;
 }
 
@@ -70,27 +70,27 @@ h2.chart_title span {
     color: #f1f1f1;
 }
 
-.histogram .axis path,
-.histogram .axis line {
+.mg-histogram .axis path,
+.mg-histogram .axis line {
     opacity: 0.5;
     stroke: #ccc;
 }
 
-.histogram .bar rect,
-.barplot rect.bar {
+.mg-histogram .mg-bar rect,
+.mg-barplot rect.mg-bar {
     fill: #d8b307;
 }
 
-.histogram .bar rect.active,
-.barplot rect.bar.active {
+.mg-histogram .mg-bar rect.active,
+.mg-barplot rect.mg-bar.active {
     fill: #b3960f;
 }
 
-.histogram .bar text {
+.mg-histogram .mg-bar text {
     fill: #fff;
 }
 
-.histogram .axis .tick line {
+.mg-histogram .axis .tick line {
     opacity: 0.3;
 }
 
@@ -98,47 +98,47 @@ li {
     color: #cfcfcf;
 }
 
-.least-squares-line {
+.mg-least-squares-line {
     stroke: #f57070;
 }
 
-.line1-color {
+.mg-line1-color {
     stroke: #ffd300;
 }
 
-.line2-color {
+.mg-line2-color {
     stroke: #18ff00;
 }
 
-.line3-color {
+.mg-line3-color {
     stroke: #f57070;
 }
 
-.line4-color {
+.mg-line4-color {
     stroke: #f8b128;
 }
 
-.line5-color {
+.mg-line5-color {
     stroke: #f7f7f7;
 }
 
-.line1-legend-color {
+.mg-line1-legend-color {
     color: #ffd300;
 }
 
-.line2-legend-color {
+.mg-line2-legend-color {
     color: #18ff00;
 }
 
-.line3-legend-color {
+.mg-line3-legend-color {
     color: #f57070;
 }
 
-.line4-legend-color {
+.mg-line4-legend-color {
     color: #f8b128;
 }
 
-.line5-legend-color {
+.mg-line5-legend-color {
     color: #f7f7f7;
 }
 
@@ -146,30 +146,30 @@ li {
     fill: #e8e8e8;
 }
 
-.main-area-solid svg .main-area {
+.mg-main-area-solid svg .mg-main-area {
     fill: #52491f;
 }
 
-.markers line {
+.mg-markers line {
     stroke: #fff;
 }
 
-.markers text {
+.mg-markers text {
     fill: #fff;
 }
 
-.missing {
+.mg-missing {
     background-image: url(../images/missing-data-dark.png);
 }
 
-circle.points-mono {
+circle.mg-points-mono {
     fill-opacity: 0.6;
     stroke: #a89641;
     fill: #a89641;
     stroke-opacity: 1;
 }
 
-circle.points-mono.selected {
+circle.mg-points-mono.selected {
     fill: #a89641;
     fill-opacity: 1;
     stroke-opacity: 1;
@@ -183,27 +183,27 @@ text {
     fill: #fff;
 }
 
-.x-rug-mono,
-.y-rug-mono {
+.mg-x-rug-mono,
+.mg-y-rug-mono {
     stroke: #cfcfcf;
 }
 
-.x-axis line,
-.y-axis line {
+.mg-x-axis line,
+.mg-y-axis line {
     stroke: #fff;
 }
 
-.x-axis text,
-.y-axis text,
-.histogram .axis text {
+.mg-x-axis text,
+.mg-y-axis text,
+.mg-histogram .axis text {
     fill: #fff;
 }
 
-.year-marker text {
+.mg-year-marker text {
     fill: #fff;
 }
 
-.year-marker line {
+.mg-year-marker line {
     stroke: #fff;
 }
 

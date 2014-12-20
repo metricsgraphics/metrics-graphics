@@ -11,7 +11,7 @@ function add_ls(args){
         .attr('x2', args.scales.X(max_x))
         .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
         .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
-        .attr('class', 'least-squares-line')
+        .attr('class', 'mg-least-squares-line')
 }
 
 function add_lowess(args){
@@ -25,7 +25,7 @@ function add_lowess(args){
 
     svg.append('path')
         .attr('d', line(lowess))
-        .attr('class', 'lowess-line')
+        .attr('class', 'mg-lowess-line')
 }
 
 function lowess_robust(x, y, alpha, inc){

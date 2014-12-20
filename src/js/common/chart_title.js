@@ -2,7 +2,7 @@ function chart_title(args) {
     //is chart title different than existing, if so, clear the fine 
     //gentleman, otherwise, move along
     'use strict';
-    var currentTitle = $(args.target).find('h2.chart_title');
+    var currentTitle = $(args.target).find('h2.mg-chart-title');
     if(args.title && args.title !== currentTitle.text())
         currentTitle.remove();
     else
@@ -15,12 +15,12 @@ function chart_title(args) {
             ? '<i class="fa fa-question-circle fa-inverse"></i>'
             : '';
     
-        $(args.target).prepend('<h2 class="chart_title">' 
+        $(args.target).prepend('<h2 class="mg-chart-title">' 
             + args.title + optional_question_mark + '</h2>');
             
         //activate the question mark if we have a description
         if (args.description){
-            newTitle = $(args.target).find('h2.chart_title');
+            newTitle = $(args.target).find('h2.mg-chart-title');
                 newTitle.popover({
                     html: true,
                     animation: false,

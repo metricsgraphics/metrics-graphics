@@ -18,29 +18,29 @@ charts.histogram = function(args) {
         var g;
 
         //remove the old histogram, add new one
-        $svg.find('.histogram').remove();
+        $svg.find('.mg-histogram').remove();
 
-        var g = svg.append("g")
-            .attr("class", "histogram");
+        var g = svg.append('g')
+            .attr('class', 'mg-histogram');
 
-        var bar = g.selectAll(".bar")
+        var bar = g.selectAll('.mg-bar')
             .data(args.data[0])
-                .enter().append("g")
-                    .attr("class", "bar")
-                    .attr("transform", function(d) {
+                .enter().append('g')
+                    .attr('class', 'mg-bar')
+                    .attr('transform', function(d) {
                         return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2)
                             + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
                         });
 
         //draw bars
-        bar.append("rect")
-            .attr("x", 1)
-            .attr("width", function(d, i) {
+        bar.append('rect')
+            .attr('x', 1)
+            .attr('width', function(d, i) {
                 return (args.scalefns.xf(args.data[0][1])
                     - args.scalefns.xf(args.data[0][0])
                     - args.bar_margin).toFixed(2);
             })
-            .attr("height", function(d) {
+            .attr('height', function(d) {
                 if(d[args.y_accessor] == 0)
                     return 0;
 
@@ -62,33 +62,33 @@ charts.histogram = function(args) {
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.active_datapoint').remove();
+        $svg.find('.mg-rollover-rect').remove();
+        $svg.find('.mg-active-datapoint').remove();
 
         //rollover text
         svg.append('text')
-            .attr('class', 'active_datapoint')
+            .attr('class', 'mg-active-datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
             .attr('text-anchor', 'end');
 
         var g = svg.append('g')
-            .attr('class', 'transparent-rollover-rect')
+            .attr('class', 'mg-rollover-rect')
 
         //draw rollover bars
-        var bar = g.selectAll(".bar")
+        var bar = g.selectAll('.mg-bar')
             .data(args.data[0])
-                .enter().append("g")
-                    .attr("class", "rollover-rects")
-                    .attr("transform", function(d) {
+                .enter().append('g')
+                    .attr('class', 'mg-rollover-rects')
+                    .attr('transform', function(d) {
                         return "translate(" + (args.scales.X(d[args.x_accessor])) + "," + 0 + ")";
                     });
 
-        bar.append("rect")
-            .attr("x", 1)
-            .attr("y", 0)
-            .attr("width", function(d, i) {
+        bar.append('rect')
+            .attr('x', 1)
+            .attr('y', 0)
+            .attr('width', function(d, i) {
                 if (i != args.data[0].length - 1) {
                     return (args.scalefns.xf(args.data[0][i + 1])
                         - args.scalefns.xf(d)).toFixed(2);
@@ -98,7 +98,7 @@ charts.histogram = function(args) {
                         - args.scalefns.xf(args.data[0][0])).toFixed(2);
                 }
             })
-            .attr("height", function(d) {
+            .attr('height', function(d) {
                 return args.height;
             })
             .attr('opacity', 0)
@@ -137,12 +137,12 @@ charts.histogram = function(args) {
             }
 
             //highlight active bar
-            d3.selectAll($(args.target).find(' svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find(' svg .mg-bar :eq(' + i + ')'))
                 .classed('active', true);
 
             //update rollover text
             if (args.show_rollover_text) {
-                svg.select('.active_datapoint')
+                svg.select('.mg-active-datapoint')
                     .text(function() {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
@@ -170,11 +170,11 @@ charts.histogram = function(args) {
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
+            d3.selectAll($(args.target).find('svg .mg-bar :eq(' + i + ')'))
                 .classed('active', false);
 
             //reset active data point text
-            svg.select('.active_datapoint')
+            svg.select('.mg-active-datapoint')
                 .text('');
 
             if(args.mouseout) {

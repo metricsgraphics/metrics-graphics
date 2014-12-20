@@ -11,12 +11,12 @@ function y_rug(args) {
             all_data.push(args.data[i][j]);
         }
     }
-    var rug = svg.selectAll('line.y-rug').data(all_data);
+    var rug = svg.selectAll('line.mg-y-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
     //D3's general update pattern
     rug.enter().append('svg:line')
-        .attr('class', 'y-rug')
+        .attr('class', 'mg-y-rug')
         .attr('opacity', 0.3);
 
     //remove rug elements that are no longer in use
@@ -32,11 +32,11 @@ function y_rug(args) {
 
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
-        rug.classed('y-rug-mono', false);
+        rug.classed('mg-y-rug-mono', false);
     }
     else {
         rug.attr('stroke', null);
-        rug.classed('y-rug-mono', true);
+        rug.classed('mg-y-rug-mono', true);
     }
 }
 
@@ -151,14 +151,14 @@ function y_axis(args) {
     }
 
     //remove the old y-axis, add new one
-    $svg.find('.y-axis').remove();
+    $svg.find('.mg-y-axis').remove();
 
     if (!args.y_axis) return this;
 
     //y axis
     g = svg.append('g')
-        .classed('y-axis', true)
-        .classed('y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true)
+        .classed('mg-y-axis-small', args.use_small_class);
 
     //are we adding a label?
     if(args.y_label) {
@@ -233,10 +233,10 @@ function y_axis(args) {
     }
 
     //add y ticks
-    g.selectAll('.yax-ticks')
+    g.selectAll('.mg-yax-ticks')
         .data(scale_ticks).enter()
             .append('line')
-                .classed('extended-y-ticks', args.y_extended_ticks)
+                .classed('mg-extended-y-ticks', args.y_extended_ticks)
                 .attr('x1', args.left)
                 .attr('x2', function() {
                     return (args.y_extended_ticks)
@@ -246,7 +246,7 @@ function y_axis(args) {
                 .attr('y1', function(d) { return args.scales.Y(d).toFixed(2); })
                 .attr('y2', function(d) { return args.scales.Y(d).toFixed(2); });
 
-    g.selectAll('.yax-labels')
+    g.selectAll('.mg-yax-labels')
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
@@ -286,11 +286,11 @@ function y_axis_categorical(args) {
     var $svg = $($(args.target).find('svg').get(0));
 
     //remove the old y-axis, add new one
-    $svg.find('.y-axis').remove();
+    $svg.find('.mg-y-axis').remove();
 
     var g = svg.append('g')
-        .classed('y-axis', true)
-        .classed('y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true)
+        .classed('mg-y-axis-small', args.use_small_class);
 
     if (!args.y_axis) return this;
 

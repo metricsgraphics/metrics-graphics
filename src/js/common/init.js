@@ -31,10 +31,10 @@ function init(args) {
     }
     //remove the svg if the chart type has changed
     var svg = $(args.target).find('svg');
-    if((svg.find('.main-line').length > 0 && args.chart_type != 'line')
-            || (svg.find('.points').length > 0 && args.chart_type != 'point')
-            || (svg.find('.histogram').length > 0 && args.chart_type != 'histogram')
-            || (svg.find('.barplot').length > 0 && args.chart_type != 'bar')
+    if((svg.find('.mg-main-line').length > 0 && args.chart_type != 'line')
+            || (svg.find('.mg-points').length > 0 && args.chart_type != 'point')
+            || (svg.find('.mg-histogram').length > 0 && args.chart_type != 'histogram')
+            || (svg.find('.mg-barplot').length > 0 && args.chart_type != 'bar')
         ) {
         $(args.target).empty();
 
@@ -61,9 +61,9 @@ function init(args) {
         svg.attr('height', args.height)
 
     // remove missing class
-    svg.classed('missing', false);
+    svg.classed('mg-missing', false);
     // remove missing text
-    svg.selectAll('.missing-text').remove();
+    svg.selectAll('.mg-missing-text').remove();
 
     //add chart title if it's different than existing one
     chart_title(args);
@@ -76,7 +76,7 @@ function init(args) {
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
     //data_graphic() on the same target with 2 lines, remove the 3rd line
-    if(args.data.length < $(args.target).find('svg .main-line').length) {
+    if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
         //line-color map, instead, see which are the lines to be removed, and delete those    
         if(args.custom_line_color_map.length > 0) {
@@ -92,17 +92,17 @@ function init(args) {
                 args.custom_line_color_map);
 
             for(var i=0; i<lines_to_remove.length; i++) {
-                $(args.target).find('svg .main-line.line' + lines_to_remove[i] + '-color')
+                $(args.target).find('svg .mg-main-line.mg-line' + lines_to_remove[i] + '-color')
                     .remove();
             }
         }
         //if we don't have a customer line-color map, just remove the lines from the end
         else {
             var num_of_new = args.data.length;
-            var num_of_existing = $(args.target).find('svg .main-line').length;
+            var num_of_existing = $(args.target).find('svg .mg-main-line').length;
 
             for(var i=num_of_existing; i>num_of_new; i--) {
-                $(args.target).find('svg .main-line.line' + i + '-color').remove();
+                $(args.target).find('svg .mg-main-line.mg-line' + i + '-color').remove();
             }
         }
     }

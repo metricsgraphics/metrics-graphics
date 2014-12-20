@@ -109,7 +109,7 @@
       }
       defaults.histogram = {
           mouseover: function(d, i) {
-              $('#histogram svg .active_datapoint')
+              $('#histogram svg .mg-active-datapoint')
                   .html('Frequency Count: ' + d.y);
           },
           binned: false,
@@ -840,7 +840,7 @@
       //is chart title different than existing, if so, clear the fine 
       //gentleman, otherwise, move along
       'use strict';
-      var currentTitle = $(args.target).find('h2.chart_title');
+      var currentTitle = $(args.target).find('h2.mg-chart-title');
       if(args.title && args.title !== currentTitle.text())
           currentTitle.remove();
       else
@@ -853,12 +853,12 @@
               ? '<i class="fa fa-question-circle fa-inverse"></i>'
               : '';
       
-          $(args.target).prepend('<h2 class="chart_title">' 
+          $(args.target).prepend('<h2 class="mg-chart-title">' 
               + args.title + optional_question_mark + '</h2>');
               
           //activate the question mark if we have a description
           if (args.description){
-              newTitle = $(args.target).find('h2.chart_title');
+              newTitle = $(args.target).find('h2.mg-chart-title');
                   newTitle.popover({
                       html: true,
                       animation: false,
@@ -887,12 +887,12 @@
               all_data.push(args.data[i][j]);
           }
       }
-      var rug = svg.selectAll('line.y-rug').data(all_data);
+      var rug = svg.selectAll('line.mg-y-rug').data(all_data);
 
       //set the attributes that do not change after initialization, per
       //D3's general update pattern
       rug.enter().append('svg:line')
-          .attr('class', 'y-rug')
+          .attr('class', 'mg-y-rug')
           .attr('opacity', 0.3);
 
       //remove rug elements that are no longer in use
@@ -908,11 +908,11 @@
 
       if (args.color_accessor) {
           rug.attr('stroke', args.scalefns.color);
-          rug.classed('y-rug-mono', false);
+          rug.classed('mg-y-rug-mono', false);
       }
       else {
           rug.attr('stroke', null);
-          rug.classed('y-rug-mono', true);
+          rug.classed('mg-y-rug-mono', true);
       }
   }
 
@@ -1027,14 +1027,14 @@
       }
 
       //remove the old y-axis, add new one
-      $svg.find('.y-axis').remove();
+      $svg.find('.mg-y-axis').remove();
 
       if (!args.y_axis) return this;
 
       //y axis
       g = svg.append('g')
-          .classed('y-axis', true)
-          .classed('y-axis-small', args.use_small_class);
+          .classed('mg-y-axis', true)
+          .classed('mg-y-axis-small', args.use_small_class);
 
       //are we adding a label?
       if(args.y_label) {
@@ -1109,10 +1109,10 @@
       }
 
       //add y ticks
-      g.selectAll('.yax-ticks')
+      g.selectAll('.mg-yax-ticks')
           .data(scale_ticks).enter()
               .append('line')
-                  .classed('extended-y-ticks', args.y_extended_ticks)
+                  .classed('mg-extended-y-ticks', args.y_extended_ticks)
                   .attr('x1', args.left)
                   .attr('x2', function() {
                       return (args.y_extended_ticks)
@@ -1122,7 +1122,7 @@
                   .attr('y1', function(d) { return args.scales.Y(d).toFixed(2); })
                   .attr('y2', function(d) { return args.scales.Y(d).toFixed(2); });
 
-      g.selectAll('.yax-labels')
+      g.selectAll('.mg-yax-labels')
           .data(scale_ticks).enter()
               .append('text')
                   .attr('x', args.left - args.yax_tick_length * 3 / 2)
@@ -1162,11 +1162,11 @@
       var $svg = $($(args.target).find('svg').get(0));
 
       //remove the old y-axis, add new one
-      $svg.find('.y-axis').remove();
+      $svg.find('.mg-y-axis').remove();
 
       var g = svg.append('g')
-          .classed('y-axis', true)
-          .classed('y-axis-small', args.use_small_class);
+          .classed('mg-y-axis', true)
+          .classed('mg-y-axis-small', args.use_small_class);
 
       if (!args.y_axis) return this;
 
@@ -1197,12 +1197,12 @@
           }
       }
 
-      var rug = svg.selectAll('line.x-rug').data(all_data);
+      var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
       //set the attributes that do not change after initialization, per
       //D3's general update pattern
       rug.enter().append('svg:line')
-          .attr('class', 'x-rug')
+          .attr('class', 'mg-x-rug')
           .attr('opacity', 0.3);
 
       //remove rug elements that are no longer in use
@@ -1218,11 +1218,11 @@
 
       if (args.color_accessor) {
           rug.attr('stroke', args.scalefns.color);
-          rug.classed('x-rug-mono', false);
+          rug.classed('mg-x-rug-mono', false);
       }
       else {
           rug.attr('stroke', null);
-          rug.classed('x-rug-mono', true);
+          rug.classed('mg-x-rug-mono', true);
       }
   }
 
@@ -1424,14 +1424,14 @@
           .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
       //remove the old x-axis, add new one
-      $svg.find('.x-axis').remove();
+      $svg.find('.mg-x-axis').remove();
 
       if (!args.x_axis) return this;
 
       //x axis
       g = svg.append('g')
-          .classed('x-axis', true)
-          .classed('x-axis-small', args.use_small_class);
+          .classed('mg-x-axis', true)
+          .classed('mg-x-axis-small', args.use_small_class);
 
       var last_i = args.scales.X.ticks(args.xax_count).length-1;
 
@@ -1470,7 +1470,7 @@
       }
 
       //add x ticks
-      g.selectAll('.xax-ticks')
+      g.selectAll('.mg-xax-ticks')
           .data(args.scales.X.ticks(args.xax_count)).enter()
               .append('line')
                   .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
@@ -1483,10 +1483,10 @@
                   })
                   .attr('class', function() {
                       if(args.x_extended_ticks)
-                          return 'extended-x-ticks';
+                          return 'mg-extended-x-ticks';
                   });
 
-      g.selectAll('.xax-labels')
+      g.selectAll('.mg-xax-labels')
           .data(args.scales.X.ticks(args.xax_count)).enter()
               .append('text')
                   .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
@@ -1520,10 +1520,10 @@
 
           //append year marker to x-axis group
           g = g.append('g')
-              .classed('year-marker', true)
-              .classed('year-marker-small', args.use_small_class); 
+              .classed('mg-year-marker', true)
+              .classed('mg-year-marker-small', args.use_small_class); 
 
-          g.selectAll('.year_marker')
+          g.selectAll('.mg-year-marker')
               .data(years).enter()
                   .append('line')
                       .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
@@ -1532,7 +1532,7 @@
                       .attr('y2', args.height - args.bottom);
 
           var yformat = d3.time.format('%Y');
-          g.selectAll('.year_marker')
+          g.selectAll('.mg-year-marker')
               .data(years).enter()
                   .append('text')
                       .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
@@ -1584,10 +1584,10 @@
       }
       //remove the svg if the chart type has changed
       var svg = $(args.target).find('svg');
-      if((svg.find('.main-line').length > 0 && args.chart_type != 'line')
-              || (svg.find('.points').length > 0 && args.chart_type != 'point')
-              || (svg.find('.histogram').length > 0 && args.chart_type != 'histogram')
-              || (svg.find('.barplot').length > 0 && args.chart_type != 'bar')
+      if((svg.find('.mg-main-line').length > 0 && args.chart_type != 'line')
+              || (svg.find('.mg-points').length > 0 && args.chart_type != 'point')
+              || (svg.find('.mg-histogram').length > 0 && args.chart_type != 'histogram')
+              || (svg.find('.mg-barplot').length > 0 && args.chart_type != 'bar')
           ) {
           $(args.target).empty();
 
@@ -1614,9 +1614,9 @@
           svg.attr('height', args.height)
 
       // remove missing class
-      svg.classed('missing', false);
+      svg.classed('mg-missing', false);
       // remove missing text
-      svg.selectAll('.missing-text').remove();
+      svg.selectAll('.mg-missing-text').remove();
 
       //add chart title if it's different than existing one
       chart_title(args);
@@ -1629,7 +1629,7 @@
       //if we're updating an existing chart and we have fewer lines than
       //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
       //data_graphic() on the same target with 2 lines, remove the 3rd line
-      if(args.data.length < $(args.target).find('svg .main-line').length) {
+      if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
           //now, the thing is we can't just remove, say, line3 if we have a custom
           //line-color map, instead, see which are the lines to be removed, and delete those    
           if(args.custom_line_color_map.length > 0) {
@@ -1645,17 +1645,17 @@
                   args.custom_line_color_map);
 
               for(var i=0; i<lines_to_remove.length; i++) {
-                  $(args.target).find('svg .main-line.line' + lines_to_remove[i] + '-color')
+                  $(args.target).find('svg .mg-main-line.mg-line' + lines_to_remove[i] + '-color')
                       .remove();
               }
           }
           //if we don't have a customer line-color map, just remove the lines from the end
           else {
               var num_of_new = args.data.length;
-              var num_of_existing = $(args.target).find('svg .main-line').length;
+              var num_of_existing = $(args.target).find('svg .mg-main-line').length;
 
               for(var i=num_of_existing; i>num_of_new; i--) {
-                  $(args.target).find('svg .main-line.line' + i + '-color').remove();
+                  $(args.target).find('svg .mg-main-line.mg-line' + i + '-color').remove();
               }
           }
       }
@@ -1670,12 +1670,12 @@
       var gb;
 
       if(args.markers) {
-          $(args.target).find('svg .markers').remove();
+          $(args.target).find('svg .mg-markers').remove();
 
           gm = svg.append('g')
-              .attr('class', 'markers');
+              .attr('class', 'mg-markers');
 
-          gm.selectAll('.markers')
+          gm.selectAll('.mg-markers')
               .data(args.markers.filter(function(d){
                   return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
                       && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
@@ -1694,7 +1694,7 @@
                   })
                   .attr('stroke-dasharray', '3,1');
 
-          gm.selectAll('.markers')
+          gm.selectAll('.mg-markers')
               .data(args.markers.filter(function(d){
                   return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
                       && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
@@ -1712,11 +1712,11 @@
       }
 
       if(args.baselines) {
-          svg.selectAll('.baselines').remove();
+          svg.selectAll('.mg-baselines').remove();
           gb = svg.append('g')
-              .attr('class', 'baselines');
+              .attr('class', 'mg-baselines');
 
-          gb.selectAll('.baselines')
+          gb.selectAll('.mg-baselines')
               .data(args.baselines)
               .enter().append('line')
                   .attr('x1', args.left + args.buffer)
@@ -1728,7 +1728,7 @@
                       return args.scales.Y(d['value']).toFixed(2);
                   });
 
-          gb.selectAll('.baselines')
+          gb.selectAll('.mg-baselines')
               .data(args.baselines)
               .enter().append('text')
                   .attr('x', args.width-args.right - args.buffer)
@@ -2121,16 +2121,16 @@
               //add confidence band
               if(args.show_confidence_band) {
                   svg.append('path')
-                      .attr('class', 'confidence-band')
+                      .attr('class', 'mg-confidence-band')
                       .attr('d', confidence_area(args.data[i]));
               }
 
               //add the area
-              var $area = $(args.target).find('svg path.area' + (line_id) + '-color');
+              var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
               if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                   //if area already exists, transition it
                   if($area.length > 0) {
-                      $(svg.node()).find('.y-axis').after($area.detach());
+                      $(svg.node()).find('.mg-y-axis').after($area.detach());
                       d3.select($area.get(0))
                           .transition()
                               .duration(function() {
@@ -2140,7 +2140,7 @@
                   }
                   else { //otherwise, add the area
                       svg.append('path')
-                          .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
+                          .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                           .attr('d', area(args.data[i]));
                   }
               } else if ($area.length > 0) {
@@ -2148,9 +2148,9 @@
               }
 
               //add the line, if it already exists, transition the fine gentleman
-              var $existing_line = $(args.target).find('svg path.main-line.line' + (line_id) + '-color').first();
+              var $existing_line = $(args.target).find('svg path.mg-main-line.mg-line' + (line_id) + '-color').first();
               if($existing_line.length > 0) {
-                  $(svg.node()).find('.y-axis').after($existing_line.detach());
+                  $(svg.node()).find('.mg-y-axis').after($existing_line.detach());
                   d3.select($existing_line.get(0))
                       .transition()
                           .duration(function() {
@@ -2166,7 +2166,7 @@
                       })
 
                       svg.append('path')
-                          .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
+                          .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                           .attr('d', flat_line(args.data[i]))
                           .transition()
                               .duration(1000)
@@ -2174,14 +2174,14 @@
                   }
                   else { //or just add the line
                       svg.append('path')
-                          .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
+                          .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                           .attr('d', line(args.data[i]));
                   }
               }
 
               //build legend
               if(args.legend) {
-                  legend = "<span class='line" + line_id  + "-legend-color'>&mdash; "
+                  legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
                           + args.legend[i] + "&nbsp; </span>" + legend;
               }
           }
@@ -2204,17 +2204,17 @@
           var g;
 
           //remove the old rollovers if they already exist
-          $svg.find('.transparent-rollover-rect').remove();
-          $svg.find('.voronoi').remove();
+          $svg.find('.mg-rollover-rect').remove();
+          $svg.find('.mg-voronoi').remove();
 
           //remove the old rollover text and circle if they already exist
-          $svg.find('.active_datapoint').remove();
-          $svg.find('.line_rollover_circle').remove();
+          $svg.find('.mg-active-datapoint').remove();
+          $svg.find('.mg-line-rollover-circle').remove();
 
           //rollover text
           svg.append('text')
-              .attr('class', 'active_datapoint')
-              .classed('active-datapoint-small', args.use_small_class)
+              .attr('class', 'mg-active-datapoint')
+              .classed('mg-active-datapoint-small', args.use_small_class)
               .attr('xml:space', 'preserve')
               .attr('x', args.width - args.right)
               .attr('y', args.top / 2)
@@ -2222,7 +2222,7 @@
 
           //append circle
           svg.append('circle')
-              .classed('line_rollover_circle', true)
+              .classed('mg-line-rollover-circle', true)
               .attr('cx', 0)
               .attr('cy', 0)
               .attr('r', 0);
@@ -2253,7 +2253,7 @@
                   .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
               var g = svg.append('g')
-                  .attr('class', 'voronoi')
+                  .attr('class', 'mg-voronoi')
 
               //we'll be using these when constructing the voronoi rollovers
               var data_nested = d3.nest()
@@ -2282,10 +2282,10 @@
                                           ? i
                                           : formatter(v);
 
-                                  return 'line' + d['line_id'] + '-color ' + 'roll_' + id;
+                                  return 'mg-line' + d['line_id'] + '-color ' + 'roll_' + id;
                               }
                               else {
-                                  return 'line' + d['line_id'] + '-color';
+                                  return 'mg-line' + d['line_id'] + '-color';
                               }
                           })
                           .on('mouseover', this.rolloverOn(args))
@@ -2300,11 +2300,11 @@
               }
 
               var g = svg.append('g')
-                  .attr('class', 'transparent-rollover-rect')
+                  .attr('class', 'mg-rollover-rect')
 
               var xf = args.data[0].map(args.scalefns.xf);
 
-              g.selectAll('.rollover-rects')
+              g.selectAll('.mg-rollover-rects')
                   .data(args.data[0]).enter()
                       .append('rect')
                           .attr('class', function(d, i) {
@@ -2317,10 +2317,10 @@
                                           ? i
                                           : formatter(v);
 
-                                  return 'line' + line_id + '-color ' + 'roll_' + id;
+                                  return 'mg-line' + line_id + '-color ' + 'roll_' + id;
                               }
                               else {
-                                  return 'line' + line_id + '-color';
+                                  return 'mg-line' + line_id + '-color';
                               }
                           })
                           .attr('x', function(d, i) {
@@ -2366,10 +2366,10 @@
 
           return function(d, i) {
               //show circle on mouse-overed rect
-              svg.selectAll('circle.line_rollover_circle')
+              svg.selectAll('circle.mg-line-rollover-circle')
                   .attr('class', "")
-                  .attr('class', 'area' + d['line_id'] + '-color')
-                  .classed('line_rollover_circle', true)
+                  .attr('class', 'mg-area' + d['line_id'] + '-color')
+                  .classed('mg-line-rollover-circle', true)
                   .attr('cx', function() {
                       return args.scales.X(d[args.x_accessor]).toFixed(2);
                   })
@@ -2392,7 +2392,7 @@
                           : formatter(v);
 
                   //trigger mouseover on matching line in .linked charts
-                  d3.selectAll('.line' + d['line_id'] + '-color.roll_' + id)
+                  d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
                       .each(function(d, i) {
                           d3.select(this).on('mouseover')(d,i);
                   })
@@ -2424,7 +2424,7 @@
 
               //update rollover text
               if (args.show_rollover_text) {
-                  svg.select('.active_datapoint')
+                  svg.select('.mg-active-datapoint')
                       .text(function() {
                           if(args.time_series) {
                               var dd = new Date(+d[args.x_accessor]);
@@ -2469,10 +2469,10 @@
               }
 
               //remove active datapoint text on mouse out
-              svg.selectAll('circle.line_rollover_circle')
+              svg.selectAll('circle.mg-line-rollover-circle')
                   .style('opacity', 0);
 
-              svg.select('.active_datapoint')
+              svg.select('.mg-active-datapoint')
                   .text('');
 
               if(args.mouseout) {
@@ -2513,29 +2513,29 @@
           var g;
 
           //remove the old histogram, add new one
-          $svg.find('.histogram').remove();
+          $svg.find('.mg-histogram').remove();
 
-          var g = svg.append("g")
-              .attr("class", "histogram");
+          var g = svg.append('g')
+              .attr('class', 'mg-histogram');
 
-          var bar = g.selectAll(".bar")
+          var bar = g.selectAll('.mg-bar')
               .data(args.data[0])
-                  .enter().append("g")
-                      .attr("class", "bar")
-                      .attr("transform", function(d) {
+                  .enter().append('g')
+                      .attr('class', 'mg-bar')
+                      .attr('transform', function(d) {
                           return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2)
                               + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
                           });
 
           //draw bars
-          bar.append("rect")
-              .attr("x", 1)
-              .attr("width", function(d, i) {
+          bar.append('rect')
+              .attr('x', 1)
+              .attr('width', function(d, i) {
                   return (args.scalefns.xf(args.data[0][1])
                       - args.scalefns.xf(args.data[0][0])
                       - args.bar_margin).toFixed(2);
               })
-              .attr("height", function(d) {
+              .attr('height', function(d) {
                   if(d[args.y_accessor] == 0)
                       return 0;
 
@@ -2557,33 +2557,33 @@
           var g;
 
           //remove the old rollovers if they already exist
-          $svg.find('.transparent-rollover-rect').remove();
-          $svg.find('.active_datapoint').remove();
+          $svg.find('.mg-rollover-rect').remove();
+          $svg.find('.mg-active-datapoint').remove();
 
           //rollover text
           svg.append('text')
-              .attr('class', 'active_datapoint')
+              .attr('class', 'mg-active-datapoint')
               .attr('xml:space', 'preserve')
               .attr('x', args.width - args.right)
               .attr('y', args.top / 2)
               .attr('text-anchor', 'end');
 
           var g = svg.append('g')
-              .attr('class', 'transparent-rollover-rect')
+              .attr('class', 'mg-rollover-rect')
 
           //draw rollover bars
-          var bar = g.selectAll(".bar")
+          var bar = g.selectAll('.mg-bar')
               .data(args.data[0])
-                  .enter().append("g")
-                      .attr("class", "rollover-rects")
-                      .attr("transform", function(d) {
+                  .enter().append('g')
+                      .attr('class', 'mg-rollover-rects')
+                      .attr('transform', function(d) {
                           return "translate(" + (args.scales.X(d[args.x_accessor])) + "," + 0 + ")";
                       });
 
-          bar.append("rect")
-              .attr("x", 1)
-              .attr("y", 0)
-              .attr("width", function(d, i) {
+          bar.append('rect')
+              .attr('x', 1)
+              .attr('y', 0)
+              .attr('width', function(d, i) {
                   if (i != args.data[0].length - 1) {
                       return (args.scalefns.xf(args.data[0][i + 1])
                           - args.scalefns.xf(d)).toFixed(2);
@@ -2593,7 +2593,7 @@
                           - args.scalefns.xf(args.data[0][0])).toFixed(2);
                   }
               })
-              .attr("height", function(d) {
+              .attr('height', function(d) {
                   return args.height;
               })
               .attr('opacity', 0)
@@ -2632,12 +2632,12 @@
               }
 
               //highlight active bar
-              d3.selectAll($(args.target).find(' svg .bar :eq(' + i + ')'))
+              d3.selectAll($(args.target).find(' svg .mg-bar :eq(' + i + ')'))
                   .classed('active', true);
 
               //update rollover text
               if (args.show_rollover_text) {
-                  svg.select('.active_datapoint')
+                  svg.select('.mg-active-datapoint')
                       .text(function() {
                           if(args.time_series) {
                               var dd = new Date(+d[args.x_accessor]);
@@ -2665,11 +2665,11 @@
 
           return function(d, i) {
               //reset active bar
-              d3.selectAll($(args.target).find('svg .bar :eq(' + i + ')'))
+              d3.selectAll($(args.target).find('svg .mg-bar :eq(' + i + ')'))
                   .classed('active', false);
 
               //reset active data point text
-              svg.select('.active_datapoint')
+              svg.select('.mg-active-datapoint')
                   .text('');
 
               if(args.mouseout) {
@@ -2718,11 +2718,11 @@
           var g;
 
           //remove the old points, add new one
-          $svg.find('.points').remove();
+          $svg.find('.mg-points').remove();
 
           // plot the points, pretty straight-forward
           g = svg.append('g')
-              .classed('points', true);
+              .classed('mg-points', true);
 
           var pts = g.selectAll('circle')
               .data(args.data[0])
@@ -2737,7 +2737,7 @@
               pts.attr('stroke', args.scalefns.color);
           }
           else {
-              pts.classed('points-mono', true);
+              pts.classed('mg-points-mono', true);
           }
 
           if (args.size_accessor != null) {
@@ -2755,14 +2755,14 @@
           var $svg = $($(args.target).find('svg').get(0));
 
           //remove the old rollovers if they already exist
-          $svg.find('.voronoi').remove();
+          $svg.find('.mg-voronoi').remove();
 
           //remove the old rollover text and circle if they already exist
-          $svg.find('.active_datapoint').remove();
+          $svg.find('.mg-active-datapoint').remove();
 
           //add rollover text
           svg.append('text')
-              .attr('class', 'active_datapoint')
+              .attr('class', 'mg-active-datapoint')
               .attr('xml:space', 'preserve')
               .attr('x', args.width - args.right)
               .attr('y', args.top / 2)
@@ -2775,7 +2775,7 @@
               .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
           var paths = svg.append('g')
-              .attr('class', 'voronoi');
+              .attr('class', 'mg-voronoi');
 
           paths.selectAll('path')
               .data(voronoi(args.data[0]))
@@ -2799,11 +2799,11 @@
           var svg = d3.select($(args.target).find('svg').get(0));
 
           return function(d, i) {
-              svg.selectAll('.points circle')
+              svg.selectAll('.mg-points circle')
                   .classed('selected', false);
 
               //highlight active point
-              var pts = svg.selectAll('.points circle.path-' + i)
+              var pts = svg.selectAll('.mg-points circle.path-' + i)
                   .classed('selected', true);
 
               if (args.size_accessor) {
@@ -2819,7 +2819,7 @@
                   globals.link = true;
 
                   //trigger mouseover on matching point in .linked charts
-                  d3.selectAll('.voronoi .path-' + i)
+                  d3.selectAll('.mg-voronoi .path-' + i)
                       .each(function() {
                           d3.select(this).on('mouseover')(d,i);
                   })
@@ -2844,7 +2844,7 @@
 
               //update rollover text
               if (args.show_rollover_text) {
-                  svg.select('.active_datapoint')
+                  svg.select('.mg-active-datapoint')
                       .text(function() {
                           if(args.time_series) {
                               var dd = new Date(+d['point'][args.x_accessor]);
@@ -2874,14 +2874,14 @@
               if(args.linked && globals.link) {
                   globals.link = false;
 
-                  d3.selectAll('.voronoi .path-' + i)
+                  d3.selectAll('.mg-voronoi .path-' + i)
                       .each(function() {
                           d3.select(this).on('mouseout')(d,i);
                   })
               }
 
               //reset active point
-              var pts = svg.selectAll('.points circle')
+              var pts = svg.selectAll('.mg-points circle')
                   .classed('unselected', false)
                   .classed('selected', false);
 
@@ -2893,7 +2893,7 @@
               }
 
               //reset active data point text
-              svg.select('.active_datapoint')
+              svg.select('.mg-active-datapoint')
                   .text('');
 
               if(args.mouseout) {
@@ -2943,18 +2943,18 @@
           var $svg = $($(args.target).find('svg').get(0));
           var g;
 
-          //remove the old barplot, add new one
-          $svg.find('.barplot').remove();
+          //remove the old mg-barplot, add new one
+          $svg.find('.mg-barplot').remove();
 
           var data = args.data[0];
 
           var g = svg.append('g')
-              .classed('barplot', true);
+              .classed('mg-barplot', true);
 
           var appropriate_height = args.scales.Y.rangeBand()/1.5;
-          g.selectAll('.bar')
+          g.selectAll('.mg-bar')
               .data(data).enter().append('rect')
-              .classed('bar', true)
+              .classed('mg-bar', true)
               .attr('x', args.scales.X(0))
               .attr('y', function(d){
                   return args.scalefns.yf(d) + appropriate_height/2;
@@ -2965,10 +2965,10 @@
               var pp=args.predictor_proportion;
               var pp0 = pp-1;
               // thick line  through bar;
-              g.selectAll('.prediction')
+              g.selectAll('.mg-prediction')
                   .data(data)
                   .enter().append("rect")
-                      .attr('class', 'bar-prediction')
+                      .attr('class', 'mg-bar-prediction')
                       .attr('x', args.scales.X(0))
                       .attr('y', function(d){
                           return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
@@ -2979,10 +2979,10 @@
                       });
           }
           if (args.baseline_accessor){
-              g.selectAll('.baseline')
+              g.selectAll('.mg-baseline')
                   .data(data)
                   .enter().append("line")
-                      .attr('class', 'bar-baseline')
+                      .attr('class', 'mg-bar-baseline')
                       .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
                       .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
                       .attr('y1', function(d){
@@ -3006,12 +3006,12 @@
           var g;
 
           //remove the old rollovers if they already exist
-          $svg.find('.transparent-rollover-rect').remove();
-          $svg.find('.active_datapoint').remove();
+          $svg.find('.mg-rollover-rect').remove();
+          $svg.find('.mg-active-datapoint').remove();
 
           //rollover text
           svg.append('text')
-              .attr('class', 'active_datapoint')
+              .attr('class', 'mg-active-datapoint')
               .attr('xml:space', 'preserve')
               .attr('x', args.width - args.right)
               .attr('y', args.top / 2)
@@ -3019,15 +3019,15 @@
               .attr('text-anchor', 'end');
 
           var g = svg.append('g')
-              .attr('class', 'transparent-rollover-rect')
+              .attr('class', 'mg-rollover-rect')
 
           //draw rollover bars
-          var bar = g.selectAll(".bar")
+          var bar = g.selectAll('.mg-bar')
               .data(args.data[0])
                   .enter().append("rect")
                       .attr('class', 'bar-rollover')
-                      .attr("x", args.scales.X(0))
-                      .attr("y", args.scalefns.yf)
+                      .attr('x', args.scales.X(0))
+                      .attr('y', args.scalefns.yf)
                       .attr('width', args.width)
                       .attr('height', args.scales.Y.rangeBand()+2)
                       .attr('opacity', 0)
@@ -3066,12 +3066,12 @@
               }
 
               //highlight active bar
-              d3.selectAll($(args.target + ' svg g.barplot .bar:eq(' + i + ')'))
+              d3.selectAll($(args.target + ' svg g.mg-barplot .mg-bar:eq(' + i + ')'))
                   .classed('active', true);
 
               //update rollover text
               if (args.show_rollover_text) {
-                  svg.select('.active_datapoint')
+                  svg.select('.mg-active-datapoint')
                       .text(function() {
                           if(args.time_series) {
                               var dd = new Date(+d[args.x_accessor]);
@@ -3097,11 +3097,11 @@
 
           return function(d, i) {
               //reset active bar
-              d3.selectAll($(args.target).find('svg g.barplot .bar:eq(' + i + ')'))
+              d3.selectAll($(args.target).find('svg g.mg-barplot .mg-bar:eq(' + i + ')'))
                   .classed('active', false);
 
               //reset active data point text
-              svg.select('.active_datapoint')
+              svg.select('.mg-active-datapoint')
                   .text('');
 
               if(args.mouseout) {
@@ -3215,7 +3215,7 @@
   		chart_title(args);
 
   		var target = args.target;
-  		var table = d3.select(target).append('table').classed('data-table', true);
+  		var table = d3.select(target).append('table').classed('mg-data-table', true);
   		var colgroup = table.append('colgroup');
   		var thead = table.append('thead');
   		var tbody = table.append('tbody');
@@ -3344,23 +3344,23 @@
           var svg = d3.select(args.target).select('svg')
 
           // add missing class
-          svg.classed('missing', true);
+          svg.classed('mg-missing', true);
 
           // do we need to clear the legend?
           if(args.legend_target)
               $(args.legend_target).html('');
 
           svg.append('rect')
-              .attr('class', 'missing-pane')
+              .attr('class', 'mg-missing-pane')
               .attr('x', args.left)
               .attr('y', args.top)
               .attr('width', args.width - (args.left * 2))
               .attr('height', args.height - (args.top * 2));
 
           // add missing text
-          svg.selectAll('.missing_text').data([args.missing_text])
+          svg.selectAll('.mg-missing-text').data([args.missing_text])
             .enter().append('text')
-              .attr('class', 'missing-text')
+              .attr('class', 'mg-missing-text')
               .attr('x', args.width / 2)
               .attr('y', args.height / 2)
               .attr('dy', '.50em')
@@ -3638,7 +3638,7 @@
           .attr('x2', args.scales.X(max_x))
           .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
           .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
-          .attr('class', 'least-squares-line')
+          .attr('class', 'mg-least-squares-line')
   }
 
   function add_lowess(args){
@@ -3652,7 +3652,7 @@
 
       svg.append('path')
           .attr('d', line(lowess))
-          .attr('class', 'lowess-line')
+          .attr('class', 'mg-lowess-line')
   }
 
   function lowess_robust(x, y, alpha, inc){
@@ -4016,7 +4016,7 @@
       var error = '<i class="fa fa-x fa-exclamation-circle warning"></i>';
       console.log('ERROR : ', args.target, ' : ', args.error);
       
-      $(args.target).find('.chart_title').append(error);
+      $(args.target).find('.mg-chart-title').append(error);
   }
 
   if (typeof define === "function" && define.amd) define(MG);

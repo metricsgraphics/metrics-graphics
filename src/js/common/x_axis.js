@@ -12,12 +12,12 @@ function x_rug(args) {
         }
     }
 
-    var rug = svg.selectAll('line.x-rug').data(all_data);
+    var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
     //D3's general update pattern
     rug.enter().append('svg:line')
-        .attr('class', 'x-rug')
+        .attr('class', 'mg-x-rug')
         .attr('opacity', 0.3);
 
     //remove rug elements that are no longer in use
@@ -33,11 +33,11 @@ function x_rug(args) {
 
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
-        rug.classed('x-rug-mono', false);
+        rug.classed('mg-x-rug-mono', false);
     }
     else {
         rug.attr('stroke', null);
-        rug.classed('x-rug-mono', true);
+        rug.classed('mg-x-rug-mono', true);
     }
 }
 
@@ -239,14 +239,14 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - additional_buffer]);
 
     //remove the old x-axis, add new one
-    $svg.find('.x-axis').remove();
+    $svg.find('.mg-x-axis').remove();
 
     if (!args.x_axis) return this;
 
     //x axis
     g = svg.append('g')
-        .classed('x-axis', true)
-        .classed('x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true)
+        .classed('mg-x-axis-small', args.use_small_class);
 
     var last_i = args.scales.X.ticks(args.xax_count).length-1;
 
@@ -285,7 +285,7 @@ function x_axis(args) {
     }
 
     //add x ticks
-    g.selectAll('.xax-ticks')
+    g.selectAll('.mg-xax-ticks')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('line')
                 .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
@@ -298,10 +298,10 @@ function x_axis(args) {
                 })
                 .attr('class', function() {
                     if(args.x_extended_ticks)
-                        return 'extended-x-ticks';
+                        return 'mg-extended-x-ticks';
                 });
 
-    g.selectAll('.xax-labels')
+    g.selectAll('.mg-xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
                 .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
@@ -335,10 +335,10 @@ function x_axis(args) {
 
         //append year marker to x-axis group
         g = g.append('g')
-            .classed('year-marker', true)
-            .classed('year-marker-small', args.use_small_class); 
+            .classed('mg-year-marker', true)
+            .classed('mg-year-marker-small', args.use_small_class); 
 
-        g.selectAll('.year_marker')
+        g.selectAll('.mg-year-marker')
             .data(years).enter()
                 .append('line')
                     .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
@@ -347,7 +347,7 @@ function x_axis(args) {
                     .attr('y2', args.height - args.bottom);
 
         var yformat = d3.time.format('%Y');
-        g.selectAll('.year_marker')
+        g.selectAll('.mg-year-marker')
             .data(years).enter()
                 .append('text')
                     .attr('x', function(d) { return args.scales.X(d).toFixed(2); })

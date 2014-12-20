@@ -1,3 +1,7 @@
+.mg-chart-title {
+    margin-left: 20px;
+}
+
 a,
 a:active,
 a:visited {
@@ -15,6 +19,7 @@ a.active {
     border-radius: 4px;
     color: #fff;
     padding: 5px;
+    text-decoration: none;
 }
 
 a.examples-options.selected {
@@ -45,10 +50,6 @@ body {
 .btn-group span.title {
     margin-left: 8px;
     margin-right: 8px;
-}
-
-.chart_title {
-    margin-left: 30px;
 }
 
 #description {
@@ -109,13 +110,18 @@ html {
     font-size: 12px;
 }
 
+.legend {
+    font-size: 0.9rem;
+    padding: 25px 0 15px 0;
+}
+
 #logo {
     margin: 60px 0 30px 0;
     height: 79px;
     width: 400px;
 }
 
-.missing {
+.mg-missing {
     background-image: url(../images/missing-data.png);
     background-repeat: no-repeat;
     background-position: center center;

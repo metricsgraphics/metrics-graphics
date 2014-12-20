@@ -5,12 +5,12 @@ function markers(args) {
     var gb;
 
     if(args.markers) {
-        $(args.target).find('svg .markers').remove();
+        $(args.target).find('svg .mg-markers').remove();
 
         gm = svg.append('g')
-            .attr('class', 'markers');
+            .attr('class', 'mg-markers');
 
-        gm.selectAll('.markers')
+        gm.selectAll('.mg-markers')
             .data(args.markers.filter(function(d){
                 return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
                     && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
@@ -29,7 +29,7 @@ function markers(args) {
                 })
                 .attr('stroke-dasharray', '3,1');
 
-        gm.selectAll('.markers')
+        gm.selectAll('.mg-markers')
             .data(args.markers.filter(function(d){
                 return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
                     && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
@@ -47,11 +47,11 @@ function markers(args) {
     }
 
     if(args.baselines) {
-        svg.selectAll('.baselines').remove();
+        svg.selectAll('.mg-baselines').remove();
         gb = svg.append('g')
-            .attr('class', 'baselines');
+            .attr('class', 'mg-baselines');
 
-        gb.selectAll('.baselines')
+        gb.selectAll('.mg-baselines')
             .data(args.baselines)
             .enter().append('line')
                 .attr('x1', args.left + args.buffer)
@@ -63,7 +63,7 @@ function markers(args) {
                     return args.scales.Y(d['value']).toFixed(2);
                 });
 
-        gb.selectAll('.baselines')
+        gb.selectAll('.mg-baselines')
             .data(args.baselines)
             .enter().append('text')
                 .attr('x', args.width-args.right - args.buffer)

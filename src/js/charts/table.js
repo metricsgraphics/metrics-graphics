@@ -91,7 +91,7 @@ MG.data_table = function(args){
 		chart_title(args);
 
 		var target = args.target;
-		var table = d3.select(target).append('table').classed('data-table', true);
+		var table = d3.select(target).append('table').classed('mg-data-table', true);
 		var colgroup = table.append('colgroup');
 		var thead = table.append('thead');
 		var tbody = table.append('tbody');

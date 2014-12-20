@@ -1,103 +1,103 @@
-.active_datapoint {
+.mg-active-datapoint {
     fill: black;
     font-size: 0.9rem;
     font-weight: 400;
+    opacity: 0.8;
 }
 
-.area1-color {
+.mg-area1-color {
     fill: #0000ff;
 }
 
-.area2-color {
+.mg-area2-color {
     fill: #05b378;
 }
 
-.area3-color {
+.mg-area3-color {
     fill: #db4437;
 }
 
-.area4-color {
+.mg-area4-color {
     fill: #f8b128;
 }
 
-.area5-color {
+.mg-area5-color {
     fill: #5c5c5c;
 }
 
-.barplot rect.bar {
+.mg-barplot rect.mg-bar {
     shape-rendering: crispEdges;
-        fill: #b6b6fc;
-
+    fill: #b6b6fc;
 }
 
-.barplot rect.bar.active {
+.mg-barplot rect.mg-bar.active {
     fill: #9e9efc;
 }
 
-.barplot .bar-prediction {
+.mg-barplot .mg-bar-prediction {
     fill: #5b5b5b;
 }
 
-.barplot .bar-baseline {
+.mg-barplot .mg-bar-baseline {
     stroke: #5b5b5b;
     stroke-width: 2;
 }
 
-.baselines line {
+.mg-baselines line {
     opacity: 0.2;
     shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
 }
 
-.baselines text {
+.mg-baselines text {
     fill: black;
     font-size: 0.7rem;
     opacity: 0.5;
     stroke: none;
 }
 
-.chart_title .popover {
+.mg-chart-title .popover {
     font-size: 0.95rem;
 }
 
-.chart_title .popover-content {
+.mg-chart-title .popover-content {
     cursor: auto;
     line-height: 17px;
 }
 
-.chart_title .popover.top,
-.data-table .popover.top {
+.mg-chart-title .popover.top,
+.mg-data-table .popover.top {
     margin-top: 0;
 }
 
-.chart_title {
+.mg-chart-title {
     cursor: default;
     font-size: 1.8rem;
     padding-top: 8px;
     text-align: center;
 }
 
-.chart_title .fa {
+.mg-chart-title .fa {
     color: #ccc;
     font-size: 1.2rem;
     padding-left: 4px;
     vertical-align: top;
 }
 
-.chart_title .fa.warning {
+.mg-chart-title .fa.warning {
     font-weight: 300;
 }
 
-circle {
+.mg-points circle {
     opacity: 0.85;
 }
 
-.data-table {
+.mg-data-table {
     margin-top: 30px;
 }
 
-.data-table thead tr th {
+.mg-data-table thead tr th {
     border-bottom: 1px solid darkgray;
     cursor: default;
     font-size: 1.1rem;
@@ -106,232 +106,226 @@ circle {
     text-align: right;
 }
 
-.data-table thead tr th .fa {
+.mg-data-table thead tr th .fa {
     color: #ccc;
     padding-left: 4px;
 }
 
-.data-table thead tr th .popover {
+.mg-data-table thead tr th .popover {
     font-size: 1rem;
     font-weight: normal;
 }
 
-.data-table .secondary-title {
+.mg-data-table .secondary-title {
     color: darkgray;
 }
 
-.data-table tbody tr td {
+.mg-data-table tbody tr td {
     margin: 2px;
     padding: 5px;
     vertical-align: top;
 }
 
-.data-table  tbody tr td.table-text {
+.mg-data-table  tbody tr td.table-text {
     opacity: 0.8;
     padding-left: 30px;
 }
 
-.extended-y-ticks svg .y-axis line {
+.mg-y-axis line.mg-extended-y-ticks {
     opacity: 0.07;
 }
 
-.extended-x-ticks svg .x-axis line {
+.mg-x-axis line.mg-extended-x-ticks {
     opacity: 0.1;
 }
 
-.histogram .axis path,
-.histogram .axis line {
-    opacity: 0.7;
+.mg-histogram .axis path,
+.mg-histogram .axis line {
     fill: none;
+    opacity: 0.7;
     shape-rendering: crispEdges;
     stroke: #ccc;
 }
 
-.histogram .bar rect {
-    shape-rendering: crispEdges;
+.mg-histogram .mg-bar rect {
     fill: #b6b6fc;
+    shape-rendering: crispEdges;
 }
 
-.histogram .bar rect.active {
+.mg-histogram .mg-bar rect.active {
     fill: #9e9efc;
 }
 
-.least-squares-line {
+.mg-least-squares-line {
+    stroke: red;
     stroke-width: 1;
-    stroke: red;
 }
 
-.lowess-line {
-    stroke: red;
+.mg-lowess-line {
     fill: none;
+    stroke: red;
 }
 
-.line1-color {
+.mg-line1-color {
     stroke: #4040e8;
 }
 
-.line2-color {
+.mg-line2-color {
     stroke: #05b378;
 }
 
-.line3-color {
+.mg-line3-color {
     stroke: #db4437;
 }
 
-.line4-color {
+.mg-line4-color {
     stroke: #f8b128;
 }
 
-.line5-color {
+.mg-line5-color {
     stroke: #5c5c5c;
 }
 
-.line1-legend-color {
+.mg-line1-legend-color {
     color: #4040e8;
 }
 
-.line2-legend-color {
+.mg-line2-legend-color {
     color: #05b378;
 }
 
-.line3-legend-color {
+.mg-line3-legend-color {
     color: #db4437;
 }
 
-.line4-legend-color {
+.mg-line4-legend-color {
     color: #f8b128;
 }
 
-.line5-legend-color {
+.mg-line5-legend-color {
     color: #5c5c5c;
 }
 
-.legend {
-    font-size: 0.9rem;
-    padding: 25px 0 15px 0;
-}
-
-.main-area-solid svg .main-area {
+.mg-main-area-solid svg .mg-main-area {
     fill: #ccccff;
     opacity: 1;
 }
 
-.markers line {
+.mg-markers line {
     opacity: 0.2;
     shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
 }
 
-.markers text {
+.mg-markers text {
     fill: black;
     font-size: 0.7rem;
     opacity: 0.5;
     stroke: none;
 }
 
-.missing-pane {
+.mg-missing-pane {
     fill: none;
 }
 
-path.main-area {
+.mg-missing-text {
+    opacity: 0.8;
+}
+
+path.mg-main-area {
     opacity: 0.2;
     stroke: none;
 }
 
-path.confidence-band {
+path.mg-confidence-band {
     fill: #ccc;
     opacity: 0.4;
     stroke: none;
 }
 
-path.main-line {
+path.mg-main-line {
     fill: none;
     opacity: 0.8;
     stroke-width: 1.1px;
 }
 
-.points circle {
+.mg-points circle {
     fill-opacity: 0.4;
     stroke-opacity: 1;
 }
 
-circle.points-mono {
+circle.mg-points-mono {
     fill: #0000ff;
     stroke: #0000ff;
 }
 
 /* a selected point in a scatterplot */
-.points circle.selected {
+.mg-points circle.selected {
     fill-opacity: 1;
     stroke-opacity: 1;
 }
 
-text {
-    fill: black;
-    opacity: 0.8;
-}
-
-.voronoi path {
+.mg-voronoi path {
     fill: none;
     pointer-events: all;
     stroke: none;
     stroke-opacity: 0.1;
 }
 
-.x-rug-mono,
-.y-rug-mono {
+.mg-x-rug-mono,
+.mg-y-rug-mono {
     stroke: black;
 }
 
-.x-axis line,
-.y-axis line {
+.mg-x-axis line,
+.mg-y-axis line {
     opacity: 0.3;
     shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
 }
 
-.x-axis text,
-.y-axis text,
-.histogram .axis text {
+.mg-x-axis text,
+.mg-y-axis text,
+.mg-histogram .axis text {
     fill: black;
     font-size: 0.9rem;
     opacity: 0.5;
 }
 
-.x-axis .label,
-.y-axis .label,
-.axis .label {
+.mg-x-axis .label,
+.mg-y-axis .label,
+.mg-axis .label {
     font-size: 0.8rem;
     text-transform: uppercase;
     font-weight: 400;
 }
 
-.x-axis-small text,
-.y-axis-small text,
-.active-datapoint-small {
+.mg-x-axis-small text,
+.mg-y-axis-small text,
+.mg-active-datapoint-small {
     font-size: 0.6rem;
 }
 
-.x-axis-small .label,
-.y-axis-small .label {
+.mg-x-axis-small .label,
+.mg-y-axis-small .label {
     font-size: 0.65rem;
 }
 
-.year-marker text {
+.mg-year-marker text {
     fill: black;
     font-size: 0.7rem;
     opacity: 0.5;
 }
 
-.year-marker line {
+.mg-year-marker line {
     opacity: 0.2;
     shape-rendering: crispEdges;
     stroke: black;
     stroke-width: 1;
 }
 
-.year-marker-small text {
+.mg-year-marker-small text {
     font-size: 0.6rem;
 }

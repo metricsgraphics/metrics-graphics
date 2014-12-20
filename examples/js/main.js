@@ -48,7 +48,7 @@ $(document).ready(function() {
                 var date = df(d['date']);
                 var y_val = (d.value == 0) ? 'no data' : d.value;
 
-                $('#missing-y svg .active_datapoint')
+                $('#missing-y svg .mg-active-datapoint')
                     .text(date +  '   ' + y_val);
             }
         })
@@ -534,7 +534,7 @@ $(document).ready(function() {
             mouseover: function(d, i) {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
-                $('#custom-rollover svg .active_datapoint')
+                $('#custom-rollover svg .mg-active-datapoint')
                     .text('Day ' + (i+1) + '   '
                          + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
@@ -614,7 +614,7 @@ $(document).ready(function() {
         target: '#histogram1',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            $('#histogram1 svg .active_datapoint')
+            $('#histogram1 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
@@ -645,7 +645,7 @@ $(document).ready(function() {
                 } else {
                     string = d3.round(d.x,2) + ' Months';
                 }
-                $('#ufos svg .active_datapoint')
+                $('#ufos svg .mg-active-datapoint')
                     .text(string +   '       Volume: ' + d.y);
             }
         })
@@ -671,7 +671,7 @@ $(document).ready(function() {
         x_accessor:'value',
         y_accessor:'count',
         mouseover: function(d, i) {
-            $('#histogram2 svg .active_datapoint')
+            $('#histogram2 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
@@ -691,7 +691,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         x_accessor:'val1',
         mouseover: function(d, i) {
-            $('#histogram3 svg .active_datapoint')
+            $('#histogram3 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })
@@ -712,7 +712,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         x_accessor:'val1',
         mouseover: function(d, i) {
-            $('#histogram4 svg .active_datapoint')
+            $('#histogram4 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     })

@@ -68,16 +68,16 @@ charts.line = function(args) {
             //add confidence band
             if(args.show_confidence_band) {
                 svg.append('path')
-                    .attr('class', 'confidence-band')
+                    .attr('class', 'mg-confidence-band')
                     .attr('d', confidence_area(args.data[i]));
             }
 
             //add the area
-            var $area = $(args.target).find('svg path.area' + (line_id) + '-color');
+            var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
             if(args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
                 //if area already exists, transition it
                 if($area.length > 0) {
-                    $(svg.node()).find('.y-axis').after($area.detach());
+                    $(svg.node()).find('.mg-y-axis').after($area.detach());
                     d3.select($area.get(0))
                         .transition()
                             .duration(function() {
@@ -87,7 +87,7 @@ charts.line = function(args) {
                 }
                 else { //otherwise, add the area
                     svg.append('path')
-                        .attr('class', 'main-area ' + 'area' + (line_id) + '-color')
+                        .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
             } else if ($area.length > 0) {
@@ -95,9 +95,9 @@ charts.line = function(args) {
             }
 
             //add the line, if it already exists, transition the fine gentleman
-            var $existing_line = $(args.target).find('svg path.main-line.line' + (line_id) + '-color').first();
+            var $existing_line = $(args.target).find('svg path.mg-main-line.mg-line' + (line_id) + '-color').first();
             if($existing_line.length > 0) {
-                $(svg.node()).find('.y-axis').after($existing_line.detach());
+                $(svg.node()).find('.mg-y-axis').after($existing_line.detach());
                 d3.select($existing_line.get(0))
                     .transition()
                         .duration(function() {
@@ -113,7 +113,7 @@ charts.line = function(args) {
                     })
 
                     svg.append('path')
-                        .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
+                        .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                         .attr('d', flat_line(args.data[i]))
                         .transition()
                             .duration(1000)
@@ -121,14 +121,14 @@ charts.line = function(args) {
                 }
                 else { //or just add the line
                     svg.append('path')
-                        .attr('class', 'main-line ' + 'line' + (line_id) + '-color')
+                        .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]));
                 }
             }
 
             //build legend
             if(args.legend) {
-                legend = "<span class='line" + line_id  + "-legend-color'>&mdash; "
+                legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
                         + args.legend[i] + "&nbsp; </span>" + legend;
             }
         }
@@ -151,17 +151,17 @@ charts.line = function(args) {
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.transparent-rollover-rect').remove();
-        $svg.find('.voronoi').remove();
+        $svg.find('.mg-rollover-rect').remove();
+        $svg.find('.mg-voronoi').remove();
 
         //remove the old rollover text and circle if they already exist
-        $svg.find('.active_datapoint').remove();
-        $svg.find('.line_rollover_circle').remove();
+        $svg.find('.mg-active-datapoint').remove();
+        $svg.find('.mg-line-rollover-circle').remove();
 
         //rollover text
         svg.append('text')
-            .attr('class', 'active_datapoint')
-            .classed('active-datapoint-small', args.use_small_class)
+            .attr('class', 'mg-active-datapoint')
+            .classed('mg-active-datapoint-small', args.use_small_class)
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
             .attr('y', args.top / 2)
@@ -169,7 +169,7 @@ charts.line = function(args) {
 
         //append circle
         svg.append('circle')
-            .classed('line_rollover_circle', true)
+            .classed('mg-line-rollover-circle', true)
             .attr('cx', 0)
             .attr('cy', 0)
             .attr('r', 0);
@@ -200,7 +200,7 @@ charts.line = function(args) {
                 .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
             var g = svg.append('g')
-                .attr('class', 'voronoi')
+                .attr('class', 'mg-voronoi')
 
             //we'll be using these when constructing the voronoi rollovers
             var data_nested = d3.nest()
@@ -229,10 +229,10 @@ charts.line = function(args) {
                                         ? i
                                         : formatter(v);
 
-                                return 'line' + d['line_id'] + '-color ' + 'roll_' + id;
+                                return 'mg-line' + d['line_id'] + '-color ' + 'roll_' + id;
                             }
                             else {
-                                return 'line' + d['line_id'] + '-color';
+                                return 'mg-line' + d['line_id'] + '-color';
                             }
                         })
                         .on('mouseover', this.rolloverOn(args))
@@ -247,11 +247,11 @@ charts.line = function(args) {
             }
 
             var g = svg.append('g')
-                .attr('class', 'transparent-rollover-rect')
+                .attr('class', 'mg-rollover-rect')
 
             var xf = args.data[0].map(args.scalefns.xf);
 
-            g.selectAll('.rollover-rects')
+            g.selectAll('.mg-rollover-rects')
                 .data(args.data[0]).enter()
                     .append('rect')
                         .attr('class', function(d, i) {
@@ -264,10 +264,10 @@ charts.line = function(args) {
                                         ? i
                                         : formatter(v);
 
-                                return 'line' + line_id + '-color ' + 'roll_' + id;
+                                return 'mg-line' + line_id + '-color ' + 'roll_' + id;
                             }
                             else {
-                                return 'line' + line_id + '-color';
+                                return 'mg-line' + line_id + '-color';
                             }
                         })
                         .attr('x', function(d, i) {
@@ -313,10 +313,10 @@ charts.line = function(args) {
 
         return function(d, i) {
             //show circle on mouse-overed rect
-            svg.selectAll('circle.line_rollover_circle')
+            svg.selectAll('circle.mg-line-rollover-circle')
                 .attr('class', "")
-                .attr('class', 'area' + d['line_id'] + '-color')
-                .classed('line_rollover_circle', true)
+                .attr('class', 'mg-area' + d['line_id'] + '-color')
+                .classed('mg-line-rollover-circle', true)
                 .attr('cx', function() {
                     return args.scales.X(d[args.x_accessor]).toFixed(2);
                 })
@@ -339,7 +339,7 @@ charts.line = function(args) {
                         : formatter(v);
 
                 //trigger mouseover on matching line in .linked charts
-                d3.selectAll('.line' + d['line_id'] + '-color.roll_' + id)
+                d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
                 })
@@ -371,7 +371,7 @@ charts.line = function(args) {
 
             //update rollover text
             if (args.show_rollover_text) {
-                svg.select('.active_datapoint')
+                svg.select('.mg-active-datapoint')
                     .text(function() {
                         if(args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
@@ -416,10 +416,10 @@ charts.line = function(args) {
             }
 
             //remove active datapoint text on mouse out
-            svg.selectAll('circle.line_rollover_circle')
+            svg.selectAll('circle.mg-line-rollover-circle')
                 .style('opacity', 0);
 
-            svg.select('.active_datapoint')
+            svg.select('.mg-active-datapoint')
                 .text('');
 
             if(args.mouseout) {
