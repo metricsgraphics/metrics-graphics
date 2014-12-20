@@ -17,7 +17,7 @@ var target = '#qunit-fixture',
   };
 
 test('correct number of bars', function() {
-  data_graphic(defaults);
+  MG.data_graphic(defaults);
   equal($('#qunit-fixture svg .bar').length, 3, 'should have 3 bars');
 });
 
@@ -38,7 +38,7 @@ test('triggers callbacks when provided', function() {
       }
     });
 
-  data_graphic(params);
+  MG.data_graphic(params);
 
   var bar = document.getElementsByClassName('bar-rollover')[0];
 
@@ -67,7 +67,7 @@ test('triggers callbacks when using 1.x-style method names', function() {
       }
     });
 
-  data_graphic(params);
+  MG.data_graphic(params);
 
   var bar = document.getElementsByClassName('bar-rollover')[0];
 
