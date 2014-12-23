@@ -2078,6 +2078,13 @@
 
           //confidence band
           var confidence_area;
+
+          //if it already exists, remove it
+          var $existing_band = $(args.target).find('svg path.mg-confidence-band').first();
+          if($existing_band.length > 0) {
+              $existing_band.remove();
+          }
+
           if(args.show_confidence_band) {
               var confidence_area = d3.svg.area()
                   .x(args.scalefns.xf)
