@@ -28,7 +28,7 @@ Though originally envisioned for Mozilla Metrics dashboard projects, we are maki
 ## Important changes in v2.0
 1. The library is now namespaced. ``data_graphic`` is now ``MG.data_graphic`` and ``convert_dates`` is now ``MG.convert.date``. A new function called ``MG.convert.number`` is now available.
 2. The ``rollover_callback`` option has been renamed ``mouseover`` and expanded in order to make it more consistent with other libraries. We now have three callback functions available: [mouseover](https://github.com/mozilla/metrics-graphics/wiki/Graphic#mouseover), [mouseout](https://github.com/mozilla/metrics-graphics/wiki/Graphic#mouseout) and [mousemove](https://github.com/mozilla/metrics-graphics/wiki/Graphic#mousemove).
-3. CSS rules have been prefixed and in some cases updated for consistency. ``active_datapoint`` for instance is now ``mg-active-datapoint``
+3. CSS rules have been prefixed and in some cases updated for consistency. ``active_datapoint`` for instance is now ``mg-active-datapoint``.
 
 ## Quick-start guide
 1. Download the [latest release](https://github.com/mozilla/metrics-graphics/releases).
