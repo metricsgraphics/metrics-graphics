@@ -44,9 +44,9 @@
 }
 
 .mg-baselines line {
-    opacity: 0.2;
+    opacity: 1;
     shape-rendering: crispEdges;
-    stroke: black;
+    stroke: #ccc;
     stroke-width: 1;
 }
 
@@ -212,9 +212,9 @@
 }
 
 .mg-markers line {
-    opacity: 0.2;
+    opacity: 1;
     shape-rendering: crispEdges;
-    stroke: black;
+    stroke: #ccc;
     stroke-width: 1;
 }
 
@@ -280,9 +280,9 @@ circle.mg-points-mono {
 
 .mg-x-axis line,
 .mg-y-axis line {
-    opacity: 0.3;
+    opacity: 1;
     shape-rendering: crispEdges;
-    stroke: black;
+    stroke: #ccc;
     stroke-width: 1;
 }
 
@@ -320,9 +320,9 @@ circle.mg-points-mono {
 }
 
 .mg-year-marker line {
-    opacity: 0.2;
+    opacity: 1;
     shape-rendering: crispEdges;
-    stroke: black;
+    stroke: #ccc;
     stroke-width: 1;
 }
 

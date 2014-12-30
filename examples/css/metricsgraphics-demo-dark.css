@@ -45,7 +45,7 @@ a.active {
 }
 
 .mg-baselines line {
-    stroke: #fff;
+    stroke: #676767;
 }
 
 .mg-baselines text {
@@ -151,7 +151,7 @@ li {
 }
 
 .mg-markers line {
-    stroke: #fff;
+    stroke: #676767;
 }
 
 .mg-markers text {
@@ -190,7 +190,7 @@ text {
 
 .mg-x-axis line,
 .mg-y-axis line {
-    stroke: #fff;
+    stroke: #676767;
 }
 
 .mg-x-axis text,
@@ -204,7 +204,7 @@ text {
 }
 
 .mg-year-marker line {
-    stroke: #fff;
+    stroke: #676767;
 }
 
 /*
