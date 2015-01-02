@@ -1,17 +1,17 @@
-//UMD/AMDJS require d3.js
-
+// AMDJS UMD support depends on d3 and jquery
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(["d3"], function (d3) {
-      return factory(d3);
+    define(["d3", "jquery"], function (d3, $) {
+      factory(d3, $);
     });
   } else if (typeof exports !== 'undefined') {
+    // for Node.js or CommonJS. jQuery may not be needed as a module.
     var d3 = require("d3");
     module.exports = factory(d3);
   } else {
-    factory(root.d3);
+    factory(root.d3, (root.jQuery || root.Zepto || root.ender || root.$))
   }
-}(this, function (d3) {
+}(this, function (d3, $) {
 
   var MG = { version: '2.0.0' };
 
