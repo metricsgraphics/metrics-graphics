@@ -2,14 +2,14 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(["d3", "jquery"], function (d3, $) {
-      factory(d3, $);
+      return factory(d3, $);
     });
   } else if (typeof exports !== 'undefined') {
     // for Node.js or CommonJS. jQuery may not be needed as a module.
     var d3 = require("d3");
-    module.exports = factory(d3);
+    return module.exports = factory(d3, null);
   } else {
-    factory(root.d3, (root.jQuery || root.Zepto || root.ender || root.$))
+    return factory(root.d3, (root.jQuery || root.Zepto || root.ender || root.$));
   }
 }(this, function (d3, $) {
 
