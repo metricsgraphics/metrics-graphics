@@ -761,7 +761,7 @@ $(document).ready(function() {
         target: '#bar2',
     })
 
-    data_graphic({
+    MG.data_graphic({
         title: 'Vertical Bars',
         chart_type: 'bar',
         description: 'work in progress',

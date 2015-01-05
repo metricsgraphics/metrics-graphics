@@ -390,11 +390,11 @@ function x_axis_categorical(args) {
     var $svg = $($(args.target).find('svg').get(0));
 
     //remove the old y-axis, add new one
-    $svg.find('.x-axis').remove();
+    $svg.find('.mg-x-axis').remove();
 
     var g = svg.append('g')
-        .classed('x-axis', true)
-        .classed('x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true)
+        .classed('mg-x-axis-small', args.use_small_class);
 
     if (!args.x_axis) return this;
 
