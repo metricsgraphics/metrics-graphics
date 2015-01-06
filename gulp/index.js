@@ -40,7 +40,6 @@ var
     src + 'misc/smoothers.js',
     src + 'misc/utility.js',
     src + 'misc/error.js'
-    //src + 'end.js'
   ];
 
 gulp.task('clean', function () {
