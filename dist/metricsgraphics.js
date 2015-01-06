@@ -6,7 +6,7 @@
       } else if (typeof exports === 'object') {
         module.exports = factory(require('d3'), require('jquery'));
       } else {
-        root.Metricsgraphics = factory(root.d3, root.jQuery);
+        root.MG = factory(root.d3, root.jQuery);
       }
     }(this, function(d3, $) {
     var MG = {version:'2.0.0'};
@@ -886,8 +886,8 @@
     function y_rug(args) {
         'use strict';
         var svg = d3.select($(args.target).find('svg').get(0));
-        var buffer_size = args.chart_type == 'point' 
-            ? args.buffer / 2 
+        var buffer_size = args.chart_type == 'point'
+            ? args.buffer / 2
             : args.buffer * 2 / 3;
 
         var all_data = [];
@@ -965,15 +965,33 @@
             }
         }
 
-        // the default cause is for the y-axis to start at 0, unless we explicitly want it
-        // to start at ab arbitrary number or from the data's minimum value
+        // the default case is for the y-axis to start at 0, unless we explicitly want it
+        // to start at an arbitrary number or from the data's minimum value
         if (min_y >= 0 && !args.min_y && !args.min_y_from_data){
             min_y = 0;
         }
 
+        if(args.chart_type == 'bar') {
+            min_y = 0;
+            max_y = d3.max(args.data[0], function(d){
+                var trio = [];
+                trio.push(d[args.y_accessor]);
+
+                if (args.baseline_accessor!=null){
+                    trio.push(d[args.baseline_accessor]);
+                };
+
+                if (args.predictor_accessor!=null){
+                    trio.push(d[args.predictor_accessor]);
+                }
+
+                return Math.max.apply(null, trio);
+            });
+        }
+
         //if a min_y or max_y have been set, use those instead
         min_y = args.min_y ? args.min_y : min_y;
-        max_y = args.max_y ? args.max_y : max_y;
+        max_y = args.max_y ? args.max_y : max_y * args.inflator;
 
         if (args.y_scale_type != 'log') {
             // we are currently saying that if the min val > 0, set 0 as min y.
@@ -985,9 +1003,8 @@
             }
         }
 
-        max_y = max_y * args.inflator;
         if (!args.min_y && args.min_y_from_data){
-            min_y = min_y / args.inflator;    
+            min_y = min_y / args.inflator;
         }
 
         if (args.y_scale_type == 'log'){
@@ -1016,22 +1033,24 @@
             .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top]);
 
-        var yax_format;
-        if (args.format == 'count') {
-            yax_format = function(f) {
-                if (f < 1.0) {
-                    // Don't scale tiny values.
-                    return args.yax_units + d3.round(f, args.decimals);
-                } else {
-                    var pf = d3.formatPrefix(f);
-                    return args.yax_units + pf.scale(f) + pf.symbol;
+        var yax_format = args.yax_format;
+        if (!yax_format) {
+            if (args.format == 'count') {
+                yax_format = function(f) {
+                    if (f < 1.0) {
+                        // Don't scale tiny values.
+                        return args.yax_units + d3.round(f, args.decimals);
+                    } else {
+                        var pf = d3.formatPrefix(f);
+                        return args.yax_units + pf.scale(f) + pf.symbol;
+                    }
+                };
+            }
+            else {
+                yax_format = function(d_) {
+                    var n = d3.format('%p');
+                    return n(d_);
                 }
-            };
-        }
-        else {
-            yax_format = function(d_) {
-                var n = d3.format('%p');
-                return n(d_);
             }
         }
 
@@ -1050,7 +1069,7 @@
             g.append('text')
                 .attr('class', 'label')
                 .attr('x', function() {
-                    return -1 * (args.top + args.buffer + 
+                    return -1 * (args.top + args.buffer +
                             ((args.height - args.bottom - args.buffer)
                                 - (args.top + args.buffer)) / 2);
                 })
@@ -1089,7 +1108,7 @@
 
         //filter out fraction ticks if our data is ints and if ymax > number of generated ticks
         var number_of_ticks = args.scales.Y.ticks(args.yax_count).length;
-        
+
         //is our data object all ints?
         var data_is_int = true;
         $.each(args.data, function(i, d) {
@@ -1135,7 +1154,7 @@
             .data(scale_ticks).enter()
                 .append('text')
                     .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                    .attr('dx', -3).attr('y', function(d) { 
+                    .attr('dx', -3).attr('y', function(d) {
                         return args.scales.Y(d).toFixed(2);
                     })
                     .attr('dy', '.35em')
@@ -1153,7 +1172,7 @@
     }
 
     function y_axis_categorical(args) {
-        // first, come up with y_axis 
+        // first, come up with y_axis
         var svg_height = args.height;
         if (args.chart_type == 'bar' && svg_height == null){
             // we need to set a new height variable.
@@ -1182,7 +1201,7 @@
         g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
             .attr('x', args.left)
             .attr('y', function(d) {
-                return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 
+                return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
                     + (args.buffer)*args.outer_padding_percentage;
             })
             .attr('dy', '.35em')
@@ -1194,8 +1213,8 @@
 
     function x_rug(args) {
         'use strict';
-        var buffer_size = args.chart_type =='point' 
-            ? args.buffer / 2 
+        var buffer_size = args.chart_type =='point'
+            ? args.buffer / 2
             : args.buffer;
 
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -1249,7 +1268,7 @@
         }
 
         if (args.chart_type == 'point') {
-            // figure out 
+            // figure out
             var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
             if (args.color_accessor != null) {
                 if (args.color_domain == null) {
@@ -1280,11 +1299,11 @@
 
                 if (args.color_range == null){
                     if (args.color_type=='number') {
-                        color_range = ['blue', 'red'];    
+                        color_range = ['blue', 'red'];
                     } else {
                         color_range = null;
                     }
-                    
+
                 } else {
                     color_range = args.color_range;
                 }
@@ -1293,11 +1312,11 @@
                     args.scales.color = d3.scale.linear()
                         .domain(color_domain)
                         .range(color_range)
-                        .clamp(true);    
+                        .clamp(true);
                 } else {
-                    args.scales.color = args.color_range != null 
-                        ? d3.scale.ordinal().range(color_range) 
-                        : (color_domain.length > 10 
+                    args.scales.color = args.color_range != null
+                        ? d3.scale.ordinal().range(color_range)
+                        : (color_domain.length > 10
                             ? d3.scale.category20() : d3.scale.category10());
 
                     args.scales.color.domain(color_domain);
@@ -1359,9 +1378,9 @@
         else if(args.chart_type == 'histogram') {
             min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
             max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
-            
+
             //force override xax_format
-            //todo revisit to see if this makes sense        
+            //todo revisit to see if this makes sense
             args.xax_format = function(f) {
                 if (f < 1.0) {
                     //don't scale tiny values
@@ -1424,8 +1443,8 @@
             additional_buffer = 0;
         }
 
-        args.scales.X = (args.time_series) 
-            ? d3.time.scale() 
+        args.scales.X = (args.time_series)
+            ? d3.time.scale()
             : d3.scale.linear();
 
         args.scales.X
@@ -1464,12 +1483,12 @@
         if(args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
             //extend axis line across bottom, rather than from domain's min..max
             g.append('line')
-                .attr('x1', 
+                .attr('x1',
                     (args.concise == false || args.xax_count == 0)
                         ? args.left + args.buffer
                         : (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
                 )
-                .attr('x2', 
+                .attr('x2',
                     (args.concise == false || args.xax_count == 0)
                         ? args.width - args.right - args.buffer
                         : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
@@ -1530,7 +1549,7 @@
             //append year marker to x-axis group
             g = g.append('g')
                 .classed('mg-year-marker', true)
-                .classed('mg-year-marker-small', args.use_small_class); 
+                .classed('mg-year-marker-small', args.use_small_class);
 
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
@@ -1551,11 +1570,63 @@
                         .text(function(d) {
                             return yformat(d);
                         });
-        };  
+        };
 
         if (args.x_rug){
             x_rug(args);
         }
+
+        return this;
+    }
+
+    function x_axis_categorical(args) {
+        var svg_width = args.width,
+          additional_buffer = 0;
+        if (args.chart_type == 'bar') {
+            additional_buffer = args.buffer + 5;
+
+            if (svg_width == null){
+              // we need to set a new width variable.
+            }
+        }
+
+        args.scales.X = d3.scale.ordinal()
+            .domain(args.categorical_variables.reverse())
+            .rangeRoundBands([args.left, args.width - args.right - args.buffer - additional_buffer]);
+
+
+        args.scalefns.xf = function(di) {
+            return args.scales.X(di[args.x_accessor]);
+        }
+
+        var svg = d3.select($(args.target).find('svg').get(0));
+        var $svg = $($(args.target).find('svg').get(0));
+
+        //remove the old y-axis, add new one
+        $svg.find('.mg-x-axis').remove();
+
+        var g = svg.append('g')
+            .classed('mg-x-axis', true)
+            .classed('mg-x-axis-small', args.use_small_class);
+
+        if (!args.x_axis) return this;
+
+        var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
+
+        labels.attr('x', function(d) {
+                return args.scales.X(d) + args.scales.X.rangeBand() / 2
+                    + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
+            })
+            .attr('y', args.height - args.bottom + args.buffer)
+            .attr('dy', '.35em')
+            .attr('text-anchor', 'middle')
+            .text(String);
+
+        labels.each(function(d, idx) {
+            var elem = this,
+                width = args.scales.X.rangeBand();
+            truncate_text(elem, d, width);
+        });
 
         return this;
     }
@@ -2945,69 +3016,235 @@
         'use strict';
         this.args = args;
 
+        this.is_vertical = true;
+
         this.init = function(args) {
             raw_data_transformation(args);
             process_categorical_variables(args);
             init(args);
-            x_axis(args);
-            y_axis_categorical(args);
+
+            this.is_vertical = args.bar_orientation === 'vertical';
+
+            if (this.is_vertical) {
+                x_axis_categorical(args);
+                y_axis(args);
+            } else {
+                x_axis(args);
+                y_axis_categorical(args);
+            }
             return this;
         }
 
         this.mainPlot = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
-            var $svg = $($(args.target).find('svg').get(0));
-            var g;
-
-            //remove the old mg-barplot, add new one
-            $svg.find('.mg-barplot').remove();
-
+            var svg = d3.select(args.target).select('svg');
             var data = args.data[0];
+            var barplot = svg.select('.mg-barplot');
+            var fresh_render = barplot.empty();
 
-            var g = svg.append('g')
-                .classed('mg-barplot', true);
+            var bars;
+            var predictor_bars;
+            var baseline_marks;
 
-            var appropriate_height = args.scales.Y.rangeBand()/1.5;
-            g.selectAll('.mg-bar')
-                .data(data).enter().append('rect')
-                .classed('mg-bar', true)
-                .attr('x', args.scales.X(0))
-                .attr('y', function(d){
-                    return args.scalefns.yf(d) + appropriate_height/2;
-                })
-                .attr('height', appropriate_height)
-                .attr('width', function(d){ return args.scalefns.xf(d) - args.scales.X(0)});
-            if (args.predictor_accessor){
-                var pp=args.predictor_proportion;
-                var pp0 = pp-1;
-                // thick line  through bar;
-                g.selectAll('.mg-prediction')
-                    .data(data)
-                    .enter().append("rect")
-                        .attr('class', 'mg-bar-prediction')
+            var perform_load_animation = fresh_render && args.animate_on_load;
+            var should_transition = perform_load_animation || args.transition_on_update;
+            var transition_duration = args.transition_duration || 1000;
+
+            // draw the plot on first render
+            if (fresh_render) {
+                barplot = svg.append('g')
+                    .classed('mg-barplot', true);
+
+                bars = barplot.selectAll('.mg-bar')
+                            .data(data)
+                            .enter()
+                        .append('rect')
+                            .classed('mg-bar', true);
+
+                if (args.predictor_accessor) {
+                    predictor_bars = barplot.selectAll('.mg-bar-prediction')
+                            .data(data)
+                            .enter()
+                        .append('rect')
+                            .classed('mg-bar-prediction', true);
+                }
+
+                if (args.baseline_accessor) {
+                    baseline_marks = barplot.selectAll('.mg-bar-baseline')
+                            .data(data)
+                            .enter()
+                        .append('line')
+                        .classed('mg-bar-baseline', true);
+                }
+            }
+            // setup vars with the existing elements
+            // TODO: deal with changing data sets - i.e. more/less, different labels etc.
+            else {
+                barplot = svg.select('g.mg-barplot');
+
+                // move the barplot after the axes so it doesn't overlap
+                $(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
+
+                bars = barplot.selectAll('rect.mg-bar');
+
+                if (args.predictor_accessor) {
+                    predictor_bars = barplot.selectAll('.mg-bar-prediction');
+                }
+
+                if (args.baseline_accessor) {
+                    predictor_bars = barplot.selectAll('.mg-bar-baseline');
+                }
+            }
+
+
+            var appropriate_size;
+
+            if (this.is_vertical) {
+                appropriate_size = args.scales.X.rangeBand()/1.5;
+
+                if (perform_load_animation) {
+                    bars.attr('height', 0)
+                        .attr('y', args.scales.Y(0));
+                }
+
+                if (should_transition) {
+                    bars = bars.transition()
+                        .duration(transition_duration);
+                }
+
+                bars.attr('y', function(d) {
+                        return args.scales.Y(0) - (args.scales.Y(0) - args.scalefns.yf(d));
+                    })
+                    .attr('x', function(d) {
+                        return args.scalefns.xf(d) + appropriate_size/2;
+                    })
+                    .attr('width', appropriate_size)
+                    .attr('height', function(d){
+                        return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
+                    });
+
+                if (args.predictor_accessor) {
+                    var pp = args.predictor_proportion;
+                    var pp0 = pp-1;
+
+                    if (perform_load_animation) {
+                        predictor_bars.attr('height', 0)
+                            .attr('y', args.scales.Y(0));
+                    }
+
+                    if (should_transition) {
+                        predictor_bars = predictor_bars.transition()
+                            .duration(transition_duration);
+                    }
+
+                    // thick line  through bar;
+                    predictor_bars
+                        .attr('y', function(d) {
+                            return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
+                        })
+                        .attr('x', function(d){
+                            return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
+                        })
+                        .attr('width', appropriate_size/pp)
+                        .attr('height', function(d){
+                            return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
+                        });
+                }
+
+                if (args.baseline_accessor){
+
+                    if (perform_load_animation) {
+                        baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)})
+                    }
+
+                    if (should_transition) {
+                        baseline_marks = baseline_marks.transition()
+                            .duration(transition_duration);
+                    }
+
+                    baseline_marks
+                        .attr('x1', function(d){
+                            return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
+                        })
+                        .attr('x2', function(d){
+                            return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
+                        })
+                        .attr('y1', function(d){return args.scales.Y(d[args.baseline_accessor])})
+                        .attr('y2', function(d){return args.scales.Y(d[args.baseline_accessor])});
+
+                }
+
+            } else {
+                appropriate_size = args.scales.Y.rangeBand()/1.5;
+
+                if (perform_load_animation) {
+                    bars.attr('width', 0);
+                }
+
+                if (should_transition) {
+                    bars = bars.transition()
+                        .duration(transition_duration);
+                }
+
+                bars.attr('x', args.scales.X(0))
+                    .attr('y', function(d){
+                        return args.scalefns.yf(d) + appropriate_size/2;
+                    })
+                    .attr('height', appropriate_size)
+                    .attr('width', function(d){
+                        return args.scalefns.xf(d) - args.scales.X(0);
+                    });
+
+
+                if (args.predictor_accessor){
+                    var pp = args.predictor_proportion;
+                    var pp0 = pp-1;
+
+
+                    if (perform_load_animation) {
+                        predictor_bars.attr('width', 0);
+                    }
+
+                    if (should_transition) {
+                        predictor_bars = predictor_bars.transition()
+                            .duration(transition_duration);
+                    }
+
+                    // thick line  through bar;
+                    predictor_bars
                         .attr('x', args.scales.X(0))
                         .attr('y', function(d){
-                            return args.scalefns.yf(d) + pp0*appropriate_height/(pp*2) + appropriate_height/2;
+                            return args.scalefns.yf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
                         })
-                        .attr('height', appropriate_height/pp)
+                        .attr('height', appropriate_size/pp)
                         .attr('width', function(d){
                             return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
                         });
-            }
-            if (args.baseline_accessor){
-                g.selectAll('.mg-baseline')
-                    .data(data)
-                    .enter().append("line")
-                        .attr('class', 'mg-bar-baseline')
+                }
+
+                if (args.baseline_accessor){
+
+                    if (perform_load_animation) {
+                        baseline_marks
+                            .attr({x1: args.scales.X(0), x2: args.scales.X(0)})
+                    }
+
+                    if (should_transition) {
+                        baseline_marks = baseline_marks.transition()
+                            .duration(transition_duration);
+                    }
+
+                    baseline_marks
                         .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
                         .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
                         .attr('y1', function(d){
-                            return args.scalefns.yf(d)+appropriate_height/2-appropriate_height/pp + appropriate_height/2;
+                            return args.scalefns.yf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
                         })
                         .attr('y2', function(d){
-                            return args.scalefns.yf(d)+appropriate_height/2+appropriate_height/pp + appropriate_height/2;
+                            return args.scalefns.yf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
                         });
+                }
             }
+
             return this;
         }
 
@@ -3038,23 +3275,40 @@
                 .attr('class', 'mg-rollover-rect')
 
             //draw rollover bars
-            var bar = g.selectAll('.mg-bar')
-                .data(args.data[0])
-                    .enter().append("rect")
-                        .attr('class', 'bar-rollover')
-                        .attr('x', args.scales.X(0))
-                        .attr('y', args.scalefns.yf)
-                        .attr('width', args.width)
-                        .attr('height', args.scales.Y.rangeBand()+2)
-                        .attr('opacity', 0)
-                        .on('mouseover', this.rolloverOn(args))
-                        .on('mouseout', this.rolloverOff(args))
-                        .on('mousemove', this.rolloverMove(args));
+            var bar = g.selectAll(".mg-bar-rollover")
+                .data(args.data[0]).enter()
+                .append("rect")
+                  .attr('class', 'mg-bar-rollover');
+
+            if (this.is_vertical) {
+                bar.attr("x", args.scalefns.xf)
+                    .attr("y", function() {
+                        return args.scales.Y(0) - args.height;
+                    })
+                    .attr('width', args.scales.X.rangeBand())
+                    .attr('height', args.height)
+                    .attr('opacity', 0)
+                    .on('mouseover', this.rolloverOn(args))
+                    .on('mouseout', this.rolloverOff(args))
+                    .on('mousemove', this.rolloverMove(args));
+            } else {
+                bar.attr("x", args.scales.X(0))
+                    .attr("y", args.scalefns.yf)
+                    .attr('width', args.width)
+                    .attr('height', args.scales.Y.rangeBand()+2)
+                    .attr('opacity', 0)
+                    .on('mouseover', this.rolloverOn(args))
+                    .on('mouseout', this.rolloverOff(args))
+                    .on('mousemove', this.rolloverMove(args));
+            }
         }
 
         this.rolloverOn = function(args) {
             var svg = d3.select($(args.target).find('svg').get(0));
             var x_formatter = d3.time.format('%Y-%m-%d');
+            var label_accessor = this.is_vertical ? args.x_accessor : args.y_accessor;
+            var data_accessor = this.is_vertical ? args.y_accessor : args.x_accessor;
+            var label_units = this.is_vertical ? args.yax_units : args.xax_units;
 
             return function(d, i) {
                 svg.selectAll('text')
@@ -3090,14 +3344,14 @@
                     svg.select('.mg-active-datapoint')
                         .text(function() {
                             if(args.time_series) {
-                                var dd = new Date(+d[args.x_accessor]);
+                                var dd = new Date(+d[data_accessor]);
                                 dd.setDate(dd.getDate());
 
-                                return fmt(dd) + '  ' + args.yax_units
-                                    + num(d[args.y_accessor]);
+                                return fmt(dd) + '  ' + label_units
+                                    + num(d[label_accessor]);
                             }
                             else {
-                                return d[args.y_accessor] + ': ' + num(d[args.x_accessor]);
+                                return d[label_accessor] + ': ' + num(d[data_accessor]);
                             }
                         });
                 }
@@ -3493,7 +3747,7 @@
                     })
 
                     //if we don't have this date in our data object, add it and set it to zero
-                    if(!existing_o) {            
+                    if(!existing_o) {
                         o[args.x_accessor] = new Date(d);
                         o[args.y_accessor] = 0;
                         processed_data.push(o);
@@ -3502,7 +3756,7 @@
                     else {
                         processed_data.push(existing_o);
                     }
-                    
+
                     //add the last data item
                     if(Date.parse(d) == Date.parse(new Date(last[args.x_accessor]))) {
                         processed_data.push(last);
@@ -3536,13 +3790,13 @@
             if (typeof(our_data[0]) == 'object'){
                 // we are dealing with an array of objects. Extract the data value of interest.
                 extracted_data = our_data
-                    .map(function(d){ 
+                    .map(function(d){
                         return d[args.x_accessor];
                     });
             } else if (typeof(our_data[0]) == 'number'){
                 // we are dealing with a simple array of numbers. No extraction needed.
                 extracted_data = our_data;
-            } 
+            }
             else {
                 console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
                 return;
@@ -3589,14 +3843,17 @@
         'use strict';
         var extracted_data, processed_data={}, pd=[];
         var our_data = args.data[0];
+        var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
+        var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
+
         args.categorical_variables = [];
 
         if (args.binned == false){
             if (typeof(our_data[0]) == 'object') {
                 // we are dealing with an array of objects. Extract the data value of interest.
                 extracted_data = our_data
-                    .map(function(d){ 
-                        return d[args.y_accessor];
+                    .map(function(d){
+                        return d[label_accessor];
                     });
             } else {
                 extracted_data = our_data;
@@ -3606,20 +3863,20 @@
                 this_dp=extracted_data[i];
                 if (args.categorical_variables.indexOf(this_dp) == -1) args.categorical_variables.push(this_dp)
                 if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp]=0;
-                
+
                 processed_data[this_dp]+=1;
             }
             processed_data = Object.keys(processed_data).map(function(d){
                 var obj = {};
-                obj[args.x_accessor] = processed_data[d];
-                obj[args.y_accessor] = d;
+                obj[data_accessor] = processed_data[d];
+                obj[label_accessor] = d;
                 return obj;
             })
         } else {
             // nothing needs to really happen here.
             processed_data = our_data;
             args.categorical_variables = d3.set(processed_data.map(function(d){
-                return d[args.y_accessor];
+                return d[label_accessor];
             })).values();
             args.categorical_variables.reverse();
         }
@@ -3633,9 +3890,9 @@
         var x = data.map(function(d){return d[args.x_accessor]});
         var y = data.map(function(d){return d[args.y_accessor]});
         if (args.least_squares){
-            args.ls_line = least_squares(x,y);    
+            args.ls_line = least_squares(x,y);
         };
-        
+
         //args.lowess_line = lowess_robust(x,y, .5, 100)
         return this;
 
@@ -4022,9 +4279,39 @@
     }
 
 
+    /**
+        Print warning message to the console when a feature has been scheduled for removal
+
+        @author Dan de Havilland (github.com/dandehavilland)
+        @date 2014-12
+    */
     function warnDeprecation(message, untilVersion) {
       console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'));
       console.trace();
+    }
+
+    /**
+        Truncate a string to fit within an SVG text node
+        CSS text-overlow doesn't apply to SVG <= 1.2
+
+        @author Dan de Havilland (github.com/dandehavilland)
+        @date 2014-12-02
+    */
+    function truncate_text(textObj, textString, width) {
+      var bbox,
+        position = 0;
+
+      textObj.textContent = textString;
+      bbox = textObj.getBBox();
+
+      while (bbox.width > width) {
+        textObj.textContent = textString.slice(0, --position) + '...';
+        bbox = textObj.getBBox();
+
+        if (textObj.textContent === '...') {
+          break;
+        }
+      }
     }
 
     //call this to add a warning icon to a graph and log an error to the console

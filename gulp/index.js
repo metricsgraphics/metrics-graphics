@@ -79,6 +79,9 @@ gulp.task('build:js', ['clean'], function () {
           },
           exports: function() {
             return "MG";
+          },
+          namespace: function() {
+            return "MG";
           }
         }
       ))
