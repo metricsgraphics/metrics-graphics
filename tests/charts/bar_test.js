@@ -26,7 +26,7 @@ test('triggers callbacks when provided', function() {
     mousemoveCalled = false,
     mouseoutCalled = false,
 
-    params = $.extend({}, defaults, {
+    params = extend(defaults, {
       mouseover: function() {
         mouseoverCalled = true;
       },
@@ -50,33 +50,4 @@ test('triggers callbacks when provided', function() {
 
   bar.dispatchEvent(generateMouseEvent('mouseout'));
   equal(mouseoutCalled, true, 'mouseout was called');
-});
-
-// Can be removed in 2.x
-test('triggers callbacks when using 1.x-style method names', function() {
-  var mouseoverCalled = false,
-    mousemoveCalled = false,
-    mouseoutCalled = false,
-
-    params = $.extend({}, defaults, {
-      rollover_callback: function() {
-        mouseoverCalled = true;
-      },
-      rollout_callback: function() {
-        mouseoutCalled = true;
-      }
-    });
-
-  MG.data_graphic(params);
-
-  var bar = document.getElementsByClassName('bar-rollover')[0];
-
-  bar.dispatchEvent(generateMouseEvent('mouseover'));
-  equal(mouseoverCalled, true, 'rollover_callback was called');
-
-  bar.dispatchEvent(generateMouseEvent('mouseout'));
-  equal(mouseoutCalled, true, 'rollout_callback was called');
-
-  ok(window.deprecations.rollover_callback.warned, 'rollover_callback deprecation notice displayed');
-  ok(window.deprecations.rollout_callback.warned, 'rollout_callback deprecation notice displayed');
 });

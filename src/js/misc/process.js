@@ -101,7 +101,7 @@ function process_line(args) {
                 })
 
                 //if we don't have this date in our data object, add it and set it to zero
-                if(!existing_o) {            
+                if(!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
                     processed_data.push(o);
@@ -110,7 +110,7 @@ function process_line(args) {
                 else {
                     processed_data.push(existing_o);
                 }
-                
+
                 //add the last data item
                 if(Date.parse(d) == Date.parse(new Date(last[args.x_accessor]))) {
                     processed_data.push(last);
@@ -144,13 +144,13 @@ function process_histogram(args){
         if (typeof(our_data[0]) == 'object'){
             // we are dealing with an array of objects. Extract the data value of interest.
             extracted_data = our_data
-                .map(function(d){ 
+                .map(function(d){
                     return d[args.x_accessor];
                 });
         } else if (typeof(our_data[0]) == 'number'){
             // we are dealing with a simple array of numbers. No extraction needed.
             extracted_data = our_data;
-        } 
+        }
         else {
             console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
             return;
@@ -197,14 +197,17 @@ function process_categorical_variables(args){
     'use strict';
     var extracted_data, processed_data={}, pd=[];
     var our_data = args.data[0];
+    var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
+    var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
+
     args.categorical_variables = [];
 
     if (args.binned == false){
         if (typeof(our_data[0]) == 'object') {
             // we are dealing with an array of objects. Extract the data value of interest.
             extracted_data = our_data
-                .map(function(d){ 
-                    return d[args.y_accessor];
+                .map(function(d){
+                    return d[label_accessor];
                 });
         } else {
             extracted_data = our_data;
@@ -214,20 +217,20 @@ function process_categorical_variables(args){
             this_dp=extracted_data[i];
             if (args.categorical_variables.indexOf(this_dp) == -1) args.categorical_variables.push(this_dp)
             if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp]=0;
-            
+
             processed_data[this_dp]+=1;
         }
         processed_data = Object.keys(processed_data).map(function(d){
             var obj = {};
-            obj[args.x_accessor] = processed_data[d];
-            obj[args.y_accessor] = d;
+            obj[data_accessor] = processed_data[d];
+            obj[label_accessor] = d;
             return obj;
         })
     } else {
         // nothing needs to really happen here.
         processed_data = our_data;
         args.categorical_variables = d3.set(processed_data.map(function(d){
-            return d[args.y_accessor];
+            return d[label_accessor];
         })).values();
         args.categorical_variables.reverse();
     }
@@ -241,9 +244,9 @@ function process_point(args){
     var x = data.map(function(d){return d[args.x_accessor]});
     var y = data.map(function(d){return d[args.y_accessor]});
     if (args.least_squares){
-        args.ls_line = least_squares(x,y);    
+        args.ls_line = least_squares(x,y);
     };
-    
+
     //args.lowess_line = lowess_robust(x,y, .5, 100)
     return this;
 

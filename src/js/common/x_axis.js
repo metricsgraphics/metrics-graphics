@@ -1,7 +1,7 @@
 function x_rug(args) {
     'use strict';
-    var buffer_size = args.chart_type =='point' 
-        ? args.buffer / 2 
+    var buffer_size = args.chart_type =='point'
+        ? args.buffer / 2
         : args.buffer;
 
     var svg = d3.select($(args.target).find('svg').get(0));
@@ -55,7 +55,7 @@ function x_axis(args) {
     }
 
     if (args.chart_type == 'point') {
-        // figure out 
+        // figure out
         var min_size, max_size, min_color, max_color, size_range, color_range, size_domain, color_domain;
         if (args.color_accessor != null) {
             if (args.color_domain == null) {
@@ -86,11 +86,11 @@ function x_axis(args) {
 
             if (args.color_range == null){
                 if (args.color_type=='number') {
-                    color_range = ['blue', 'red'];    
+                    color_range = ['blue', 'red'];
                 } else {
                     color_range = null;
                 }
-                
+
             } else {
                 color_range = args.color_range;
             }
@@ -99,11 +99,11 @@ function x_axis(args) {
                 args.scales.color = d3.scale.linear()
                     .domain(color_domain)
                     .range(color_range)
-                    .clamp(true);    
+                    .clamp(true);
             } else {
-                args.scales.color = args.color_range != null 
-                    ? d3.scale.ordinal().range(color_range) 
-                    : (color_domain.length > 10 
+                args.scales.color = args.color_range != null
+                    ? d3.scale.ordinal().range(color_range)
+                    : (color_domain.length > 10
                         ? d3.scale.category20() : d3.scale.category10());
 
                 args.scales.color.domain(color_domain);
@@ -165,9 +165,9 @@ function x_axis(args) {
     else if(args.chart_type == 'histogram') {
         min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
         max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
-        
+
         //force override xax_format
-        //todo revisit to see if this makes sense        
+        //todo revisit to see if this makes sense
         args.xax_format = function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
@@ -230,8 +230,8 @@ function x_axis(args) {
         additional_buffer = 0;
     }
 
-    args.scales.X = (args.time_series) 
-        ? d3.time.scale() 
+    args.scales.X = (args.time_series)
+        ? d3.time.scale()
         : d3.scale.linear();
 
     args.scales.X
@@ -270,12 +270,12 @@ function x_axis(args) {
     if(args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
-            .attr('x1', 
+            .attr('x1',
                 (args.concise == false || args.xax_count == 0)
                     ? args.left + args.buffer
                     : (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
             )
-            .attr('x2', 
+            .attr('x2',
                 (args.concise == false || args.xax_count == 0)
                     ? args.width - args.right - args.buffer
                     : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
@@ -336,7 +336,7 @@ function x_axis(args) {
         //append year marker to x-axis group
         g = g.append('g')
             .classed('mg-year-marker', true)
-            .classed('mg-year-marker-small', args.use_small_class); 
+            .classed('mg-year-marker-small', args.use_small_class);
 
         g.selectAll('.mg-year-marker')
             .data(years).enter()
@@ -357,11 +357,63 @@ function x_axis(args) {
                     .text(function(d) {
                         return yformat(d);
                     });
-    };  
+    };
 
     if (args.x_rug){
         x_rug(args);
     }
+
+    return this;
+}
+
+function x_axis_categorical(args) {
+    var svg_width = args.width,
+      additional_buffer = 0;
+    if (args.chart_type == 'bar') {
+        additional_buffer = args.buffer + 5;
+
+        if (svg_width == null){
+          // we need to set a new width variable.
+        }
+    }
+
+    args.scales.X = d3.scale.ordinal()
+        .domain(args.categorical_variables.reverse())
+        .rangeRoundBands([args.left, args.width - args.right - args.buffer - additional_buffer]);
+
+
+    args.scalefns.xf = function(di) {
+        return args.scales.X(di[args.x_accessor]);
+    }
+
+    var svg = d3.select($(args.target).find('svg').get(0));
+    var $svg = $($(args.target).find('svg').get(0));
+
+    //remove the old y-axis, add new one
+    $svg.find('.mg-x-axis').remove();
+
+    var g = svg.append('g')
+        .classed('mg-x-axis', true)
+        .classed('mg-x-axis-small', args.use_small_class);
+
+    if (!args.x_axis) return this;
+
+    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
+
+    labels.attr('x', function(d) {
+            return args.scales.X(d) + args.scales.X.rangeBand() / 2
+                + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
+        })
+        .attr('y', args.height - args.bottom + args.buffer)
+        .attr('dy', '.35em')
+        .attr('text-anchor', 'middle')
+        .text(String);
+
+    labels.each(function(d, idx) {
+        var elem = this,
+            width = args.scales.X.rangeBand();
+        truncate_text(elem, d, width);
+    });
 
     return this;
 }
