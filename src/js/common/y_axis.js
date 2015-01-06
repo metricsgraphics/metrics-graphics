@@ -80,15 +80,15 @@ function y_axis(args) {
         }
     }
 
-    // the default cause is for the y-axis to start at 0, unless we explicitly want it
-    // to start at ab arbitrary number or from the data's minimum value
+    // the default case is for the y-axis to start at 0, unless we explicitly want it
+    // to start at an arbitrary number or from the data's minimum value
     if (min_y >= 0 && !args.min_y && !args.min_y_from_data){
         min_y = 0;
     }
 
     //if a min_y or max_y have been set, use those instead
     min_y = args.min_y ? args.min_y : min_y;
-    max_y = args.max_y ? args.max_y : max_y;
+    max_y = args.max_y ? args.max_y : max_y * args.inflator;
 
     if (args.y_scale_type != 'log') {
         // we are currently saying that if the min val > 0, set 0 as min y.
@@ -100,7 +100,6 @@ function y_axis(args) {
         }
     }
 
-    max_y = max_y * args.inflator;
     if (!args.min_y && args.min_y_from_data){
         min_y = min_y / args.inflator;    
     }
