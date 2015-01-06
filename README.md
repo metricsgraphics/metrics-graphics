@@ -58,6 +58,7 @@ To run tests, type:
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
 * [Interactive demo](http://metricsgraphicsjs.org/interactive-demo.htm)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
+* [Convenience functions](https://github.com/mozilla/metrics-graphics/wiki/Convenience-Functions)
 * [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
