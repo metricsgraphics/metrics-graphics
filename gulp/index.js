@@ -1,6 +1,7 @@
 // Gulp and plugins
 var
   gulp = require('gulp'),
+  umd    = require('gulp-umd'),
   rimraf = require('gulp-rimraf'),
   uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
@@ -38,8 +39,8 @@ var
     src + 'misc/process.js',
     src + 'misc/smoothers.js',
     src + 'misc/utility.js',
-    src + 'misc/error.js',
-    src + 'end.js'
+    src + 'misc/error.js'
+    //src + 'end.js'
   ];
 
 gulp.task('clean', function () {
@@ -58,7 +59,30 @@ gulp.task('clean', function () {
 // create 'metricsgraphics.js' and 'metricsgraphics.min.js' from source js
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
-    .pipe(concat('metricsgraphics.js'))
+    .pipe(concat({path:'metricsgraphics.js'}))
+    .pipe(umd(
+        {
+          dependencies:function() {
+            return [{
+              name: 'd3',
+              amd: 'd3',
+              cjs: 'd3',
+              global: 'd3',
+              param: 'd3'
+            },
+            {
+              name: 'jquery',
+              amd: 'jquery',
+              cjs: 'jquery',
+              global: 'jQuery',
+              param: '$'
+            }];
+          },
+          exports: function() {
+            return "MG";
+          }
+        }
+      ))
      .pipe(es6ModuleTranspiler({
         type: "plain"
     }))
