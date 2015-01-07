@@ -3620,13 +3620,6 @@
             if(args.legend_target)
                 $(args.legend_target).html('');
 
-            svg.append('rect')
-                .attr('class', 'mg-missing-pane')
-                .attr('x', args.left)
-                .attr('y', args.top)
-                .attr('width', args.width - (args.left * 2))
-                .attr('height', args.height - (args.top * 2));
-
             // add missing text
             svg.selectAll('.mg-missing-text').data([args.missing_text])
               .enter().append('text')
