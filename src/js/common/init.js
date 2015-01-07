@@ -37,7 +37,6 @@ function init(args) {
             || (svg.find('.mg-barplot').length > 0 && args.chart_type != 'bar')
         ) {
         $(args.target).empty();
-
     }
 
     //add svg if it doesn't already exist
