@@ -58,7 +58,7 @@ gulp.task('clean', function () {
 // create 'metricsgraphics.js' and 'metricsgraphics.min.js' from source js
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
-    .pipe(concat({path:'metricsgraphics.js'}))
+    .pipe(concat({path: 'metricsgraphics.js'}))
     .pipe(umd(
         {
           dependencies:function() {
@@ -84,9 +84,10 @@ gulp.task('build:js', ['clean'], function () {
             return "MG";
           }
         }
-      ))
-     .pipe(es6ModuleTranspiler({
-        type: "plain"
+    ))
+    .pipe(es6ModuleTranspiler({
+      type: 'plain',
+      sourceMaps: false
     }))
     .pipe(gulp.dest(dist))
     .pipe(rename('metricsgraphics.min.js'))
