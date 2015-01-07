@@ -2159,7 +2159,7 @@
             var confidence_area;
 
             //if it already exists, remove it
-            var $existing_band = $(args.target).find('svg path.mg-confidence-band').first();
+            var $existing_band = $(args.target).find('svg path.mg-confidence-band');
             if($existing_band.length > 0) {
                 $existing_band.remove();
             }
