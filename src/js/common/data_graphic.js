@@ -56,23 +56,7 @@ MG.data_graphic = function() {
         mouseover: null,
         show_rollover_text: true,
         show_confidence_band: null,   // given [l, u] shows a confidence at each point from l to u
-        xax_format: function(d) {
-            var df = d3.time.format('%b %d');
-            var pf = d3.formatPrefix(d);
-
-            // format as date or not, of course user can pass in
-            // a custom function if desired
-            switch($.type(args.data[0][0][args.x_accessor])) {
-                case 'date':
-                    return df(d);
-                    break;
-                case 'number':
-                    return pf.scale(d) + pf.symbol;
-                    break;
-                default:
-                    return d;
-            }
-        },
+        xax_format: null,             // xax_format is a function that formats the labels for the x axis.
         area: true,
         chart_type: 'line',
         data: [],
