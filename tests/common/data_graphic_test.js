@@ -17,9 +17,9 @@ test('correctly aliases callbacks when using 1.x-style method names', function()
       }
     };
 
-  data_graphic(params);
+  MG.data_graphic(params);
 
-  var bar = document.getElementsByClassName('bar-rollover')[0];
+  var bar = document.getElementsByClassName('mg-bar-rollover')[0];
 
   bar.dispatchEvent(generateMouseEvent('mouseover'));
   equal(mouseoverCalled, true, 'rollover_callback was called');
@@ -27,6 +27,6 @@ test('correctly aliases callbacks when using 1.x-style method names', function()
   bar.dispatchEvent(generateMouseEvent('mouseout'));
   equal(mouseoutCalled, true, 'rollout_callback was called');
 
-  ok(window.deprecations.rollover_callback.warned, 'rollover_callback deprecation notice displayed');
-  ok(window.deprecations.rollout_callback.warned, 'rollout_callback deprecation notice displayed');
+  ok(MG.deprecations.rollover_callback.warned, 'rollover_callback deprecation notice displayed');
+  ok(MG.deprecations.rollout_callback.warned, 'rollout_callback deprecation notice displayed');
 });
