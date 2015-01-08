@@ -2502,7 +2502,7 @@
                     d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
                         .each(function(d, i) {
                             d3.select(this).on('mouseover')(d,i);
-                    })
+                        })
                 }
 
                 svg.selectAll('text')
@@ -2572,7 +2572,7 @@
                     d3.selectAll('.roll_' + id)
                         .each(function(d, i) {
                             d3.select(this).on('mouseout')(d);
-                    });
+                        })
                 }
 
                 //remove active datapoint text on mouse out
@@ -2687,7 +2687,13 @@
             var bar = g.selectAll('.mg-bar')
                 .data(args.data[0])
                     .enter().append('g')
-                        .attr('class', 'mg-rollover-rects')
+                        .attr('class', function(d, i) {
+                            if(args.linked) {
+                                return 'mg-rollover-rects roll_' + i;
+                            } else {
+                                return 'mg-rollover-rects';
+                            }
+                        })
                         .attr('transform', function(d) {
                             return "translate(" + (args.scales.X(d[args.x_accessor])) + "," + 0 + ")";
                         });
@@ -2750,6 +2756,17 @@
                 d3.selectAll($(args.target).find(' svg .mg-bar :eq(' + i + ')'))
                     .classed('active', true);
 
+                //trigger mouseover on all matching bars
+                if(args.linked && !MG.globals.link) {
+                    MG.globals.link = true;
+
+                    //trigger mouseover on matching bars in .linked charts
+                    d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
+                        .each(function(d) { //use existing i
+                            d3.select(this).on('mouseover')(d,i);
+                        })
+                }
+                
                 //update rollover text
                 if (args.show_rollover_text) {
                     svg.select('.mg-active-datapoint')
@@ -2779,6 +2796,16 @@
             var svg = d3.select($(args.target).find('svg').get(0));
 
             return function(d, i) {
+                if(args.linked && MG.globals.link) {
+                    MG.globals.link = false;
+
+                    //trigger mouseout on matching bars in .linked charts
+                    d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
+                        .each(function(d) { //use existing i
+                            d3.select(this).on('mouseout')(d,i);
+                        })
+                }
+                
                 //reset active bar
                 d3.selectAll($(args.target).find('svg .mg-bar :eq(' + i + ')'))
                     .classed('active', false);

@@ -688,6 +688,7 @@ $(document).ready(function() {
         height: trunk.height,
         right: trunk.right,
         target: '#histogram3',
+        linked: true,
         y_extended_ticks: true,
         x_accessor:'val1',
         mouseover: function(d, i) {
@@ -706,6 +707,7 @@ $(document).ready(function() {
         data: fourth,
         chart_type: 'histogram',
         width: trunk.width,
+        linked: true,
         height: trunk.height,
         right: trunk.right,
         target: '#histogram4',

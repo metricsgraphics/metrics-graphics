@@ -353,7 +353,7 @@ charts.line = function(args) {
                 d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
-                })
+                    })
             }
 
             svg.selectAll('text')
@@ -423,7 +423,7 @@ charts.line = function(args) {
                 d3.selectAll('.roll_' + id)
                     .each(function(d, i) {
                         d3.select(this).on('mouseout')(d);
-                });
+                    })
             }
 
             //remove active datapoint text on mouse out
