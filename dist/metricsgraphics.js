@@ -1174,9 +1174,6 @@
     function y_axis_categorical(args) {
         // first, come up with y_axis
         var svg_height = args.height;
-        if (args.chart_type == 'bar' && svg_height == null){
-            // we need to set a new height variable.
-        }
 
         args.scales.Y = d3.scale.ordinal()
             .domain(args.categorical_variables)
@@ -1420,6 +1417,26 @@
                     var pf = d3.formatPrefix(f);
                     return args.xax_units + pf.scale(f) + pf.symbol;
                 }
+            }
+        }
+
+        //if data set is of length 1, expand the range so that we can build the x-axis
+        //of course, a line chart doesn't make sense in this case, so the preferred
+        //method would be to check for said object's length and, if appropriate, 
+        //change the chart type to 'point'
+        if(min_x == max_x) {
+            if(min_x instanceof Date) {
+                var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
+                var tomorrow = MG.clone(min_x).setDate(min_x.getDate() + 1);
+
+                min_x = yesterday;
+                max_x = tomorrow;
+            } else if(typeof min_x == 'number') {
+                min_x = min_x - 1;
+                max_x = max_x + 1;
+            } else if(typeof min_x == 'string') {
+                min_x = Number(min_x) - 1;
+                max_x = Number(max_x) + 1;
             }
         }
 
@@ -2410,7 +2427,10 @@
                                 }
                             })
                             .attr('x', function(d, i) {
-                                if (i == 0) {
+                                //if data set is of length 1
+                                if(xf.length == 1) {
+                                    return args.left + args.buffer;
+                                } else if (i == 0) {
                                     return xf[i].toFixed(2);
                                 } else {
                                     return ((xf[i-1] + xf[i])/2).toFixed(2);
@@ -2422,13 +2442,14 @@
                                     : args.top;
                             })
                             .attr('width', function(d, i) {
-                                if (i == 0) {
+                                //if data set is of length 1
+                                if(xf.length == 1) {
+                                    return args.width - args.right - args.buffer;
+                                } else if (i == 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
-                                }
-                                else if (i == xf.length - 1) {
+                                } else if (i == xf.length - 1) {
                                     return ((xf[i] - xf[i-1]) / 2).toFixed(2);
-                                }
-                                else {
+                                } else {
                                     return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
                                 }
                             })
@@ -2617,9 +2638,14 @@
             bar.append('rect')
                 .attr('x', 1)
                 .attr('width', function(d, i) {
-                    return (args.scalefns.xf(args.data[0][1])
+                    if(args.data[0].length == 1) {
+                            return (args.scalefns.xf(args.data[0][0]) 
+                                - args.bar_margin).toFixed(2)
+                    } else {
+                        return (args.scalefns.xf(args.data[0][1])
                         - args.scalefns.xf(args.data[0][0])
                         - args.bar_margin).toFixed(2);
+                    }
                 })
                 .attr('height', function(d) {
                     if(d[args.y_accessor] == 0)
@@ -2670,11 +2696,14 @@
                 .attr('x', 1)
                 .attr('y', 0)
                 .attr('width', function(d, i) {
-                    if (i != args.data[0].length - 1) {
+                    //if data set is of length 1
+                    if(args.data[0].length == 1) {
+                        return (args.scalefns.xf(args.data[0][0]) 
+                            - args.bar_margin).toFixed(2);
+                    } else if (i != args.data[0].length - 1) {
                         return (args.scalefns.xf(args.data[0][i + 1])
                             - args.scalefns.xf(d)).toFixed(2);
-                    }
-                    else {
+                    } else {
                         return (args.scalefns.xf(args.data[0][1])
                             - args.scalefns.xf(args.data[0][0])).toFixed(2);
                     }

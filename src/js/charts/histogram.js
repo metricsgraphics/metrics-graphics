@@ -36,9 +36,14 @@ charts.histogram = function(args) {
         bar.append('rect')
             .attr('x', 1)
             .attr('width', function(d, i) {
-                return (args.scalefns.xf(args.data[0][1])
+                if(args.data[0].length == 1) {
+                        return (args.scalefns.xf(args.data[0][0]) 
+                            - args.bar_margin).toFixed(2)
+                } else {
+                    return (args.scalefns.xf(args.data[0][1])
                     - args.scalefns.xf(args.data[0][0])
                     - args.bar_margin).toFixed(2);
+                }
             })
             .attr('height', function(d) {
                 if(d[args.y_accessor] == 0)
@@ -89,11 +94,14 @@ charts.histogram = function(args) {
             .attr('x', 1)
             .attr('y', 0)
             .attr('width', function(d, i) {
-                if (i != args.data[0].length - 1) {
+                //if data set is of length 1
+                if(args.data[0].length == 1) {
+                    return (args.scalefns.xf(args.data[0][0]) 
+                        - args.bar_margin).toFixed(2);
+                } else if (i != args.data[0].length - 1) {
                     return (args.scalefns.xf(args.data[0][i + 1])
                         - args.scalefns.xf(d)).toFixed(2);
-                }
-                else {
+                } else {
                     return (args.scalefns.xf(args.data[0][1])
                         - args.scalefns.xf(args.data[0][0])).toFixed(2);
                 }
