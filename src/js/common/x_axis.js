@@ -64,7 +64,6 @@ function x_axis(args) {
 
     // this is for some charts that might need additional buffer, such as the bar chart.
 
-
     args.scales.X = (args.time_series)
         ? d3.time.scale()
         : d3.scale.linear();
@@ -90,12 +89,8 @@ function x_axis(args) {
         mg_add_x_label(g, args);
     }
 
-
-
     mg_add_x_ticks(g, args);
     mg_add_x_tick_labels(g, args);
-
-    //are we adding years to x-axis
 
     if (args.x_rug){
         x_rug(args);
@@ -306,17 +301,18 @@ function mg_default_xax_format(args){
         if (diff < 60){
             main_time_format = d3.time.format('%m:%S');
             time_frame = 'seconds';
-        } else if (diff/(1000*60*60) <= 24){
-            main_time_format = d3.time.format('%H:%m')
-        } else if (diff/(100*60*60) <= 24*4){
-            main_time_format = d3.time.format('%H:%m')
-            console.log(args.target);
+        } else if (diff/(60*60) <= 24){
+            main_time_format = d3.time.format('%H:%m');
+            time_frame = 'less-than-day';
+        } else if (diff/(60*60) <= 24*4){
+            main_time_format = d3.time.format('%H:%m');
+            time_frame = 'four-days';
         } else {
-            main_time_format = d3.time.format('%b %d')
+            main_time_format = d3.time.format('%b %d');
+            time_frame = 'default';
         }
-        console.log(diff);
     }
-    
+
     args.processed.main_x_time_format = main_time_format;
     args.processed.x_time_frame = time_frame;
 
@@ -375,6 +371,8 @@ function mg_add_x_ticks(g, args){
 }
 
 function mg_add_x_tick_labels(g, args){
+    var min_x=args.processed.min_x, max_x=args.processed.max_x;
+
     g.selectAll('.mg-xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
@@ -386,21 +384,32 @@ function mg_add_x_tick_labels(g, args){
                     return args.xax_units + args.xax_format(d);
                 })
 
-    if (args.time_series && args.show_years) {
-        var min_x;
-        var max_x;
+    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
 
-        for (var i=0; i<args.data.length; i++) {
-            last_i = args.data[i].length-1;
-
-            if(args.data[i][0][args.x_accessor] < min_x || !min_x)
-                min_x = args.data[i][0][args.x_accessor];
-            if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
-                max_x = args.data[i][last_i][args.x_accessor];
+        var secondary_marks, secondary_function, yformat;
+        var time_frame = args.processed.x_time_frame;
+        console.log(time_frame);
+        switch(time_frame){
+            case 'seconds':
+                secondary_function = d3.time.days;
+                yformat = d3.time.format('%I %p');
+                break;
+            case 'less-than-day':
+                secondary_function = d3.time.days;
+                yformat = d3.time.format('%b %d');
+                break;
+            case 'four-days':
+                secondary_function = d3.time.days;
+                yformat = d3.time.format('%b %d');
+                break;
+            default:
+                secondary_function = d3.time.years;
+                yformat = d3.time.format('%Y');
         }
 
-        var years = d3.time.years(min_x, max_x);
 
+        var years = secondary_function(min_x, max_x);
+       
         if (years.length == 0){
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
@@ -411,15 +420,17 @@ function mg_add_x_tick_labels(g, args){
             .classed('mg-year-marker', true)
             .classed('mg-year-marker-small', args.use_small_class);
 
-        g.selectAll('.mg-year-marker')
-            .data(years).enter()
-                .append('line')
-                    .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
-                    .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
-                    .attr('y1', args.top)
-                    .attr('y2', args.height - args.bottom);
+        if (time_frame == 'default'){
+            g.selectAll('.mg-year-marker')
+                .data(years).enter()
+                    .append('line')
+                        .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
+                        .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
+                        .attr('y1', args.top)
+                        .attr('y2', args.height - args.bottom);    
+        }
+        
 
-        var yformat = d3.time.format('%Y');
         g.selectAll('.mg-year-marker')
             .data(years).enter()
                 .append('text')

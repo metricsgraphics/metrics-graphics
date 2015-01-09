@@ -69,7 +69,8 @@ MG.data_graphic = function() {
         markers: null,                // sets the marker lines
         scalefns: {},
         scales: {},
-        show_years: true,
+        show_years: true,              // This will be eventually deprecated.
+        show_secondary_x_label: true,
         target: '#viz',
         interpolate: 'cardinal',       // interpolation method to use when rendering lines
         custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
