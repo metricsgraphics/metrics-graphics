@@ -228,6 +228,9 @@ function x_axis(args) {
             min_x = Number(min_x) - 1;
             max_x = Number(max_x) + 1;
         }
+        
+        //force xax_count to be 2
+        args.xax_count = 2;
     }
 
     min_x = args.min_x ? args.min_x : min_x;
