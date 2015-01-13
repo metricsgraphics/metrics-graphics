@@ -95,7 +95,7 @@ $(document).ready(function() {
         d.value = Math.round(d.value);
         return d;
     });
-    
+
     MG.data_graphic({
         data: hist1,
         target: '#time-hist',
@@ -299,7 +299,8 @@ $(document).ready(function() {
             linked: true,
             y_extended_ticks: true,
             x_accessor: 'date',
-            y_accessor: ['value', 'value2', 'value3']
+            y_accessor: ['value', 'value2', 'value3'],
+            aggregate_rollover: true
         });
     });
 

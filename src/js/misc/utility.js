@@ -172,3 +172,47 @@ function truncate_text(textObj, textString, width) {
     }
   }
 }
+
+
+/**
+  Wrap the contents of a text node to a specific width
+
+  Adapted from bl.ocks.org/mbostock/7555321
+
+  @author Mike Bostock
+  @author Dan de Havilland
+  @date 2015-01-14
+*/
+function wrapText(text, width, token, tspanAttrs) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(token || /\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = 0,
+        tspan = text.text(null)
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", dy + "em")
+          .attr(tspanAttrs || {});
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (width == null || tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text
+            .append("tspan")
+            .attr("x", 0)
+            .attr("y", ++lineNumber * lineHeight + dy + "em")
+            .attr(tspanAttrs || {})
+            .text(word);
+      }
+    }
+  });
+}

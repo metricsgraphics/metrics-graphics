@@ -119,6 +119,24 @@ test('We have only one set of rollovers for multiple lines', function() {
     equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists');
 });
 
+test('We use the rect-style rollovers when `aggregate_rolloveres == true`', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [[{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+               [{'date': new Date('2014-01-01'), 'value': 120},
+               {'date': new Date('2014-03-01'), 'value': 180}]],
+        aggregate_rollover: true
+    };
+
+    MG.data_graphic(params);
+
+    // ensure rollover returns aggregated result data
+    equal(document.querySelectorAll('.mg-voronoi').length, 0, 'Voronoi rollover is not generated');
+    equal(document.querySelectorAll('.mg-rollover-rect').length, 1, 'Rect rollover is generated');
+});
+
+
 test('There are as many lines as data series (one)', function() {
     var params = {
         target: '#qunit-fixture',
@@ -166,7 +184,7 @@ test('No zombie lines when we update a chart with fewer lines', function() {
                [{'date': new Date('2014-01-01'), 'value': 120},
                {'date': new Date('2014-03-01'), 'value': 180}]]
     };
-    
+
     var params2 = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-01-01'), 'value': 12},
