@@ -299,13 +299,13 @@ function mg_default_xax_format(args){
     if (args.time_series){
         var diff = (args.processed.max_x - args.processed.min_x)/(1000);
         if (diff < 60){
-            main_time_format = d3.time.format('%m:%S');
+            main_time_format = d3.time.format('%M:%S');
             time_frame = 'seconds';
         } else if (diff/(60*60) <= 24){
-            main_time_format = d3.time.format('%H:%m');
-            time_frame = 'less-than-day';
+            main_time_format = d3.time.format('%H:%M');
+            time_frame = 'less-than-a-day';
         } else if (diff/(60*60) <= 24*4){
-            main_time_format = d3.time.format('%H:%m');
+            main_time_format = d3.time.format('%H:%M');
             time_frame = 'four-days';
         } else {
             main_time_format = d3.time.format('%b %d');
@@ -388,13 +388,12 @@ function mg_add_x_tick_labels(g, args){
 
         var secondary_marks, secondary_function, yformat;
         var time_frame = args.processed.x_time_frame;
-        console.log(time_frame);
         switch(time_frame){
             case 'seconds':
                 secondary_function = d3.time.days;
                 yformat = d3.time.format('%I %p');
                 break;
-            case 'less-than-day':
+            case 'less-than-a-day':
                 secondary_function = d3.time.days;
                 yformat = d3.time.format('%b %d');
                 break;
@@ -496,10 +495,10 @@ function mg_find_min_max_x(args){
     args.processed.min_x = min_x;
     args.processed.max_x = max_x;
 
-    if (!args.xax_format && args.chart_type=='line') args.xax_format      = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type=='line') args.xax_format       = mg_default_xax_format(args);
     if (!args.xax_format && args.chart_type=='point') args.xax_format      = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type=='histogram') args.xax_format = mg_default_histogram_xax_format(args);
-    if (!args.xax_format && args.chart_type=='bar') args.xax_format       = mg_default_bar_xax_format(args);
+    if (!args.xax_format && args.chart_type=='histogram') args.xax_format  = mg_default_histogram_xax_format(args);
+    if (!args.xax_format && args.chart_type=='bar') args.xax_format        = mg_default_bar_xax_format(args);
 
 
     args.x_axis_negative = false;

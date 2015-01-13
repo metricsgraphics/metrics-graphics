@@ -315,8 +315,21 @@ charts.line = function(args) {
     }
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
-        var x_formatter = d3.time.format('%Y-%m-%d');
+        var svg = d3.select($(args.target).find('svg').get(0));        
+        var fmt;
+        switch(args.processed.x_time_frame){
+            case 'seconds':
+                fmt = d3.time.format('%b %e, %Y  %H:%M:%S');
+                break;
+            case 'less-than-a-day':
+                fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                break;
+            case 'four-days':
+                fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                break;
+            default:
+                fmt = d3.time.format('%b %e, %Y');
+        }
 
         return function(d, i) {
             //show circle on mouse-overed rect
@@ -358,7 +371,7 @@ charts.line = function(args) {
                 })
                 .attr('opacity', 0.3);
 
-            var fmt = d3.time.format('%b %e, %Y');
+            //var fmt = d3.time.format('%b %e, %Y');
 
             if (args.format == 'count') {
                 var num = function(d_) {
