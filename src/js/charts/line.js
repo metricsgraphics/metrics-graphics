@@ -278,7 +278,10 @@ charts.line = function(args) {
                             }
                         })
                         .attr('x', function(d, i) {
-                            if (i == 0) {
+                            //if data set is of length 1
+                            if(xf.length == 1) {
+                                return args.left + args.buffer;
+                            } else if (i == 0) {
                                 return xf[i].toFixed(2);
                             } else {
                                 return ((xf[i-1] + xf[i])/2).toFixed(2);
@@ -290,13 +293,14 @@ charts.line = function(args) {
                                 : args.top;
                         })
                         .attr('width', function(d, i) {
-                            if (i == 0) {
+                            //if data set is of length 1
+                            if(xf.length == 1) {
+                                return args.width - args.right - args.buffer;
+                            } else if (i == 0) {
                                 return ((xf[i+1] - xf[i]) / 2).toFixed(2);
-                            }
-                            else if (i == xf.length - 1) {
+                            } else if (i == xf.length - 1) {
                                 return ((xf[i] - xf[i-1]) / 2).toFixed(2);
-                            }
-                            else {
+                            } else {
                                 return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
                             }
                         })
@@ -362,7 +366,7 @@ charts.line = function(args) {
                 d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
                     .each(function(d, i) {
                         d3.select(this).on('mouseover')(d,i);
-                })
+                    })
             }
 
             svg.selectAll('text')
@@ -432,7 +436,7 @@ charts.line = function(args) {
                 d3.selectAll('.roll_' + id)
                     .each(function(d, i) {
                         d3.select(this).on('mouseout')(d);
-                });
+                    })
             }
 
             //remove active datapoint text on mouse out

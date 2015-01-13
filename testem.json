@@ -4,6 +4,7 @@
     "node_modules/jquery/dist/jquery.js",
     "node_modules/d3/d3.js",
 
+    "src/js/MG.js",
     "src/js/common/data_graphic.js",
     "src/js/common/chart_title.js",
     "src/js/common/y_axis.js",

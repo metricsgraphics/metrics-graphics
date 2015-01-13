@@ -187,12 +187,11 @@ function mg_point_add_color_scale(args){
             } else {
                 color_range = null;
             }
-
         } else {
             color_range = args.color_range;
         }
 
-        if (args.color_type=='number') {
+    if (args.color_type=='number') {
             args.scales.color = d3.scale.linear()
                 .domain(color_domain)
                 .range(color_range)
@@ -488,9 +487,33 @@ function mg_find_min_max_x(args){
         });
 
     }
+    //if data set is of length 1, expand the range so that we can build the x-axis
+    //of course, a line chart doesn't make sense in this case, so the preferred
+    //method would be to check for said object's length and, if appropriate, 
+    //change the chart type to 'point'
+    if(min_x == max_x) {
+        if(min_x instanceof Date) {
+            var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
+            var tomorrow = MG.clone(min_x).setDate(min_x.getDate() + 1);
+
+            min_x = yesterday;
+            max_x = tomorrow;
+        } else if(typeof min_x == 'number') {
+            min_x = min_x - 1;
+            max_x = max_x + 1;
+        } else if(typeof min_x == 'string') {
+            min_x = Number(min_x) - 1;
+            max_x = Number(max_x) + 1;
+        }
+        
+        //force xax_count to be 2
+        args.xax_count = 2;
+    }
+
 
     min_x = args.min_x ? args.min_x : min_x;
     max_x = args.max_x ? args.max_x : max_x;
+    args.x_axis_negative = false;
 
     args.processed.min_x = min_x;
     args.processed.max_x = max_x;

@@ -289,9 +289,6 @@ function y_axis(args) {
 function y_axis_categorical(args) {
     // first, come up with y_axis
     var svg_height = args.height;
-    if (args.chart_type == 'bar' && svg_height == null){
-        // we need to set a new height variable.
-    }
 
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
