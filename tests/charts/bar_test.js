@@ -1,4 +1,4 @@
-module('Bar chart');
+module('bar');
 
 var target = '#qunit-fixture',
   defaults = {
