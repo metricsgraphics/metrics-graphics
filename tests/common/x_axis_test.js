@@ -129,3 +129,15 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     
     equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot on the x-axis');
 });
+
+test('args.x_extended_ticks', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        x_extended_ticks: true
+    };
+
+    MG.data_graphic(params);
+    ok(document.querySelector('.mg-extended-x-ticks'), 'X-axis extended ticks exist');
+});

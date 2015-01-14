@@ -176,7 +176,7 @@ function mg_point_add_color_scale(args) {
             color_domain = args.color_domain;
         }
 
-        if(args.color_range == null){
+        if(args.color_range == null) {
             if(args.color_type=='number') {
                 color_range = ['blue', 'red'];
             } else {
@@ -210,11 +210,11 @@ function mg_point_add_size_scale(args) {
     var min_size, max_size, size_domain, size_range;
     if(args.size_accessor != null) {
         if(args.size_domain == null) {
-            min_size = d3.min(args.data[0], function(d){
+            min_size = d3.min(args.data[0], function(d) {
                 return d[args.size_accessor];
             });
 
-            max_size = d3.max(args.data[0], function(d){
+            max_size = d3.max(args.data[0], function(d) {
                 return d[args.size_accessor];
             });
 
@@ -254,7 +254,6 @@ function mg_add_x_label(g, args) {
             return args.x_label;
         })
 }
-
 
 function mg_default_bar_xax_format(args) {
     if(args.xax_format)
@@ -302,10 +301,10 @@ function mg_default_xax_format(args) {
         if(diff < 60) {
             main_time_format = d3.time.format('%M:%S');
             time_frame = 'seconds';
-        } else if (diff/(60*60) <= 24){
+        } else if (diff / (60 * 60) <= 24) {
             main_time_format = d3.time.format('%H:%M');
             time_frame = 'less-than-a-day';
-        } else if (diff/(60*60) <= 24*4){
+        } else if (diff / (60 * 60) <= 24 * 4) {
             main_time_format = d3.time.format('%H:%M');
             time_frame = 'four-days';
         } else {
@@ -431,7 +430,7 @@ function mg_add_x_tick_labels(g, args) {
             .classed('mg-year-marker', true)
             .classed('mg-year-marker-small', args.use_small_class);
 
-        if(time_frame == 'default'){
+        if(time_frame == 'default') {
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
                     .append('line')
@@ -470,11 +469,11 @@ function mg_find_min_max_x(args) {
                 max_x = args.data[i][last_i][args.x_accessor];
         }
     } else if(args.chart_type == 'point') {
-        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
-        min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
+        max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
+        min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
     } else if(args.chart_type == 'histogram') {
-        min_x = d3.min(args.data[0], function(d){return d[args.x_accessor]});
-        max_x = d3.max(args.data[0], function(d){return d[args.x_accessor]});
+        min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
+        max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
 
     } else if(args.chart_type == 'bar') {
         min_x = 0; 
@@ -532,14 +531,14 @@ function mg_find_min_max_x(args) {
     args.x_axis_negative = false;
 
     if (!args.time_series) {
-        if (args.processed.min_x < 0){
-            args.processed.min_x = args.processed.min_x  - (args.processed.max_x * (args.inflator-1));
+        if (args.processed.min_x < 0) {
+            args.processed.min_x = args.processed.min_x  - (args.processed.max_x * (args.inflator - 1));
             args.x_axis_negative = true;
         }
     }
 
     if (args.chart_type == 'bar') {
-        args.additional_buffer = args.buffer*5;
+        args.additional_buffer = args.buffer * 5;
     } else {
         args.additional_buffer = 0;
     }
