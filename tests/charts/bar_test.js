@@ -17,37 +17,37 @@ var target = '#qunit-fixture',
   };
 
 test('Correct number of bars are added', function() {
-  MG.data_graphic(defaults);
-  equal($('#qunit-fixture svg .mg-bar').length, 3, 'Should have 3 bars');
+    MG.data_graphic(defaults);
+    equal(document.querySelectorAll('.mg-bar').length, 3, 'Should have 3 bars');
 });
 
 test('Triggers callbacks when provided', function() {
-  var mouseoverCalled = false,
-    mousemoveCalled = false,
-    mouseoutCalled = false,
+    var mouseoverCalled = false,
+        mousemoveCalled = false,
+        mouseoutCalled = false,
 
     params = extend(defaults, {
-      mouseover: function() {
-        mouseoverCalled = true;
-      },
-      mousemove: function() {
-        mousemoveCalled = true;
-      },
-      mouseout: function() {
-        mouseoutCalled = true;
-      }
+        mouseover: function() {
+            mouseoverCalled = true;
+        },
+        mousemove: function() {
+            mousemoveCalled = true;
+        },
+        mouseout: function() {
+            mouseoutCalled = true;
+        }
     });
 
-  MG.data_graphic(params);
+    MG.data_graphic(params);
 
-  var bar = document.getElementsByClassName('mg-bar-rollover')[0];
+    var bar = document.getElementsByClassName('mg-bar-rollover')[0];
 
-  bar.dispatchEvent(generateMouseEvent('mouseover'));
-  equal(mouseoverCalled, true, 'mouseover was called');
+    bar.dispatchEvent(generateMouseEvent('mouseover'));
+    equal(mouseoverCalled, true, 'mouseover was called');
 
-  bar.dispatchEvent(generateMouseEvent('mousemove'));
-  equal(mousemoveCalled, true, 'mousemove was called');
+    bar.dispatchEvent(generateMouseEvent('mousemove'));
+    equal(mousemoveCalled, true, 'mousemove was called');
 
-  bar.dispatchEvent(generateMouseEvent('mouseout'));
-  equal(mouseoutCalled, true, 'mouseout was called');
+    bar.dispatchEvent(generateMouseEvent('mouseout'));
+    equal(mouseoutCalled, true, 'mouseout was called');
 });
