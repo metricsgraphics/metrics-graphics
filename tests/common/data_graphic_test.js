@@ -12,6 +12,7 @@ test('Required arguments are set', function() {
     ok(params.width, 'args.width is set');
     ok(params.height, 'args.height is set');
     ok(params.data, 'args.data is set');
+    ok(params.target, 'args.target is set');
 });
 
 // Can be removed in 2.x

@@ -6,11 +6,13 @@
 
     "src/js/MG.js",
     "src/js/common/data_graphic.js",
+    "src/js/common/bootstrap_tooltip_popover.js",
     "src/js/common/chart_title.js",
     "src/js/common/y_axis.js",
     "src/js/common/x_axis.js",
     "src/js/common/init.js",
     "src/js/common/markers.js",
+    "src/js/layout/bootstrap_dropdown.js",
     "src/js/layout/button.js",
     "src/js/charts/line.js",
     "src/js/charts/histogram.js",
