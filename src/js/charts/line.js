@@ -27,7 +27,7 @@ charts.line = function(args) {
         var confidence_area;
 
         //if it already exists, remove it
-        var $existing_band = $(args.target).find('svg path.mg-confidence-band');
+        var $existing_band = $(args.target).find('.mg-confidence-band');
         if($existing_band.length > 0) {
             $existing_band.remove();
         }
@@ -63,11 +63,11 @@ charts.line = function(args) {
         var legend = '';
         var this_data;
 
-        for(var i=args.data.length-1; i>=0; i--) {
+        for(var i = args.data.length - 1; i >= 0; i--) {
             this_data = args.data[i];
 
             //override increment if we have a custom increment series
-            var line_id = i+1;
+            var line_id = i + 1;
             if(args.custom_line_color_map.length > 0) {
                 line_id = args.custom_line_color_map[i];
             }
@@ -91,13 +91,12 @@ charts.line = function(args) {
                                 return (args.transition_on_update) ? 1000 : 0;
                             })
                             .attr('d', area(args.data[i]));
-                }
-                else { //otherwise, add the area
+                } else { //otherwise, add the area
                     svg.append('path')
                         .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]));
                 }
-            } else if ($area.length > 0) {
+            } else if($area.length > 0) {
               $area.remove();
             }
 
@@ -125,8 +124,7 @@ charts.line = function(args) {
                         .transition()
                             .duration(1000)
                             .attr('d', line(args.data[i]));
-                }
-                else { //or just add the line
+                } else { //or just add the line
                     svg.append('path')
                         .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]));
@@ -185,13 +183,12 @@ charts.line = function(args) {
         //increment from 1... unless we have a custom increment series
         var line_id = 1;
 
-        for(var i=0;i<args.data.length;i++) {
-            for(var j=0;j<args.data[i].length;j++) {
+        for(var i = 0; i < args.data.length; i++) {
+            for(var j = 0; j < args.data[i].length; j++) {
                 //if custom line-color map is set, use that instead of line_id
                 if(args.custom_line_color_map.length > 0) {
                     args.data[i][j]['line_id'] = args.custom_line_color_map[i];
-                }
-                else {
+                } else {
                     args.data[i][j]['line_id'] = line_id;
                 }
             }
@@ -237,8 +234,7 @@ charts.line = function(args) {
                                         : formatter(v);
 
                                 return 'mg-line' + d['line_id'] + '-color ' + 'roll_' + id;
-                            }
-                            else {
+                            } else {
                                 return 'mg-line' + d['line_id'] + '-color';
                             }
                         })
@@ -272,8 +268,7 @@ charts.line = function(args) {
                                         : formatter(v);
 
                                 return 'mg-line' + line_id + '-color ' + 'roll_' + id;
-                            }
-                            else {
+                            } else {
                                 return 'mg-line' + line_id + '-color';
                             }
                         })
@@ -281,7 +276,7 @@ charts.line = function(args) {
                             //if data set is of length 1
                             if(xf.length == 1) {
                                 return args.left + args.buffer;
-                            } else if (i == 0) {
+                            } else if(i == 0) {
                                 return xf[i].toFixed(2);
                             } else {
                                 return ((xf[i-1] + xf[i])/2).toFixed(2);
@@ -296,9 +291,9 @@ charts.line = function(args) {
                             //if data set is of length 1
                             if(xf.length == 1) {
                                 return args.width - args.right - args.buffer;
-                            } else if (i == 0) {
+                            } else if(i == 0) {
                                 return ((xf[i+1] - xf[i]) / 2).toFixed(2);
-                            } else if (i == xf.length - 1) {
+                            } else if(i == xf.length - 1) {
                                 return ((xf[i] - xf[i-1]) / 2).toFixed(2);
                             } else {
                                 return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
@@ -377,15 +372,14 @@ charts.line = function(args) {
 
             //var fmt = d3.time.format('%b %e, %Y');
 
-            if (args.format == 'count') {
+            if(args.format == 'count') {
                 var num = function(d_) {
                     var is_float = d_ % 1 != 0;
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
-            }
-            else {
+            } else {
                 var num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
@@ -394,7 +388,7 @@ charts.line = function(args) {
             }
 
             //update rollover text
-            if (args.show_rollover_text) {
+            if(args.show_rollover_text) {
                 svg.select('.mg-active-datapoint')
                     .text(function() {
                         if(args.time_series) {
