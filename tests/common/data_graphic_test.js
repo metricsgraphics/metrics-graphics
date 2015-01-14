@@ -1,7 +1,21 @@
 module('data_graphic');
 
+test('Required arguments are set', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-02'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+
+    ok(params.width, 'args.width is set');
+    ok(params.height, 'args.height is set');
+    ok(params.data, 'args.data is set');
+});
+
 // Can be removed in 2.x
-test('correctly aliases callbacks when using 1.x-style method names', function() {
+test('Correctly aliases callbacks when using 1.x-style method names', function() {
   var mouseoverCalled = false,
     mouseoutCalled = false,
 

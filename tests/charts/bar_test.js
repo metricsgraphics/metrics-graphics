@@ -1,4 +1,4 @@
-module('Bar Chart');
+module('Bar chart');
 
 var target = '#qunit-fixture',
   defaults = {
@@ -16,12 +16,12 @@ var target = '#qunit-fixture',
     }]
   };
 
-test('correct number of bars', function() {
+test('Correct number of bars are added', function() {
   MG.data_graphic(defaults);
-  equal($('#qunit-fixture svg .mg-bar').length, 3, 'should have 3 bars');
+  equal($('#qunit-fixture svg .mg-bar').length, 3, 'Should have 3 bars');
 });
 
-test('triggers callbacks when provided', function() {
+test('Triggers callbacks when provided', function() {
   var mouseoverCalled = false,
     mousemoveCalled = false,
     mouseoutCalled = false,
