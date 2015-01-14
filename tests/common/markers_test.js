@@ -55,7 +55,7 @@ test('All baselines are added', function() {
 });
 
 test('Markers\' texts are correctly added', function() {
-    var markers = [{ 
+    var markers = [{
             'date': new Date('2014-02-01'),
             'label': '1st Milestone'
         }, {
