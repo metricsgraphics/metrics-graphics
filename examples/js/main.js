@@ -97,6 +97,27 @@ $(document).ready(function() {
         height:torso.height*4/5
     });
 
+
+    // fake some discrete data:
+
+    var hist1 = fake_data(25,60).map(function(d){
+        d.Value = Math.round(d.Value);
+        return d;
+    });
+    
+    MG.data_graphic({
+        data: hist1,
+        target: '#time-hist',
+        title: 'Histograms can be time series as well',
+        x_accessor:'date',
+        y_accessor:'Value',
+        chart_type: 'histogram',
+        width: torso.width,
+        binned: true,
+        height:torso.height*4/5
+    });
+
+
     //few observations
     d3.json('data/missing-y.json', function(data) {
         data = MG.convert.date(data, 'date');

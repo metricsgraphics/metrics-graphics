@@ -326,7 +326,15 @@ function mg_default_xax_format(args){
                 return args.processed.main_x_time_format(d);
                 break;
             case 'number':
-                return pf.scale(d) + pf.symbol;
+                if (d < 1.0) {
+                    //don't scale tiny values
+                    return args.yax_units + d3.round(d, args.decimals);
+                }
+                else {
+                    var pf = d3.formatPrefix(d);
+                    return args.xax_units + pf.scale(d) + pf.symbol;
+                }
+                //return pf.scale(d) + pf.symbol;
                 break;
             default:
                 return d;
@@ -520,7 +528,7 @@ function mg_find_min_max_x(args){
 
     if (!args.xax_format && args.chart_type=='line') args.xax_format       = mg_default_xax_format(args);
     if (!args.xax_format && args.chart_type=='point') args.xax_format      = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type=='histogram') args.xax_format  = mg_default_histogram_xax_format(args);
+    if (!args.xax_format && args.chart_type=='histogram') args.xax_format  = mg_default_xax_format(args);
     if (!args.xax_format && args.chart_type=='bar') args.xax_format        = mg_default_bar_xax_format(args);
 
 
