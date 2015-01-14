@@ -83,7 +83,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor) {
-                predictor_bars = barplot.selectAll('.mg-bar-baseline');
+                baseline_marks = barplot.selectAll('.mg-bar-baseline');
             }
         }
 
