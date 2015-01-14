@@ -95,6 +95,30 @@ test('Rollovers work for multiple lines', function() {
     ok(document.querySelector('.mg-voronoi'), 'Rollovers exist');
 });
 
+test('We have only one set of rollovers for single lines', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+    equal(document.querySelectorAll('.mg-rollover-rect').length, 1, 'One set of rollovers exists');
+});
+
+test('We have only one set of rollovers for multiple lines', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [[{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+               [{'date': new Date('2014-01-01'), 'value': 120},
+               {'date': new Date('2014-03-01'), 'value': 180}]]
+    };
+
+    MG.data_graphic(params);
+    equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists');
+});
+
 test('There are as many lines as data series (one)', function() {
     var params = {
         target: '#qunit-fixture',
