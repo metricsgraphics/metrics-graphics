@@ -164,3 +164,16 @@ test('args.yax_units', function() {
     MG.data_graphic(params);
     equal(document.querySelector('.mg-y-axis text').innerHTML[0], '$', 'Y-axis units are $');
 });
+
+test('When args.max_y is set, ignore inflator', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        max_y: 50,
+    };
+
+    MG.data_graphic(params);
+    var nodes = document.querySelectorAll('.mg-y-axis text');
+    equal(nodes[nodes.length - 1].innerHTML, 50, 'Maximum y-axis value is 50');
+});
