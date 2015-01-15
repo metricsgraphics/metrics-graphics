@@ -139,7 +139,7 @@ $(document).ready(function() {
             mouseover: function(d, i) {
                 var df = d3.time.format('%b %d, %Y');
                 var date = df(d.date);
-                var y_val = (d.value == 0) ? 'no data' : d.value;
+                var y_val = (d.value === 0) ? 'no data' : d.value;
 
                 $('#missing-y svg .mg-active-datapoint')
                     .text(date +  '   ' + y_val);
@@ -182,7 +182,7 @@ $(document).ready(function() {
             target: '#fake_users1',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "No X Axis",
@@ -294,7 +294,7 @@ $(document).ready(function() {
             for (var j=0; j < data[i].length; j++){
                 if (i === 2 && all_the_data[j].date < new Date('2014-02-01')){
                     // pass
-                } else if (i==1 && all_the_data[j].date > new Date('2014-03-22')) {
+                } else if (i === 1 && all_the_data[j].date > new Date('2014-03-22')) {
                     // pass
                 } else {
                     all_the_data[j]['value'+(i+1)] = data[i][j].value;
@@ -1012,7 +1012,7 @@ $(document).ready(function() {
     addScatterplotSizeAndColor('light');
 
     function addScatterplotSizeAndColor(theme) {
-        var color_range = (theme == 'light') ? null : ['white','yellow'];
+        var color_range = (theme === 'light') ? null : ['white','yellow'];
 
         //call data_graphic again since we need to use a different color_range for the dark theme
         d3.json('data/points1.json', function(data) {
