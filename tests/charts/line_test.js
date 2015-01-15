@@ -157,3 +157,24 @@ test('There are as many lines as data series (two) on multiple calls to an exist
 
     equal(document.querySelectorAll('.mg-main-line').length, 2, 'Two lines exist');
 });
+
+test('No zombie lines when we update a chart with fewer lines', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [[{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+               [{'date': new Date('2014-01-01'), 'value': 120},
+               {'date': new Date('2014-03-01'), 'value': 180}]]
+    };
+    
+    var params2 = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(params2);
+
+    equal(document.querySelectorAll('.mg-main-line').length, 1, 'One line exists');
+});
