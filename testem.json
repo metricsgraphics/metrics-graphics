@@ -12,6 +12,7 @@
     "src/js/common/x_axis.js",
     "src/js/common/init.js",
     "src/js/common/markers.js",
+    "src/js/common/window_listeners.js",
     "src/js/layout/bootstrap_dropdown.js",
     "src/js/layout/button.js",
     "src/js/charts/line.js",

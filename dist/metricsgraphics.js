@@ -39,6 +39,8 @@
             buffer: 8,                    // the buffer between the actual chart area and the margins
             width: 350,                   // the width of the entire graphic
             height: 220,                  // the height of the entire graphic
+            full_width: false,            // sets the graphic width to be the width of the parent element and resizes dynamically
+            full_height: false,           // sets the graphic width to be the width of the parent element and resizes dynamically
             small_height_threshold: 120,  // the height threshold for when smaller text appears
             small_width_threshold: 160,   // the width  threshold for when smaller text appears
             small_text: false,            // coerces small text regardless of graphic size
@@ -185,21 +187,21 @@
         else if(args.chart_type == 'point'){
             var a = merge_with_defaults(defaults.point, defaults.all);
             args = merge_with_defaults(args, a);
-            charts.point(args).mainPlot().markers().rollover();
+            charts.point(args).mainPlot().markers().rollover().windowListeners();
         }
         else if(args.chart_type == 'histogram'){
             var a = merge_with_defaults(defaults.histogram, defaults.all);
             args = merge_with_defaults(args, a);
-            charts.histogram(args).mainPlot().markers().rollover();
+            charts.histogram(args).mainPlot().markers().rollover().windowListeners();
         }
         else if (args.chart_type == 'bar'){
             var a = merge_with_defaults(defaults.bar, defaults.all);
             args = merge_with_defaults(args, a);
-            charts.bar(args).mainPlot().markers().rollover();
+            charts.bar(args).mainPlot().markers().rollover().windowListeners();
         }
         else {
             args = merge_with_defaults(args, defaults.all);
-            charts.line(args).markers().mainPlot().rollover();
+            charts.line(args).markers().mainPlot().rollover().windowListeners();
         }
 
         return args.data;
@@ -1768,6 +1770,14 @@
         var svg_width = args.width;
         var svg_height = args.height;
 
+        if (args.full_width){
+            // get parent element.
+            var svg_width = get_width(args.target);
+        }
+        if (args.fill_height){
+            var svg_height = get_height(args.target);
+        }
+
         if (args.chart_type=='bar' && svg_height == null){
             svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
         }
@@ -1780,7 +1790,6 @@
             ) {
             $(args.target).empty();
         }
-
         //add svg if it doesn't already exist
         //using trim on html rather than :empty to ignore white spaces if they exist
         if($.trim($(args.target).html()) == '') {
@@ -1792,14 +1801,23 @@
                     .attr('height', svg_height);
         }
 
+        args.width = svg_width;
+        args.height = svg_height;
+
         var svg = d3.select(args.target).selectAll('svg');
 
         //has the width or height changed?
-        if(args.width != Number(svg.attr('width')))
-            svg.attr('width', args.width)
+        if(svg_width != Number(svg.attr('width')))
+            svg.attr('width', svg_width)
 
-        if(args.height != Number(svg.attr('height')))
-            svg.attr('height', args.height)
+        if(svg_height != Number(svg.attr('height')))
+            svg.attr('height', svg_height)
+
+        // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
+        svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
+
+        if (args.full_width || args.full_height)
+            svg.attr('preserveAspectRatio', 'xMinYMin meet');
 
         // remove missing class
         svg.classed('mg-missing', false);
@@ -1933,6 +1951,24 @@
         return this;
     }
 
+    function mg_window_listeners(args){
+        mg_if_aspect_ratio_resize_svg(args);
+    }
+
+    function mg_if_aspect_ratio_resize_svg(args){
+        // If we've asked the svg to fill a div, resize with div.
+        if (args.full_width || args.full_height){
+            window.addEventListener('resize', function(){
+                // var svg_width = 
+                // var svg_height = 
+                // args.width = svg_width;
+                // args.height = svg_height;
+                d3.select(args.target).select('svg')
+                    .attr('width', get_width(args.target));
+            }, true);
+        }
+
+    }
     /*!
      * Bootstrap v3.3.1 (http://getbootstrap.com)
      * Copyright 2011-2014 Twitter, Inc.
@@ -2695,6 +2731,11 @@
             }
         }
 
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
+            return this;
+        }
+
         this.init(args);
         return this;
     }
@@ -2820,6 +2861,7 @@
                 .on('mouseover', this.rolloverOn(args))
                 .on('mouseout', this.rolloverOff(args))
                 .on('mousemove', this.rolloverMove(args));
+            return this;
         }
 
         this.rolloverOn = function(args) {
@@ -2925,6 +2967,11 @@
                     args.mousemove(d, i);
                 }
             }
+        }
+
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
+            return this;
         }
 
         this.init(args);
@@ -3152,6 +3199,11 @@
         }
 
         this.update = function(args) {
+            return this;
+        }
+
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
             return this;
         }
 
@@ -3455,6 +3507,7 @@
                     .on('mouseout', this.rolloverOff(args))
                     .on('mousemove', this.rolloverMove(args));
             }
+            return this;
         }
 
         this.rolloverOn = function(args) {
@@ -3540,6 +3593,11 @@
                     args.mousemove(d, i);
                 }
             }
+        }
+
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
+            return this;
         }
 
         this.init(args);
@@ -4045,14 +4103,14 @@
 
     }
 
-    function add_ls(args){
+    function add_ls(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
         var data = args.data[0];
-        //var min_x = d3.min(data, function(d){return d[args.x_accessor]});
-        //var max_x = d3.max(data, function(d){return d[args.x_accessor]});
         var min_x = args.scales.X.ticks(args.xax_count)[0];
         var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length-1];
-        
+
+        $(args.target).find('.mg-least-squares-line').remove();
+
         svg.append('svg:line')
             .attr('x1', args.scales.X(min_x))
             .attr('x2', args.scales.X(max_x))
@@ -4325,6 +4383,18 @@
             return d;
         });
         return data;
+    }
+
+    function get_pixel_dimension(target, dimension){
+        return Number(d3.select(target).style(dimension).replace(/px/g, ''));
+    }
+
+    function get_width(target){
+        return get_pixel_dimension(target, 'width');
+    }
+
+    function get_height(target){
+        return get_pixel_dimension(target, 'height');
     }
 
     var each = function(obj, iterator, context) {

@@ -293,6 +293,7 @@ charts.bar = function(args) {
                 .on('mouseout', this.rolloverOff(args))
                 .on('mousemove', this.rolloverMove(args));
         }
+        return this;
     }
 
     this.rolloverOn = function(args) {
@@ -378,6 +379,11 @@ charts.bar = function(args) {
                 args.mousemove(d, i);
             }
         }
+    }
+
+    this.windowListeners = function() {
+        mg_window_listeners(this.args);
+        return this;
     }
 
     this.init(args);

@@ -19,6 +19,18 @@ MG.convert.number = function(data, accessor){
     return data;
 }
 
+function get_pixel_dimension(target, dimension){
+    return Number(d3.select(target).style(dimension).replace(/px/g, ''));
+}
+
+function get_width(target){
+    return get_pixel_dimension(target, 'width');
+}
+
+function get_height(target){
+    return get_pixel_dimension(target, 'height');
+}
+
 var each = function(obj, iterator, context) {
     // yanked out of underscore
     if (obj == null) return obj;

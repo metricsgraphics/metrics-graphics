@@ -26,12 +26,12 @@ function init(args) {
     var svg_width = args.width;
     var svg_height = args.height;
 
-    if (args.fill_width){
+    if (args.full_width){
         // get parent element.
-        var svg_width = Number(d3.select(args.target).style('width').replace(/px/g, ''));
+        var svg_width = get_width(args.target);
     }
     if (args.fill_height){
-
+        var svg_height = get_height(args.target);
     }
 
     if (args.chart_type=='bar' && svg_height == null){
@@ -72,7 +72,7 @@ function init(args) {
     // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
-    if (args.fill_width || args.fill_height)
+    if (args.full_width || args.full_height)
         svg.attr('preserveAspectRatio', 'xMinYMin meet');
 
     // remove missing class

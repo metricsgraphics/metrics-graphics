@@ -27,6 +27,8 @@ MG.data_graphic = function() {
         buffer: 8,                    // the buffer between the actual chart area and the margins
         width: 350,                   // the width of the entire graphic
         height: 220,                  // the height of the entire graphic
+        full_width: false,            // sets the graphic width to be the width of the parent element and resizes dynamically
+        full_height: false,           // sets the graphic width to be the width of the parent element and resizes dynamically
         small_height_threshold: 120,  // the height threshold for when smaller text appears
         small_width_threshold: 160,   // the width  threshold for when smaller text appears
         small_text: false,            // coerces small text regardless of graphic size
@@ -173,21 +175,21 @@ MG.data_graphic = function() {
     else if(args.chart_type == 'point'){
         var a = merge_with_defaults(defaults.point, defaults.all);
         args = merge_with_defaults(args, a);
-        charts.point(args).mainPlot().markers().rollover();
+        charts.point(args).mainPlot().markers().rollover().windowListeners();
     }
     else if(args.chart_type == 'histogram'){
         var a = merge_with_defaults(defaults.histogram, defaults.all);
         args = merge_with_defaults(args, a);
-        charts.histogram(args).mainPlot().markers().rollover();
+        charts.histogram(args).mainPlot().markers().rollover().windowListeners();
     }
     else if (args.chart_type == 'bar'){
         var a = merge_with_defaults(defaults.bar, defaults.all);
         args = merge_with_defaults(args, a);
-        charts.bar(args).mainPlot().markers().rollover();
+        charts.bar(args).mainPlot().markers().rollover().windowListeners();
     }
     else {
         args = merge_with_defaults(args, defaults.all);
-        charts.line(args).markers().mainPlot().rollover();
+        charts.line(args).markers().mainPlot().rollover().windowListeners();
     }
 
     return args.data;

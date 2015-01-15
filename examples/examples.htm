@@ -10,9 +10,9 @@
     <meta property='og:url' content='http://metricsgraphicsjs.org/' />
     <meta property='og:site_name' content='MetricsGraphics.js' />
 
-    <link href='images/og-logo.png' rel='icon' type='image/png' />
+    <link rel='icon' type='image/png' href='images/og-logo.png' />
 
-    <title>MetricsGraphics.js</title>
+    <title>MetricsGraphics.js (DEV)</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
@@ -25,6 +25,7 @@
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js' charset='utf-8'></script>
+
     <script src='../dist/metricsgraphics.js'></script>
     <script src='js/main.js'></script>
 
@@ -51,8 +52,8 @@
                 <li class='divider'>|</li>
                 <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
                 <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
-                <li class='float-right no-padding'><a class='examples-options' href='dev.htm'>DEV</a></li>
-                <li class='float-right'><a class='selected examples-options' href='examples.htm'>RELEASE</a></li>
+                <li class='float-right no-padding'><a class='selected examples-options' href='dev.htm'>DEV</a></li>
+                <li class='float-right'><a class='examples-options' href='examples.htm'>RELEASE</a></li>
             </ul>
 
             <img src='images/logo.svg' id='logo' class='svg' />
@@ -88,9 +89,9 @@
                 </div>
             </div>
 
-            <div class='row trunk-section'>
+             <div class='row trunk-section'>
                 <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Smart Time Formatting</h2>
+                    <h2 class='trunk-title'>Automatic Time Formatting</h2>
                     <p>MetricsGraphics.js has sensible defaults for time-based axis labelling and rollovers, whether you're displaying each second or each month.</p>
                 </div>
                 <div class='col-lg-8'>
@@ -101,6 +102,25 @@
                     <div class='row'>
                         <div class='col-lg-6 text-center' id='time3'></div>
                         <div class='col-lg-6 text-center' id='time4'></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-4'>
+                    <h2 class='trunk-title'>Static or Dynamic Sizing</h2>
+                    <p>
+                        You can automatically set the width or height of a data graphic to fit its parent element. When done the graphic will rescale to fit the size of the parent element while preserving its aspect ratio.
+                    </p>
+                    <p>
+                        Try resizing this window.
+                    </p>
+                </div>
+                <div class='col-lg-8'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center'>
+                            <div style='width:100%' id='aspect1'></div>
+                        </div>
                     </div>
                 </div>
             </div>

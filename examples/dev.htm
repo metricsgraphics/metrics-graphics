@@ -36,6 +36,7 @@
     <script src='../src/js/common/x_axis.js'></script>
     <script src='../src/js/common/init.js'></script>
     <script src='../src/js/common/markers.js'></script>
+    <script src='../src/js/common/window_listeners.js'></script>
     <script src='../src/js/layout/bootstrap_dropdown.js'></script>
     <script src='../src/js/layout/button.js'></script>
     <script src='../src/js/charts/line.js'></script>
@@ -48,6 +49,7 @@
     <script src='../src/js/misc/smoothers.js'></script>
     <script src='../src/js/misc/utility.js'></script>
     <script src='../src/js/misc/error.js'></script>
+
     <!-- dev end -->
 
 
@@ -133,12 +135,17 @@
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Static or Dynamic Sizing</h2>
-                    <p></p>
+                    <p>
+                        You can automatically set the width or height of a data graphic to fit its parent element. When done the graphic will rescale to fit the size of the parent element while preserving its aspect ratio.
+                    </p>
+                    <p>
+                        Try resizing this window.
+                    </p>
                 </div>
                 <div class='col-lg-8'>
                     <div class='row'>
-                        <div class='col-lg-12 text-center' style='outline:1px solid gray'>
-                            <div style='width:70%;height:400px' id='aspect1'></div>
+                        <div class='col-lg-12 text-center'>
+                            <div style='width:100%' id='aspect1'></div>
                         </div>
                     </div>
                 </div>

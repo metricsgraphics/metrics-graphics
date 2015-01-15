@@ -222,6 +222,11 @@ charts.point = function(args) {
         return this;
     }
 
+    this.windowListeners = function() {
+        mg_window_listeners(this.args);
+        return this;
+    }
+
     this.init(args);
 
     return this;
