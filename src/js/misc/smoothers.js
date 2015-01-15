@@ -3,9 +3,9 @@ function add_ls(args) {
     var data = args.data[0];
     var min_x = args.scales.X.ticks(args.xax_count)[0];
     var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length-1];
-    
+
     $(args.target).find('.mg-least-squares-line').remove();
-    
+
     svg.append('svg:line')
         .attr('x1', args.scales.X(min_x))
         .attr('x2', args.scales.X(max_x))
