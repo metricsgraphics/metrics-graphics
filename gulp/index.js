@@ -42,6 +42,9 @@ var
     src + 'misc/error.js'
   ];
 
+
+gulp.task('default', ['jslint', 'test', 'build:js']);
+
 gulp.task('clean', function () {
   return gulp.src([dist + 'metricsgraphics.js', dist + 'metricsgraphics.min.js'], {read: false})
     .pipe(rimraf());

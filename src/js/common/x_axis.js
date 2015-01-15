@@ -380,9 +380,6 @@ function mg_add_x_ticks(g, args) {
 }
 
 function mg_add_x_tick_labels(g, args) {
-    var min_x = args.processed.min_x, 
-        max_x = args.processed.max_x;
-
     g.selectAll('.mg-xax-labels')
         .data(args.scales.X.ticks(args.xax_count)).enter()
             .append('text')
@@ -418,7 +415,7 @@ function mg_add_x_tick_labels(g, args) {
                 yformat = d3.time.format('%Y');
         }
 
-        var years = secondary_function(min_x, max_x);
+        var years = secondary_function(args.processed.min_x, args.processed.max_x);
        
         if(years.length == 0) {
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
@@ -430,7 +427,7 @@ function mg_add_x_tick_labels(g, args) {
             .classed('mg-year-marker', true)
             .classed('mg-year-marker-small', args.use_small_class);
 
-        if(time_frame == 'default') {
+        if(time_frame === 'default') {
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
                     .append('line')
@@ -523,12 +520,7 @@ function mg_find_min_max_x(args) {
     args.processed.min_x = min_x;
     args.processed.max_x = max_x;
 
-    if (!args.xax_format && args.chart_type == 'line') args.xax_format       = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'point') args.xax_format      = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'histogram') args.xax_format  = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'bar') args.xax_format        = mg_default_bar_xax_format(args);
-
-    args.x_axis_negative = false;
+    mg_select_xax_format(args);
 
     if (!args.time_series) {
         if (args.processed.min_x < 0) {
@@ -542,4 +534,11 @@ function mg_find_min_max_x(args) {
     } else {
         args.additional_buffer = 0;
     }
+}
+
+function mg_select_xax_format(args){
+    if (!args.xax_format && args.chart_type == 'line') args.xax_format       = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type == 'point') args.xax_format      = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type == 'histogram') args.xax_format  = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type == 'bar') args.xax_format        = mg_default_bar_xax_format(args);
 }

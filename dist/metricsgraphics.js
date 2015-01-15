@@ -1577,9 +1577,6 @@
     }
 
     function mg_add_x_tick_labels(g, args) {
-        var min_x = args.processed.min_x, 
-            max_x = args.processed.max_x;
-
         g.selectAll('.mg-xax-labels')
             .data(args.scales.X.ticks(args.xax_count)).enter()
                 .append('text')
@@ -1615,7 +1612,7 @@
                     yformat = d3.time.format('%Y');
             }
 
-            var years = secondary_function(min_x, max_x);
+            var years = secondary_function(args.processed.min_x, args.processed.max_x);
            
             if(years.length == 0) {
                 var first_tick = args.scales.X.ticks(args.xax_count)[0];
@@ -1627,7 +1624,7 @@
                 .classed('mg-year-marker', true)
                 .classed('mg-year-marker-small', args.use_small_class);
 
-            if(time_frame == 'default') {
+            if(time_frame === 'default') {
                 g.selectAll('.mg-year-marker')
                     .data(years).enter()
                         .append('line')
@@ -1720,12 +1717,7 @@
         args.processed.min_x = min_x;
         args.processed.max_x = max_x;
 
-        if (!args.xax_format && args.chart_type == 'line') args.xax_format       = mg_default_xax_format(args);
-        if (!args.xax_format && args.chart_type == 'point') args.xax_format      = mg_default_xax_format(args);
-        if (!args.xax_format && args.chart_type == 'histogram') args.xax_format  = mg_default_xax_format(args);
-        if (!args.xax_format && args.chart_type == 'bar') args.xax_format        = mg_default_bar_xax_format(args);
-
-        args.x_axis_negative = false;
+        mg_select_xax_format(args);
 
         if (!args.time_series) {
             if (args.processed.min_x < 0) {
@@ -1739,6 +1731,13 @@
         } else {
             args.additional_buffer = 0;
         }
+    }
+
+    function mg_select_xax_format(args){
+        if (!args.xax_format && args.chart_type == 'line') args.xax_format       = mg_default_xax_format(args);
+        if (!args.xax_format && args.chart_type == 'point') args.xax_format      = mg_default_xax_format(args);
+        if (!args.xax_format && args.chart_type == 'histogram') args.xax_format  = mg_default_xax_format(args);
+        if (!args.xax_format && args.chart_type == 'bar') args.xax_format        = mg_default_bar_xax_format(args);
     }
 
     function init(args) {
@@ -2269,7 +2268,7 @@
             var confidence_area;
 
             //if it already exists, remove it
-            var $existing_band = $(args.target).find('svg path.mg-confidence-band');
+            var $existing_band = $(args.target).find('.mg-confidence-band');
             if($existing_band.length > 0) {
                 $existing_band.remove();
             }
@@ -2305,11 +2304,11 @@
             var legend = '';
             var this_data;
 
-            for(var i=args.data.length-1; i>=0; i--) {
+            for(var i = args.data.length - 1; i >= 0; i--) {
                 this_data = args.data[i];
 
                 //override increment if we have a custom increment series
-                var line_id = i+1;
+                var line_id = i + 1;
                 if(args.custom_line_color_map.length > 0) {
                     line_id = args.custom_line_color_map[i];
                 }
@@ -2333,13 +2332,12 @@
                                     return (args.transition_on_update) ? 1000 : 0;
                                 })
                                 .attr('d', area(args.data[i]));
-                    }
-                    else { //otherwise, add the area
+                    } else { //otherwise, add the area
                         svg.append('path')
                             .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                             .attr('d', area(args.data[i]));
                     }
-                } else if ($area.length > 0) {
+                } else if($area.length > 0) {
                   $area.remove();
                 }
 
@@ -2367,8 +2365,7 @@
                             .transition()
                                 .duration(1000)
                                 .attr('d', line(args.data[i]));
-                    }
-                    else { //or just add the line
+                    } else { //or just add the line
                         svg.append('path')
                             .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                             .attr('d', line(args.data[i]));
@@ -2427,13 +2424,12 @@
             //increment from 1... unless we have a custom increment series
             var line_id = 1;
 
-            for(var i=0;i<args.data.length;i++) {
-                for(var j=0;j<args.data[i].length;j++) {
+            for(var i = 0; i < args.data.length; i++) {
+                for(var j = 0; j < args.data[i].length; j++) {
                     //if custom line-color map is set, use that instead of line_id
                     if(args.custom_line_color_map.length > 0) {
                         args.data[i][j]['line_id'] = args.custom_line_color_map[i];
-                    }
-                    else {
+                    } else {
                         args.data[i][j]['line_id'] = line_id;
                     }
                 }
@@ -2479,8 +2475,7 @@
                                             : formatter(v);
 
                                     return 'mg-line' + d['line_id'] + '-color ' + 'roll_' + id;
-                                }
-                                else {
+                                } else {
                                     return 'mg-line' + d['line_id'] + '-color';
                                 }
                             })
@@ -2514,8 +2509,7 @@
                                             : formatter(v);
 
                                     return 'mg-line' + line_id + '-color ' + 'roll_' + id;
-                                }
-                                else {
+                                } else {
                                     return 'mg-line' + line_id + '-color';
                                 }
                             })
@@ -2523,7 +2517,7 @@
                                 //if data set is of length 1
                                 if(xf.length == 1) {
                                     return args.left + args.buffer;
-                                } else if (i == 0) {
+                                } else if(i == 0) {
                                     return xf[i].toFixed(2);
                                 } else {
                                     return ((xf[i-1] + xf[i])/2).toFixed(2);
@@ -2538,9 +2532,9 @@
                                 //if data set is of length 1
                                 if(xf.length == 1) {
                                     return args.width - args.right - args.buffer;
-                                } else if (i == 0) {
+                                } else if(i == 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
-                                } else if (i == xf.length - 1) {
+                                } else if(i == xf.length - 1) {
                                     return ((xf[i] - xf[i-1]) / 2).toFixed(2);
                                 } else {
                                     return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
@@ -2619,15 +2613,14 @@
 
                 //var fmt = d3.time.format('%b %e, %Y');
 
-                if (args.format == 'count') {
+                if(args.format == 'count') {
                     var num = function(d_) {
                         var is_float = d_ % 1 != 0;
                         var n = d3.format("0,000");
                         d_ = is_float ? d3.round(d_, args.decimals) : d_;
                         return n(d_);
                     }
-                }
-                else {
+                } else {
                     var num = function(d_) {
                         var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                         var n = d3.format(fmt_string);
@@ -2636,7 +2629,7 @@
                 }
 
                 //update rollover text
-                if (args.show_rollover_text) {
+                if(args.show_rollover_text) {
                     svg.select('.mg-active-datapoint')
                         .text(function() {
                             if(args.time_series) {
