@@ -6,7 +6,7 @@ test('Chart\'s width is set correctly on subsequent calls to existing chart', fu
         data: [{'date': new Date('2014-11-01'), 'value': 12},
                {'date': new Date('2014-11-02'), 'value': 18}],
     };
-    
+
     var params = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-11-01'), 'value': 12},
@@ -17,7 +17,7 @@ test('Chart\'s width is set correctly on subsequent calls to existing chart', fu
 
     MG.data_graphic(params_0);
     MG.data_graphic(params);
-    
+
     var width = document.querySelector(params.target + ' svg').offsetWidth;
     ok(width == params.width, 'SVG\'s width matches latest specified width');
 });
@@ -28,7 +28,7 @@ test('Chart\'s height is set correctly on subsequent calls to existing chart', f
         data: [{'date': new Date('2014-11-01'), 'value': 12},
                {'date': new Date('2014-11-02'), 'value': 18}],
     };
-    
+
     var params = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-11-01'), 'value': 12},
@@ -39,7 +39,7 @@ test('Chart\'s height is set correctly on subsequent calls to existing chart', f
 
     MG.data_graphic(params_0);
     MG.data_graphic(params);
-    
+
     var height = document.querySelector(params.target + ' svg').offsetHeight;
     ok(height == params.height, 'SVG\'s height matches latest specified height');
 });
@@ -50,7 +50,7 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
         data: [{'date': new Date('2014-11-01'), 'value': 12},
                {'date': new Date('2014-11-02'), 'value': 18}],
     };
-    
+
     var params = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-11-01'), 'value': 12},
@@ -61,14 +61,14 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
 
     MG.data_graphic(params_0);
     MG.data_graphic(params);
-    
+
     //ensure chart types change appropriately
     var line = document.querySelector('.mg-main-line');
     ok(line, 'chart_type is `line`, line chart is plotted');
 
-    //check all the other chart types    
-    var chart_types = [{id: 'point', domElement: '.mg-points'}, 
-        {id: 'histogram', domElement: '.mg-histogram'}, 
+    //check all the other chart types
+    var chart_types = [{id: 'point', domElement: '.mg-points'},
+        {id: 'histogram', domElement: '.mg-histogram'},
         {id: 'bar', domElement: '.mg-barplot'}];
 
     for(var i = 0; i < chart_types.length; i++) {
@@ -80,14 +80,15 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
             width: 200,
             height: 100,
         };
-        
+
         MG.data_graphic(params);
-        ok(document.querySelector(chart_types[i].domElement), 
+        ok(document.querySelector(chart_types[i].domElement),
             'chart_type switched to `' + chart_types[i].id + '`, the correct chart type is plotted');
     }
 });
 
 test('Missing chart has required class name set', function() {
+    expect(1);
     var params = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-11-01'), 'value': 12},
@@ -97,8 +98,8 @@ test('Missing chart has required class name set', function() {
 
     MG.data_graphic(params);
 
-    var classname = document.querySelector(params.target + ' svg').classList.contains('mg-missing');
-    ok(target, 'Missing chart has class `missing` set');
+    var matches = document.querySelector(params.target + ' svg').getAttribute('class').match(/mg-missing/);
+    ok(matches, 'Missing chart has class `missing` set');
 });
 
 test('Linked chart has the required class set', function() {
@@ -111,8 +112,8 @@ test('Linked chart has the required class set', function() {
 
     MG.data_graphic(params);
 
-    var classname = document.querySelector(params.target + ' svg').classList.contains('linked');
-    ok(target, 'Linked chart has class `linked` set');
+    var matches = document.querySelector(params.target + ' svg').getAttribute('class').match(/linked/);
+    ok(matches, 'Linked chart has class `linked` set');
 });
 
 test('args.time_series is set to true when data is time-series', function() {

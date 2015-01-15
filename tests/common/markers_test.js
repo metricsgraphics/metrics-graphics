@@ -71,8 +71,8 @@ test('Markers\' texts are correctly added', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-markers text')[0].innerHTML, markers[0].label, 'First marker\'s text matches specified one');
-    equal(document.querySelectorAll(target + ' .mg-markers text')[1].innerHTML, markers[1].label, 'Second marker\'s text matches specified one');
+    equal(document.querySelectorAll(target + ' .mg-markers text')[0].textContent, markers[0].label, 'First marker\'s text matches specified one');
+    equal(document.querySelectorAll(target + ' .mg-markers text')[1].textContent, markers[1].label, 'Second marker\'s text matches specified one');
 });
 
 test('Baseline text is correctly added', function() {
@@ -86,5 +86,5 @@ test('Baseline text is correctly added', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-baselines text')[0].innerHTML, baselines[0].label, 'Baseline text matches specified one');
+    equal(document.querySelectorAll(target + ' .mg-baselines text')[0].textContent, baselines[0].label, 'Baseline text matches specified one');
 });
