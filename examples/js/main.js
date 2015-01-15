@@ -29,6 +29,7 @@ $(document).ready(function() {
         var d = new Date();
         var v = 100000;
         var data=[];
+
         for (var i = 0; i<length; i++){
             v += (Math.random()-.5)*10000;
             data.push({date: MG.clone(d), value: v});
@@ -40,6 +41,7 @@ $(document).ready(function() {
     function fake_days(length) {
         var d = new Date();
         var v = 100000;
+
         var data = [];
         for (var i = 0; i<length; i++) {
             v += (Math.random()-.5) * 10000;
@@ -56,7 +58,7 @@ $(document).ready(function() {
     var data5 = fake_days(25).map(function(d) {
         d.date = Math.round(d.date.getTime() / 10000);
         return d;
-    })
+    });
 
     MG.data_graphic({
         data: data1,
@@ -125,13 +127,13 @@ $(document).ready(function() {
             y_accessor: 'value',
             mouseover: function(d, i) {
                 var df = d3.time.format('%b %d, %Y');
-                var date = df(d['date']);
+                var date = df(d.date);
                 var y_val = (d.value == 0) ? 'no data' : d.value;
 
                 $('#missing-y svg .mg-active-datapoint')
                     .text(date +  '   ' + y_val);
             }
-        })
+        });
     });
 
     d3.json('data/small-range.json', function(data) {
@@ -149,13 +151,13 @@ $(document).ready(function() {
             target: '#small-range',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
     });
 
     d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');
 
-        var fake_baselines = [{value:160000000, label:'a baseline'}]
+        var fake_baselines = [{value: 160000000, label: 'a baseline'}];
 
         //add a line chart
         MG.data_graphic({
@@ -187,7 +189,7 @@ $(document).ready(function() {
             area: false,
             x_axis: false,
             small_text: true
-        })
+        });
 
         var markers = [{
             'date': new Date('2014-03-17T00:00:00.000Z'),
@@ -222,7 +224,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
-    })
+    });
 
     d3.json('data/fake_users2.json', function(data) {
         for(var i=0;i<data.length;i++) {
@@ -240,7 +242,7 @@ $(document).ready(function() {
             target: '#fake_users2',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         //add a wide multi-line chart
         MG.data_graphic({
@@ -259,7 +261,7 @@ $(document).ready(function() {
             target: '#fake_users3',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         //linked multi-line charts
         MG.data_graphic({
@@ -277,11 +279,11 @@ $(document).ready(function() {
 
         // missing data in one of a multi-line chart.
         var all_the_data = MG.clone(data[0]);
-        for (var i = 1; i < data.length; i ++){
+        for (i = 1; i < data.length; i ++){
             for (var j=0; j < data[i].length; j++){
-                if (i==2 && all_the_data[j]['date'] < new Date('2014-02-01')){
+                if (i === 2 && all_the_data[j].date < new Date('2014-02-01')){
                     // pass
-                } else if (i==1 && all_the_data[j]['date'] > new Date('2014-03-22')) {
+                } else if (i==1 && all_the_data[j].date > new Date('2014-03-22')) {
                     // pass
                 } else {
                     all_the_data[j]['value'+(i+1)] = data[i][j].value;
@@ -302,7 +304,7 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: ['value', 'value2', 'value3']
         });
-    })
+    });
 
     d3.json('data/fake_users3.json', function(data) {
         for(var i=0;i<data.length;i++) {
@@ -321,8 +323,8 @@ $(document).ready(function() {
             linked: true,
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/confidence_band.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -342,14 +344,14 @@ $(document).ready(function() {
             max_y: 1,
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/log.json', function(data){
         data = [data];
         for(var i=0;i<data.length;i++) {
             data[i] = MG.convert.date(data[i], 'date');
-        };
+        }
 
         //add a chart that has a log scale
         MG.data_graphic({
@@ -363,8 +365,8 @@ $(document).ready(function() {
             target: '#log1',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/some_percentage.json', function(data) {
         for(var i=0;i<data.length;i++) {
@@ -377,7 +379,7 @@ $(document).ready(function() {
         }, {
             'date': new Date('2014-03-15T00:00:00.000Z'),
             'label': '2nd Milestone'
-        }]
+        }];
 
         MG.data_graphic({
             title: "Some Percentages",
@@ -391,7 +393,7 @@ $(document).ready(function() {
             target: '#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "Changing Precision 2",
@@ -406,7 +408,7 @@ $(document).ready(function() {
             target: '#precision2',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "... Or No Rollover Text",
@@ -422,8 +424,8 @@ $(document).ready(function() {
             target: '#no-rollover-text',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/some_currency.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -438,8 +440,8 @@ $(document).ready(function() {
             x_accessor: 'date',
             yax_units: '$',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/xnotdate.json', function(data) {
         MG.data_graphic({
@@ -458,8 +460,8 @@ $(document).ready(function() {
             y_accessor: 'females',
             x_label: 'males',
             y_label: 'females',
-        })
-    })
+        });
+    });
 
     MG.data_graphic({
         title: "Glorious Graphic",
@@ -470,7 +472,7 @@ $(document).ready(function() {
         target: '#glorious_chart',
         width: torso.width,
         height: torso.height
-    })
+    });
 
     // lower section
     d3.json('data/brief-1.json', function(data) {
@@ -488,7 +490,7 @@ $(document).ready(function() {
             target: '#briefing-1',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "Small Text Inferred By Size",
@@ -519,8 +521,8 @@ $(document).ready(function() {
             y_accessor: 'value',
             small_text: true,
             y_axis: false
-        })
-    })
+        });
+    });
 
     d3.json('data/split_by.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -536,7 +538,7 @@ $(document).ready(function() {
             target: '#split_by',
             x_accessor: 'date',
             y_accessor: 'release'
-        })
+        });
 
         MG.data_graphic({
             title: "Beta Downloads",
@@ -550,8 +552,8 @@ $(document).ready(function() {
             target: '#modify_time_period',
             x_accessor: 'date',
             y_accessor: 'beta'
-        })
-    })
+        });
+    });
 
     d3.json('data/brief-2.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -569,7 +571,7 @@ $(document).ready(function() {
             target: '#briefing-2',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "Small Text",
@@ -583,8 +585,8 @@ $(document).ready(function() {
             target: '#small2',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/float.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -601,7 +603,7 @@ $(document).ready(function() {
             target: '#precision1',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
+        });
 
         MG.data_graphic({
             title: "Custom Rollover Text",
@@ -615,14 +617,13 @@ $(document).ready(function() {
                 //custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
                 $('#custom-rollover svg .mg-active-datapoint')
-                    .text('Day ' + (i+1) + '   '
-                         + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                    .text('Day ' + (i+1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: '#custom-rollover',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/neg1.json', function(data) {
         data = MG.convert.date(data, 'date');
@@ -656,8 +657,8 @@ $(document).ready(function() {
             target: '#y-axis-not-zero',
             x_accessor: 'date',
             y_accessor: 'value'
-        })
-    })
+        });
+    });
 
     d3.json('data/neg2.json', function(data) {
         MG.data_graphic({
@@ -674,8 +675,8 @@ $(document).ready(function() {
             target: '#neg2',
             x_accessor: 'subject',
             y_accessor: 'measure'
-        })
-    })
+        });
+    });
 
     //add histograms
     //generate a Bates distribution of 10 random variables
@@ -697,11 +698,11 @@ $(document).ready(function() {
             $('#histogram1 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })
+    });
 
     d3.csv('data/ufo_dates.csv', function(ufos){
         var data = ufos.map(function(d){
-            return parseInt(d['value'])/30;
+            return parseInt(d.value)/30;
         });
         data.sort();
         var p75 = data[Math.floor(data.length*3/4)];
@@ -754,10 +755,10 @@ $(document).ready(function() {
             $('#histogram2 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })
+    });
 
     var third = d3.range(1000).map(d3.random.bates(10));
-    third = third.map(function(d,i){ return {'val1': d, 'val2': i} });
+    third = third.map(function(d,i){ return {val1: d, val2: i} });
 
     MG.data_graphic({
         title: "Histogram 3",
@@ -775,11 +776,11 @@ $(document).ready(function() {
             $('#histogram3 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })
+    });
 
     // check for negative values, for sanity.
     var fourth = d3.range(1000).map(d3.random.bates(10));
-    fourth = fourth.map(function(d,i){return d-.5});
+    fourth = fourth.map(function(d,i){return d - 0.5});
 
     MG.data_graphic({
         title: "Histogram 4",
@@ -797,7 +798,7 @@ $(document).ready(function() {
             $('#histogram4 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
-    })
+    });
 
     var bar_data = [
         {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
@@ -809,7 +810,7 @@ $(document).ready(function() {
         {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
         {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
         {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
-    ]
+    ];
 
     MG.data_graphic({
         title:'Bar Prototype',
@@ -825,7 +826,7 @@ $(document).ready(function() {
         target: '#bar1',
         animate_on_load: true,
         x_axis: false
-    })
+    });
 
     MG.data_graphic({
         title:'No Axis',
@@ -840,8 +841,8 @@ $(document).ready(function() {
         height:trunk.height,
         right:trunk.right,
         animate_on_load: true,
-        target: '#bar2',
-    })
+        target: '#bar2'
+    });
 
     MG.data_graphic({
         title: 'Vertical Bars',
@@ -857,7 +858,7 @@ $(document).ready(function() {
         height: trunk.height,
         right: trunk.right,
         animate_on_load: true,
-        target: "#bar3"
+        target: '#bar3'
     });
 
     d3.json('data/points1.json', function(data) {
@@ -945,8 +946,8 @@ $(document).ready(function() {
         {a:'apples', b:'quartz'},
         {a:'bananas', b:'pyrite'},
         {a:'durian', b:'obsidian'}
-    ]
-    var resolution_features = ['weekly', 'monthly']
+    ];
+    var resolution_features = ['weekly', 'monthly'];
 
     var buttons = MG.button_layout('div#buttons')
         .data(bdata)
@@ -966,7 +967,7 @@ $(document).ready(function() {
         { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': .14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
         { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': .23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
         { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': .19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
-    ]
+    ];
 
     var table1 = MG.data_table({
             data: table_data,
@@ -1000,9 +1001,7 @@ $(document).ready(function() {
     addScatterplotSizeAndColor('light');
 
     function addScatterplotSizeAndColor(theme) {
-        var color_range = (theme == 'light')
-                ? null
-                : ['white','yellow'];
+        var color_range = (theme == 'light') ? null : ['white','yellow'];
 
         //call data_graphic again since we need to use a different color_range for the dark theme
         d3.json('data/points1.json', function(data) {
@@ -1049,7 +1048,7 @@ $(document).ready(function() {
             addScatterplotSizeAndColor('dark');
 
             return false;
-        })
+        });
 
         $('#light-css').click(function () {
             $('.missing')
@@ -1070,7 +1069,7 @@ $(document).ready(function() {
             addScatterplotSizeAndColor('light');
 
             return false;
-        })
+        });
 
         $('.split-by-controls button').click(function() {
             var new_y_accessor = $(this).data('y_accessor');
@@ -1090,17 +1089,15 @@ $(document).ready(function() {
                 target: '#split_by',
                 x_accessor: 'date',
                 y_accessor: new_y_accessor
-            })
-        })
+            });
+        });
 
         $('.modify-time-period-controls button').click(function() {
             var past_n_days = $(this).data('time_period');
             var data = modify_time_period(split_by_data, past_n_days);
 
             //change button state
-            $(this).addClass('active')
-                .siblings()
-                .removeClass('active');
+            $(this).addClass('active').siblings().removeClass('active');
 
             //update data
             MG.data_graphic({
@@ -1114,8 +1111,8 @@ $(document).ready(function() {
                 target: '#modify_time_period',
                 x_accessor: 'date',
                 y_accessor: 'beta'
-            })
-        })
+            });
+        });
     }
 
     //replace all SVG images with inline SVG
@@ -1147,7 +1144,7 @@ $(document).ready(function() {
             $img.replaceWith($svg);
 
         }, 'xml');
-    })
+    });
 
     function modify_time_period(data, past_n_days) {
         //splice time period
@@ -1161,4 +1158,4 @@ $(document).ready(function() {
 
         return data_spliced;
     }
-})
+});
