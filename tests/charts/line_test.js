@@ -136,7 +136,6 @@ test('We use the rect-style rollovers when `aggregate_rolloveres == true`', func
     equal(document.querySelectorAll('.mg-rollover-rect').length, 1, 'Rect rollover is generated');
 });
 
-
 test('There are as many lines as data series (one)', function() {
     var params = {
         target: '#qunit-fixture',
