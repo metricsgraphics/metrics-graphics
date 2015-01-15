@@ -1,3 +1,5 @@
+[![Build Status][travis-badge]][travis-badge-url]
+
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
 _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At under 60KB (minified), it provides a simple way to produce common types of graphics in a principled and consistent way. The library currently supports line charts, scatterplots, histograms, bar charts and data tables, as well as features like rug plots and basic linear regression.
@@ -73,3 +75,7 @@ If library x works for you, you should keep using it. We're not aiming to be com
 ## License
 
 The __MetricsGraphics.js__ code is shared under the terms of the [Mozilla Public License v2.0](http://www.mozilla.org/MPL/2.0/). See the `LICENSE` file at the root of the repository. The current logo is courtesy of [Font Awesome](http://fortawesome.github.io/Font-Awesome/).
+
+
+[travis-badge]: https://travis-ci.org/mozilla/metrics-graphics.svg?branch=master
+[travis-badge-url]: https://travis-ci.org/mozilla/metrics-graphics
