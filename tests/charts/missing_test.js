@@ -8,7 +8,7 @@ test('Missing chart\'s text matches specified missing_text', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelector('.mg-missing-text').innerHTML, 
-        params.missing_text, 
+    equal(document.querySelector('.mg-missing-text').textContent,
+        params.missing_text,
         'Missing chart\'s text matches missing_text');
 });

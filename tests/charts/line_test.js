@@ -22,7 +22,7 @@ test('Only one confidence is added on multiple calls to the same target element'
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll(target + ' .mg-confidence-band').length, 1, 'We only have one confidence band');
 });
 
@@ -154,6 +154,6 @@ test('There are as many lines as data series (two) on multiple calls to an exist
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll('.mg-main-line').length, 2, 'Two lines exist');
 });
