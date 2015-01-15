@@ -25,83 +25,74 @@ $(document).ready(function() {
 
     assignEventListeners();
 
-    function fake_data(length, seconds){
+    function fake_data(length, seconds) {
         var d = new Date();
         var v = 100000;
         var data=[];
-        for (var i=0; i<length; i++){
-            v += (Math.random()-0.5)*10000;
-            data.push({date: MG.clone(d), Value: v});
+
+        for (var i = 0; i<length; i++){
+            v += (Math.random()-.5)*10000;
+            data.push({date: MG.clone(d), value: v});
             d = new Date(d.getTime() + seconds * 1000);
         }
         return data;
     }
 
-    function fake_days(length){
+    function fake_days(length) {
         var d = new Date();
         var v = 100000;
-        var data=[];
-        for (var i=0; i<length; i++){
-            v += (Math.random()-0.5)*10000;
-            data.push({date: MG.clone(d), Value: v});
-            d.setDate(d.getDate()+1);
+
+        var data = [];
+        for (var i = 0; i<length; i++) {
+            v += (Math.random()-.5) * 10000;
+            data.push({date: MG.clone(d), value: v});
+            d.setDate(d.getDate() + 1);
         }
         return data;
     }
 
-    // 
-
     var data1 = fake_data(25, 1);
-    var data2 = fake_data(25,60*20);
-    var data3 = fake_data(75,60*60);
+    var data2 = fake_data(25,60 * 20);
+    var data3 = fake_data(75,60 * 60);
     var data4 = fake_days(25);
-    var data5 = fake_days(25).map(function(d){
-        d.date = Math.round(d.date.getTime()/10000);
+    var data5 = fake_days(25).map(function(d) {
+        d.date = Math.round(d.date.getTime() / 10000);
         return d;
     });
 
     MG.data_graphic({
-        data:data1,
+        data: data1,
         target: '#time1',
         title: 'Less Than A Minute',
-        x_accessor:'date',
-        y_accessor:'Value',
-        width:torso.width,
-        height:torso.height*4/5
+        width: torso.width,
+        height: torso.height*4/5
     });
     MG.data_graphic({
-        data:data2,
+        data: data2,
         target: '#time2',
         title: 'Less Than A Day',
-        x_accessor:'date',
-        y_accessor:'Value',
-        width:torso.width,
-        height:torso.height*4/5
+        width: torso.width,
+        height: torso.height*4/5
     });
     MG.data_graphic({
-        data:data3,
+        data: data3,
         target: '#time3',
         title: 'A Few Days',
-        x_accessor:'date',
-        y_accessor:'Value',
-        width:torso.width,
-        height:torso.height*4/5
+        width: torso.width,
+        height: torso.height*4/5
     });
     MG.data_graphic({
-        data:data4,
+        data: data4,
         target: '#time4',
         title: 'Over A Large Span of Days',
-        x_accessor:'date',
-        y_accessor:'Value',
-        width:torso.width,
-        height:torso.height*4/5
+        width: torso.width,
+        height: torso.height*4/5
     });
 
 
-    // fake some discrete data:
-
-    var hist1 = fake_data(25,60).map(function(d){
-        d.Value = Math.round(d.Value);
+    //fake some discrete data
+    var hist1 = fake_data(25, 60).map(function(d){
+        d.value = Math.round(d.value);
         return d;
     });
     
@@ -109,12 +100,10 @@ $(document).ready(function() {
         data: hist1,
         target: '#time-hist',
         title: 'Histograms can be time series as well',
-        x_accessor:'date',
-        y_accessor:'Value',
         chart_type: 'histogram',
         width: torso.width,
         binned: true,
-        height:torso.height*4/5
+        height: torso.height * 4 / 5
     });
 
 
