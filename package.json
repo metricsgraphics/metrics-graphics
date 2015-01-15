@@ -4,7 +4,7 @@
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/metricsgraphics.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "./node_modules/testem/testem.js ci testem.json"
   },
   "repository": {
     "type": "git",
