@@ -29,6 +29,9 @@
 
     "tests/**/*_test.js"
   ],
+  "launch_in_ci": [
+    "PhantomJS"
+  ],
   "launch_in_dev": [
     "PhantomJS"
   ],
