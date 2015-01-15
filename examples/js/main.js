@@ -324,6 +324,21 @@ $(document).ready(function() {
             x_accessor: 'date',
             y_accessor: 'value'
         });
+
+        MG.data_graphic({
+            title:"Preserving the aspect ratio",
+            description: "Try resizing your window.",
+            data: data,
+            // width: torso.width*2,
+            fill_width: true,
+            preserve_aspect_ratio: true,
+            height: torso.height,
+            right: torso.right,
+            x_extended_ticks: true,
+            target: '#aspect1',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
     });
 
     d3.json('data/confidence_band.json', function(data) {

@@ -26,6 +26,14 @@ function init(args) {
     var svg_width = args.width;
     var svg_height = args.height;
 
+    if (args.fill_width){
+        // get parent element.
+        var svg_width = Number(d3.select(args.target).style('width').replace(/px/g, ''));
+    }
+    if (args.fill_height){
+
+    }
+
     if (args.chart_type=='bar' && svg_height == null){
         svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
     }
@@ -38,7 +46,6 @@ function init(args) {
         ) {
         $(args.target).empty();
     }
-
     //add svg if it doesn't already exist
     //using trim on html rather than :empty to ignore white spaces if they exist
     if($.trim($(args.target).html()) == '') {
@@ -50,14 +57,23 @@ function init(args) {
                 .attr('height', svg_height);
     }
 
+    args.width = svg_width;
+    args.height = svg_height;
+
     var svg = d3.select(args.target).selectAll('svg');
 
     //has the width or height changed?
-    if(args.width != Number(svg.attr('width')))
-        svg.attr('width', args.width)
+    if(svg_width != Number(svg.attr('width')))
+        svg.attr('width', svg_width)
 
-    if(args.height != Number(svg.attr('height')))
-        svg.attr('height', args.height)
+    if(svg_height != Number(svg.attr('height')))
+        svg.attr('height', svg_height)
+
+    // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
+    svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
+
+    if (args.fill_width || args.fill_height)
+        svg.attr('preserveAspectRatio', 'xMinYMin meet');
 
     // remove missing class
     svg.classed('mg-missing', false);
