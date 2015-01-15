@@ -1,4 +1,4 @@
-[![Build Status][travis-badge]][travis-badge-url]
+[![Build Status][travis-badge]][travis-badge-url] [![Code Climate][code-climate-badge]][code-climate-url]
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
@@ -79,3 +79,5 @@ The __MetricsGraphics.js__ code is shared under the terms of the [Mozilla Public
 
 [travis-badge]: https://travis-ci.org/mozilla/metrics-graphics.svg?branch=master
 [travis-badge-url]: https://travis-ci.org/mozilla/metrics-graphics
+[code-climate-badge]: https://codeclimate.com/github/mozilla/metrics-graphics/badges/gpa.svg
+[code-climate-url]: https://codeclimate.com/github/mozilla/metrics-graphics
