@@ -1272,7 +1272,9 @@
         //remove the old x-axis, add new one
         $svg.find('.mg-x-axis').remove();
 
-        if (!args.x_axis) return this;
+        if (!args.x_axis) {
+            return this;
+        }
 
         //x axis
         g = svg.append('g')
@@ -1322,7 +1324,9 @@
             .classed('mg-x-axis', true)
             .classed('mg-x-axis-small', args.use_small_class);
 
-        if (!args.x_axis) return this;
+        if (!args.x_axis) {
+            return this;
+        }
 
         var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
 
@@ -1356,7 +1360,7 @@
                     });
 
                     max_color = d3.max(args.data[0], function(d) {
-                        return d[args.color_accessor]
+                        return d[args.color_accessor];
                     });
 
                     color_domain = [min_color, max_color];
@@ -1390,7 +1394,7 @@
                     .range(color_range)
                     .clamp(true);
             } else {
-                args.scales.color = args.color_range != null
+                args.scales.color = args.color_range !== null
                     ? d3.scale.ordinal().range(color_range)
                     : (color_domain.length > 10
                         ? d3.scale.category20() : d3.scale.category10());
@@ -1462,12 +1466,11 @@
             if (f < 1.0) {
                 //don't scale tiny values
                 return args.yax_units + d3.round(f, args.decimals);
-            }
-            else {
+            } else {
                 var pf = d3.formatPrefix(f);
                 return args.xax_units + pf.scale(f) + pf.symbol;
             }
-        }
+        };
     }
 
     function mg_default_histogram_xax_format(args) {
@@ -1483,19 +1486,20 @@
                 var pf = d3.formatPrefix(f);
                 return args.xax_units + pf.scale(f) + pf.symbol;
             }
-        }
+        };
     }
 
     function mg_default_xax_format(args) {
-        if (args.xax_format)
+        if (args.xax_format) {
             return args.xax_format;
+        }
 
         var diff, 
             main_time_format, 
             time_frame;
 
         if (args.time_series) {
-            var diff = (args.processed.max_x - args.processed.min_x) / 1000;
+            diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
             if (diff < 60) {
                 main_time_format = d3.time.format('%M:%S');
@@ -2752,7 +2756,7 @@
                 if (args.mousemove) {
                     args.mousemove(d, i);
                 }
-            }
+            };
         };
 
         this.windowListeners = function() {
@@ -2762,7 +2766,7 @@
 
         this.init(args);
         return this;
-    }
+    };
 
     charts.histogram = function(args) {
         'use strict';
@@ -2907,13 +2911,13 @@
                         var n = d3.format("0,000");
                         d_ = is_float ? d3.round(d_, args.decimals) : d_;
                         return n(d_);
-                    }
+                    };
                 } else {
                     num = function(d_) {
                         var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                         var n = d3.format(fmt_string);
                         return n(d_);
-                    }
+                    };
                 }
 
                 //highlight active bar
@@ -2953,7 +2957,7 @@
                 if (args.mouseover) {
                     args.mouseover(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverOff = function(args) {
@@ -2981,7 +2985,7 @@
                 if (args.mouseout) {
                     args.mouseout(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverMove = function(args) {
@@ -2989,7 +2993,7 @@
                 if (args.mousemove) {
                     args.mousemove(d, i);
                 }
-            }
+            };
         };
         
         this.windowListeners = function() {
@@ -2999,7 +3003,7 @@
 
         this.init(args);
         return this;
-    }
+    };
 
     charts.point = function(args) {
         'use strict';
@@ -3233,7 +3237,7 @@
         this.init(args);
 
         return this;
-    }
+    };
 
     // BARCHART:
     // x - function that processes data
@@ -3499,7 +3503,7 @@
                 .attr('text-anchor', 'end');
 
             var g = svg.append('g')
-                .attr('class', 'mg-rollover-rect')
+                .attr('class', 'mg-rollover-rect');
 
             //draw rollover bars
             var bar = g.selectAll(".mg-bar-rollover")
@@ -3553,13 +3557,13 @@
                         var n = d3.format("0,000");
                         d_ = is_float ? d3.round(d_, args.decimals) : d_;
                         return n(d_);
-                    }
+                    };
                 } else {
                     num = function(d_) {
                         var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                         var n = d3.format(fmt_string);
                         return n(d_);
-                    }
+                    };
                 }
 
                 //highlight active bar
@@ -3584,7 +3588,7 @@
                 if (args.mouseover) {
                     args.mouseover(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverOff = function(args) {
@@ -3602,7 +3606,7 @@
                 if (args.mouseout) {
                     args.mouseout(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverMove = function(args) {
@@ -3610,7 +3614,7 @@
                 if (args.mousemove) {
                     args.mousemove(d, i);
                 }
-            }
+            };
         };
 
         this.windowListeners = function() {
@@ -3620,7 +3624,7 @@
 
         this.init(args);
         return this;
-    }
+    };
 
     /*
     Data Tables
@@ -3831,7 +3835,7 @@
         };
 
         return this;
-    }
+    };
 
     charts.missing = function(args) {
         'use strict';

@@ -72,7 +72,9 @@ function x_axis(args) {
     //remove the old x-axis, add new one
     $svg.find('.mg-x-axis').remove();
 
-    if (!args.x_axis) return this;
+    if (!args.x_axis) {
+        return this;
+    }
 
     //x axis
     g = svg.append('g')
@@ -122,7 +124,9 @@ function x_axis_categorical(args) {
         .classed('mg-x-axis', true)
         .classed('mg-x-axis-small', args.use_small_class);
 
-    if (!args.x_axis) return this;
+    if (!args.x_axis) {
+        return this;
+    }
 
     var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
 
@@ -156,7 +160,7 @@ function mg_point_add_color_scale(args) {
                 });
 
                 max_color = d3.max(args.data[0], function(d) {
-                    return d[args.color_accessor]
+                    return d[args.color_accessor];
                 });
 
                 color_domain = [min_color, max_color];
@@ -190,7 +194,7 @@ function mg_point_add_color_scale(args) {
                 .range(color_range)
                 .clamp(true);
         } else {
-            args.scales.color = args.color_range != null
+            args.scales.color = args.color_range !== null
                 ? d3.scale.ordinal().range(color_range)
                 : (color_domain.length > 10
                     ? d3.scale.category20() : d3.scale.category10());
@@ -262,12 +266,11 @@ function mg_default_bar_xax_format(args) {
         if (f < 1.0) {
             //don't scale tiny values
             return args.yax_units + d3.round(f, args.decimals);
-        }
-        else {
+        } else {
             var pf = d3.formatPrefix(f);
             return args.xax_units + pf.scale(f) + pf.symbol;
         }
-    }
+    };
 }
 
 function mg_default_histogram_xax_format(args) {
@@ -283,19 +286,20 @@ function mg_default_histogram_xax_format(args) {
             var pf = d3.formatPrefix(f);
             return args.xax_units + pf.scale(f) + pf.symbol;
         }
-    }
+    };
 }
 
 function mg_default_xax_format(args) {
-    if (args.xax_format)
+    if (args.xax_format) {
         return args.xax_format;
+    }
 
     var diff, 
         main_time_format, 
         time_frame;
 
     if (args.time_series) {
-        var diff = (args.processed.max_x - args.processed.min_x) / 1000;
+        diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
         if (diff < 60) {
             main_time_format = d3.time.format('%M:%S');

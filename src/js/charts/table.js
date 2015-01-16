@@ -207,4 +207,4 @@ MG.data_table = function(args) {
     };
 
     return this;
-}
+};

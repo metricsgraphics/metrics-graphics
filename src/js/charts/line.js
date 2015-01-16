@@ -465,7 +465,7 @@ charts.line = function(args) {
             if (args.mousemove) {
                 args.mousemove(d, i);
             }
-        }
+        };
     };
 
     this.windowListeners = function() {
@@ -475,4 +475,4 @@ charts.line = function(args) {
 
     this.init(args);
     return this;
-}
+};

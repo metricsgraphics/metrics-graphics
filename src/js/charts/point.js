@@ -230,4 +230,4 @@ charts.point = function(args) {
     this.init(args);
 
     return this;
-}
+};

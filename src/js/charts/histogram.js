@@ -141,13 +141,13 @@ charts.histogram = function(args) {
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
-                }
+                };
             } else {
                 num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
-                }
+                };
             }
 
             //highlight active bar
@@ -187,7 +187,7 @@ charts.histogram = function(args) {
             if (args.mouseover) {
                 args.mouseover(d, i);
             }
-        }
+        };
     };
 
     this.rolloverOff = function(args) {
@@ -215,7 +215,7 @@ charts.histogram = function(args) {
             if (args.mouseout) {
                 args.mouseout(d, i);
             }
-        }
+        };
     };
 
     this.rolloverMove = function(args) {
@@ -223,7 +223,7 @@ charts.histogram = function(args) {
             if (args.mousemove) {
                 args.mousemove(d, i);
             }
-        }
+        };
     };
     
     this.windowListeners = function() {
@@ -233,4 +233,4 @@ charts.histogram = function(args) {
 
     this.init(args);
     return this;
-}
+};
