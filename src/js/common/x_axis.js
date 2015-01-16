@@ -338,7 +338,7 @@ function mg_default_xax_format(args) {
         } else {
             return d;
         }
-    }
+    };
 }
 
 function mg_add_x_ticks(g, args) {

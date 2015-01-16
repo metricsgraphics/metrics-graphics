@@ -183,22 +183,23 @@
         }
 
         //build the chart
+        var a;
         if (args.chart_type === 'missing-data') {
             args = merge_with_defaults(args, defaults.missing);
             charts.missing(args);
         }
         else if (args.chart_type === 'point') {
-            var a = merge_with_defaults(defaults.point, defaults.all);
+            a = merge_with_defaults(defaults.point, defaults.all);
             args = merge_with_defaults(args, a);
             charts.point(args).mainPlot().markers().rollover().windowListeners();
         }
         else if (args.chart_type === 'histogram') {
-            var a = merge_with_defaults(defaults.histogram, defaults.all);
+            a = merge_with_defaults(defaults.histogram, defaults.all);
             args = merge_with_defaults(args, a);
             charts.histogram(args).mainPlot().markers().rollover().windowListeners();
         }
         else if (args.chart_type === 'bar') {
-            var a = merge_with_defaults(defaults.bar, defaults.all);
+            a = merge_with_defaults(defaults.bar, defaults.all);
             args = merge_with_defaults(args, a);
             charts.bar(args).mainPlot().markers().rollover().windowListeners();
         }
@@ -1123,7 +1124,7 @@
             });
         }
 
-        var last_i = scale_ticks.length-1;
+        var last_i = scale_ticks.length - 1;
         if (!args.x_extended_ticks && !args.y_extended_ticks) {
             g.append('line')
                 .attr('x1', args.left)
@@ -1544,7 +1545,7 @@
             } else {
                 return d;
             }
-        }
+        };
     }
 
     function mg_add_x_ticks(g, args) {
@@ -1772,8 +1773,6 @@
         } else {
             args.time_series = false;
         }
-
-        var linked;
 
         var svg_width = args.width;
         var svg_height = args.height;
@@ -2650,7 +2649,7 @@
                 ){
                     svg.selectAll('circle.mg-line-rollover-circle')
                         .attr('class', "")
-                        .attr('class', 'mg-area' + d['line_id'] + '-color')
+                        .attr('class', 'mg-area' + d.line_id + '-color')
                         .classed('mg-line-rollover-circle', true)
                         .attr('cx', function() {
                             return args.scales.X(d[args.x_accessor]).toFixed(2);
@@ -2727,7 +2726,7 @@
                 if (args.mouseover) {
                     args.mouseover(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverOff = function(args) {
@@ -3037,7 +3036,7 @@
                 add_ls(args);
             }
 
-            return this
+            return this;
         };
 
         this.mainPlot = function() {
@@ -3067,7 +3066,7 @@
                 pts.classed('mg-points-mono', true);
             }
 
-            if (args.size_accessor != null) {
+            if (args.size_accessor !== null) {
                 pts.attr('r', args.scalefns.size);
             } else {
                 pts.attr('r', args.point_size);
@@ -3163,13 +3162,13 @@
                         var n = d3.format("0,000");
                         d_ = is_float ? d3.round(d_, args.decimals) : d_;
                         return n(d_);
-                    }
+                    };
                 } else {
                     num = function(d_) {
                         var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                         var n = d3.format(fmt_string);
                         return n(d_);
-                    }
+                    };
                 }
 
                 //update rollover text
@@ -3180,8 +3179,7 @@
                                 var dd = new Date(+d.point[args.x_accessor]);
                                 dd.setDate(dd.getDate());
 
-                                return fmt(dd) + '  ' + args.yax_units
-                                    + num(d.point[args.y_accessor]);
+                                return fmt(dd) + '  ' + args.yax_units + num(d.point[args.y_accessor]);
                             } else {
                                 return args.x_accessor + ': ' + num(d.point[args.x_accessor])
                                     + ', ' + args.y_accessor + ': ' + args.yax_units
@@ -3193,7 +3191,7 @@
                 if (args.mouseover) {
                     args.mouseover(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverOff = function(args) {
@@ -3227,7 +3225,7 @@
                 if (args.mouseout) {
                     args.mouseout(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverMove = function(args) {
@@ -3235,7 +3233,7 @@
                 if (args.mousemove) {
                     args.mousemove(d, i);
                 }
-            }
+            };
         };
 
         this.update = function(args) {

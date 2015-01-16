@@ -346,7 +346,7 @@ charts.line = function(args) {
             ){
                 svg.selectAll('circle.mg-line-rollover-circle')
                     .attr('class', "")
-                    .attr('class', 'mg-area' + d['line_id'] + '-color')
+                    .attr('class', 'mg-area' + d.line_id + '-color')
                     .classed('mg-line-rollover-circle', true)
                     .attr('cx', function() {
                         return args.scales.X(d[args.x_accessor]).toFixed(2);
@@ -423,7 +423,7 @@ charts.line = function(args) {
             if (args.mouseover) {
                 args.mouseover(d, i);
             }
-        }
+        };
     };
 
     this.rolloverOff = function(args) {

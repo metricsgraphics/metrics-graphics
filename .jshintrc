@@ -4,5 +4,6 @@
     "jQuery": false,
     "MG": false,
     "d3": false
-  }
+  },
+  laxbreak: true
 }

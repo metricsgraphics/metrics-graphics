@@ -17,7 +17,7 @@ charts.point = function(args) {
             add_ls(args);
         }
 
-        return this
+        return this;
     };
 
     this.mainPlot = function() {
@@ -47,7 +47,7 @@ charts.point = function(args) {
             pts.classed('mg-points-mono', true);
         }
 
-        if (args.size_accessor != null) {
+        if (args.size_accessor !== null) {
             pts.attr('r', args.scalefns.size);
         } else {
             pts.attr('r', args.point_size);
@@ -143,13 +143,13 @@ charts.point = function(args) {
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
-                }
+                };
             } else {
                 num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
-                }
+                };
             }
 
             //update rollover text
@@ -160,8 +160,7 @@ charts.point = function(args) {
                             var dd = new Date(+d.point[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
-                            return fmt(dd) + '  ' + args.yax_units
-                                + num(d.point[args.y_accessor]);
+                            return fmt(dd) + '  ' + args.yax_units + num(d.point[args.y_accessor]);
                         } else {
                             return args.x_accessor + ': ' + num(d.point[args.x_accessor])
                                 + ', ' + args.y_accessor + ': ' + args.yax_units
@@ -173,7 +172,7 @@ charts.point = function(args) {
             if (args.mouseover) {
                 args.mouseover(d, i);
             }
-        }
+        };
     };
 
     this.rolloverOff = function(args) {
@@ -207,7 +206,7 @@ charts.point = function(args) {
             if (args.mouseout) {
                 args.mouseout(d, i);
             }
-        }
+        };
     };
 
     this.rolloverMove = function(args) {
@@ -215,7 +214,7 @@ charts.point = function(args) {
             if (args.mousemove) {
                 args.mousemove(d, i);
             }
-        }
+        };
     };
 
     this.update = function(args) {
