@@ -4,15 +4,15 @@ function chart_title(args) {
     //is the chart title different than existing one? If so, clear the fine 
     //gentleman. Otherwise, move along.
     var currentTitle = $(args.target).find('h2.mg-chart-title');
-    if(args.title && args.title !== currentTitle.text()) {
+    if (args.title && args.title !== currentTitle.text()) {
         currentTitle.remove();
     //if title hasn't been specified or if it's blank, remove the title
-    } else if(!args.title || args.title === '') {
+    } else if (!args.title || args.title === '') {
         currentTitle.remove();
     } else
         return;
 
-    if(args.target && args.title) {
+    if (args.target && args.title) {
         var newTitle;
         //only show question mark if there's a description
         var optional_question_mark = (args.description)
@@ -23,7 +23,7 @@ function chart_title(args) {
             + args.title + optional_question_mark + '</h2>');
 
         //activate the question mark if we have a description
-        if(args.description) {
+        if (args.description) {
             newTitle = $(args.target).find('h2.mg-chart-title');
 
             newTitle.popover({
@@ -37,7 +37,7 @@ function chart_title(args) {
         }   
     }
 
-    if(args.error) {
+    if (args.error) {
         error(args);
     }
 }

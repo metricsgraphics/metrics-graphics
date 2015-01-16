@@ -1,7 +1,8 @@
 //a set of helper functions, some that we've written, others that we've borrowed
 
 MG.convert = {};
-MG.convert.date = function(data, accessor, time_format){
+
+MG.convert.date = function(data, accessor, time_format) {
     time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
     data = data.map(function(d) {
         var fff = d3.time.format(time_format);
@@ -10,30 +11,32 @@ MG.convert.date = function(data, accessor, time_format){
     });
 
     return data;
-}
-MG.convert.number = function(data, accessor){
-    data = data.map(function(d){
+};
+
+MG.convert.number = function(data, accessor) {
+    data = data.map(function(d) {
         d[accessor] = Number(d[accessor]);
         return d;
     });
-    return data;
-}
 
-function get_pixel_dimension(target, dimension){
+    return data;
+};
+
+function get_pixel_dimension(target, dimension) {
     return Number(d3.select(target).style(dimension).replace(/px/g, ''));
 }
 
-function get_width(target){
+function get_width(target) {
     return get_pixel_dimension(target, 'width');
 }
 
-function get_height(target){
+function get_height(target) {
     return get_pixel_dimension(target, 'height');
 }
 
 var each = function(obj, iterator, context) {
     // yanked out of underscore
-    if (obj == null) return obj;
+    if (obj === null) return obj;
     if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
       obj.forEach(iterator, context);
     } else if (obj.length === +obj.length) {
@@ -63,7 +66,7 @@ function merge_with_defaults(obj) {
 }
 
 function number_of_values(data, accessor, value) {
-    var values = data.filter(function(d){
+    var values = data.filter(function(d) {
         return d[accessor] === value;
     })
 
@@ -71,13 +74,12 @@ function number_of_values(data, accessor, value) {
 }
 
 function has_values_below(data, accessor, value) {
-    var values = data.filter(function(d){
+    var values = data.filter(function(d) {
         return d[accessor] <= value;
     })
 
     return values.length > 0;
 }
-
 
 function has_too_many_zeros(data, accessor, zero_count) {
     return number_of_values(data, accessor, 0) >= zero_count;
@@ -87,7 +89,7 @@ function has_too_many_zeros(data, accessor, zero_count) {
 //http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
     // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
+    if (null === obj || "object" !== typeof obj) return obj;
 
     // Handle Date
     if (obj instanceof Date) {

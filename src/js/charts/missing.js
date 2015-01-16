@@ -12,9 +12,9 @@ charts.missing = function(args) {
             .attr('height', args.height);
 
         // delete child elements
-        d3.select(args.target).selectAll('svg *').remove()
+        d3.select(args.target).selectAll('svg *').remove();
 
-        var svg = d3.select(args.target).select('svg')
+        var svg = d3.select(args.target).select('svg');
 
         // add missing class
         svg.classed('mg-missing', true);
@@ -31,10 +31,10 @@ charts.missing = function(args) {
             .attr('y', args.height / 2)
             .attr('dy', '.50em')
             .attr('text-anchor', 'middle')
-            .text(args.missing_text)
+            .text(args.missing_text);
 
         return this;
-    }
+    };
 
     this.init(args);
     return this;

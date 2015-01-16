@@ -9,7 +9,7 @@ charts.point = function(args) {
         x_axis(args);
         y_axis(args);
         return this;
-    }
+    };
 
     this.markers = function() {
         markers(args);
@@ -18,7 +18,7 @@ charts.point = function(args) {
         }
 
         return this
-    }
+    };
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -40,23 +40,21 @@ charts.point = function(args) {
                 .attr('cy', args.scalefns.yf);
 
         //are we coloring our points, or just using the default color?
-        if (args.color_accessor!=null) {
+        if (args.color_accessor !== null) {
             pts.attr('fill',   args.scalefns.color);
             pts.attr('stroke', args.scalefns.color);
-        }
-        else {
+        } else {
             pts.classed('mg-points-mono', true);
         }
 
         if (args.size_accessor != null) {
             pts.attr('r', args.scalefns.size);
-        }
-        else {
+        } else {
             pts.attr('r', args.point_size);
         }
 
         return this;
-    }
+    };
 
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -89,7 +87,10 @@ charts.point = function(args) {
             .data(voronoi(args.data[0]))
             .enter().append('path')
                 .attr('d', function(d) {
-                    if(d == undefined) return;
+                    if (d === undefined) {
+                        return;
+                    }
+
                     return 'M' + d.join(',') + 'Z';
                 })
                 .attr('class', function(d,i) {
@@ -101,7 +102,7 @@ charts.point = function(args) {
                 .on('mousemove', this.rolloverMove(args));
 
         return this;
-    }
+    };
 
     this.rolloverOn = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -116,34 +117,35 @@ charts.point = function(args) {
 
             if (args.size_accessor) {
                 pts.attr('r', function(di) {
-                    return args.scalefns.size(di) + 1
+                    return args.scalefns.size(di) + 1;
                 });
             } else {
                 pts.attr('r', args.point_size);
             }
 
             //trigger mouseover on all points for this class name in .linked charts
-            if(args.linked && !globals.link) {
+            if (args.linked && !globals.link) {
                 globals.link = true;
 
                 //trigger mouseover on matching point in .linked charts
                 d3.selectAll('.mg-voronoi .path-' + i)
                     .each(function() {
                         d3.select(this).on('mouseover')(d,i);
-                })
+                    });
             }
 
             var fmt = d3.time.format('%b %e, %Y');
-            if (args.format == 'count') {
-                var num = function(d_) {
-                    var is_float = d_ % 1 != 0;
+            var num;
+
+            if (args.format === 'count') {
+                num = function(d_) {
+                    var is_float = d_ % 1 !== 0;
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
-            }
-            else {
-                var num = function(d_) {
+            } else {
+                num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
@@ -154,38 +156,37 @@ charts.point = function(args) {
             if (args.show_rollover_text) {
                 svg.select('.mg-active-datapoint')
                     .text(function() {
-                        if(args.time_series) {
-                            var dd = new Date(+d['point'][args.x_accessor]);
+                        if (args.time_series) {
+                            var dd = new Date(+d.point[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
                             return fmt(dd) + '  ' + args.yax_units
-                                + num(d['point'][args.y_accessor]);
-                        }
-                        else {
-                            return args.x_accessor + ': ' + num(d['point'][args.x_accessor])
+                                + num(d.point[args.y_accessor]);
+                        } else {
+                            return args.x_accessor + ': ' + num(d.point[args.x_accessor])
                                 + ', ' + args.y_accessor + ': ' + args.yax_units
-                                + num(d['point'][args.y_accessor]);
+                                + num(d.point[args.y_accessor]);
                         }
                     });
             }
 
-            if(args.mouseover) {
+            if (args.mouseover) {
                 args.mouseover(d, i);
             }
         }
-    }
+    };
 
     this.rolloverOff = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d,i) {
-            if(args.linked && globals.link) {
+            if (args.linked && globals.link) {
                 globals.link = false;
 
                 d3.selectAll('.mg-voronoi .path-' + i)
                     .each(function() {
                         d3.select(this).on('mouseout')(d,i);
-                })
+                    });
             }
 
             //reset active point
@@ -195,8 +196,7 @@ charts.point = function(args) {
 
             if (args.size_accessor) {
                 pts.attr('r', args.scalefns.size);
-            }
-            else {
+            } else {
                 pts.attr('r', args.point_size);
             }
 
@@ -204,28 +204,28 @@ charts.point = function(args) {
             svg.select('.mg-active-datapoint')
                 .text('');
 
-            if(args.mouseout) {
+            if (args.mouseout) {
                 args.mouseout(d, i);
             }
         }
-    }
+    };
 
     this.rolloverMove = function(args) {
         return function(d, i) {
-            if(args.mousemove) {
+            if (args.mousemove) {
                 args.mousemove(d, i);
             }
         }
-    }
+    };
 
     this.update = function(args) {
         return this;
-    }
+    };
 
     this.windowListeners = function() {
         mg_window_listeners(this.args);
         return this;
-    }
+    };
 
     this.init(args);
 

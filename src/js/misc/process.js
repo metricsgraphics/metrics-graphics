@@ -1,6 +1,4 @@
-
-
-function raw_data_transformation(args){
+function raw_data_transformation(args) {
     'use strict';
 
     // We need to account for a few data format cases:
@@ -8,37 +6,34 @@ function raw_data_transformation(args){
     // 2. [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
     // 3. [[4323, 2343],..]                                      // unnested 2d array
     // 4. [[[4323, 2343],..] , [[4323, 2343],..]]                // nested 2d array
-    if (args.chart_type == 'line'){
+    if (args.chart_type === 'line') {
         var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
         var is_unnested_array_of_arrays = (
             args.data[0] instanceof Array && 
             !(args.data[0][0] instanceof Object &&
             !(args.data[0][0] instanceof Date)));
 
-        if(
-            is_unnested_obj_array || is_unnested_array_of_arrays){
+        if (is_unnested_obj_array || is_unnested_array_of_arrays) {
             args.data = [args.data];
-        }         
+        }
     } else {
-        if (!(args.data[0] instanceof Array)){
+        if (!(args.data[0] instanceof Array)) {
             args.data = [args.data];
         }
     }
 
-
-
-    if (args.y_accessor instanceof Array){
-        args.data = args.data.map(function(_d){
-            return args.y_accessor.map(function(ya){
-                return _d.map(function(di){
+    if (args.y_accessor instanceof Array) {
+        args.data = args.data.map(function(_d) {
+            return args.y_accessor.map(function(ya) {
+                return _d.map(function(di) {
                     di = MG.clone(di);
-                    if (di[ya]==undefined){
+                    if (di[ya] === undefined) {
                         return undefined;
                     }
                     di['multiline_y_accessor'] = di[ya];
                     return di;
-                }).filter(function(di){
-                    return di != undefined;
+                }).filter(function(di) {
+                    return di !== undefined;
                 })
             })
         })[0];
@@ -47,8 +42,8 @@ function raw_data_transformation(args){
     }
 
     //sort x-axis data
-    if (args.chart_type == 'line'){
-        for(var i=0; i<args.data.length; i++) {
+    if (args.chart_type === 'line') {
+        for (var i = 0; i < args.data.length; i++) {
             args.data[i].sort(function(a, b) {
                 return a[args.x_accessor] - b[args.x_accessor];
             });
@@ -60,15 +55,14 @@ function raw_data_transformation(args){
 
 function process_line(args) {
     'use strict';
-    //are we replacing missing y values with zeros?
-
     //do we have a time-series?
-    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) == 'date')
+    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) === 'date')
             ? true
             : false;
 
-    if(args.missing_is_zero && args.chart_type == 'line' && is_time_series) {
-        for(var i=0;i<args.data.length;i++) {
+    //are we replacing missing y values with zeros?
+    if (args.missing_is_zero && args.chart_type === 'line' && is_time_series) {
+        for (var i = 0;i < args.data.length; i++) {
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
             //initialize our new array for storing the processed data
@@ -86,14 +80,14 @@ function process_line(args) {
 
                 //add the first date item (judge me not, world)
                 //we'll be starting from the day after our first date
-                if(Date.parse(d) == Date.parse(new Date(start_date))) {
+                if (Date.parse(d) === Date.parse(new Date(start_date))) {
                     processed_data.push(MG.clone(args.data[i][0]));
                 }
 
                 //check to see if we already have this date in our data object
                 var existing_o = null;
                 $.each(args.data[i], function(i, val) {
-                    if(Date.parse(val.date) == Date.parse(new Date(d))) {
+                    if (Date.parse(val.date) === Date.parse(new Date(d))) {
                         existing_o = val;
 
                         return false;
@@ -101,7 +95,7 @@ function process_line(args) {
                 })
 
                 //if we don't have this date in our data object, add it and set it to zero
-                if(!existing_o) {
+                if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
                     processed_data.push(o);
@@ -112,7 +106,7 @@ function process_line(args) {
                 }
 
                 //add the last data item
-                if(Date.parse(d) == Date.parse(new Date(last[args.x_accessor]))) {
+                if (Date.parse(d) === Date.parse(new Date(last[args.x_accessor]))) {
                     processed_data.push(last);
                 }
             }
@@ -125,7 +119,7 @@ function process_line(args) {
     return this;
 }
 
-function process_histogram(args){
+function process_histogram(args) {
     'use strict';
     // if args.binned=False, then we need to bin the data appropriately.
     // if args.binned=True, then we need to make sure to compute the relevant computed data.
@@ -138,47 +132,49 @@ function process_histogram(args){
     // histogram data is always single dimension
     var our_data = args.data[0];
     var extracted_data;
-    if (args.binned==false){
+    if (args.binned === false) {
         // use d3's built-in layout.histogram functionality to compute what you need.
 
-        if (typeof(our_data[0]) == 'object'){
+        if (typeof(our_data[0]) === 'object') {
             // we are dealing with an array of objects. Extract the data value of interest.
             extracted_data = our_data
-                .map(function(d){
+                .map(function(d) {
                     return d[args.x_accessor];
                 });
-        } else if (typeof(our_data[0]) == 'number'){
+        } else if (typeof(our_data[0]) === 'number') {
             // we are dealing with a simple array of numbers. No extraction needed.
             extracted_data = our_data;
-        }
-        else {
+        } else {
             console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
             return;
         }
 
         var hist = d3.layout.histogram()
-        if (args.bins){
+        if (args.bins) {
             hist = hist.bins(args.bins);
         }
+
         args.processed_data = hist(extracted_data)
-            .map(function(d){
+            .map(function(d) {
                 // extract only the data we need per data point.
-                return {'x': d['x'], 'y':d['y'], 'dx': d['dx']};
-            })
+                return {'x': d.x, 'y': d.y, 'dx': d.dx};
+            });
     } else {
         // here, we just need to reconstruct the array of objects
         // take the x accessor and y accessor.
         // pull the data as x and y. y is count.
 
-        args.processed_data = our_data.map(function(d){
-            return {'x': d[args.x_accessor], 'y': d[args.y_accessor]}
+        args.processed_data = our_data.map(function(d) {
+            return {'x': d[args.x_accessor], 'y': d[args.y_accessor]};
         });
+
         var this_pt;
         var next_pt;
+
         // we still need to compute the dx component for each data point
-        for (var i=0; i < args.processed_data.length; i++){
+        for (var i=0; i < args.processed_data.length; i++) {
             this_pt = args.processed_data[i];
-            if (i == args.processed_data.length-1){
+            if (i === args.processed_data.length - 1) {
                 this_pt.dx = args.processed_data[i-1].dx;
             } else {
                 next_pt = args.processed_data[i+1];
@@ -186,13 +182,15 @@ function process_histogram(args){
             }
         }
     }
+
     args.data = [args.processed_data];
     args.x_accessor = args.processed_x_accessor;
     args.y_accessor = args.processed_y_accessor;
+
     return this;
 }
 
-function process_categorical_variables(args){
+function process_categorical_variables(args) {
     // For use with bar charts, etc.
     'use strict';
     var extracted_data, processed_data={}, pd=[];
@@ -202,50 +200,55 @@ function process_categorical_variables(args){
 
     args.categorical_variables = [];
 
-    if (args.binned == false){
-        if (typeof(our_data[0]) == 'object') {
+    if (args.binned === false) {
+        if (typeof(our_data[0]) === 'object') {
             // we are dealing with an array of objects. Extract the data value of interest.
             extracted_data = our_data
-                .map(function(d){
+                .map(function(d) {
                     return d[label_accessor];
                 });
         } else {
             extracted_data = our_data;
         }
-        var this_dp;
-        for (var i=0; i< extracted_data.length; i++){
-            this_dp=extracted_data[i];
-            if (args.categorical_variables.indexOf(this_dp) == -1) args.categorical_variables.push(this_dp)
-            if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp]=0;
 
-            processed_data[this_dp]+=1;
+        var this_dp;
+
+        for (var i=0; i< extracted_data.length; i++) {
+            this_dp=extracted_data[i];
+            if (args.categorical_variables.indexOf(this_dp) === -1) args.categorical_variables.push(this_dp);
+            if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp] = 0;
+
+            processed_data[this_dp] += 1;
         }
-        processed_data = Object.keys(processed_data).map(function(d){
+
+        processed_data = Object.keys(processed_data).map(function(d) {
             var obj = {};
             obj[data_accessor] = processed_data[d];
             obj[label_accessor] = d;
             return obj;
-        })
+        });
     } else {
         // nothing needs to really happen here.
         processed_data = our_data;
-        args.categorical_variables = d3.set(processed_data.map(function(d){
+        args.categorical_variables = d3.set(processed_data.map(function(d) {
             return d[label_accessor];
         })).values();
         args.categorical_variables.reverse();
     }
+
     args.data = [processed_data];
     return this;
 }
 
-function process_point(args){
+function process_point(args) {
     'use strict';
     var data = args.data[0];
-    var x = data.map(function(d){return d[args.x_accessor]});
-    var y = data.map(function(d){return d[args.y_accessor]});
-    if (args.least_squares){
+    var x = data.map(function(d) { return d[args.x_accessor]; });
+    var y = data.map(function(d) { return d[args.y_accessor]; });
+
+    if (args.least_squares) {
         args.ls_line = least_squares(x,y);
-    };
+    }
 
     //args.lowess_line = lowess_robust(x,y, .5, 100)
     return this;

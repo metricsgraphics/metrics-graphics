@@ -44,7 +44,7 @@ $(document).ready(function() {
 
         var data = [];
         for (var i = 0; i<length; i++) {
-            v += (Math.random()-.5) * 10000;
+            v += (Math.random() - 0.5) * 10000;
             data.push({date: MG.clone(d), value: v});
             d.setDate(d.getDate() + 1);
         }
@@ -279,15 +279,12 @@ $(document).ready(function() {
 
         // missing data in one of a multi-line chart.
         var all_the_data = MG.clone(data[0]);
-        for (i = 1; i < data.length; i ++){
+        for(i = 1; i < data.length; i++){
             for (var j=0; j < data[i].length; j++){
-                if (i === 2 && all_the_data[j].date < new Date('2014-02-01')){
-                    // pass
-                } else if (i === 1 && all_the_data[j].date > new Date('2014-03-22')) {
+                if(i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
                     // pass
                 } else {
                     all_the_data[j]['value'+(i+1)] = data[i][j].value;
-
                 }
             }
         }
@@ -742,12 +739,12 @@ $(document).ready(function() {
                 $('#ufos svg .mg-active-datapoint')
                     .text(string +   '       Volume: ' + d.y);
             }
-        })
-    })
+        });
+    });
 
-    var second = d3.range(10000).map(function(d){return Math.random()*10});
+    var second = d3.range(10000).map(function(d){ return Math.random() * 10; });
     second = d3.layout.histogram()(second)
-        .map(function(d){
+        .map(function(d) {
             return {'count': d.y, 'value':d.x};
     });
 
@@ -771,7 +768,7 @@ $(document).ready(function() {
     });
 
     var third = d3.range(1000).map(d3.random.bates(10));
-    third = third.map(function(d,i){ return {val1: d, val2: i} });
+    third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
     MG.data_graphic({
         title: "Histogram 3",
@@ -793,7 +790,7 @@ $(document).ready(function() {
 
     // check for negative values, for sanity.
     var fourth = d3.range(1000).map(d3.random.bates(10));
-    fourth = fourth.map(function(d,i){return d - 0.5});
+    fourth = fourth.map(function(d,i){ return d - 0.5; });
 
     MG.data_graphic({
         title: "Histogram 4",
@@ -952,7 +949,7 @@ $(document).ready(function() {
             x_accessor: 'x',
             y_accessor: 'y'
         });
-    })
+    });
 
     //
     var bdata = [
@@ -964,7 +961,7 @@ $(document).ready(function() {
 
     var buttons = MG.button_layout('div#buttons')
         .data(bdata)
-        .manual_button('Time Scale', resolution_features, function(){console.log('switched time scales.')})
+        .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
         .button('a', 'Fruit')
         .button('b', 'Rock')
         .callback(function(){
@@ -975,11 +972,11 @@ $(document).ready(function() {
 
     // data tables
     var table_data = [
-        { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': .12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
-        { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': .11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
-        { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': .14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
-        { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': .23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
-        { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': .19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
+        { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
+        { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
+        { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
+        { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
+        { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
     ];
 
     var table1 = MG.data_table({
@@ -994,7 +991,7 @@ $(document).ready(function() {
             label: 'Country',
             description: 'These are arbitrary countries with arbitrary years underneath.'
         })
-        .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds' }})
+        .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
         .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
         .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
         .number({
@@ -1002,8 +999,8 @@ $(document).ready(function() {
             label: 'Volume',
             format: 'count', currency: '$',
             width: 100,
-            font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal' },
-            color: function(d){ return d < 5000000 ? '#f70101' : 'auto' }
+            font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
+            color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
         })
         .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
         .text({ accessor: 'description', width: 240, font_style: 'italic' })
@@ -1094,6 +1091,8 @@ $(document).ready(function() {
 
             //update data
             MG.data_graphic({
+                title: "Downloads by Channel",
+                description: "The graphic is gracefully updated depending on the selected channel.",
                 data: split_by_data,
                 width: torso.width*2,
                 height: trunk.height,
@@ -1114,6 +1113,8 @@ $(document).ready(function() {
 
             //update data
             MG.data_graphic({
+                title: "Beta Downloads",
+                description: "The graphic is gracefully updated depending on the chosen time period.",
                 data: data,
                 width: torso.width*2,
                 height: trunk.height,
@@ -1162,7 +1163,7 @@ $(document).ready(function() {
     function modify_time_period(data, past_n_days) {
         //splice time period
         var data_spliced = MG.clone(data);
-        if(past_n_days != '') {
+        if(past_n_days !== '') {
             for(var i=0; i<data_spliced.length; i++) {
                 var from = data_spliced[i].length - past_n_days;
                 data_spliced[i].splice(0,from);

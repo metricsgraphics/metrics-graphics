@@ -9,13 +9,11 @@ charts.histogram = function(args) {
         x_axis(args);
         y_axis(args);
         return this;
-    }
+    };
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
-
-        var g;
 
         //remove the old histogram, add new one
         $svg.find('.mg-histogram').remove();
@@ -28,17 +26,17 @@ charts.histogram = function(args) {
                 .enter().append('g')
                     .attr('class', 'mg-bar')
                     .attr('transform', function(d) {
-                        return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2)
+                        return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2) 
                             + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
-                        });
+                    });
 
         //draw bars
         bar.append('rect')
             .attr('x', 1)
             .attr('width', function(d, i) {
-                if(args.data[0].length == 1) {
+                if (args.data[0].length === 1) {
                         return (args.scalefns.xf(args.data[0][0]) 
-                            - args.bar_margin).toFixed(2)
+                            - args.bar_margin).toFixed(2);
                 } else {
                     return (args.scalefns.xf(args.data[0][1])
                     - args.scalefns.xf(args.data[0][0])
@@ -46,15 +44,16 @@ charts.histogram = function(args) {
                 }
             })
             .attr('height', function(d) {
-                if(d[args.y_accessor] == 0)
+                if (d[args.y_accessor] === 0) {
                     return 0;
+                }
 
                 return (args.height - args.bottom - args.buffer
                     - args.scales.Y(d[args.y_accessor])).toFixed(2);
             });
 
         return this;
-    }
+    };
 
     this.markers = function() {
         markers(args);
@@ -64,7 +63,6 @@ charts.histogram = function(args) {
     this.rollover = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
-        var g;
 
         //remove the old rollovers if they already exist
         $svg.find('.mg-rollover-rect').remove();
@@ -79,14 +77,14 @@ charts.histogram = function(args) {
             .attr('text-anchor', 'end');
 
         var g = svg.append('g')
-            .attr('class', 'mg-rollover-rect')
+            .attr('class', 'mg-rollover-rect');
 
         //draw rollover bars
         var bar = g.selectAll('.mg-bar')
             .data(args.data[0])
                 .enter().append('g')
                     .attr('class', function(d, i) {
-                        if(args.linked) {
+                        if (args.linked) {
                             return 'mg-rollover-rects roll_' + i;
                         } else {
                             return 'mg-rollover-rects';
@@ -101,10 +99,10 @@ charts.histogram = function(args) {
             .attr('y', 0)
             .attr('width', function(d, i) {
                 //if data set is of length 1
-                if(args.data[0].length == 1) {
+                if (args.data[0].length === 1) {
                     return (args.scalefns.xf(args.data[0][0]) 
                         - args.bar_margin).toFixed(2);
-                } else if (i != args.data[0].length - 1) {
+                } else if (i !== args.data[0].length - 1) {
                     return (args.scalefns.xf(args.data[0][i + 1])
                         - args.scalefns.xf(d)).toFixed(2);
                 } else {
@@ -119,8 +117,9 @@ charts.histogram = function(args) {
             .on('mouseover', this.rolloverOn(args))
             .on('mouseout', this.rolloverOff(args))
             .on('mousemove', this.rolloverMove(args));
+    
         return this;
-    }
+    };
 
     this.rolloverOn = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -129,22 +128,22 @@ charts.histogram = function(args) {
         return function(d, i) {
             svg.selectAll('text')
                 .filter(function(g, j) {
-                    return d == g;
+                    return d === g;
                 })
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
+            var num;
 
-            if (args.format == 'count') {
-                var num = function(d_) {
-                    var is_float = d_ % 1 != 0;
+            if (args.format === 'count') {
+                num = function(d_) {
+                    var is_float = d_ % 1 !== 0;
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
-            }
-            else {
-                var num = function(d_) {
+            } else {
+                num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
@@ -156,21 +155,21 @@ charts.histogram = function(args) {
                 .classed('active', true);
 
             //trigger mouseover on all matching bars
-            if(args.linked && !MG.globals.link) {
+            if (args.linked && !MG.globals.link) {
                 MG.globals.link = true;
 
                 //trigger mouseover on matching bars in .linked charts
                 d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
                     .each(function(d) { //use existing i
                         d3.select(this).on('mouseover')(d,i);
-                    })
+                    });
             }
             
             //update rollover text
             if (args.show_rollover_text) {
                 svg.select('.mg-active-datapoint')
                     .text(function() {
-                        if(args.time_series) {
+                        if (args.time_series) {
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
@@ -185,24 +184,24 @@ charts.histogram = function(args) {
                     });
             }
 
-            if(args.mouseover) {
+            if (args.mouseover) {
                 args.mouseover(d, i);
             }
         }
-    }
+    };
 
     this.rolloverOff = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
 
         return function(d, i) {
-            if(args.linked && MG.globals.link) {
+            if (args.linked && MG.globals.link) {
                 MG.globals.link = false;
 
                 //trigger mouseout on matching bars in .linked charts
                 d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
                     .each(function(d) { //use existing i
                         d3.select(this).on('mouseout')(d,i);
-                    })
+                    });
             }
             
             //reset active bar
@@ -213,24 +212,24 @@ charts.histogram = function(args) {
             svg.select('.mg-active-datapoint')
                 .text('');
 
-            if(args.mouseout) {
+            if (args.mouseout) {
                 args.mouseout(d, i);
             }
         }
-    }
+    };
 
     this.rolloverMove = function(args) {
         return function(d, i) {
-            if(args.mousemove) {
+            if (args.mousemove) {
                 args.mousemove(d, i);
             }
         }
-    }
-
+    };
+    
     this.windowListeners = function() {
         mg_window_listeners(this.args);
         return this;
-    }
+    };
 
     this.init(args);
     return this;

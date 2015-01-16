@@ -4,7 +4,7 @@ function markers(args) {
     var gm;
     var gb;
 
-    if(args.markers) {
+    if (args.markers) {
         $(args.target).find('svg .mg-markers').remove();
 
         gm = svg.append('g')
@@ -46,7 +46,7 @@ function markers(args) {
                 });
     }
 
-    if(args.baselines) {
+    if (args.baselines) {
         svg.selectAll('.mg-baselines').remove();
         gb = svg.append('g')
             .attr('class', 'mg-baselines');

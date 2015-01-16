@@ -55,7 +55,7 @@ function x_axis(args) {
         return args.scales.X(di[args.x_accessor]);
     }
 
-    if(args.chart_type == 'point') {
+    if (args.chart_type === 'point') {
         mg_point_add_color_scale(args);
         mg_point_add_size_scale(args);
     }
@@ -80,17 +80,17 @@ function x_axis(args) {
         .classed('mg-x-axis', true)
         .classed('mg-x-axis-small', args.use_small_class);
 
-    var last_i = args.scales.X.ticks(args.xax_count).length-1;
+    var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
     //are we adding a label?
-    if(args.x_label) {
+    if (args.x_label) {
         mg_add_x_label(g, args);
     }
 
     mg_add_x_ticks(g, args);
     mg_add_x_tick_labels(g, args);
 
-    if(args.x_rug) {
+    if (args.x_rug) {
         x_rug(args);
     }
 
@@ -101,7 +101,7 @@ function x_axis_categorical(args) {
     var svg_width = args.width,
         additional_buffer = 0;
 
-    if(args.chart_type == 'bar') {
+    if (args.chart_type === 'bar') {
         additional_buffer = args.buffer + 5;
     }
 
@@ -149,9 +149,9 @@ function mg_point_add_color_scale(args) {
     var min_color, max_color, 
         color_domain, color_range;
 
-    if(args.color_accessor != null) {
-        if(args.color_domain == null) {
-            if(args.color_type=='number') {
+    if (args.color_accessor !== null) {
+        if (args.color_domain === null) {
+            if (args.color_type === 'number') {
                 min_color = d3.min(args.data[0], function(d) {
                     return d[args.color_accessor]
                 });
@@ -162,7 +162,7 @@ function mg_point_add_color_scale(args) {
 
                 color_domain = [min_color, max_color];
             }
-            else if(args.color_type == 'category') {
+            else if (args.color_type === 'category') {
                 color_domain = d3.set(args.data[0]
                     .map(function(d) {
                         return d[args.color_accessor];
@@ -171,13 +171,12 @@ function mg_point_add_color_scale(args) {
 
                 color_domain.sort();
             }
-        }
-        else {
+        } else {
             color_domain = args.color_domain;
         }
 
-        if(args.color_range == null) {
-            if(args.color_type=='number') {
+        if (args.color_range === null) {
+            if (args.color_type === 'number') {
                 color_range = ['blue', 'red'];
             } else {
                 color_range = null;
@@ -186,7 +185,7 @@ function mg_point_add_color_scale(args) {
             color_range = args.color_range;
         }
 
-    if(args.color_type == 'number') {
+    if (args.color_type === 'number') {
             args.scales.color = d3.scale.linear()
                 .domain(color_domain)
                 .range(color_range)
@@ -208,8 +207,8 @@ function mg_point_add_color_scale(args) {
 
 function mg_point_add_size_scale(args) {
     var min_size, max_size, size_domain, size_range;
-    if(args.size_accessor != null) {
-        if(args.size_domain == null) {
+    if (args.size_accessor !== null) {
+        if (args.size_domain === null) {
             min_size = d3.min(args.data[0], function(d) {
                 return d[args.size_accessor];
             });
@@ -222,7 +221,7 @@ function mg_point_add_size_scale(args) {
         } else {
             size_domain = args.size_domain;
         }
-        if (args.size_range == null) {
+        if (args.size_range === null) {
             size_range = [1,5]; //args.size_domain;
         } else {
             size_range = args.size_range;
@@ -256,11 +255,11 @@ function mg_add_x_label(g, args) {
 }
 
 function mg_default_bar_xax_format(args) {
-    if(args.xax_format)
+    if (args.xax_format)
         return args.xax_format;
 
     return function(f) {
-        if(f < 1.0) {
+        if (f < 1.0) {
             //don't scale tiny values
             return args.yax_units + d3.round(f, args.decimals);
         }
@@ -272,15 +271,14 @@ function mg_default_bar_xax_format(args) {
 }
 
 function mg_default_histogram_xax_format(args) {
-    if(args.xax_format)
+    if (args.xax_format)
         return args.xax_format;
 
     return function(f) {
-        if(f < 1.0) {
+        if (f < 1.0) {
             //don't scale tiny values
             return args.yax_units + d3.round(f, args.decimals);
-        }
-        else {
+        } else {
             var pf = d3.formatPrefix(f);
             return args.xax_units + pf.scale(f) + pf.symbol;
         }
@@ -295,10 +293,10 @@ function mg_default_xax_format(args) {
         main_time_format, 
         time_frame;
 
-    if(args.time_series) {
+    if (args.time_series) {
         var diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
-        if(diff < 60) {
+        if (diff < 60) {
             main_time_format = d3.time.format('%M:%S');
             time_frame = 'seconds';
         } else if (diff / (60 * 60) <= 24) {
@@ -327,7 +325,7 @@ function mg_default_xax_format(args) {
                 return args.processed.main_x_time_format(d);
                 break;
             case 'number':
-                if(d < 1.0) {
+                if (d < 1.0) {
                     //don't scale tiny values
                     return args.yax_units + d3.round(d, args.decimals);
                 } else {
@@ -345,16 +343,16 @@ function mg_default_xax_format(args) {
 function mg_add_x_ticks(g, args) {
     var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
-    if(args.chart_type != 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
+    if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
         //extend axis line across bottom, rather than from domain's min..max
         g.append('line')
             .attr('x1',
-                (args.concise == false || args.xax_count == 0)
+                (args.concise === false || args.xax_count === 0)
                     ? args.left + args.buffer
                     : (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
             )
             .attr('x2',
-                (args.concise == false || args.xax_count == 0)
+                (args.concise === false || args.xax_count === 0)
                     ? args.width - args.right - args.buffer
                     : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
             )
@@ -374,8 +372,9 @@ function mg_add_x_ticks(g, args) {
                         : args.height - args.bottom + args.xax_tick_length;
                 })
                 .attr('class', function() {
-                    if(args.x_extended_ticks)
+                    if (args.x_extended_ticks) {
                         return 'mg-extended-x-ticks';
+                    }
                 });
 }
 
@@ -391,7 +390,7 @@ function mg_add_x_tick_labels(g, args) {
                     return args.xax_units + args.xax_format(d);
                 })
 
-    if(args.time_series && (args.show_years || args.show_secondary_x_label)) {
+    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
         var secondary_marks, 
             secondary_function, yformat;
 
@@ -417,7 +416,7 @@ function mg_add_x_tick_labels(g, args) {
 
         var years = secondary_function(args.processed.min_x, args.processed.max_x);
        
-        if(years.length == 0) {
+        if (years.length === 0) {
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
         }
@@ -427,7 +426,7 @@ function mg_add_x_tick_labels(g, args) {
             .classed('mg-year-marker', true)
             .classed('mg-year-marker-small', args.use_small_class);
 
-        if(time_frame === 'default') {
+        if (time_frame === 'default') {
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
                     .append('line')
@@ -455,24 +454,26 @@ function mg_find_min_max_x(args) {
         min_x, 
         max_x;
 
-    if(args.chart_type == 'line') {
-        for(var i=0; i<args.data.length; i++) {
+    if (args.chart_type === 'line') {
+        for (var i = 0; i < args.data.length; i++) {
             last_i = args.data[i].length-1;
 
-            if(args.data[i][0][args.x_accessor] < min_x || !min_x)
+            if (args.data[i][0][args.x_accessor] < min_x || !min_x) {
                 min_x = args.data[i][0][args.x_accessor];
+            }
 
-            if(args.data[i][last_i][args.x_accessor] > max_x || !max_x)
+            if (args.data[i][last_i][args.x_accessor] > max_x || !max_x) {
                 max_x = args.data[i][last_i][args.x_accessor];
+            }
         }
-    } else if(args.chart_type == 'point') {
+    } else if (args.chart_type === 'point') {
         max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
         min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
-    } else if(args.chart_type == 'histogram') {
+    } else if (args.chart_type === 'histogram') {
         min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
         max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
 
-    } else if(args.chart_type == 'bar') {
+    } else if (args.chart_type === 'bar') {
         min_x = 0; 
         max_x = d3.max(args.data[0], function(d) {
             var trio = [];
@@ -494,17 +495,17 @@ function mg_find_min_max_x(args) {
     //of course, a line chart doesn't make sense in this case, so the preferred
     //method would be to check for said object's length and, if appropriate, 
     //change the chart type to 'point'
-    if(min_x == max_x) {
-        if(min_x instanceof Date) {
+    if (min_x === max_x) {
+        if (min_x instanceof Date) {
             var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
             var tomorrow = MG.clone(min_x).setDate(min_x.getDate() + 1);
 
             min_x = yesterday;
             max_x = tomorrow;
-        } else if(typeof min_x == 'number') {
+        } else if (typeof min_x === 'number') {
             min_x = min_x - 1;
             max_x = max_x + 1;
-        } else if(typeof min_x == 'string') {
+        } else if (typeof min_x === 'string') {
             min_x = Number(min_x) - 1;
             max_x = Number(max_x) + 1;
         }
@@ -529,16 +530,16 @@ function mg_find_min_max_x(args) {
         }
     }
 
-    if (args.chart_type == 'bar') {
+    if (args.chart_type === 'bar') {
         args.additional_buffer = args.buffer * 5;
     } else {
         args.additional_buffer = 0;
     }
 }
 
-function mg_select_xax_format(args){
-    if (!args.xax_format && args.chart_type == 'line') args.xax_format       = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'point') args.xax_format      = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'histogram') args.xax_format  = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type == 'bar') args.xax_format        = mg_default_bar_xax_format(args);
+function mg_select_xax_format(args) {
+    if (!args.xax_format && args.chart_type === 'line') args.xax_format       = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type === 'point') args.xax_format      = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type === 'histogram') args.xax_format  = mg_default_xax_format(args);
+    if (!args.xax_format && args.chart_type === 'bar') args.xax_format        = mg_default_bar_xax_format(args);
 }

@@ -1,5 +1,3 @@
-
-
 var charts = {};
 
 MG.globals = {};
@@ -77,7 +75,8 @@ MG.data_graphic = function() {
         interpolate: 'cardinal',       // interpolation method to use when rendering lines
         custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
         max_data_size: null            // explicitly specify the the max number of line series, for use with custom_line_color_map
-    }
+    };
+
     defaults.point = {
         buffer: 16,
         ls: false,
@@ -90,7 +89,8 @@ MG.data_graphic = function() {
         size_domain: null,
         color_domain: null,
         color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
-    }
+    };
+
     defaults.histogram = {
         mouseover: function(d, i) {
             $('#histogram svg .mg-active-datapoint')
@@ -102,7 +102,8 @@ MG.data_graphic = function() {
         processed_y_accessor: 'y',
         processed_dx_accessor: 'dx',
         bar_margin: 1
-    }
+    };
+
     defaults.bar = {
         y_accessor: 'factor',
         x_accessor: 'value',
@@ -112,12 +113,13 @@ MG.data_graphic = function() {
         dodge_accessor: null,
         binned: true,
         padding_percentage: 0,
-        outer_padding_percentage: .1,
+        outer_padding_percentage: 0.1,
         height: 500,
         top: 20,
         bar_height: 20,
         left: 70
-    }
+    };
+
     defaults.missing = {
         top: 0,
         bottom: 0,
@@ -127,13 +129,11 @@ MG.data_graphic = function() {
         width: 350,
         height: 220,
         missing_text: 'Data currently missing or unavailable'
-    }
+    };
 
     var args = arguments[0];
     if (!args) { args = {}; }
-    //args = merge_with_defaults(args, moz.defaults.all);
 
-    var g = '';
     if (args.list) {
         args.x_accessor = 0;
         args.y_accessor = 1;
@@ -160,7 +160,7 @@ MG.data_graphic = function() {
             deprecation.warned = true;
 
             if (replacement) {
-                message += ' in favor of `args.' + replacement + '`'
+                message += ' in favor of `args.' + replacement + '`';
             }
 
             warnDeprecation(message, deprecation.version);
@@ -168,21 +168,21 @@ MG.data_graphic = function() {
     }
 
     //build the chart
-    if(args.chart_type == 'missing-data'){
+    if (args.chart_type === 'missing-data') {
         args = merge_with_defaults(args, defaults.missing);
         charts.missing(args);
     }
-    else if(args.chart_type == 'point'){
+    else if (args.chart_type === 'point') {
         var a = merge_with_defaults(defaults.point, defaults.all);
         args = merge_with_defaults(args, a);
         charts.point(args).mainPlot().markers().rollover().windowListeners();
     }
-    else if(args.chart_type == 'histogram'){
+    else if (args.chart_type === 'histogram') {
         var a = merge_with_defaults(defaults.histogram, defaults.all);
         args = merge_with_defaults(args, a);
         charts.histogram(args).mainPlot().markers().rollover().windowListeners();
     }
-    else if (args.chart_type == 'bar'){
+    else if (args.chart_type === 'bar') {
         var a = merge_with_defaults(defaults.bar, defaults.all);
         args = merge_with_defaults(args, a);
         charts.bar(args).mainPlot().markers().rollover().windowListeners();

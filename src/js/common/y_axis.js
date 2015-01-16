@@ -1,16 +1,17 @@
 function y_rug(args) {
     'use strict';
     var svg = d3.select($(args.target).find('svg').get(0));
-    var buffer_size = args.chart_type == 'point'
+    var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;
 
     var all_data = [];
-    for (var i=0; i<args.data.length; i++) {
-        for (var j=0; j<args.data[i].length; j++) {
+    for (var i = 0; i < args.data.length; i++) {
+        for (var j = 0; j < args.data[i].length; j++) {
             all_data.push(args.data[i][j]);
         }
     }
+
     var rug = svg.selectAll('line.mg-y-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
@@ -30,7 +31,7 @@ function y_rug(args) {
         .attr('y1', args.scalefns.yf)
         .attr('y2', args.scalefns.yf);
 
-    if(args.color_accessor) {
+    if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
         rug.classed('mg-y-rug-mono', false);
     } else {
@@ -55,17 +56,17 @@ function y_axis(args) {
     for(var i=0; i<args.data.length; i++) {
         var a = args.data[i];
 
-        if(args.y_scale_type == 'log') {
+        if (args.y_scale_type === 'log') {
             // filter positive values
             a = a.filter(function(d) { return d[args.y_accessor] > 0; });
         }
 
-        if(a.length > 0) { // get min/max in one pass
+        if (a.length > 0) { // get min/max in one pass
             var extent = d3.extent(a,function(d) {
                 return d[args.y_accessor];
             });
 
-            if(!_set) {
+            if (!_set) {
                 // min_y and max_y haven't been set
                 min_y = extent[0];
                 max_y = extent[1];
@@ -79,21 +80,21 @@ function y_axis(args) {
 
     // the default case is for the y-axis to start at 0, unless we explicitly want it
     // to start at an arbitrary number or from the data's minimum value
-    if(min_y >= 0 && !args.min_y && !args.min_y_from_data) {
+    if (min_y >= 0 && !args.min_y && !args.min_y_from_data) {
         min_y = 0;
     }
 
-    if(args.chart_type == 'bar') {
+    if (args.chart_type === 'bar') {
         min_y = 0;
         max_y = d3.max(args.data[0], function(d) {
             var trio = [];
             trio.push(d[args.y_accessor]);
 
-            if(args.baseline_accessor!=null) {
+            if (args.baseline_accessor!=null) {
                 trio.push(d[args.baseline_accessor]);
             }
 
-            if(args.predictor_accessor!=null) {
+            if (args.predictor_accessor!=null) {
                 trio.push(d[args.predictor_accessor]);
             }
 
@@ -105,27 +106,27 @@ function y_axis(args) {
     min_y = args.min_y ? args.min_y : min_y;
     max_y = args.max_y ? args.max_y : max_y * args.inflator;
 
-    if(args.y_scale_type != 'log') {
+    if (args.y_scale_type !== 'log') {
         //we are currently saying that if the min val > 0, set 0 as min y
-        if(min_y >= 0) {
+        if (min_y >= 0) {
             args.y_axis_negative = false;
         } else {
-            min_y = min_y  - (max_y * (args.inflator-1));
+            min_y = min_y  - (max_y * (args.inflator - 1));
             args.y_axis_negative = true;
         }
     }
 
-    if(!args.min_y && args.min_y_from_data) {
+    if (!args.min_y && args.min_y_from_data) {
         min_y = min_y / args.inflator;
     }
 
-    if(args.y_scale_type == 'log') {
-        if(args.chart_type == 'histogram') {
+    if (args.y_scale_type === 'log') {
+        if (args.chart_type === 'histogram') {
             // log histogram plots should start just below 1
             // so that bins with single counts are visible
             min_y = 0.2;
         } else {
-            if(min_y <= 0) {
+            if (min_y <= 0) {
                 min_y = 1;
             }
         }
@@ -146,10 +147,10 @@ function y_axis(args) {
         .range([args.height - args.bottom - args.buffer, args.top]);
 
     var yax_format = args.yax_format;
-    if(!yax_format) {
-        if(args.format == 'count') {
+    if (!yax_format) {
+        if (args.format === 'count') {
             yax_format = function(f) {
-                if(f < 1.0) {
+                if (f < 1.0) {
                     // Don't scale tiny values.
                     return args.yax_units + d3.round(f, args.decimals);
                 } else {
@@ -168,7 +169,7 @@ function y_axis(args) {
     //remove the old y-axis, add new one
     $svg.find('.mg-y-axis').remove();
 
-    if(!args.y_axis) return this;
+    if (!args.y_axis) return this;
 
     //y axis
     g = svg.append('g')
@@ -176,7 +177,7 @@ function y_axis(args) {
         .classed('mg-y-axis-small', args.use_small_class);
 
     //are we adding a label?
-    if(args.y_label) {
+    if (args.y_label) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
@@ -200,17 +201,16 @@ function y_axis(args) {
     var scale_ticks = args.scales.Y.ticks(args.yax_count);
 
     function log10(val) {
-         //return Math.log(val) / Math.LN10;
-         if(val == 1000) {
+         if (val === 1000) {
             return 3;
          }
-         if(val == 1000000) {
+         if (val === 1000000) {
             return 7;
          }
          return Math.log(val) / Math.LN10;
     }
 
-    if(args.y_scale_type == 'log') {
+    if (args.y_scale_type === 'log') {
         // get out only whole logs
         scale_ticks = scale_ticks.filter(function(d) {
             return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1-1e-6;
@@ -224,14 +224,14 @@ function y_axis(args) {
     var data_is_int = true;
     $.each(args.data, function(i, d) {
         $.each(d, function(i, d) {
-            if(d[args.y_accessor] % 1 !== 0) {
+            if (d[args.y_accessor] % 1 !== 0) {
                 data_is_int = false;
                 return false;
             }
         });
     });
 
-    if(data_is_int && number_of_ticks > max_y && args.format == 'count') {
+    if (data_is_int && number_of_ticks > max_y && args.format === 'count') {
         //remove non-integer ticks
         scale_ticks = scale_ticks.filter(function(d) {
             return d % 1 === 0;
@@ -239,7 +239,7 @@ function y_axis(args) {
     }
 
     var last_i = scale_ticks.length-1;
-    if(!args.x_extended_ticks && !args.y_extended_ticks) {
+    if (!args.x_extended_ticks && !args.y_extended_ticks) {
         g.append('line')
             .attr('x1', args.left)
             .attr('x2', args.left)
@@ -275,7 +275,7 @@ function y_axis(args) {
                     return o;
                 })
 
-    if(args.y_rug) {
+    if (args.y_rug) {
         y_rug(args);
     }
 
@@ -284,8 +284,6 @@ function y_axis(args) {
 
 function y_axis_categorical(args) {
     // first, come up with y_axis
-    var svg_height = args.height;
-
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
         .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
@@ -304,8 +302,9 @@ function y_axis_categorical(args) {
         .classed('mg-y-axis', true)
         .classed('mg-y-axis-small', args.use_small_class);
 
-    if(!args.y_axis)
+    if (!args.y_axis) {
         return this;
+    }
 
     g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
@@ -315,7 +314,7 @@ function y_axis_categorical(args) {
         })
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
-        .text(String)
+        .text(String);
 
     return this;
 }

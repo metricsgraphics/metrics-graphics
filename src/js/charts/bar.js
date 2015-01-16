@@ -25,7 +25,7 @@ charts.bar = function(args) {
             y_axis_categorical(args);
         }
         return this;
-    }
+    };
 
     this.mainPlot = function() {
         var svg = d3.select(args.target).select('svg');
@@ -87,7 +87,6 @@ charts.bar = function(args) {
             }
         }
 
-
         var appropriate_size;
 
         if (this.is_vertical) {
@@ -110,7 +109,7 @@ charts.bar = function(args) {
                     return args.scalefns.xf(d) + appropriate_size/2;
                 })
                 .attr('width', appropriate_size)
-                .attr('height', function(d){
+                .attr('height', function(d) {
                     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
                 });
 
@@ -133,19 +132,18 @@ charts.bar = function(args) {
                     .attr('y', function(d) {
                         return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
                     })
-                    .attr('x', function(d){
+                    .attr('x', function(d) {
                         return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
                     })
                     .attr('width', appropriate_size/pp)
-                    .attr('height', function(d){
+                    .attr('height', function(d) {
                         return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
                     });
             }
 
-            if (args.baseline_accessor){
-
+            if (args.baseline_accessor) {
                 if (perform_load_animation) {
-                    baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)})
+                    baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)});
                 }
 
                 if (should_transition) {
@@ -154,17 +152,15 @@ charts.bar = function(args) {
                 }
 
                 baseline_marks
-                    .attr('x1', function(d){
+                    .attr('x1', function(d) {
                         return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
                     })
-                    .attr('x2', function(d){
+                    .attr('x2', function(d) {
                         return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
                     })
-                    .attr('y1', function(d){return args.scales.Y(d[args.baseline_accessor])})
-                    .attr('y2', function(d){return args.scales.Y(d[args.baseline_accessor])});
-
+                    .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
+                    .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
             }
-
         } else {
             appropriate_size = args.scales.Y.rangeBand()/1.5;
 
@@ -178,19 +174,18 @@ charts.bar = function(args) {
             }
 
             bars.attr('x', args.scales.X(0))
-                .attr('y', function(d){
+                .attr('y', function(d) {
                     return args.scalefns.yf(d) + appropriate_size/2;
                 })
                 .attr('height', appropriate_size)
-                .attr('width', function(d){
+                .attr('width', function(d) {
                     return args.scalefns.xf(d) - args.scales.X(0);
                 });
 
 
-            if (args.predictor_accessor){
+            if (args.predictor_accessor) {
                 var pp = args.predictor_proportion;
                 var pp0 = pp-1;
-
 
                 if (perform_load_animation) {
                     predictor_bars.attr('width', 0);
@@ -204,20 +199,19 @@ charts.bar = function(args) {
                 // thick line  through bar;
                 predictor_bars
                     .attr('x', args.scales.X(0))
-                    .attr('y', function(d){
-                        return args.scalefns.yf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
+                    .attr('y', function(d) {
+                        return args.scalefns.yf(d) + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
                     })
-                    .attr('height', appropriate_size/pp)
-                    .attr('width', function(d){
+                    .attr('height', appropriate_size / pp)
+                    .attr('width', function(d) {
                         return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
                     });
             }
 
-            if (args.baseline_accessor){
-
+            if (args.baseline_accessor) {
                 if (perform_load_animation) {
                     baseline_marks
-                        .attr({x1: args.scales.X(0), x2: args.scales.X(0)})
+                        .attr({x1: args.scales.X(0), x2: args.scales.X(0)});
                 }
 
                 if (should_transition) {
@@ -226,19 +220,19 @@ charts.bar = function(args) {
                 }
 
                 baseline_marks
-                    .attr('x1', function(d){return args.scales.X(d[args.baseline_accessor])})
-                    .attr('x2', function(d){return args.scales.X(d[args.baseline_accessor])})
-                    .attr('y1', function(d){
-                        return args.scalefns.yf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
+                    .attr('x1', function(d) { return args.scales.X(d[args.baseline_accessor]); })
+                    .attr('x2', function(d) { return args.scales.X(d[args.baseline_accessor]); })
+                    .attr('y1', function(d) {
+                        return args.scalefns.yf(d) + appropriate_size / 2 - appropriate_size / pp + appropriate_size / 2;
                     })
-                    .attr('y2', function(d){
-                        return args.scalefns.yf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
+                    .attr('y2', function(d) {
+                        return args.scalefns.yf(d) + appropriate_size / 2 + appropriate_size / pp + appropriate_size / 2;
                     });
             }
         }
 
         return this;
-    }
+    };
 
     this.markers = function() {
         markers(args);
@@ -294,11 +288,10 @@ charts.bar = function(args) {
                 .on('mousemove', this.rolloverMove(args));
         }
         return this;
-    }
+    };
 
     this.rolloverOn = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
-        var x_formatter = d3.time.format('%Y-%m-%d');
         var label_accessor = this.is_vertical ? args.x_accessor : args.y_accessor;
         var data_accessor = this.is_vertical ? args.y_accessor : args.x_accessor;
         var label_units = this.is_vertical ? args.yax_units : args.xax_units;
@@ -306,22 +299,22 @@ charts.bar = function(args) {
         return function(d, i) {
             svg.selectAll('text')
                 .filter(function(g, j) {
-                    return d == g;
+                    return d === g;
                 })
                 .attr('opacity', 0.3);
 
             var fmt = d3.time.format('%b %e, %Y');
+            var num;
 
-            if (args.format == 'count') {
-                var num = function(d_) {
-                    var is_float = d_ % 1 != 0;
+            if (args.format === 'count') {
+                num = function(d_) {
+                    var is_float = d_ % 1 !== 0;
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
                 }
-            }
-            else {
-                var num = function(d_) {
+            } else {
+                num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
@@ -336,24 +329,22 @@ charts.bar = function(args) {
             if (args.show_rollover_text) {
                 svg.select('.mg-active-datapoint')
                     .text(function() {
-                        if(args.time_series) {
+                        if (args.time_series) {
                             var dd = new Date(+d[data_accessor]);
                             dd.setDate(dd.getDate());
 
-                            return fmt(dd) + '  ' + label_units
-                                + num(d[label_accessor]);
-                        }
-                        else {
+                            return fmt(dd) + '  ' + label_units + num(d[label_accessor]);
+                        } else {
                             return d[label_accessor] + ': ' + num(d[data_accessor]);
                         }
                     });
             }
 
-            if(args.mouseover) {
+            if (args.mouseover) {
                 args.mouseover(d, i);
             }
         }
-    }
+    };
 
     this.rolloverOff = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -367,24 +358,24 @@ charts.bar = function(args) {
             svg.select('.mg-active-datapoint')
                 .text('');
 
-            if(args.mouseout) {
+            if (args.mouseout) {
                 args.mouseout(d, i);
             }
         }
-    }
+    };
 
     this.rolloverMove = function(args) {
         return function(d, i) {
-            if(args.mousemove) {
+            if (args.mousemove) {
                 args.mousemove(d, i);
             }
         }
-    }
+    };
 
     this.windowListeners = function() {
         mg_window_listeners(this.args);
         return this;
-    }
+    };
 
     this.init(args);
     return this;
