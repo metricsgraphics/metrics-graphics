@@ -103,16 +103,9 @@ function y_axis(args) {
         });
     }
     //if a min_y or max_y have been set, use those instead
-<<<<<<< HEAD
-    min_y = args.min_y ? args.min_y : min_y;
-    max_y = args.max_y ? args.max_y : max_y * args.inflator;
-
-    if (args.y_scale_type !== 'log') {
-=======
     min_y = args.min_y !== null ? args.min_y : min_y;
     max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
-    if(args.y_scale_type != 'log') {
->>>>>>> FETCH_HEAD
+    if (args.y_scale_type != 'log') {
         //we are currently saying that if the min val > 0, set 0 as min y
         if (min_y >= 0) {
             args.y_axis_negative = false;
