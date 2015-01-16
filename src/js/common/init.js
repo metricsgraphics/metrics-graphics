@@ -20,8 +20,6 @@ function init(args) {
         args.time_series = false;
     }
 
-    var linked;
-
     var svg_width = args.width;
     var svg_height = args.height;
 
