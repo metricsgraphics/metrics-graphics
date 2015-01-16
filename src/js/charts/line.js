@@ -265,7 +265,6 @@ charts.line = function(args) {
 
         // for multi-lines and aggregated rollovers, use rects
         else if (args.data.length > 1 && args.aggregate_rollover) {
-            console.log('aggregate rollover');
             var data_nested = d3.nest()
                 .key(function(d) { return d[args.x_accessor]; })
                 .entries(d3.merge(args.data.map(function(d) { return d; })));
@@ -494,49 +493,90 @@ charts.line = function(args) {
 
             //update rollover text
             if (args.show_rollover_text) {
-                svg.select('.mg-active-datapoint')
-                    .attr('dy', 0)
-                    .text(function() {
+                var textContainer = svg.select('.mg-active-datapoint'),
+                    lineCount = 0,
+                    lineHeight = 1.1;
 
-                        if (args.aggregate_rollover && args.data.length > 1) {
-                            if (args.time_series) {
-                                var date = new Date(d.key),
-                                    displayText = fmt(date) + '  ' + args.yax_units;
+                textContainer.select('*').remove();
 
-                                d.values.forEach(function(datum) {
-                                    displayText += "\n" + 'line ' + datum.line_id + ' ' + num(datum[args.y_accessor]);
-                                });
+                if (args.aggregate_rollover && args.data.length > 1) {
+                    if (args.time_series) {
+                        var date = new Date(d.key);
 
-                                return displayText
-                            }
-                            else {
-                                var displayText = '';
+                        textContainer.append('tspan')
+                            .text(fmt(date) + '  ' + args.yax_units);
 
-                                d.values.forEach(function(datum) {
-                                    displayText += "\n" + 'line ' + datum.line_id + ' ' +
-                                        args.x_accessor + ': ' + datum[args.x_accessor]
-                                        + ', ' + args.y_accessor + ': ' + args.yax_units
-                                        + num(datum[args.y_accessor]);
-                                });
+                        lineCount = 1;
 
-                                return displaxText;
-                            }
-                        } else {
-                            if (args.time_series) {
-                                var dd = new Date(+d[args.x_accessor]);
-                                dd.setDate(dd.getDate());
+                        d.values.forEach(function(datum) {
+                            var label = textContainer.append('tspan')
+                                .attr({
+                                  x: 0,
+                                  y: (lineCount * lineHeight) + 'em'
+                                })
+                                .text(num(datum[args.y_accessor]));
 
-                                return fmt(dd) + '  ' + args.yax_units
-                                    + num(d[args.y_accessor]);
-                            }
-                            else {
-                                return args.x_accessor + ': ' + d[args.x_accessor]
+                            textContainer.append('tspan')
+                                .attr({
+                                  x: -label.node().getComputedTextLength(),
+                                  y: (lineCount * lineHeight) + 'em'
+                                })
+                                .text('\u2014 ') // mdash
+                                .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                .style('font-weight', 'bold');
+
+                            lineCount++;
+                        });
+
+                        textContainer.append('tspan')
+                            .attr('x', 0)
+                            .attr('y', (lineCount * lineHeight) + 'em')
+                            .text('\u00A0');
+                    } else {
+                        d.values.forEach(function(datum) {
+                            var label = textContainer.append('tspan')
+                                .attr({
+                                  x: 0,
+                                  y: (lineCount * lineHeight) + 'em'
+                                })
+                                .text(args.x_accessor + ': ' + datum[args.x_accessor]
                                     + ', ' + args.y_accessor + ': ' + args.yax_units
-                                    + num(d[args.y_accessor]);
-                            }
-                        }
-                    })
-                    .call(wrapText, null, "\n", {'text-anchor': 'end'});
+                                    + num(datum[args.y_accessor]));
+
+                            textContainer.append('tspan')
+                                .attr({
+                                  x: -label.node().getComputedTextLength(),
+                                  y: (lineCount * lineHeight) + 'em'
+                                })
+                                .text('\u2014 ') // mdash
+                                .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                .style('font-weight', 'bold');
+
+                            lineCount++;
+                        });
+                    }
+
+                    // append an blank (&nbsp;) line to mdash positioning
+                    textContainer.append('tspan')
+                        .attr('x', 0)
+                        .attr('y', (lineCount * lineHeight) + 'em')
+                        .text('\u00A0');
+                } else {
+                    if (args.time_series) {
+                        var dd = new Date(+d[args.x_accessor]);
+                        dd.setDate(dd.getDate());
+
+                        textContainer.append('tspan')
+                            .text(fmt(dd) + '  ' + args.yax_units
+                                + num(d[args.y_accessor]));
+                    }
+                    else {
+                        textContainer.append('tspan')
+                            .text(args.x_accessor + ': ' + d[args.x_accessor]
+                                + ', ' + args.y_accessor + ': ' + args.yax_units
+                                + num(d[args.y_accessor]));
+                    }
+                }
             }
 
             if (args.mouseover) {
