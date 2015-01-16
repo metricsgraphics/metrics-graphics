@@ -56,6 +56,11 @@ To run tests, type:
 
     gulp test
 
+To run the development server (accessible at http://localhost:4300):
+
+    gulp serve
+
+
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
 * [Interactive demo](http://metricsgraphicsjs.org/interactive-demo.htm)
