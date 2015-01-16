@@ -919,6 +919,7 @@
     }
 
     function y_axis(args) {
+        if (!args.processed) args.processed = {};
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
         var g;
@@ -979,12 +980,17 @@
                 return Math.max.apply(null, trio);
             });
         }
-
         //if a min_y or max_y have been set, use those instead
+<<<<<<< HEAD
         min_y = args.min_y ? args.min_y : min_y;
         max_y = args.max_y ? args.max_y : max_y * args.inflator;
 
         if (args.y_scale_type !== 'log') {
+=======
+        min_y = args.min_y !== null ? args.min_y : min_y;
+        max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
+        if(args.y_scale_type != 'log') {
+>>>>>>> FETCH_HEAD
             //we are currently saying that if the min val > 0, set 0 as min y
             if (min_y >= 0) {
                 args.y_axis_negative = false;
@@ -1008,7 +1014,6 @@
                     min_y = 1;
                 }
             }
-
             args.scales.Y = d3.scale.log()
                 .domain([min_y, max_y])
                 .range([args.height - args.bottom - args.buffer, args.top])
@@ -1018,10 +1023,11 @@
                 .domain([min_y, max_y])
                 .range([args.height - args.bottom - args.buffer, args.top]);
         }
-
+        args.processed.min_y = min_y;
+        args.processed.max_y = max_y;
         //used for ticks and such, and designed to be paired with log or linear
         args.scales.Y_axis = d3.scale.linear()
-            .domain([min_y, max_y])
+            .domain([args.processed.min_y, args.processed.max_y])
             .range([args.height - args.bottom - args.buffer, args.top]);
 
         var yax_format = args.yax_format;
@@ -1264,7 +1270,6 @@
         args.scales.X = (args.time_series)
             ? d3.time.scale()
             : d3.scale.linear();
-
         args.scales.X
             .domain([args.processed.min_x, args.processed.max_x])
             .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
@@ -1807,12 +1812,22 @@
 
         var svg = d3.select(args.target).selectAll('svg');
 
+        // add clip path element to svg.
+        svg.append('defs')
+            .append('clipPath')
+                .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+            .append('svg:rect')
+                .attr('x', args.left)
+                .attr('y', args.top)
+                .attr('width', args.width - args.left - args.right - args.buffer)
+                .attr('height', args.height - args.top - args.bottom - args.buffer);
+
         //has the width or height changed?
         if(svg_width != Number(svg.attr('width')))
-            svg.attr('width', svg_width)
+            svg.attr('width', svg_width);
 
         if(svg_height != Number(svg.attr('height')))
-            svg.attr('height', svg_height)
+            svg.attr('height', svg_height);
 
         // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
         svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
@@ -2355,7 +2370,8 @@
                 if (args.show_confidence_band) {
                     svg.append('path')
                         .attr('class', 'mg-confidence-band')
-                        .attr('d', confidence_area(args.data[i]));
+                        .attr('d', confidence_area(args.data[i]))
+                        .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
                 }
 
                 //add the area
@@ -2369,11 +2385,15 @@
                                 .duration(function() {
                                     return (args.transition_on_update) ? 1000 : 0;
                                 })
-                                .attr('d', area(args.data[i]));
+                                .attr('d', area(args.data[i]))
+                                .attr('clip-path', 'url(#mg-plot-window)');
+    ;
                     } else { //otherwise, add the area
                         svg.append('path')
                             .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
-                            .attr('d', area(args.data[i]));
+                            .attr('d', area(args.data[i]))
+                            .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+    ;
                     }
                 } else if ($area.length > 0) {
                   $area.remove();
@@ -2402,11 +2422,15 @@
                             .attr('d', flat_line(args.data[i]))
                             .transition()
                                 .duration(1000)
-                                .attr('d', line(args.data[i]));
+                                .attr('d', line(args.data[i]))
+                                .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+    ;
                     } else { //or just add the line
                         svg.append('path')
                             .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
-                            .attr('d', line(args.data[i]));
+                            .attr('d', line(args.data[i]))
+                            .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+    ;
                     }
                 }
 
@@ -2613,18 +2637,25 @@
 
             return function(d, i) {
                 //show circle on mouse-overed rect
-                svg.selectAll('circle.mg-line-rollover-circle')
-                    .attr('class', "")
-                    .attr('class', 'mg-area' + d['line_id'] + '-color')
-                    .classed('mg-line-rollover-circle', true)
-                    .attr('cx', function() {
-                        return args.scales.X(d[args.x_accessor]).toFixed(2);
-                    })
-                    .attr('cy', function() {
-                        return args.scales.Y(d[args.y_accessor]).toFixed(2);
-                    })
-                    .attr('r', args.point_size)
-                    .style('opacity', 1);
+                if (d[args.x_accessor] > args.processed.min_x && 
+                    d[args.x_accessor] < args.processed.max_x &&
+                    d[args.y_accessor] > args.processed.min_y &&
+                    d[args.y_accessor] < args.processed.max_y
+                ){
+                    svg.selectAll('circle.mg-line-rollover-circle')
+                        .attr('class', "")
+                        .attr('class', 'mg-area' + d['line_id'] + '-color')
+                        .classed('mg-line-rollover-circle', true)
+                        .attr('cx', function() {
+                            return args.scales.X(d[args.x_accessor]).toFixed(2);
+                        })
+                        .attr('cy', function() {
+                            return args.scales.Y(d[args.y_accessor]).toFixed(2);
+                        })
+                        .attr('r', args.point_size)
+                        .style('opacity', 1);               
+                }
+
 
                 //trigger mouseover on all rects for this date in .linked charts
                 if (args.linked && !MG.globals.link) {
@@ -4394,7 +4425,17 @@
         return data;
     };
 
+<<<<<<< HEAD
     function get_pixel_dimension(target, dimension) {
+=======
+    function mg_strip_punctuation(s){
+        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var finalString = punctuationless.replace(/ +?/g, "");
+        return finalString;
+    }
+
+    function get_pixel_dimension(target, dimension){
+>>>>>>> FETCH_HEAD
         return Number(d3.select(target).style(dimension).replace(/px/g, ''));
     }
 

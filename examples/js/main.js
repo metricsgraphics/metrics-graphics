@@ -350,8 +350,6 @@ $(document).ready(function() {
             show_secondary_x_label: false,
             show_confidence_band: ['l', 'u'],
             x_extended_ticks: true,
-            min_y: 0,
-            max_y: 1,
             x_accessor: 'date',
             y_accessor: 'value'
         });
