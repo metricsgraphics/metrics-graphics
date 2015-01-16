@@ -62,12 +62,22 @@ function init(args) {
 
     var svg = d3.select(args.target).selectAll('svg');
 
+    // add clip path element to svg.
+    svg.append('defs')
+        .append('clipPath')
+            .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+        .append('svg:rect')
+            .attr('x', args.left)
+            .attr('y', args.top)
+            .attr('width', args.width - args.left - args.right - args.buffer)
+            .attr('height', args.height - args.top - args.bottom - args.buffer);
+
     //has the width or height changed?
     if(svg_width != Number(svg.attr('width')))
-        svg.attr('width', svg_width)
+        svg.attr('width', svg_width);
 
     if(svg_height != Number(svg.attr('height')))
-        svg.attr('height', svg_height)
+        svg.attr('height', svg_height);
 
     // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);

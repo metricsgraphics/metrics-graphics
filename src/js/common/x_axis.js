@@ -65,7 +65,6 @@ function x_axis(args) {
     args.scales.X = (args.time_series)
         ? d3.time.scale()
         : d3.scale.linear();
-
     args.scales.X
         .domain([args.processed.min_x, args.processed.max_x])
         .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);

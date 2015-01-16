@@ -40,6 +40,7 @@ function y_rug(args) {
 }
 
 function y_axis(args) {
+    if (!args.processed) args.processed = {};
     var svg = d3.select($(args.target).find('svg').get(0));
     var $svg = $($(args.target).find('svg').get(0));
     var g;
@@ -100,11 +101,9 @@ function y_axis(args) {
             return Math.max.apply(null, trio);
         });
     }
-
     //if a min_y or max_y have been set, use those instead
-    min_y = args.min_y ? args.min_y : min_y;
-    max_y = args.max_y ? args.max_y : max_y * args.inflator;
-
+    min_y = args.min_y !== null ? args.min_y : min_y;
+    max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
     if(args.y_scale_type != 'log') {
         //we are currently saying that if the min val > 0, set 0 as min y
         if(min_y >= 0) {
@@ -129,7 +128,6 @@ function y_axis(args) {
                 min_y = 1;
             }
         }
-
         args.scales.Y = d3.scale.log()
             .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top])
@@ -139,10 +137,11 @@ function y_axis(args) {
             .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top]);
     }
-
+    args.processed.min_y = min_y;
+    args.processed.max_y = max_y;
     //used for ticks and such, and designed to be paired with log or linear
     args.scales.Y_axis = d3.scale.linear()
-        .domain([min_y, max_y])
+        .domain([args.processed.min_y, args.processed.max_y])
         .range([args.height - args.bottom - args.buffer, args.top]);
 
     var yax_format = args.yax_format;

@@ -19,6 +19,12 @@ MG.convert.number = function(data, accessor){
     return data;
 }
 
+function mg_strip_punctuation(s){
+    var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+    var finalString = punctuationless.replace(/ +?/g, "");
+    return finalString;
+}
+
 function get_pixel_dimension(target, dimension){
     return Number(d3.select(target).style(dimension).replace(/px/g, ''));
 }
