@@ -242,7 +242,7 @@ function y_axis(args) {
         });
     }
 
-    var last_i = scale_ticks.length-1;
+    var last_i = scale_ticks.length - 1;
     if (!args.x_extended_ticks && !args.y_extended_ticks) {
         g.append('line')
             .attr('x1', args.left)
