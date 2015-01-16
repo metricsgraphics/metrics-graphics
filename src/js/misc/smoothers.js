@@ -25,7 +25,7 @@ function add_lowess(args) {
 
     svg.append('path')
         .attr('d', line(lowess))
-        .attr('class', 'mg-lowess-line')
+        .attr('class', 'mg-lowess-line');
 }
 
 function lowess_robust(x, y, alpha, inc) {
@@ -45,13 +45,13 @@ function lowess_robust(x, y, alpha, inc) {
 
     for (var i = 0; i < 100; i += 1) {
         r = d3.zip(y_proto, y).map(function(yi) {
-        return Math.abs(yi[1] - yi[0]);
+            return Math.abs(yi[1] - yi[0]);
         });
 
-        var q = d3.quantile(r.sort(), 0.5)
+        var q = d3.quantile(r.sort(), 0.5);
 
         r = r.map(function(ri) {
-            return _bisquare_weight(ri / (6 * q))
+            return _bisquare_weight(ri / (6 * q));
         });
 
         _l = _calculate_lowess_fit(x,y,alpha,inc, r);
@@ -69,7 +69,7 @@ function lowess_robust(x, y, alpha, inc) {
 
 function lowess(x, y, alpha, inc) {
     var r = [];
-    for (var i = 0; i < x.length; i += 1) {r.push(1)}
+    for (var i = 0; i < x.length; i += 1) { r.push(1); }
     var _l = _calculate_lowess_fit(x, y, alpha, inc, r);
 }
 
@@ -112,11 +112,12 @@ function least_squares(x_, y_) {
     var x0 = yhat - beta * xhat;
 
     return {
-        x0:x0, 
-        beta:beta, 
-        fit:function(x) {
+        x0: x0, 
+        beta: beta, 
+        fit: function(x) {
             return x0 + x * beta;
-        }}
+        }
+    };
 }
 
 function _pow_weight(u, w) {
@@ -160,11 +161,11 @@ function _weighted_means(wxy) {
 
 function _weighted_beta(wxy, xbar, ybar) {
     var num = d3.sum(wxy.map(function(wxyi) {
-        return Math.pow(wxyi.w, 2) * (wxyi.x - xbar) * (wxyi.y - ybar)
+        return Math.pow(wxyi.w, 2) * (wxyi.x - xbar) * (wxyi.y - ybar);
     }));
 
     var denom = d3.sum(wxy.map(function(wxyi) {
-        return Math.pow(wxyi.w, 2) * (Math.pow(wxyi.x - xbar), 2)
+        return Math.pow(wxyi.w, 2) * (Math.pow(wxyi.x - xbar), 2);
     }));
 
     return num / denom;
@@ -178,7 +179,7 @@ function _weighted_least_squares(wxy) {
     xbar = _wm.xbar;
     ybar = _wm.ybar;
 
-    var beta = _weighted_beta(wxy, xbar, ybar)
+    var beta = _weighted_beta(wxy, xbar, ybar);
 
     return {
         beta : beta,
@@ -224,7 +225,7 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
     var y_proto = [];
 
     for (var i = 0; i < x_proto.length; i += 1) {
-        x_i = x_proto[i]
+        x_i = x_proto[i];
 
         // get k closest neighbors.
         xi_neighbors = xy.map(function(xyi) {
@@ -236,7 +237,7 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
         }).sort().slice(0, k);
 
         // Get the largest distance in the neighbor set.
-        delta_i = d3.max(xi_neighbors)[0]
+        delta_i = d3.max(xi_neighbors)[0];
 
         // Prepare the weights for mean calculation and WLS.
 
@@ -245,17 +246,17 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
                 w : _tricube_weight(wxy[0] / delta_i) * wxy[3], 
                 x : wxy[1], 
                 y  :wxy[2]
-            }})
+            }});
         
         // Find the weighted least squares, obviously.
-        var _output = _weighted_least_squares(xi_neighbors)
+        var _output = _weighted_least_squares(xi_neighbors);
 
         x0_i = _output.x0;
         beta_i = _output.beta;
 
         // 
-        y_proto.push(x0_i + beta_i * x_i)
+        y_proto.push(x0_i + beta_i * x_i);
     }
 
-    return {x:x_proto, y:y_proto};
+    return {x: x_proto, y: y_proto};
 }
