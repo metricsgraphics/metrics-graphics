@@ -14,10 +14,9 @@ function init(args) {
     //but with the intention of using multiple values for multilines, etc.
 
     //do we have a time_series?
-    if($.type(args.data[0][0][args.x_accessor]) == 'date') {
+    if($.type(args.data[0][0][args.x_accessor]) === 'date') {
         args.time_series = true;
-    }
-    else {
+    } else {
         args.time_series = false;
     }
 
@@ -26,29 +25,34 @@ function init(args) {
     var svg_width = args.width;
     var svg_height = args.height;
 
-    if (args.full_width){
-        // get parent element.
-        var svg_width = get_width(args.target);
-    }
-    if (args.fill_height){
-        var svg_height = get_height(args.target);
+     //are we setting the aspect ratio
+    if (args.full_width) {
+        // get parent element
+        svg_width = get_width(args.target);
     }
 
-    if (args.chart_type=='bar' && svg_height == null){
+    if (args.fill_height) {
+        svg_height = get_height(args.target);
+    }
+
+    if (args.chart_type === 'bar' && svg_height === null) {
         svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
     }
+
     //remove the svg if the chart type has changed
     var svg = $(args.target).find('svg');
-    if((svg.find('.mg-main-line').length > 0 && args.chart_type != 'line')
-            || (svg.find('.mg-points').length > 0 && args.chart_type != 'point')
-            || (svg.find('.mg-histogram').length > 0 && args.chart_type != 'histogram')
-            || (svg.find('.mg-barplot').length > 0 && args.chart_type != 'bar')
+
+    if((svg.find('.mg-main-line').length > 0 && args.chart_type !== 'line')
+            || (svg.find('.mg-points').length > 0 && args.chart_type !== 'point')
+            || (svg.find('.mg-histogram').length > 0 && args.chart_type !== 'histogram')
+            || (svg.find('.mg-barplot').length > 0 && args.chart_type !== 'bar')
         ) {
         $(args.target).empty();
     }
+
     //add svg if it doesn't already exist
     //using trim on html rather than :empty to ignore white spaces if they exist
-    if($.trim($(args.target).html()) == '') {
+    if($.trim($(args.target).html()) === '') {
         //add svg
         d3.select(args.target)
             .append('svg')
@@ -60,7 +64,7 @@ function init(args) {
     args.width = svg_width;
     args.height = svg_height;
 
-    var svg = d3.select(args.target).selectAll('svg');
+    svg = d3.select(args.target).selectAll('svg');
 
     // add clip path element to svg.
     svg.append('defs')
@@ -73,17 +77,20 @@ function init(args) {
             .attr('height', args.height - args.top - args.bottom - args.buffer);
 
     //has the width or height changed?
-    if(svg_width != Number(svg.attr('width')))
+    if (svg_width !== Number(svg.attr('width'))) {
         svg.attr('width', svg_width);
+    }
 
-    if(svg_height != Number(svg.attr('height')))
+    if (svg_height !== Number(svg.attr('height'))) {
         svg.attr('height', svg_height);
+    }
 
     // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
-    if (args.full_width || args.full_height)
+    if (args.full_width || args.full_height) {
         svg.attr('preserveAspectRatio', 'xMinYMin meet');
+    }
 
     // remove missing class
     svg.classed('mg-missing', false);
@@ -109,7 +116,7 @@ function init(args) {
                 var arr = new Array(len);
                 for(var i=0;i<arr.length;i++) { arr[i] = i + 1; }
                 return arr;
-            }
+            };
 
             //get an array of lines ids to remove
             var lines_to_remove = arrDiff(

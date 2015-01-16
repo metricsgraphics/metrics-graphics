@@ -38,4 +38,4 @@ charts.missing = function(args) {
 
     this.init(args);
     return this;
-}
+};

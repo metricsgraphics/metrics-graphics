@@ -168,7 +168,10 @@
                     }
                 }
 
-                if (deprecation.warned) continue;
+                if (deprecation.warned) {
+                    continue;
+                }
+
                 deprecation.warned = true;
 
                 if (replacement) {
@@ -205,7 +208,7 @@
         }
 
         return args.data;
-    }
+    };
 
     /*!
      * Bootstrap v3.3.1 (http://getbootstrap.com)
@@ -919,7 +922,10 @@
     }
 
     function y_axis(args) {
-        if (!args.processed) args.processed = {};
+        if (!args.processed) {
+            args.processed = {};
+        }
+
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
         var g;
@@ -1149,7 +1155,7 @@
                     })
                     .attr('dy', '.35em')
                     .attr('text-anchor', 'end')
-                    .text(function(d, i) {
+                    .text(function(d) {
                         var o = yax_format(d);
                         return o;
                     });
@@ -1761,10 +1767,9 @@
         //but with the intention of using multiple values for multilines, etc.
 
         //do we have a time_series?
-        if($.type(args.data[0][0][args.x_accessor]) == 'date') {
+        if($.type(args.data[0][0][args.x_accessor]) === 'date') {
             args.time_series = true;
-        }
-        else {
+        } else {
             args.time_series = false;
         }
 
@@ -1773,29 +1778,34 @@
         var svg_width = args.width;
         var svg_height = args.height;
 
-        if (args.full_width){
-            // get parent element.
-            var svg_width = get_width(args.target);
-        }
-        if (args.fill_height){
-            var svg_height = get_height(args.target);
+         //are we setting the aspect ratio
+        if (args.full_width) {
+            // get parent element
+            svg_width = get_width(args.target);
         }
 
-        if (args.chart_type=='bar' && svg_height == null){
+        if (args.fill_height) {
+            svg_height = get_height(args.target);
+        }
+
+        if (args.chart_type === 'bar' && svg_height === null) {
             svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
         }
+
         //remove the svg if the chart type has changed
         var svg = $(args.target).find('svg');
-        if((svg.find('.mg-main-line').length > 0 && args.chart_type != 'line')
-                || (svg.find('.mg-points').length > 0 && args.chart_type != 'point')
-                || (svg.find('.mg-histogram').length > 0 && args.chart_type != 'histogram')
-                || (svg.find('.mg-barplot').length > 0 && args.chart_type != 'bar')
+
+        if((svg.find('.mg-main-line').length > 0 && args.chart_type !== 'line')
+                || (svg.find('.mg-points').length > 0 && args.chart_type !== 'point')
+                || (svg.find('.mg-histogram').length > 0 && args.chart_type !== 'histogram')
+                || (svg.find('.mg-barplot').length > 0 && args.chart_type !== 'bar')
             ) {
             $(args.target).empty();
         }
+
         //add svg if it doesn't already exist
         //using trim on html rather than :empty to ignore white spaces if they exist
-        if($.trim($(args.target).html()) == '') {
+        if($.trim($(args.target).html()) === '') {
             //add svg
             d3.select(args.target)
                 .append('svg')
@@ -1807,7 +1817,7 @@
         args.width = svg_width;
         args.height = svg_height;
 
-        var svg = d3.select(args.target).selectAll('svg');
+        svg = d3.select(args.target).selectAll('svg');
 
         // add clip path element to svg.
         svg.append('defs')
@@ -1820,17 +1830,20 @@
                 .attr('height', args.height - args.top - args.bottom - args.buffer);
 
         //has the width or height changed?
-        if(svg_width != Number(svg.attr('width')))
+        if (svg_width !== Number(svg.attr('width'))) {
             svg.attr('width', svg_width);
+        }
 
-        if(svg_height != Number(svg.attr('height')))
+        if (svg_height !== Number(svg.attr('height'))) {
             svg.attr('height', svg_height);
+        }
 
         // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
         svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
-        if (args.full_width || args.full_height)
+        if (args.full_width || args.full_height) {
             svg.attr('preserveAspectRatio', 'xMinYMin meet');
+        }
 
         // remove missing class
         svg.classed('mg-missing', false);
@@ -1856,7 +1869,7 @@
                     var arr = new Array(len);
                     for(var i=0;i<arr.length;i++) { arr[i] = i + 1; }
                     return arr;
-                }
+                };
 
                 //get an array of lines ids to remove
                 var lines_to_remove = arrDiff(
@@ -1921,12 +1934,12 @@
                 .enter()
                 .append('text')
                     .attr('x', function(d) {
-                        return args.scales.X(d[args.x_accessor])
+                        return args.scales.X(d[args.x_accessor]);
                     })
                     .attr('y', args.top - 8)
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
-                        return d['label'];
+                        return d.label;
                     });
         }
 
@@ -1941,10 +1954,10 @@
                     .attr('x1', args.left + args.buffer)
                     .attr('x2', args.width-args.right-args.buffer)
                     .attr('y1', function(d){
-                        return args.scales.Y(d['value']).toFixed(2);
+                        return args.scales.Y(d.value).toFixed(2);
                     })
                     .attr('y2', function(d){
-                        return args.scales.Y(d['value']).toFixed(2);
+                        return args.scales.Y(d.value).toFixed(2);
                     });
 
             gb.selectAll('.mg-baselines')
@@ -1952,12 +1965,12 @@
                 .enter().append('text')
                     .attr('x', args.width-args.right - args.buffer)
                     .attr('y', function(d){
-                        return args.scales.Y(d['value']).toFixed(2);
+                        return args.scales.Y(d.value).toFixed(2);
                     })
                     .attr('dy', -3)
                     .attr('text-anchor', 'end')
                     .text(function(d) {
-                        return d['label'];
+                        return d.label;
                     });
         }
 
@@ -3649,19 +3662,19 @@
         this.args.columns = [];
         this.formatting_options = [['color', 'color'], ['font-weight', 'font_weight'], ['font-style', 'font_style'], ['font-size', 'font_size']];
 
-        this._strip_punctuation = function(s){
+        this._strip_punctuation = function(s) {
             var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
             var finalString = punctuationless.replace(/ +?/g, "");
             return finalString;
         };
 
         this._format_element = function(element, value, args) {
-            this.formatting_options.forEach(function(fo){
+            this.formatting_options.forEach(function(fo) {
                 var attr = fo[0];
                 var key = fo[1];
-                if(args[key]) element.style(attr, 
-                    typeof args[key] == 'string' || 
-                    typeof args[key] == 'number' ? 
+                if (args[key]) element.style(attr, 
+                    typeof args[key] === 'string' || 
+                    typeof args[key] === 'number' ? 
                         args[key] : args[key](value));
             });
         };
@@ -3732,7 +3745,7 @@
 
             tr = thead.append('tr');
 
-            for(var h = 0;h < args.columns.length; h++) {
+            for (var h = 0; h < args.columns.length; h++) {
                 var this_col = args.columns[h];
                 td_type = this_col.type;
                 th_text = this_col.label;
@@ -3742,7 +3755,7 @@
                     .style('text-align', td_type === 'title' ? 'left' : 'right')
                     .text(th_text);
 
-                if(this_col.description) {
+                if (this_col.description) {
                     th.append('i')
                         .classed('fa', true)
                         .classed('fa-question-circle', true)
@@ -3759,49 +3772,52 @@
                 }
             }
 
-            for(var h=0; h < args.columns.length; h++) {
+            for (var h = 0; h < args.columns.length; h++) {
                 col = colgroup.append('col');
-                if(args.columns[h].type === 'number') {
+                if (args.columns[h].type === 'number') {
                     col.attr('align', 'char').attr('char', '.');
                 }
             }
 
-            for (var i=0; i < args.data.length; i++){
+            for (var i=0; i < args.data.length; i++) {
                 tr = tbody.append('tr');
-                for (var j=0;j<args.columns.length;j++){
+                for (var j = 0; j < args.columns.length; j++) {
                     this_column = args.columns[j];
                     td_accessor = this_column.accessor;
                     td_value = td_text = args.data[i][td_accessor];
                     td_type     = this_column.type;
 
-                    if(td_type === 'number') {
+                    if (td_type === 'number') {
                         //td_text may need to be rounded
-                        if(this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')) {
+                        if (this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')) {
                             // round according to the number value in this_column.round
                             td_text = d3.format('0,.'+this_column.round+'f')(td_text);
                         }
 
-                        if(this_column.hasOwnProperty('value_formatter')) {
+                        if (this_column.hasOwnProperty('value_formatter')) {
                             // provide a function that formats the text according to the function this_column.format.
                             td_text = this_column.value_formatter(td_text);
                         }
 
-                        if(this_column.hasOwnProperty('format')) {
+                        if (this_column.hasOwnProperty('format')) {
                             // this is a shorthand for percentage formatting, and others if need be.
                             // supported: 'percentage', 'count', 'temperature'
 
-                            if(this_column.round) td_text = d3.round(td_text, this_column.round);
+                            if (this_column.round) {
+                                td_text = d3.round(td_text, this_column.round);
+                            }
+
                             var this_format = this_column.format;
                             var formatter;
 
-                            if(this_format === 'percentage')  formatter = d3.format('%p');
-                            if(this_format === 'count')       formatter = d3.format("0,000");
-                            if(this_format === 'temperature') formatter = function(t) { return t +'º'; };
+                            if (this_format === 'percentage')  formatter = d3.format('%p');
+                            if (this_format === 'count')       formatter = d3.format("0,000");
+                            if (this_format === 'temperature') formatter = function(t) { return t +'º'; };
 
                             td_text = formatter(td_text);
                         }
 
-                        if(this_column.hasOwnProperty('currency')) {
+                        if (this_column.hasOwnProperty('currency')) {
                             // this is another shorthand for formatting according to a currency amount, which gets appended to front of number
                             td_text = this_column.currency + td_text;
                         }
@@ -3816,11 +3832,11 @@
 
                     this._format_element(td, td_value, this_column);
 
-                    if(td_type == 'title') {
+                    if (td_type === 'title') {
                         this_title = td.append('div').text(td_text);
                         this._format_element(this_title, td_text, this_column);
 
-                        if(args.columns[j].hasOwnProperty('secondary_accessor')) {
+                        if (args.columns[j].hasOwnProperty('secondary_accessor')) {
                             td.append('div')
                                 .text(args.data[i][args.columns[j].secondary_accessor])
                                 .classed("secondary-title", true);
@@ -3877,7 +3893,7 @@
 
         this.init(args);
         return this;
-    }
+    };
 
     function raw_data_transformation(args) {
         'use strict';

@@ -41,7 +41,10 @@ function y_rug(args) {
 }
 
 function y_axis(args) {
-    if (!args.processed) args.processed = {};
+    if (!args.processed) {
+        args.processed = {};
+    }
+
     var svg = d3.select($(args.target).find('svg').get(0));
     var $svg = $($(args.target).find('svg').get(0));
     var g;
@@ -271,7 +274,7 @@ function y_axis(args) {
                 })
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end')
-                .text(function(d, i) {
+                .text(function(d) {
                     var o = yax_format(d);
                     return o;
                 });

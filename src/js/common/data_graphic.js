@@ -156,7 +156,10 @@ MG.data_graphic = function() {
                 }
             }
 
-            if (deprecation.warned) continue;
+            if (deprecation.warned) {
+                continue;
+            }
+
             deprecation.warned = true;
 
             if (replacement) {
@@ -193,4 +196,4 @@ MG.data_graphic = function() {
     }
 
     return args.data;
-}
+};

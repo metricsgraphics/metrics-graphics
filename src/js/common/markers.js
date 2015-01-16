@@ -37,12 +37,12 @@ function markers(args) {
             .enter()
             .append('text')
                 .attr('x', function(d) {
-                    return args.scales.X(d[args.x_accessor])
+                    return args.scales.X(d[args.x_accessor]);
                 })
                 .attr('y', args.top - 8)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
-                    return d['label'];
+                    return d.label;
                 });
     }
 
@@ -57,10 +57,10 @@ function markers(args) {
                 .attr('x1', args.left + args.buffer)
                 .attr('x2', args.width-args.right-args.buffer)
                 .attr('y1', function(d){
-                    return args.scales.Y(d['value']).toFixed(2);
+                    return args.scales.Y(d.value).toFixed(2);
                 })
                 .attr('y2', function(d){
-                    return args.scales.Y(d['value']).toFixed(2);
+                    return args.scales.Y(d.value).toFixed(2);
                 });
 
         gb.selectAll('.mg-baselines')
@@ -68,12 +68,12 @@ function markers(args) {
             .enter().append('text')
                 .attr('x', args.width-args.right - args.buffer)
                 .attr('y', function(d){
-                    return args.scales.Y(d['value']).toFixed(2);
+                    return args.scales.Y(d.value).toFixed(2);
                 })
                 .attr('dy', -3)
                 .attr('text-anchor', 'end')
                 .text(function(d) {
-                    return d['label'];
+                    return d.label;
                 });
     }
 

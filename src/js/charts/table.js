@@ -21,19 +21,19 @@ MG.data_table = function(args) {
     this.args.columns = [];
     this.formatting_options = [['color', 'color'], ['font-weight', 'font_weight'], ['font-style', 'font_style'], ['font-size', 'font_size']];
 
-    this._strip_punctuation = function(s){
+    this._strip_punctuation = function(s) {
         var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
         var finalString = punctuationless.replace(/ +?/g, "");
         return finalString;
     };
 
     this._format_element = function(element, value, args) {
-        this.formatting_options.forEach(function(fo){
+        this.formatting_options.forEach(function(fo) {
             var attr = fo[0];
             var key = fo[1];
-            if(args[key]) element.style(attr, 
-                typeof args[key] == 'string' || 
-                typeof args[key] == 'number' ? 
+            if (args[key]) element.style(attr, 
+                typeof args[key] === 'string' || 
+                typeof args[key] === 'number' ? 
                     args[key] : args[key](value));
         });
     };
@@ -104,7 +104,7 @@ MG.data_table = function(args) {
 
         tr = thead.append('tr');
 
-        for(var h = 0;h < args.columns.length; h++) {
+        for (var h = 0; h < args.columns.length; h++) {
             var this_col = args.columns[h];
             td_type = this_col.type;
             th_text = this_col.label;
@@ -114,7 +114,7 @@ MG.data_table = function(args) {
                 .style('text-align', td_type === 'title' ? 'left' : 'right')
                 .text(th_text);
 
-            if(this_col.description) {
+            if (this_col.description) {
                 th.append('i')
                     .classed('fa', true)
                     .classed('fa-question-circle', true)
@@ -131,49 +131,52 @@ MG.data_table = function(args) {
             }
         }
 
-        for(var h=0; h < args.columns.length; h++) {
+        for (var h = 0; h < args.columns.length; h++) {
             col = colgroup.append('col');
-            if(args.columns[h].type === 'number') {
+            if (args.columns[h].type === 'number') {
                 col.attr('align', 'char').attr('char', '.');
             }
         }
 
-        for (var i=0; i < args.data.length; i++){
+        for (var i=0; i < args.data.length; i++) {
             tr = tbody.append('tr');
-            for (var j=0;j<args.columns.length;j++){
+            for (var j = 0; j < args.columns.length; j++) {
                 this_column = args.columns[j];
                 td_accessor = this_column.accessor;
                 td_value = td_text = args.data[i][td_accessor];
                 td_type     = this_column.type;
 
-                if(td_type === 'number') {
+                if (td_type === 'number') {
                     //td_text may need to be rounded
-                    if(this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')) {
+                    if (this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')) {
                         // round according to the number value in this_column.round
                         td_text = d3.format('0,.'+this_column.round+'f')(td_text);
                     }
 
-                    if(this_column.hasOwnProperty('value_formatter')) {
+                    if (this_column.hasOwnProperty('value_formatter')) {
                         // provide a function that formats the text according to the function this_column.format.
                         td_text = this_column.value_formatter(td_text);
                     }
 
-                    if(this_column.hasOwnProperty('format')) {
+                    if (this_column.hasOwnProperty('format')) {
                         // this is a shorthand for percentage formatting, and others if need be.
                         // supported: 'percentage', 'count', 'temperature'
 
-                        if(this_column.round) td_text = d3.round(td_text, this_column.round);
+                        if (this_column.round) {
+                            td_text = d3.round(td_text, this_column.round);
+                        }
+
                         var this_format = this_column.format;
                         var formatter;
 
-                        if(this_format === 'percentage')  formatter = d3.format('%p');
-                        if(this_format === 'count')       formatter = d3.format("0,000");
-                        if(this_format === 'temperature') formatter = function(t) { return t +'º'; };
+                        if (this_format === 'percentage')  formatter = d3.format('%p');
+                        if (this_format === 'count')       formatter = d3.format("0,000");
+                        if (this_format === 'temperature') formatter = function(t) { return t +'º'; };
 
                         td_text = formatter(td_text);
                     }
 
-                    if(this_column.hasOwnProperty('currency')) {
+                    if (this_column.hasOwnProperty('currency')) {
                         // this is another shorthand for formatting according to a currency amount, which gets appended to front of number
                         td_text = this_column.currency + td_text;
                     }
@@ -188,11 +191,11 @@ MG.data_table = function(args) {
 
                 this._format_element(td, td_value, this_column);
 
-                if(td_type == 'title') {
+                if (td_type === 'title') {
                     this_title = td.append('div').text(td_text);
                     this._format_element(this_title, td_text, this_column);
 
-                    if(args.columns[j].hasOwnProperty('secondary_accessor')) {
+                    if (args.columns[j].hasOwnProperty('secondary_accessor')) {
                         td.append('div')
                             .text(args.data[i][args.columns[j].secondary_accessor])
                             .classed("secondary-title", true);
