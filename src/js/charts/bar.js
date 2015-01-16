@@ -83,7 +83,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor) {
-                predictor_bars = barplot.selectAll('.mg-bar-baseline');
+                baseline_marks = barplot.selectAll('.mg-bar-baseline');
             }
         }
 
@@ -143,6 +143,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor){
+                var pp = args.predictor_proportion;
 
                 if (perform_load_animation) {
                     baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)})
@@ -214,6 +215,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor){
+                var pp = args.predictor_proportion;
 
                 if (perform_load_animation) {
                     baseline_marks
