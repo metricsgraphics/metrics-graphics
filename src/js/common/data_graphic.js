@@ -171,22 +171,23 @@ MG.data_graphic = function() {
     }
 
     //build the chart
+    var a;
     if (args.chart_type === 'missing-data') {
         args = merge_with_defaults(args, defaults.missing);
         charts.missing(args);
     }
     else if (args.chart_type === 'point') {
-        var a = merge_with_defaults(defaults.point, defaults.all);
+        a = merge_with_defaults(defaults.point, defaults.all);
         args = merge_with_defaults(args, a);
         charts.point(args).mainPlot().markers().rollover().windowListeners();
     }
     else if (args.chart_type === 'histogram') {
-        var a = merge_with_defaults(defaults.histogram, defaults.all);
+        a = merge_with_defaults(defaults.histogram, defaults.all);
         args = merge_with_defaults(args, a);
         charts.histogram(args).mainPlot().markers().rollover().windowListeners();
     }
     else if (args.chart_type === 'bar') {
-        var a = merge_with_defaults(defaults.bar, defaults.all);
+        a = merge_with_defaults(defaults.bar, defaults.all);
         args = merge_with_defaults(args, a);
         charts.bar(args).mainPlot().markers().rollover().windowListeners();
     }
