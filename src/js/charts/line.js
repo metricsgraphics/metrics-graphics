@@ -9,7 +9,7 @@ charts.line = function(args) {
         x_axis(args);
         y_axis(args);
         return this;
-    }
+    };
 
     this.mainPlot = function() {
         var svg = d3.select($(args.target).find('svg').get(0));
@@ -93,16 +93,14 @@ charts.line = function(args) {
                             })
                             .attr('d', area(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window)');
-;
                 } else { //otherwise, add the area
                     svg.append('path')
                         .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                         .attr('d', area(args.data[i]))
-                        .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-;
+                        .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                 }
             } else if ($area.length > 0) {
-              $area.remove();
+                $area.remove();
             }
 
             //add the line, if it already exists, transition the fine gentleman
@@ -130,13 +128,11 @@ charts.line = function(args) {
                             .duration(1000)
                             .attr('d', line(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-;
                 } else { //or just add the line
                     svg.append('path')
                         .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]))
                         .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-;
                 }
             }
 
@@ -390,19 +386,19 @@ charts.line = function(args) {
 
             var num;
 
-            if (args.format == 'count') {
+            if (args.format === 'count') {
                 num = function(d_) {
                     var is_float = d_ % 1 !== 0;
                     var n = d3.format("0,000");
                     d_ = is_float ? d3.round(d_, args.decimals) : d_;
                     return n(d_);
-                }
+                };
             } else {
                 num = function(d_) {
                     var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                     var n = d3.format(fmt_string);
                     return n(d_);
-                }
+                };
             }
 
             //update rollover text
@@ -461,7 +457,7 @@ charts.line = function(args) {
             if (args.mouseout) {
                 args.mouseout(d, i);
             }
-        }
+        };
     };
 
     this.rolloverMove = function(args) {

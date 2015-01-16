@@ -1,6 +1,6 @@
 function x_rug(args) {
     'use strict';
-    var buffer_size = args.chart_type =='point'
+    var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer;
 
@@ -53,7 +53,7 @@ function x_axis(args) {
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
-    }
+    };
 
     if (args.chart_type === 'point') {
         mg_point_add_color_scale(args);
@@ -110,7 +110,7 @@ function x_axis_categorical(args) {
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
-    }
+    };
 
     var svg = d3.select($(args.target).find('svg').get(0));
     var $svg = $($(args.target).find('svg').get(0));
@@ -152,7 +152,7 @@ function mg_point_add_color_scale(args) {
         if (args.color_domain === null) {
             if (args.color_type === 'number') {
                 min_color = d3.min(args.data[0], function(d) {
-                    return d[args.color_accessor]
+                    return d[args.color_accessor];
                 });
 
                 max_color = d3.max(args.data[0], function(d) {
@@ -250,12 +250,13 @@ function mg_add_x_label(g, args) {
         .attr('text-anchor', 'middle')
         .text(function(d) {
             return args.x_label;
-        })
+        });
 }
 
 function mg_default_bar_xax_format(args) {
-    if (args.xax_format)
+    if (args.xax_format) {
         return args.xax_format;
+    }
 
     return function(f) {
         if (f < 1.0) {
@@ -270,8 +271,9 @@ function mg_default_bar_xax_format(args) {
 }
 
 function mg_default_histogram_xax_format(args) {
-    if (args.xax_format)
+    if (args.xax_format) {
         return args.xax_format;
+    }
 
     return function(f) {
         if (f < 1.0) {
@@ -319,22 +321,18 @@ function mg_default_xax_format(args) {
 
         // format as date or not, of course user can pass in
         // a custom function if desired
-        switch($.type(args.data[0][0][args.x_accessor])) {
-            case 'date':
-                return args.processed.main_x_time_format(d);
-                break;
-            case 'number':
-                if (d < 1.0) {
-                    //don't scale tiny values
-                    return args.yax_units + d3.round(d, args.decimals);
-                } else {
-                    var pf = d3.formatPrefix(d);
-                    return args.xax_units + pf.scale(d) + pf.symbol;
-                }
-
-                break;
-            default:
-                return d;
+        if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+            return args.processed.main_x_time_format(d);
+        } else if($.type(args.data[0][0][args.x_accessor]) === 'number') {
+            if (d < 1.0) {
+                //don't scale tiny values
+                return args.yax_units + d3.round(d, args.decimals);
+            } else {
+                var pf = d3.formatPrefix(d);
+                return args.xax_units + pf.scale(d) + pf.symbol;
+            }
+        } else {
+            return d;
         }
     }
 }
@@ -387,7 +385,7 @@ function mg_add_x_tick_labels(g, args) {
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return args.xax_units + args.xax_format(d);
-                })
+                });
 
     if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
         var secondary_marks, 
@@ -478,11 +476,11 @@ function mg_find_min_max_x(args) {
             var trio = [];
             trio.push(d[args.x_accessor]);
 
-            if (args.baseline_accessor != null) {
+            if (args.baseline_accessor !== null) {
                 trio.push(d[args.baseline_accessor]);
             }
 
-            if (args.predictor_accessor != null) {
+            if (args.predictor_accessor !== null) {
                 trio.push(d[args.predictor_accessor]);
             }
 

@@ -51,10 +51,10 @@ function y_axis(args) {
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
-    }
+    };
 
     var _set = false;
-    for(var i=0; i<args.data.length; i++) {
+    for (var i = 0; i < args.data.length; i++) {
         var a = args.data[i];
 
         if (args.y_scale_type === 'log') {
@@ -91,11 +91,11 @@ function y_axis(args) {
             var trio = [];
             trio.push(d[args.y_accessor]);
 
-            if (args.baseline_accessor!=null) {
+            if (args.baseline_accessor !== null) {
                 trio.push(d[args.baseline_accessor]);
             }
 
-            if (args.predictor_accessor!=null) {
+            if (args.predictor_accessor !== null) {
                 trio.push(d[args.predictor_accessor]);
             }
 
@@ -105,7 +105,7 @@ function y_axis(args) {
     //if a min_y or max_y have been set, use those instead
     min_y = args.min_y !== null ? args.min_y : min_y;
     max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
-    if (args.y_scale_type != 'log') {
+    if (args.y_scale_type !== 'log') {
         //we are currently saying that if the min val > 0, set 0 as min y
         if (min_y >= 0) {
             args.y_axis_negative = false;
@@ -161,14 +161,16 @@ function y_axis(args) {
             yax_format = function(d_) {
                 var n = d3.format('%p');
                 return n(d_);
-            }
+            };
         }
     }
 
     //remove the old y-axis, add new one
     $svg.find('.mg-y-axis').remove();
 
-    if (!args.y_axis) return this;
+    if (!args.y_axis) {
+        return this;
+    }
 
     //y axis
     g = svg.append('g')
@@ -272,7 +274,7 @@ function y_axis(args) {
                 .text(function(d, i) {
                     var o = yax_format(d);
                     return o;
-                })
+                });
 
     if (args.y_rug) {
         y_rug(args);
@@ -289,7 +291,7 @@ function y_axis_categorical(args) {
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
-    }
+    };
 
     var svg = d3.select($(args.target).find('svg').get(0));
     var $svg = $($(args.target).find('svg').get(0));

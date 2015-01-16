@@ -929,10 +929,10 @@
 
         args.scalefns.yf = function(di) {
             return args.scales.Y(di[args.y_accessor]);
-        }
+        };
 
         var _set = false;
-        for(var i=0; i<args.data.length; i++) {
+        for (var i = 0; i < args.data.length; i++) {
             var a = args.data[i];
 
             if (args.y_scale_type === 'log') {
@@ -969,11 +969,11 @@
                 var trio = [];
                 trio.push(d[args.y_accessor]);
 
-                if (args.baseline_accessor!=null) {
+                if (args.baseline_accessor !== null) {
                     trio.push(d[args.baseline_accessor]);
                 }
 
-                if (args.predictor_accessor!=null) {
+                if (args.predictor_accessor !== null) {
                     trio.push(d[args.predictor_accessor]);
                 }
 
@@ -983,7 +983,7 @@
         //if a min_y or max_y have been set, use those instead
         min_y = args.min_y !== null ? args.min_y : min_y;
         max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
-        if (args.y_scale_type != 'log') {
+        if (args.y_scale_type !== 'log') {
             //we are currently saying that if the min val > 0, set 0 as min y
             if (min_y >= 0) {
                 args.y_axis_negative = false;
@@ -1039,14 +1039,16 @@
                 yax_format = function(d_) {
                     var n = d3.format('%p');
                     return n(d_);
-                }
+                };
             }
         }
 
         //remove the old y-axis, add new one
         $svg.find('.mg-y-axis').remove();
 
-        if (!args.y_axis) return this;
+        if (!args.y_axis) {
+            return this;
+        }
 
         //y axis
         g = svg.append('g')
@@ -1150,7 +1152,7 @@
                     .text(function(d, i) {
                         var o = yax_format(d);
                         return o;
-                    })
+                    });
 
         if (args.y_rug) {
             y_rug(args);
@@ -1167,7 +1169,7 @@
 
         args.scalefns.yf = function(di) {
             return args.scales.Y(di[args.y_accessor]);
-        }
+        };
 
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
@@ -1198,7 +1200,7 @@
 
     function x_rug(args) {
         'use strict';
-        var buffer_size = args.chart_type =='point'
+        var buffer_size = args.chart_type === 'point'
             ? args.buffer / 2
             : args.buffer;
 
@@ -1251,7 +1253,7 @@
 
         args.scalefns.xf = function(di) {
             return args.scales.X(di[args.x_accessor]);
-        }
+        };
 
         if (args.chart_type === 'point') {
             mg_point_add_color_scale(args);
@@ -1308,7 +1310,7 @@
 
         args.scalefns.xf = function(di) {
             return args.scales.X(di[args.x_accessor]);
-        }
+        };
 
         var svg = d3.select($(args.target).find('svg').get(0));
         var $svg = $($(args.target).find('svg').get(0));
@@ -1350,7 +1352,7 @@
             if (args.color_domain === null) {
                 if (args.color_type === 'number') {
                     min_color = d3.min(args.data[0], function(d) {
-                        return d[args.color_accessor]
+                        return d[args.color_accessor];
                     });
 
                     max_color = d3.max(args.data[0], function(d) {
@@ -1448,12 +1450,13 @@
             .attr('text-anchor', 'middle')
             .text(function(d) {
                 return args.x_label;
-            })
+            });
     }
 
     function mg_default_bar_xax_format(args) {
-        if (args.xax_format)
+        if (args.xax_format) {
             return args.xax_format;
+        }
 
         return function(f) {
             if (f < 1.0) {
@@ -1468,8 +1471,9 @@
     }
 
     function mg_default_histogram_xax_format(args) {
-        if (args.xax_format)
+        if (args.xax_format) {
             return args.xax_format;
+        }
 
         return function(f) {
             if (f < 1.0) {
@@ -1517,22 +1521,18 @@
 
             // format as date or not, of course user can pass in
             // a custom function if desired
-            switch($.type(args.data[0][0][args.x_accessor])) {
-                case 'date':
-                    return args.processed.main_x_time_format(d);
-                    break;
-                case 'number':
-                    if (d < 1.0) {
-                        //don't scale tiny values
-                        return args.yax_units + d3.round(d, args.decimals);
-                    } else {
-                        var pf = d3.formatPrefix(d);
-                        return args.xax_units + pf.scale(d) + pf.symbol;
-                    }
-
-                    break;
-                default:
-                    return d;
+            if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+                return args.processed.main_x_time_format(d);
+            } else if($.type(args.data[0][0][args.x_accessor]) === 'number') {
+                if (d < 1.0) {
+                    //don't scale tiny values
+                    return args.yax_units + d3.round(d, args.decimals);
+                } else {
+                    var pf = d3.formatPrefix(d);
+                    return args.xax_units + pf.scale(d) + pf.symbol;
+                }
+            } else {
+                return d;
             }
         }
     }
@@ -1585,7 +1585,7 @@
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return args.xax_units + args.xax_format(d);
-                    })
+                    });
 
         if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
             var secondary_marks, 
@@ -1676,11 +1676,11 @@
                 var trio = [];
                 trio.push(d[args.x_accessor]);
 
-                if (args.baseline_accessor != null) {
+                if (args.baseline_accessor !== null) {
                     trio.push(d[args.baseline_accessor]);
                 }
 
-                if (args.predictor_accessor != null) {
+                if (args.predictor_accessor !== null) {
                     trio.push(d[args.predictor_accessor]);
                 }
 
@@ -2296,7 +2296,7 @@
             x_axis(args);
             y_axis(args);
             return this;
-        }
+        };
 
         this.mainPlot = function() {
             var svg = d3.select($(args.target).find('svg').get(0));
@@ -2380,16 +2380,14 @@
                                 })
                                 .attr('d', area(args.data[i]))
                                 .attr('clip-path', 'url(#mg-plot-window)');
-    ;
                     } else { //otherwise, add the area
                         svg.append('path')
                             .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                             .attr('d', area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-    ;
+                            .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                     }
                 } else if ($area.length > 0) {
-                  $area.remove();
+                    $area.remove();
                 }
 
                 //add the line, if it already exists, transition the fine gentleman
@@ -2417,13 +2415,11 @@
                                 .duration(1000)
                                 .attr('d', line(args.data[i]))
                                 .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-    ;
                     } else { //or just add the line
                         svg.append('path')
                             .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                             .attr('d', line(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
-    ;
                     }
                 }
 
@@ -2677,19 +2673,19 @@
 
                 var num;
 
-                if (args.format == 'count') {
+                if (args.format === 'count') {
                     num = function(d_) {
                         var is_float = d_ % 1 !== 0;
                         var n = d3.format("0,000");
                         d_ = is_float ? d3.round(d_, args.decimals) : d_;
                         return n(d_);
-                    }
+                    };
                 } else {
                     num = function(d_) {
                         var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
                         var n = d3.format(fmt_string);
                         return n(d_);
-                    }
+                    };
                 }
 
                 //update rollover text
@@ -2748,7 +2744,7 @@
                 if (args.mouseout) {
                     args.mouseout(d, i);
                 }
-            }
+            };
         };
 
         this.rolloverMove = function(args) {

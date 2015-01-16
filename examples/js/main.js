@@ -31,7 +31,7 @@ $(document).ready(function() {
         var data=[];
 
         for (var i = 0; i<length; i++){
-            v += (Math.random()-.5)*10000;
+            v += (Math.random() - 0.5) * 10000;
             data.push({date: MG.clone(d), value: v});
             d = new Date(d.getTime() + seconds * 1000);
         }
