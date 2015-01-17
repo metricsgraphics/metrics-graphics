@@ -2375,6 +2375,8 @@
                     line_id = args.custom_line_color_map[i];
                 }
 
+                args.data[i].line_id = line_id;
+
                 //add confidence band
                 if (args.show_confidence_band) {
                     svg.append('path')
@@ -2472,20 +2474,31 @@
             $svg.find('.mg-line-rollover-circle').remove();
 
             //rollover text
-            svg.append('text')
-                .attr('class', 'mg-active-datapoint')
-                .classed('mg-active-datapoint-small', args.use_small_class)
-                .attr('xml:space', 'preserve')
-                .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
-                .attr('text-anchor', 'end');
+            svg.append('g')
+                .attr('class', 'mg-active-datapoint-container')
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top / 2) + ')')
+                .append('text')
+                    .attr('class', 'mg-active-datapoint')
+                    .classed('mg-active-datapoint-small', args.use_small_class)
+                    .attr('xml:space', 'preserve')
+                    .attr('text-anchor', 'end');
 
             //append circle
-            svg.append('circle')
-                .classed('mg-line-rollover-circle', true)
-                .attr('cx', 0)
-                .attr('cy', 0)
-                .attr('r', 0);
+            svg.selectAll('.mg-line-rollover-circle')
+                .data(args.data).enter()
+                    .append('circle')
+                    .attr({
+                      'class': function(d, i) {
+                          return [
+                              'mg-line-rollover-circle',
+                              'mg-line' + d['line_id'] + '-color',
+                              'mg-area' + d['line_id'] + '-color'
+                          ].join(' ');
+                      },
+                      'cx': 0,
+                      'cy': 0,
+                      'r': 0
+                    });
 
             //update our data by setting a unique line id for each series
             //increment from 1... unless we have a custom increment series
@@ -2506,7 +2519,7 @@
             var g;
 
             //for multi-line, use voronoi
-            if (args.data.length > 1) {
+            if (args.data.length > 1 && !args.aggregate_rollover) {
                 //main rollover
                 var voronoi = d3.geom.voronoi()
                     .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
@@ -2549,8 +2562,56 @@
                                 }
                             })
                             .on('mouseover', this.rolloverOn(args))
-                            .on('mouseout', this.rolloverOff(args));
+                            .on('mouseout', this.rolloverOff(args))
+                            .on('mousemove', this.rolloverMove(args));
             }
+
+            // for multi-lines and aggregated rollovers, use rects
+            else if (args.data.length > 1 && args.aggregate_rollover) {
+                var data_nested = d3.nest()
+                    .key(function(d) { return d[args.x_accessor]; })
+                    .entries(d3.merge(args.data.map(function(d) { return d; })));
+
+                var xf = data_nested.map(function(di) {
+                    return args.scales.X(new Date(di.key));
+                });
+
+                var g = svg.append('g')
+                  .attr('class', 'mg-rollover-rect');
+
+                g.selectAll('.mg-rollover-rects')
+                    .data(data_nested).enter()
+                        .append('rect')
+                            .attr('x', function(d, i) {
+                                //if data set is of length 1
+                                if(xf.length == 1) {
+                                    return args.left + args.buffer;
+                                } else if (i == 0) {
+                                    return xf[i].toFixed(2);
+                                } else {
+                                    return ((xf[i-1] + xf[i])/2).toFixed(2);
+                                }
+                            })
+                            .attr('y', args.top)
+                            .attr('width', function(d, i) {
+                                //if data set is of length 1
+                                if(xf.length == 1) {
+                                    return args.width - args.right - args.buffer;
+                                } else if (i == 0) {
+                                    return ((xf[i+1] - xf[i]) / 2).toFixed(2);
+                                } else if (i == xf.length - 1) {
+                                    return ((xf[i] - xf[i-1]) / 2).toFixed(2);
+                                } else {
+                                    return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
+                                }
+                            })
+                            .attr('height', args.height - args.bottom - args.top - args.buffer)
+                            .attr('opacity', 0)
+                            .on('mouseover', this.rolloverOn(args))
+                            .on('mouseout', this.rolloverOff(args))
+                            .on('mousemove', this.rolloverMove(args));
+            }
+
             //for single line, use rects
             else {
                 //set to 1 unless we have a custom increment series
@@ -2624,7 +2685,7 @@
         };
 
         this.rolloverOn = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));        
+            var svg = d3.select($(args.target).find('svg').get(0));
             var fmt;
             switch(args.processed.x_time_frame) {
                 case 'seconds':
@@ -2641,44 +2702,73 @@
             }
 
             return function(d, i) {
-                //show circle on mouse-overed rect
-                if (d[args.x_accessor] > args.processed.min_x && 
-                    d[args.x_accessor] < args.processed.max_x &&
-                    d[args.y_accessor] > args.processed.min_y &&
-                    d[args.y_accessor] < args.processed.max_y
-                ){
+
+                if (args.aggregate_rollover && args.data.length > 1) {
+
+                    // hide the circles in case a non-contiguous series is present
                     svg.selectAll('circle.mg-line-rollover-circle')
-                        .attr('class', "")
-                        .attr('class', 'mg-area' + d.line_id + '-color')
-                        .classed('mg-line-rollover-circle', true)
-                        .attr('cx', function() {
-                            return args.scales.X(d[args.x_accessor]).toFixed(2);
-                        })
-                        .attr('cy', function() {
-                            return args.scales.Y(d[args.y_accessor]).toFixed(2);
-                        })
-                        .attr('r', args.point_size)
-                        .style('opacity', 1);               
-                }
+                        .style('opacity', 0);
 
+                    d.values.forEach(function(datum) {
 
-                //trigger mouseover on all rects for this date in .linked charts
-                if (args.linked && !MG.globals.link) {
-                    MG.globals.link = true;
+                      if (datum[args.x_accessor] > args.processed.min_x &&
+                          datum[args.x_accessor] < args.processed.max_x &&
+                          datum[args.y_accessor] > args.processed.min_y &&
+                          datum[args.y_accessor] < args.processed.max_y
+                      ){
+                        var circle = svg.select('circle.mg-line' + datum['line_id'] + '-color')
+                            .attr({
+                                'cx': function() {
+                                    return args.scales.X(datum[args.x_accessor]).toFixed(2);
+                                },
+                                'cy': function() {
+                                    return args.scales.Y(datum[args.y_accessor]).toFixed(2);
+                                },
+                                'r': args.point_size
+                            })
+                            .style('opacity', 1);
+                      }
+                    });
+                } else {
 
-                    var v = d[args.x_accessor];
-                    var formatter = d3.time.format('%Y-%m-%d');
+                    //show circle on mouse-overed rect
+                    if (d[args.x_accessor] > args.processed.min_x &&
+                        d[args.x_accessor] < args.processed.max_x &&
+                        d[args.y_accessor] > args.processed.min_y &&
+                        d[args.y_accessor] < args.processed.max_y
+                    ){
+                        svg.selectAll('circle.mg-line-rollover-circle')
+                            .attr('class', "")
+                            .attr('class', 'mg-area' + d.line_id + '-color')
+                            .classed('mg-line-rollover-circle', true)
+                            .attr('cx', function() {
+                                return args.scales.X(d[args.x_accessor]).toFixed(2);
+                            })
+                            .attr('cy', function() {
+                                return args.scales.Y(d[args.y_accessor]).toFixed(2);
+                            })
+                            .attr('r', args.point_size)
+                            .style('opacity', 1);
+                    }
 
-                    //only format when y-axis is date
-                    var id = (typeof v === 'number')
-                            ? i
-                            : formatter(v);
+                    //trigger mouseover on all rects for this date in .linked charts
+                    if (args.linked && !MG.globals.link) {
+                        MG.globals.link = true;
 
-                    //trigger mouseover on matching line in .linked charts
-                    d3.selectAll('.mg-line' + d.line_id + '-color.roll_' + id)
-                        .each(function(d, i) {
-                            d3.select(this).on('mouseover')(d,i);
-                        });
+                        var v = d[args.x_accessor];
+                        var formatter = d3.time.format('%Y-%m-%d');
+
+                        //only format when y-axis is date
+                        var id = (typeof v === 'number')
+                                ? i
+                                : formatter(v);
+
+                        //trigger mouseover on matching line in .linked charts
+                        d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
+                            .each(function(d, i) {
+                                d3.select(this).on('mouseover')(d,i);
+                            });
+                    }
                 }
 
                 svg.selectAll('text')
@@ -2706,21 +2796,90 @@
 
                 //update rollover text
                 if (args.show_rollover_text) {
-                    svg.select('.mg-active-datapoint')
-                        .text(function() {
-                            if (args.time_series) {
-                                var dd = new Date(+d[args.x_accessor]);
-                                dd.setDate(dd.getDate());
+                    var textContainer = svg.select('.mg-active-datapoint'),
+                        lineCount = 0,
+                        lineHeight = 1.1;
 
-                                return fmt(dd) + '  ' + args.yax_units
-                                    + num(d[args.y_accessor]);
-                            }
-                            else {
-                                return args.x_accessor + ': ' + d[args.x_accessor]
+                    textContainer.select('*').remove();
+
+                    if (args.aggregate_rollover && args.data.length > 1) {
+                        if (args.time_series) {
+                            var date = new Date(d.key);
+
+                            textContainer.append('tspan')
+                                .text((fmt(date) + '  ' + args.yax_units).trim());
+
+                            lineCount = 1;
+
+                            d.values.forEach(function(datum) {
+                                var label = textContainer.append('tspan')
+                                    .attr({
+                                      x: 0,
+                                      y: (lineCount * lineHeight) + 'em'
+                                    })
+                                    .text(num(datum[args.y_accessor]));
+
+                                textContainer.append('tspan')
+                                    .attr({
+                                      x: -label.node().getComputedTextLength(),
+                                      y: (lineCount * lineHeight) + 'em'
+                                    })
+                                    .text('\u2014 ') // mdash
+                                    .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                    .style('font-weight', 'bold');
+
+                                lineCount++;
+                            });
+
+                            textContainer.append('tspan')
+                                .attr('x', 0)
+                                .attr('y', (lineCount * lineHeight) + 'em')
+                                .text('\u00A0');
+                        } else {
+                            d.values.forEach(function(datum) {
+                                var label = textContainer.append('tspan')
+                                    .attr({
+                                      x: 0,
+                                      y: (lineCount * lineHeight) + 'em'
+                                    })
+                                    .text(args.x_accessor + ': ' + datum[args.x_accessor]
+                                        + ', ' + args.y_accessor + ': ' + args.yax_units
+                                        + num(datum[args.y_accessor]));
+
+                                textContainer.append('tspan')
+                                    .attr({
+                                      x: -label.node().getComputedTextLength(),
+                                      y: (lineCount * lineHeight) + 'em'
+                                    })
+                                    .text('\u2014 ') // mdash
+                                    .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                    .style('font-weight', 'bold');
+
+                                lineCount++;
+                            });
+                        }
+
+                        // append an blank (&nbsp;) line to mdash positioning
+                        textContainer.append('tspan')
+                            .attr('x', 0)
+                            .attr('y', (lineCount * lineHeight) + 'em')
+                            .text('\u00A0');
+                    } else {
+                        if (args.time_series) {
+                            var dd = new Date(+d[args.x_accessor]);
+                            dd.setDate(dd.getDate());
+
+                            textContainer.append('tspan')
+                                .text(fmt(dd) + '  ' + args.yax_units
+                                    + num(d[args.y_accessor]));
+                        }
+                        else {
+                            textContainer.append('tspan')
+                                .text(args.x_accessor + ': ' + d[args.x_accessor]
                                     + ', ' + args.y_accessor + ': ' + args.yax_units
-                                    + num(d[args.y_accessor]);
-                            }
-                        });
+                                    + num(d[args.y_accessor]));
+                        }
+                    }
                 }
 
                 if (args.mouseover) {
@@ -4586,6 +4745,50 @@
           break;
         }
       }
+    }
+
+
+    /**
+      Wrap the contents of a text node to a specific width
+
+      Adapted from bl.ocks.org/mbostock/7555321
+
+      @author Mike Bostock
+      @author Dan de Havilland
+      @date 2015-01-14
+    */
+    function wrapText(text, width, token, tspanAttrs) {
+      text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(token || /\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = 0,
+            tspan = text.text(null)
+              .append("tspan")
+              .attr("x", 0)
+              .attr("y", dy + "em")
+              .attr(tspanAttrs || {});
+
+        while (word = words.pop()) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (width == null || tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text
+                .append("tspan")
+                .attr("x", 0)
+                .attr("y", ++lineNumber * lineHeight + dy + "em")
+                .attr(tspanAttrs || {})
+                .text(word);
+          }
+        }
+      });
     }
 
     //call this to add a warning icon to a graph and log an error to the console

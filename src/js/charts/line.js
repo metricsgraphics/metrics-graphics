@@ -504,7 +504,7 @@ charts.line = function(args) {
                         var date = new Date(d.key);
 
                         textContainer.append('tspan')
-                            .text(fmt(date) + '  ' + args.yax_units);
+                            .text((fmt(date) + '  ' + args.yax_units).trim());
 
                         lineCount = 1;
 
