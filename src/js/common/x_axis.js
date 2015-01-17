@@ -249,7 +249,7 @@ function mg_add_x_label(g, args) {
                 + ((args.width - args.right - args.buffer)
                     - (args.left + args.buffer)) / 2;
         })
-        .attr('y', (args.height - args.bottom / 2).toFixed(2))
+        .attr('y', (args.height - args.bottom / 2 + args.xax_tick_length + 1.3).toFixed(2))
         .attr('dy', '.50em')
         .attr('text-anchor', 'middle')
         .text(function(d) {
