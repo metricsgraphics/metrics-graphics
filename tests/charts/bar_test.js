@@ -1,20 +1,24 @@
-module('bar');
-
 var target = '#qunit-fixture',
-  defaults = {
-    target: target,
-    chart_type: 'bar',
-    data: [{
-      label: 'Bar 1',
-      value: 100
-    },{
-      label: 'Bar 2',
-      value: 200
-    },{
-      label: 'Bar 3',
-      value: 300
-    }]
-  };
+  defaults;
+
+module('bar', {
+  setup: function() {
+    defaults = {
+      target: target,
+      chart_type: 'bar',
+      data: [{
+        label: 'Bar 1',
+        value: 100
+      },{
+        label: 'Bar 2',
+        value: 200
+      },{
+        label: 'Bar 3',
+        value: 300
+      }]
+    };
+  }
+});
 
 test('Correct number of bars are added', function() {
     MG.data_graphic(defaults);

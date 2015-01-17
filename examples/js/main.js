@@ -95,7 +95,7 @@ $(document).ready(function() {
         d.value = Math.round(d.value);
         return d;
     });
-    
+
     MG.data_graphic({
         data: hist1,
         target: '#time-hist',
@@ -300,6 +300,21 @@ $(document).ready(function() {
             y_extended_ticks: true,
             x_accessor: 'date',
             y_accessor: ['value', 'value2', 'value3']
+        });
+
+        MG.data_graphic({
+            title:"Aggregated Rollover Information",
+            description: "Also handles non-contiguous data",
+            data: all_the_data,
+            width: torso.width*2,
+            height: torso.height,
+            right: torso.right,
+            target: '#aggregate',
+            linked: true,
+            y_extended_ticks: true,
+            x_accessor: 'date',
+            y_accessor: ['value', 'value2', 'value3'],
+            aggregate_rollover: true
         });
     });
 

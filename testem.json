@@ -34,7 +34,8 @@
     "PhantomJS"
   ],
   "launch_in_dev": [
-    "PhantomJS"
+    "PhantomJS",
+    "Chrome"
   ],
   "phantomjs_debug_port": 9000
 }

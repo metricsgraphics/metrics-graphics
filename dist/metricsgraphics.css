@@ -170,20 +170,40 @@
     stroke: #4040e8;
 }
 
+.mg-hover-line1-color {
+    fill: #4040e8;
+}
+
 .mg-line2-color {
     stroke: #05b378;
+}
+
+.mg-hover-line2-color {
+    fill: #05b378;
 }
 
 .mg-line3-color {
     stroke: #db4437;
 }
 
+.mg-hover-line3-color {
+    fill: #db4437;
+}
+
 .mg-line4-color {
     stroke: #f8b128;
 }
 
+.mg-hover-line4-color {
+    fill: #f8b128;
+}
+
 .mg-line5-color {
     stroke: #5c5c5c;
+}
+
+.mg-hover-line5-color {
+    fill: #5c5c5c;
 }
 
 .mg-line1-legend-color {
