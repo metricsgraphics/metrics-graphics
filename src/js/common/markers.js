@@ -11,18 +11,11 @@ function markers(args) {
             .attr('class', 'mg-markers');
 
         gm.selectAll('.mg-markers')
-            .data(args.markers.filter(function(d){
-                return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                    && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
-            }))
+            .data(args.markers.filter(inRange))
             .enter()
             .append('line')
-                .attr('x1', function(d) {
-                    return args.scales.X(d[args.x_accessor]).toFixed(2);
-                })
-                .attr('x2', function(d) {
-                    return args.scales.X(d[args.x_accessor]).toFixed(2);
-                })
+                .attr('x1', xPositionFixed)
+                .attr('x2', xPositionFixed)
                 .attr('y1', args.top)
                 .attr('y2', function() {
                     return args.height - args.bottom - args.buffer;
@@ -30,20 +23,18 @@ function markers(args) {
                 .attr('stroke-dasharray', '3,1');
 
         gm.selectAll('.mg-markers')
-            .data(args.markers.filter(function(d){
-                return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                    && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
-            }))
+            .data(args.markers.filter(inRange))
             .enter()
             .append('text')
-                .attr('x', function(d) {
-                    return args.scales.X(d[args.x_accessor]);
-                })
+                .attr('class', 'marker-text')
+                .attr('x', xPosition)
                 .attr('y', args.top - 8)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;
                 });
+
+        preventOverlap(gm.selectAll('.marker-text'));
     }
 
     if (args.baselines) {
@@ -75,6 +66,51 @@ function markers(args) {
                 .text(function(d) {
                     return d.label;
                 });
+    }
+
+    function preventOverlap (labels) {
+
+      var prev;
+      labels.each(function(d, i) {
+        if(i > 0) {
+          var thisbb = this.getBoundingClientRect();
+
+          if(isOverlapping(this, labels)) {
+            var node = d3.select(this), newY = +node.attr('y');
+            if (newY + 8 == args.top) {
+              newY = args.top - 16;
+            }
+            node.attr('y', newY);
+          }
+        }
+        prev = this;
+      });
+    }
+
+    function isOverlapping(element, labels) {
+      var bbox = element.getBoundingClientRect();
+      for(var i = 0; i < labels.length; i++) {
+        var elbb = labels[0][i].getBoundingClientRect();
+        if (
+          labels[0][i] !== element &&
+          ((elbb.right > bbox.left && elbb.left > bbox.left && bbox.top === elbb.top) ||
+          (elbb.left < bbox.left && elbb.right > bbox.left && bbox.top === elbb.top))
+        ) return true;
+      }
+      return false;
+    }
+
+    function xPosition (d) {
+      return args.scales.X(d[args.x_accessor]);
+    }
+
+    function xPositionFixed (d) {
+      return xPosition(d).toFixed(2);
+    }
+
+    function inRange (d){
+      return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+          && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
     }
 
     return this;
