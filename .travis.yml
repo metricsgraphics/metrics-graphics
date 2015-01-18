@@ -4,7 +4,7 @@ node_js:
 notifications:
   irc:
     channels:
-      - "irc.mozilla.org#metrics-graphics"
+      - "irc.mozilla.org#metrics"
     on_success: change
     on_failure: always
     use_notice: true
