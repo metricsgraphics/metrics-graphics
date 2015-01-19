@@ -10,7 +10,12 @@ function init(args) {
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
 
-    //this is how we're dealing with passing in a single array of data, 
+    if (d3.select(args.target).empty()) {
+        console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
+        return;
+    }
+
+    //this is how we're dealing with passing in a single array of data,
     //but with the intention of using multiple values for multilines, etc.
 
     //do we have a time_series?
@@ -99,8 +104,8 @@ function init(args) {
     chart_title(args);
 
     //draw axes
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer 
-            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer * 2 
+    args.use_small_class = args.height - args.top - args.bottom - args.buffer
+            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer * 2
             <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
@@ -108,7 +113,7 @@ function init(args) {
     //data_graphic() on the same target with 2 lines, remove the 3rd line
     if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
-        //line-color map, instead, see which are the lines to be removed, and delete those    
+        //line-color map, instead, see which are the lines to be removed, and delete those
         if(args.custom_line_color_map.length > 0) {
             var array_full_series = function(len) {
                 var arr = new Array(len);
@@ -118,7 +123,7 @@ function init(args) {
 
             //get an array of lines ids to remove
             var lines_to_remove = arrDiff(
-                array_full_series(args.max_data_size), 
+                array_full_series(args.max_data_size),
                 args.custom_line_color_map);
 
             for(var i=0; i<lines_to_remove.length; i++) {
