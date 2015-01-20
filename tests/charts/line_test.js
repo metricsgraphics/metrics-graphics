@@ -195,3 +195,17 @@ test('No zombie lines when we update a chart with fewer lines', function() {
 
     equal(document.querySelectorAll('.mg-main-line').length, 1, 'One line exists');
 });
+
+test('Rollover circle is visible on load if the dataset is of length 1', function() {
+    var data = [{"date": '2014-02-01', "value": 6}];
+    var data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        data: data,
+        target: "#qunit-fixture"
+    });
+
+    deepEqual(d3.select('.mg-line-rollover-circle').style('opacity'), "1", 'Rollover circle is visible');
+});
+
+

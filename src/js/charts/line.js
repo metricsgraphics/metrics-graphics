@@ -378,6 +378,12 @@ charts.line = function(args) {
                         .on('mousemove', this.rolloverMove(args));
         }
 
+        //if the dataset is of length 1, trigger the rollover for our solitary rollover rect
+        if (args.data.length == 1 && args.data[0].length == 1) {
+            d3.select('.mg-rollover-rect .mg-line1-color')
+                .on('mouseover')(args.data[0][0], 0);
+        }
+
         return this;
     };
 
@@ -606,9 +612,16 @@ charts.line = function(args) {
                     });
             }
 
-            //remove active datapoint text on mouse out
+            //remove active datapoint text on mouse out, except if we have a single
             svg.selectAll('circle.mg-line-rollover-circle')
-                .style('opacity', 0);
+                .style('opacity', function() {
+                        if (args.data.length == 1 && args.data[0].length == 1) {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    });
 
             svg.select('.mg-active-datapoint')
                 .text('');
