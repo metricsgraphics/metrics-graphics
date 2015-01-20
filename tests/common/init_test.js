@@ -48,7 +48,7 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
     var params_0 = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-11-01'), 'value': 12},
-               {'date': new Date('2014-11-02'), 'value': 18}],
+               {'date': new Date('2014-11-02'), 'value': 18}]
     };
 
     var params = {

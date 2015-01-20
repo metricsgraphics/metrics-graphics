@@ -88,3 +88,53 @@ test('Baseline text is correctly added', function() {
     MG.data_graphic(params);
     equal(document.querySelectorAll(target + ' .mg-baselines text')[0].textContent, baselines[0].label, 'Baseline text matches specified one');
 });
+
+test('When an existing chart is updated with no markers, existing markers are cleared', function() {
+    var markers = [{
+            'date': new Date('2014-11-02'),
+            'label': 'Lorem Ipsum'
+        }];
+
+    var params_0 = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-03'), 'value': 18}],
+        markers: markers
+    };
+
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 14},
+               {'date': new Date('2014-11-03'), 'value': 20}],
+    };
+
+    MG.data_graphic(params_0);
+    MG.data_graphic(params);
+
+    equal(document.querySelectorAll('.mg-markers').length, 0, 'Old markers were cleared');
+});
+
+test('When an existing chart is updated with no baselines, existing baselines are cleared', function() {
+    var baselines = [{
+            'value': 10,
+            'label': 'Lorem Ipsum'
+        }];
+
+    var params_0 = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-03'), 'value': 18}],
+        baselines: baselines
+    };
+
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 14},
+               {'date': new Date('2014-11-03'), 'value': 20}],
+    };
+
+    MG.data_graphic(params_0);
+    MG.data_graphic(params);
+
+    equal(document.querySelectorAll('.mg-baselines').length, 0, 'Old baselines were cleared');
+});
