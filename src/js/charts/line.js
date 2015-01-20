@@ -408,10 +408,10 @@ charts.line = function(args) {
 
                 d.values.forEach(function(datum) {
 
-                  if (datum[args.x_accessor] > args.processed.min_x &&
-                      datum[args.x_accessor] < args.processed.max_x &&
-                      datum[args.y_accessor] > args.processed.min_y &&
-                      datum[args.y_accessor] < args.processed.max_y
+                  if (datum[args.x_accessor] >= args.processed.min_x &&
+                      datum[args.x_accessor] <= args.processed.max_x &&
+                      datum[args.y_accessor] >= args.processed.min_y &&
+                      datum[args.y_accessor] <= args.processed.max_y
                   ){
                     var circle = svg.select('circle.mg-line' + datum['line_id'] + '-color')
                         .attr({
@@ -429,10 +429,10 @@ charts.line = function(args) {
             } else {
 
                 //show circle on mouse-overed rect
-                if (d[args.x_accessor] > args.processed.min_x &&
-                    d[args.x_accessor] < args.processed.max_x &&
-                    d[args.y_accessor] > args.processed.min_y &&
-                    d[args.y_accessor] < args.processed.max_y
+                if (d[args.x_accessor] >= args.processed.min_x &&
+                    d[args.x_accessor] <= args.processed.max_x &&
+                    d[args.y_accessor] >= args.processed.min_y &&
+                    d[args.y_accessor] <= args.processed.max_y
                 ){
                     svg.selectAll('circle.mg-line-rollover-circle')
                         .attr('class', "")
