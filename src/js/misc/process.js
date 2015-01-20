@@ -64,9 +64,13 @@ function process_line(args) {
     if (args.missing_is_zero
             && args.chart_type === 'line'
             && is_time_series
-            && args.data.length > 1
         ) {
-        for (var i = 0;i < args.data.length; i++) {
+        for (var i = 0; i < args.data.length; i++) {
+            //we need to have a dataset of length > 2, so if it's less than that, skip
+            if (args.data[i].length == 1) {
+                continue;
+            }
+            
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
             //initialize our new array for storing the processed data
