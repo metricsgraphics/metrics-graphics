@@ -10,6 +10,7 @@ var
 //minifycss = require('gulp-minify-css'), // for minifiing css
   jslint = require('gulp-jslint'),
   testem = require('gulp-testem'),
+  connect = require('gulp-connect'),
   es6ModuleTranspiler = require("gulp-es6-module-transpiler");
 
 // paths
@@ -99,7 +100,7 @@ gulp.task('build:js', ['clean'], function () {
     .pipe(gulp.dest(dist));
 });
 
-// check source js files with jslint
+// Check source js files with jslint
 gulp.task('jslint', function () {
   return gulp.src(jsFiles)
     .pipe(jslint({
@@ -108,9 +109,30 @@ gulp.task('jslint', function () {
     }));
 });
 
+// Run test suite server (testem')
 gulp.task('test', function() {
   return gulp.src([''])
     .pipe(testem({
       configFile: 'testem.json'
     }));
+});
+
+
+// Development server tasks
+// NOTE: these paths will need changing when the SCSS source is ready
+var roots = ['dist', 'examples', 'src'],
+    watchables = roots.map(function(root) {
+        return root + '/**/*';
+    });
+
+gulp.task('dev:watch', function() { return gulp.watch(watchables, ['dev:reload']); });
+gulp.task('dev:reload', function() { return gulp.src(watchables).pipe(connect.reload()); });
+gulp.task('serve', ['dev:serve', 'dev:watch']);
+
+gulp.task('dev:serve', function() {
+    connect.server({
+        root: roots,
+        port: 4300,
+        livereload: true
+    });
 });

@@ -37,6 +37,7 @@
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-concat": "^2.4.2",
+    "gulp-connect": "^2.2.0",
     "gulp-es6-module-transpiler": "^0.2.0",
     "gulp-jslint": "^0.2.1",
     "gulp-rename": "^1.2.0",
