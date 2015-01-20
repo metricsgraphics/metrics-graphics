@@ -65,6 +65,7 @@ MG.data_graphic = function() {
         format: 'count',              // format = {count, percentage}
         inflator: 10/9,               // for setting y axis max
         linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+        linked_format: '%Y-%m-%d',    // What granularity to link on for graphs. Default is at day
         list: false,
         baselines: null,              // sets the baseline lines
         markers: null,                // sets the marker lines
