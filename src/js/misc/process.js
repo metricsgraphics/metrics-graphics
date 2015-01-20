@@ -70,7 +70,7 @@ function process_line(args) {
             if (args.data[i].length == 1) {
                 continue;
             }
-            
+
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
             //initialize our new array for storing the processed data
