@@ -29,12 +29,7 @@ charts.line = function(args) {
 
         //confidence band
         var confidence_area;
-
-        //if it already exists, remove it
-        var existing_band = svg.selectAll('.mg-confidence-band');
-        if (!existing_band.empty()) {
-            existing_band.remove();
-        }
+        var existing_band = svg.select('.mg-confidence-band');
 
         if (args.show_confidence_band) {
             confidence_area = d3.svg.area()
@@ -66,6 +61,7 @@ charts.line = function(args) {
         //for building the optional legend
         var legend = '';
         var this_data;
+        var confidenceBand;
 
         for (var i = args.data.length - 1; i >= 0; i--) {
             this_data = args.data[i];
@@ -80,10 +76,20 @@ charts.line = function(args) {
 
             //add confidence band
             if (args.show_confidence_band) {
-                svg.append('path')
-                    .attr('class', 'mg-confidence-band')
-                    .attr('d', confidence_area(args.data[i]))
-                    .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                if (!existing_band.empty()) {
+                    confidenceBand = existing_band
+                        .transition()
+                        .duration(function() {
+                          return (args.transition_on_update) ? 1000 : 0;
+                        });
+                } else {
+                    confidenceBand = svg.append('path')
+                        .attr('class', 'mg-confidence-band');
+                }
+
+              confidenceBand
+                  .attr('d', confidence_area(args.data[i]))
+                  .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
             }
 
             //add the area
