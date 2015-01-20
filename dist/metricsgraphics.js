@@ -4156,7 +4156,7 @@
                     //check to see if we already have this date in our data object
                     var existing_o = null;
                     $.each(args.data[i], function(i, val) {
-                        if (Date.parse(val.date) === Date.parse(new Date(d))) {
+                        if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
                             existing_o = val;
 
                             return false;
