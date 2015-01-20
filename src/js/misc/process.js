@@ -61,7 +61,11 @@ function process_line(args) {
             : false;
 
     //are we replacing missing y values with zeros?
-    if (args.missing_is_zero && args.chart_type === 'line' && is_time_series) {
+    if (args.missing_is_zero
+            && args.chart_type === 'line'
+            && is_time_series
+            && args.data.length > 1
+        ) {
         for (var i = 0;i < args.data.length; i++) {
             var first = args.data[i][0];
             var last = args.data[i][args.data[i].length-1];
