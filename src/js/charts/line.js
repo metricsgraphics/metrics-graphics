@@ -246,7 +246,7 @@ charts.line = function(args) {
                         .attr('class', function(d) {
                             if (args.linked) {
                                 var v = d[args.x_accessor];
-                                var formatter = d3.time.format('%Y-%m-%d');
+                                var formatter = d3.time.format(args.linked_format);
 
                                 //only format when x-axis is date
                                 var id = (typeof v === 'number')
@@ -328,7 +328,7 @@ charts.line = function(args) {
                         .attr('class', function(d, i) {
                             if (args.linked) {
                                 var v = d[args.x_accessor];
-                                var formatter = d3.time.format('%Y-%m-%d');
+                                var formatter = d3.time.format(args.linked_format);
 
                                 //only format when x-axis is date
                                 var id = (typeof v === 'number')
@@ -459,7 +459,7 @@ charts.line = function(args) {
                     MG.globals.link = true;
 
                     var v = d[args.x_accessor];
-                    var formatter = d3.time.format('%Y-%m-%d');
+                    var formatter = d3.time.format(args.linked_format);
 
                     //only format when y-axis is date
                     var id = (typeof v === 'number')
@@ -599,7 +599,7 @@ charts.line = function(args) {
                 MG.globals.link = false;
 
                 var v = d[args.x_accessor];
-                var formatter = d3.time.format('%Y-%m-%d');
+                var formatter = d3.time.format(args.linked_format);
 
                 //only format when y-axis is date
                 var id = (typeof v === 'number')
