@@ -19,7 +19,7 @@ test('Chart\'s width is set correctly on subsequent calls to existing chart', fu
     MG.data_graphic(params);
 
     var width = document.querySelector(params.target + ' svg').offsetWidth;
-    ok(width == params.width, 'SVG\'s width matches latest specified width');
+    ok(width == 200, 'SVG\'s width matches latest specified width');
 });
 
 test('Chart\'s height is set correctly on subsequent calls to existing chart', function() {

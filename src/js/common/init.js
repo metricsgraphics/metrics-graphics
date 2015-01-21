@@ -97,8 +97,10 @@ function init(args) {
 
     // remove missing class
     svg.classed('mg-missing', false);
+    
     // remove missing text
     svg.selectAll('.mg-missing-text').remove();
+    svg.selectAll('.mg-missing-pane').remove();
 
     //add chart title if it's different than existing one
     chart_title(args);

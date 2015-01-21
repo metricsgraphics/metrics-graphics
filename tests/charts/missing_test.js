@@ -12,3 +12,51 @@ test('Missing chart\'s text matches specified missing_text', function() {
         params.missing_text,
         'Missing chart\'s text matches missing_text');
 });
+
+test('Only one mg-missing-pane on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        chart_type: 'missing-data',
+        missing_text: 'In an astral plane that was never meant to fly...'
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll(target + ' .mg-missing-pane').length, 1, 'We only have one mg-missing-pane');
+});
+
+test('Only one mg-missing-text on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        chart_type: 'missing-data',
+        missing_text: 'In an astral plane that was never meant to fly...'
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll(target + ' .mg-missing-text').length, 1, 'We only have one mg-missing-text');
+});
+
+test('Missing chart\'s width is set correctly on subsequent calls to existing chart', function() {
+    var params_0 = {
+        target: '#qunit-fixture',
+        chart_type: 'missing-data',
+        missing_text: 'In an astral plane that was never meant to fly...'
+    };
+
+    var params = {
+        target: '#qunit-fixture',
+        chart_type: 'missing-data',
+        missing_text: 'In an astral plane that was never meant to fly...',
+        width: 200,
+        height: 100,
+    };
+
+    MG.data_graphic(params_0);
+    MG.data_graphic(params);
+
+    var width = document.querySelector(params.target + ' svg').offsetWidth;
+    ok(width == 200, 'SVG\'s width matches latest specified width');
+});

@@ -158,10 +158,6 @@ li {
     fill: #fff;
 }
 
-.mg-missing {
-    background-image: url(../images/missing-data-dark.png);
-}
-
 circle.mg-points-mono {
     fill-opacity: 0.6;
     stroke: #a89641;

@@ -77,6 +77,7 @@
             format: 'count',              // format = {count, percentage}
             inflator: 10/9,               // for setting y axis max
             linked: false,                // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+            linked_format: '%Y-%m-%d',    // What granularity to link on for graphs. Default is at day
             list: false,
             baselines: null,              // sets the baseline lines
             markers: null,                // sets the marker lines
@@ -138,10 +139,15 @@
             bottom: 0,
             right: 0,
             left: 0,
+            buffer: 8,
             legend_target: '',
             width: 350,
             height: 220,
-            missing_text: 'Data currently missing or unavailable'
+            missing_text: 'Data currently missing or unavailable',
+            scalefns: {},
+            scales: {},
+            show_missing_background: true,
+            interpolate: 'cardinal'
         };
 
         var args = arguments[0];
@@ -1832,7 +1838,7 @@
                 .attr('x', args.left)
                 .attr('y', args.top)
                 .attr('width', args.width - args.left - args.right - args.buffer)
-                .attr('height', args.height - args.top - args.bottom - args.buffer);
+                .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
 
         //has the width or height changed?
         if (svg_width !== Number(svg.attr('width'))) {
@@ -1852,8 +1858,10 @@
 
         // remove missing class
         svg.classed('mg-missing', false);
+        
         // remove missing text
         svg.selectAll('.mg-missing-text').remove();
+        svg.selectAll('.mg-missing-pane').remove();
 
         //add chart title if it's different than existing one
         chart_title(args);
@@ -2556,7 +2564,7 @@
                             .attr('class', function(d) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format('%Y-%m-%d');
+                                    var formatter = d3.time.format(args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -2638,7 +2646,7 @@
                             .attr('class', function(d, i) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format('%Y-%m-%d');
+                                    var formatter = d3.time.format(args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -2769,7 +2777,7 @@
                         MG.globals.link = true;
 
                         var v = d[args.x_accessor];
-                        var formatter = d3.time.format('%Y-%m-%d');
+                        var formatter = d3.time.format(args.linked_format);
 
                         //only format when y-axis is date
                         var id = (typeof v === 'number')
@@ -2909,7 +2917,7 @@
                     MG.globals.link = false;
 
                     var v = d[args.x_accessor];
-                    var formatter = d3.time.format('%Y-%m-%d');
+                    var formatter = d3.time.format(args.linked_format);
 
                     //only format when y-axis is date
                     var id = (typeof v === 'number')
@@ -4043,17 +4051,68 @@
                 .attr('width', args.width)
                 .attr('height', args.height);
 
+            var svg = d3.select(args.target).select('svg');
+            
+            // has the width or height changed?
+            if (args.width !== Number(svg.attr('width'))) {
+                svg.attr('width', args.width);
+            }
+
+            if (args.height !== Number(svg.attr('height'))) {
+                svg.attr('height', args.height);
+            }
+
             // delete child elements
             d3.select(args.target).selectAll('svg *').remove();
-
-            var svg = d3.select(args.target).select('svg');
 
             // add missing class
             svg.classed('mg-missing', true);
 
             // do we need to clear the legend?
-            if(args.legend_target)
+            if (args.legend_target) {
                 $(args.legend_target).html('');
+            }
+
+            //are we adding a background placeholder
+            if (args.show_missing_background) {
+                var data = [];
+                for (var x = 1; x <= 50; x++) {
+                    data.push({'x': x, 'y': Math.random() - (x * 0.03)});
+                }
+
+                args.scales.X = d3.scale.linear()
+                    .domain([0, data.length])
+                    .range([args.left + args.buffer, args.width - args.right - args.buffer]);
+
+                args.scales.Y = d3.scale.linear()
+                    .domain([-2, 2])
+                    .range([args.height - args.bottom - args.buffer, args.top]);
+
+                args.scalefns.xf = function(di) { return args.scales.X(di.x); };
+                args.scalefns.yf = function(di) { return args.scales.Y(di.y); };
+
+                var line = d3.svg.line()
+                    .x(args.scalefns.xf)
+                    .y(args.scalefns.yf)
+                    .interpolate(args.interpolate);
+
+                var area = d3.svg.area()
+                    .x(args.scalefns.xf)
+                    .y0(args.scales.Y.range()[0])
+                    .y1(args.scalefns.yf)
+                    .interpolate(args.interpolate);
+
+                var g = svg.append('g')
+                    .attr('class', 'mg-missing-pane');
+
+                g.append('path')
+                    .attr('class', 'mg-main-line mg-line1-color')
+                    .attr('d', line(data));
+
+                g.append('path')
+                    .attr('class', 'mg-main-area mg-area1-color')
+                    .attr('d', area(data));
+            }
 
             // add missing text
             svg.selectAll('.mg-missing-text').data([args.missing_text])

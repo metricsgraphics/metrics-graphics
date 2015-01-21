@@ -246,7 +246,15 @@
 }
 
 .mg-missing-text {
-    opacity: 0.8;
+    opacity: 0.9;
+}
+
+.mg-missing .mg-main-line {
+    opacity: 0.1;
+}
+
+.mg-missing .mg-main-area {
+    opacity: 0.03;
 }
 
 path.mg-main-area {

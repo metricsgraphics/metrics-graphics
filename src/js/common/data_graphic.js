@@ -127,10 +127,15 @@ MG.data_graphic = function() {
         bottom: 0,
         right: 0,
         left: 0,
+        buffer: 8,
         legend_target: '',
         width: 350,
         height: 220,
-        missing_text: 'Data currently missing or unavailable'
+        missing_text: 'Data currently missing or unavailable',
+        scalefns: {},
+        scales: {},
+        show_missing_background: true,
+        interpolate: 'cardinal'
     };
 
     var args = arguments[0];
