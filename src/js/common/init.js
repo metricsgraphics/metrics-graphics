@@ -77,7 +77,7 @@ function init(args) {
             .attr('x', args.left)
             .attr('y', args.top)
             .attr('width', args.width - args.left - args.right - args.buffer)
-            .attr('height', args.height - args.top - args.bottom - args.buffer);
+            .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
 
     //has the width or height changed?
     if (svg_width !== Number(svg.attr('width'))) {
