@@ -56,7 +56,7 @@ var each = function(obj, iterator, context) {
     }
 
     return obj;
-}
+};
 
 function merge_with_defaults(obj) {
     // taken from underscore
@@ -66,7 +66,7 @@ function merge_with_defaults(obj) {
           if (obj[prop] === void 0) obj[prop] = source[prop];
         }
       }
-    })
+    });
 
     return obj;
 }
@@ -74,7 +74,7 @@ function merge_with_defaults(obj) {
 function number_of_values(data, accessor, value) {
     var values = data.filter(function(d) {
         return d[accessor] === value;
-    })
+    });
 
     return values.length;
 }
@@ -82,7 +82,7 @@ function number_of_values(data, accessor, value) {
 function has_values_below(data, accessor, value) {
     var values = data.filter(function(d) {
         return d[accessor] <= value;
-    })
+    });
 
     return values.length > 0;
 }
@@ -94,19 +94,21 @@ function has_too_many_zeros(data, accessor, zero_count) {
 //deep copy
 //http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
+    var copy;
+
     // Handle the 3 simple types, and null or undefined
     if (null === obj || "object" !== typeof obj) return obj;
 
     // Handle Date
     if (obj instanceof Date) {
-        var copy = new Date();
+        copy = new Date();
         copy.setTime(obj.getTime());
         return copy;
     }
 
     // Handle Array
     if (obj instanceof Array) {
-        var copy = [];
+        copy = [];
         for (var i = 0, len = obj.length; i < len; i++) {
             copy[i] = MG.clone(obj[i]);
         }
@@ -115,7 +117,7 @@ MG.clone = function(obj) {
 
     // Handle Object
     if (obj instanceof Object) {
-        var copy = {};
+        copy = {};
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
         }
@@ -123,15 +125,17 @@ MG.clone = function(obj) {
     }
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
-}
+};
 
 //give us the difference of two int arrays
 //http://radu.cotescu.com/javascript-diff-function/
 function arrDiff(a,b) {
-    var seen = [], diff = [];
-    for ( var i = 0; i < b.length; i++)
+    var seen = [],
+        diff = [],
+        i;
+    for (i = 0; i < b.length; i++)
         seen[b[i]] = true;
-    for ( var i = 0; i < a.length; i++)
+    for (i = 0; i < a.length; i++)
         if (!seen[a[i]])
             diff.push(a[i]);
     return diff;
@@ -199,10 +203,10 @@ function wrapText(text, width, token, tspanAttrs) {
           .attr("y", dy + "em")
           .attr(tspanAttrs || {});
 
-    while (word = words.pop()) {
+    while (!!(word = words.pop())) {
       line.push(word);
       tspan.text(line.join(" "));
-      if (width == null || tspan.node().getComputedTextLength() > width) {
+      if (width === null || tspan.node().getComputedTextLength() > width) {
         line.pop();
         tspan.text(line.join(" "));
         line = [word];

@@ -15,6 +15,10 @@ charts.line = function(args) {
         var svg = d3.select($(args.target).find('svg').get(0));
         var g;
         var data_median = 0;
+        var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
+        var mapToY = function(d) {
+            return d[args.y_accessor];
+        };
 
         //main area
         var area = d3.svg.area()
@@ -90,9 +94,7 @@ charts.line = function(args) {
                     $(svg.node()).find('.mg-y-axis').after($area.detach());
                     d3.select($area.get(0))
                         .transition()
-                            .duration(function() {
-                                return (args.transition_on_update) ? 1000 : 0;
-                            })
+                            .duration(updateTransitionDuration)
                             .attr('d', area(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window)');
                 } else { //otherwise, add the area
@@ -111,17 +113,13 @@ charts.line = function(args) {
                 $(svg.node()).find('.mg-y-axis').after($existing_line.detach());
                 d3.select($existing_line.get(0))
                     .transition()
-                        .duration(function() {
-                            return (args.transition_on_update) ? 1000 : 0;
-                        })
+                        .duration(updateTransitionDuration)
                         .attr('d', line(args.data[i]));
             }
             else { //otherwise...
                 //if we're animating on load, animate the line from its median value
                 if (args.animate_on_load) {
-                    data_median = d3.median(args.data[i], function(d) {
-                        return d[args.y_accessor];
-                    });
+                    data_median = d3.median(args.data[i], mapToY);
 
                     svg.append('path')
                         .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
@@ -188,8 +186,8 @@ charts.line = function(args) {
                   'class': function(d, i) {
                       return [
                           'mg-line-rollover-circle',
-                          'mg-line' + d['line_id'] + '-color',
-                          'mg-area' + d['line_id'] + '-color'
+                          'mg-line' + d.line_id + '-color',
+                          'mg-area' + d.line_id + '-color'
                       ].join(' ');
                   },
                   'cx': 0,
@@ -213,7 +211,8 @@ charts.line = function(args) {
             line_id++;
         }
 
-        var g;
+        var data_nested;
+        var xf;
 
         //for multi-line, use voronoi
         if (args.data.length > 1 && !args.aggregate_rollover) {
@@ -227,7 +226,7 @@ charts.line = function(args) {
                 .attr('class', 'mg-voronoi');
 
             //we'll be using these when constructing the voronoi rollovers
-            var data_nested = d3.nest()
+            data_nested = d3.nest()
                 .key(function(d) {
                     return args.scales.X(d[args.x_accessor]) + ","
                         + args.scales.Y(d[args.y_accessor]);
@@ -265,15 +264,15 @@ charts.line = function(args) {
 
         // for multi-lines and aggregated rollovers, use rects
         else if (args.data.length > 1 && args.aggregate_rollover) {
-            var data_nested = d3.nest()
+            data_nested = d3.nest()
                 .key(function(d) { return d[args.x_accessor]; })
-                .entries(d3.merge(args.data.map(function(d) { return d; })));
+                .entries(d3.merge(args.data));
 
-            var xf = data_nested.map(function(di) {
+            xf = data_nested.map(function(di) {
                 return args.scales.X(new Date(di.key));
             });
 
-            var g = svg.append('g')
+            g = svg.append('g')
               .attr('class', 'mg-rollover-rect');
 
             g.selectAll('.mg-rollover-rects')
@@ -281,9 +280,9 @@ charts.line = function(args) {
                     .append('rect')
                         .attr('x', function(d, i) {
                             //if data set is of length 1
-                            if(xf.length == 1) {
+                            if(xf.length === 1) {
                                 return args.left + args.buffer;
-                            } else if (i == 0) {
+                            } else if (i === 0) {
                                 return xf[i].toFixed(2);
                             } else {
                                 return ((xf[i-1] + xf[i])/2).toFixed(2);
@@ -292,9 +291,9 @@ charts.line = function(args) {
                         .attr('y', args.top)
                         .attr('width', function(d, i) {
                             //if data set is of length 1
-                            if(xf.length == 1) {
+                            if(xf.length === 1) {
                                 return args.width - args.right - args.buffer;
-                            } else if (i == 0) {
+                            } else if (i === 0) {
                                 return ((xf[i+1] - xf[i]) / 2).toFixed(2);
                             } else if (i == xf.length - 1) {
                                 return ((xf[i] - xf[i-1]) / 2).toFixed(2);
@@ -312,7 +311,7 @@ charts.line = function(args) {
         //for single line, use rects
         else {
             //set to 1 unless we have a custom increment series
-            var line_id = 1;
+            line_id = 1;
             if (args.custom_line_color_map.length > 0) {
                 line_id = args.custom_line_color_map[0];
             }
@@ -320,7 +319,7 @@ charts.line = function(args) {
             g = svg.append('g')
                 .attr('class', 'mg-rollover-rect');
 
-            var xf = args.data[0].map(args.scalefns.xf);
+            xf = args.data[0].map(args.scalefns.xf);
 
             g.selectAll('.mg-rollover-rects')
                 .data(args.data[0]).enter()
@@ -419,7 +418,7 @@ charts.line = function(args) {
                       datum[args.y_accessor] >= args.processed.min_y &&
                       datum[args.y_accessor] <= args.processed.max_y
                   ){
-                    var circle = svg.select('circle.mg-line' + datum['line_id'] + '-color')
+                    var circle = svg.select('circle.mg-line' + datum.line_id + '-color')
                         .attr({
                             'cx': function() {
                                 return args.scales.X(datum[args.x_accessor]).toFixed(2);
@@ -467,7 +466,7 @@ charts.line = function(args) {
                             : formatter(v);
 
                     //trigger mouseover on matching line in .linked charts
-                    d3.selectAll('.mg-line' + d['line_id'] + '-color.roll_' + id)
+                    d3.selectAll('.mg-line' + d.line_id + '-color.roll_' + id)
                         .each(function(d, i) {
                             d3.select(this).on('mouseover')(d,i);
                         });
@@ -528,7 +527,7 @@ charts.line = function(args) {
                                   y: (lineCount * lineHeight) + 'em'
                                 })
                                 .text('\u2014 ') // mdash
-                                .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                .classed('mg-hover-line' + datum.line_id + '-color', true)
                                 .style('font-weight', 'bold');
 
                             lineCount++;
@@ -555,7 +554,7 @@ charts.line = function(args) {
                                   y: (lineCount * lineHeight) + 'em'
                                 })
                                 .text('\u2014 ') // mdash
-                                .classed('mg-hover-line' + datum['line_id'] + '-color', true)
+                                .classed('mg-hover-line' + datum.line_id + '-color', true)
                                 .style('font-weight', 'bold');
 
                             lineCount++;
@@ -646,5 +645,6 @@ charts.line = function(args) {
     };
 
     this.init(args);
+
     return this;
 };

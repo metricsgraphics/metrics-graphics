@@ -5,5 +5,8 @@
     "MG": false,
     "d3": false
   },
-  "laxbreak": true
+  "laxbreak": true,
+  "validthis": true,
+  "loopfunc": true,
+  "sub": true
 }

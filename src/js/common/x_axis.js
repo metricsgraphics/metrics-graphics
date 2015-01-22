@@ -149,7 +149,7 @@ function x_axis_categorical(args) {
 }
 
 function mg_point_add_color_scale(args) {
-    var min_color, max_color, 
+    var min_color, max_color,
         color_domain, color_range;
 
     if (args.color_accessor !== null) {
@@ -294,8 +294,8 @@ function mg_default_xax_format(args) {
         return args.xax_format;
     }
 
-    var diff, 
-        main_time_format, 
+    var diff,
+        main_time_format,
         time_frame;
 
     if (args.time_series) {
@@ -332,7 +332,7 @@ function mg_default_xax_format(args) {
                 //don't scale tiny values
                 return args.yax_units + d3.round(d, args.decimals);
             } else {
-                var pf = d3.formatPrefix(d);
+                pf = d3.formatPrefix(d);
                 return args.xax_units + pf.scale(d) + pf.symbol;
             }
         } else {
@@ -392,7 +392,7 @@ function mg_add_x_tick_labels(g, args) {
                 });
 
     if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-        var secondary_marks, 
+        var secondary_marks,
             secondary_function, yformat;
 
         var time_frame = args.processed.x_time_frame;
@@ -416,7 +416,7 @@ function mg_add_x_tick_labels(g, args) {
         }
 
         var years = secondary_function(args.processed.min_x, args.processed.max_x);
-       
+
         if (years.length === 0) {
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
@@ -434,7 +434,7 @@ function mg_add_x_tick_labels(g, args) {
                         .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
                         .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
                         .attr('y1', args.top)
-                        .attr('y2', args.height - args.bottom);    
+                        .attr('y2', args.height - args.bottom);
         }
 
         g.selectAll('.mg-year-marker')
@@ -451,8 +451,8 @@ function mg_add_x_tick_labels(g, args) {
 }
 
 function mg_find_min_max_x(args) {
-    var last_i, 
-        min_x, 
+    var last_i,
+        min_x,
         max_x;
 
     if (args.chart_type === 'line') {
@@ -475,7 +475,7 @@ function mg_find_min_max_x(args) {
         max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
 
     } else if (args.chart_type === 'bar') {
-        min_x = 0; 
+        min_x = 0;
         max_x = d3.max(args.data[0], function(d) {
             var trio = [];
             trio.push(d[args.x_accessor]);
@@ -494,7 +494,7 @@ function mg_find_min_max_x(args) {
 
     //if data set is of length 1, expand the range so that we can build the x-axis
     //of course, a line chart doesn't make sense in this case, so the preferred
-    //method would be to check for said object's length and, if appropriate, 
+    //method would be to check for said object's length and, if appropriate,
     //change the chart type to 'point'
     if (min_x === max_x) {
         if (min_x instanceof Date) {
@@ -510,7 +510,7 @@ function mg_find_min_max_x(args) {
             min_x = Number(min_x) - 1;
             max_x = Number(max_x) + 1;
         }
-        
+
         //force xax_count to be 2
         args.xax_count = 2;
     }

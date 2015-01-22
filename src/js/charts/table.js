@@ -4,7 +4,7 @@ Data Tables
 Along with histograms, bars, lines, and scatters, a simple data table can take you far.
 We often just want to look at numbers, organized as a table, where columns are variables,
 and rows are data points. Sometimes we want a cell to have a small graphic as the main
-column element, in which case we want small multiples. sometimes we want to 
+column element, in which case we want small multiples. sometimes we want to
 
 var table = New data_table(data)
                 .target('div#data-table')
@@ -31,9 +31,9 @@ MG.data_table = function(args) {
         this.formatting_options.forEach(function(fo) {
             var attr = fo[0];
             var key = fo[1];
-            if (args[key]) element.style(attr, 
-                typeof args[key] === 'string' || 
-                typeof args[key] === 'number' ? 
+            if (args[key]) element.style(attr,
+                typeof args[key] === 'string' ||
+                typeof args[key] === 'number' ?
                     args[key] : args[key](value));
         });
     };
@@ -63,7 +63,7 @@ MG.data_table = function(args) {
 
     this.bullet = function() {
         /*
-        text label 
+        text label
         main value
         comparative measure
         any number of ranges
@@ -101,10 +101,11 @@ MG.data_table = function(args) {
 
         var tr, th, td_accessor, td_type, td_value, th_text, td_text, td;
         var col;
+        var h;
 
         tr = thead.append('tr');
 
-        for (var h = 0; h < args.columns.length; h++) {
+        for (h = 0; h < args.columns.length; h++) {
             var this_col = args.columns[h];
             td_type = this_col.type;
             th_text = this_col.label;
@@ -131,7 +132,7 @@ MG.data_table = function(args) {
             }
         }
 
-        for (var h = 0; h < args.columns.length; h++) {
+        for (h = 0; h < args.columns.length; h++) {
             col = colgroup.append('col');
             if (args.columns[h].type === 'number') {
                 col.attr('align', 'char').attr('char', '.');
