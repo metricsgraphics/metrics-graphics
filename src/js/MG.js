@@ -1,1 +1,1 @@
-var MG = {version:'2.1.0'};
+var MG = {version: '2.1.0'};
