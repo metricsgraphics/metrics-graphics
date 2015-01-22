@@ -8,7 +8,7 @@ var
   rename = require('gulp-rename'),
 //sass = require('gulp-sass'), // for building css from scss
 //minifycss = require('gulp-minify-css'), // for minifiing css
-  jslint = require('gulp-jslint'),
+  jshint = require('gulp-jshint'),
   testem = require('gulp-testem'),
   connect = require('gulp-connect'),
   es6ModuleTranspiler = require("gulp-es6-module-transpiler");
@@ -45,7 +45,7 @@ var
   ];
 
 
-gulp.task('default', ['jslint', 'test', 'build:js']);
+gulp.task('default', ['jshint', 'test', 'build:js']);
 
 gulp.task('clean', function () {
   return gulp.src([dist + 'metricsgraphics.js', dist + 'metricsgraphics.min.js'], {read: false})
@@ -100,13 +100,11 @@ gulp.task('build:js', ['clean'], function () {
     .pipe(gulp.dest(dist));
 });
 
-// Check source js files with jslint
-gulp.task('jslint', function () {
+// Check source js files with jshint
+gulp.task('jshint', function () {
   return gulp.src(jsFiles)
-    .pipe(jslint({
-      predef: ["window", '$', 'd3'], // used globals
-      nomen: false // true if there are variable names with leading _
-    }));
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
 
 // Run test suite server (testem')
