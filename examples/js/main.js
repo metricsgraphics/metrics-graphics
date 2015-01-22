@@ -1,6 +1,6 @@
 $(document).ready(function() {
     'use strict';
-    //json data that we intend to update later on via on-screen controls
+    // json data that we intend to update later on via on-screen controls
     var split_by_data;
 
     var torso = {};
@@ -30,7 +30,7 @@ $(document).ready(function() {
         var v = 100000;
         var data=[];
 
-        for (var i = 0; i<length; i++){
+        for (var i = 0; i < length; i++){
             v += (Math.random() - 0.5) * 10000;
             data.push({date: MG.clone(d), value: v});
             d = new Date(d.getTime() + seconds * 1000);
@@ -65,32 +65,34 @@ $(document).ready(function() {
         target: '#time1',
         title: 'Less Than A Minute',
         width: torso.width,
-        height: torso.height*4/5
+        height: torso.height * 4 / 5
     });
+
     MG.data_graphic({
         data: data2,
         target: '#time2',
         title: 'Less Than A Day',
         width: torso.width,
-        height: torso.height*4/5
+        height: torso.height * 4 / 5
     });
+
     MG.data_graphic({
         data: data3,
         target: '#time3',
         title: 'A Few Days',
         width: torso.width,
-        height: torso.height*4/5
+        height: torso.height * 4 / 5
     });
+
     MG.data_graphic({
         data: data4,
         target: '#time4',
         title: 'Over A Large Span of Days',
         width: torso.width,
-        height: torso.height*4/5
+        height: torso.height * 4 / 5
     });
 
-
-    //fake some discrete data
+    // fake some discrete data
     var hist1 = fake_data(25, 60).map(function(d){
         d.value = Math.round(d.value);
         return d;
@@ -106,11 +108,10 @@ $(document).ready(function() {
         height: torso.height * 4 / 5
     });
 
-
-    //few observations
+    // few observations
     d3.json('data/missing-y.json', function(data) {
         data = MG.convert.date(data, 'date');
-        //add a line chart that has a few observations
+        // add a line chart that has a few observations
         MG.data_graphic({
             title: "Few Observations",
             description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no date' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
@@ -139,7 +140,7 @@ $(document).ready(function() {
     d3.json('data/small-range.json', function(data) {
         data = MG.convert.date(data, 'date');
 
-        //small range
+        // small range
         MG.data_graphic({
             title: "Small Range of Integers",
             description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
@@ -159,7 +160,7 @@ $(document).ready(function() {
 
         var fake_baselines = [{value: 160000000, label: 'a baseline'}];
 
-        //add a line chart
+        // add a line chart
         MG.data_graphic({
             title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
@@ -196,7 +197,7 @@ $(document).ready(function() {
             'label': 'Look, a spike!'
         }];
 
-        //add a chart with annotations
+        // add a chart with annotations
         MG.data_graphic({
             title: "Annotations",
             description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
@@ -216,7 +217,7 @@ $(document).ready(function() {
             data: data,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height*1.5,
+            height: trunk.height * 1.5,
             left: 60,
             right: trunk.right,
             least_squares: true,
@@ -227,11 +228,11 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users2.json', function(data) {
-        for(var i=0;i<data.length;i++) {
+        for (var i = 0;i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
-        //add a multi-line chart
+        // add a multi-line chart
         MG.data_graphic({
             title:"Multi-Line Chart",
             description: "This line chart contains multiple lines.",
@@ -244,7 +245,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        //add a wide multi-line chart
+        // add a wide multi-line chart
         MG.data_graphic({
             title:"Multi-Line Chart Wide",
             description: "This line chart contains multiple lines and has extended ticks enabled.",
@@ -252,7 +253,7 @@ $(document).ready(function() {
             legend: ['Line 1','Line 2','Line 3'],
             legend_target: '.legend',
             data: data,
-            width: torso.width*2,
+            width: torso.width * 2,
             height: torso.height,
             right: trunk.right,
             show_secondary_x_label: false,
@@ -263,7 +264,7 @@ $(document).ready(function() {
             y_accessor: 'value'
         });
 
-        //linked multi-line charts
+        // linked multi-line charts
         MG.data_graphic({
             title:"Multi-Line Linked",
             description: "Demoing linked multi-line charts.",
@@ -281,18 +282,19 @@ $(document).ready(function() {
         var all_the_data = MG.clone(data[0]);
         for(i = 1; i < data.length; i++){
             for (var j=0; j < data[i].length; j++){
-                if(i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+                if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
                     // pass
                 } else {
-                    all_the_data[j]['value'+(i+1)] = data[i][j].value;
+                    all_the_data[j]['value' + (i + 1)] = data[i][j].value;
                 }
             }
         }
+
         MG.data_graphic({
             title:"Handling Different Sized Lines in a Single Array",
             description: "How do you handle data with multiple implied time series lengths?",
             data: all_the_data,
-            width: torso.width*2,
+            width: torso.width * 2,
             height: torso.height,
             right: torso.right,
             target: '#missing1',
@@ -306,7 +308,7 @@ $(document).ready(function() {
             title:"Aggregated Rollover Information",
             description: "Also handles non-contiguous data",
             data: all_the_data,
-            width: torso.width*2,
+            width: torso.width * 2,
             height: torso.height,
             right: torso.right,
             target: '#aggregate',
@@ -319,11 +321,11 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users3.json', function(data) {
-        for(var i=0;i<data.length;i++) {
+        for(var i = 0; i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
-        //linked multi-line charts
+        // linked multi-line charts
         MG.data_graphic({
             title:"Multi-Line Linked 2",
             description: "Demoing linked multi-line charts.",
@@ -342,7 +344,7 @@ $(document).ready(function() {
             description: "Try resizing your window.",
             data: data,
             full_width: true,
-            height: torso.height*3/2,
+            height: torso.height * 3 / 2,
             right: torso.right,
             x_extended_ticks: true,
             target: '#aspect1',
@@ -358,7 +360,7 @@ $(document).ready(function() {
             description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
-            width: torso.width*2,
+            width: torso.width * 2,
             height: torso.height,
             right: trunk.right,
             target: '#confidence_band',
@@ -372,17 +374,17 @@ $(document).ready(function() {
 
     d3.json('data/log.json', function(data){
         data = [data];
-        for(var i=0;i<data.length;i++) {
+        for(var i = 0;i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
-        //add a chart that has a log scale
+        // add a chart that has a log scale
         MG.data_graphic({
             title: "Log Scale",
             description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
             data: data,
             y_scale_type:'log',
-            width: torso.width*2,
+            width: torso.width * 2,
             height: torso.height,
             right: torso.right,
             target: '#log1',
@@ -392,7 +394,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/some_percentage.json', function(data) {
-        for(var i=0;i<data.length;i++) {
+        for(var i = 0;i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
@@ -554,7 +556,7 @@ $(document).ready(function() {
             title: "Downloads by Channel",
             description: "The graphic is gracefully updated depending on the selected channel.",
             data: data,
-            width: torso.width*2,
+            width: torso.width * 2,
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
@@ -567,7 +569,7 @@ $(document).ready(function() {
             title: "Beta Downloads",
             description: "The graphic is gracefully updated depending on the chosen time period.",
             data: data,
-            width: torso.width*2,
+            width: torso.width * 2,
             height: trunk.height,
             right: trunk.right,
             show_secondary_x_label: false,
@@ -637,10 +639,10 @@ $(document).ready(function() {
             right: trunk.right,
             xax_count: 4,
             mouseover: function(d, i) {
-                //custom format the rollover text, show days
+                // custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
                 $('#custom-rollover svg .mg-active-datapoint')
-                    .text('Day ' + (i+1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                    .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: '#custom-rollover',
             x_accessor: 'date',
@@ -701,8 +703,8 @@ $(document).ready(function() {
         });
     });
 
-    //add histograms
-    //generate a Bates distribution of 10 random variables
+    // add histograms
+    // generate a Bates distribution of 10 random variables
     var values = d3.range(10000).map(d3.random.bates(10));
 
     MG.data_graphic({
@@ -725,18 +727,18 @@ $(document).ready(function() {
 
     d3.csv('data/ufo_dates.csv', function(ufos){
         var data = ufos.map(function(d){
-            return parseInt(d.value)/30;
+            return parseInt(d.value) / 30;
         });
         data.sort();
-        var p75 = data[Math.floor(data.length*3/4)];
+        var p75 = data[Math.floor(data.length * 3 / 4)];
         MG.data_graphic({
             title: "Difference in UFO Sighting and Reporting Dates (in months)",
             description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
             data: data,
-            markers:[{'label':'75% of reports come <' + d3.round(p75/12) +' years after the initial sighting', 'value':p75}],
+            markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
             chart_type: 'histogram',
-            width: trunk.width*2,
-            height: trunk.height*1.5,
+            width: trunk.width * 2,
+            height: trunk.height * 1.5,
             right: trunk.right,
             bar_margin: 0,
             bins:150,
@@ -750,15 +752,15 @@ $(document).ready(function() {
                     string = d3.round(d.x,2) + ' Months';
                 }
                 $('#ufos svg .mg-active-datapoint')
-                    .text(string +   '       Volume: ' + d.y);
+                    .text(string + '       Volume: ' + d.y);
             }
         });
     });
 
-    var second = d3.range(10000).map(function(d){ return Math.random() * 10; });
+    var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
     second = d3.layout.histogram()(second)
         .map(function(d) {
-            return {'count': d.y, 'value':d.x};
+            return {'count': d.y, 'value': d.x};
     });
 
     MG.data_graphic({
@@ -891,7 +893,7 @@ $(document).ready(function() {
             data: data,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height*1.5,
+            height: trunk.height * 1.5,
             right: trunk.right,
             target: '#scatter-simple',
             xax_format: function(f) {
@@ -909,7 +911,7 @@ $(document).ready(function() {
             data: data,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height*1.5,
+            height: trunk.height * 1.5,
             right: trunk.right,
             target: '#categorical1',
             xax_format: function(f) {
@@ -929,7 +931,7 @@ $(document).ready(function() {
             data: data,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height*1.5,
+            height: trunk.height * 1.5,
             right: trunk.right,
             target: '#categorical2',
             xax_format: function(f) {
@@ -952,7 +954,7 @@ $(document).ready(function() {
             least_squares: true,
             chart_type: 'point',
             width: trunk.width,
-            height: trunk.height*1.5,
+            height: trunk.height * 1.5,
             right: trunk.right,
             target: '#scatter-line-best-fit',
             xax_format: function(f) {
@@ -964,12 +966,12 @@ $(document).ready(function() {
         });
     });
 
-    //
     var bdata = [
         {a:'apples', b:'quartz'},
         {a:'bananas', b:'pyrite'},
         {a:'durian', b:'obsidian'}
     ];
+
     var resolution_features = ['weekly', 'monthly'];
 
     var buttons = MG.button_layout('div#buttons')
@@ -1020,13 +1022,13 @@ $(document).ready(function() {
         .display();
 
 
-    //add this scatterplot and color the groups based on the theme
+    // add this scatterplot and color the groups based on the theme
     addScatterplotSizeAndColor('light');
 
     function addScatterplotSizeAndColor(theme) {
         var color_range = (theme === 'light') ? null : ['white','yellow'];
 
-        //call data_graphic again since we need to use a different color_range for the dark theme
+        // call data_graphic again since we need to use a different color_range for the dark theme
         d3.json('data/points1.json', function(data) {
             MG.data_graphic({
                 title: "Scatterplot with Size and Color",
@@ -1034,7 +1036,7 @@ $(document).ready(function() {
                 data: data,
                 chart_type: 'point',
                 width: trunk.width,
-                height: trunk.height*1.5,
+                height: trunk.height * 1.5,
                 right: trunk.right,
                 target: '#scatter-size-and-color',
                 xax_format: function(f) {
@@ -1067,7 +1069,7 @@ $(document).ready(function() {
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
 
-            //add this scatterplot and color the groups based on the theme
+            // add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('dark');
 
             return false;
@@ -1088,7 +1090,7 @@ $(document).ready(function() {
             $('#dark').attr({href : ''});
             $('#dark-layout').attr({href : ''});
 
-            //add this scatterplot and color the groups based on the theme
+            // add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('light');
 
             return false;
@@ -1097,17 +1099,17 @@ $(document).ready(function() {
         $('.split-by-controls button').click(function() {
             var new_y_accessor = $(this).data('y_accessor');
 
-            //change button state
+            // change button state
             $(this).addClass('active')
                 .siblings()
                 .removeClass('active');
 
-            //update data
+            // update data
             MG.data_graphic({
                 title: "Downloads by Channel",
                 description: "The graphic is gracefully updated depending on the selected channel.",
                 data: split_by_data,
-                width: torso.width*2,
+                width: torso.width * 2,
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
@@ -1121,15 +1123,15 @@ $(document).ready(function() {
             var past_n_days = $(this).data('time_period');
             var data = modify_time_period(split_by_data, past_n_days);
 
-            //change button state
+            // change button state
             $(this).addClass('active').siblings().removeClass('active');
 
-            //update data
+            // update data
             MG.data_graphic({
                 title: "Beta Downloads",
                 description: "The graphic is gracefully updated depending on the chosen time period.",
                 data: data,
-                width: torso.width*2,
+                width: torso.width * 2,
                 height: trunk.height,
                 right: trunk.right,
                 show_secondary_x_label: false,
@@ -1142,9 +1144,9 @@ $(document).ready(function() {
         });
     }
 
-    //replace all SVG images with inline SVG
-    //http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
-    //-image-using-css-jquery-svg-image-replacement
+    // replace all SVG images with inline SVG
+    // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
+    // -image-using-css-jquery-svg-image-replacement
     $('img.svg').each(function() {
         var $img = jQuery(this);
         var imgID = $img.attr('id');
@@ -1156,12 +1158,12 @@ $(document).ready(function() {
             var $svg = jQuery(data).find('svg');
 
             // Add replaced image's ID to the new SVG
-            if(typeof imgID !== 'undefined') {
+            if (typeof imgID !== 'undefined') {
                 $svg = $svg.attr('id', imgID);
             }
             // Add replaced image's classes to the new SVG
-            if(typeof imgClass !== 'undefined') {
-                $svg = $svg.attr('class', imgClass+' replaced-svg');
+            if (typeof imgClass !== 'undefined') {
+                $svg = $svg.attr('class', imgClass + ' replaced-svg');
             }
 
             // Remove any invalid XML tags as per http://validator.w3.org
@@ -1174,10 +1176,10 @@ $(document).ready(function() {
     });
 
     function modify_time_period(data, past_n_days) {
-        //splice time period
+        // splice time period
         var data_spliced = MG.clone(data);
-        if(past_n_days !== '') {
-            for(var i=0; i<data_spliced.length; i++) {
+        if (past_n_days !== '') {
+            for (var i = 0; i < data_spliced.length; i++) {
                 var from = data_spliced[i].length - past_n_days;
                 data_spliced[i].splice(0,from);
             }
