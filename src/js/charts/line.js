@@ -83,7 +83,7 @@ charts.line = function(args) {
                 svg.append('path')
                     .attr('class', 'mg-confidence-band')
                     .attr('d', confidence_area(args.data[i]))
-                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                    .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
             }
 
             //add the area
@@ -127,12 +127,12 @@ charts.line = function(args) {
                         .transition()
                             .duration(1000)
                             .attr('d', line(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                 } else { //or just add the line
                     svg.append('path')
                         .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                         .attr('d', line(args.data[i]))
-                        .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+                        .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                 }
             }
 
