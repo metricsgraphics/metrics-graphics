@@ -1,6 +1,6 @@
 function y_rug(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;
@@ -45,7 +45,7 @@ function y_axis(args) {
         args.processed = {};
     }
 
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var $svg = $($(args.target).find('svg').get(0));
     var g;
 
@@ -296,7 +296,7 @@ function y_axis_categorical(args) {
         return args.scales.Y(di[args.y_accessor]);
     };
 
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var $svg = $($(args.target).find('svg').get(0));
 
     //remove the old y-axis, add new one

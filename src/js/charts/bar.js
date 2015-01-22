@@ -28,7 +28,7 @@ charts.bar = function(args) {
     };
 
     this.mainPlot = function() {
-        var svg = d3.select(args.target).select('svg');
+        var svg = mg_get_svg_child_of(args.target);
         var data = args.data[0];
         var barplot = svg.select('.mg-barplot');
         var fresh_render = barplot.empty();
@@ -245,7 +245,7 @@ charts.bar = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
         var g;
 
@@ -296,7 +296,7 @@ charts.bar = function(args) {
     };
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var label_accessor = this.is_vertical ? args.x_accessor : args.y_accessor;
         var data_accessor = this.is_vertical ? args.y_accessor : args.x_accessor;
         var label_units = this.is_vertical ? args.yax_units : args.xax_units;
@@ -352,7 +352,7 @@ charts.bar = function(args) {
     };
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
 
         return function(d, i) {
             //reset active bar

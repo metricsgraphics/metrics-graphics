@@ -21,7 +21,7 @@ charts.point = function(args) {
     };
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
         var g;
 
@@ -57,7 +57,7 @@ charts.point = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old rollovers if they already exist
@@ -105,7 +105,7 @@ charts.point = function(args) {
     };
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
 
         return function(d, i) {
             svg.selectAll('.mg-points circle')
@@ -176,7 +176,7 @@ charts.point = function(args) {
     };
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
 
         return function(d,i) {
             if (args.linked && globals.link) {

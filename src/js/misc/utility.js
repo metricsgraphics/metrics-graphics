@@ -22,6 +22,10 @@ MG.convert.number = function(data, accessor) {
     return data;
 };
 
+function mg_get_svg_child_of(selector_or_node){
+    return d3.select(selector_or_node).select('svg');
+}
+
 function mg_strip_punctuation(s) {
     var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
     var finalString = punctuationless.replace(/ +?/g, "");

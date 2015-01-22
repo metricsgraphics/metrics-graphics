@@ -12,7 +12,7 @@ charts.histogram = function(args) {
     };
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old histogram, add new one
@@ -61,7 +61,7 @@ charts.histogram = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old rollovers if they already exist
@@ -122,7 +122,7 @@ charts.histogram = function(args) {
     };
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var x_formatter = d3.time.format('%Y-%m-%d');
 
         return function(d, i) {
@@ -191,7 +191,7 @@ charts.histogram = function(args) {
     };
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
 
         return function(d, i) {
             if (args.linked && MG.globals.link) {

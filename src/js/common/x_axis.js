@@ -4,7 +4,7 @@ function x_rug(args) {
         ? args.buffer / 2
         : args.buffer;
 
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var all_data=[];
     for (var i=0; i<args.data.length; i++) {
         for (var j=0; j<args.data[i].length; j++) {
@@ -43,7 +43,7 @@ function x_rug(args) {
 
 function x_axis(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var $svg = $($(args.target).find('svg').get(0));
     args.processed = {};
 
@@ -114,7 +114,7 @@ function x_axis_categorical(args) {
         return args.scales.X(di[args.x_accessor]);
     };
 
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var $svg = $($(args.target).find('svg').get(0));
 
     //remove the old x-axis, add new one

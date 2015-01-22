@@ -27,6 +27,14 @@ test('MG.convert.number', function() {
     equal($.type(data[0].value), 'number', 'Second value is a number');
 });
 
+test('mg_get_svg_child_of', function(){
+  d3.select('#qunit-fixture').append('svg');
+  var svg_element_with_node = mg_get_svg_child_of(document.querySelector('#qunit-fixture'));
+  var svg_element_with_text = mg_get_svg_child_of('#qunit-fixture');
+  equal(svg_element_with_node.length, 1, 'node-based argument should return a d3 selection with svg.');
+  equal(svg_element_with_node.length, 1, 'selector-based argument should return a d3 selection with svg.');
+});
+
 
 module('Utility Functions');
 

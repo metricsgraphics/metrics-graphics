@@ -12,7 +12,7 @@ charts.line = function(args) {
     };
 
     this.mainPlot = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var g;
         var data_median = 0;
         var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
@@ -156,7 +156,7 @@ charts.line = function(args) {
     };
 
     this.rollover = function() {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
         var g;
 
@@ -387,7 +387,7 @@ charts.line = function(args) {
     };
 
     this.rolloverOn = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var fmt;
         switch(args.processed.x_time_frame) {
             case 'seconds':
@@ -591,7 +591,7 @@ charts.line = function(args) {
     };
 
     this.rolloverOff = function(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
 
         return function(d, i) {
             if (args.linked && MG.globals.link) {

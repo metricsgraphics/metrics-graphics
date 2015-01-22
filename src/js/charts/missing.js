@@ -11,7 +11,7 @@ charts.missing = function(args) {
             .attr('width', args.width)
             .attr('height', args.height);
 
-        var svg = d3.select(args.target).select('svg');
+        var svg = mg_get_svg_child_of(args.target);
 
         // has the width or height changed?
         if (args.width !== Number(svg.attr('width'))) {

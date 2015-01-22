@@ -890,7 +890,7 @@
 
     function y_rug(args) {
         'use strict';
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var buffer_size = args.chart_type === 'point'
             ? args.buffer / 2
             : args.buffer * 2 / 3;
@@ -935,7 +935,7 @@
             args.processed = {};
         }
 
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
         var g;
 
@@ -1186,7 +1186,7 @@
             return args.scales.Y(di[args.y_accessor]);
         };
 
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old y-axis, add new one
@@ -1219,7 +1219,7 @@
             ? args.buffer / 2
             : args.buffer;
 
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var all_data=[];
         for (var i=0; i<args.data.length; i++) {
             for (var j=0; j<args.data[i].length; j++) {
@@ -1258,7 +1258,7 @@
 
     function x_axis(args) {
         'use strict';
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
         args.processed = {};
 
@@ -1329,7 +1329,7 @@
             return args.scales.X(di[args.x_accessor]);
         };
 
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old x-axis, add new one
@@ -2338,7 +2338,7 @@
         };
 
         this.mainPlot = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var g;
             var data_median = 0;
             var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
@@ -2482,7 +2482,7 @@
         };
 
         this.rollover = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
             var g;
 
@@ -2713,7 +2713,7 @@
         };
 
         this.rolloverOn = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var fmt;
             switch(args.processed.x_time_frame) {
                 case 'seconds':
@@ -2917,7 +2917,7 @@
         };
 
         this.rolloverOff = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
 
             return function(d, i) {
                 if (args.linked && MG.globals.link) {
@@ -2989,7 +2989,7 @@
         };
 
         this.mainPlot = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old histogram, add new one
@@ -3038,7 +3038,7 @@
         };
 
         this.rollover = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old rollovers if they already exist
@@ -3099,7 +3099,7 @@
         };
 
         this.rolloverOn = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var x_formatter = d3.time.format('%Y-%m-%d');
 
             return function(d, i) {
@@ -3168,7 +3168,7 @@
         };
 
         this.rolloverOff = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
 
             return function(d, i) {
                 if (args.linked && MG.globals.link) {
@@ -3235,7 +3235,7 @@
         };
 
         this.mainPlot = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
             var g;
 
@@ -3271,7 +3271,7 @@
         };
 
         this.rollover = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old rollovers if they already exist
@@ -3319,7 +3319,7 @@
         };
 
         this.rolloverOn = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
 
             return function(d, i) {
                 svg.selectAll('.mg-points circle')
@@ -3390,7 +3390,7 @@
         };
 
         this.rolloverOff = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
 
             return function(d,i) {
                 if (args.linked && globals.link) {
@@ -3475,7 +3475,7 @@
         };
 
         this.mainPlot = function() {
-            var svg = d3.select(args.target).select('svg');
+            var svg = mg_get_svg_child_of(args.target);
             var data = args.data[0];
             var barplot = svg.select('.mg-barplot');
             var fresh_render = barplot.empty();
@@ -3692,7 +3692,7 @@
         };
 
         this.rollover = function() {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var $svg = $($(args.target).find('svg').get(0));
             var g;
 
@@ -3743,7 +3743,7 @@
         };
 
         this.rolloverOn = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
             var label_accessor = this.is_vertical ? args.x_accessor : args.y_accessor;
             var data_accessor = this.is_vertical ? args.y_accessor : args.x_accessor;
             var label_units = this.is_vertical ? args.yax_units : args.xax_units;
@@ -3799,7 +3799,7 @@
         };
 
         this.rolloverOff = function(args) {
-            var svg = d3.select($(args.target).find('svg').get(0));
+            var svg = mg_get_svg_child_of(args.target);
 
             return function(d, i) {
                 //reset active bar
@@ -4061,7 +4061,7 @@
                 .attr('width', args.width)
                 .attr('height', args.height);
 
-            var svg = d3.select(args.target).select('svg');
+            var svg = mg_get_svg_child_of(args.target);
 
             // has the width or height changed?
             if (args.width !== Number(svg.attr('width'))) {
@@ -4701,6 +4701,10 @@
 
         return data;
     };
+
+    function mg_get_svg_child_of(selector_or_node){
+        return d3.select(selector_or_node).select('svg');
+    }
 
     function mg_strip_punctuation(s) {
         var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
