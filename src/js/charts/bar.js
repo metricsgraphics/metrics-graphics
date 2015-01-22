@@ -35,6 +35,7 @@ charts.bar = function(args) {
 
         var bars;
         var predictor_bars;
+        var pp, pp0;
         var baseline_marks;
 
         var perform_load_animation = fresh_render && args.animate_on_load;
@@ -114,8 +115,8 @@ charts.bar = function(args) {
                 });
 
             if (args.predictor_accessor) {
-                var pp = args.predictor_proportion;
-                var pp0 = pp-1;
+                pp = args.predictor_proportion;
+                pp0 = pp-1;
 
                 if (perform_load_animation) {
                     predictor_bars.attr('height', 0)
@@ -142,7 +143,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor) {
-                var pp = args.predictor_proportion;
+                pp = args.predictor_proportion;
 
                 if (perform_load_animation) {
                     baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)});
@@ -186,8 +187,8 @@ charts.bar = function(args) {
 
 
             if (args.predictor_accessor) {
-                var pp = args.predictor_proportion;
-                var pp0 = pp-1;
+                pp = args.predictor_proportion;
+                pp0 = pp-1;
 
                 if (perform_load_animation) {
                     predictor_bars.attr('width', 0);
@@ -211,7 +212,7 @@ charts.bar = function(args) {
             }
 
             if (args.baseline_accessor) {
-                var pp = args.predictor_proportion;
+                pp = args.predictor_proportion;
 
                 if (perform_load_animation) {
                     baseline_marks
@@ -261,7 +262,7 @@ charts.bar = function(args) {
             .attr('dy', '.35em')
             .attr('text-anchor', 'end');
 
-        var g = svg.append('g')
+        g = svg.append('g')
             .attr('class', 'mg-rollover-rect');
 
         //draw rollover bars
