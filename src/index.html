@@ -1,18 +1,9 @@
 <html lang='en'>
 <head>
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
-    <meta property='og:title' content='MetricsGraphics.js' />
-    <meta property='og:description' content='MetricsGraphics.js is a library optimized
-        for visualizing and laying out time-series data. It provides a simple way to produce
-        common types of graphics in a principled, consistent and responsive way.' />
-    <meta property='og:image' content='http://metricsgraphicsjs.org/images/og-logo.png' />
-    <meta property='og:type' content='website' />
-    <meta property='og:url' content='http://metricsgraphicsjs.org/' />
-    <meta property='og:site_name' content='MetricsGraphics.js' />
+    <link rel='icon' type='image/png' href='images/og-logo.png' />
 
-    <link href='images/og-logo.png' rel='icon' type='image/png' />
-
-    <title>MetricsGraphics.js - a library based on D3.js, optimized for visualizing and laying out time-series data</title>
+    <title>MetricsGraphics.js (DEV)</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
@@ -25,8 +16,6 @@
     <script src='/jquery/dist/jquery.min.js'></script>
     <script src='/d3/d3.min.js' charset='utf-8'></script>
     <script src="js/lib/ace.js" charset="utf-8"></script>
-
-
 
     <!-- dev start -->
     <script src='js/MG.js'></script>
@@ -50,60 +39,7 @@
     <script src='js/misc/smoothers.js'></script>
     <script src='js/misc/utility.js'></script>
     <script src='js/misc/error.js'></script>
-
     <!-- dev end -->
-
-</head>
-
-<body>
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1570736809816152&version=v2.0";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
-
-    <div class='container'>
-        <div class='head'>
-            <ul>
-                <li><a href='http://www.metricsgraphicsjs.org/'>Home</a></li>
-                <li><a href='https://github.com/mozilla/metrics-graphics/releases'>Download</a></li>
-                <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
-                <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
-                <li><a href='examples.htm'>Examples</a></li>
-            </ul>
-
-            <img src='images/logo.svg' id='logo' class='svg' />
-        </div>
-    </div>
-
-    <div class='container'>
-        <div class='row main-windows-titles'>
-            <div class='col-xs-2'>Data</div>
-            <div class='js-title col-xs-5'>
-                JavaScript <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options#list-of-options' target='_blank'>See Full List of Options</a>
-                <button type='button' class='update btn'>Run</button>
-            </div>
-        </div>
-        <div class='row main-windows'>
-            <div class='data col-xs-2'>
-                <textarea></textarea>
-            </div>
-            <div class='js col-xs-5' id='editor'></div>
-            <div class='result text-center col-xs-5'></div>
-        </div>
-    </div>
-
-    <div class='container footer'>
-        Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a>,
-        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> and the
-        <a href='https://metrics.mozilla.com/'>Metrics Team</a> at
-        <a href='https://www.mozilla.org/en-US/'>Mozilla</a>.
-        <br />Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
-        Mozilla Public License</a>.
-    </div>
 
     <style>
         body {
@@ -175,7 +111,7 @@
             border: 1px solid #ccc;
         }
 
-        .btn.update {
+        .btn {
             background-color: steelblue;
             color: white;
             margin-top: 34px;
@@ -185,13 +121,65 @@
             z-index: 99;
         }
 
-        .btn.update:hover,
-        .btn.update:active,
-        .btn.update:visited {
+        .btn.update {
+            right: 7px;
+        }
+
+        .btn.reset {
+            right: -70px;
+        }
+
+        .btn:hover,
+        .btn:focus,
+        .btn:active,
+        .btn:visited {
             color: #efefef;
             outline: none;
         }
     </style>
+</head>
+
+<body>
+    <div class='container'>
+        <div class='head'>
+            <ul>
+                <li><a href='http://metricsgraphicsjs.org/'>Home</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics/releases'>Download</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
+                <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
+            </ul>
+
+            <img src='images/logo.svg' id='logo' class='svg' />
+        </div>
+    </div>
+
+    <div class='container'>
+        <div class='row main-windows-titles'>
+            <div class='col-xs-2'>Data</div>
+            <div class='js-title col-xs-5'>
+                JavaScript <a href='https://github.com/mozilla/metrics-graphics/wiki/List-of-Options#list-of-options' target='_blank'>See Full List of Options</a>
+                <button type='button' class='update btn'>Run</button>
+                <button type='button' class='reset btn'>Reset</button>
+            </div>
+        </div>
+        <div class='row main-windows'>
+            <div class='data col-xs-2'>
+                <textarea></textarea>
+            </div>
+            <div class='js col-xs-5' id='editor'></div>
+            <div class='result text-center col-xs-5'></div>
+        </div>
+    </div>
+
+    <div class='container footer'>
+        Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a>,
+        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> and the
+        <a href='https://metrics.mozilla.com/'>Metrics Team</a> at
+        <a href='https://www.mozilla.org/en-US/'>Mozilla</a>.
+        <br />Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
+        Mozilla Public License</a>.
+    </div>
+
     <script>
         var mgKey = 'mg-dev',
             editor,
@@ -235,12 +223,21 @@
             run();
         });
 
+        $('.reset').on('click', function() {
+            clearState();
+            document.location = document.location;
+        });
+
         function run() {
             eval(editor.getValue());
         }
 
         function saveState(){
             localStorage.setItem(mgKey, JSON.stringify(persisted));
+        }
+
+        function clearState() {
+            localStorage.clear(mgKey);
         }
     </script>
 </body>
