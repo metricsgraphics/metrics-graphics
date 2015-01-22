@@ -46,8 +46,8 @@
 .mg-baselines line {
     opacity: 1;
     shape-rendering: crispEdges;
-    stroke: #ccc;
-    stroke-width: 1;
+    stroke: #909090;
+    stroke-width: 0.5;
 }
 
 .mg-baselines text {
@@ -234,8 +234,8 @@
 .mg-markers line {
     opacity: 1;
     shape-rendering: crispEdges;
-    stroke: #ccc;
-    stroke-width: 1;
+    stroke: #909090;
+    stroke-width: 0.5;
 }
 
 .mg-markers text {
