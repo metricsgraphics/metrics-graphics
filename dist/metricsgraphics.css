@@ -314,8 +314,8 @@ circle.mg-points-mono {
 .mg-y-axis line {
     opacity: 1;
     shape-rendering: crispEdges;
-    stroke: #ccc;
-    stroke-width: 1;
+    stroke: #909090;
+    stroke-width: 0.5;
 }
 
 .mg-x-axis text,
@@ -354,8 +354,8 @@ circle.mg-points-mono {
 .mg-year-marker line {
     opacity: 1;
     shape-rendering: crispEdges;
-    stroke: #ccc;
-    stroke-width: 1;
+    stroke: #909090;
+    stroke-width: 0.5;
 }
 
 .mg-year-marker-small text {
