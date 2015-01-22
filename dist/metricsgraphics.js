@@ -136,11 +136,11 @@
         };
 
         defaults.missing = {
-            top: 0,
-            bottom: 0,
-            right: 0,
-            left: 0,
-            buffer: 8,
+            top: 40,                      // the size of the top margin
+            bottom: 30,                   // the size of the bottom margin
+            right: 10,                    // size of the right margin
+            left: 10,                     // size of the left margin
+            buffer: 8,                    // the buffer between the actual chart area and the margins
             legend_target: '',
             width: 350,
             height: 220,
@@ -2409,7 +2409,7 @@
                     svg.append('path')
                         .attr('class', 'mg-confidence-band')
                         .attr('d', confidence_area(args.data[i]))
-                        .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                        .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                 }
 
                 //add the area
@@ -2453,12 +2453,12 @@
                             .transition()
                                 .duration(1000)
                                 .attr('d', line(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                     } else { //or just add the line
                         svg.append('path')
                             .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                             .attr('d', line(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+mg_strip_punctuation(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                     }
                 }
 
@@ -4062,7 +4062,7 @@
                 .attr('height', args.height);
 
             var svg = d3.select(args.target).select('svg');
-            
+
             // has the width or height changed?
             if (args.width !== Number(svg.attr('width'))) {
                 svg.attr('width', args.width);
@@ -4096,7 +4096,7 @@
 
                 args.scales.Y = d3.scale.linear()
                     .domain([-2, 2])
-                    .range([args.height - args.bottom - args.buffer, args.top]);
+                    .range([args.height - args.bottom - args.buffer*2, args.top]);
 
                 args.scalefns.xf = function(di) { return args.scales.X(di.x); };
                 args.scalefns.yf = function(di) { return args.scales.Y(di.y); };
@@ -4114,6 +4114,13 @@
 
                 var g = svg.append('g')
                     .attr('class', 'mg-missing-pane');
+                
+                g.append('svg:rect')
+                    .classed('mg-missing-background', true)
+                    .attr('x', args.buffer)
+                    .attr('y', args.buffer)
+                    .attr('width', args.width-args.buffer*2)
+                    .attr('height', args.height-args.buffer*2);
 
                 g.append('path')
                     .attr('class', 'mg-main-line mg-line1-color')

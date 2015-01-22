@@ -249,6 +249,16 @@
     opacity: 0.9;
 }
 
+.mg-missing-background {
+    stroke-width:2;
+    stroke-opacity:0.05;
+    stroke-dasharray:10,5;
+    fill:none;
+    stroke:blue;
+    rx:15;
+    ry:15;
+}
+
 .mg-missing .mg-main-line {
     opacity: 0.1;
 }

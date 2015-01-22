@@ -123,11 +123,11 @@ MG.data_graphic = function() {
     };
 
     defaults.missing = {
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        buffer: 8,
+        top: 40,                      // the size of the top margin
+        bottom: 30,                   // the size of the bottom margin
+        right: 10,                    // size of the right margin
+        left: 10,                     // size of the left margin
+        buffer: 8,                    // the buffer between the actual chart area and the margins
         legend_target: '',
         width: 350,
         height: 220,

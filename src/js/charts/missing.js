@@ -12,7 +12,7 @@ charts.missing = function(args) {
             .attr('height', args.height);
 
         var svg = d3.select(args.target).select('svg');
-        
+
         // has the width or height changed?
         if (args.width !== Number(svg.attr('width'))) {
             svg.attr('width', args.width);
@@ -46,7 +46,7 @@ charts.missing = function(args) {
 
             args.scales.Y = d3.scale.linear()
                 .domain([-2, 2])
-                .range([args.height - args.bottom - args.buffer, args.top]);
+                .range([args.height - args.bottom - args.buffer*2, args.top]);
 
             args.scalefns.xf = function(di) { return args.scales.X(di.x); };
             args.scalefns.yf = function(di) { return args.scales.Y(di.y); };
@@ -64,6 +64,13 @@ charts.missing = function(args) {
 
             var g = svg.append('g')
                 .attr('class', 'mg-missing-pane');
+            
+            g.append('svg:rect')
+                .classed('mg-missing-background', true)
+                .attr('x', args.buffer)
+                .attr('y', args.buffer)
+                .attr('width', args.width-args.buffer*2)
+                .attr('height', args.height-args.buffer*2);
 
             g.append('path')
                 .attr('class', 'mg-main-line mg-line1-color')
