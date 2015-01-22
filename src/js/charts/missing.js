@@ -64,13 +64,15 @@ charts.missing = function(args) {
 
             var g = svg.append('g')
                 .attr('class', 'mg-missing-pane');
-            
+
             g.append('svg:rect')
                 .classed('mg-missing-background', true)
                 .attr('x', args.buffer)
                 .attr('y', args.buffer)
                 .attr('width', args.width-args.buffer*2)
-                .attr('height', args.height-args.buffer*2);
+                .attr('height', args.height-args.buffer*2)
+                .attr('rx',15)
+                .attr('ry', 15);
 
             g.append('path')
                 .attr('class', 'mg-main-line mg-line1-color')
