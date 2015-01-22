@@ -250,13 +250,13 @@
 }
 
 .mg-missing-background {
-    stroke-width:2;
-    stroke-opacity:0.05;
-    stroke-dasharray:10,5;
-    fill:none;
-    stroke:blue;
-    rx:15;
-    ry:15;
+    fill: none;
+    rx: 15;
+    ry: 15;
+    stroke: blue;
+    stroke-width: 2;
+    stroke-opacity: 0.05;
+    stroke-dasharray: 10,5;
 }
 
 .mg-missing .mg-main-line {
