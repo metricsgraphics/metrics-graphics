@@ -6,7 +6,6 @@ function init(args) {
         description: null
     };
 
-    var args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
 
@@ -97,7 +96,7 @@ function init(args) {
 
     // remove missing class
     svg.classed('mg-missing', false);
-    
+
     // remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
@@ -113,13 +112,15 @@ function init(args) {
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
     //data_graphic() on the same target with 2 lines, remove the 3rd line
+
+    var i;
     if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
         //line-color map, instead, see which are the lines to be removed, and delete those
         if(args.custom_line_color_map.length > 0) {
             var array_full_series = function(len) {
                 var arr = new Array(len);
-                for(var i=0;i<arr.length;i++) { arr[i] = i + 1; }
+                for(i = 0; i < arr.length; i++) { arr[i] = i + 1; }
                 return arr;
             };
 
@@ -128,7 +129,7 @@ function init(args) {
                 array_full_series(args.max_data_size),
                 args.custom_line_color_map);
 
-            for(var i=0; i<lines_to_remove.length; i++) {
+            for(i = 0; i<lines_to_remove.length; i++) {
                 $(args.target).find('svg .mg-main-line.mg-line' + lines_to_remove[i] + '-color')
                     .remove();
             }
@@ -138,7 +139,7 @@ function init(args) {
             var num_of_new = args.data.length;
             var num_of_existing = $(args.target).find('svg .mg-main-line').length;
 
-            for(var i=num_of_existing; i>num_of_new; i--) {
+            for(i = num_of_existing; i>num_of_new; i--) {
                 $(args.target).find('svg .mg-main-line.mg-line' + i + '-color').remove();
             }
         }
