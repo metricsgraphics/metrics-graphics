@@ -123,9 +123,9 @@ var roots = ['dist', 'examples', 'src'],
         return root + '/**/*';
     });
 
-gulp.task('dev:watch', function() { return gulp.watch(watchables, ['dev:reload']); });
+gulp.task('dev:watch', function() { return gulp.watch(watchables, ['jshint', 'dev:reload']); });
 gulp.task('dev:reload', function() { return gulp.src(watchables).pipe(connect.reload()); });
-gulp.task('serve', ['dev:serve', 'dev:watch']);
+gulp.task('serve', ['jshint', 'dev:serve', 'dev:watch']);
 
 gulp.task('dev:serve', function() {
     connect.server({
