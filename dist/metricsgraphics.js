@@ -213,7 +213,7 @@
         }
         else {
             args = merge_with_defaults(args, defaults.all);
-            charts.line(args).mainPlot().markers().rollover().windowListeners();
+            charts.line(args).markers().mainPlot().rollover().windowListeners();
         }
 
         return args.data;
