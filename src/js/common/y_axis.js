@@ -49,26 +49,26 @@ function y_axis(args) {
     var $svg = $($(args.target).find('svg').get(0));
     var g;
 
-    var min_y, 
+    var min_y,
         max_y;
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
     };
 
-    var _set = false;
+    var _set = false,
+        gtZeroFilter = function(d) { return d[args.y_accessor] > 0; },
+        mapToY = function(d) { return d[args.y_accessor]; };
     for (var i = 0; i < args.data.length; i++) {
         var a = args.data[i];
 
         if (args.y_scale_type === 'log') {
             // filter positive values
-            a = a.filter(function(d) { return d[args.y_accessor] > 0; });
+            a = a.filter(gtZeroFilter);
         }
 
         if (a.length > 0) { // get min/max in one pass
-            var extent = d3.extent(a,function(d) {
-                return d[args.y_accessor];
-            });
+            var extent = d3.extent(a, mapToY);
 
             if (!_set) {
                 // min_y and max_y haven't been set
