@@ -120,7 +120,7 @@ gulp.task('test', function() {
 
 // Development server tasks
 // NOTE: these paths will need changing when the SCSS source is ready
-var roots = ['dist', 'examples', 'src'],
+var roots = ['dist', 'examples', 'src', 'bower_components'],
     watchables = roots.map(function(root) {
         return root + '/**/*';
     });
