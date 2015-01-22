@@ -9,7 +9,7 @@ function raw_data_transformation(args) {
     if (args.chart_type === 'line') {
         var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
         var is_unnested_array_of_arrays = (
-            args.data[0] instanceof Array && 
+            args.data[0] instanceof Array &&
             !(args.data[0][0] instanceof Object &&
             !(args.data[0][0] instanceof Date)));
 
@@ -34,8 +34,8 @@ function raw_data_transformation(args) {
                     return di;
                 }).filter(function(di) {
                     return di !== undefined;
-                })
-            })
+                });
+            });
         })[0];
 
         args.y_accessor = 'multiline_y_accessor';
@@ -50,7 +50,7 @@ function raw_data_transformation(args) {
         }
     }
 
-    return this
+    return this;
 }
 
 function process_line(args) {
@@ -100,7 +100,7 @@ function process_line(args) {
 
                         return false;
                     }
-                })
+                });
 
                 //if we don't have this date in our data object, add it and set it to zero
                 if (!existing_o) {
@@ -157,7 +157,7 @@ function process_histogram(args) {
             return;
         }
 
-        var hist = d3.layout.histogram()
+        var hist = d3.layout.histogram();
         if (args.bins) {
             hist = hist.bins(args.bins);
         }

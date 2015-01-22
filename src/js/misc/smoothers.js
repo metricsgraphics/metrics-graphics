@@ -36,14 +36,15 @@ function lowess_robust(x, y, alpha, inc) {
     var _l;
     var r = [];
     var yhat = d3.mean(y);
-    for (var i = 0; i < x.length; i += 1) { r.push(1); }
+    var i;
+    for (i = 0; i < x.length; i += 1) { r.push(1); }
     _l = _calculate_lowess_fit(x,y,alpha, inc, r);
     var x_proto = _l.x;
     var y_proto = _l.y;
 
     // Now, take the fit, recalculate the weights, and re-run LOWESS using r*w instead of w.
 
-    for (var i = 0; i < 100; i += 1) {
+    for (i = 0; i < 100; i += 1) {
         r = d3.zip(y_proto, y).map(function(yi) {
             return Math.abs(yi[1] - yi[0]);
         });
@@ -112,8 +113,8 @@ function least_squares(x_, y_) {
     var x0 = yhat - beta * xhat;
 
     return {
-        x0: x0, 
-        beta: beta, 
+        x0: x0,
+        beta: beta,
         fit: function(x) {
             return x0 + x * beta;
         }
@@ -148,7 +149,7 @@ function _manhattan(x1,x2) {
 
 function _weighted_means(wxy) {
     var wsum = d3.sum(wxy.map(function(wxyi) { return wxyi.w; }));
-    
+
     return {
         xbar: d3.sum(wxy.map(function(wxyi) {
             return wxyi.w * wxyi.x;
@@ -188,13 +189,11 @@ function _weighted_least_squares(wxy) {
         x0   : ybar - beta * xbar
 
     };
-    
-    return num / denom;
 }
 
 function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
     // alpha - smoothing factor. 0 < alpha < 1/
-    // 
+    //
     //
     var k = Math.floor(x.length * alpha);
 
@@ -208,7 +207,7 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
     });
 
     var x_max = d3.quantile(sorted_x, 0.98);
-    var x_min = d3.quantile(sorted_x, 0.02); 
+    var x_min = d3.quantile(sorted_x, 0.02);
 
     var xy = d3.zip(x, y, residuals).sort();
 
@@ -217,7 +216,7 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
     var smallest = x_min;
     var largest = x_max;
     var x_proto = d3.range(smallest, largest, size);
-    
+
     var xi_neighbors;
     var x_i, beta_i, x0_i, delta_i, xbar, ybar;
 
@@ -230,10 +229,10 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
         // get k closest neighbors.
         xi_neighbors = xy.map(function(xyi) {
             return [
-                Math.abs(xyi[0] - x_i), 
-                xyi[0], 
+                Math.abs(xyi[0] - x_i),
+                xyi[0],
                 xyi[1],
-                xyi[2]]
+                xyi[2]];
         }).sort().slice(0, k);
 
         // Get the largest distance in the neighbor set.
@@ -243,18 +242,19 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
 
         xi_neighbors = xi_neighbors.map(function(wxy) {
             return {
-                w : _tricube_weight(wxy[0] / delta_i) * wxy[3], 
-                x : wxy[1], 
+                w : _tricube_weight(wxy[0] / delta_i) * wxy[3],
+                x : wxy[1],
                 y  :wxy[2]
-            }});
-        
+            };
+        });
+
         // Find the weighted least squares, obviously.
         var _output = _weighted_least_squares(xi_neighbors);
 
         x0_i = _output.x0;
         beta_i = _output.beta;
 
-        // 
+        //
         y_proto.push(x0_i + beta_i * x_i);
     }
 
