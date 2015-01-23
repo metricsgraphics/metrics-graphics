@@ -1666,13 +1666,9 @@
                     max_x = args.data[i][last_i][args.x_accessor];
                 }
             }
-        } else if (args.chart_type === 'point') {
+        } else if (args.chart_type === 'point' || args.chart_type === 'histogram') {
             max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
             min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
-        } else if (args.chart_type === 'histogram') {
-            min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
-            max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
-
         } else if (args.chart_type === 'bar') {
             min_x = 0;
             max_x = d3.max(args.data[0], function(d) {
