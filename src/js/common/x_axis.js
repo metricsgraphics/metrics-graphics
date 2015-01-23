@@ -273,22 +273,6 @@ function mg_default_bar_xax_format(args) {
     };
 }
 
-function mg_default_histogram_xax_format(args) {
-    if (args.xax_format) {
-        return args.xax_format;
-    }
-
-    return function(f) {
-        if (f < 1.0) {
-            //don't scale tiny values
-            return args.yax_units + d3.round(f, args.decimals);
-        } else {
-            var pf = d3.formatPrefix(f);
-            return args.xax_units + pf.scale(f) + pf.symbol;
-        }
-    };
-}
-
 function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
