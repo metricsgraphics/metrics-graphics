@@ -32,7 +32,7 @@ test('Only one x-axis is added on multiple calls to the same target element', fu
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll(target + ' .mg-x-axis').length, 1, 'We only have one x-axis');
 });
 
@@ -126,7 +126,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot on the x-axis');
 });
 
@@ -140,4 +140,48 @@ test('args.x_extended_ticks', function() {
 
     MG.data_graphic(params);
     ok(document.querySelector('.mg-extended-x-ticks'), 'X-axis extended ticks exist');
+});
+
+test('correctly calculates min and max values for line chart', function() {
+    var args;
+
+    // single series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        chart_type: 'line',
+        data: [
+            [
+                {x: 4},
+                {x: 5},
+                {x: 6},
+                {x: 7}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 4);
+    equal(args.processed.max_x, 7);
+
+    // multiple series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        chart_type: 'line',
+        data: [
+            [
+                {x: 1},
+                {x: 2},
+                {x: 3},
+                {x: 4}
+            ], [
+                {x: 5},
+                {x: 6},
+                {x: 7}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 1);
+    equal(args.processed.max_x, 7);
 });

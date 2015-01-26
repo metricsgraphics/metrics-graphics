@@ -23,6 +23,7 @@
     "src/js/charts/missing.js",
     "src/js/misc/process.js",
     "src/js/misc/smoothers.js",
+    "src/js/misc/formatters.js",
     "src/js/misc/utility.js",
     "src/js/misc/error.js",
 
