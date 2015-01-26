@@ -32,7 +32,7 @@ test('Only one x-axis is added on multiple calls to the same target element', fu
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll(target + ' .mg-x-axis').length, 1, 'We only have one x-axis');
 });
 
@@ -126,7 +126,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot on the x-axis');
 });
 
@@ -140,4 +140,72 @@ test('args.x_extended_ticks', function() {
 
     MG.data_graphic(params);
     ok(document.querySelector('.mg-extended-x-ticks'), 'X-axis extended ticks exist');
+});
+
+test('correctly calculates min and max values for line, point and histogram charts', function() {
+    var args;
+
+    // single series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        chart_type: 'line',
+        data: [
+            [
+                {x: 4},
+                {x: 5},
+                {x: 6},
+                {x: 7}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 4, 'min is correct for single series');
+    equal(args.processed.max_x, 7, 'max is correct for single series');
+
+    // multiple series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        chart_type: 'line',
+        data: [
+            [
+                {x: 1},
+                {x: 2},
+                {x: 3},
+                {x: 4}
+            ], [
+                {x: 5},
+                {x: 6},
+                {x: 7}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 1, 'min is correct for multiple series');
+    equal(args.processed.max_x, 7, 'max is correct for multiple series');
+});
+
+test('correctly calculates min and max values for bar chart', function() {
+    var args;
+
+    // single series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        baseline_accessor: 'b',
+        predictor_accessor: 'p',
+        chart_type: 'bar',
+        data: [
+            [
+                {x: 4, b: 3, p: 2},
+                {x: 5, b: 2, p: 6},
+                {x: 6, b: 1, p: 10},
+                {x: 7, b: 0, p: 12}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 0, 'min is correct');
+    equal(args.processed.max_x, 12, 'max is correct');
 });
