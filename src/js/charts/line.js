@@ -240,6 +240,7 @@ charts.line = function(args) {
                 .data(voronoi(data_nested))
                 .enter()
                     .append('path')
+                        .filter(function(d) { return d !== undefined; })
                         .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
                         .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
                         .attr('class', function(d) {
