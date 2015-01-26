@@ -436,38 +436,28 @@ function mg_add_x_tick_labels(g, args) {
 
 function mg_find_min_max_x(args) {
     var last_i,
+        extent_x = [],
         min_x,
-        max_x;
+        max_x,
+        all_data = [].concat.apply([], args.data),
+        mapDtoX = function(d) { return d[args.x_accessor]; };
 
-    if (args.chart_type === 'line') {
-        for (var i = 0; i < args.data.length; i++) {
-            last_i = args.data[i].length-1;
+    // clear the cached xax_format in case we need to recalculate
+    delete args.xax_format;
 
-            if (args.data[i][0][args.x_accessor] < min_x || !min_x) {
-                min_x = args.data[i][0][args.x_accessor];
-            }
+    if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
+        extent_x = d3.extent(all_data, mapDtoX);
+        min_x = extent_x[0];
+        max_x = extent_x[1];
 
-            if (args.data[i][last_i][args.x_accessor] > max_x || !max_x) {
-                max_x = args.data[i][last_i][args.x_accessor];
-            }
-        }
-    } else if (args.chart_type === 'point' || args.chart_type === 'histogram') {
-        max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
-        min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
     } else if (args.chart_type === 'bar') {
         min_x = 0;
-        max_x = d3.max(args.data[0], function(d) {
-            var trio = [];
-            trio.push(d[args.x_accessor]);
-
-            if (args.baseline_accessor !== null) {
-                trio.push(d[args.baseline_accessor]);
-            }
-
-            if (args.predictor_accessor !== null) {
-                trio.push(d[args.predictor_accessor]);
-            }
-
+        max_x = d3.max(all_data, function(d) {
+            var trio = [
+                d[args.x_accessor],
+                d[args.baseline_accessor],
+                d[args.predictor_accessor]
+            ];
             return Math.max.apply(null, trio);
         });
     }
