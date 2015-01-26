@@ -142,7 +142,7 @@ test('args.x_extended_ticks', function() {
     ok(document.querySelector('.mg-extended-x-ticks'), 'X-axis extended ticks exist');
 });
 
-test('correctly calculates min and max values for line chart', function() {
+test('correctly calculates min and max values for line, point and histogram charts', function() {
     var args;
 
     // single series
@@ -160,8 +160,8 @@ test('correctly calculates min and max values for line chart', function() {
         ]
     };
     mg_find_min_max_x(args);
-    equal(args.processed.min_x, 4);
-    equal(args.processed.max_x, 7);
+    equal(args.processed.min_x, 4, 'min is correct for single series');
+    equal(args.processed.max_x, 7, 'max is correct for single series');
 
     // multiple series
     args = {
@@ -182,6 +182,30 @@ test('correctly calculates min and max values for line chart', function() {
         ]
     };
     mg_find_min_max_x(args);
-    equal(args.processed.min_x, 1);
-    equal(args.processed.max_x, 7);
+    equal(args.processed.min_x, 1, 'min is correct for multiple series');
+    equal(args.processed.max_x, 7, 'max is correct for multiple series');
+});
+
+test('correctly calculates min and max values for bar chart', function() {
+    var args;
+
+    // single series
+    args = {
+        processed: {},
+        x_accessor: 'x',
+        baseline_accessor: 'b',
+        predictor_accessor: 'p',
+        chart_type: 'bar',
+        data: [
+            [
+                {x: 4, b: 3, p: 2},
+                {x: 5, b: 2, p: 6},
+                {x: 6, b: 1, p: 10},
+                {x: 7, b: 0, p: 12}
+            ]
+        ]
+    };
+    mg_find_min_max_x(args);
+    equal(args.processed.min_x, 0, 'min is correct');
+    equal(args.processed.max_x, 12, 'max is correct');
 });
