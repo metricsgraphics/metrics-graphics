@@ -228,7 +228,7 @@ $(document).ready(function() {
     });
 
     d3.json('data/fake_users2.json', function(data) {
-        for (var i = 0;i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
