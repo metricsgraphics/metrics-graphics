@@ -41,6 +41,7 @@ var
     src + 'misc/process.js',
     src + 'misc/smoothers.js',
     src + 'misc/formatters.js',
+    src + 'misc/transitions.js',
     src + 'misc/utility.js',
     src + 'misc/error.js'
   ];

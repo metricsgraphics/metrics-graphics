@@ -88,7 +88,8 @@ charts.line = function(args) {
 
             //add the area
             var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
-            if (args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
+            var displayArea = args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1;
+            if (displayArea) {
                 //if area already exists, transition it
                 if ($area.length > 0) {
                     $(svg.node()).find('.mg-y-axis').after($area.detach());
@@ -108,13 +109,19 @@ charts.line = function(args) {
             }
 
             //add the line, if it already exists, transition the fine gentleman
-            var $existing_line = $(args.target).find('svg path.mg-main-line.mg-line' + (line_id) + '-color').first();
-            if ($existing_line.length > 0) {
-                $(svg.node()).find('.mg-y-axis').after($existing_line.detach());
-                d3.select($existing_line.get(0))
+            var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
+            if (!existing_line.empty()) {
+                $(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
+                var lineTransition = existing_line
                     .transition()
-                        .duration(updateTransitionDuration)
-                        .attr('d', line(args.data[i]));
+                    .duration(updateTransitionDuration);
+
+                if (!displayArea) {
+                    lineTransition.attrTween('d', pathTween(line(args.data[i]), 4));
+                } else {
+                    lineTransition.attr('d', line(args.data[i]));
+                }
+
             }
             else { //otherwise...
                 //if we're animating on load, animate the line from its median value
