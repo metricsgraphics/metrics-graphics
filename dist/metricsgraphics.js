@@ -108,8 +108,8 @@
 
         defaults.histogram = {
             mouseover: function(d, i) {
-                $('#histogram svg .mg-active-datapoint')
-                    .html('Frequency Count: ' + d.y);
+                d3.select('#histogram svg .mg-active-datapoint')
+                    .text('Frequency Count: ' + d.y);
             },
             binned: false,
             bins: null,
@@ -850,15 +850,15 @@
         //is the chart title different than existing one? If so, clear the fine 
         //gentleman. Otherwise, move along.
         var currentTitle = $(args.target).find('h2.mg-chart-title');
-        if (args.title && args.title !== currentTitle.text()) {
+        if(args.title && args.title !== currentTitle.text()) {
             currentTitle.remove();
         //if title hasn't been specified or if it's blank, remove the title
-        } else if (!args.title || args.title === '') {
+        } else if(!args.title || args.title === '') {
             currentTitle.remove();
         } else
             return;
 
-        if (args.target && args.title) {
+        if(args.target && args.title) {
             var newTitle;
             //only show question mark if there's a description
             var optional_question_mark = (args.description)
@@ -869,9 +869,9 @@
                 + args.title + optional_question_mark + '</h2>');
 
             //activate the question mark if we have a description
-            if (args.description) {
+            if(args.description) {
                 newTitle = $(args.target).find('h2.mg-chart-title');
-
+                
                 newTitle.popover({
                     html: true,
                     animation: false,
@@ -883,14 +883,14 @@
             }   
         }
 
-        if (args.error) {
+        if(args.error) {
             error(args);
         }
     }
-
     function y_rug(args) {
         'use strict';
         var svg = mg_get_svg_child_of(args.target);
+        
         var buffer_size = args.chart_type === 'point'
             ? args.buffer / 2
             : args.buffer * 2 / 3;
@@ -936,7 +936,7 @@
         }
 
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
+
         var g;
 
         var min_y,
@@ -1059,7 +1059,7 @@
         }
 
         //remove the old y-axis, add new one
-        $svg.find('.mg-y-axis').remove();
+        svg.selectAll('.mg-y-axis').remove();
 
         if (!args.y_axis) {
             return this;
@@ -1116,8 +1116,8 @@
 
         //is our data object all ints?
         var data_is_int = true;
-        $.each(args.data, function(i, d) {
-            $.each(d, function(i, d) {
+        args.data.forEach(function(d, i) {
+            d.forEach(function(d, i) {
                 if (d[args.y_accessor] % 1 !== 0) {
                     data_is_int = false;
                     return false;
@@ -1187,10 +1187,9 @@
         };
 
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old y-axis, add new one
-        $svg.find('.mg-y-axis').remove();
+        svg.selectAll('.mg-y-axis').remove();
 
         var g = svg.append('g')
             .classed('mg-y-axis', true)
@@ -1220,6 +1219,7 @@
             : args.buffer;
 
         var svg = mg_get_svg_child_of(args.target);
+
         var all_data=[];
         for (var i=0; i<args.data.length; i++) {
             for (var j=0; j<args.data[i].length; j++) {
@@ -1249,8 +1249,7 @@
         if (args.color_accessor) {
             rug.attr('stroke', args.scalefns.color);
             rug.classed('mg-x-rug-mono', false);
-        }
-        else {
+        } else {
             rug.attr('stroke', null);
             rug.classed('mg-x-rug-mono', true);
         }
@@ -1259,12 +1258,11 @@
     function x_axis(args) {
         'use strict';
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
-        args.processed = {};
-
         var g;
         var min_x;
         var max_x;
+
+        args.processed = {};
 
         args.scalefns.xf = function(di) {
             return args.scales.X(di[args.x_accessor]);
@@ -1285,7 +1283,7 @@
             .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
 
         //remove the old x-axis, add new one
-        $svg.find('.mg-x-axis').remove();
+        svg.selectAll('.mg-x-axis').remove();
 
         if (!args.x_axis) {
             return this;
@@ -1314,6 +1312,8 @@
     }
 
     function x_axis_categorical(args) {
+        var svg = mg_get_svg_child_of(args.target);
+
         var svg_width = args.width,
             additional_buffer = 0;
 
@@ -1329,11 +1329,8 @@
             return args.scales.X(di[args.x_accessor]);
         };
 
-        var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
-
         //remove the old x-axis, add new one
-        $svg.find('.mg-x-axis').remove();
+        svg.selectAll('.mg-x-axis').remove();
 
         var g = svg.append('g')
             .classed('mg-x-axis', true)
@@ -1480,7 +1477,7 @@
         return function(f) {
             if (f < 1.0) {
                 //don't scale tiny values
-                return args.yax_units + d3.round(f, args.decimals);
+                return args.xax_units + d3.round(f, args.decimals);
             } else {
                 var pf = d3.formatPrefix(f);
                 return args.xax_units + pf.scale(f) + pf.symbol;
@@ -1524,12 +1521,12 @@
 
             // format as date or not, of course user can pass in
             // a custom function if desired
-            if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+            if(args.data[0][0][args.x_accessor] instanceof Date) {
                 return args.processed.main_x_time_format(d);
-            } else if($.type(args.data[0][0][args.x_accessor]) === 'number') {
+            } else if(isNumeric(args.data[0][0][args.x_accessor])) {
                 if (d < 1.0) {
                     //don't scale tiny values
-                    return args.yax_units + d3.round(d, args.decimals);
+                    return args.xax_units + d3.round(d, args.decimals);
                 } else {
                     pf = d3.formatPrefix(d);
                     return args.xax_units + pf.scale(d) + pf.symbol;
@@ -1670,13 +1667,12 @@
             max_x = d3.max(all_data, function(d) {
                 var trio = [
                     d[args.x_accessor],
-                    d[args.baseline_accessor],
-                    d[args.predictor_accessor]
+                    (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
+                    (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
                 ];
                 return Math.max.apply(null, trio);
             });
         }
-
         //if data set is of length 1, expand the range so that we can build the x-axis
         //of course, a line chart doesn't make sense in this case, so the preferred
         //method would be to check for said object's length and, if appropriate,
@@ -1738,6 +1734,7 @@
             description: null
         };
 
+        var args = arguments[0];
         if (!args) { args = {}; }
         args = merge_with_defaults(args, defaults);
 
@@ -1746,11 +1743,14 @@
             return;
         }
 
+        var container = d3.select(args.target);
+        var svg = container.selectAll('svg');
+
         //this is how we're dealing with passing in a single array of data,
         //but with the intention of using multiple values for multilines, etc.
 
         //do we have a time_series?
-        if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+        if (args.data[0][0][args.x_accessor] instanceof Date) {
             args.time_series = true;
         } else {
             args.time_series = false;
@@ -1759,7 +1759,7 @@
         var svg_width = args.width;
         var svg_height = args.height;
 
-         //are we setting the aspect ratio
+        //are we setting the aspect ratio
         if (args.full_width) {
             // get parent element
             svg_width = get_width(args.target);
@@ -1774,21 +1774,19 @@
         }
 
         //remove the svg if the chart type has changed
-        var svg = $(args.target).find('svg');
-
-        if((svg.find('.mg-main-line').length > 0 && args.chart_type !== 'line')
-                || (svg.find('.mg-points').length > 0 && args.chart_type !== 'point')
-                || (svg.find('.mg-histogram').length > 0 && args.chart_type !== 'histogram')
-                || (svg.find('.mg-barplot').length > 0 && args.chart_type !== 'bar')
+        if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line')
+                || (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point')
+                || (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram')
+                || (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
             ) {
-            $(args.target).empty();
+            svg.remove();
         }
 
         //add svg if it doesn't already exist
         //using trim on html rather than :empty to ignore white spaces if they exist
-        if($.trim($(args.target).html()) === '') {
+        if (mg_get_svg_child_of(args.target).empty()) {
             //add svg
-            d3.select(args.target)
+            svg = d3.select(args.target)
                 .append('svg')
                     .classed('linked', args.linked)
                     .attr('width', svg_width)
@@ -1798,12 +1796,13 @@
         args.width = svg_width;
         args.height = svg_height;
 
-        svg = d3.select(args.target).selectAll('svg');
+        // add clip path element to svg
+        svg.selectAll('.mg-clip-path').remove();
 
-        // add clip path element to svg.
         svg.append('defs')
+            .attr('class', 'mg-clip-path')
             .append('clipPath')
-                .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+                .attr('class', 'mg-plot-window-' + mg_strip_punctuation(args.target))
             .append('svg:rect')
                 .attr('x', args.left)
                 .attr('y', args.top)
@@ -1828,7 +1827,7 @@
 
         // remove missing class
         svg.classed('mg-missing', false);
-
+        
         // remove missing text
         svg.selectAll('.mg-missing-text').remove();
         svg.selectAll('.mg-missing-pane').remove();
@@ -1845,14 +1844,14 @@
         //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
         //data_graphic() on the same target with 2 lines, remove the 3rd line
 
-        var i;
-        if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
+        var i = 0;
+        if (args.data.length < svg.selectAll('.mg-main-line')[0].length) {
             //now, the thing is we can't just remove, say, line3 if we have a custom
             //line-color map, instead, see which are the lines to be removed, and delete those
-            if(args.custom_line_color_map.length > 0) {
+            if (args.custom_line_color_map.length > 0) {
                 var array_full_series = function(len) {
                     var arr = new Array(len);
-                    for(i = 0; i < arr.length; i++) { arr[i] = i + 1; }
+                    for (var i = 0; i < arr.length; i++) { arr[i] = i + 1; }
                     return arr;
                 };
 
@@ -1861,18 +1860,19 @@
                     array_full_series(args.max_data_size),
                     args.custom_line_color_map);
 
-                for(i = 0; i<lines_to_remove.length; i++) {
-                    $(args.target).find('svg .mg-main-line.mg-line' + lines_to_remove[i] + '-color')
+                for (i = 0; i < lines_to_remove.length; i++) {
+                    svg.selectAll('.mg-main-line.mg-line' + lines_to_remove[i] + '-color')
                         .remove();
                 }
             }
             //if we don't have a customer line-color map, just remove the lines from the end
             else {
                 var num_of_new = args.data.length;
-                var num_of_existing = $(args.target).find('svg .mg-main-line').length;
+                var num_of_existing = svg.selectAll('.mg-main-line')[0].length;
 
-                for(i = num_of_existing; i>num_of_new; i--) {
-                    $(args.target).find('svg .mg-main-line.mg-line' + i + '-color').remove();
+                for (i = num_of_existing; i > num_of_new; i--) {
+                    svg.selectAll('.mg-main-line.mg-line' + i + '-color')
+                        .remove();
                 }
             }
         }
@@ -1882,13 +1882,13 @@
 
     function markers(args) {
         'use strict';
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var gm;
         var gb;
 
         //remove existing markers and baselines
-        $(args.target).find('svg .mg-markers').remove();
-        $(args.target).find('svg .mg-baselines').remove();
+        svg.selectAll('.mg-markers').remove();
+        svg.selectAll('.mg-baselines').remove();
 
         if (args.markers) {
             gm = svg.append('g')
@@ -1971,12 +1971,12 @@
         // If we've asked the svg to fill a div, resize with div.
         if (args.full_width || args.full_height){
             window.addEventListener('resize', function(){
-                // var svg_width = 
-                // var svg_height = 
-                // args.width = svg_width;
-                // args.height = svg_height;
-                d3.select(args.target).select('svg')
-                    .attr('width', get_width(args.target));
+                var svg = d3.select(args.target).select('svg');
+                var aspect = svg.attr('height') / svg.attr('width');
+                var newWidth = get_width(args.target);
+
+                svg.attr('width', newWidth);
+                svg.attr('height', aspect * newWidth);
             }, true);
         }
 
@@ -2327,9 +2327,9 @@
             var confidence_area;
 
             //if it already exists, remove it
-            var $existing_band = $(args.target).find('.mg-confidence-band');
-            if ($existing_band.length > 0) {
-                $existing_band.remove();
+            var existing_band = svg.selectAll('.mg-confidence-band');
+            if (!existing_band.empty()) {
+                existing_band.remove();
             }
 
             if (args.show_confidence_band) {
@@ -2383,12 +2383,16 @@
                 }
 
                 //add the area
-                var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
-                if (args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1) {
+                //var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
+                var areas = svg.selectAll('.mg-area' + (line_id) + '-color');
+                var displayArea = args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1;
+                if (displayArea) {
                     //if area already exists, transition it
-                    if ($area.length > 0) {
-                        $(svg.node()).find('.mg-y-axis').after($area.detach());
-                        d3.select($area.get(0))
+                    if (!areas.empty()) {
+                        //$(svg.node()).find('.mg-y-axis').after($area.detach());
+                        svg.select('.mg-y-axis').node().parentNode.appendChild(areas.node());
+
+                        areas
                             .transition()
                                 .duration(updateTransitionDuration)
                                 .attr('d', area(args.data[i]))
@@ -2399,18 +2403,26 @@
                             .attr('d', area(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                     }
-                } else if ($area.length > 0) {
-                    $area.remove();
+                } else if (!areas.empty()) {
+                    areas.remove();
                 }
 
                 //add the line, if it already exists, transition the fine gentleman
-                var $existing_line = $(args.target).find('svg path.mg-main-line.mg-line' + (line_id) + '-color').first();
-                if ($existing_line.length > 0) {
-                    $(svg.node()).find('.mg-y-axis').after($existing_line.detach());
-                    d3.select($existing_line.get(0))
+                var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
+                if (!existing_line.empty()) {
+                    //$(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
+                    svg.select('.mg-y-axis').node().parentNode.appendChild(existing_line.node());
+
+                    var lineTransition = existing_line
                         .transition()
-                            .duration(updateTransitionDuration)
-                            .attr('d', line(args.data[i]));
+                        .duration(updateTransitionDuration);
+
+                    if (!displayArea) {
+                        lineTransition.attrTween('d', pathTween(line(args.data[i]), 4));
+                    } else {
+                        lineTransition.attr('d', line(args.data[i]));
+                    }
+
                 }
                 else { //otherwise...
                     //if we're animating on load, animate the line from its median value
@@ -2440,7 +2452,7 @@
             }
 
             if (args.legend) {
-                $(args.legend_target).html(legend);
+                d3.select(args.legend_target).html(legend);
             }
 
             return this;
@@ -2453,16 +2465,16 @@
 
         this.rollover = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
             var g;
 
             //remove the old rollovers if they already exist
-            $svg.find('.mg-rollover-rect').remove();
-            $svg.find('.mg-voronoi').remove();
+            svg.selectAll('.mg-rollover-rect').remove();
+            svg.selectAll('.mg-voronoi').remove();
 
             //remove the old rollover text and circle if they already exist
-            $svg.find('.mg-active-datapoint').remove();
-            $svg.find('.mg-line-rollover-circle').remove();
+            svg.selectAll('.mg-active-datapoint').remove();
+            svg.selectAll('.mg-line-rollover-circle').remove();
+            svg.selectAll('.mg-active-datapoint-container').remove();
 
             //rollover text
             svg.append('g')
@@ -2946,10 +2958,9 @@
 
         this.mainPlot = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old histogram, add new one
-            $svg.find('.mg-histogram').remove();
+            svg.selectAll('.mg-histogram').remove();
 
             var g = svg.append('g')
                 .attr('class', 'mg-histogram');
@@ -2995,11 +3006,10 @@
 
         this.rollover = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old rollovers if they already exist
-            $svg.find('.mg-rollover-rect').remove();
-            $svg.find('.mg-active-datapoint').remove();
+            svg.selectAll('.mg-rollover-rect').remove();
+            svg.selectAll('.mg-active-datapoint').remove();
 
             //rollover text
             svg.append('text')
@@ -3069,7 +3079,10 @@
                 var num = rolloverNumberFormatter(args);
 
                 //highlight active bar
-                d3.selectAll($(args.target).find(' svg .mg-bar :eq(' + i + ')'))
+                svg.selectAll('.mg-bar rect')
+                    .filter(function(d, j) {
+                        return j === i;
+                    })
                     .classed('active', true);
 
                 //trigger mouseover on all matching bars
@@ -3123,7 +3136,7 @@
                 }
 
                 //reset active bar
-                d3.selectAll($(args.target).find('svg .mg-bar :eq(' + i + ')'))
+                svg.selectAll('.mg-bar rect')
                     .classed('active', false);
 
                 //reset active data point text
@@ -3177,11 +3190,10 @@
 
         this.mainPlot = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
             var g;
 
             //remove the old points, add new one
-            $svg.find('.mg-points').remove();
+            svg.selectAll('.mg-points').remove();
 
             // plot the points, pretty straight-forward
             g = svg.append('g')
@@ -3213,13 +3225,12 @@
 
         this.rollover = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
 
             //remove the old rollovers if they already exist
-            $svg.find('.mg-voronoi').remove();
+            svg.selectAll('.mg-voronoi').remove();
 
             //remove the old rollover text and circle if they already exist
-            $svg.find('.mg-active-datapoint').remove();
+            svg.selectAll('.mg-active-datapoint').remove();
 
             //add rollover text
             svg.append('text')
@@ -3445,11 +3456,11 @@
             // setup vars with the existing elements
             // TODO: deal with changing data sets - i.e. more/less, different labels etc.
             else {
-                barplot = svg.select('g.mg-barplot');
-
                 // move the barplot after the axes so it doesn't overlap
-                $(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
-
+                //$(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
+                svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
+                
+                console.log('waylee');
                 bars = barplot.selectAll('rect.mg-bar');
 
                 if (args.predictor_accessor) {
@@ -3619,12 +3630,11 @@
 
         this.rollover = function() {
             var svg = mg_get_svg_child_of(args.target);
-            var $svg = $($(args.target).find('svg').get(0));
             var g;
 
             //remove the old rollovers if they already exist
-            $svg.find('.mg-rollover-rect').remove();
-            $svg.find('.mg-active-datapoint').remove();
+            svg.selectAll('.mg-rollover-rect').remove();
+            svg.selectAll('.mg-active-datapoint').remove();
 
             //rollover text
             svg.append('text')
@@ -3685,7 +3695,10 @@
                 var num = rolloverNumberFormatter(args);
 
                 //highlight active bar
-                d3.selectAll($(args.target + ' svg g.mg-barplot .mg-bar:eq(' + i + ')'))
+                svg.selectAll('g.mg-barplot .mg-bar')
+                    .filter(function(d, j) {
+                        return j === i;
+                    })
                     .classed('active', true);
 
                 //update rollover text
@@ -3714,7 +3727,7 @@
 
             return function(d, i) {
                 //reset active bar
-                d3.selectAll($(args.target).find('svg g.mg-barplot .mg-bar:eq(' + i + ')'))
+                svg.selectAll('g.mg-barplot .mg-bar')
                     .classed('active', false);
 
                 //reset active data point text
@@ -3991,7 +4004,7 @@
 
             // do we need to clear the legend?
             if (args.legend_target) {
-                $(args.legend_target).html('');
+                d3.select(args.legend_target).html('');
             }
 
             //are we adding a background placeholder
@@ -4608,6 +4621,32 @@
         return num;
     }
 
+    // http://bl.ocks.org/mbostock/3916621
+    function pathTween(d1, precision) {
+      return function() {
+        var path0 = this,
+            path1 = path0.cloneNode(),
+            n0 = path0.getTotalLength(),
+            n1 = (path1.setAttribute("d", d1), path1).getTotalLength();
+
+        // Uniform sampling of distance based on specified precision.
+        var distances = [0], i = 0, dt = precision / Math.max(n0, n1);
+        while ((i += dt) < 1) distances.push(i);
+        distances.push(1);
+
+        // Compute point-interpolators at each distance.
+        var points = distances.map(function(t) {
+          var p0 = path0.getPointAtLength(t * n0),
+              p1 = path1.getPointAtLength(t * n1);
+          return d3.interpolate([p0.x, p0.y], [p1.x, p1.y]);
+        });
+
+        return function(t) {
+          return t < 1 ? "M" + points.map(function(p) { return p(t); }).join("L") : d1;
+        };
+      };
+    }
+
     //a set of helper functions, some that we've written, others that we've borrowed
 
     MG.convert = {};
@@ -4632,7 +4671,7 @@
         return data;
     };
 
-    function mg_get_svg_child_of(selector_or_node){
+    function mg_get_svg_child_of(selector_or_node) {
         return d3.select(selector_or_node).select('svg');
     }
 
@@ -4652,6 +4691,10 @@
 
     function get_height(target) {
         return get_pixel_dimension(target, 'height');
+    }
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
     var each = function(obj, iterator, context) {
@@ -4839,9 +4882,9 @@
     function error(args) {
         console.log('ERROR : ', args.target, ' : ', args.error);
 
-        $(args.target)
-            .find('.mg-chart-title')
-            .append('<i class="fa fa-x fa-exclamation-circle warning"></i>');
+        d3.select(args.target).select('.mg-chart-title')
+            .append('i')
+                .attr('class', 'fa fa-x fa-exclamation-circle warning');
     }
 
     return MG;

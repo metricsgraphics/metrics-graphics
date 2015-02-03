@@ -2,7 +2,7 @@
 function error(args) {
     console.log('ERROR : ', args.target, ' : ', args.error);
 
-    $(args.target)
-        .find('.mg-chart-title')
-        .append('<i class="fa fa-x fa-exclamation-circle warning"></i>');
+    d3.select(args.target).select('.mg-chart-title')
+        .append('i')
+            .attr('class', 'fa fa-x fa-exclamation-circle warning');
 }

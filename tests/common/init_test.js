@@ -84,6 +84,9 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
         MG.data_graphic(params);
         ok(document.querySelector(chart_types[i].domElement),
             'chart_type switched to `' + chart_types[i].id + '`, the correct chart type is plotted');
+            
+        //ensure old chart was removed
+        equal(document.querySelectorAll('.mg-main-line').length, 0, 'line chart (old one) was removed');
     }
 });
 
@@ -138,4 +141,17 @@ test('args.time_series is set to false when data is not time-series', function()
 
     MG.data_graphic(params);
     equal(params.time_series, false, 'args.time_series is set to false when data is not time-series');
+});
+
+test('Only one clip path is added on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12, 'l': 10, 'u': 14},
+               {'date': new Date('2014-03-01'), 'value': 18, 'l': 16, 'u': 20}]
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll('.mg-clip-path').length, 1, 'We only have one clip path');
 });

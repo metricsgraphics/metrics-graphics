@@ -22,11 +22,10 @@ charts.point = function(args) {
 
     this.mainPlot = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old points, add new one
-        $svg.find('.mg-points').remove();
+        svg.selectAll('.mg-points').remove();
 
         // plot the points, pretty straight-forward
         g = svg.append('g')
@@ -58,13 +57,12 @@ charts.point = function(args) {
 
     this.rollover = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old rollovers if they already exist
-        $svg.find('.mg-voronoi').remove();
+        svg.selectAll('.mg-voronoi').remove();
 
         //remove the old rollover text and circle if they already exist
-        $svg.find('.mg-active-datapoint').remove();
+        svg.selectAll('.mg-active-datapoint').remove();
 
         //add rollover text
         svg.append('text')

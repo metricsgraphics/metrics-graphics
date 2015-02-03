@@ -13,7 +13,7 @@ test('Chart title is updated', function() {
 
     MG.data_graphic(params);
     MG.data_graphic(params2);
-    equal(document.querySelector('.mg-chart-title').innerHTML, 'bar', 'Chart title is foo');
+    equal(document.querySelector('.mg-chart-title').innerText, 'bar', 'Chart title is foo');
 });
 
 test('Chart title is removed if title is set to blank', function() {

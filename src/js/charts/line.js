@@ -31,9 +31,9 @@ charts.line = function(args) {
         var confidence_area;
 
         //if it already exists, remove it
-        var $existing_band = $(args.target).find('.mg-confidence-band');
-        if ($existing_band.length > 0) {
-            $existing_band.remove();
+        var existing_band = svg.selectAll('.mg-confidence-band');
+        if (!existing_band.empty()) {
+            existing_band.remove();
         }
 
         if (args.show_confidence_band) {
@@ -87,13 +87,16 @@ charts.line = function(args) {
             }
 
             //add the area
-            var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
+            //var $area = $(args.target).find('svg path.mg-area' + (line_id) + '-color');
+            var areas = svg.selectAll('.mg-area' + (line_id) + '-color');
             var displayArea = args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1;
             if (displayArea) {
                 //if area already exists, transition it
-                if ($area.length > 0) {
-                    $(svg.node()).find('.mg-y-axis').after($area.detach());
-                    d3.select($area.get(0))
+                if (!areas.empty()) {
+                    //$(svg.node()).find('.mg-y-axis').after($area.detach());
+                    svg.select('.mg-y-axis').node().parentNode.appendChild(areas.node());
+
+                    areas
                         .transition()
                             .duration(updateTransitionDuration)
                             .attr('d', area(args.data[i]))
@@ -104,14 +107,16 @@ charts.line = function(args) {
                         .attr('d', area(args.data[i]))
                         .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
                 }
-            } else if ($area.length > 0) {
-                $area.remove();
+            } else if (!areas.empty()) {
+                areas.remove();
             }
 
             //add the line, if it already exists, transition the fine gentleman
             var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
             if (!existing_line.empty()) {
-                $(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
+                //$(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
+                svg.select('.mg-y-axis').node().parentNode.appendChild(existing_line.node());
+
                 var lineTransition = existing_line
                     .transition()
                     .duration(updateTransitionDuration);
@@ -151,7 +156,7 @@ charts.line = function(args) {
         }
 
         if (args.legend) {
-            $(args.legend_target).html(legend);
+            d3.select(args.legend_target).html(legend);
         }
 
         return this;
@@ -164,16 +169,16 @@ charts.line = function(args) {
 
     this.rollover = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.mg-rollover-rect').remove();
-        $svg.find('.mg-voronoi').remove();
+        svg.selectAll('.mg-rollover-rect').remove();
+        svg.selectAll('.mg-voronoi').remove();
 
         //remove the old rollover text and circle if they already exist
-        $svg.find('.mg-active-datapoint').remove();
-        $svg.find('.mg-line-rollover-circle').remove();
+        svg.selectAll('.mg-active-datapoint').remove();
+        svg.selectAll('.mg-line-rollover-circle').remove();
+        svg.selectAll('.mg-active-datapoint-container').remove();
 
         //rollover text
         svg.append('g')

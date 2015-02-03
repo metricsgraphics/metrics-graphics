@@ -1,12 +1,12 @@
 function markers(args) {
     'use strict';
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var gm;
     var gb;
 
     //remove existing markers and baselines
-    $(args.target).find('svg .mg-markers').remove();
-    $(args.target).find('svg .mg-baselines').remove();
+    svg.selectAll('.mg-markers').remove();
+    svg.selectAll('.mg-baselines').remove();
 
     if (args.markers) {
         gm = svg.append('g')

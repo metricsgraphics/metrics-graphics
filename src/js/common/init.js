@@ -6,6 +6,7 @@ function init(args) {
         description: null
     };
 
+    var args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
 
@@ -14,11 +15,14 @@ function init(args) {
         return;
     }
 
+    var container = d3.select(args.target);
+    var svg = container.selectAll('svg');
+
     //this is how we're dealing with passing in a single array of data,
     //but with the intention of using multiple values for multilines, etc.
 
     //do we have a time_series?
-    if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+    if (args.data[0][0][args.x_accessor] instanceof Date) {
         args.time_series = true;
     } else {
         args.time_series = false;
@@ -27,7 +31,7 @@ function init(args) {
     var svg_width = args.width;
     var svg_height = args.height;
 
-     //are we setting the aspect ratio
+    //are we setting the aspect ratio
     if (args.full_width) {
         // get parent element
         svg_width = get_width(args.target);
@@ -42,21 +46,19 @@ function init(args) {
     }
 
     //remove the svg if the chart type has changed
-    var svg = $(args.target).find('svg');
-
-    if((svg.find('.mg-main-line').length > 0 && args.chart_type !== 'line')
-            || (svg.find('.mg-points').length > 0 && args.chart_type !== 'point')
-            || (svg.find('.mg-histogram').length > 0 && args.chart_type !== 'histogram')
-            || (svg.find('.mg-barplot').length > 0 && args.chart_type !== 'bar')
+    if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line')
+            || (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point')
+            || (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram')
+            || (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
         ) {
-        $(args.target).empty();
+        svg.remove();
     }
 
     //add svg if it doesn't already exist
     //using trim on html rather than :empty to ignore white spaces if they exist
-    if($.trim($(args.target).html()) === '') {
+    if (mg_get_svg_child_of(args.target).empty()) {
         //add svg
-        d3.select(args.target)
+        svg = d3.select(args.target)
             .append('svg')
                 .classed('linked', args.linked)
                 .attr('width', svg_width)
@@ -66,12 +68,13 @@ function init(args) {
     args.width = svg_width;
     args.height = svg_height;
 
-    svg = d3.select(args.target).selectAll('svg');
+    // add clip path element to svg
+    svg.selectAll('.mg-clip-path').remove();
 
-    // add clip path element to svg.
     svg.append('defs')
+        .attr('class', 'mg-clip-path')
         .append('clipPath')
-            .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+            .attr('class', 'mg-plot-window-' + mg_strip_punctuation(args.target))
         .append('svg:rect')
             .attr('x', args.left)
             .attr('y', args.top)
@@ -96,7 +99,7 @@ function init(args) {
 
     // remove missing class
     svg.classed('mg-missing', false);
-
+    
     // remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
@@ -113,14 +116,14 @@ function init(args) {
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
     //data_graphic() on the same target with 2 lines, remove the 3rd line
 
-    var i;
-    if(args.data.length < $(args.target).find('svg .mg-main-line').length) {
+    var i = 0;
+    if (args.data.length < svg.selectAll('.mg-main-line')[0].length) {
         //now, the thing is we can't just remove, say, line3 if we have a custom
         //line-color map, instead, see which are the lines to be removed, and delete those
-        if(args.custom_line_color_map.length > 0) {
+        if (args.custom_line_color_map.length > 0) {
             var array_full_series = function(len) {
                 var arr = new Array(len);
-                for(i = 0; i < arr.length; i++) { arr[i] = i + 1; }
+                for (var i = 0; i < arr.length; i++) { arr[i] = i + 1; }
                 return arr;
             };
 
@@ -129,18 +132,19 @@ function init(args) {
                 array_full_series(args.max_data_size),
                 args.custom_line_color_map);
 
-            for(i = 0; i<lines_to_remove.length; i++) {
-                $(args.target).find('svg .mg-main-line.mg-line' + lines_to_remove[i] + '-color')
+            for (i = 0; i < lines_to_remove.length; i++) {
+                svg.selectAll('.mg-main-line.mg-line' + lines_to_remove[i] + '-color')
                     .remove();
             }
         }
         //if we don't have a customer line-color map, just remove the lines from the end
         else {
             var num_of_new = args.data.length;
-            var num_of_existing = $(args.target).find('svg .mg-main-line').length;
+            var num_of_existing = svg.selectAll('.mg-main-line')[0].length;
 
-            for(i = num_of_existing; i>num_of_new; i--) {
-                $(args.target).find('svg .mg-main-line.mg-line' + i + '-color').remove();
+            for (i = num_of_existing; i > num_of_new; i--) {
+                svg.selectAll('.mg-main-line.mg-line' + i + '-color')
+                    .remove();
             }
         }
     }

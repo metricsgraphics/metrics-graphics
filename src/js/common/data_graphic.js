@@ -95,8 +95,8 @@ MG.data_graphic = function() {
 
     defaults.histogram = {
         mouseover: function(d, i) {
-            $('#histogram svg .mg-active-datapoint')
-                .html('Frequency Count: ' + d.y);
+            d3.select('#histogram svg .mg-active-datapoint')
+                .text('Frequency Count: ' + d.y);
         },
         binned: false,
         bins: null,
