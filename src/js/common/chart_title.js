@@ -18,14 +18,14 @@ function chart_title(args) {
         var optional_question_mark = (args.description)
             ? '<i class="fa fa-question-circle fa-inverse description"></i>'
             : '';
-    
+
         $(args.target).prepend('<h2 class="mg-chart-title">' 
             + args.title + optional_question_mark + '</h2>');
 
         //activate the question mark if we have a description
         if(args.description) {
             newTitle = $(args.target).find('h2.mg-chart-title');
-            
+
             newTitle.popover({
                 html: true,
                 animation: false,
