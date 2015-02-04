@@ -1,4 +1,7 @@
 //a set of helper functions, some that we've written, others that we've borrowed
+function isArray(arr) {
+    return Object.prototype.toString.call(arr) === '[object Array]';
+}
 
 MG.convert = {};
 

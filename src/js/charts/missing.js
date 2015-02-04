@@ -30,7 +30,7 @@ charts.missing = function(args) {
 
         // do we need to clear the legend?
         if (args.legend_target) {
-            $(args.legend_target).html('');
+            document.querySelector(args.legend_target).innerHTML = '';
         }
 
         //are we adding a background placeholder

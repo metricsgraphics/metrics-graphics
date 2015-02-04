@@ -8,6 +8,8 @@ charts.point = function(args) {
         init(args);
         x_axis(args);
         y_axis(args);
+        this.$svg = document.querySelector(args.target + ' svg')
+        this.svg = d3.select(this.$svg)
         return this;
     };
 
@@ -26,10 +28,13 @@ charts.point = function(args) {
         var g;
 
         //remove the old points, add new one
-        $svg.find('.mg-points').remove();
+        var oldPoints = this.$svg.querySelector('.mg-points');
 
+        if(oldPoints)
+          oldPoints.parentNode.removeChild(oldPoints);
+        
         // plot the points, pretty straight-forward
-        g = svg.append('g')
+        g = this.svg.append('g')
             .classed('mg-points', true);
 
         var pts = g.selectAll('circle')
@@ -57,17 +62,21 @@ charts.point = function(args) {
     };
 
     this.rollover = function() {
-        var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
+        [
+          //remove the old rollovers if they already exist
+          this.$svg.querySelector('.mg-voronoi'),
+          //remove the old rollover text and circle if they already exist
+          this.$svg.querySelector('.mg-active-datapoint')
+        ].forEach(function(e, i) {
+        
+          if(!e)
+            return;
 
-        //remove the old rollovers if they already exist
-        $svg.find('.mg-voronoi').remove();
-
-        //remove the old rollover text and circle if they already exist
-        $svg.find('.mg-active-datapoint').remove();
+          e.parentNode.removeChild(e);
+        })
 
         //add rollover text
-        svg.append('text')
+        this.svg.append('text')
             .attr('class', 'mg-active-datapoint')
             .attr('xml:space', 'preserve')
             .attr('x', args.width - args.right)
@@ -80,7 +89,7 @@ charts.point = function(args) {
             .y(args.scalefns.yf)
             .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
 
-        var paths = svg.append('g')
+        var paths = this.svg.append('g')
             .attr('class', 'mg-voronoi');
 
         paths.selectAll('path')
@@ -105,7 +114,7 @@ charts.point = function(args) {
     };
 
     this.rolloverOn = function(args) {
-        var svg = mg_get_svg_child_of(args.target);
+        var svg = this.svg;
 
         return function(d, i) {
             svg.selectAll('.mg-points circle')
@@ -161,7 +170,7 @@ charts.point = function(args) {
     };
 
     this.rolloverOff = function(args) {
-        var svg = mg_get_svg_child_of(args.target);
+        var svg = this.svg;
 
         return function(d,i) {
             if (args.linked && globals.link) {
