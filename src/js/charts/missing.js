@@ -30,7 +30,7 @@ charts.missing = function(args) {
 
         // do we need to clear the legend?
         if (args.legend_target) {
-            document.querySelector(args.legend_target).innerHTML = '';
+            d3.select(args.legend_target).html('');
         }
 
         //are we adding a background placeholder

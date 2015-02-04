@@ -7,7 +7,7 @@ function chart_title(args) {
     if (args.title && args.title !== currentTitle.text()) {
         currentTitle.remove();
     //if title hasn't been specified or if it's blank, remove the title
-    } else if (!args.title || args.title === '') {
+    } else if(!args.title || args.title === '') {
         currentTitle.remove();
     } else
         return;
@@ -18,7 +18,7 @@ function chart_title(args) {
         var optional_question_mark = (args.description)
             ? '<i class="fa fa-question-circle fa-inverse description"></i>'
             : '';
-    
+
         $(args.target).prepend('<h2 class="mg-chart-title">' 
             + args.title + optional_question_mark + '</h2>');
 

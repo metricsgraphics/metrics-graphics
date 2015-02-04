@@ -4,7 +4,8 @@ function x_rug(args) {
         ? args.buffer / 2
         : args.buffer;
 
-    var svg = d3.select(document.querySelector(args.target + ' svg'));
+    var svg = mg_get_svg_child_of(args.target);
+
     var all_data=[];
     for (var i=0; i<args.data.length; i++) {
         for (var j=0; j<args.data[i].length; j++) {
@@ -34,8 +35,7 @@ function x_rug(args) {
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
         rug.classed('mg-x-rug-mono', false);
-    }
-    else {
+    } else {
         rug.attr('stroke', null);
         rug.classed('mg-x-rug-mono', true);
     }
@@ -43,13 +43,12 @@ function x_rug(args) {
 
 function x_axis(args) {
     'use strict';
-    var $svg = document.querySelector(args.target + ' svg');
-    var svg = d3.select($svg);
-    args.processed = {};
-
+    var svg = mg_get_svg_child_of(args.target);
     var g;
     var min_x;
     var max_x;
+
+    args.processed = {};
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
@@ -70,11 +69,7 @@ function x_axis(args) {
         .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
 
     //remove the old x-axis, add new one
-    var xaxis = $svg.querySelector('.mg-x-axis');
-
-    if(xaxis) {
-      xaxis.parentNode.removeChild(xaxis);
-    }
+    svg.selectAll('.mg-x-axis').remove();
 
     if (!args.x_axis) {
         return this;
@@ -103,6 +98,8 @@ function x_axis(args) {
 }
 
 function x_axis_categorical(args) {
+    var svg = mg_get_svg_child_of(args.target);
+
     var svg_width = args.width,
         additional_buffer = 0;
 
@@ -118,11 +115,8 @@ function x_axis_categorical(args) {
         return args.scales.X(di[args.x_accessor]);
     };
 
-    var svg = mg_get_svg_child_of(args.target);
-    var $svg = $($(args.target).find('svg').get(0));
-
     //remove the old x-axis, add new one
-    $svg.find('.mg-x-axis').remove();
+    svg.selectAll('.mg-x-axis').remove();
 
     var g = svg.append('g')
         .classed('mg-x-axis', true)
@@ -269,7 +263,7 @@ function mg_default_bar_xax_format(args) {
     return function(f) {
         if (f < 1.0) {
             //don't scale tiny values
-            return args.yax_units + d3.round(f, args.decimals);
+            return args.xax_units + d3.round(f, args.decimals);
         } else {
             var pf = d3.formatPrefix(f);
             return args.xax_units + pf.scale(f) + pf.symbol;
@@ -313,12 +307,12 @@ function mg_default_xax_format(args) {
 
         // format as date or not, of course user can pass in
         // a custom function if desired
-        if($.type(args.data[0][0][args.x_accessor]) === 'date') {
+        if(args.data[0][0][args.x_accessor] instanceof Date) {
             return args.processed.main_x_time_format(d);
-        } else if($.type(args.data[0][0][args.x_accessor]) === 'number') {
+        } else if(isNumeric(args.data[0][0][args.x_accessor])) {
             if (d < 1.0) {
                 //don't scale tiny values
-                return args.yax_units + d3.round(d, args.decimals);
+                return args.xax_units + d3.round(d, args.decimals);
             } else {
                 pf = d3.formatPrefix(d);
                 return args.xax_units + pf.scale(d) + pf.symbol;
@@ -459,13 +453,12 @@ function mg_find_min_max_x(args) {
         max_x = d3.max(all_data, function(d) {
             var trio = [
                 d[args.x_accessor],
-                d[args.baseline_accessor],
-                d[args.predictor_accessor]
+                (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
+                (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
             ];
             return Math.max.apply(null, trio);
         });
     }
-
     //if data set is of length 1, expand the range so that we can build the x-axis
     //of course, a line chart doesn't make sense in this case, so the preferred
     //method would be to check for said object's length and, if appropriate,

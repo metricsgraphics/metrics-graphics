@@ -72,11 +72,11 @@ charts.bar = function(args) {
         // setup vars with the existing elements
         // TODO: deal with changing data sets - i.e. more/less, different labels etc.
         else {
-            barplot = svg.select('g.mg-barplot');
-
             // move the barplot after the axes so it doesn't overlap
-            $(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
-
+            //$(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
+            svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
+            
+            console.log('waylee');
             bars = barplot.selectAll('rect.mg-bar');
 
             if (args.predictor_accessor) {
@@ -246,12 +246,11 @@ charts.bar = function(args) {
 
     this.rollover = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
         var g;
 
         //remove the old rollovers if they already exist
-        $svg.find('.mg-rollover-rect').remove();
-        $svg.find('.mg-active-datapoint').remove();
+        svg.selectAll('.mg-rollover-rect').remove();
+        svg.selectAll('.mg-active-datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -312,7 +311,10 @@ charts.bar = function(args) {
             var num = rolloverNumberFormatter(args);
 
             //highlight active bar
-            d3.selectAll($(args.target + ' svg g.mg-barplot .mg-bar:eq(' + i + ')'))
+            svg.selectAll('g.mg-barplot .mg-bar')
+                .filter(function(d, j) {
+                    return j === i;
+                })
                 .classed('active', true);
 
             //update rollover text
@@ -341,7 +343,7 @@ charts.bar = function(args) {
 
         return function(d, i) {
             //reset active bar
-            d3.selectAll($(args.target).find('svg g.mg-barplot .mg-bar:eq(' + i + ')'))
+            svg.selectAll('g.mg-barplot .mg-bar')
                 .classed('active', false);
 
             //reset active data point text

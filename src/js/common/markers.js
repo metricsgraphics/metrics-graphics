@@ -1,20 +1,14 @@
 function markers(args) {
     'use strict';
-    var svg = d3.select(document.querySelector(args.target + ' svg'));
+    var svg = mg_get_svg_child_of(args.target);
     var gm;
     var gb;
 
-    var oldMarkers = document.querySelector(args.target + ' svg .mg-markers');
-    if(oldMarkers) {
-        oldMarkers.parentNode.removeChild(oldMarkers); 
-    }
+    //remove existing markers and baselines
+    svg.selectAll('.mg-markers').remove();
+    svg.selectAll('.mg-baselines').remove();
 
-    var oldBaselines = document.querySelector(args.target + ' svg .mg-baselines');
-    if(oldBaselines) {
-        oldBaselines.parentNode.removeChild(oldBaselines); 
-    }
-
-    if(args.markers) {
+    if (args.markers) {
         gm = svg.append('g')
             .attr('class', 'mg-markers');
 

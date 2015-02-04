@@ -56,7 +56,7 @@ function raw_data_transformation(args) {
 function process_line(args) {
     'use strict';
     //do we have a time-series?
-    var is_time_series = (args.data[0][0][args.x_accessor] instanceof Date)
+    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) === 'date')
             ? true
             : false;
 

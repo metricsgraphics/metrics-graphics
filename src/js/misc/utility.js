@@ -1,7 +1,4 @@
 //a set of helper functions, some that we've written, others that we've borrowed
-function isArray(arr) {
-    return Object.prototype.toString.call(arr) === '[object Array]';
-}
 
 MG.convert = {};
 
@@ -25,7 +22,7 @@ MG.convert.number = function(data, accessor) {
     return data;
 };
 
-function mg_get_svg_child_of(selector_or_node){
+function mg_get_svg_child_of(selector_or_node) {
     return d3.select(selector_or_node).select('svg');
 }
 
@@ -45,6 +42,10 @@ function get_width(target) {
 
 function get_height(target) {
     return get_pixel_dimension(target, 'height');
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 var each = function(obj, iterator, context) {

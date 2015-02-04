@@ -208,4 +208,15 @@ test('Rollover circle is visible on load if the dataset is of length 1', functio
     deepEqual(d3.select('.mg-line-rollover-circle').style('opacity'), "1", 'Rollover circle is visible');
 });
 
+test('Only one active data point container is added on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12, 'l': 10, 'u': 14},
+               {'date': new Date('2014-03-01'), 'value': 18, 'l': 16, 'u': 20}]
+    };
 
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one active data point container');
+});

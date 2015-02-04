@@ -13,10 +13,9 @@ charts.histogram = function(args) {
 
     this.mainPlot = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old histogram, add new one
-        $svg.find('.mg-histogram').remove();
+        svg.selectAll('.mg-histogram').remove();
 
         var g = svg.append('g')
             .attr('class', 'mg-histogram');
@@ -62,11 +61,10 @@ charts.histogram = function(args) {
 
     this.rollover = function() {
         var svg = mg_get_svg_child_of(args.target);
-        var $svg = $($(args.target).find('svg').get(0));
 
         //remove the old rollovers if they already exist
-        $svg.find('.mg-rollover-rect').remove();
-        $svg.find('.mg-active-datapoint').remove();
+        svg.selectAll('.mg-rollover-rect').remove();
+        svg.selectAll('.mg-active-datapoint').remove();
 
         //rollover text
         svg.append('text')
@@ -136,7 +134,10 @@ charts.histogram = function(args) {
             var num = rolloverNumberFormatter(args);
 
             //highlight active bar
-            d3.selectAll($(args.target).find(' svg .mg-bar :eq(' + i + ')'))
+            svg.selectAll('.mg-bar rect')
+                .filter(function(d, j) {
+                    return j === i;
+                })
                 .classed('active', true);
 
             //trigger mouseover on all matching bars
@@ -190,7 +191,7 @@ charts.histogram = function(args) {
             }
 
             //reset active bar
-            d3.selectAll($(args.target).find('svg .mg-bar :eq(' + i + ')'))
+            svg.selectAll('.mg-bar rect')
                 .classed('active', false);
 
             //reset active data point text
