@@ -1,4 +1,4 @@
-$(document).ready(function() {
+(function() {
     'use strict';
     // json data that we intend to update later on via on-screen controls
     var split_by_data;
@@ -131,7 +131,7 @@ $(document).ready(function() {
                 var date = df(d.date);
                 var y_val = (d.value === 0) ? 'no data' : d.value;
 
-                $('#missing-y svg .mg-active-datapoint')
+                d3.select('#missing-y svg .mg-active-datapoint')
                     .text(date +  '   ' + y_val);
             }
         });
@@ -641,7 +641,7 @@ $(document).ready(function() {
             mouseover: function(d, i) {
                 // custom format the rollover text, show days
                 var prefix = d3.formatPrefix(d.value);
-                $('#custom-rollover svg .mg-active-datapoint')
+                d3.select('#custom-rollover svg .mg-active-datapoint')
                     .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
             },
             target: '#custom-rollover',
@@ -720,7 +720,7 @@ $(document).ready(function() {
         target: '#histogram1',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            $('#histogram1 svg .mg-active-datapoint')
+            d3.select('#histogram1 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     });
@@ -751,7 +751,7 @@ $(document).ready(function() {
                 } else {
                     string = d3.round(d.x,2) + ' Months';
                 }
-                $('#ufos svg .mg-active-datapoint')
+                d3.select('#ufos svg .mg-active-datapoint')
                     .text(string + '       Volume: ' + d.y);
             }
         });
@@ -777,7 +777,7 @@ $(document).ready(function() {
         x_accessor:'value',
         y_accessor:'count',
         mouseover: function(d, i) {
-            $('#histogram2 svg .mg-active-datapoint')
+            d3.select('#histogram2 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     });
@@ -798,7 +798,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         x_accessor:'val1',
         mouseover: function(d, i) {
-            $('#histogram3 svg .mg-active-datapoint')
+            d3.select('#histogram3 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     });
@@ -820,7 +820,7 @@ $(document).ready(function() {
         y_extended_ticks: true,
         x_accessor:'val1',
         mouseover: function(d, i) {
-            $('#histogram4 svg .mg-active-datapoint')
+            d3.select('#histogram4 svg .mg-active-datapoint')
                 .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
         }
     });
@@ -974,7 +974,7 @@ $(document).ready(function() {
 
     var resolution_features = ['weekly', 'monthly'];
 
-    var buttons = MG.button_layout('div#buttons')
+    /*var buttons = MG.button_layout('div#buttons')
         .data(bdata)
         .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
         .button('a', 'Fruit')
@@ -983,7 +983,7 @@ $(document).ready(function() {
             console.log('made it');
             return false;
         })
-        .display();
+        .display();*/
 
     // data tables
     var table_data = [
@@ -997,7 +997,8 @@ $(document).ready(function() {
     var table1 = MG.data_table({
             data: table_data,
             title: 'A Data Table',
-            description: 'A table has many of the same properties as any other data graphic.'
+            description: 'A table has many of the same properties as any other data graphic.',
+            show_tooltips: false
         })
         .target('#table1')
         .title({
@@ -1147,7 +1148,7 @@ $(document).ready(function() {
     // replace all SVG images with inline SVG
     // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
     // -image-using-css-jquery-svg-image-replacement
-    $('img.svg').each(function() {
+/*    $('img.svg').each(function() {
         var $img = jQuery(this);
         var imgID = $img.attr('id');
         var imgClass = $img.attr('class');
@@ -1173,7 +1174,7 @@ $(document).ready(function() {
             $img.replaceWith($svg);
 
         }, 'xml');
-    });
+    });*/
 
     function modify_time_period(data, past_n_days) {
         // splice time period
@@ -1187,4 +1188,4 @@ $(document).ready(function() {
 
         return data_spliced;
     }
-});
+})();

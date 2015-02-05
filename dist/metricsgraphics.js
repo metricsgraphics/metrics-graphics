@@ -89,7 +89,8 @@
             interpolate: 'cardinal',       // interpolation method to use when rendering lines
             custom_line_color_map: [],     // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
             max_data_size: null,           // explicitly specify the the max number of line series, for use with custom_line_color_map
-            aggregate_rollover: false      // links the lines in a multi-line chart
+            aggregate_rollover: false,     // links the lines in a multi-line chart
+            show_tooltips: true            // if enabled, a chart's description will appear in a tooltip (requires jquery)
         };
 
         defaults.point = {
@@ -847,31 +848,33 @@
     function chart_title(args) {
         'use strict';
 
-        //is the chart title different than existing one? If so, clear the fine 
-        //gentleman. Otherwise, move along.
-        var currentTitle = $(args.target).find('h2.mg-chart-title');
-        if(args.title && args.title !== currentTitle.text()) {
-            currentTitle.remove();
-        //if title hasn't been specified or if it's blank, remove the title
-        } else if(!args.title || args.title === '') {
-            currentTitle.remove();
-        } else
-            return;
+        //remove the chart title if it's different than the new one
+        var currentTitle = d3.select(args.target).selectAll('.mg-chart-title');
 
-        if(args.target && args.title) {
+        if (!currentTitle.empty() && args.title && args.title !== currentTitle.text()) {
+            currentTitle.remove();
+        
+        } //if title hasn't been specified or if it's blank, remove the title
+        else if(!args.title || args.title === '') {
+            currentTitle.remove();
+        }
+
+
+        if (args.target && args.title) {
             var newTitle;
             //only show question mark if there's a description
-            var optional_question_mark = (args.description)
+            var optional_question_mark = (args.show_tooltips && args.description)
                 ? '<i class="fa fa-question-circle fa-inverse description"></i>'
                 : '';
-        
-            $(args.target).prepend('<h2 class="mg-chart-title">' 
-                + args.title + optional_question_mark + '</h2>');
+
+            d3.select(args.target).insert('h2', ':first-child') 
+                .attr('class', 'mg-chart-title')
+                .html(args.title + optional_question_mark);
 
             //activate the question mark if we have a description
-            if(args.description) {
+            if (args.show_tooltips && args.description) {
                 newTitle = $(args.target).find('h2.mg-chart-title');
-                
+
                 newTitle.popover({
                     html: true,
                     animation: false,
@@ -880,10 +883,10 @@
                     placement: 'top',
                     container: newTitle
                 });
-            }   
+            }
         }
 
-        if(args.error) {
+        if (args.error) {
             error(args);
         }
     }
@@ -3874,7 +3877,7 @@
                     .style('text-align', td_type === 'title' ? 'left' : 'right')
                     .text(th_text);
 
-                if (this_col.description) {
+                if (args.show_tooltips && this_col.description) {
                     th.append('i')
                         .classed('fa', true)
                         .classed('fa-question-circle', true)
@@ -4132,7 +4135,7 @@
     function process_line(args) {
         'use strict';
         //do we have a time-series?
-        var is_time_series = ($.type(args.data[0][0][args.x_accessor]) === 'date')
+        var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
                 ? true
                 : false;
 
@@ -4170,7 +4173,7 @@
 
                     //check to see if we already have this date in our data object
                     var existing_o = null;
-                    $.each(args.data[i], function(i, val) {
+                    args.data[i].forEach(function(val, i) {
                         if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
                             existing_o = val;
 
@@ -4340,12 +4343,12 @@
     }
 
     function add_ls(args) {
-        var svg = d3.select($(args.target).find('svg').get(0));
+        var svg = mg_get_svg_child_of(args.target);
         var data = args.data[0];
         var min_x = args.scales.X.ticks(args.xax_count)[0];
         var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length - 1];
 
-        $(args.target).find('.mg-least-squares-line').remove();
+        d3.select(args.target).selectAll('.mg-least-squares-line').remove();
 
         svg.append('svg:line')
             .attr('x1', args.scales.X(min_x))

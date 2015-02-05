@@ -1,10 +1,10 @@
 function add_ls(args) {
-    var svg = d3.select($(args.target).find('svg').get(0));
+    var svg = mg_get_svg_child_of(args.target);
     var data = args.data[0];
     var min_x = args.scales.X.ticks(args.xax_count)[0];
     var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length - 1];
 
-    $(args.target).find('.mg-least-squares-line').remove();
+    d3.select(args.target).selectAll('.mg-least-squares-line').remove();
 
     svg.append('svg:line')
         .attr('x1', args.scales.X(min_x))

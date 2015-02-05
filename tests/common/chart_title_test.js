@@ -54,7 +54,8 @@ test('When a description is set, we get a question mark', function() {
         description: 'bar',
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-01-01'), 'value': 12},
-               {'date': new Date('2014-03-01'), 'value': 18}]
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        show_tooltips: true
     };
 
     MG.data_graphic(params);

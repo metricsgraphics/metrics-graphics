@@ -115,7 +115,7 @@ MG.data_table = function(args) {
                 .style('text-align', td_type === 'title' ? 'left' : 'right')
                 .text(th_text);
 
-            if (this_col.description) {
+            if (args.show_tooltips && this_col.description) {
                 th.append('i')
                     .classed('fa', true)
                     .classed('fa-question-circle', true)

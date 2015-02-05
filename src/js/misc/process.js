@@ -56,7 +56,7 @@ function raw_data_transformation(args) {
 function process_line(args) {
     'use strict';
     //do we have a time-series?
-    var is_time_series = ($.type(args.data[0][0][args.x_accessor]) === 'date')
+    var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
             ? true
             : false;
 
@@ -94,7 +94,7 @@ function process_line(args) {
 
                 //check to see if we already have this date in our data object
                 var existing_o = null;
-                $.each(args.data[i], function(i, val) {
+                args.data[i].forEach(function(val, i) {
                     if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
                         existing_o = val;
 
