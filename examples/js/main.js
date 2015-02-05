@@ -998,7 +998,7 @@
             data: table_data,
             title: 'A Data Table',
             description: 'A table has many of the same properties as any other data graphic.',
-            show_tooltips: false
+            show_tooltips: true
         })
         .target('#table1')
         .title({
