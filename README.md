@@ -70,7 +70,7 @@ To run the development server (accessible at http://localhost:4300):
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Download package
-The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are the ones under ``dist``. Remember to load the set of third-party libraries that are there in the examples pages. If your project uses Bootstrap, make sure you load MetricsGraphics.js after it.
+The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are the ones under ``dist``. Remember to load ``D3`` and ``jQuery``. If you don't care about tooltips, you don't need the latter. If your project uses Bootstrap, make sure you load MetricsGraphics.js after it.
 
 ## Frequently asked question
 __What does MetricsGraphics.js do that library x doesn't do?__
