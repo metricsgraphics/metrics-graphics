@@ -974,7 +974,7 @@
 
     var resolution_features = ['weekly', 'monthly'];
 
-    /*var buttons = MG.button_layout('div#buttons')
+    var buttons = MG.button_layout('div#buttons')
         .data(bdata)
         .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
         .button('a', 'Fruit')
@@ -983,7 +983,7 @@
             console.log('made it');
             return false;
         })
-        .display();*/
+        .display();
 
     // data tables
     var table_data = [
