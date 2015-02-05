@@ -28,7 +28,7 @@ function markers(args) {
             .data(args.markers.filter(inRange))
             .enter()
             .append('text')
-                .attr('class', 'marker-text')
+                .attr('class', 'mg-marker-text')
                 .attr('x', xPosition)
                 .attr('y', args.top - 8)
                 .attr('text-anchor', 'middle')
@@ -36,7 +36,7 @@ function markers(args) {
                     return d.label;
                 });
 
-        preventOverlap(gm.selectAll('.marker-text'));
+        preventOverlap(gm.selectAll('.mg-marker-text'));
     }
 
     if (args.baselines) {
@@ -70,48 +70,47 @@ function markers(args) {
     }
 
     function preventOverlap (labels) {
+        var prev;
+        labels.each(function(d, i) {
+        if (i > 0) {
+            var thisbb = this.getBoundingClientRect();
 
-      var prev;
-      labels.each(function(d, i) {
-        if(i > 0) {
-          var thisbb = this.getBoundingClientRect();
-
-          if(isOverlapping(this, labels)) {
-            var node = d3.select(this), newY = +node.attr('y');
-            if (newY + 8 == args.top) {
-              newY = args.top - 16;
+            if (isOverlapping(this, labels)) {
+                var node = d3.select(this), newY = +node.attr('y');
+                if (newY + 8 == args.top) {
+                    newY = args.top - 16;
+                }
+                node.attr('y', newY);
             }
-            node.attr('y', newY);
-          }
         }
         prev = this;
       });
     }
 
     function isOverlapping(element, labels) {
-      var bbox = element.getBoundingClientRect();
-      for(var i = 0; i < labels.length; i++) {
-        var elbb = labels[0][i].getBoundingClientRect();
-        if (
-          labels[0][i] !== element &&
-          ((elbb.right > bbox.left && elbb.left > bbox.left && bbox.top === elbb.top) ||
-          (elbb.left < bbox.left && elbb.right > bbox.left && bbox.top === elbb.top))
-        ) return true;
-      }
-      return false;
+        var bbox = element.getBoundingClientRect();
+        for(var i = 0; i < labels.length; i++) {
+            var elbb = labels[0][i].getBoundingClientRect();
+            if (
+                labels[0][i] !== element &&
+                ((elbb.right > bbox.left && elbb.left > bbox.left && bbox.top === elbb.top) ||
+                (elbb.left < bbox.left && elbb.right > bbox.left && bbox.top === elbb.top))
+            ) return true;
+        }
+        return false;
     }
 
     function xPosition (d) {
-      return args.scales.X(d[args.x_accessor]);
+        return args.scales.X(d[args.x_accessor]);
     }
 
     function xPositionFixed (d) {
-      return xPosition(d).toFixed(2);
+        return xPosition(d).toFixed(2);
     }
 
-    function inRange (d){
-      return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-          && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
+    function inRange (d) {
+        return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+            && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
     }
 
     return this;
