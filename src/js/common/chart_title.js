@@ -1,10 +1,10 @@
 function chart_title(args) {
     'use strict';
 
-    var svg = d3.select(args.target);
+    var container = d3.select(args.target);
 
     // remove the current title if it exists
-    svg.select('.mg-chart-title').remove();
+    container.select('.mg-chart-title').remove();
 
     if (args.target && args.title) {
         //only show question mark if there's a description
@@ -12,13 +12,13 @@ function chart_title(args) {
             ? '<i class="fa fa-question-circle fa-inverse description"></i>'
             : '';
 
-        svg.insert('h2', ':first-child')
+        container.insert('h2', ':first-child')
             .attr('class', 'mg-chart-title')
             .html(args.title + optional_question_mark);
 
         //activate the question mark if we have a description
         if (args.show_tooltips && args.description) {
-            var $newTitle = $(svg.node()).find('h2.mg-chart-title');
+            var $newTitle = $(container.node()).find('h2.mg-chart-title');
 
             $newTitle.popover({
                 html: true,
