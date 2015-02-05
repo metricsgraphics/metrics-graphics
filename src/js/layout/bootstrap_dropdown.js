@@ -31,7 +31,7 @@ if (typeof jQuery !== 'undefined') {
       var backdrop = '.dropdown-backdrop';
       var toggle   = '[data-toggle="dropdown"]';
       var Dropdown = function (element) {
-        $(element).on('click.bs.dropdown', this.toggle)
+        $(element).on('click.bs.dropdown', this.toggle);
       };
 
       Dropdown.VERSION = '3.3.1';
@@ -167,7 +167,7 @@ if (typeof jQuery !== 'undefined') {
 
       $(document)
         .on('click.bs.dropdown.data-api', clearMenus)
-        .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+        .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation(); })
         .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
         .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
         .on('keydown.bs.dropdown.data-api', '[role="menu"]', Dropdown.prototype.keydown)

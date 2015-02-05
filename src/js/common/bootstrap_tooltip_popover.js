@@ -227,7 +227,7 @@ if (typeof jQuery !== 'undefined') {
             that.hoverState = null;
 
             if (prevHoverState == 'out') that.leave(that);
-          }
+          };
 
           $.support.transition && this.$tip.hasClass('fade') ?
             $tip
@@ -235,7 +235,7 @@ if (typeof jQuery !== 'undefined') {
               .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
             complete();
         }
-      }
+      };
 
       Tooltip.prototype.applyPlacement = function (offset, placement) {
         var $tip   = this.tip();
@@ -285,13 +285,13 @@ if (typeof jQuery !== 'undefined') {
 
         $tip.offset(offset);
         this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical);
-      }
+      };
 
       Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
         this.arrow()
           .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
           .css(isHorizontal ? 'top' : 'left', '');
-      }
+      };
 
       Tooltip.prototype.setContent = function () {
         var $tip  = this.tip();
@@ -299,7 +299,7 @@ if (typeof jQuery !== 'undefined') {
 
         $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title);
         $tip.removeClass('fade in top bottom left right');
-      }
+      };
 
       Tooltip.prototype.hide = function (callback) {
         var that = this;
@@ -310,8 +310,8 @@ if (typeof jQuery !== 'undefined') {
           if (that.hoverState != 'in') $tip.detach();
           that.$element
             .removeAttr('aria-describedby')
-            .trigger('hidden.bs.' + that.type)
-          callback && callback()
+            .trigger('hidden.bs.' + that.type);
+          callback && callback();
         }
 
         this.$element.trigger(e);
@@ -329,7 +329,7 @@ if (typeof jQuery !== 'undefined') {
         this.hoverState = null;
 
         return this;
-      }
+      };
 
       Tooltip.prototype.fixTitle = function () {
         var $e = this.$element;
@@ -358,7 +358,7 @@ if (typeof jQuery !== 'undefined') {
         var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null;
 
         return $.extend({}, elRect, scroll, outerDims, elOffset);
-      }
+      };
 
       Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
         return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
@@ -366,7 +366,7 @@ if (typeof jQuery !== 'undefined') {
                placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
             /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
 
-      }
+      };
 
       Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
         var delta = { top: 0, left: 0 };
@@ -394,7 +394,7 @@ if (typeof jQuery !== 'undefined') {
         }
 
         return delta;
-      }
+      };
 
       Tooltip.prototype.getTitle = function () {
         var title;
@@ -402,28 +402,28 @@ if (typeof jQuery !== 'undefined') {
         var o  = this.options;
 
         title = $e.attr('data-original-title')
-          || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+          || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title);
 
         return title;
-      }
+      };
 
       Tooltip.prototype.getUID = function (prefix) {
         do prefix += ~~(Math.random() * 1000000)
-        while (document.getElementById(prefix))
+        while (document.getElementById(prefix));
         return prefix;
-      }
+      };
 
       Tooltip.prototype.tip = function () {
         return (this.$tip = this.$tip || $(this.options.template));
-      }
+      };
 
       Tooltip.prototype.arrow = function () {
         return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'));
-      }
+      };
 
       Tooltip.prototype.enable = function () {
         this.enabled = true;
-      }
+      };
 
       Tooltip.prototype.disable = function () {
         this.enabled = false;
@@ -431,7 +431,7 @@ if (typeof jQuery !== 'undefined') {
 
       Tooltip.prototype.toggleEnabled = function () {
         this.enabled = !this.enabled;
-      }
+      };
 
       Tooltip.prototype.toggle = function (e) {
         var self = this;
@@ -444,15 +444,15 @@ if (typeof jQuery !== 'undefined') {
         }
 
         self.tip().hasClass('in') ? self.leave(self) : self.enter(self);
-      }
+      };
 
       Tooltip.prototype.destroy = function () {
         var that = this;
         clearTimeout(this.timeout);
         this.hide(function () {
           that.$element.off('.' + that.type).removeData('bs.' + that.type);
-        })
-      }
+        });
+      };
 
 
       // TOOLTIP PLUGIN DEFINITION
@@ -473,7 +473,7 @@ if (typeof jQuery !== 'undefined') {
             if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)));
           }
           if (typeof option == 'string') data[option]();
-        })
+        });
       }
 
       var old = $.fn.tooltip;
@@ -488,7 +488,7 @@ if (typeof jQuery !== 'undefined') {
       $.fn.tooltip.noConflict = function () {
         $.fn.tooltip = old;
         return this;
-      }
+      };
 
     }(jQuery);
 
@@ -512,7 +512,7 @@ if (typeof jQuery !== 'undefined') {
 
       var Popover = function (element, options) {
         this.init('popover', element, options);
-      }
+      };
 
       if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js');
 
@@ -523,7 +523,7 @@ if (typeof jQuery !== 'undefined') {
         trigger: 'click',
         content: '',
         template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
-      })
+      });
 
 
       // NOTE: POPOVER EXTENDS tooltip.js
@@ -535,7 +535,7 @@ if (typeof jQuery !== 'undefined') {
 
       Popover.prototype.getDefaults = function () {
         return Popover.DEFAULTS;
-      }
+      };
 
       Popover.prototype.setContent = function () {
         var $tip    = this.tip();
@@ -552,11 +552,11 @@ if (typeof jQuery !== 'undefined') {
         // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
         // this manually by checking the contents.
         if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide();
-      }
+      };
 
       Popover.prototype.hasContent = function () {
         return this.getTitle() || this.getContent();
-      }
+      };
 
       Popover.prototype.getContent = function () {
         var $e = this.$element;
@@ -566,16 +566,16 @@ if (typeof jQuery !== 'undefined') {
           || (typeof o.content == 'function' ?
                 o.content.call($e[0]) :
                 o.content);
-      }
+      };
 
       Popover.prototype.arrow = function () {
         return (this.$arrow = this.$arrow || this.tip().find('.arrow'));
-      }
+      };
 
       Popover.prototype.tip = function () {
         if (!this.$tip) this.$tip = $(this.options.template);
         return this.$tip;
-      }
+      };
 
 
       // POPOVER PLUGIN DEFINITION
@@ -596,7 +596,7 @@ if (typeof jQuery !== 'undefined') {
             if (!data) $this.data('bs.popover', (data = new Popover(this, options)));
           }
           if (typeof option == 'string') data[option]();
-        })
+        });
       }
 
       var old = $.fn.popover;
@@ -611,7 +611,7 @@ if (typeof jQuery !== 'undefined') {
       $.fn.popover.noConflict = function () {
         $.fn.popover = old;
         return this;
-      }
+      };
 
     }(jQuery);
 }
