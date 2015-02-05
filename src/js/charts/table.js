@@ -172,7 +172,7 @@ MG.data_table = function(args) {
 
                         if (this_format === 'percentage')  formatter = d3.format('%p');
                         if (this_format === 'count')       formatter = d3.format("0,000");
-                        if (this_format === 'temperature') formatter = function(t) { return t +'º'; };
+                        if (this_format === 'temperature') formatter = function(t) { return t +'&deg;'; };
 
                         td_text = formatter(td_text);
                     }

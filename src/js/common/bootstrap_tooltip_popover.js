@@ -35,14 +35,14 @@ if (typeof jQuery !== 'undefined') {
         this.enabled    =
         this.timeout    =
         this.hoverState =
-        this.$element   = null
+        this.$element   = null;
 
-        this.init('tooltip', element, options)
-      }
+        this.init('tooltip', element, options);
+      };
 
-      Tooltip.VERSION  = '3.3.1'
+      Tooltip.VERSION  = '3.3.1';
 
-      Tooltip.TRANSITION_DURATION = 150
+      Tooltip.TRANSITION_DURATION = 150;
 
       Tooltip.DEFAULTS = {
         animation: true,
@@ -58,108 +58,108 @@ if (typeof jQuery !== 'undefined') {
           selector: 'body',
           padding: 0
         }
-      }
+      };
 
       Tooltip.prototype.init = function (type, element, options) {
-        this.enabled   = true
-        this.type      = type
-        this.$element  = $(element)
-        this.options   = this.getOptions(options)
-        this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+        this.enabled   = true;
+        this.type      = type;
+        this.$element  = $(element);
+        this.options   = this.getOptions(options);
+        this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport);
 
-        var triggers = this.options.trigger.split(' ')
+        var triggers = this.options.trigger.split(' ');
 
         for (var i = triggers.length; i--;) {
-          var trigger = triggers[i]
+          var trigger = triggers[i];
 
           if (trigger == 'click') {
-            this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+            this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this));
           } else if (trigger != 'manual') {
-            var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
-            var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+            var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin';
+            var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout';
 
-            this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-            this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+            this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this));
+            this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this));
           }
         }
 
         this.options.selector ?
           (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
-          this.fixTitle()
-      }
+          this.fixTitle();
+      };
 
       Tooltip.prototype.getDefaults = function () {
-        return Tooltip.DEFAULTS
+        return Tooltip.DEFAULTS;
       }
 
       Tooltip.prototype.getOptions = function (options) {
-        options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+        options = $.extend({}, this.getDefaults(), this.$element.data(), options);
 
         if (options.delay && typeof options.delay == 'number') {
           options.delay = {
             show: options.delay,
             hide: options.delay
-          }
+          };
         }
 
-        return options
-      }
+        return options;
+      };
 
       Tooltip.prototype.getDelegateOptions = function () {
-        var options  = {}
-        var defaults = this.getDefaults()
+        var options  = {};
+        var defaults = this.getDefaults();
 
         this._options && $.each(this._options, function (key, value) {
-          if (defaults[key] != value) options[key] = value
-        })
+          if (defaults[key] != value) options[key] = value;
+        });
 
-        return options
-      }
+        return options;
+      };
 
       Tooltip.prototype.enter = function (obj) {
         var self = obj instanceof this.constructor ?
-          obj : $(obj.currentTarget).data('bs.' + this.type)
+          obj : $(obj.currentTarget).data('bs.' + this.type);
 
         if (self && self.$tip && self.$tip.is(':visible')) {
-          self.hoverState = 'in'
-          return
+          self.hoverState = 'in';
+          return;
         }
 
         if (!self) {
-          self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-          $(obj.currentTarget).data('bs.' + this.type, self)
+          self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
+          $(obj.currentTarget).data('bs.' + this.type, self);
         }
 
-        clearTimeout(self.timeout)
+        clearTimeout(self.timeout);
 
-        self.hoverState = 'in'
+        self.hoverState = 'in';
 
-        if (!self.options.delay || !self.options.delay.show) return self.show()
+        if (!self.options.delay || !self.options.delay.show) return self.show();
 
         self.timeout = setTimeout(function () {
-          if (self.hoverState == 'in') self.show()
-        }, self.options.delay.show)
-      }
+          if (self.hoverState == 'in') self.show();
+        }, self.options.delay.show);
+      };
 
       Tooltip.prototype.leave = function (obj) {
         var self = obj instanceof this.constructor ?
-          obj : $(obj.currentTarget).data('bs.' + this.type)
+          obj : $(obj.currentTarget).data('bs.' + this.type);
 
         if (!self) {
-          self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-          $(obj.currentTarget).data('bs.' + this.type, self)
+          self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
+          $(obj.currentTarget).data('bs.' + this.type, self);
         }
 
-        clearTimeout(self.timeout)
+        clearTimeout(self.timeout);
 
-        self.hoverState = 'out'
+        self.hoverState = 'out';
 
-        if (!self.options.delay || !self.options.delay.hide) return self.hide()
+        if (!self.options.delay || !self.options.delay.hide) return self.hide();
 
         self.timeout = setTimeout(function () {
           if (self.hoverState == 'out') self.hide()
         }, self.options.delay.hide)
-      }
+      };
 
       Tooltip.prototype.show = function () {
         var e = $.Event('show.bs.' + this.type)

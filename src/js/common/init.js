@@ -6,7 +6,7 @@ function init(args) {
         description: null
     };
 
-    var args = arguments[0];
+    args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
 
