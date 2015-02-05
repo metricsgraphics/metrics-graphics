@@ -309,7 +309,7 @@ function mg_default_xax_format(args) {
         // a custom function if desired
         if(args.data[0][0][args.x_accessor] instanceof Date) {
             return args.processed.main_x_time_format(d);
-        } else if(isNumeric(args.data[0][0][args.x_accessor])) {
+        } if (typeof args.data[0][0][args.x_accessor] === 'number') {
             if (d < 1.0) {
                 //don't scale tiny values
                 return args.xax_units + d3.round(d, args.decimals);
