@@ -336,11 +336,11 @@ if (typeof jQuery !== 'undefined') {
         if ($e.attr('title') || typeof ($e.attr('data-original-title')) != 'string') {
           $e.attr('data-original-title', $e.attr('title') || '').attr('title', '');
         }
-      }
+      };
 
       Tooltip.prototype.hasContent = function () {
         return this.getTitle();
-      }
+      };
 
       Tooltip.prototype.getPosition = function ($element) {
         $element   = $element || this.$element;
@@ -364,7 +364,7 @@ if (typeof jQuery !== 'undefined') {
         return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
                placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2  } :
                placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-            /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
+            /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   };
 
       };
 
@@ -408,7 +408,7 @@ if (typeof jQuery !== 'undefined') {
       };
 
       Tooltip.prototype.getUID = function (prefix) {
-        do prefix += ~~(Math.random() * 1000000)
+        do prefix += ~~(Math.random() * 1000000);
         while (document.getElementById(prefix));
         return prefix;
       };
@@ -427,7 +427,7 @@ if (typeof jQuery !== 'undefined') {
 
       Tooltip.prototype.disable = function () {
         this.enabled = false;
-      }
+      };
 
       Tooltip.prototype.toggleEnabled = function () {
         this.enabled = !this.enabled;
