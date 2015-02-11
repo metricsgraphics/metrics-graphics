@@ -106,7 +106,7 @@ charts.line = function(args) {
                         .transition()
                             .duration(updateTransitionDuration)
                             .attr('d', area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window)');
+                            .attr('clip-path', 'url(#mg-plot-window'+ mg_strip_punctuation(args.target)+')');
                 } else { //otherwise, add the area
                     svg.append('path')
                         .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
