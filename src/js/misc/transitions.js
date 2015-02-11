@@ -1,5 +1,5 @@
 // http://bl.ocks.org/mbostock/3916621
-function pathTween(d1, precision) {
+function path_tween(d1, precision) {
   return function() {
     var path0 = this,
         path1 = path0.cloneNode(),
@@ -23,3 +23,5 @@ function pathTween(d1, precision) {
     };
   };
 }
+
+MG.path_tween = path_tween;

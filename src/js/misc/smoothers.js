@@ -14,6 +14,8 @@ function add_ls(args) {
         .attr('class', 'mg-least-squares-line');
 }
 
+MG.add_ls = add_ls;
+
 function add_lowess(args) {
     var svg = d3.select($(args.target).find('svg').get(0));
     var lowess = args.lowess_line;
@@ -27,6 +29,8 @@ function add_lowess(args) {
         .attr('d', line(lowess))
         .attr('class', 'mg-lowess-line');
 }
+
+MG.add_lowess = add_lowess;
 
 function lowess_robust(x, y, alpha, inc) {
     // Used http://www.unc.edu/courses/2007spring/biol/145/001/docs/lectures/Oct27.html
@@ -68,11 +72,15 @@ function lowess_robust(x, y, alpha, inc) {
     });
 }
 
+MG.lowess_robust = lowess_robust;
+
 function lowess(x, y, alpha, inc) {
     var r = [];
     for (var i = 0; i < x.length; i += 1) { r.push(1); }
     var _l = _calculate_lowess_fit(x, y, alpha, inc, r);
 }
+
+MG.lowess = lowess;
 
 function least_squares(x_, y_) {
     var x, y, xi, yi,
@@ -120,6 +128,8 @@ function least_squares(x_, y_) {
         }
     };
 }
+
+MG.least_squares = least_squares;
 
 function _pow_weight(u, w) {
     if (u >= 0 && u <= 1) {

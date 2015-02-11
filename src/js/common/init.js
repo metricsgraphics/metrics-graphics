@@ -157,3 +157,5 @@ function init(args) {
 
     return this;
 }
+
+MG.init = init;

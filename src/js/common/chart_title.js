@@ -35,3 +35,5 @@ function chart_title(args) {
         error(args);
     }
 }
+
+MG.chart_title = chart_title;

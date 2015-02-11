@@ -1,5 +1,3 @@
-var charts = {};
-
 MG.globals = {};
 MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
@@ -9,10 +7,11 @@ MG.deprecations = {
 MG.globals.link = false;
 MG.globals.version = "1.1";
 
-MG.data_graphic = function() {
+MG.charts = {};
+
+MG.data_graphic = function(args) {
     'use strict';
-    var defaults = {};
-    defaults.all = {
+    var defaults = {
         missing_is_zero: false,       // if true, missing values will be treated as zeros
         missing_is_hidden: false,     // if true, missing values will appear as broken segments
         legend: '' ,                  // an array identifying the labels for a chart's lines
@@ -84,68 +83,12 @@ MG.data_graphic = function() {
         show_tooltips: true            // if enabled, a chart's description will appear in a tooltip (requires jquery)
     };
 
-    defaults.point = {
-        buffer: 16,
-        ls: false,
-        lowess: false,
-        point_size: 2.5,
-        size_accessor: null,
-        color_accessor: null,
-        size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
-        color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
-        size_domain: null,
-        color_domain: null,
-        color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
-    };
+    MG.call_hook('global.defaults', defaults);
 
-    defaults.histogram = {
-        mouseover: function(d, i) {
-            d3.select('#histogram svg .mg-active-datapoint')
-                .text('Frequency Count: ' + d.y);
-        },
-        binned: false,
-        bins: null,
-        processed_x_accessor: 'x',
-        processed_y_accessor: 'y',
-        processed_dx_accessor: 'dx',
-        bar_margin: 1
-    };
-
-    defaults.bar = {
-        y_accessor: 'factor',
-        x_accessor: 'value',
-        baseline_accessor: null,
-        predictor_accessor: null,
-        predictor_proportion: 5,
-        dodge_accessor: null,
-        binned: true,
-        padding_percentage: 0,
-        outer_padding_percentage: 0.1,
-        height: 500,
-        top: 20,
-        bar_height: 20,
-        left: 70
-    };
-
-    defaults.missing = {
-        top: 40,                      // the size of the top margin
-        bottom: 30,                   // the size of the bottom margin
-        right: 10,                    // size of the right margin
-        left: 10,                     // size of the left margin
-        buffer: 8,                    // the buffer between the actual chart area and the margins
-        legend_target: '',
-        width: 350,
-        height: 220,
-        missing_text: 'Data currently missing or unavailable',
-        scalefns: {},
-        scales: {},
-        show_tooltips: true,
-        show_missing_background: true,
-        interpolate: 'cardinal'
-    };
-
-    var args = arguments[0];
     if (!args) { args = {}; }
+
+    var selected_chart = MG.charts[args.chart_type || defaults.chart_type];
+    merge_with_defaults(args, selected_chart.defaults, defaults);
 
     if (args.list) {
         args.x_accessor = 0;
@@ -179,35 +122,13 @@ MG.data_graphic = function() {
                 message += ' in favor of `args.' + replacement + '`';
             }
 
-            warnDeprecation(message, deprecation.version);
+            warn_deprecation(message, deprecation.version);
         }
     }
 
-    //build the chart
-    var a;
-    if (args.chart_type === 'missing-data') {
-        args = merge_with_defaults(args, defaults.missing);
-        charts.missing(args);
-    }
-    else if (args.chart_type === 'point') {
-        a = merge_with_defaults(defaults.point, defaults.all);
-        args = merge_with_defaults(args, a);
-        charts.point(args).mainPlot().markers().rollover().windowListeners();
-    }
-    else if (args.chart_type === 'histogram') {
-        a = merge_with_defaults(defaults.histogram, defaults.all);
-        args = merge_with_defaults(args, a);
-        charts.histogram(args).mainPlot().markers().rollover().windowListeners();
-    }
-    else if (args.chart_type === 'bar') {
-        a = merge_with_defaults(defaults.bar, defaults.all);
-        args = merge_with_defaults(args, a);
-        charts.bar(args).mainPlot().markers().rollover().windowListeners();
-    }
-    else {
-        args = merge_with_defaults(args, defaults.all);
-        charts.line(args).markers().mainPlot().rollover().windowListeners();
-    }
+    MG.call_hook('global.before_init', args);
+
+    new selected_chart.descriptor(args);
 
     return args.data;
 };

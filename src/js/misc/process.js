@@ -9,9 +9,9 @@ function raw_data_transformation(args) {
 
     var _is_nested_array = is_array_of_arrays(args.data);
 
-    args.array_of_objects = false; 
+    args.array_of_objects = false;
     args.array_of_arrays = false;
-    args.nested_array_of_arrays = false; 
+    args.nested_array_of_arrays = false;
     args.nested_array_of_objects = false;
 
     if (_is_nested_array) {
@@ -67,8 +67,12 @@ function raw_data_transformation(args) {
     return this;
 }
 
+MG.raw_data_transformation = raw_data_transformation;
+
 function process_line(args) {
     'use strict';
+    var is_time_series;
+
     //do we have a time-series?
     var is_time_series = d3.sum(args.data.map(function(series) {
         return series.length > 0 && series[0][args.x_accessor] instanceof Date;
@@ -84,7 +88,7 @@ function process_line(args) {
     }
 
     //are we replacing missing y values with zeros?
-    if ((args.missing_is_zero || args.missing_is_hidden) 
+    if ((args.missing_is_zero || args.missing_is_hidden)
             && args.chart_type === 'line'
             && is_time_series
         ) {
@@ -150,6 +154,8 @@ function process_line(args) {
 
     return this;
 }
+
+MG.process_line = process_line;
 
 function process_histogram(args) {
     'use strict';
@@ -223,6 +229,8 @@ function process_histogram(args) {
     return this;
 }
 
+MG.process_histogram = process_histogram;
+
 function process_categorical_variables(args) {
     // For use with bar charts, etc.
     'use strict';
@@ -272,6 +280,8 @@ function process_categorical_variables(args) {
     return this;
 }
 
+MG.process_categorical_variables = process_categorical_variables;
+
 function process_point(args) {
     'use strict';
     var data = args.data[0];
@@ -286,3 +296,5 @@ function process_point(args) {
     return this;
 
 }
+
+MG.process_point = process_point;

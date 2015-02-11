@@ -6,3 +6,5 @@ function error(args) {
         .append('i')
             .attr('class', 'fa fa-x fa-exclamation-circle warning');
 }
+
+MG.error = error;

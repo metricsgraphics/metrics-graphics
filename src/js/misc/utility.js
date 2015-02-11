@@ -217,6 +217,8 @@ function merge_with_defaults(obj) {
     return obj;
 }
 
+MG.merge_with_defaults = merge_with_defaults;
+
 function number_of_values(data, accessor, value) {
     var values = data.filter(function(d) {
         return d[accessor] === value;
@@ -275,7 +277,7 @@ MG.clone = function(obj) {
 
 //give us the difference of two int arrays
 //http://radu.cotescu.com/javascript-diff-function/
-function arrDiff(a,b) {
+function arr_diff(a,b) {
     var seen = [],
         diff = [],
         i;
@@ -287,6 +289,7 @@ function arrDiff(a,b) {
     return diff;
 }
 
+MG.arr_diff = arr_diff;
 
 /**
     Print warning message to the console when a feature has been scheduled for removal
@@ -294,10 +297,12 @@ function arrDiff(a,b) {
     @author Dan de Havilland (github.com/dandehavilland)
     @date 2014-12
 */
-function warnDeprecation(message, untilVersion) {
+function warn_deprecation(message, untilVersion) {
   console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'));
   console.trace();
 }
+
+MG.warn_deprecation = warn_deprecation;
 
 /**
     Truncate a string to fit within an SVG text node
@@ -323,6 +328,7 @@ function truncate_text(textObj, textString, width) {
   }
 }
 
+MG.truncate_text = truncate_text;
 
 /**
   Wrap the contents of a text node to a specific width
@@ -333,7 +339,7 @@ function truncate_text(textObj, textString, width) {
   @author Dan de Havilland
   @date 2015-01-14
 */
-function wrapText(text, width, token, tspanAttrs) {
+function wrap_text(text, width, token, tspanAttrs) {
   text.each(function() {
     var text = d3.select(this),
         words = text.text().split(token || /\s+/).reverse(),
@@ -366,3 +372,5 @@ function wrapText(text, width, token, tspanAttrs) {
     }
   });
 }
+
+MG.wrap_text = wrap_text;

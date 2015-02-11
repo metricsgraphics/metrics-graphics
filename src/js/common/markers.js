@@ -88,3 +88,5 @@ function markers(args) {
 
     return this;
 }
+
+MG.markers = markers;

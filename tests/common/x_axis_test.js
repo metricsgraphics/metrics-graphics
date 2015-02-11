@@ -222,3 +222,16 @@ test('Ensure that custom xax_format isn\'t deleted', function() {
     MG.data_graphic(params);
     equal(params.xax_format(), 'humbug', 'xax_format hasn\'t been overriden');
 });
+
+test('Ensure that default null xax_format is respected; allow MG to recalculate the default on redraw', function() {
+    var params = {
+        title: 'foo',
+        target: '.result',
+        xax_format: null,
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+    equal(params.xax_format, null, 'xax_format is still null');
+});

@@ -1,4 +1,4 @@
-function rolloverNumberFormatter(args) {
+function format_rollover_number(args) {
     var num;
     if (args.format === 'count') {
         num = function(d_) {
@@ -16,3 +16,5 @@ function rolloverNumberFormatter(args) {
     }
     return num;
 }
+
+MG.format_rollover_number = format_rollover_number;
