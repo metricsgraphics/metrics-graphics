@@ -74,7 +74,7 @@ function init(args) {
     svg.append('defs')
         .attr('class', 'mg-clip-path')
         .append('clipPath')
-            .attr('class', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+            .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
         .append('svg:rect')
             .attr('x', args.left)
             .attr('y', args.top)
@@ -99,7 +99,7 @@ function init(args) {
 
     // remove missing class
     svg.classed('mg-missing', false);
-    
+
     // remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
