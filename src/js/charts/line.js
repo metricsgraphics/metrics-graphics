@@ -156,7 +156,7 @@ charts.line = function(args) {
 
             var the_line = svg.select('.mg-line' + (line_id) + '-color');        
             if (args.missing_is_hidden && the_line.attr('d') !== null) {
-                var bits = the_line.attr('d').split('L');    
+                var bits = the_line.attr('d').split('L');
                 var zero = args.scales.Y(0);
                 var dasharray = [];
                 var singleton_point_length = 2;
