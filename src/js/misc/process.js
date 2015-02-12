@@ -57,11 +57,16 @@ function process_line(args) {
     'use strict';
     //do we have a time-series?
     var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
-            ? true
-            : false;
+        ? true
+        : false;
+
+    //force linear interpolation when missing_is_hidden is enabled
+    if (args.missing_is_hidden) {
+        args.interpolate = 'linear';
+    }
 
     //are we replacing missing y values with zeros?
-    if (args.missing_is_zero
+    if ((args.missing_is_zero || args.missing_is_hidden) 
             && args.chart_type === 'line'
             && is_time_series
         ) {

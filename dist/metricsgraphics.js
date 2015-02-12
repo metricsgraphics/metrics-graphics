@@ -27,6 +27,7 @@
         var defaults = {};
         defaults.all = {
             missing_is_zero: false,       // if true, missing values will be treated as zeros
+            missing_is_hidden: false,     // if true, missing values will appear as broken segments
             legend: '' ,                  // an array identifying the labels for a chart's lines
             legend_target: '',            // if set, the specified element is populated with a legend
             error: '',                    // if set, a graph will show an error icon and log the error to the console
@@ -257,14 +258,14 @@
             this.enabled    =
             this.timeout    =
             this.hoverState =
-            this.$element   = null
+            this.$element   = null;
 
-            this.init('tooltip', element, options)
-          }
+            this.init('tooltip', element, options);
+          };
 
-          Tooltip.VERSION  = '3.3.1'
+          Tooltip.VERSION  = '3.3.1';
 
-          Tooltip.TRANSITION_DURATION = 150
+          Tooltip.TRANSITION_DURATION = 150;
 
           Tooltip.DEFAULTS = {
             animation: true,
@@ -280,200 +281,200 @@
               selector: 'body',
               padding: 0
             }
-          }
+          };
 
           Tooltip.prototype.init = function (type, element, options) {
-            this.enabled   = true
-            this.type      = type
-            this.$element  = $(element)
-            this.options   = this.getOptions(options)
-            this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+            this.enabled   = true;
+            this.type      = type;
+            this.$element  = $(element);
+            this.options   = this.getOptions(options);
+            this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport);
 
-            var triggers = this.options.trigger.split(' ')
+            var triggers = this.options.trigger.split(' ');
 
             for (var i = triggers.length; i--;) {
-              var trigger = triggers[i]
+              var trigger = triggers[i];
 
               if (trigger == 'click') {
-                this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+                this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this));
               } else if (trigger != 'manual') {
-                var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
-                var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+                var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin';
+                var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout';
 
-                this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-                this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+                this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this));
+                this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this));
               }
             }
 
             this.options.selector ?
               (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
-              this.fixTitle()
-          }
+              this.fixTitle();
+          };
 
           Tooltip.prototype.getDefaults = function () {
-            return Tooltip.DEFAULTS
-          }
+            return Tooltip.DEFAULTS;
+          };
 
           Tooltip.prototype.getOptions = function (options) {
-            options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+            options = $.extend({}, this.getDefaults(), this.$element.data(), options);
 
             if (options.delay && typeof options.delay == 'number') {
               options.delay = {
                 show: options.delay,
                 hide: options.delay
-              }
+              };
             }
 
-            return options
-          }
+            return options;
+          };
 
           Tooltip.prototype.getDelegateOptions = function () {
-            var options  = {}
-            var defaults = this.getDefaults()
+            var options  = {};
+            var defaults = this.getDefaults();
 
             this._options && $.each(this._options, function (key, value) {
-              if (defaults[key] != value) options[key] = value
-            })
+              if (defaults[key] != value) options[key] = value;
+            });
 
-            return options
-          }
+            return options;
+          };
 
           Tooltip.prototype.enter = function (obj) {
             var self = obj instanceof this.constructor ?
-              obj : $(obj.currentTarget).data('bs.' + this.type)
+              obj : $(obj.currentTarget).data('bs.' + this.type);
 
             if (self && self.$tip && self.$tip.is(':visible')) {
-              self.hoverState = 'in'
-              return
+              self.hoverState = 'in';
+              return;
             }
 
             if (!self) {
-              self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-              $(obj.currentTarget).data('bs.' + this.type, self)
+              self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
+              $(obj.currentTarget).data('bs.' + this.type, self);
             }
 
-            clearTimeout(self.timeout)
+            clearTimeout(self.timeout);
 
-            self.hoverState = 'in'
+            self.hoverState = 'in';
 
-            if (!self.options.delay || !self.options.delay.show) return self.show()
+            if (!self.options.delay || !self.options.delay.show) return self.show();
 
             self.timeout = setTimeout(function () {
-              if (self.hoverState == 'in') self.show()
-            }, self.options.delay.show)
-          }
+              if (self.hoverState == 'in') self.show();
+            }, self.options.delay.show);
+          };
 
           Tooltip.prototype.leave = function (obj) {
             var self = obj instanceof this.constructor ?
-              obj : $(obj.currentTarget).data('bs.' + this.type)
+              obj : $(obj.currentTarget).data('bs.' + this.type);
 
             if (!self) {
-              self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-              $(obj.currentTarget).data('bs.' + this.type, self)
+              self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
+              $(obj.currentTarget).data('bs.' + this.type, self);
             }
 
-            clearTimeout(self.timeout)
+            clearTimeout(self.timeout);
 
-            self.hoverState = 'out'
+            self.hoverState = 'out';
 
-            if (!self.options.delay || !self.options.delay.hide) return self.hide()
+            if (!self.options.delay || !self.options.delay.hide) return self.hide();
 
             self.timeout = setTimeout(function () {
-              if (self.hoverState == 'out') self.hide()
-            }, self.options.delay.hide)
-          }
+              if (self.hoverState == 'out') self.hide();
+            }, self.options.delay.hide);
+          };
 
           Tooltip.prototype.show = function () {
-            var e = $.Event('show.bs.' + this.type)
+            var e = $.Event('show.bs.' + this.type);
 
             if (this.hasContent() && this.enabled) {
-              this.$element.trigger(e)
+              this.$element.trigger(e);
 
-              var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
-              if (e.isDefaultPrevented() || !inDom) return
-              var that = this
+              var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0]);
+              if (e.isDefaultPrevented() || !inDom) return;
+              var that = this;
 
-              var $tip = this.tip()
+              var $tip = this.tip();
 
-              var tipId = this.getUID(this.type)
+              var tipId = this.getUID(this.type);
 
-              this.setContent()
-              $tip.attr('id', tipId)
-              this.$element.attr('aria-describedby', tipId)
+              this.setContent();
+              $tip.attr('id', tipId);
+              this.$element.attr('aria-describedby', tipId);
 
-              if (this.options.animation) $tip.addClass('fade')
+              if (this.options.animation) $tip.addClass('fade');
 
               var placement = typeof this.options.placement == 'function' ?
                 this.options.placement.call(this, $tip[0], this.$element[0]) :
-                this.options.placement
+                this.options.placement;
 
-              var autoToken = /\s?auto?\s?/i
-              var autoPlace = autoToken.test(placement)
-              if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+              var autoToken = /\s?auto?\s?/i;
+              var autoPlace = autoToken.test(placement);
+              if (autoPlace) placement = placement.replace(autoToken, '') || 'top';
 
               $tip
                 .detach()
                 .css({ top: 0, left: 0, display: 'block' })
                 .addClass(placement)
-                .data('bs.' + this.type, this)
+                .data('bs.' + this.type, this);
 
-              this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+              this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element);
 
-              var pos          = this.getPosition()
-              var actualWidth  = $tip[0].offsetWidth
-              var actualHeight = $tip[0].offsetHeight
+              var pos          = this.getPosition();
+              var actualWidth  = $tip[0].offsetWidth;
+              var actualHeight = $tip[0].offsetHeight;
 
               if (autoPlace) {
-                var orgPlacement = placement
-                var $container   = this.options.container ? $(this.options.container) : this.$element.parent()
-                var containerDim = this.getPosition($container)
+                var orgPlacement = placement;
+                var $container   = this.options.container ? $(this.options.container) : this.$element.parent();
+                var containerDim = this.getPosition($container);
 
                 placement = placement == 'bottom' && pos.bottom + actualHeight > containerDim.bottom ? 'top'    :
                             placement == 'top'    && pos.top    - actualHeight < containerDim.top    ? 'bottom' :
                             placement == 'right'  && pos.right  + actualWidth  > containerDim.width  ? 'left'   :
                             placement == 'left'   && pos.left   - actualWidth  < containerDim.left   ? 'right'  :
-                            placement
+                            placement;
 
                 $tip
                   .removeClass(orgPlacement)
-                  .addClass(placement)
+                  .addClass(placement);
               }
 
-              var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+              var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight);
 
-              this.applyPlacement(calculatedOffset, placement)
+              this.applyPlacement(calculatedOffset, placement);
 
               var complete = function () {
-                var prevHoverState = that.hoverState
-                that.$element.trigger('shown.bs.' + that.type)
-                that.hoverState = null
+                var prevHoverState = that.hoverState;
+                that.$element.trigger('shown.bs.' + that.type);
+                that.hoverState = null;
 
-                if (prevHoverState == 'out') that.leave(that)
-              }
+                if (prevHoverState == 'out') that.leave(that);
+              };
 
               $.support.transition && this.$tip.hasClass('fade') ?
                 $tip
                   .one('bsTransitionEnd', complete)
                   .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-                complete()
+                complete();
             }
-          }
+          };
 
           Tooltip.prototype.applyPlacement = function (offset, placement) {
-            var $tip   = this.tip()
-            var width  = $tip[0].offsetWidth
-            var height = $tip[0].offsetHeight
+            var $tip   = this.tip();
+            var width  = $tip[0].offsetWidth;
+            var height = $tip[0].offsetHeight;
 
             // manually read margins because getBoundingClientRect includes difference
-            var marginTop = parseInt($tip.css('margin-top'), 10)
-            var marginLeft = parseInt($tip.css('margin-left'), 10)
+            var marginTop = parseInt($tip.css('margin-top'), 10);
+            var marginLeft = parseInt($tip.css('margin-left'), 10);
 
             // we must check for NaN for ie 8/9
-            if (isNaN(marginTop))  marginTop  = 0
-            if (isNaN(marginLeft)) marginLeft = 0
+            if (isNaN(marginTop))  marginTop  = 0;
+            if (isNaN(marginLeft)) marginLeft = 0;
 
-            offset.top  = offset.top  + marginTop
-            offset.left = offset.left + marginLeft
+            offset.top  = offset.top  + marginTop;
+            offset.left = offset.left + marginLeft;
 
             // $.fn.offset doesn't round pixel values
             // so we use setOffset directly with our own function B-0
@@ -482,199 +483,199 @@
                 $tip.css({
                   top: Math.round(props.top),
                   left: Math.round(props.left)
-                })
+                });
               }
-            }, offset), 0)
+            }, offset), 0);
 
-            $tip.addClass('in')
+            $tip.addClass('in');
 
             // check to see if placing tip in new offset caused the tip to resize itself
-            var actualWidth  = $tip[0].offsetWidth
-            var actualHeight = $tip[0].offsetHeight
+            var actualWidth  = $tip[0].offsetWidth;
+            var actualHeight = $tip[0].offsetHeight;
 
             if (placement == 'top' && actualHeight != height) {
-              offset.top = offset.top + height - actualHeight
+              offset.top = offset.top + height - actualHeight;
             }
 
-            var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+            var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight);
 
-            if (delta.left) offset.left += delta.left
-            else offset.top += delta.top
+            if (delta.left) offset.left += delta.left;
+            else offset.top += delta.top;
 
-            var isVertical          = /top|bottom/.test(placement)
-            var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
-            var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+            var isVertical          = /top|bottom/.test(placement);
+            var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight;
+            var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight';
 
-            $tip.offset(offset)
-            this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
-          }
+            $tip.offset(offset);
+            this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical);
+          };
 
           Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
             this.arrow()
               .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-              .css(isHorizontal ? 'top' : 'left', '')
-          }
+              .css(isHorizontal ? 'top' : 'left', '');
+          };
 
           Tooltip.prototype.setContent = function () {
-            var $tip  = this.tip()
-            var title = this.getTitle()
+            var $tip  = this.tip();
+            var title = this.getTitle();
 
-            $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
-            $tip.removeClass('fade in top bottom left right')
-          }
+            $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title);
+            $tip.removeClass('fade in top bottom left right');
+          };
 
           Tooltip.prototype.hide = function (callback) {
-            var that = this
-            var $tip = this.tip()
-            var e    = $.Event('hide.bs.' + this.type)
+            var that = this;
+            var $tip = this.tip();
+            var e    = $.Event('hide.bs.' + this.type);
 
             function complete() {
-              if (that.hoverState != 'in') $tip.detach()
+              if (that.hoverState != 'in') $tip.detach();
               that.$element
                 .removeAttr('aria-describedby')
-                .trigger('hidden.bs.' + that.type)
-              callback && callback()
+                .trigger('hidden.bs.' + that.type);
+              callback && callback();
             }
 
-            this.$element.trigger(e)
+            this.$element.trigger(e);
 
-            if (e.isDefaultPrevented()) return
+            if (e.isDefaultPrevented()) return;
 
-            $tip.removeClass('in')
+            $tip.removeClass('in');
 
             $.support.transition && this.$tip.hasClass('fade') ?
               $tip
                 .one('bsTransitionEnd', complete)
                 .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-              complete()
+              complete();
 
-            this.hoverState = null
+            this.hoverState = null;
 
-            return this
-          }
+            return this;
+          };
 
           Tooltip.prototype.fixTitle = function () {
-            var $e = this.$element
+            var $e = this.$element;
             if ($e.attr('title') || typeof ($e.attr('data-original-title')) != 'string') {
-              $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+              $e.attr('data-original-title', $e.attr('title') || '').attr('title', '');
             }
-          }
+          };
 
           Tooltip.prototype.hasContent = function () {
-            return this.getTitle()
-          }
+            return this.getTitle();
+          };
 
           Tooltip.prototype.getPosition = function ($element) {
-            $element   = $element || this.$element
+            $element   = $element || this.$element;
 
-            var el     = $element[0]
-            var isBody = el.tagName == 'BODY'
+            var el     = $element[0];
+            var isBody = el.tagName == 'BODY';
 
-            var elRect    = el.getBoundingClientRect()
+            var elRect    = el.getBoundingClientRect();
             if (elRect.width == null) {
               // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
-              elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+              elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top });
             }
-            var elOffset  = isBody ? { top: 0, left: 0 } : $element.offset()
-            var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
-            var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+            var elOffset  = isBody ? { top: 0, left: 0 } : $element.offset();
+            var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() };
+            var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null;
 
-            return $.extend({}, elRect, scroll, outerDims, elOffset)
-          }
+            return $.extend({}, elRect, scroll, outerDims, elOffset);
+          };
 
           Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
             return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
                    placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2  } :
                    placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-                /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
+                /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   };
 
-          }
+          };
 
           Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
-            var delta = { top: 0, left: 0 }
-            if (!this.$viewport) return delta
+            var delta = { top: 0, left: 0 };
+            if (!this.$viewport) return delta;
 
-            var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
-            var viewportDimensions = this.getPosition(this.$viewport)
+            var viewportPadding = this.options.viewport && this.options.viewport.padding || 0;
+            var viewportDimensions = this.getPosition(this.$viewport);
 
             if (/right|left/.test(placement)) {
-              var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
-              var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+              var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll;
+              var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight;
               if (topEdgeOffset < viewportDimensions.top) { // top overflow
-                delta.top = viewportDimensions.top - topEdgeOffset
+                delta.top = viewportDimensions.top - topEdgeOffset;
               } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
-                delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+                delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset;
               }
             } else {
-              var leftEdgeOffset  = pos.left - viewportPadding
-              var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+              var leftEdgeOffset  = pos.left - viewportPadding;
+              var rightEdgeOffset = pos.left + viewportPadding + actualWidth;
               if (leftEdgeOffset < viewportDimensions.left) { // left overflow
-                delta.left = viewportDimensions.left - leftEdgeOffset
+                delta.left = viewportDimensions.left - leftEdgeOffset;
               } else if (rightEdgeOffset > viewportDimensions.width) { // right overflow
-                delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+                delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset;
               }
             }
 
-            return delta
-          }
+            return delta;
+          };
 
           Tooltip.prototype.getTitle = function () {
-            var title
-            var $e = this.$element
-            var o  = this.options
+            var title;
+            var $e = this.$element;
+            var o  = this.options;
 
             title = $e.attr('data-original-title')
-              || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+              || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title);
 
-            return title
-          }
+            return title;
+          };
 
           Tooltip.prototype.getUID = function (prefix) {
-            do prefix += ~~(Math.random() * 1000000)
-            while (document.getElementById(prefix))
-            return prefix
-          }
+            do prefix += ~~(Math.random() * 1000000);
+            while (document.getElementById(prefix));
+            return prefix;
+          };
 
           Tooltip.prototype.tip = function () {
-            return (this.$tip = this.$tip || $(this.options.template))
-          }
+            return (this.$tip = this.$tip || $(this.options.template));
+          };
 
           Tooltip.prototype.arrow = function () {
-            return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
-          }
+            return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'));
+          };
 
           Tooltip.prototype.enable = function () {
-            this.enabled = true
-          }
+            this.enabled = true;
+          };
 
           Tooltip.prototype.disable = function () {
-            this.enabled = false
-          }
+            this.enabled = false;
+          };
 
           Tooltip.prototype.toggleEnabled = function () {
-            this.enabled = !this.enabled
-          }
+            this.enabled = !this.enabled;
+          };
 
           Tooltip.prototype.toggle = function (e) {
-            var self = this
+            var self = this;
             if (e) {
-              self = $(e.currentTarget).data('bs.' + this.type)
+              self = $(e.currentTarget).data('bs.' + this.type);
               if (!self) {
-                self = new this.constructor(e.currentTarget, this.getDelegateOptions())
-                $(e.currentTarget).data('bs.' + this.type, self)
+                self = new this.constructor(e.currentTarget, this.getDelegateOptions());
+                $(e.currentTarget).data('bs.' + this.type, self);
               }
             }
 
-            self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
-          }
+            self.tip().hasClass('in') ? self.leave(self) : self.enter(self);
+          };
 
           Tooltip.prototype.destroy = function () {
-            var that = this
-            clearTimeout(this.timeout)
+            var that = this;
+            clearTimeout(this.timeout);
             this.hide(function () {
-              that.$element.off('.' + that.type).removeData('bs.' + that.type)
-            })
-          }
+              that.$element.off('.' + that.type).removeData('bs.' + that.type);
+            });
+          };
 
 
           // TOOLTIP PLUGIN DEFINITION
@@ -682,35 +683,35 @@
 
           function Plugin(option) {
             return this.each(function () {
-              var $this    = $(this)
-              var data     = $this.data('bs.tooltip')
-              var options  = typeof option == 'object' && option
-              var selector = options && options.selector
+              var $this    = $(this);
+              var data     = $this.data('bs.tooltip');
+              var options  = typeof option == 'object' && option;
+              var selector = options && options.selector;
 
-              if (!data && option == 'destroy') return
+              if (!data && option == 'destroy') return;
               if (selector) {
-                if (!data) $this.data('bs.tooltip', (data = {}))
-                if (!data[selector]) data[selector] = new Tooltip(this, options)
+                if (!data) $this.data('bs.tooltip', (data = {}));
+                if (!data[selector]) data[selector] = new Tooltip(this, options);
               } else {
-                if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+                if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)));
               }
-              if (typeof option == 'string') data[option]()
-            })
+              if (typeof option == 'string') data[option]();
+            });
           }
 
-          var old = $.fn.tooltip
+          var old = $.fn.tooltip;
 
-          $.fn.tooltip             = Plugin
-          $.fn.tooltip.Constructor = Tooltip
+          $.fn.tooltip             = Plugin;
+          $.fn.tooltip.Constructor = Tooltip;
 
 
           // TOOLTIP NO CONFLICT
           // ===================
 
           $.fn.tooltip.noConflict = function () {
-            $.fn.tooltip = old
-            return this
-          }
+            $.fn.tooltip = old;
+            return this;
+          };
 
         }(jQuery);
 
@@ -733,71 +734,71 @@
           // ===============================
 
           var Popover = function (element, options) {
-            this.init('popover', element, options)
-          }
+            this.init('popover', element, options);
+          };
 
-          if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+          if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js');
 
-          Popover.VERSION  = '3.3.1'
+          Popover.VERSION  = '3.3.1';
 
           Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
             placement: 'right',
             trigger: 'click',
             content: '',
             template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
-          })
+          });
 
 
           // NOTE: POPOVER EXTENDS tooltip.js
           // ================================
 
-          Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+          Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype);
 
-          Popover.prototype.constructor = Popover
+          Popover.prototype.constructor = Popover;
 
           Popover.prototype.getDefaults = function () {
-            return Popover.DEFAULTS
-          }
+            return Popover.DEFAULTS;
+          };
 
           Popover.prototype.setContent = function () {
-            var $tip    = this.tip()
-            var title   = this.getTitle()
-            var content = this.getContent()
+            var $tip    = this.tip();
+            var title   = this.getTitle();
+            var content = this.getContent();
 
-            $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+            $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title);
             $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
               this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
-            ](content)
+            ](content);
 
-            $tip.removeClass('fade top bottom left right in')
+            $tip.removeClass('fade top bottom left right in');
 
             // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
             // this manually by checking the contents.
-            if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
-          }
+            if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide();
+          };
 
           Popover.prototype.hasContent = function () {
-            return this.getTitle() || this.getContent()
-          }
+            return this.getTitle() || this.getContent();
+          };
 
           Popover.prototype.getContent = function () {
-            var $e = this.$element
-            var o  = this.options
+            var $e = this.$element;
+            var o  = this.options;
 
             return $e.attr('data-content')
               || (typeof o.content == 'function' ?
                     o.content.call($e[0]) :
-                    o.content)
-          }
+                    o.content);
+          };
 
           Popover.prototype.arrow = function () {
-            return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
-          }
+            return (this.$arrow = this.$arrow || this.tip().find('.arrow'));
+          };
 
           Popover.prototype.tip = function () {
-            if (!this.$tip) this.$tip = $(this.options.template)
-            return this.$tip
-          }
+            if (!this.$tip) this.$tip = $(this.options.template);
+            return this.$tip;
+          };
 
 
           // POPOVER PLUGIN DEFINITION
@@ -805,35 +806,35 @@
 
           function Plugin(option) {
             return this.each(function () {
-              var $this    = $(this)
-              var data     = $this.data('bs.popover')
-              var options  = typeof option == 'object' && option
-              var selector = options && options.selector
+              var $this    = $(this);
+              var data     = $this.data('bs.popover');
+              var options  = typeof option == 'object' && option;
+              var selector = options && options.selector;
 
-              if (!data && option == 'destroy') return
+              if (!data && option == 'destroy') return;
               if (selector) {
-                if (!data) $this.data('bs.popover', (data = {}))
-                if (!data[selector]) data[selector] = new Popover(this, options)
+                if (!data) $this.data('bs.popover', (data = {}));
+                if (!data[selector]) data[selector] = new Popover(this, options);
               } else {
-                if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+                if (!data) $this.data('bs.popover', (data = new Popover(this, options)));
               }
-              if (typeof option == 'string') data[option]()
-            })
+              if (typeof option == 'string') data[option]();
+            });
           }
 
-          var old = $.fn.popover
+          var old = $.fn.popover;
 
-          $.fn.popover             = Plugin
-          $.fn.popover.Constructor = Popover
+          $.fn.popover             = Plugin;
+          $.fn.popover.Constructor = Popover;
 
 
           // POPOVER NO CONFLICT
           // ===================
 
           $.fn.popover.noConflict = function () {
-            $.fn.popover = old
-            return this
-          }
+            $.fn.popover = old;
+            return this;
+          };
 
         }(jQuery);
     }
@@ -1511,7 +1512,7 @@
             // a custom function if desired
             if(args.data[0][0][args.x_accessor] instanceof Date) {
                 return args.processed.main_x_time_format(d);
-            } else if($.type(args.data[0][0][args.x_accessor]) === 'number') {
+            } if (typeof args.data[0][0][args.x_accessor] === 'number') {
                 if (d < 1.0) {
                     //don't scale tiny values
                     return args.xax_units + d3.round(d, args.decimals);
@@ -1722,7 +1723,7 @@
             description: null
         };
 
-        var args = arguments[0];
+        args = arguments[0];
         if (!args) { args = {}; }
         args = merge_with_defaults(args, defaults);
 
@@ -1790,7 +1791,7 @@
         svg.append('defs')
             .attr('class', 'mg-clip-path')
             .append('clipPath')
-                .attr('class', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+                .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
             .append('svg:rect')
                 .attr('x', args.left)
                 .attr('y', args.top)
@@ -1815,7 +1816,7 @@
 
         // remove missing class
         svg.classed('mg-missing', false);
-        
+
         // remove missing text
         svg.selectAll('.mg-missing-text').remove();
         svg.selectAll('.mg-missing-pane').remove();
@@ -1883,18 +1884,11 @@
                 .attr('class', 'mg-markers');
 
             gm.selectAll('.mg-markers')
-                .data(args.markers.filter(function(d){
-                    return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                        && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
-                }))
+                .data(args.markers.filter(inRange))
                 .enter()
                 .append('line')
-                    .attr('x1', function(d) {
-                        return args.scales.X(d[args.x_accessor]).toFixed(2);
-                    })
-                    .attr('x2', function(d) {
-                        return args.scales.X(d[args.x_accessor]).toFixed(2);
-                    })
+                    .attr('x1', xPositionFixed)
+                    .attr('x2', xPositionFixed)
                     .attr('y1', args.top)
                     .attr('y2', function() {
                         return args.height - args.bottom - args.buffer;
@@ -1902,20 +1896,18 @@
                     .attr('stroke-dasharray', '3,1');
 
             gm.selectAll('.mg-markers')
-                .data(args.markers.filter(function(d){
-                    return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                        && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
-                }))
+                .data(args.markers.filter(inRange))
                 .enter()
                 .append('text')
-                    .attr('x', function(d) {
-                        return args.scales.X(d[args.x_accessor]);
-                    })
+                    .attr('class', 'mg-marker-text')
+                    .attr('x', xPosition)
                     .attr('y', args.top - 8)
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return d.label;
                     });
+
+            preventOverlap(gm.selectAll('.mg-marker-text'));
         }
 
         if (args.baselines) {
@@ -1946,6 +1938,50 @@
                     .text(function(d) {
                         return d.label;
                     });
+        }
+
+        function preventOverlap (labels) {
+            var prev;
+            labels.each(function(d, i) {
+            if (i > 0) {
+                var thisbb = this.getBoundingClientRect();
+
+                if (isOverlapping(this, labels)) {
+                    var node = d3.select(this), newY = +node.attr('y');
+                    if (newY + 8 == args.top) {
+                        newY = args.top - 16;
+                    }
+                    node.attr('y', newY);
+                }
+            }
+            prev = this;
+          });
+        }
+
+        function isOverlapping(element, labels) {
+            var bbox = element.getBoundingClientRect();
+            for(var i = 0; i < labels.length; i++) {
+                var elbb = labels[0][i].getBoundingClientRect();
+                if (
+                    labels[0][i] !== element &&
+                    ((elbb.right > bbox.left && elbb.left > bbox.left && bbox.top === elbb.top) ||
+                    (elbb.left < bbox.left && elbb.right > bbox.left && bbox.top === elbb.top))
+                ) return true;
+            }
+            return false;
+        }
+
+        function xPosition (d) {
+            return args.scales.X(d[args.x_accessor]);
+        }
+
+        function xPositionFixed (d) {
+            return xPosition(d).toFixed(2);
+        }
+
+        function inRange (d) {
+            return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+                && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
         }
 
         return this;
@@ -1999,109 +2035,109 @@
           // DROPDOWN CLASS DEFINITION
           // =========================
 
-          var backdrop = '.dropdown-backdrop'
-          var toggle   = '[data-toggle="dropdown"]'
+          var backdrop = '.dropdown-backdrop';
+          var toggle   = '[data-toggle="dropdown"]';
           var Dropdown = function (element) {
-            $(element).on('click.bs.dropdown', this.toggle)
-          }
+            $(element).on('click.bs.dropdown', this.toggle);
+          };
 
-          Dropdown.VERSION = '3.3.1'
+          Dropdown.VERSION = '3.3.1';
 
           Dropdown.prototype.toggle = function (e) {
-            var $this = $(this)
+            var $this = $(this);
 
-            if ($this.is('.disabled, :disabled')) return
+            if ($this.is('.disabled, :disabled')) return;
 
-            var $parent  = getParent($this)
-            var isActive = $parent.hasClass('open')
+            var $parent  = getParent($this);
+            var isActive = $parent.hasClass('open');
 
-            clearMenus()
+            clearMenus();
 
             if (!isActive) {
               if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
                 // if mobile we use a backdrop because click events don't delegate
-                $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
+                $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus);
               }
 
-              var relatedTarget = { relatedTarget: this }
-              $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+              var relatedTarget = { relatedTarget: this };
+              $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget));
 
-              if (e.isDefaultPrevented()) return
+              if (e.isDefaultPrevented()) return;
 
               $this
                 .trigger('focus')
-                .attr('aria-expanded', 'true')
+                .attr('aria-expanded', 'true');
 
               $parent
                 .toggleClass('open')
-                .trigger('shown.bs.dropdown', relatedTarget)
+                .trigger('shown.bs.dropdown', relatedTarget);
             }
 
-            return false
-          }
+            return false;
+          };
 
           Dropdown.prototype.keydown = function (e) {
-            if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+            if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return;
 
-            var $this = $(this)
+            var $this = $(this);
 
-            e.preventDefault()
-            e.stopPropagation()
+            e.preventDefault();
+            e.stopPropagation();
 
-            if ($this.is('.disabled, :disabled')) return
+            if ($this.is('.disabled, :disabled')) return;
 
-            var $parent  = getParent($this)
-            var isActive = $parent.hasClass('open')
+            var $parent  = getParent($this);
+            var isActive = $parent.hasClass('open');
 
             if ((!isActive && e.which != 27) || (isActive && e.which == 27)) {
-              if (e.which == 27) $parent.find(toggle).trigger('focus')
-              return $this.trigger('click')
+              if (e.which == 27) $parent.find(toggle).trigger('focus');
+              return $this.trigger('click');
             }
 
-            var desc = ' li:not(.divider):visible a'
-            var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
+            var desc = ' li:not(.divider):visible a';
+            var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc);
 
-            if (!$items.length) return
+            if (!$items.length) return;
 
-            var index = $items.index(e.target)
+            var index = $items.index(e.target);
 
-            if (e.which == 38 && index > 0)                 index--                        // up
-            if (e.which == 40 && index < $items.length - 1) index++                        // down
-            if (!~index)                                      index = 0
+            if (e.which == 38 && index > 0)                 index--;                        // up
+            if (e.which == 40 && index < $items.length - 1) index++;                        // down
+            if (!~index)                                      index = 0;
 
-            $items.eq(index).trigger('focus')
-          }
+            $items.eq(index).trigger('focus');
+          };
 
           function clearMenus(e) {
-            if (e && e.which === 3) return
-            $(backdrop).remove()
+            if (e && e.which === 3) return;
+            $(backdrop).remove();
             $(toggle).each(function () {
-              var $this         = $(this)
-              var $parent       = getParent($this)
-              var relatedTarget = { relatedTarget: this }
+              var $this         = $(this);
+              var $parent       = getParent($this);
+              var relatedTarget = { relatedTarget: this };
 
-              if (!$parent.hasClass('open')) return
+              if (!$parent.hasClass('open')) return;
 
-              $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+              $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget));
 
-              if (e.isDefaultPrevented()) return
+              if (e.isDefaultPrevented()) return;
 
-              $this.attr('aria-expanded', 'false')
-              $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
-            })
+              $this.attr('aria-expanded', 'false');
+              $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget);
+            });
           }
 
           function getParent($this) {
-            var selector = $this.attr('data-target')
+            var selector = $this.attr('data-target');
 
             if (!selector) {
-              selector = $this.attr('href')
-              selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+              selector = $this.attr('href');
+              selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, ''); // strip for ie7
             }
 
-            var $parent = selector && $(selector)
+            var $parent = selector && $(selector);
 
-            return $parent && $parent.length ? $parent : $this.parent()
+            return $parent && $parent.length ? $parent : $this.parent();
           }
 
 
@@ -2110,27 +2146,27 @@
 
           function Plugin(option) {
             return this.each(function () {
-              var $this = $(this)
-              var data  = $this.data('bs.dropdown')
+              var $this = $(this);
+              var data  = $this.data('bs.dropdown');
 
-              if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
-              if (typeof option == 'string') data[option].call($this)
-            })
+              if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)));
+              if (typeof option == 'string') data[option].call($this);
+            });
           }
 
-          var old = $.fn.dropdown
+          var old = $.fn.dropdown;
 
-          $.fn.dropdown             = Plugin
-          $.fn.dropdown.Constructor = Dropdown
+          $.fn.dropdown             = Plugin;
+          $.fn.dropdown.Constructor = Dropdown;
 
 
           // DROPDOWN NO CONFLICT
           // ====================
 
           $.fn.dropdown.noConflict = function () {
-            $.fn.dropdown = old
-            return this
-          }
+            $.fn.dropdown = old;
+            return this;
+          };
 
 
           // APPLY TO STANDARD DROPDOWN ELEMENTS
@@ -2138,11 +2174,11 @@
 
           $(document)
             .on('click.bs.dropdown.data-api', clearMenus)
-            .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+            .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation(); })
             .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
             .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
             .on('keydown.bs.dropdown.data-api', '[role="menu"]', Dropdown.prototype.keydown)
-            .on('keydown.bs.dropdown.data-api', '[role="listbox"]', Dropdown.prototype.keydown)
+            .on('keydown.bs.dropdown.data-api', '[role="listbox"]', Dropdown.prototype.keydown);
 
         }(jQuery);
     }
@@ -2305,12 +2341,7 @@
 
             //confidence band
             var confidence_area;
-
-            //if it already exists, remove it
-            var existing_band = svg.selectAll('.mg-confidence-band');
-            if (!existing_band.empty()) {
-                existing_band.remove();
-            }
+            var existing_band = svg.select('.mg-confidence-band');
 
             if (args.show_confidence_band) {
                 confidence_area = d3.svg.area()
@@ -2342,6 +2373,7 @@
             //for building the optional legend
             var legend = '';
             var this_data;
+            var confidenceBand;
 
             for (var i = args.data.length - 1; i >= 0; i--) {
                 this_data = args.data[i];
@@ -2356,10 +2388,20 @@
 
                 //add confidence band
                 if (args.show_confidence_band) {
-                    svg.append('path')
-                        .attr('class', 'mg-confidence-band')
-                        .attr('d', confidence_area(args.data[i]))
-                        .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                    if (!existing_band.empty()) {
+                        confidenceBand = existing_band
+                            .transition()
+                            .duration(function() {
+                              return (args.transition_on_update) ? 1000 : 0;
+                            });
+                    } else {
+                        confidenceBand = svg.append('path')
+                            .attr('class', 'mg-confidence-band');
+                    }
+
+                  confidenceBand
+                      .attr('d', confidence_area(args.data[i]))
+                      .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
                 }
 
                 //add the area
@@ -2376,7 +2418,7 @@
                             .transition()
                                 .duration(updateTransitionDuration)
                                 .attr('d', area(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window)');
+                                .attr('clip-path', 'url(#mg-plot-window'+ mg_strip_punctuation(args.target)+')');
                     } else { //otherwise, add the area
                         svg.append('path')
                             .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
@@ -2421,6 +2463,64 @@
                             .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                             .attr('d', line(args.data[i]))
                             .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                    }
+                }
+
+                if (args.missing_is_hidden) {
+                    var the_line = svg.select('.mg-line' + (line_id) + '-color');
+                    var bits = the_line.attr('d').split('L');
+                    var zero = args.scales.Y(0);
+                    var dasharray = [];
+                    var singleton_point_length = 2;
+
+                    var x_y, 
+                        x_y_plus_1,
+                        x,
+                        y,
+                        x_plus_1,
+                        y_plus_1,
+                        segment_length,
+                        cumulative_segment_length = 0;
+
+                    bits[0] = bits[0].replace('M', '');
+                    bits[bits.length - 1] = bits[bits.length - 1].replace('Z', '');
+
+                    //if we have a min_x, turn the line off first
+                    if (args.min_x) {
+                        dasharray.push(0);
+                    }
+
+                    //build the stroke-dasharray pattern
+                    for (var j = 0; j < bits.length - 1; j++) {
+                        x_y = bits[j].split(',');
+                        x_y_plus_1 = bits[j + 1].split(',');
+                        x = Number(x_y[0]);
+                        y = Number(x_y[1]);
+                        x_plus_1 = Number(x_y_plus_1[0]);
+                        y_plus_1 = Number(x_y_plus_1[1]);
+
+                        segment_length = Math.sqrt(Math.pow(x - x_plus_1, 2) + Math.pow(y - y_plus_1, 2));
+
+                        //do we need to either cover or clear the current stroke
+                        if (y_plus_1 == zero && y != zero) {
+                            dasharray.push(cumulative_segment_length || singleton_point_length);
+                            cumulative_segment_length = (cumulative_segment_length)
+                                ? segment_length
+                                : segment_length - singleton_point_length;
+                        } else if (y_plus_1 != zero && y == zero) { //switching on line
+                            dasharray.push(cumulative_segment_length += segment_length);
+                            cumulative_segment_length = 0;
+                        } else {
+                            cumulative_segment_length += segment_length;
+                        }
+                    }
+
+                    //fear not, end bit of line, ye too shall be covered
+                    if (dasharray.length > 0) {
+                        dasharray.push(the_line.node().getTotalLength() - dasharray[dasharray.length - 1]);
+
+                        svg.select('.mg-line' + (line_id) + '-color')
+                            .attr('stroke-dasharray', dasharray.join());
                     }
                 }
 
@@ -2720,6 +2820,9 @@
                             .style('opacity', 1);
                       }
                     });
+                } else if (args.missing_is_hidden && d[args.y_accessor] == 0) {
+                    //disable rollovers for hidden parts of the line
+                    return;
                 } else {
 
                     //show circle on mouse-overed rect
@@ -3911,7 +4014,7 @@
 
                             if (this_format === 'percentage')  formatter = d3.format('%p');
                             if (this_format === 'count')       formatter = d3.format("0,000");
-                            if (this_format === 'temperature') formatter = function(t) { return t +'º'; };
+                            if (this_format === 'temperature') formatter = function(t) { return t +'°'; };
 
                             td_text = formatter(td_text);
                         }
@@ -4113,11 +4216,16 @@
         'use strict';
         //do we have a time-series?
         var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
-                ? true
-                : false;
+            ? true
+            : false;
+
+        //force linear interpolation when missing_is_hidden is enabled
+        if (args.missing_is_hidden) {
+            args.interpolate = 'linear';
+        }
 
         //are we replacing missing y values with zeros?
-        if (args.missing_is_zero
+        if ((args.missing_is_zero || args.missing_is_hidden) 
                 && args.chart_type === 'line'
                 && is_time_series
             ) {

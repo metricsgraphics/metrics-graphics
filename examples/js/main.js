@@ -154,6 +154,40 @@
             y_accessor: 'value'
         });
     });
+    
+    d3.json('data/missing-is-hidden.json', function(data) {
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
+            title: 'Broken Lines',
+            description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+            data: data,
+            missing_is_hidden: true,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            target: '#missing_is_hidden',
+            show_secondary_x_label: false
+        });
+    });
+    
+    d3.json('data/missing-is-hidden-multi.json', function(data) {
+        for (var i = 0; i < data.length; i++) {
+            data[i] = MG.convert.date(data[i], 'date');
+        }
+
+        // add a multi-line chart
+        MG.data_graphic({
+            title: 'Broken Multi-Lines',
+            description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+            data: data,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            missing_is_hidden: true,
+            target: '#missing_is_hidden_multi',
+            show_secondary_x_label: false
+        });
+    });
 
     d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');

@@ -14,6 +14,7 @@ MG.data_graphic = function() {
     var defaults = {};
     defaults.all = {
         missing_is_zero: false,       // if true, missing values will be treated as zeros
+        missing_is_hidden: false,     // if true, missing values will appear as broken segments
         legend: '' ,                  // an array identifying the labels for a chart's lines
         legend_target: '',            // if set, the specified element is populated with a legend
         error: '',                    // if set, a graph will show an error icon and log the error to the console
