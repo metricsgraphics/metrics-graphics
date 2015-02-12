@@ -456,7 +456,7 @@ charts.line = function(args) {
 
         //if the dataset is of length 1, trigger the rollover for our solitary rollover rect
         if (args.data.length == 1 && args.data[0].length == 1) {
-            d3.select('.mg-rollover-rect .mg-line1-color')
+            d3.select('.mg-rollover-rect rect')
                 .on('mouseover')(args.data[0][0], 0);
         }
 
