@@ -456,8 +456,17 @@ charts.line = function(args) {
 
         //if the dataset is of length 1, trigger the rollover for our solitary rollover rect
         if (args.data.length == 1 && args.data[0].length == 1) {
-            d3.select('.mg-rollover-rect rect')
+            svg.select('.mg-rollover-rect rect')
                 .on('mouseover')(args.data[0][0], 0);
+        } else if (args.data.length > 1) {
+            //otherwise, trigger it for an appropriate line in a multi-line chart
+            //@todo this will only trigger one of the lines, even if there are more than one
+            for (var i = 0; i < args.data.length; i++) {
+                if (args.data[i].length == 1) {
+                    svg.selectAll('.mg-voronoi .mg-line' + (i + 1) + '-color')
+                        .on('mouseover')(args.data[i][0], 0);
+                }
+            }
         }
 
         return this;
