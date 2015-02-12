@@ -2418,7 +2418,7 @@
                             .transition()
                                 .duration(updateTransitionDuration)
                                 .attr('d', area(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window'+ mg_strip_punctuation(args.target)+')');
+                                .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
                     } else { //otherwise, add the area
                         svg.append('path')
                             .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
@@ -2466,9 +2466,9 @@
                     }
                 }
 
-                if (args.missing_is_hidden) {
-                    var the_line = svg.select('.mg-line' + (line_id) + '-color');
-                    var bits = the_line.attr('d').split('L');
+                var the_line = svg.select('.mg-line' + (line_id) + '-color');        
+                if (args.missing_is_hidden && the_line.attr('d') !== null) {
+                    var bits = the_line.attr('d').split('L');    
                     var zero = args.scales.Y(0);
                     var dasharray = [];
                     var singleton_point_length = 2;
@@ -2768,8 +2768,17 @@
 
             //if the dataset is of length 1, trigger the rollover for our solitary rollover rect
             if (args.data.length == 1 && args.data[0].length == 1) {
-                d3.select('.mg-rollover-rect .mg-line1-color')
+                svg.select('.mg-rollover-rect rect')
                     .on('mouseover')(args.data[0][0], 0);
+            } else if (args.data.length > 1) {
+                //otherwise, trigger it for an appropriate line in a multi-line chart
+                //@todo this will only trigger one of the lines, even if there are more than one
+                for (var i = 0; i < args.data.length; i++) {
+                    if (args.data[i].length == 1) {
+                        svg.selectAll('.mg-voronoi .mg-line' + (i + 1) + '-color')
+                            .on('mouseover')(args.data[i][0], 0);
+                    }
+                }
             }
 
             return this;
