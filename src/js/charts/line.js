@@ -106,7 +106,7 @@ charts.line = function(args) {
                         .transition()
                             .duration(updateTransitionDuration)
                             .attr('d', area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window'+ mg_strip_punctuation(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
                 } else { //otherwise, add the area
                     svg.append('path')
                         .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
@@ -154,9 +154,9 @@ charts.line = function(args) {
                 }
             }
 
-            if (args.missing_is_hidden) {
-                var the_line = svg.select('.mg-line' + (line_id) + '-color');
-                var bits = the_line.attr('d').split('L');
+            var the_line = svg.select('.mg-line' + (line_id) + '-color');        
+            if (args.missing_is_hidden && the_line.attr('d') !== null) {
+                var bits = the_line.attr('d').split('L');    
                 var zero = args.scales.Y(0);
                 var dasharray = [];
                 var singleton_point_length = 2;
