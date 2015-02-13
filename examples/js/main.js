@@ -166,6 +166,7 @@
             height: torso.height,
             right: torso.right,
             target: '#missing_is_hidden',
+            area: false,
             show_secondary_x_label: false
         });
     });
