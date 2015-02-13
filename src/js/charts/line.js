@@ -157,7 +157,7 @@ charts.line = function(args) {
             var the_line = svg.select('.mg-line' + (line_id) + '-color');        
             if (args.missing_is_hidden && the_line.attr('d') !== null) {
                 var bits = the_line.attr('d').split('L');
-                var zero = args.scales.Y(0);
+                var zero = args.scales.Y(0) + 42;
                 var dasharray = [];
                 var singleton_point_length = 2;
 
@@ -517,7 +517,10 @@ charts.line = function(args) {
                         .style('opacity', 1);
                   }
                 });
-            } else if (args.missing_is_hidden && d[args.y_accessor] == 0) {
+            } else if (args.missing_is_hidden 
+                    && d[args.y_accessor] == 0 
+                    && d['missing']
+                ) {
                 //disable rollovers for hidden parts of the line
                 return;
             } else {

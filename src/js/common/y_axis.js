@@ -54,6 +54,11 @@ function y_axis(args) {
         max_y;
 
     args.scalefns.yf = function(di) {
+        //since we want to show actual zeros when missing_is_hidden is on
+        if(args.missing_is_hidden && di['missing']) {
+            return args.scales.Y(di[args.y_accessor]) + 42;
+        }
+
         return args.scales.Y(di[args.y_accessor]);
     };
 

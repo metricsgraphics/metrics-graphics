@@ -111,6 +111,7 @@ function process_line(args) {
                 if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
+                    o['missing'] = true; //we want to distinguish between zero-value and missing observations
                     processed_data.push(o);
                 }
                 //otherwise, use the existing object for that date
