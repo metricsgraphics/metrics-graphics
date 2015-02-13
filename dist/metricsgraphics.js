@@ -934,7 +934,7 @@
         args.scalefns.yf = function(di) {
             //since we want to show actual zeros when missing_is_hidden is on
             if(args.missing_is_hidden && di['missing']) {
-                return args.scales.Y(di[args.y_accessor]) + 42;
+                return args.scales.Y(di[args.y_accessor]) + 42.1234;
             }
 
             return args.scales.Y(di[args.y_accessor]);
@@ -2474,7 +2474,7 @@
                 var the_line = svg.select('.mg-line' + (line_id) + '-color');        
                 if (args.missing_is_hidden && the_line.attr('d') !== null) {
                     var bits = the_line.attr('d').split('L');
-                    var zero = args.scales.Y(0) + 42;
+                    var zero = args.scales.Y(0) + 42.1234;
                     var dasharray = [];
                     var singleton_point_length = 2;
 
