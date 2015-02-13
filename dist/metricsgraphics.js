@@ -932,6 +932,11 @@
             max_y;
 
         args.scalefns.yf = function(di) {
+            //since we want to show actual zeros when missing_is_hidden is on
+            if(args.missing_is_hidden && di['missing']) {
+                return args.scales.Y(di[args.y_accessor]) + 42;
+            }
+
             return args.scales.Y(di[args.y_accessor]);
         };
 
@@ -2468,8 +2473,8 @@
 
                 var the_line = svg.select('.mg-line' + (line_id) + '-color');        
                 if (args.missing_is_hidden && the_line.attr('d') !== null) {
-                    var bits = the_line.attr('d').split('L');    
-                    var zero = args.scales.Y(0);
+                    var bits = the_line.attr('d').split('L');
+                    var zero = args.scales.Y(0) + 42;
                     var dasharray = [];
                     var singleton_point_length = 2;
 
@@ -2829,7 +2834,10 @@
                             .style('opacity', 1);
                       }
                     });
-                } else if (args.missing_is_hidden && d[args.y_accessor] == 0) {
+                } else if (args.missing_is_hidden 
+                        && d[args.y_accessor] == 0 
+                        && d['missing']
+                    ) {
                     //disable rollovers for hidden parts of the line
                     return;
                 } else {
@@ -4279,6 +4287,7 @@
                     if (!existing_o) {
                         o[args.x_accessor] = new Date(d);
                         o[args.y_accessor] = 0;
+                        o['missing'] = true; //we want to distinguish between zero-value and missing observations
                         processed_data.push(o);
                     }
                     //otherwise, use the existing object for that date
