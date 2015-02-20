@@ -1759,7 +1759,7 @@
             svg_width = get_width(args.target);
         }
 
-        if (args.fill_height) {
+        if (args.full_height) {
             svg_height = get_height(args.target);
         }
 
