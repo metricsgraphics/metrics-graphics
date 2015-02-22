@@ -23,7 +23,7 @@ test('Only one mg-missing-pane on multiple calls to the same target element', fu
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
 
-    equal(document.querySelectorAll(target + ' .mg-missing-pane').length, 1, 'We only have one mg-missing-pane');
+    equal(document.querySelectorAll(params.target + ' .mg-missing-pane').length, 1, 'We only have one mg-missing-pane');
 });
 
 test('Only one mg-missing-text on multiple calls to the same target element', function() {
@@ -36,7 +36,7 @@ test('Only one mg-missing-text on multiple calls to the same target element', fu
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
 
-    equal(document.querySelectorAll(target + ' .mg-missing-text').length, 1, 'We only have one mg-missing-text');
+    equal(document.querySelectorAll(params.target + ' .mg-missing-text').length, 1, 'We only have one mg-missing-text');
 });
 
 test('Missing chart\'s width is set correctly on subsequent calls to existing chart', function() {

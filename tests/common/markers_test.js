@@ -17,7 +17,7 @@ test('All markers are added if they lie within the visible range', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-markers line').length, markers.length, 'Two markers added');
+    equal(document.querySelectorAll(params.target + ' .mg-markers line').length, markers.length, 'Two markers added');
 });
 
 test('Markers that lie outside the visible range are excluded', function() {
@@ -37,7 +37,7 @@ test('Markers that lie outside the visible range are excluded', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-markers line').length, 1, 'One marker added');
+    equal(document.querySelectorAll(params.target + ' .mg-markers line').length, 1, 'One marker added');
 });
 
 test('All baselines are added', function() {
@@ -51,7 +51,7 @@ test('All baselines are added', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-baselines line').length, markers.length, 'One baseline added');
+    equal(document.querySelectorAll(params.target + ' .mg-baselines line').length, markers.length, 'One baseline added');
 });
 
 test('Markers\' texts are correctly added', function() {
@@ -71,8 +71,8 @@ test('Markers\' texts are correctly added', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-markers text')[0].textContent, markers[0].label, 'First marker\'s text matches specified one');
-    equal(document.querySelectorAll(target + ' .mg-markers text')[1].textContent, markers[1].label, 'Second marker\'s text matches specified one');
+    equal(document.querySelectorAll(params.target + ' .mg-markers text')[0].textContent, markers[0].label, 'First marker\'s text matches specified one');
+    equal(document.querySelectorAll(params.target + ' .mg-markers text')[1].textContent, markers[1].label, 'Second marker\'s text matches specified one');
 });
 
 test('Baseline text is correctly added', function() {
@@ -86,7 +86,7 @@ test('Baseline text is correctly added', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(target + ' .mg-baselines text')[0].textContent, baselines[0].label, 'Baseline text matches specified one');
+    equal(document.querySelectorAll(params.target + ' .mg-baselines text')[0].textContent, baselines[0].label, 'Baseline text matches specified one');
 });
 
 test('When an existing chart is updated with no markers, existing markers are cleared', function() {
