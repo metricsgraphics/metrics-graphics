@@ -128,8 +128,6 @@ function y_axis(args) {
         min_y = min_y / args.inflator;
     }
 
-    console.log(min_y, max_y);
-
     if (args.y_scale_type === 'log') {
         if (args.chart_type === 'histogram') {
             // log histogram plots should start just below 1

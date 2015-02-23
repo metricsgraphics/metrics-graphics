@@ -84,11 +84,15 @@ charts.bar = function(args) {
             bars = bars.transition()
                 .duration(transition_duration);
 
-            predictor_bars = predictor_bars.transition()
-                .duration(transition_duration);
+            if (predictor_bars) {
+                predictor_bars = predictor_bars.transition()
+                    .duration(transition_duration);
+            }
 
-            baseline_marks = baseline_marks.transition()
-                .duration(transition_duration);
+            if (baseline_marks) {
+                baseline_marks = baseline_marks.transition()
+                    .duration(transition_duration);
+            }
         }
 
 
