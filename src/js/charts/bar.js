@@ -105,15 +105,19 @@ charts.bar = function(args) {
                     y: args.scales.Y(0)
                 });
 
-                predictor_bars.attr({
-                    height: 0,
-                    y: args.scales.Y(0)
-                });
+                if (predictor_bars) {
+                    predictor_bars.attr({
+                        height: 0,
+                        y: args.scales.Y(0)
+                    });
+                }
 
-                baseline_marks.attr({
-                    y1: args.scales.Y(0),
-                    y2: args.scales.Y(0)
-                });
+                if (baseline_marks) {
+                    baseline_marks.attr({
+                        y1: args.scales.Y(0),
+                        y2: args.scales.Y(0)
+                    });
+                }
             }
 
             bars.attr('y', args.scalefns.yf)
@@ -163,12 +167,16 @@ charts.bar = function(args) {
             if (perform_load_animation) {
                 bars.attr('width', 0);
 
-                predictor_bars.attr('width', 0);
+                if (predictor_bars) {
+                    predictor_bars.attr('width', 0);
+                }
 
-                baseline_marks.attr({
-                    x1: args.scales.X(0),
-                    x2: args.scales.X(0)
-                });
+                if (baseline_marks) {
+                    baseline_marks.attr({
+                        x1: args.scales.X(0),
+                        x2: args.scales.X(0)
+                    });
+                }
             }
 
             bars.attr('x', args.scales.X(0))
