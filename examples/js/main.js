@@ -114,7 +114,7 @@
         // add a line chart that has a few observations
         MG.data_graphic({
             title: "Few Observations",
-            description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no date' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+            description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
             data: data,
             interpolate: 'basic',
             missing_is_zero: true,
