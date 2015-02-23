@@ -1,7 +1,7 @@
 function y_rug(args) {
     'use strict';
     var svg = mg_get_svg_child_of(args.target);
-    
+
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;
@@ -127,6 +127,8 @@ function y_axis(args) {
     if (!args.min_y && args.min_y_from_data) {
         min_y = min_y / args.inflator;
     }
+
+    console.log(min_y, max_y);
 
     if (args.y_scale_type === 'log') {
         if (args.chart_type === 'histogram') {
