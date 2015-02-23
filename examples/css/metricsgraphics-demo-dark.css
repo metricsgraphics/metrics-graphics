@@ -106,7 +106,15 @@ li {
     stroke: #ffd300;
 }
 
+.mg-hover-line1-color {
+    stroke: #ffd300;
+}
+
 .mg-line2-color {
+    stroke: #18ff00;
+}
+
+.mg-hover-line2-color {
     stroke: #18ff00;
 }
 
@@ -114,11 +122,23 @@ li {
     stroke: #f57070;
 }
 
+.mg-hover-line3-color {
+    stroke: #f57070;
+}
+
 .mg-line4-color {
     stroke: #f8b128;
 }
 
+.mg-hover-line4-color {
+    stroke: #f8b128;
+}
+
 .mg-line5-color {
+    stroke: #f7f7f7;
+}
+
+.mg-hover-line5-color {
     stroke: #f7f7f7;
 }
 
