@@ -1,7 +1,7 @@
 function y_rug(args) {
     'use strict';
     var svg = mg_get_svg_child_of(args.target);
-    
+
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;

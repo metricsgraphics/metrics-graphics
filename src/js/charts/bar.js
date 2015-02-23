@@ -30,7 +30,7 @@ charts.bar = function(args) {
     this.mainPlot = function() {
         var svg = mg_get_svg_child_of(args.target);
         var data = args.data[0];
-        var barplot = svg.select('.mg-barplot');
+        var barplot = svg.select('g.mg-barplot');
         var fresh_render = barplot.empty();
 
         var bars;
@@ -43,69 +43,80 @@ charts.bar = function(args) {
         var transition_duration = args.transition_duration || 1000;
 
         // draw the plot on first render
-        if (fresh_render) {
+        if (barplot.empty()) {
             barplot = svg.append('g')
                 .classed('mg-barplot', true);
-
-            bars = barplot.selectAll('.mg-bar')
-                        .data(data)
-                        .enter()
-                    .append('rect')
-                        .classed('mg-bar', true);
-
-            if (args.predictor_accessor) {
-                predictor_bars = barplot.selectAll('.mg-bar-prediction')
-                        .data(data)
-                        .enter()
-                    .append('rect')
-                        .classed('mg-bar-prediction', true);
-            }
-
-            if (args.baseline_accessor) {
-                baseline_marks = barplot.selectAll('.mg-bar-baseline')
-                        .data(data)
-                        .enter()
-                    .append('line')
-                    .classed('mg-bar-baseline', true);
-            }
         }
-        // setup vars with the existing elements
-        // TODO: deal with changing data sets - i.e. more/less, different labels etc.
-        else {
-            // move the barplot after the axes so it doesn't overlap
-            //$(svg.node()).find('.mg-y-axis').after($(barplot.node()).detach());
-            svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
-            
-            console.log('waylee');
-            bars = barplot.selectAll('rect.mg-bar');
 
-            if (args.predictor_accessor) {
-                predictor_bars = barplot.selectAll('.mg-bar-prediction');
-            }
+        bars = bars = barplot.selectAll('.mg-bar')
+            .data(data);
 
-            if (args.baseline_accessor) {
-                baseline_marks = barplot.selectAll('.mg-bar-baseline');
-            }
+        bars.exit().remove();
+
+        bars.enter().append('rect')
+            .classed('mg-bar', true);
+
+        if (args.predictor_accessor) {
+            predictor_bars = barplot.selectAll('.mg-bar-prediction')
+                .data(data);
+
+            predictor_bars.exit().remove();
+
+            predictor_bars.enter().append('rect')
+                .classed('mg-bar-prediction', true);
+        }
+
+        if (args.baseline_accessor) {
+            baseline_marks = barplot.selectAll('.mg-bar-baseline')
+                .data(data);
+
+            baseline_marks.exit().remove();
+
+            baseline_marks.enter().append('line')
+                .classed('mg-bar-baseline', true);
         }
 
         var appropriate_size;
+
+
+        // setup transitions
+        if (should_transition) {
+            bars = bars.transition()
+                .duration(transition_duration);
+
+            if (predictor_bars) {
+                predictor_bars = predictor_bars.transition()
+                    .duration(transition_duration);
+            }
+
+            if (baseline_marks) {
+                baseline_marks = baseline_marks.transition()
+                    .duration(transition_duration);
+            }
+        }
+
 
         if (this.is_vertical) {
             appropriate_size = args.scales.X.rangeBand()/1.5;
 
             if (perform_load_animation) {
-                bars.attr('height', 0)
-                    .attr('y', args.scales.Y(0));
+                bars.attr({
+                    height: 0,
+                    y: args.scales.Y(0)
+                });
+
+                predictor_bars.attr({
+                    height: 0,
+                    y: args.scales.Y(0)
+                });
+
+                baseline_marks.attr({
+                    y1: args.scales.Y(0),
+                    y2: args.scales.Y(0)
+                });
             }
 
-            if (should_transition) {
-                bars = bars.transition()
-                    .duration(transition_duration);
-            }
-
-            bars.attr('y', function(d) {
-                    return args.scales.Y(0) - (args.scales.Y(0) - args.scalefns.yf(d));
-                })
+            bars.attr('y', args.scalefns.yf)
                 .attr('x', function(d) {
                     return args.scalefns.xf(d) + appropriate_size/2;
                 })
@@ -114,21 +125,12 @@ charts.bar = function(args) {
                     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
                 });
 
+
             if (args.predictor_accessor) {
                 pp = args.predictor_proportion;
                 pp0 = pp-1;
 
-                if (perform_load_animation) {
-                    predictor_bars.attr('height', 0)
-                        .attr('y', args.scales.Y(0));
-                }
-
-                if (should_transition) {
-                    predictor_bars = predictor_bars.transition()
-                        .duration(transition_duration);
-                }
-
-                // thick line  through bar;
+                // thick line through bar;
                 predictor_bars
                     .attr('y', function(d) {
                         return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
@@ -145,15 +147,6 @@ charts.bar = function(args) {
             if (args.baseline_accessor) {
                 pp = args.predictor_proportion;
 
-                if (perform_load_animation) {
-                    baseline_marks.attr({y1: args.scales.Y(0), y2: args.scales.Y(0)});
-                }
-
-                if (should_transition) {
-                    baseline_marks = baseline_marks.transition()
-                        .duration(transition_duration);
-                }
-
                 baseline_marks
                     .attr('x1', function(d) {
                         return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
@@ -169,11 +162,13 @@ charts.bar = function(args) {
 
             if (perform_load_animation) {
                 bars.attr('width', 0);
-            }
 
-            if (should_transition) {
-                bars = bars.transition()
-                    .duration(transition_duration);
+                predictor_bars.attr('width', 0);
+
+                baseline_marks.attr({
+                    x1: args.scales.X(0),
+                    x2: args.scales.X(0)
+                });
             }
 
             bars.attr('x', args.scales.X(0))
@@ -190,15 +185,6 @@ charts.bar = function(args) {
                 pp = args.predictor_proportion;
                 pp0 = pp-1;
 
-                if (perform_load_animation) {
-                    predictor_bars.attr('width', 0);
-                }
-
-                if (should_transition) {
-                    predictor_bars = predictor_bars.transition()
-                        .duration(transition_duration);
-                }
-
                 // thick line  through bar;
                 predictor_bars
                     .attr('x', args.scales.X(0))
@@ -213,16 +199,6 @@ charts.bar = function(args) {
 
             if (args.baseline_accessor) {
                 pp = args.predictor_proportion;
-
-                if (perform_load_animation) {
-                    baseline_marks
-                        .attr({x1: args.scales.X(0), x2: args.scales.X(0)});
-                }
-
-                if (should_transition) {
-                    baseline_marks = baseline_marks.transition()
-                        .duration(transition_duration);
-                }
 
                 baseline_marks
                     .attr('x1', function(d) { return args.scales.X(d[args.baseline_accessor]); })
