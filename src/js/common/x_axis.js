@@ -441,7 +441,9 @@ function mg_find_min_max_x(args) {
         mapDtoX = function(d) { return d[args.x_accessor]; };
 
     // clear the cached xax_format in case we need to recalculate
-    delete args.xax_format;
+    if(!args.xax_format) {
+        delete args.xax_format;
+    }
 
     if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
         extent_x = d3.extent(all_data, mapDtoX);
