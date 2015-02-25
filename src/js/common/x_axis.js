@@ -441,7 +441,7 @@ function mg_find_min_max_x(args) {
         mapDtoX = function(d) { return d[args.x_accessor]; };
 
     // clear the cached xax_format in case we need to recalculate
-    if(!args.xax_format) {
+    if(args.xax_format === null) {
         delete args.xax_format;
     }
 

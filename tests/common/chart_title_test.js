@@ -84,7 +84,9 @@ test('Chart title is not duplicated on redraw', function() {
                {'date': new Date('2014-03-01'), 'value': 18}]
     };
 
+    var params2 = MG.clone(params);
     MG.data_graphic(params);
-    MG.data_graphic(params);
+    MG.data_graphic(params2);
+
     equal(document.querySelectorAll('.mg-chart-title').length, 1, 'there is once chart title');
 });
