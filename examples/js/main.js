@@ -192,7 +192,6 @@
 
     d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');
-
         var fake_baselines = [{value: 160000000, label: 'a baseline'}];
 
         // add a line chart
