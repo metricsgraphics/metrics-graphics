@@ -33,7 +33,7 @@ test('Only one y-axis is added on multiple calls to the same target element', fu
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
 
-    equal(document.querySelectorAll(target + ' .mg-y-axis').length, 1, 'We only have one y-axis');
+    equal(document.querySelectorAll(params.target + ' .mg-y-axis').length, 1, 'We only have one y-axis');
 });
 
 test('args.y_label', function() {

@@ -33,7 +33,7 @@ test('Only one x-axis is added on multiple calls to the same target element', fu
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
 
-    equal(document.querySelectorAll(target + ' .mg-x-axis').length, 1, 'We only have one x-axis');
+    equal(document.querySelectorAll(params.target + ' .mg-x-axis').length, 1, 'We only have one x-axis');
 });
 
 test('args.show_secondary_x_label: true', function() {
