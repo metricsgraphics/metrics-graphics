@@ -142,7 +142,7 @@ test('args.x_extended_ticks', function() {
     ok(document.querySelector('.mg-extended-x-ticks'), 'X-axis extended ticks exist');
 });
 
-test('correctly calculates min and max values for line, point and histogram charts', function() {
+test('Correctly calculates min and max values for line, point and histogram charts', function() {
     var args;
 
     // single series
@@ -186,7 +186,7 @@ test('correctly calculates min and max values for line, point and histogram char
     equal(args.processed.max_x, 7, 'max is correct for multiple series');
 });
 
-test('correctly calculates min and max values for bar chart', function() {
+test('Correctly calculates min and max values for bar chart', function() {
     var args;
 
     // single series
@@ -208,4 +208,17 @@ test('correctly calculates min and max values for bar chart', function() {
     mg_find_min_max_x(args);
     equal(args.processed.min_x, 0, 'min is correct');
     equal(args.processed.max_x, 12, 'max is correct');
+});
+
+test('Ensure that custom xax_format isn\'t deleted', function() {
+    var params = {
+        title: 'foo',
+        target: '.result',
+        xax_format: function(d) { return 'humbug'; },
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+    equal(params.xax_format(), 'humbug', 'xax_format hasn\'t been overriden');
 });
