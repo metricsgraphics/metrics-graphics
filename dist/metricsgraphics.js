@@ -9,7 +9,7 @@
         root.MG = factory(root.d3, root.jQuery);
       }
     }(this, function(d3, $) {
-    window.MG = {version: '2.2.0'};
+    window.MG = {version: '2.2.1'};
 
     var charts = {};
 
