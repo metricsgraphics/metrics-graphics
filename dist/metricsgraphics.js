@@ -1914,7 +1914,7 @@
                         return d.label;
                     });
 
-            preventOverlap(gm.selectAll('.mg-marker-text'));
+            preventOverlap(gm.selectAll('.mg-marker-text')[0]);
         }
 
         if (args.baselines) {
@@ -1948,32 +1948,38 @@
         }
 
         function preventOverlap (labels) {
-            var prev;
-            labels.each(function(d, i) {
-            if (i > 0) {
-                var thisbb = this.getBoundingClientRect();
+            if (labels.length == 1) {
+                return;
+            }
 
-                if (isOverlapping(this, labels)) {
-                    var node = d3.select(this), newY = +node.attr('y');
+            for (var i = 0; i < labels.length; i++) {
+                if (isOverlapping(labels[i], labels)) {
+                    var node = d3.select(labels[i]);
+                    var newY = +node.attr('y');
                     if (newY + 8 == args.top) {
                         newY = args.top - 16;
                     }
                     node.attr('y', newY);
                 }
             }
-            prev = this;
-          });
         }
 
         function isOverlapping(element, labels) {
-            var bbox = element.getBoundingClientRect();
-            for(var i = 0; i < labels.length; i++) {
-                var elbb = labels[0][i].getBoundingClientRect();
-                if (
-                    labels[0][i] !== element &&
-                    ((elbb.right > bbox.left && elbb.left > bbox.left && bbox.top === elbb.top) ||
-                    (elbb.left < bbox.left && elbb.right > bbox.left && bbox.top === elbb.top))
-                ) return true;
+            var element_bbox = element.getBoundingClientRect();
+
+            for (var i = 0; i < labels.length; i++) {
+                if (labels[i] == element) {
+                    continue;
+                }
+
+                //check to see if this label overlaps with any of the other labels
+                var sibling_bbox = labels[i].getBoundingClientRect();
+
+                if (element_bbox.top === sibling_bbox.top && 
+                        !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
+                    ) {
+                    return true;
+                }
             }
             return false;
         }
