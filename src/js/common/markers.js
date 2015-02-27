@@ -69,12 +69,14 @@ function markers(args) {
                 });
     }
 
-    function preventOverlap (labels) {
+    function preventOverlap(labels) {
         if (labels.length == 1) {
             return;
         }
 
+        //see if each of our labels overlaps any of the other labels
         for (var i = 0; i < labels.length; i++) {
+            //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
             if (isOverlapping(labels[i], labels)) {
                 var node = d3.select(labels[i]);
                 var newY = +node.attr('y');
@@ -96,7 +98,6 @@ function markers(args) {
 
             //check to see if this label overlaps with any of the other labels
             var sibling_bbox = labels[i].getBoundingClientRect();
-
             if (element_bbox.top === sibling_bbox.top && 
                     !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
                 ) {
@@ -106,15 +107,15 @@ function markers(args) {
         return false;
     }
 
-    function xPosition (d) {
+    function xPosition(d) {
         return args.scales.X(d[args.x_accessor]);
     }
 
-    function xPositionFixed (d) {
+    function xPositionFixed(d) {
         return xPosition(d).toFixed(2);
     }
 
-    function inRange (d) {
+    function inRange(d) {
         return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
             && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
     }
