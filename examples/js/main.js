@@ -1100,6 +1100,9 @@
             $('.trunk-section')
                 .css('border-top-color', '#5e5e5e');
 
+            $('.mg-missing-background')
+                .css('stroke', '#ccc');
+
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
@@ -1119,6 +1122,9 @@
 
             $('.trunk-section')
                 .css('border-top-color', '#ccc');
+
+            $('.mg-missing-background')
+                .css('stroke', 'blue');
 
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
