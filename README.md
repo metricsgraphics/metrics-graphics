@@ -42,7 +42,7 @@ The library depends on [D3](http://d3js.org) and [jQuery](http://jquery.com/). A
 ## Contributing
 If you would like to help extend MetricsGraphics.js or fix bugs, please [fork the library](https://github.com/mozilla/metrics-graphics) and install [Node.js](http://nodejs.org). Then, from the project's root directory install [gulp](http://gulpjs.com):
 
-    install gulp
+    npm install gulp
 
 Then, install the library's dependencies:
 
