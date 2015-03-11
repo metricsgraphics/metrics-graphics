@@ -243,9 +243,7 @@ function mg_add_x_label(g, args) {
     g.append('text')
         .attr('class', 'label')
         .attr('x', function() {
-            return args.left + args.buffer
-                + ((args.width - args.right - args.buffer)
-                    - (args.left + args.buffer)) / 2;
+            return (args.left + args.width - args.right) / 2;
         })
         .attr('y', (args.height - args.bottom / 2).toFixed(2))
         .attr('dy', '.50em')
