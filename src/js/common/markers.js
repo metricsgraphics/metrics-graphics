@@ -70,7 +70,7 @@ function markers(args) {
     }
 
     function preventOverlap(labels) {
-        if (labels.length == 1) {
+        if (!labels || labels.length == 1) {
             return;
         }
 
