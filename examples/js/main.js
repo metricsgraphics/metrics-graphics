@@ -729,7 +729,7 @@
             right: trunk.right,
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
+                return Math.round(pf.scale(f)) + pf.symbol;
             },
             target: '#neg2',
             x_accessor: 'subject',
@@ -932,10 +932,11 @@
             target: '#scatter-simple',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
+                return Math.round(pf.scale(f)) + pf.symbol;
             },
             x_accessor: 'x',
             y_accessor: 'y',
+            mouseover: function(d, i) { console.log(d,i); },
             y_rug: true
         });
 
@@ -950,7 +951,7 @@
             target: '#categorical1',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
+                return Math.round(pf.scale(f)) + pf.symbol;
             },
             x_accessor: 'x',
             y_accessor: 'y',
@@ -970,7 +971,7 @@
             target: '#categorical2',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
+                return Math.round(pf.scale(f)) + pf.symbol;
             },
             x_accessor: 'x',
             y_accessor: 'y',
@@ -993,7 +994,7 @@
             target: '#scatter-line-best-fit',
             xax_format: function(f) {
                 var pf = d3.formatPrefix(f);
-                return pf.scale(f) + pf.symbol;
+                return Math.round(pf.scale(f)) + pf.symbol;
             },
             x_accessor: 'x',
             y_accessor: 'y'
@@ -1076,7 +1077,7 @@
                 target: '#scatter-size-and-color',
                 xax_format: function(f) {
                     var pf = d3.formatPrefix(f);
-                    return pf.scale(f) + pf.symbol;
+                    return Math.round(pf.scale(f)) + pf.symbol;
                 },
                 x_accessor: 'x',
                 y_accessor: 'y',

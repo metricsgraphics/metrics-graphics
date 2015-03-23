@@ -33,6 +33,7 @@ MG.data_graphic = function() {
         small_text: false,            // coerces small text regardless of graphic size
         xax_count: 6,                 // number of x axis ticks
         xax_tick_length: 5,           // x axis tick length
+        xax_start_at_min: false,
         yax_count: 5,                 // number of y axis ticks
         yax_tick_length: 5,           // y axis tick length
         x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts

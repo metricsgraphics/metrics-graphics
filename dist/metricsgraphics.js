@@ -46,6 +46,7 @@
             small_text: false,            // coerces small text regardless of graphic size
             xax_count: 6,                 // number of x axis ticks
             xax_tick_length: 5,           // x axis tick length
+            xax_start_at_min: false,
             yax_count: 5,                 // number of y axis ticks
             yax_tick_length: 5,           // y axis tick length
             x_extended_ticks: false,      // extends x axis ticks across chart - useful for tall charts
@@ -1272,6 +1273,7 @@
         args.scales.X = (args.time_series)
             ? d3.time.scale()
             : d3.scale.linear();
+
         args.scales.X
             .domain([args.processed.min_x, args.processed.max_x])
             .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
@@ -1451,9 +1453,7 @@
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return args.left + args.buffer
-                    + ((args.width - args.right - args.buffer)
-                        - (args.left + args.buffer)) / 2;
+                return (args.left + args.width - args.right) / 2;
             })
             .attr('y', (args.height - args.bottom / 2).toFixed(2))
             .attr('dy', '.50em')
@@ -1517,7 +1517,7 @@
             // a custom function if desired
             if(args.data[0][0][args.x_accessor] instanceof Date) {
                 return args.processed.main_x_time_format(d);
-            } if (typeof args.data[0][0][args.x_accessor] === 'number') {
+            } else if (typeof args.data[0][0][args.x_accessor] === 'number') {
                 if (d < 1.0) {
                     //don't scale tiny values
                     return args.xax_units + d3.round(d, args.decimals);
@@ -1533,17 +1533,32 @@
 
     function mg_add_x_ticks(g, args) {
         var last_i = args.scales.X.ticks(args.xax_count).length - 1;
+        var ticks = args.scales.X.ticks(args.xax_count);
+
+        //force min to be the first tick rather than the first element in ticks
+        if(args.xax_start_at_min) {
+            ticks[0] = args.processed.min_x;
+        }
 
         if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
             //extend axis line across bottom, rather than from domain's min..max
             g.append('line')
-                .attr('x1',
-                    (args.concise === false || args.xax_count === 0)
-                        ? args.left + args.buffer
-                        : (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
-                )
+                .attr('x1', function() {
+                    //start the axis line from the beginning, domain's min, or the auto-generated
+                    //ticks' first element, depending on whether xax_count is set to 0 or 
+                    //xax_start_at_min is set to true
+                    if (args.xax_count === 0) {
+                        return args.left + args.buffer;
+                    }
+                    else if (args.xax_start_at_min) {
+                        return args.scales.X(args.processed.min_x).toFixed(2)
+                    }
+                    else {
+                        return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2);
+                    }
+                })
                 .attr('x2',
-                    (args.concise === false || args.xax_count === 0)
+                    (args.xax_count === 0)
                         ? args.width - args.right - args.buffer
                         : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
                 )
@@ -1552,7 +1567,7 @@
         }
 
         g.selectAll('.mg-xax-ticks')
-            .data(args.scales.X.ticks(args.xax_count)).enter()
+            .data(ticks).enter()
                 .append('line')
                     .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
                     .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
@@ -1570,8 +1585,15 @@
     }
 
     function mg_add_x_tick_labels(g, args) {
+        var ticks = args.scales.X.ticks(args.xax_count);
+
+        //force min to be the first tick rather than the first element in ticks
+        if(args.xax_start_at_min) {
+            ticks[0] = args.processed.min_x;
+        }
+
         g.selectAll('.mg-xax-labels')
-            .data(args.scales.X.ticks(args.xax_count)).enter()
+            .data(ticks).enter()
                 .append('text')
                     .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
                     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
@@ -1607,7 +1629,11 @@
 
             var years = secondary_function(args.processed.min_x, args.processed.max_x);
 
-            if (years.length === 0) {
+            //if xax_start_at_min is set
+            if (args.xax_start_at_min && years.length === 0) {
+                var first_tick = ticks[0];
+                years = [first_tick];
+            } else if (years.length === 0) {
                 var first_tick = args.scales.X.ticks(args.xax_count)[0];
                 years = [first_tick];
             }
@@ -1630,9 +1656,15 @@
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
                     .append('text')
-                        .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
+                        .attr('x', function(d, i) {
+                            if (args.xax_start_at_min && i == 0) {
+                                d = ticks[0];
+                            }
+
+                            return args.scales.X(d).toFixed(2);
+                        })
                         .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))
-                        .attr('dy', args.use_small_class ? -3 : 0)//(args.y_extended_ticks) ? 0 : 0 )
+                        .attr('dy', args.use_small_class ? -3 : 0)
                         .attr('text-anchor', 'middle')
                         .text(function(d) {
                             return yformat(d);
@@ -1947,12 +1979,14 @@
                     });
         }
 
-        function preventOverlap (labels) {
-            if (labels.length == 1) {
+        function preventOverlap(labels) {
+            if (!labels || labels.length == 1) {
                 return;
             }
 
+            //see if each of our labels overlaps any of the other labels
             for (var i = 0; i < labels.length; i++) {
+                //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
                 if (isOverlapping(labels[i], labels)) {
                     var node = d3.select(labels[i]);
                     var newY = +node.attr('y');
@@ -1974,7 +2008,6 @@
 
                 //check to see if this label overlaps with any of the other labels
                 var sibling_bbox = labels[i].getBoundingClientRect();
-
                 if (element_bbox.top === sibling_bbox.top && 
                         !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
                     ) {
@@ -1984,15 +2017,15 @@
             return false;
         }
 
-        function xPosition (d) {
+        function xPosition(d) {
             return args.scales.X(d[args.x_accessor]);
         }
 
-        function xPositionFixed (d) {
+        function xPositionFixed(d) {
             return xPosition(d).toFixed(2);
         }
 
-        function inRange (d) {
+        function inRange(d) {
             return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
                 && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
         }
