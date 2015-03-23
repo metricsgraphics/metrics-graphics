@@ -25,7 +25,8 @@ charts.line = function(args) {
             .x(args.scalefns.xf)
             .y0(args.scales.Y.range()[0])
             .y1(args.scalefns.yf)
-            .interpolate(args.interpolate);
+            .interpolate(args.interpolate)
+            .tension(args.interpolate_tension);
 
         //confidence band
         var confidence_area;
@@ -42,20 +43,23 @@ charts.line = function(args) {
                     var u = args.show_confidence_band[1];
                     return args.scales.Y(d[u]);
                 })
-                .interpolate(args.interpolate);
+                .interpolate(args.interpolate)
+                .tension(args.interpolate_tension);
         }
 
         //main line
         var line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(args.scalefns.yf)
-            .interpolate(args.interpolate);
+            .interpolate(args.interpolate)
+            .tension(args.interpolate_tension);
 
         //for animating line on first load
         var flat_line = d3.svg.line()
             .x(args.scalefns.xf)
             .y(function() { return args.scales.Y(data_median); })
-            .interpolate(args.interpolate);
+            .interpolate(args.interpolate)
+            .tension(args.interpolate_tension);
 
 
         //for building the optional legend
