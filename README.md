@@ -72,10 +72,34 @@ To run the development server (accessible at http://localhost:4300):
 ## Download package
 The download package includes everything that you see on [metricsgraphicsjs.org](http://metricsgraphicsjs.org). In order to use the library in your own project, the only files that you'll need are the ones under ``dist``. Remember to load ``D3`` and ``jQuery``. If you don't care about tooltips or the button layout, you won't need the latter. If your project uses Bootstrap, make sure you load MetricsGraphics.js after it.
 
-## Frequently asked question
+## Frequently asked questions
 __What does MetricsGraphics.js do that library x doesn't do?__
 
 If library x works for you, you should keep using it. We're not aiming to be competitive with libraries that already exist. We're aiming to make a library that meets our needs. We also happen to think that the world _needs_ a principled data presentation library, and that many of our needs are the same as other folks'.
+
+__I only see the first five lines in my chart, what gives?__
+
+The colors for the first five lines, areas and legends are defined in the stylesheet for the light and dark themes. For a sixth line, you would add the follow CSS rules:
+
+```css
+.mg-line6-color {
+    stroke: steelblue;
+}
+
+.mg-area6-color {
+    fill: steelblue;
+}
+
+.mg-hover-line6-color {
+    fill: steelblue;
+}
+
+.mg-line6-legend-color {
+    color: steelblue;
+}
+```
+
+If you're plotting more than five lines in the same chart and using _color_ to encode some dimension of the data, then you probably need to rethink the chart.
 
 ## License
 
