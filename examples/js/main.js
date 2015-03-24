@@ -195,6 +195,7 @@
         var fake_baselines = [{value: 160000000, label: 'a baseline'}];
 
         // add a line chart
+        var fake_users1 = document.getElementById('fake_users1');
         MG.data_graphic({
             title: "Line Chart",
             description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
@@ -203,7 +204,7 @@
             height: torso.height,
             right: torso.right,
             baselines: fake_baselines,
-            target: '#fake_users1',
+            target: fake_users1,
             x_accessor: 'date',
             y_accessor: 'value'
         });

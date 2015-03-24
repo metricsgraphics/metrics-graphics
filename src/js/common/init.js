@@ -6,6 +6,9 @@ function init(args) {
         description: null
     };
 
+    // If you pass in a dom element for args.target, the expectation
+    // of a string elsewhere will break.
+
     args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);

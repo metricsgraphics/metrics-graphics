@@ -1763,6 +1763,9 @@
             description: null
         };
 
+        // If you pass in a dom element for args.target, the expectation
+        // of a string elsewhere will break.
+
         args = arguments[0];
         if (!args) { args = {}; }
         args = merge_with_defaults(args, defaults);
@@ -4812,7 +4815,20 @@
     }
 
     function mg_strip_punctuation(s) {
-        var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
+        var processed_s;
+        if (typeof(s) == 'string'){
+            processed_s = s;
+        } else {
+            // args.target is 
+            if (s.id !=''){
+                processed_s = s.id;
+            } else if (args.target.className != ''){
+                processed_s = s.className;
+            } else {
+                console.warn('The specified target element ' + s + ' has no unique attributes.');
+            }
+        }
+        var punctuationless = processed_s.replace(/[^a-zA-Z0-9 _]+/g, '');
         var finalString = punctuationless.replace(/ +?/g, "");
         return finalString;
     }

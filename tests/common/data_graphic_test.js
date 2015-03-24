@@ -15,6 +15,18 @@ test('Required arguments are set', function() {
     ok(params.target, 'args.target is set');
 });
 
+test('Dom element works as target', function() {
+    var params = {
+        target: document.getElementById('qunit-fixture'),
+        data: [{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-02'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+
+    ok(document.querySelector('#qunit-fixture svg') != null, 'passing in dom element works properly');
+});
+
 // Can be removed in 2.x
 test('Correctly aliases callbacks when using 1.x-style method names', function() {
   var mouseoverCalled = false,
