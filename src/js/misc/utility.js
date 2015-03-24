@@ -32,10 +32,12 @@ function mg_strip_punctuation(s) {
         processed_s = s;
     } else {
         // args.target is 
-        if (s.id !=''){
+        if (s.id != ''){
             processed_s = s.id;
         } else if (args.target.className != ''){
             processed_s = s.className;
+        } else if (args.target.nodeName !=''){
+            processed_s = s.nodeName;
         } else {
             console.warn('The specified target element ' + s + ' has no unique attributes.');
         }
