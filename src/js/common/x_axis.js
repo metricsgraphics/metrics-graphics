@@ -434,7 +434,7 @@ function mg_add_x_tick_labels(g, args) {
             .classed('mg-year-marker', true)
             .classed('mg-year-marker-small', args.use_small_class);
 
-        if (time_frame === 'default') {
+        if (time_frame === 'default' && args.show_year_marker) {
             g.selectAll('.mg-year-marker')
                 .data(years).enter()
                     .append('line')

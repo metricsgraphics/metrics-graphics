@@ -86,6 +86,7 @@
             markers: null,                // sets the marker lines
             scalefns: {},
             scales: {},
+            show_year_marker: false,
             show_secondary_x_label: true,
             target: '#viz',
             interpolate: 'cardinal',       // interpolation method to use when rendering lines
@@ -1644,7 +1645,7 @@
                 .classed('mg-year-marker', true)
                 .classed('mg-year-marker-small', args.use_small_class);
 
-            if (time_frame === 'default') {
+            if (time_frame === 'default' && args.show_year_marker) {
                 g.selectAll('.mg-year-marker')
                     .data(years).enter()
                         .append('line')
@@ -4816,20 +4817,25 @@
 
     function mg_strip_punctuation(s) {
         var processed_s;
-        if (typeof(s) == 'string'){
+
+        if (typeof(s) == 'string') {
             processed_s = s;
         } else {
             // args.target is 
-            if (s.id !=''){
+            if (s.id != '') {
                 processed_s = s.id;
-            } else if (args.target.className != ''){
+            } else if (args.target.className != '') {
                 processed_s = s.className;
+            } else if (args.target.nodeName !='') {
+                processed_s = s.nodeName;
             } else {
                 console.warn('The specified target element ' + s + ' has no unique attributes.');
             }
         }
+
         var punctuationless = processed_s.replace(/[^a-zA-Z0-9 _]+/g, '');
         var finalString = punctuationless.replace(/ +?/g, "");
+
         return finalString;
     }
 
