@@ -73,7 +73,7 @@ MG.data_graphic = function() {
         markers: null,                // sets the marker lines
         scalefns: {},
         scales: {},
-        show_year_marker: false,
+        show_year_markers: false,
         show_secondary_x_label: true,
         target: '#viz',
         interpolate: 'cardinal',       // interpolation method to use when rendering lines
