@@ -464,7 +464,6 @@ charts.line = function(args) {
                 .on('mouseover')(args.data[0][0], 0);
         } else if (args.data.length > 1) {
             //otherwise, trigger it for an appropriate line in a multi-line chart
-            //@todo this will only trigger one of the lines, even if there are more than one
             for (var i = 0; i < args.data.length; i++) {
                 if (args.data[i].length == 1) {
                     svg.selectAll('.mg-voronoi .mg-line' + (i + 1) + '-color')
@@ -534,8 +533,8 @@ charts.line = function(args) {
                     d[args.x_accessor] <= args.processed.max_x &&
                     d[args.y_accessor] >= args.processed.min_y &&
                     d[args.y_accessor] <= args.processed.max_y
-                ){
-                    svg.selectAll('circle.mg-line-rollover-circle')
+                ) {
+                    svg.selectAll('circle.mg-line-rollover-circle.mg-area' + d.line_id + '-color')
                         .attr('class', "")
                         .attr('class', 'mg-area' + d.line_id + '-color')
                         .classed('mg-line-rollover-circle', true)
@@ -692,10 +691,10 @@ charts.line = function(args) {
                     });
             }
 
-            //remove active datapoint text on mouse out, except if we have a single
-            svg.selectAll('circle.mg-line-rollover-circle')
+            //remove active datapoint text on mouse out, except if we have a single point
+            svg.selectAll('circle.mg-line-rollover-circle.mg-area' + (d.line_id) + '-color')
                 .style('opacity', function() {
-                        if (args.data.length == 1 && args.data[0].length == 1) {
+                        if (args.data[d.line_id - 1].length == 1) {
                             return 1;
                         }
                         else {
