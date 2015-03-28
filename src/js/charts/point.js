@@ -122,8 +122,8 @@ charts.point = function(args) {
             }
 
             //trigger mouseover on all points for this class name in .linked charts
-            if (args.linked && !globals.link) {
-                globals.link = true;
+            if (args.linked && !MG.globals.link) {
+                MG.globals.link = true;
 
                 //trigger mouseover on matching point in .linked charts
                 d3.selectAll('.mg-voronoi .path-' + i)
@@ -162,8 +162,8 @@ charts.point = function(args) {
         var svg = mg_get_svg_child_of(args.target);
 
         return function(d,i) {
-            if (args.linked && globals.link) {
-                globals.link = false;
+            if (args.linked && MG.globals.link) {
+                MG.globals.link = false;
 
                 d3.selectAll('.mg-voronoi .path-' + i)
                     .each(function() {
