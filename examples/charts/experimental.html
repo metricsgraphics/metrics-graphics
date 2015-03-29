@@ -1,0 +1,863 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='scatter-simple'></div>
+                    <div class='col-lg-6 text-center' id='categorical1'></div>
+                    <div class='col-lg-6 text-center' id='categorical2'></div>
+                    <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
+                    <div class='col-lg-6 text-center' id='scatter-size-and-color'></div>
+                    <div class='col-lg-6 text-center' id='sls-time-series'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/point1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Simple Scatterplot",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-simple',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        mouseover: function(d, i) { console.log(d,i); },
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Automatic Category Coloring",
+        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#categorical1',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'v',
+        color_type:'category',
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Custom Category Color Mapping",
+        description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#categorical2',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'v',
+        color_domain:['cat_0', 'cat_1', 'other'],
+        color_range:['blue', 'gray', 'black'],
+        color_type:'category',
+        x_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Simple Line of Best Fit",
+        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        data: data,
+        least_squares: true,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-line-best-fit',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y'
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
+            title: "Another Least Squares Example",
+            description: "Least squares effortlessly works with dates or times on axes.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 150 * 1.5,
+            left: 60,
+            right: 10,
+            least_squares: true,
+            target: '#sls-time-series',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+});
+
+var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Scatterplot with Size and Color",
+        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-size-and-color',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'z',
+        color_range: color_range,
+        size_accessor:'w',
+        x_rug: true,
+        y_rug: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='histogram1'></div>
+                    <div class='col-lg-6 text-center' id='histogram2'></div>
+                    <div class='col-lg-6 text-center' id='histogram3'></div>
+                    <div class='col-lg-6 text-center' id='histogram4'></div>
+                    <div class='col-lg-12 text-center' id='time-hist'></div>
+                    <div class='col-lg-12 text-center' id='ufos'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/ufo_dates.csv'>data</a></div>
+
+<pre><code class='javascript'>var values = d3.range(10000).map(d3.random.bates(10));
+
+MG.data_graphic({
+    title: "Histogram 1",
+    description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
+    data: values,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    bins: 50,
+    bar_margin: 0,
+    target: '#histogram1',
+    y_extended_ticks: true,
+    mouseover: function(d, i) {
+        d3.select('#histogram1 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+d3.csv('data/ufo_dates.csv', function(ufos){
+    var data = ufos.map(function(d){
+        return parseInt(d.value) / 30;
+    });
+    data.sort();
+    var p75 = data[Math.floor(data.length * 3 / 4)];
+    MG.data_graphic({
+        title: "Difference in UFO Sighting and Reporting Dates (in months)",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
+        data: data,
+        markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
+        chart_type: 'histogram',
+        width: 600,
+        height: 300,
+        right: 40,
+        bar_margin: 0,
+        bins: 150,
+        target: '#ufos',
+        y_extended_ticks: true,
+        mouseover: function(d, i) {
+            var string;
+            if (d.x < 12) {
+                string = d3.round(d.x,2) + ' Months';
+            } else {
+                string = d3.round(d.x,2) + ' Months';
+            }
+            d3.select('#ufos svg .mg-active-datapoint')
+                .text(string + '       Volume: ' + d.y);
+        }
+    });
+});
+
+var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
+second = d3.layout.histogram()(second)
+    .map(function(d) {
+        return {'count': d.y, 'value': d.x};
+});
+
+MG.data_graphic({
+    title: "Histogram 2",
+    description: "Already binned data being fed in.",
+    data: second,
+    binned: true,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram2',
+    y_extended_ticks: true,
+    x_accessor:'value',
+    y_accessor:'count',
+    mouseover: function(d, i) {
+        d3.select('#histogram2 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+var third = d3.range(1000).map(d3.random.bates(10));
+third = third.map(function(d,i){ return {val1: d, val2: i}; });
+
+MG.data_graphic({
+    title: "Histogram 3",
+    description: "Unbinned, but in same format as other line chart data.",
+    data: third,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram3',
+    linked: true,
+    y_extended_ticks: true,
+    x_accessor:'val1',
+    mouseover: function(d, i) {
+        d3.select('#histogram3 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+// check for negative values, for sanity.
+var fourth = d3.range(1000).map(d3.random.bates(10));
+fourth = fourth.map(function(d,i){ return d - 0.5; });
+
+MG.data_graphic({
+    title: "Histogram 4",
+    description: "Sanity-checking negative data.",
+    data: fourth,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram4',
+    y_extended_ticks: true,
+    x_accessor:'val1',
+    mouseover: function(d, i) {
+        d3.select('#histogram4 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+var hist1 = fake_data(25, 60).map(function(d){
+    d.value = Math.round(d.value);
+    return d;
+});
+
+MG.data_graphic({
+    data: hist1,
+    target: '#time-hist',
+    title: 'Histograms can be time series as well',
+    chart_type: 'histogram',
+    width: 600,
+    height: 200,
+    binned: true,
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12 text-center' id='bar1'></div>
+                    <div class='col-lg-6 text-center' id='bar2'></div>
+                    <div class='col-lg-6 text-center' id='bar3'></div>
+                </div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>var bar_data = [
+    {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
+    {'label': 'second', 'value':2.1, 'baseline':3.1, 'prediction': 3},
+    {'label': 'third', 'value':6.3, 'baseline':6.3, 'prediction': 4},
+    {'label': 'fourth', 'value':5.7, 'baseline':3.2, 'prediction': 5},
+    {'label': 'fifth', 'value':5, 'baseline':4.2, 'prediction': 3},
+    {'label': 'sixth', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
+];
+
+MG.data_graphic({
+    title: 'Bar Prototype',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    x_accessor: 'value',
+    y_accessor: 'label',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    width: 295,
+    right: 10,
+    target: '#bar1',
+    animate_on_load: true,
+    x_axis: false
+});
+
+MG.data_graphic({
+    title: 'No Axis',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    x_accessor: 'value',
+    y_accessor: 'label',
+    width: 295,
+    height: 150,
+    right: 10,
+    animate_on_load: true,
+    target: '#bar2'
+});
+
+MG.data_graphic({
+    title: 'Vertical Bars',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    bar_orientation: 'vertical',
+    y_accessor: 'value',
+    x_accessor: 'label',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    width: 295,
+    height: 150,
+    right: 10,
+    animate_on_load: true,
+    target: '#bar3'
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='table1'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>var table_data = [
+    { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
+    { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
+    { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
+    { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
+    { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
+];
+
+var table1 = MG.data_table({
+        data: table_data,
+        title: 'A Data Table',
+        description: 'A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.',
+        show_tooltips: true
+    })
+    .target('#table1')
+    .title({
+        accessor: 'geo',
+        secondary_accessor:'year',
+        label: 'Country',
+        description: 'These are arbitrary countries with arbitrary years underneath.'
+    })
+    .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
+    .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
+    .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
+    .number({
+        accessor: 'total',
+        label: 'Volume',
+        format: 'count', currency: '$',
+        width: 100,
+        font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
+        color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
+    })
+    .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
+    .text({ accessor: 'description', width: 240, font_style: 'italic' })
+    .display();</code></pre>
+
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='buttons'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>var bdata = [
+    {a:'apples', b:'quartz'},
+    {a:'bananas', b:'pyrite'},
+    {a:'durian', b:'obsidian'}
+];
+
+var resolution_features = ['weekly', 'monthly'];
+
+var buttons = MG.button_layout('#buttons')
+    .data(bdata)
+    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
+    .button('a', 'Fruit')
+    .button('b', 'Rock')
+    .callback(function(){
+        console.log('made it');
+        return false;
+    })
+    .display();</code></pre>
+
+                </div>
+            </div>
+
+<script>
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Simple Scatterplot",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-simple',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        mouseover: function(d, i) { console.log(d,i); },
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Automatic Category Coloring",
+        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#categorical1',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'v',
+        color_type:'category',
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Custom Category Color Mapping",
+        description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#categorical2',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'v',
+        color_domain:['cat_0', 'cat_1', 'other'],
+        color_range:['blue', 'gray', 'black'],
+        color_type:'category',
+        x_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Simple Line of Best Fit",
+        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        data: data,
+        least_squares: true,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-line-best-fit',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y'
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
+            title: "Another Least Squares Example",
+            description: "Least squares effortlessly works with dates or times on axes.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 150 * 1.5,
+            left: 60,
+            right: 10,
+            least_squares: true,
+            target: '#sls-time-series',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+});
+
+var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Scatterplot with Size and Color",
+        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 150 * 1.5,
+        right: 10,
+        target: '#scatter-size-and-color',
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'z',
+        color_range: color_range,
+        size_accessor:'w',
+        x_rug: true,
+        y_rug: true
+    });
+});
+    
+var values = d3.range(10000).map(d3.random.bates(10));
+
+MG.data_graphic({
+    title: "Histogram 1",
+    description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
+    data: values,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    bins: 50,
+    bar_margin: 0,
+    target: '#histogram1',
+    y_extended_ticks: true,
+    mouseover: function(d, i) {
+        d3.select('#histogram1 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+d3.csv('data/ufo_dates.csv', function(ufos){
+    var data = ufos.map(function(d){
+        return parseInt(d.value) / 30;
+    });
+    data.sort();
+    var p75 = data[Math.floor(data.length * 3 / 4)];
+    MG.data_graphic({
+        title: "Difference in UFO Sighting and Reporting Dates (in months)",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
+        data: data,
+        markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
+        chart_type: 'histogram',
+        width: 600,
+        height: 300,
+        right: 40,
+        bar_margin: 0,
+        bins: 150,
+        target: '#ufos',
+        y_extended_ticks: true,
+        mouseover: function(d, i) {
+            var string;
+            if (d.x < 12) {
+                string = d3.round(d.x,2) + ' Months';
+            } else {
+                string = d3.round(d.x,2) + ' Months';
+            }
+            d3.select('#ufos svg .mg-active-datapoint')
+                .text(string + '       Volume: ' + d.y);
+        }
+    });
+});
+
+var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
+second = d3.layout.histogram()(second)
+    .map(function(d) {
+        return {'count': d.y, 'value': d.x};
+});
+
+MG.data_graphic({
+    title: "Histogram 2",
+    description: "Already binned data being fed in.",
+    data: second,
+    binned: true,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram2',
+    y_extended_ticks: true,
+    x_accessor:'value',
+    y_accessor:'count',
+    mouseover: function(d, i) {
+        d3.select('#histogram2 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+var third = d3.range(1000).map(d3.random.bates(10));
+third = third.map(function(d,i){ return {val1: d, val2: i}; });
+
+MG.data_graphic({
+    title: "Histogram 3",
+    description: "Unbinned, but in same format as other line chart data.",
+    data: third,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram3',
+    linked: true,
+    y_extended_ticks: true,
+    x_accessor:'val1',
+    mouseover: function(d, i) {
+        d3.select('#histogram3 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+// check for negative values, for sanity.
+var fourth = d3.range(1000).map(d3.random.bates(10));
+fourth = fourth.map(function(d,i){ return d - 0.5; });
+
+MG.data_graphic({
+    title: "Histogram 4",
+    description: "Sanity-checking negative data.",
+    data: fourth,
+    chart_type: 'histogram',
+    width: 295,
+    height: 150,
+    right: 10,
+    target: '#histogram4',
+    y_extended_ticks: true,
+    x_accessor:'val1',
+    mouseover: function(d, i) {
+        d3.select('#histogram4 svg .mg-active-datapoint')
+            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+    }
+});
+
+var hist1 = fake_data(25, 60).map(function(d){
+    d.value = Math.round(d.value);
+    return d;
+});
+
+MG.data_graphic({
+    data: hist1,
+    target: '#time-hist',
+    title: 'Histograms can be time series as well',
+    chart_type: 'histogram',
+    width: 600,
+    height: 200,
+    binned: true,
+});
+
+var bar_data = [
+    {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
+    {'label': 'second', 'value':2.1, 'baseline':3.1, 'prediction': 3},
+    {'label': 'third', 'value':6.3, 'baseline':6.3, 'prediction': 4},
+    {'label': 'fourth', 'value':5.7, 'baseline':3.2, 'prediction': 5},
+    {'label': 'fifth', 'value':5, 'baseline':4.2, 'prediction': 3},
+    {'label': 'sixth', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
+    {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
+];
+
+MG.data_graphic({
+    title: 'Bar Prototype',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    x_accessor: 'value',
+    y_accessor: 'label',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    width: 295,
+    right: 10,
+    target: '#bar1',
+    animate_on_load: true,
+    x_axis: false
+});
+
+MG.data_graphic({
+    title: 'No Axis',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    x_accessor: 'value',
+    y_accessor: 'label',
+    width: 295,
+    height: 150,
+    right: 10,
+    animate_on_load: true,
+    target: '#bar2'
+});
+
+MG.data_graphic({
+    title: 'Vertical Bars',
+    description: 'Work-in-progress',
+    data: bar_data,
+    chart_type: 'bar',
+    bar_orientation: 'vertical',
+    y_accessor: 'value',
+    x_accessor: 'label',
+    baseline_accessor: 'baseline',
+    predictor_accessor: 'prediction',
+    width: 295,
+    height: 150,
+    right: 10,
+    animate_on_load: true,
+    target: '#bar3'
+});
+
+var table_data = [
+    { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
+    { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
+    { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
+    { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
+    { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
+];
+
+var table1 = MG.data_table({
+        data: table_data,
+        title: 'A Data Table',
+        description: 'A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.',
+        show_tooltips: true
+    })
+    .target('#table1')
+    .title({
+        accessor: 'geo',
+        secondary_accessor:'year',
+        label: 'Country',
+        description: 'These are arbitrary countries with arbitrary years underneath.'
+    })
+    .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
+    .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
+    .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
+    .number({
+        accessor: 'total',
+        label: 'Volume',
+        format: 'count', currency: '$',
+        width: 100,
+        font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
+        color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
+    })
+    .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
+    .text({ accessor: 'description', width: 240, font_style: 'italic' })
+    .display();
+
+var bdata = [
+    {a:'apples', b:'quartz'},
+    {a:'bananas', b:'pyrite'},
+    {a:'durian', b:'obsidian'}
+];
+
+var resolution_features = ['weekly', 'monthly'];
+
+var buttons = MG.button_layout('#buttons')
+    .data(bdata)
+    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
+    .button('a', 'Fruit')
+    .button('b', 'Rock')
+    .callback(function(){
+        console.log('made it');
+        return false;
+    })
+    .display();    
+    
+addScatterplotSizeAndColor(theme);
+
+function addScatterplotSizeAndColor(theme) {
+    var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+    // call data_graphic again since we need to use a different color_range for the dark theme
+    d3.json('data/points1.json', function(data) {
+        MG.data_graphic({
+            title: "Scatterplot with Size and Color",
+            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 150 * 1.5,
+            right: 10,
+            target: '#scatter-size-and-color',
+            xax_format: function(f) {
+                var pf = d3.formatPrefix(f);
+                return Math.round(pf.scale(f)) + pf.symbol;
+            },
+            x_accessor: 'x',
+            y_accessor: 'y',
+            color_accessor:'z',
+            color_range: color_range,
+            size_accessor:'w',
+            x_rug: true,
+            y_rug: true
+        });
+    });
+}
+
+function fake_data(length, seconds) {
+    var d = new Date();
+    var v = 100000;
+    var data=[];
+
+    for (var i = 0; i < length; i++){
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d = new Date(d.getTime() + seconds * 1000);
+    }
+    return data;
+}
+
+function fake_days(length) {
+    var d = new Date();
+    var v = 100000;
+
+    var data = [];
+    for (var i = 0; i<length; i++) {
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d.setDate(d.getDate() + 1);
+    }
+    return data;
+}
+</script>

@@ -1,0 +1,175 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='fake_users2'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Chart",
+        description: "This line chart contains multiple lines.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#fake_users2',
+        legend: ['Line 1','Line 2','Line 3'],
+        legend_target: '.legend'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-lg-7 text-center legend'></div>
+                <div class='col-lg-5'></div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden_multi'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden-multi.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden-multi.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: 'Broken Multi-Lines',
+        description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#missing_is_hidden_multi',
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='linked_multi1'></div>
+                    <div id='linked_multi2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data 1</a>, 
+                        <a href='data/fake_users3.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi1',
+        linked: true
+    });
+})
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked 2",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi2',
+        linked: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            
+<script>
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Chart",
+        description: "This line chart contains multiple lines.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#fake_users2',
+        legend: ['Line 1','Line 2','Line 3'],
+        legend_target: '.legend'
+    });
+});
+
+d3.json('data/missing-is-hidden-multi.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: 'Broken Multi-Lines',
+        description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#missing_is_hidden_multi',
+        show_secondary_x_label: false
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi1',
+        linked: true
+    });
+})
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked 2",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi2',
+        linked: true
+    });
+});
+</script>

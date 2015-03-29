@@ -1,0 +1,234 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='fake_users1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Line Chart",
+        description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: document.getElementById('fake_users1'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='confidence_band'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/confidence_band.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/confidence_band.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Confidence Band",
+        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+        data: data,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#confidence_band',
+        show_secondary_x_label: false,
+        show_confidence_band: ['l', 'u'],
+        x_extended_ticks: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: 'Broken Lines',
+        description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='small-range'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/small-range.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/small-range.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Small Range of Integers",
+        description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+        data: data,
+        interpolate: 'basic',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#small-range'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='briefing-1'></div>
+                    <div id='briefing-2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/brief-1.json'>data 1</a>, 
+                        <a href='data/brief-2.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Linked Graphic",
+        description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
+        data: data,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-1'
+    });
+});
+
+d3.json('data/brief-2.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Other Linked Graphic",
+        description: "Roll over and watch as the graphic to the left triggers.",
+        data: data,
+        area: false,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-2'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+<script>
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Line Chart",
+        description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: document.getElementById('fake_users1'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+d3.json('data/confidence_band.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Confidence Band",
+        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+        data: data,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#confidence_band',
+        show_secondary_x_label: false,
+        show_confidence_band: ['l', 'u'],
+        x_extended_ticks: true
+    });
+});
+
+d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: 'Broken Lines',
+        description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});
+
+d3.json('data/small-range.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Small Range of Integers",
+        description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+        data: data,
+        interpolate: 'basic',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#small-range'
+    });
+});
+
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Linked Graphic",
+        description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
+        data: data,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-1'
+    });
+});
+
+d3.json('data/brief-2.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Other Linked Graphic",
+        description: "Roll over and watch as the graphic to the left triggers.",
+        data: data,
+        area: false,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-2'
+    });
+});
+</script>

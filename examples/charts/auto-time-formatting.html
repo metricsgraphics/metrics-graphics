@@ -1,0 +1,149 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='time1'></div>
+                        <div class='col-lg-12 text-center' id='time2'></div>
+                        <div class='col-lg-12 text-center' id='time3'></div>
+                        <div class='col-lg-12 text-center' id='time4'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                
+                <pre><code class='javascript'>function fake_data(length, seconds) {
+    var d = new Date();
+    var v = 100000;
+    var data=[];
+
+    for (var i = 0; i < length; i++){
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d = new Date(d.getTime() + seconds * 1000);
+    }
+    return data;
+}
+
+function fake_days(length) {
+    var d = new Date();
+    var v = 100000;
+
+    var data = [];
+    for (var i = 0; i < length; i++) {
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d.setDate(d.getDate() + 1);
+    }
+    return data;
+}
+
+var data1 = fake_data(25, 1);
+var data2 = fake_data(25,60 * 20);
+var data3 = fake_data(75,60 * 60);
+var data4 = fake_days(25);
+
+MG.data_graphic({
+    data: data1,
+    target: '#time1',
+    title: 'Less Than A Minute',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data2,
+    target: '#time2',
+    title: 'Less Than A Day',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data3,
+    target: '#time3',
+    title: 'A Few Days',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data4,
+    target: '#time4',
+    title: 'Over A Large Span of Days',
+    width: 600,
+    height: 200,
+    right: 40
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+function fake_data(length, seconds) {
+    var d = new Date();
+    var v = 100000;
+    var data=[];
+
+    for (var i = 0; i < length; i++){
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d = new Date(d.getTime() + seconds * 1000);
+    }
+    return data;
+}
+
+function fake_days(length) {
+    var d = new Date();
+    var v = 100000;
+
+    var data = [];
+    for (var i = 0; i < length; i++) {
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d.setDate(d.getDate() + 1);
+    }
+    return data;
+}
+
+var data1 = fake_data(25, 1);
+var data2 = fake_data(25,60 * 20);
+var data3 = fake_data(75,60 * 60);
+var data4 = fake_days(25);
+
+MG.data_graphic({
+    data: data1,
+    target: '#time1',
+    title: 'Less Than A Minute',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data2,
+    target: '#time2',
+    title: 'Less Than A Day',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data3,
+    target: '#time3',
+    title: 'A Few Days',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data4,
+    target: '#time4',
+    title: 'Over A Large Span of Days',
+    width: 600,
+    height: 200,
+    right: 40
+});
+</script>
