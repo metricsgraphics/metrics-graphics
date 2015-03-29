@@ -3,24 +3,34 @@ var theme = 'light';
 (function() {
     'use strict';
 
-    $('#trunk').load('charts/lines.html', function() {
+    //set the active pill and section on first load
+    var section = (document.location.hash) ? document.location.hash.slice(1) : 'lines';
+
+    $('#trunk').load('charts/' + section + '.html', function() {
         $('pre code').each(function(i, block) {
             hljs.highlightBlock(block);
         });
     });
 
+    $('.examples li a#' + section).addClass('active');
+
+    //handle mouse clicks and so on
     assignEventListeners();
 
     function assignEventListeners() {
-        $('ul.examples li a.pill').on('click', function() {
+        $('ul.examples li a.pill').on('click', function(event) {
+            event.preventDefault();
             $('ul.examples li a.pill').removeClass('active');
             $(this).addClass('active');
 
-            $('#trunk').load('charts/' + $(this).attr('id') + '.html', function() {
+            var section = $(this).attr('id').slice(5);
+            $('#trunk').load('charts/' + section + '.html', function() {
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
             });
+
+            document.location.hash = section;
 
             return false;
         })
