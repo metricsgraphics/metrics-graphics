@@ -99,7 +99,8 @@ ul {
     padding: 10px 0 0 0;
 }
 
-ul li {
+.head ul li,
+ul.examples li {
     display: inline;
     list-style: none;
     padding-right: 15px;
