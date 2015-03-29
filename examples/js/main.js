@@ -12,7 +12,7 @@
     torso.right = 40;
 
     var trunk = {};
-    trunk.width = 285;
+    trunk.width = 295;
     trunk.height = 150;
     trunk.left = 35;
     trunk.right = 10;
@@ -111,8 +111,8 @@
         title: 'Histograms can be time series as well',
         chart_type: 'histogram',
         width: torso.width,
+        height: torso.height,
         binned: true,
-        height: torso.height * 4 / 5
     });
 
     // few observations
@@ -324,7 +324,7 @@
 
         // missing data in one of a multi-line chart.
         var all_the_data = MG.clone(data[0]);
-        for(i = 1; i < data.length; i++){
+        for (i = 1; i < data.length; i++){
             for (var j=0; j < data[i].length; j++){
                 if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
                     // pass
@@ -335,7 +335,7 @@
         }
 
         MG.data_graphic({
-            title:"Handling Different Sized Lines in a Single Array",
+            title: "Handling Different Sized Lines in a Single Array",
             description: "How do you handle data with multiple implied time series lengths?",
             data: all_the_data,
             width: torso.width,
@@ -349,14 +349,13 @@
         });
 
         MG.data_graphic({
-            title:"Aggregated Rollover Information",
-            description: "Also handles non-contiguous data",
+            title: "Aggregated Rollover Information",
+            description: "Aggregated information can be displayed with the <code>aggregate_rollover</code> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
             data: all_the_data,
             width: torso.width,
             height: torso.height,
             right: torso.right,
             target: '#aggregate',
-            linked: true,
             y_extended_ticks: true,
             x_accessor: 'date',
             y_accessor: ['value', 'value2', 'value3'],
@@ -365,7 +364,7 @@
     });
 
     d3.json('data/fake_users3.json', function(data) {
-        for(var i = 0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
@@ -385,7 +384,7 @@
 
         MG.data_graphic({
             title:"Preserving the aspect ratio",
-            description: "Try resizing your window.",
+            description: "You can automatically set the width or height of a data graphic to fit its parent element. When done the graphic will rescale to fit the size of the parent element while preserving its aspect ratio.",
             data: data,
             full_width: true,
             height: torso.height * 3 / 2,
@@ -416,7 +415,7 @@
 
     d3.json('data/log.json', function(data){
         data = [data];
-        for(var i = 0;i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
@@ -436,7 +435,7 @@
     });
 
     d3.json('data/some_percentage.json', function(data) {
-        for(var i = 0;i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] = MG.convert.date(data[i], 'date');
         }
 
@@ -569,7 +568,7 @@
 
         MG.data_graphic({
             title: "Small Text Inferred By Size",
-            description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i> (and the flip for the height) then the text size automatically scales to be slightly smaller.",
+            description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i>, and the similarly for the height, the text size automatically scales so that it is slightly smaller.",
             data: data,
             width: small.width,
             height: small.height,
@@ -617,13 +616,14 @@
 
         MG.data_graphic({
             title: "Beta Downloads",
-            description: "The graphic is gracefully updated depending on the chosen time period.",
+            description: "We sometimes have the need to view data for just the past n days. Here, the <i>transition_on_update</i> option is set to false.",
             data: data,
             width: torso.width,
             height: trunk.height,
             right: trunk.right,
             show_secondary_x_label: false,
             xax_count: 4,
+            transition_on_update: false,
             target: '#modify_time_period',
             x_accessor: 'date',
             y_accessor: 'beta'
@@ -648,7 +648,7 @@
 
         MG.data_graphic({
             title: "Small Text",
-            description: "By adding small_text:true to the args list, we can force the use of smaller axis text regardless of the width or height",
+            description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i> (and the flip for the height) then the text size automatically scales to be slightly smaller.",
             data: data,
             width: trunk.width,
             height: trunk.height,
@@ -755,7 +755,7 @@
 
     MG.data_graphic({
         title: "Histogram 1",
-        description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0.",
+        description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
         data: values,
         chart_type: 'histogram',
         width: trunk.width,
@@ -783,9 +783,9 @@
             data: data,
             markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
             chart_type: 'histogram',
-            width: trunk.width,
-            height: trunk.height * 1.5,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height * 1.5,
+            right: torso.right,
             bar_margin: 0,
             bins:150,
             target: '#ufos',
@@ -884,42 +884,42 @@
     ];
 
     MG.data_graphic({
-        title:'Bar Prototype',
-        description:'work in progress',
+        title: 'Bar Prototype',
+        description: 'Work-in-progress',
         data: bar_data,
+        chart_type: 'bar',
         x_accessor: 'value',
         y_accessor: 'label',
-        baseline_accessor:'baseline',
-        predictor_accessor:'prediction',
-        chart_type: 'bar',
-        width:trunk.width,
-        right:trunk.right,
+        baseline_accessor: 'baseline',
+        predictor_accessor: 'prediction',
+        width: trunk.width,
+        right: trunk.right,
         target: '#bar1',
         animate_on_load: true,
         x_axis: false
     });
 
     MG.data_graphic({
-        title:'No Axis',
-        description:'work in progress',
-        baseline_accessor:'baseline',
-        predictor_accessor:'prediction',
+        title: 'No Axis',
+        description: 'Work-in-progress',
         data: bar_data,
         chart_type: 'bar',
+        baseline_accessor: 'baseline',
+        predictor_accessor: 'prediction',
         x_accessor: 'value',
         y_accessor: 'label',
-        width:trunk.width,
-        height:trunk.height,
-        right:trunk.right,
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
         animate_on_load: true,
         target: '#bar2'
     });
 
     MG.data_graphic({
         title: 'Vertical Bars',
-        chart_type: 'bar',
-        description: 'work in progress',
+        description: 'Work-in-progress',
         data: bar_data,
+        chart_type: 'bar',
         bar_orientation: 'vertical',
         y_accessor: 'value',
         x_accessor: 'label',
@@ -1021,7 +1021,7 @@
 
     var resolution_features = ['weekly', 'monthly'];
 
-    var buttons = MG.button_layout('div#buttons')
+    var buttons = MG.button_layout('#buttons')
         .data(bdata)
         .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
         .button('a', 'Fruit')
@@ -1044,7 +1044,7 @@
     var table1 = MG.data_table({
             data: table_data,
             title: 'A Data Table',
-            description: 'A table has many of the same properties as any other data graphic.',
+            description: 'A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.',
             show_tooltips: true
         })
         .target('#table1')
@@ -1121,7 +1121,7 @@
             $('.mg-missing-background')
                 .css('stroke', '#ccc');
 
-            $('.pill').removeClass('active');
+            $('.head ul li a.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
             $('#dark-code').attr({href : 'css/railscasts.css'});
@@ -1145,7 +1145,7 @@
             $('.mg-missing-background')
                 .css('stroke', 'blue');
 
-            $('.pill').removeClass('active');
+            $('.head ul li a.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
             $('#dark-code').attr({href : ''});
@@ -1167,7 +1167,7 @@
             // update data
             MG.data_graphic({
                 title: "Downloads by Channel",
-                description: "The graphic is gracefully updated depending on the selected channel.",
+                description: "We sometimes have the need to split the data and then gracefully update the graphic with the newly selected subset of data.",
                 data: split_by_data,
                 width: torso.width,
                 height: trunk.height,
@@ -1189,7 +1189,7 @@
             // update data
             MG.data_graphic({
                 title: "Beta Downloads",
-                description: "The graphic is gracefully updated depending on the chosen time period.",
+                description: "We sometimes have the need to view data for just the past n days. Here, the <i>transition_on_update</i> option is set to false.",
                 data: data,
                 width: torso.width,
                 height: trunk.height,
