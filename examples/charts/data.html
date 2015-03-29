@@ -36,7 +36,31 @@
 
                 </div>
             </div>
-            
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: 'Broken Lines',
+        description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
                     <div class='row'>
@@ -126,6 +150,22 @@ d3.json('data/missing-y.json', function(data) {
             d3.select('#missing-y svg .mg-active-datapoint')
                 .text(date +  '   ' + y_val);
         }
+    });
+});
+
+d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: 'Broken Lines',
+        description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
     });
 });
 
