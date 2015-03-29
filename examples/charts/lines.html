@@ -113,6 +113,23 @@ d3.json('data/brief-2.json', function(data) {
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='singleton'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Singleton",
+    description: "Handling a solitary data point.",
+    data: [{'date': new Date('2015-03-05T21:00:00Z'), 'value': 12000}],
+    width: 600,
+    height: 200,
+    right: 40,
+    target: '#singleton'
+});</code></pre>
+
+                </div>
+            </div>
+
 
 <script>
 d3.json('data/fake_users1.json', function(data) {
@@ -190,5 +207,15 @@ d3.json('data/brief-2.json', function(data) {
         xax_count: 4,
         target: '#briefing-2'
     });
+});
+
+MG.data_graphic({
+    title: "Singleton",
+    description: "Handling a solitary data point.",
+    data: [{'date': new Date('2015-03-05T21:00:00Z'), 'value': 12000}],
+    width: 600,
+    height: 200,
+    right: 40,
+    target: '#singleton'
 });
 </script>
