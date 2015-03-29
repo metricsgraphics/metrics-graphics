@@ -1,15 +1,18 @@
 (function() {
     'use strict';
+
+    hljs.initHighlightingOnLoad();
+
     // json data that we intend to update later on via on-screen controls
     var split_by_data;
 
     var torso = {};
-    torso.width = 375;
+    torso.width = 620;
     torso.height = 200;
-    torso.right = 20;
+    torso.right = 40;
 
     var trunk = {};
-    trunk.width = 320;
+    trunk.width = 285;
     trunk.height = 150;
     trunk.left = 35;
     trunk.right = 10;
@@ -65,7 +68,8 @@
         target: '#time1',
         title: 'Less Than A Minute',
         width: torso.width,
-        height: torso.height * 4 / 5
+        height: torso.height,
+        right: torso.right
     });
 
     MG.data_graphic({
@@ -73,7 +77,8 @@
         target: '#time2',
         title: 'Less Than A Day',
         width: torso.width,
-        height: torso.height * 4 / 5
+        height: torso.height,
+        right: torso.right
     });
 
     MG.data_graphic({
@@ -81,7 +86,8 @@
         target: '#time3',
         title: 'A Few Days',
         width: torso.width,
-        height: torso.height * 4 / 5
+        height: torso.height,
+        right: torso.right
     });
 
     MG.data_graphic({
@@ -89,7 +95,8 @@
         target: '#time4',
         title: 'Over A Large Span of Days',
         width: torso.width,
-        height: torso.height * 4 / 5
+        height: torso.height,
+        right: torso.right
     });
 
     // fake some discrete data
@@ -149,9 +156,7 @@
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            target: '#small-range',
-            x_accessor: 'date',
-            y_accessor: 'value'
+            target: '#small-range'
         });
     });
     
@@ -192,8 +197,20 @@
 
     d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');
-        var fake_baselines = [{value: 160000000, label: 'a baseline'}];
 
+        MG.data_graphic({
+            title: "Rug plots",
+            description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+            data: data,
+            decimals: 0,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            target: '#y_rug',
+            area: false,
+            y_rug: true
+        });
+    
         // add a line chart
         var fake_users1 = document.getElementById('fake_users1');
         MG.data_graphic({
@@ -203,22 +220,33 @@
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            baselines: fake_baselines,
             target: fake_users1,
             x_accessor: 'date',
             y_accessor: 'value'
         });
 
         MG.data_graphic({
-            title: "No X Axis",
-            description: "Here is an example hiding the x axis.",
+            title: "Baselines",
+            description: "Baselines are horizontal lines that can added at arbitrary points.",
+            data: data,
+            width: torso.width,
+            baselines: [{value: 160000000, label: 'a baseline'}],
+            height: torso.height,
+            right: torso.right,
+            target: '#baselines',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+
+        MG.data_graphic({
+            title: "No X-Axis",
+            description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
             data: data,
             decimals: 0,
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
-            y_rug: true,
             target: '#hidden1',
             x_accessor: 'date',
             y_accessor: 'value',
@@ -234,7 +262,7 @@
 
         // add a chart with annotations
         MG.data_graphic({
-            title: "Annotations",
+            title: "Annotating a Point",
             description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
             data: data,
             width: torso.width,
@@ -276,27 +304,8 @@
             height: torso.height,
             right: torso.right,
             target: '#fake_users2',
-            x_accessor: 'date',
-            y_accessor: 'value'
-        });
-
-        // add a wide multi-line chart
-        MG.data_graphic({
-            title:"Multi-Line Chart Wide",
-            description: "This line chart contains multiple lines and has extended ticks enabled.",
-            area: false,
             legend: ['Line 1','Line 2','Line 3'],
-            legend_target: '.legend',
-            data: data,
-            width: torso.width * 2,
-            height: torso.height,
-            right: trunk.right,
-            show_secondary_x_label: false,
-            xax_tick: 0,
-            y_extended_ticks: true,
-            target: '#fake_users3',
-            x_accessor: 'date',
-            y_accessor: 'value'
+            legend_target: '.legend'
         });
 
         // linked multi-line charts
@@ -329,7 +338,7 @@
             title:"Handling Different Sized Lines in a Single Array",
             description: "How do you handle data with multiple implied time series lengths?",
             data: all_the_data,
-            width: torso.width * 2,
+            width: torso.width,
             height: torso.height,
             right: torso.right,
             target: '#missing1',
@@ -343,7 +352,7 @@
             title:"Aggregated Rollover Information",
             description: "Also handles non-contiguous data",
             data: all_the_data,
-            width: torso.width * 2,
+            width: torso.width,
             height: torso.height,
             right: torso.right,
             target: '#aggregate',
@@ -395,15 +404,13 @@
             description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
             data: data,
             format: 'percentage',
-            width: torso.width * 2,
+            width: torso.width,
             height: torso.height,
-            right: trunk.right,
+            right: torso.right,
             target: '#confidence_band',
             show_secondary_x_label: false,
             show_confidence_band: ['l', 'u'],
-            x_extended_ticks: true,
-            x_accessor: 'date',
-            y_accessor: 'value'
+            x_extended_ticks: true
         });
     });
 
@@ -416,10 +423,10 @@
         // add a chart that has a log scale
         MG.data_graphic({
             title: "Log Scale",
-            description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+            description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
             data: data,
             y_scale_type:'log',
-            width: torso.width * 2,
+            width: torso.width,
             height: torso.height,
             right: torso.right,
             target: '#log1',
@@ -448,11 +455,22 @@
             width: torso.width,
             height: torso.height,
             right: torso.right,
-            markers: markers,
             format: 'percentage',
             target: '#percentage',
             x_accessor: 'date',
             y_accessor: 'value'
+        });
+        
+        MG.data_graphic({
+            title: "Markers",
+            description: "Markers are vertical lines that can be added at arbitrary points.",
+            data: data,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            markers: markers,
+            format: 'percentage',
+            target: '#markers'
         });
 
         MG.data_graphic({
@@ -460,10 +478,10 @@
             description: "Here we set <i>decimals: 0</i> for percentages.",
             data: data,
             decimals: 0,
-            format: 'Percentage',
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            format: 'percentage',
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
             target: '#precision2',
             x_accessor: 'date',
@@ -476,10 +494,10 @@
             data: data,
             decimals: 0,
             show_rollover_text: false,
-            format: 'Percentage',
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            format: 'percentage',
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
             target: '#no-rollover-text',
             x_accessor: 'date',
@@ -507,7 +525,7 @@
         MG.data_graphic({
             left: 80,
             bottom: 50,
-            title: "X-Axis Not Time, Animated",
+            title: "Axis Labels",
             description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load.",
             data: data,
             animate_on_load: true,
@@ -542,14 +560,11 @@
             title: "Linked Graphic",
             description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
             data: data,
-            width: trunk.width,
+            width: torso.width,
             linked: true,
-            height: trunk.height,
-            right: trunk.right,
+            height: torso.height,
             xax_count: 4,
-            target: '#briefing-1',
-            x_accessor: 'date',
-            y_accessor: 'value'
+            target: '#briefing-1'
         });
 
         MG.data_graphic({
@@ -568,12 +583,12 @@
 
         MG.data_graphic({
             title: "No Y Axis",
-            description: "Here is an example hiding the y axis.",
+            description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
             data: data,
             decimals: 0,
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
             target: '#hidden2',
             x_accessor: 'date',
@@ -591,7 +606,7 @@
             title: "Downloads by Channel",
             description: "The graphic is gracefully updated depending on the selected channel.",
             data: data,
-            width: torso.width * 2,
+            width: torso.width,
             height: trunk.height,
             right: trunk.right,
             xax_count: 4,
@@ -604,7 +619,7 @@
             title: "Beta Downloads",
             description: "The graphic is gracefully updated depending on the chosen time period.",
             data: data,
-            width: torso.width * 2,
+            width: torso.width,
             height: trunk.height,
             right: trunk.right,
             show_secondary_x_label: false,
@@ -624,13 +639,11 @@
             data: data,
             area: false,
             linked: true,
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
-            target: '#briefing-2',
-            x_accessor: 'date',
-            y_accessor: 'value'
+            target: '#briefing-2'
         });
 
         MG.data_graphic({
@@ -653,12 +666,12 @@
 
         MG.data_graphic({
             title: "Changing Precision 1",
-            description: "Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
+            description: "We can change the precision if the axis data type is a float. We can also change both the formatting, or hide the rollover text altogether. Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
             data: data,
             decimals: 3,
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
             target: '#precision1',
             x_accessor: 'date',
@@ -669,9 +682,9 @@
             title: "Custom Rollover Text",
             description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
             data: data,
-            width: trunk.width,
-            height: trunk.height,
-            right: trunk.right,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
             xax_count: 4,
             mouseover: function(d, i) {
                 // custom format the rollover text, show days
@@ -690,7 +703,7 @@
 
         MG.data_graphic({
             title: "Negative Values 1",
-            description: "Currently defaults to having no area by default.",
+            description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
             data: data,
             width: trunk.width,
             height: trunk.height,
@@ -707,7 +720,6 @@
 
         MG.data_graphic({
             title: "Y-Axis Not Zero",
-            description: "We should have an option for letting the y-axis be some natural value other than 0, set by the data rather than the user.",
             data: data2,
             width: trunk.width,
             height: trunk.height,
@@ -723,7 +735,6 @@
     d3.json('data/neg2.json', function(data) {
         MG.data_graphic({
             title: "Negative Values 2",
-            description: "Check for same with two numbers instead of date.",
             data: data,
             width: trunk.width,
             height: trunk.height,
@@ -772,7 +783,7 @@
             data: data,
             markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
             chart_type: 'histogram',
-            width: trunk.width * 2,
+            width: trunk.width,
             height: trunk.height * 1.5,
             right: trunk.right,
             bar_margin: 0,
@@ -1092,7 +1103,12 @@
     }
 
     function assignEventListeners() {
-        $('#dark-css').click(function () {
+        $('ul.examples li a.pill').on('click', function() {
+            $('ul.examples li a.pill').removeClass('active');
+            $(this).addClass('active');
+        })
+    
+        $('#dark-css').on('click', function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data-dark.png)');
 
@@ -1108,6 +1124,7 @@
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
+            $('#dark-code').attr({href : 'css/railscasts.css'});
 
             // add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('dark');
@@ -1115,7 +1132,7 @@
             return false;
         });
 
-        $('#light-css').click(function () {
+        $('#light-css').on('click', function () {
             $('.missing')
                 .css('background-image', 'url(images/missing-data.png)');
 
@@ -1131,7 +1148,7 @@
             $('.pill').removeClass('active');
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
-            $('#dark-layout').attr({href : ''});
+            $('#dark-code').attr({href : ''});
 
             // add this scatterplot and color the groups based on the theme
             addScatterplotSizeAndColor('light');
@@ -1152,7 +1169,7 @@
                 title: "Downloads by Channel",
                 description: "The graphic is gracefully updated depending on the selected channel.",
                 data: split_by_data,
-                width: torso.width * 2,
+                width: torso.width,
                 height: trunk.height,
                 right: trunk.right,
                 xax_count: 4,
@@ -1174,7 +1191,7 @@
                 title: "Beta Downloads",
                 description: "The graphic is gracefully updated depending on the chosen time period.",
                 data: data,
-                width: torso.width * 2,
+                width: torso.width,
                 height: trunk.height,
                 right: trunk.right,
                 show_secondary_x_label: false,

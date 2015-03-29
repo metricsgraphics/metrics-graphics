@@ -11,7 +11,7 @@
     <meta property='og:site_name' content='MetricsGraphics.js' />
 
     <link rel='icon' type='image/png' href='images/og-logo.png' />
-    <title>MetricsGraphics.js</title>
+    <title>MetricsGraphics.js (DEV)</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
@@ -21,11 +21,39 @@
     <link href='../dist/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css' id='light'>
     <link href='' rel='stylesheet' type='text/css' id='dark'>
+    <link href='css/highlightjs-default.css' rel='stylesheet' type='text/css' id='light-code'>
+    <link href='' rel='stylesheet' type='text/css' id='dark-code'>
 
+    <script src='js/lib/highlight.pack.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js' charset='utf-8'></script>
 
-    <script src='../dist/metricsgraphics.js'></script>
+
+    <!-- dev start -->
+    <script src='../src/js/MG.js'></script>
+    <script src='../src/js/common/data_graphic.js'></script>
+    <script src='../src/js/common/bootstrap_tooltip_popover.js'></script>
+    <script src='../src/js/common/chart_title.js'></script>
+    <script src='../src/js/common/y_axis.js'></script>
+    <script src='../src/js/common/x_axis.js'></script>
+    <script src='../src/js/common/init.js'></script>
+    <script src='../src/js/common/markers.js'></script>
+    <script src='../src/js/common/window_listeners.js'></script>
+    <script src='../src/js/layout/bootstrap_dropdown.js'></script>
+    <script src='../src/js/layout/button.js'></script>
+    <script src='../src/js/charts/line.js'></script>
+    <script src='../src/js/charts/histogram.js'></script>
+    <script src='../src/js/charts/point.js'></script>
+    <script src='../src/js/charts/bar.js'></script>
+    <script src='../src/js/charts/table.js'></script>
+    <script src='../src/js/charts/missing.js'></script>
+    <script src='../src/js/misc/process.js'></script>
+    <script src='../src/js/misc/smoothers.js'></script>
+    <script src='../src/js/misc/formatters.js'></script>
+    <script src='../src/js/misc/utility.js'></script>
+    <script src='../src/js/misc/error.js'></script>
+
+    <!-- dev end -->
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -50,62 +78,896 @@
                 <li class='divider'>|</li>
                 <li><a href='#' id='light-css' class='pill active'>Light style</a></li>
                 <li><a href='#' id='dark-css' class='pill'>Dark style</a></li>
-                <li class='float-right no-padding'><a class='examples-options' href='dev.htm'>DEV</a></li>
-                <li class='float-right'><a class='selected examples-options' href='examples.htm'>RELEASE</a></li>
             </ul>
 
             <img src='images/logo.svg' id='logo' class='svg' />
         </div>
 
-        <div id='torso'>
-            <div id='fake_users1'></div>
-            <div id='fake_users2'></div>
-            <div id='missing-y'></div>
-            <div id='small-range'></div>
-            <div id='spike' class='mg-main-area-solid'></div>
-            <div id='percentage'></div>
-            <div id='currency'></div>
-            <div id='xnotdate'></div>
-            <div id='glorious_chart'></div>
-            <div id='linked_multi1'></div>
-            <div id='linked_multi2'></div>
-            <div id='missing_is_hidden'></div>
-            <div id='missing_is_hidden_multi'></div>
-        </div>
+        <ul class='examples text-center'>
+            <li><a href='#lines-section' id='lines' class='pill active'>Lines</a></li>
+            <li><a href='#multilines-section' id='multilines' class='pill'>Multiple Lines</a></li>
+            <li><a href='#data-section' id='data' class='pill'>Data</a></li>
+            <li><a href='#axes-section' id='axes' class='pill'>Axes</a></li>
+            <li><a href='#rollovers-section' id='rollovers' class='pill'>Rollovers</a></li>
+            <li><a href='#auto-time-formatting-section' id='auto-time-formatting' class='pill'>Automatic time formatting</a></li>
+            <li><a href='#annotations-section' id='annotations' class='pill'>Annotations</a></li>
+            <li><a href='#updating-section' id='updating' class='pill'>Updating</a></li>
+            <li><a href='#other-section' id='other' class='pill'>Other</a></li>
+            <li><a href='#experimental-section' id='experimental' class='pill'>Experimental</a></li>
+        </ul>
+
         <div id='trunk'>
+            <a name='lines-section'></a>
             <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Hassle-Free Layouts</h2>
-                    <p>We use Bootstrap's grid template to lay out graphics. This means
-                    that it is ridiculously easy to create grids of arbitrary sizes
-                    and place graphics and their corresponding prose or associated
-                    graphics wherever and however one pleases.</p>
-                    <p>Setting <i>legend</i> and <i>legend_target</i> allows you to
-                    generate a key to go with the graphic.</p>
-                    <div class='legend'></div>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='text-center' id='fake_users3'></div>
+                <div class='col-lg-7 text-center' id='fake_users1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Line Chart",
+        description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: document.getElementById('fake_users1'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+}</code></pre>
+
                 </div>
             </div>
 
-             <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Automatic Time Formatting</h2>
-                    <p>MetricsGraphics.js has sensible defaults for time-based axis labelling and rollovers, whether you're displaying each second or each month.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='time1'></div>
-                        <div class='col-lg-6 text-center' id='time2'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='time3'></div>
-                        <div class='col-lg-6 text-center' id='time4'></div>
-                    </div>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='confidence_band'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/confidence_band.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/confidence_band.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Confidence Band",
+        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+        data: data,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#confidence_band',
+        show_secondary_x_label: false,
+        show_confidence_band: ['l', 'u'],
+        x_extended_ticks: true
+    });
+});</code></pre>
+
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: 'Broken Lines',
+        description: 'Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.',
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='small-range'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/small-range.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/small-range.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Small Range of Integers",
+        description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+        data: data,
+        interpolate: 'basic',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#small-range'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='briefing-1'></div>
+                    <div id='briefing-2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/brief-1.json'>data 1</a>, 
+                        <a href='data/brief-2.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Linked Graphic",
+        description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
+        data: data,
+        width: trunk.width,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-1'
+    });
+});
+
+d3.json('data/brief-2.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Other Linked Graphic",
+        description: "Roll over and watch as the graphic to the left triggers.",
+        data: data,
+        area: false,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-2'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <a name='multilines-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='fake_users2'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Chart",
+        description: "This line chart contains multiple lines.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#fake_users2',
+        legend: ['Line 1','Line 2','Line 3'],
+        legend_target: '.legend'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-lg-7 text-center legend'></div>
+                <div class='col-lg-5'></div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden_multi'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden-multi.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden-multi.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: 'Broken Multi-Lines',
+        description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#missing_is_hidden_multi',
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='linked_multi1'></div>
+                    <div id='linked_multi2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data 1</a>, 
+                        <a href='data/fake_users3.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi1',
+        linked: true
+    });
+})
+
+d3.json('data/fake_users3.json', function(data) {
+    for(var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title:"Multi-Line Linked 2",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi2',
+        linked: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <a name='data-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='missing-y'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/missing-y.json'>data</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/missing-y.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Few Observations",
+        description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+        data: data,
+        interpolate: 'basic',
+        missing_is_zero: true,
+        width: 600,
+        height: 200,
+        right: torso.right,
+        min_x: new Date('2014-01-01'),
+        max_x: new Date('2014-06-01'),
+        target: '#missing-y',
+        mouseover: function(d, i) {
+            var df = d3.time.format('%b %d, %Y');
+            var date = df(d.date);
+            var y_val = (d.value === 0) ? 'no data' : d.value;
+
+            d3.select('#missing-y svg .mg-active-datapoint')
+                .text(date +  '   ' + y_val);
+        }
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='glorious_chart'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Glorious Graphic",
+    error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
+    chart_type: 'missing-data',
+    missing_text: 'This is an example of a missing chart',
+    description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
+    target: '#glorious_chart',
+    width: 600,
+    height: 200
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='missing1'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+                
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var all_the_data = MG.clone(data[0]);
+    for(i = 1; i < data.length; i++){
+        for (var j=0; j < data[i].length; j++){
+            if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+                // pass
+            } else {
+                all_the_data[j]['value' + (i + 1)] = data[i][j].value;
+            }
+        }
+    }
+
+    MG.data_graphic({
+        title:"Handling Different Sized Lines in a Single Array",
+        description: "How do you handle data with multiple implied time series lengths?",
+        data: all_the_data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing1',
+        linked: true,
+        y_extended_ticks: true,
+        x_accessor: 'date',
+        y_accessor: ['value', 'value2', 'value3']
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <a name='axes-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='xnotdate'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/xnotdate.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/xnotdate.json', function(data) {
+    MG.data_graphic({
+        title: "Axis Labels",
+        description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load.",
+        data: data,
+        animate_on_load: true,
+        area: false,
+        width: 600,
+        height: 200,
+        right: 40,
+        left: 80,
+        bottom: 50,
+        target: '#xnotdate',
+        x_accessor: 'males',
+        y_accessor: 'females',
+        x_label: 'males',
+        y_label: 'females',
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='percentage'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for(var i = 0;i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Some Percentages",
+        description: "Here is an example that shows percentages.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        format: 'percentage',
+        target: '#percentage'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='currency'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_currency.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_currency.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Some Currency",
+        description: "Here is an example that uses custom units for currency.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#currency',
+        yax_units: '$'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='log1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/log.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/log.json', function(data){
+    data = [data];
+    for(var i = 0;i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Log Scale",
+        description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
+        data: data,
+        y_scale_type:'log',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#log1'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12 text-center' id='hidden1'></div>
+                    <div class='col-lg-12 text-center' id='hidden2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users1.json'>data 1</a>, 
+                        <a href='data/brief-1.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No X Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#hidden1',
+        area: false,
+        x_axis: false,
+        small_text: true
+    });
+});
+
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No Y Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 20,
+        xax_count: 4,
+        target: '#hidden2',
+        area: false,
+        small_text: true,
+        y_axis: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='y_rug'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No X Axis",
+        description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#y_rug',
+        area: false,
+        y_rug: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='neg1'></div>
+                    <div class='col-lg-6 text-center' id='neg2'></div>
+                    <div class='col-lg-6 text-center' id='y-axis-not-zero'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/neg1.json'>data 1</a>, 
+                        <a href='data/neg2.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/neg1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Negative Values 1",
+        description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
+        data: data,
+        width: 285,
+        height: 150,
+        right: 10,
+        target: '#neg1'
+    });
+
+    var data2 = MG.clone(data).map(function(d) {
+        d.value = d.value + 550;
+        return d;
+    });
+
+    MG.data_graphic({
+        title: "Y-Axis Not Zero",
+        data: data2,
+        width: 285,
+        height: 150,
+        right: 10,
+        min_y_from_data: true,
+        yax_units: '$',
+        target: '#y-axis-not-zero',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+d3.json('data/neg2.json', function(data) {
+    MG.data_graphic({
+        title: "Negative Values 2",
+        data: data,
+        width: 285,
+        height: 150,
+        right: 10,
+        xax_format: function(f) {
+            var pf = d3.formatPrefix(f);
+            return Math.round(pf.scale(f)) + pf.symbol;
+        },
+        target: '#neg2',
+        x_accessor: 'subject',
+        y_accessor: 'measure'
+    });
+});</code></pre>
+
+
+
+
+                </div>
+            </div>
+
+            <a name='rollovers-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12 text-center' id='precision1'></div>
+                    <div class='col-lg-12 text-center' id='precision2'></div>
+                    <div class='col-lg-12 text-center' id='custom-rollover'></div>
+                    <div class='col-lg-12 text-center' id='no-rollover-text'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/float.json'>data 1</a>, 
+                        <a href='data/some_percentage.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/float.json', function(data) {
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Changing Precision 1",
+        description: "We can change the precision if the axis data type is a float. We can also change both the formatting, or hide the rollover text altogether. Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
+        data: data,
+        decimals: 3,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision1'
+    });
+
+    MG.data_graphic({
+        title: "Custom Rollover Text",
+        description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        mouseover: function(d, i) {
+            // custom format the rollover text, show days
+            var prefix = d3.formatPrefix(d.value);
+            d3.select('#custom-rollover svg .mg-active-datapoint')
+                .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+        },
+        target: '#custom-rollover'
+    });
+});
+
+d3.json('data/some_percentage.json', function(data) {
+    for(var i = 0;i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Changing Precision 2",
+        description: "Here we set <i>decimals: 0</i> for percentages.",
+        data: data,
+        decimals: 0,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision2'
+    });
+
+    MG.data_graphic({
+        title: "... Or No Rollover Text",
+        description: "By setting <i>show_rollover_text: false</i>, you can hide the default rollover text from even appearing. This, coupled with the custom callback, gives a lot of interesting options for controlling rollovers.",
+        data: data,
+        decimals: 0,
+        show_rollover_text: false,
+        format: 'Percentage',
+        width: trunk.width,
+        height: trunk.height,
+        right: trunk.right,
+        xax_count: 4,
+        target: '#no-rollover-text'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <a name='auto-time-formatting-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='time1'></div>
+                        <div class='col-lg-12 text-center' id='time2'></div>
+                        <div class='col-lg-12 text-center' id='time3'></div>
+                        <div class='col-lg-12 text-center' id='time4'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                
+                <pre><code class='javascript'>function fake_data(length, seconds) {
+    var d = new Date();
+    var v = 100000;
+    var data=[];
+
+    for (var i = 0; i < length; i++){
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d = new Date(d.getTime() + seconds * 1000);
+    }
+    return data;
+}
+
+function fake_days(length) {
+    var d = new Date();
+    var v = 100000;
+
+    var data = [];
+    for (var i = 0; i < length; i++) {
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d.setDate(d.getDate() + 1);
+    }
+    return data;
+}
+
+var data1 = fake_data(25, 1);
+var data2 = fake_data(25,60 * 20);
+var data3 = fake_data(75,60 * 60);
+var data4 = fake_days(25);
+
+MG.data_graphic({
+    data: data1,
+    target: '#time1',
+    title: 'Less Than A Minute',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data2,
+    target: '#time2',
+    title: 'Less Than A Day',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data3,
+    target: '#time3',
+    title: 'A Few Days',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    data: data4,
+    target: '#time4',
+    title: 'Over A Large Span of Days',
+    width: 600,
+    height: 200,
+    right: 40
+});</code></pre>
+
+                </div>
+            </div>
+            
+            <a name='annotations-section'></a>
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for(var i = 0;i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': '1st Milestone'
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': '2nd Milestone'
+    }];
+
+    MG.data_graphic({
+        title: "Markers",
+        description: "Markers are vertical lines that can be added at arbitrary points.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='baselines'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Baselines",
+        description: "Baselines are horizontal lines that can added at arbitrary points.",
+        data: data,
+        baselines: [{value: 160000000, label: 'a baseline'}],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#baselines'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center mg-main-area-solid' id='spike'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+        data = MG.convert.date(data, 'date');
+
+        var markers = [{
+            'date': new Date('2014-03-17T00:00:00.000Z'),
+            'label': 'Look, a spike!'
+        }];
+
+        MG.data_graphic({
+            title: "Annotating a Point",
+            description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
+            data: data,
+            width: torso.width,
+            height: torso.height,
+            right: torso.right,
+            markers: markers,
+            target: '#spike'
+        });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       <div class='footer'>
+            <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 2.2.1</a>
+            <br />Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a> and
+            <a href='https://github.com/hamilton'>Hamilton Ulmer</a>
+            <br />2014 &middot; Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
+            Mozilla Public License</a>
+            <br /><a href='https://github.com/mozilla/metrics-graphics'>
+                <i class='fa fa-github fa-3x' style='line-height:42px'></i>
+            </a>
+        </div>
+        
+            
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
                     <h2 class='trunk-title'>Static or Dynamic Sizing</h2>
@@ -121,34 +983,6 @@
                         <div class='col-lg-12 text-center'>
                             <div style='width:100%' id='aspect1'></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Confidence Band</h2>
-                    <p>We regularly make use of confidence bands with forecasts. One
-                    can easily specify a confidence band by enabling the option and
-                    specifying the elements that contain the lower and upper values
-                    for each data point.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='text-center' id='confidence_band'></div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Linked Graphics</h2>
-                    <p>It can be useful to have two graphics linked together&mdash;when
-                    a rollover in one is triggered, the same rollover is triggered on
-                    the same date or data point in the other.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='briefing-1'></div>
-                        <div class='col-lg-6 text-center' id='briefing-2'></div>
                     </div>
                 </div>
             </div>
@@ -202,68 +1036,6 @@
                     <div class='row'>
                         <div class='col-lg-6 text-center' id='small1'></div>
                         <div class='col-lg-6 text-center' id='small2'></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Hiding Axes</h2>
-                    <p>Either axis can be hidden with an argument.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='hidden1'></div>
-                        <div class='col-lg-6 text-center' id='hidden2'></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Rollover Text Formatting</h2>
-                    <p>We can change the precision if the axis data type is a float.
-                    We can also change both the formatting, or hide the rollover text
-                    altogether.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='precision1'></div>
-                        <div class='col-lg-6 text-center' id='precision2'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='custom-rollover'></div>
-                        <div class='col-lg-6 text-center' id='no-rollover-text'></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Logarithmic Scales</h2>
-                    <p>One can change the y-axis' scale to logarithmic by setting
-                    <i>y_scale_type</i> to <i>log</i>.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div id='log1'></div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Min and Max Numbers on&nbsp;Y-Axis</h2>
-                    <p>Currently this lib will default to 0 on the y-axis as min if
-                    there are no negative numbers. If there are negatives, should
-                    provide some buffer below.</p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='neg1'></div>
-                        <div class='col-lg-6 text-center' id='neg2'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-6 text-center' id='y-axis-not-zero'></div>
-                        <div class='col-lg-6 text-center'></div>
                     </div>
                 </div>
             </div>
@@ -327,21 +1099,6 @@
 
             <div class='row trunk-section'>
                 <div class='col-lg-4'>
-                    <h2 class='trunk-title'>Handling Missing Data</h2>
-                    <p>
-                        MetricsGraphics.js has a number of ways of handling missing data in line charts. We are currently working on a few options, including segmenting time series to show gaps.
-                    </p>
-                </div>
-                <div class='col-lg-8'>
-                    <div class='row'>
-                        <div class='text-center' id='missing1'></div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-4'>
                     <h2 class='trunk-title'>Aggregate Series Tooltip</h2>
                     <p>
                         Aggregated information can be displayed with the <code>aggregate_rollover</code> option in order to clearly highlight the relationship between lines.
@@ -396,19 +1153,8 @@
                 </div>
             </div>
         </div>
-
-        <div class='footer'>
-            <a href='http://metricsgraphicsjs.org'>MetricsGraphics.js 2.2.1</a>
-            <br />Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a> and
-            <a href='https://github.com/hamilton'>Hamilton Ulmer</a>
-            <br />2014 &middot; Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
-            Mozilla Public License</a>
-            <br /><a href='https://github.com/mozilla/metrics-graphics'>
-                <i class='fa fa-github fa-3x' style='line-height:42px'></i>
-            </a>
-        </div>
     </div>
-
+            
     <script src='js/main.js'></script>
 </body>
 </html>

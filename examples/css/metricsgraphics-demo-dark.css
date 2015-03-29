@@ -62,6 +62,10 @@ body {
     opacity: 0.1;
 }
 
+pre {
+    border-left: 2px solid #3b3b3b;
+}
+
 h1 {
     color: #f1f1f1;
 }
