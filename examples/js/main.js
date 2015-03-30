@@ -6,7 +6,7 @@ var theme = 'light';
     //set the active pill and section on first load
     var section = (document.location.hash) ? document.location.hash.slice(1) : 'lines';
 
-    $('#trunk').load('charts/' + section + '.html', function() {
+    $('#trunk').load('charts/' + section + '.htm', function() {
         $('pre code').each(function(i, block) {
             hljs.highlightBlock(block);
         });
@@ -24,7 +24,7 @@ var theme = 'light';
             $(this).addClass('active');
 
             var section = $(this).attr('id').slice(5);
-            $('#trunk').load('charts/' + section + '.html', function() {
+            $('#trunk').load('charts/' + section + '.htm', function() {
                 $('pre code').each(function(i, block) {
                     hljs.highlightBlock(block);
                 });
