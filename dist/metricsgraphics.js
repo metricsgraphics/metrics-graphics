@@ -152,6 +152,7 @@
             missing_text: 'Data currently missing or unavailable',
             scalefns: {},
             scales: {},
+            show_tooltips: true,
             show_missing_background: true,
             interpolate: 'cardinal'
         };
@@ -3439,8 +3440,8 @@
                 }
 
                 //trigger mouseover on all points for this class name in .linked charts
-                if (args.linked && !globals.link) {
-                    globals.link = true;
+                if (args.linked && !MG.globals.link) {
+                    MG.globals.link = true;
 
                     //trigger mouseover on matching point in .linked charts
                     d3.selectAll('.mg-voronoi .path-' + i)
@@ -3479,8 +3480,8 @@
             var svg = mg_get_svg_child_of(args.target);
 
             return function(d,i) {
-                if (args.linked && globals.link) {
-                    globals.link = false;
+                if (args.linked && MG.globals.link) {
+                    MG.globals.link = false;
 
                     d3.selectAll('.mg-voronoi .path-' + i)
                         .each(function() {

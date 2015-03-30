@@ -71,10 +71,10 @@
                 
 <pre><code class='javascript'>MG.data_graphic({
     title: "Glorious Graphic",
+    description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
     chart_type: 'missing-data',
     missing_text: 'This is an example of a missing chart',
-    description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     target: '#glorious_chart',
     width: 600,
     height: 200
@@ -171,10 +171,10 @@ d3.json('data/missing-is-hidden.json', function(data) {
 
 MG.data_graphic({
     title: "Glorious Graphic",
-    error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
     chart_type: 'missing-data',
-    missing_text: 'This is an example of a missing chart',
     description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
+    error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
+    missing_text: 'This is an example of a missing chart',
     target: '#glorious_chart',
     width: 600,
     height: 200

@@ -139,6 +139,7 @@ MG.data_graphic = function() {
         missing_text: 'Data currently missing or unavailable',
         scalefns: {},
         scales: {},
+        show_tooltips: true,
         show_missing_background: true,
         interpolate: 'cardinal'
     };
