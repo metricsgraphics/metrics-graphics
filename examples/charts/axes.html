@@ -79,7 +79,7 @@
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/log.json'>data</a></div>
 
-<pre><code class='javascript'>d3.json('data/log.json', function(data){
+<pre><code class='javascript'>d3.json('data/log.json', function(data) {
     data = [data];
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
@@ -89,7 +89,7 @@
         title: "Log Scale",
         description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
         data: data,
-        y_scale_type:'log',
+        y_scale_type: 'log',
         width: 600,
         height: 200,
         right: 40,
@@ -290,7 +290,7 @@ d3.json('data/some_currency.json', function(data) {
     });
 });
 
-d3.json('data/log.json', function(data){
+d3.json('data/log.json', function(data) {
     data = [data];
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
@@ -300,7 +300,7 @@ d3.json('data/log.json', function(data){
         title: "Log Scale",
         description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
         data: data,
-        y_scale_type:'log',
+        y_scale_type: 'log',
         width: 600,
         height: 200,
         right: 40,

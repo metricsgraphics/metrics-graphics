@@ -17,7 +17,7 @@
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-simple',
         xax_format: function(f) {
@@ -36,7 +36,7 @@
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#categorical1',
         xax_format: function(f) {
@@ -45,7 +45,7 @@
         },
         x_accessor: 'x',
         y_accessor: 'y',
-        color_accessor:'v',
+        color_accessor: 'v',
         color_type:'category',
         y_rug: true
     });
@@ -56,7 +56,7 @@
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#categorical2',
         xax_format: function(f) {
@@ -65,10 +65,10 @@
         },
         x_accessor: 'x',
         y_accessor: 'y',
-        color_accessor:'v',
-        color_domain:['cat_0', 'cat_1', 'other'],
-        color_range:['blue', 'gray', 'black'],
-        color_type:'category',
+        color_accessor: 'v',
+        color_domain: ['cat_0', 'cat_1', 'other'],
+        color_range: ['blue', 'gray', 'black'],
+        color_type: 'category',
         x_rug: true
     });
 
@@ -79,7 +79,7 @@
         least_squares: true,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
         xax_format: function(f) {
@@ -99,7 +99,7 @@ d3.json('data/fake_users1.json', function(data) {
             data: data,
             chart_type: 'point',
             width: 295,
-            height: 150 * 1.5,
+            height: 225,
             left: 60,
             right: 10,
             least_squares: true,
@@ -118,7 +118,7 @@ d3.json('data/points1.json', function(data) {
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-size-and-color',
         xax_format: function(f) {
@@ -180,7 +180,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
         description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
         data: data,
-        markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
+        markers: [{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
         chart_type: 'histogram',
         width: 600,
         height: 300,
@@ -219,8 +219,8 @@ MG.data_graphic({
     right: 10,
     target: '#histogram2',
     y_extended_ticks: true,
-    x_accessor:'value',
-    y_accessor:'count',
+    x_accessor: 'value',
+    y_accessor: 'count',
     mouseover: function(d, i) {
         d3.select('#histogram2 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -241,7 +241,7 @@ MG.data_graphic({
     target: '#histogram3',
     linked: true,
     y_extended_ticks: true,
-    x_accessor:'val1',
+    x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram3 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -262,7 +262,7 @@ MG.data_graphic({
     right: 10,
     target: '#histogram4',
     y_extended_ticks: true,
-    x_accessor:'val1',
+    x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram4 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -275,9 +275,9 @@ var hist1 = fake_data(25, 60).map(function(d){
 });
 
 MG.data_graphic({
+    title: "Histograms can be time series as well",
     data: hist1,
     target: '#time-hist',
-    title: 'Histograms can be time series as well',
     chart_type: 'histogram',
     width: 600,
     height: 200,
@@ -308,8 +308,8 @@ MG.data_graphic({
 ];
 
 MG.data_graphic({
-    title: 'Bar Prototype',
-    description: 'Work-in-progress',
+    title: "Bar Prototype",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     x_accessor: 'value',
@@ -324,8 +324,8 @@ MG.data_graphic({
 });
 
 MG.data_graphic({
-    title: 'No Axis',
-    description: 'Work-in-progress',
+    title: "No Axis",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     baseline_accessor: 'baseline',
@@ -340,8 +340,8 @@ MG.data_graphic({
 });
 
 MG.data_graphic({
-    title: 'Vertical Bars',
-    description: 'Work-in-progress',
+    title: "Vertical Bars",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     bar_orientation: 'vertical',
@@ -372,9 +372,9 @@ MG.data_graphic({
 ];
 
 var table1 = MG.data_table({
+        title: "A Data Table",
+        description: "A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.",
         data: table_data,
-        title: 'A Data Table',
-        description: 'A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.',
         show_tooltips: true
     })
     .target('#table1')
@@ -382,7 +382,7 @@ var table1 = MG.data_table({
         accessor: 'geo',
         secondary_accessor:'year',
         label: 'Country',
-        description: 'These are arbitrary countries with arbitrary years underneath.'
+        description: "These are arbitrary countries with arbitrary years underneath."
     })
     .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
     .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
@@ -436,7 +436,7 @@ d3.json('data/points1.json', function(data) {
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-simple',
         xax_format: function(f) {
@@ -455,7 +455,7 @@ d3.json('data/points1.json', function(data) {
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#categorical1',
         xax_format: function(f) {
@@ -464,8 +464,8 @@ d3.json('data/points1.json', function(data) {
         },
         x_accessor: 'x',
         y_accessor: 'y',
-        color_accessor:'v',
-        color_type:'category',
+        color_accessor: 'v',
+        color_type: 'category',
         y_rug: true
     });
 
@@ -475,7 +475,7 @@ d3.json('data/points1.json', function(data) {
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#categorical2',
         xax_format: function(f) {
@@ -484,10 +484,10 @@ d3.json('data/points1.json', function(data) {
         },
         x_accessor: 'x',
         y_accessor: 'y',
-        color_accessor:'v',
-        color_domain:['cat_0', 'cat_1', 'other'],
-        color_range:['blue', 'gray', 'black'],
-        color_type:'category',
+        color_accessor: 'v',
+        color_domain: ['cat_0', 'cat_1', 'other'],
+        color_range: ['blue', 'gray', 'black'],
+        color_type: 'category',
         x_rug: true
     });
 
@@ -498,7 +498,7 @@ d3.json('data/points1.json', function(data) {
         least_squares: true,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
         xax_format: function(f) {
@@ -518,7 +518,7 @@ d3.json('data/fake_users1.json', function(data) {
             data: data,
             chart_type: 'point',
             width: 295,
-            height: 150 * 1.5,
+            height: 225,
             left: 60,
             right: 10,
             least_squares: true,
@@ -537,7 +537,7 @@ d3.json('data/points1.json', function(data) {
         data: data,
         chart_type: 'point',
         width: 295,
-        height: 150 * 1.5,
+        height: 225,
         right: 10,
         target: '#scatter-size-and-color',
         xax_format: function(f) {
@@ -546,9 +546,9 @@ d3.json('data/points1.json', function(data) {
         },
         x_accessor: 'x',
         y_accessor: 'y',
-        color_accessor:'z',
+        color_accessor: 'z',
         color_range: color_range,
-        size_accessor:'w',
+        size_accessor: 'w',
         x_rug: true,
         y_rug: true
     });
@@ -584,7 +584,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
         description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
         data: data,
-        markers:[{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
+        markers: [{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
         chart_type: 'histogram',
         width: 600,
         height: 300,
@@ -623,8 +623,8 @@ MG.data_graphic({
     right: 10,
     target: '#histogram2',
     y_extended_ticks: true,
-    x_accessor:'value',
-    y_accessor:'count',
+    x_accessor: 'value',
+    y_accessor: 'count',
     mouseover: function(d, i) {
         d3.select('#histogram2 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -645,7 +645,7 @@ MG.data_graphic({
     target: '#histogram3',
     linked: true,
     y_extended_ticks: true,
-    x_accessor:'val1',
+    x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram3 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -666,7 +666,7 @@ MG.data_graphic({
     right: 10,
     target: '#histogram4',
     y_extended_ticks: true,
-    x_accessor:'val1',
+    x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram4 svg .mg-active-datapoint')
             .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
@@ -679,9 +679,9 @@ var hist1 = fake_data(25, 60).map(function(d){
 });
 
 MG.data_graphic({
+    title: "Histograms can be time series as well",
     data: hist1,
     target: '#time-hist',
-    title: 'Histograms can be time series as well',
     chart_type: 'histogram',
     width: 600,
     height: 200,
@@ -701,8 +701,8 @@ var bar_data = [
 ];
 
 MG.data_graphic({
-    title: 'Bar Prototype',
-    description: 'Work-in-progress',
+    title: "Bar Prototype",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     x_accessor: 'value',
@@ -717,8 +717,8 @@ MG.data_graphic({
 });
 
 MG.data_graphic({
-    title: 'No Axis',
-    description: 'Work-in-progress',
+    title: "No Axis",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     baseline_accessor: 'baseline',
@@ -733,8 +733,8 @@ MG.data_graphic({
 });
 
 MG.data_graphic({
-    title: 'Vertical Bars',
-    description: 'Work-in-progress',
+    title: "Vertical Bars",
+    description: "Work-in-progress",
     data: bar_data,
     chart_type: 'bar',
     bar_orientation: 'vertical',
@@ -758,9 +758,9 @@ var table_data = [
 ];
 
 var table1 = MG.data_table({
+        title: "A Data Table",
+        description: "A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.",
         data: table_data,
-        title: 'A Data Table',
-        description: 'A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.',
         show_tooltips: true
     })
     .target('#table1')
@@ -768,7 +768,7 @@ var table1 = MG.data_table({
         accessor: 'geo',
         secondary_accessor:'year',
         label: 'Country',
-        description: 'These are arbitrary countries with arbitrary years underneath.'
+        description: "These are arbitrary countries with arbitrary years underneath."
     })
     .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
     .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
@@ -817,7 +817,7 @@ function addScatterplotSizeAndColor(theme) {
             data: data,
             chart_type: 'point',
             width: 295,
-            height: 150 * 1.5,
+            height: 225,
             right: 10,
             target: '#scatter-size-and-color',
             xax_format: function(f) {
@@ -826,9 +826,9 @@ function addScatterplotSizeAndColor(theme) {
             },
             x_accessor: 'x',
             y_accessor: 'y',
-            color_accessor:'z',
+            color_accessor: 'z',
             color_range: color_range,
-            size_accessor:'w',
+            size_accessor: 'w',
             x_rug: true,
             y_rug: true
         });

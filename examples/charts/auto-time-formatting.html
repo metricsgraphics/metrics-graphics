@@ -14,7 +14,7 @@
     var v = 100000;
     var data=[];
 
-    for (var i = 0; i < length; i++){
+    for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
         data.push({date: MG.clone(d), value: v});
         d = new Date(d.getTime() + seconds * 1000);
@@ -41,36 +41,36 @@ var data3 = fake_data(75,60 * 60);
 var data4 = fake_days(25);
 
 MG.data_graphic({
+    title: "Less Than A Minute",
     data: data1,
     target: '#time1',
-    title: 'Less Than A Minute',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "Less Than A Day",
     data: data2,
     target: '#time2',
-    title: 'Less Than A Day',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "A Few Days",
     data: data3,
     target: '#time3',
-    title: 'A Few Days',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "Over A Large Span of Days",
     data: data4,
     target: '#time4',
-    title: 'Over A Large Span of Days',
     width: 600,
     height: 200,
     right: 40
@@ -85,7 +85,7 @@ function fake_data(length, seconds) {
     var v = 100000;
     var data=[];
 
-    for (var i = 0; i < length; i++){
+    for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
         data.push({date: MG.clone(d), value: v});
         d = new Date(d.getTime() + seconds * 1000);
@@ -112,36 +112,36 @@ var data3 = fake_data(75,60 * 60);
 var data4 = fake_days(25);
 
 MG.data_graphic({
+    title: "Less Than A Minute",
     data: data1,
     target: '#time1',
-    title: 'Less Than A Minute',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "Less Than A Day",
     data: data2,
     target: '#time2',
-    title: 'Less Than A Day',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "A Few Days",
     data: data3,
     target: '#time3',
-    title: 'A Few Days',
     width: 600,
     height: 200,
     right: 40
 });
 
 MG.data_graphic({
+    title: "Over A Large Span of Days",
     data: data4,
     target: '#time4',
-    title: 'Over A Large Span of Days',
     width: 600,
     height: 200,
     right: 40
