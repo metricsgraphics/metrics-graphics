@@ -81,10 +81,6 @@ __I only see the first five lines in my chart, what gives?__
 
 The colors for the first five lines, areas and legends are defined in the stylesheet for the light and dark themes. For a sixth line, you would add the follow CSS rules:
 
-__I get an error when I load MG alongside library x__
-
-If your project uses Bootstrap, make sure you load MetricsGraphics.js after it. If your project uses jQuery UI, load it after MetricsGraphics.js.
-
 
 ```css
 .mg-line6-color {
@@ -105,6 +101,10 @@ If your project uses Bootstrap, make sure you load MetricsGraphics.js after it. 
 ```
 
 If you're plotting more than five lines in the same chart and using _color_ to encode some dimension of the data, then you probably need to rethink the chart.
+
+__I get an error when I load MG alongside library x__
+
+If your project uses Bootstrap, make sure you load MetricsGraphics.js after it. If your project uses jQuery UI, load it after MetricsGraphics.js.
 
 ## License
 
