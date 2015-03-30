@@ -66,9 +66,7 @@ $('.split-by-controls button').click(function() {
     split_by_params.y_accessor = new_y_accessor;
 
     // change button state
-    $(this).addClass('active')
-        .siblings()
-        .removeClass('active');
+    $(this).addClass('active').siblings().removeClass('active');
 
     // update data
     delete split_by_params.xax_format;
@@ -88,12 +86,11 @@ $('.modify-time-period-controls button').click(function() {
 });
 
 function modify_time_period(data, past_n_days) {
-    var data_spliced = MG.clone(data);
     if (past_n_days !== '') {
-        return data_spliced.slice(past_n_days * -1);
+        return MG.clone(data).slice(past_n_days * -1);
     }
 
-    return data_spliced;
+    return data;
 }</code></pre>
 
                 </div>
@@ -122,6 +119,7 @@ var modify_time_period_params = {
     right: 40,
     show_secondary_x_label: false,
     xax_count: 4,
+    transition_on_update: false,
     target: '#modify_time_period',
     x_accessor: 'date',
     y_accessor: 'beta'
@@ -143,9 +141,7 @@ $('.split-by-controls button').click(function() {
     split_by_params.y_accessor = new_y_accessor;
 
     // change button state
-    $(this).addClass('active')
-        .siblings()
-        .removeClass('active');
+    $(this).addClass('active').siblings().removeClass('active');
 
     // update data
     delete split_by_params.xax_format;
@@ -165,11 +161,10 @@ $('.modify-time-period-controls button').click(function() {
 });
 
 function modify_time_period(data, past_n_days) {
-    var data_spliced = MG.clone(data);
     if (past_n_days !== '') {
-        return data_spliced.slice(past_n_days * -1);
+        return MG.clone(data).slice(past_n_days * -1);
     }
 
-    return data_spliced;
+    return data;
 }
 </script>
