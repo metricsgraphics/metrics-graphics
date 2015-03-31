@@ -307,7 +307,7 @@ function mg_default_xax_format(args) {
         // format as date or not, of course user can pass in
         // a custom function if desired
         if(args.data[0][0][args.x_accessor] instanceof Date) {
-            return args.processed.main_x_time_format(d);
+            return args.processed.main_x_time_format(new Date(d));
         } else if (typeof args.data[0][0][args.x_accessor] === 'number') {
             if (d < 1.0) {
                 //don't scale tiny values
