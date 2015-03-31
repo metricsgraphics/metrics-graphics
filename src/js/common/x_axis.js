@@ -458,7 +458,7 @@ function mg_add_x_tick_labels(g, args) {
                     .attr('dy', args.use_small_class ? -3 : 0)
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
-                        return yformat(d);
+                        return yformat(new Date(d));
                     });
     }
 }
