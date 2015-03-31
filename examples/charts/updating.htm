@@ -144,7 +144,6 @@ $('.split-by-controls button').click(function() {
     $(this).addClass('active').siblings().removeClass('active');
 
     // update data
-    delete split_by_params.xax_format;
     MG.data_graphic(split_by_params);
 });
 
@@ -155,7 +154,6 @@ $('.modify-time-period-controls button').click(function() {
     // change button state
     $(this).addClass('active').siblings().removeClass('active');
 
-    delete modify_time_period_params.xax_format;
     modify_time_period_params.data = data;
     MG.data_graphic(modify_time_period_params);
 });

@@ -275,32 +275,32 @@ function mg_default_xax_format(args) {
         return args.xax_format;
     }
 
-    var diff,
-        main_time_format,
-        time_frame;
-
-    if (args.time_series) {
-        diff = (args.processed.max_x - args.processed.min_x) / 1000;
-
-        if (diff < 60) {
-            main_time_format = d3.time.format('%M:%S');
-            time_frame = 'seconds';
-        } else if (diff / (60 * 60) <= 24) {
-            main_time_format = d3.time.format('%H:%M');
-            time_frame = 'less-than-a-day';
-        } else if (diff / (60 * 60) <= 24 * 4) {
-            main_time_format = d3.time.format('%H:%M');
-            time_frame = 'four-days';
-        } else {
-            main_time_format = d3.time.format('%b %d');
-            time_frame = 'default';
-        }
-    }
-
-    args.processed.main_x_time_format = main_time_format;
-    args.processed.x_time_frame = time_frame;
-
     return function(d) {
+        var diff;
+        var main_time_format;
+        var time_frame;
+
+        if (args.time_series) {
+            diff = (args.processed.max_x - args.processed.min_x) / 1000;
+
+            if (diff < 60) {
+                main_time_format = d3.time.format('%M:%S');
+                time_frame = 'seconds';
+            } else if (diff / (60 * 60) <= 24) {
+                main_time_format = d3.time.format('%H:%M');
+                time_frame = 'less-than-a-day';
+            } else if (diff / (60 * 60) <= 24 * 4) {
+                main_time_format = d3.time.format('%H:%M');
+                time_frame = 'four-days';
+            } else {
+                main_time_format = d3.time.format('%b %d');
+                time_frame = 'default';
+            }
+        }
+
+        args.processed.main_x_time_format = main_time_format;
+        args.processed.x_time_frame = time_frame;
+
         var df = d3.time.format('%b %d');
         var pf = d3.formatPrefix(d);
 
