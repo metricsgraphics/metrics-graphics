@@ -28,7 +28,6 @@ charts.missing = function(args) {
         var svg = mg_get_svg_child_of(args.target);
         
         // has the width or height changed?
-
         if (svg_width !== Number(svg.attr('width'))) {
             svg.attr('width', svg_width);
         }
@@ -36,6 +35,9 @@ charts.missing = function(args) {
         if (svg_height !== Number(svg.attr('height'))) {
             svg.attr('height', svg_height);
         }
+
+        // @todo need to reconsider how we handle automatic scaling
+        svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
         // delete child elements
         d3.select(args.target).selectAll('svg *').remove();

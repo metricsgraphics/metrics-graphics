@@ -93,7 +93,7 @@ function init(args) {
         svg.attr('height', svg_height);
     }
 
-    // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
+    // @todo need to reconsider how we handle automatic scaling
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
     if (args.full_width || args.full_height) {

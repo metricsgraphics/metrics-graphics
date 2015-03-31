@@ -144,7 +144,7 @@
             top: 40,                      // the size of the top margin
             bottom: 30,                   // the size of the bottom margin
             right: 10,                    // size of the right margin
-            left: 50,                     // size of the left margin
+            left: 10,                     // size of the left margin
             buffer: 8,                    // the buffer between the actual chart area and the margins
             legend_target: '',
             width: 350,
@@ -1852,7 +1852,7 @@
             svg.attr('height', svg_height);
         }
 
-        // This is an unfinished feature. Need to reconsider how we handle automatic scaling.
+        // @todo need to reconsider how we handle automatic scaling
         svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
         if (args.full_width || args.full_height) {
@@ -4136,7 +4136,6 @@
             var svg = mg_get_svg_child_of(args.target);
             
             // has the width or height changed?
-
             if (svg_width !== Number(svg.attr('width'))) {
                 svg.attr('width', svg_width);
             }
@@ -4144,6 +4143,9 @@
             if (svg_height !== Number(svg.attr('height'))) {
                 svg.attr('height', svg_height);
             }
+
+            // @todo need to reconsider how we handle automatic scaling
+            svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
             // delete child elements
             d3.select(args.target).selectAll('svg *').remove();

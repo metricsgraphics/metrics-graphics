@@ -131,7 +131,7 @@ MG.data_graphic = function() {
         top: 40,                      // the size of the top margin
         bottom: 30,                   // the size of the bottom margin
         right: 10,                    // size of the right margin
-        left: 50,                     // size of the left margin
+        left: 10,                     // size of the left margin
         buffer: 8,                    // the buffer between the actual chart area and the margins
         legend_target: '',
         width: 350,
