@@ -39,6 +39,20 @@ test('Only one mg-missing-text on multiple calls to the same target element', fu
     equal(document.querySelectorAll(params.target + ' .mg-missing-text').length, 1, 'We only have one mg-missing-text');
 });
 
+test('missing chart obeys full_width: true', function() {
+    var params = {
+        target: '#qunit-fixture',
+        chart_type: 'missing-data',
+        full_width: true,
+        missing_text: 'In an astral plane that was never meant to fly...'
+    };
+    document.querySelector('#qunit-fixture').style.width='700px';
+
+    MG.data_graphic(params);
+
+    equal(document.querySelector('#qunit-fixture svg').getAttribute('width'), 700, 'The missing chart svg has same width as parent element.');
+});
+
 test('Missing chart\'s width is set correctly on subsequent calls to existing chart', function() {
     var params_0 = {
         target: '#qunit-fixture',

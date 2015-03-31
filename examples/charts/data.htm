@@ -64,18 +64,18 @@
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
                     <div class='row'>
-                        <div class='col-lg-12 text-center' id='glorious_chart'></div>
+                        <div class='col-lg-12 text-center' id='missing-data'></div>
                     </div>
                 </div>
                 <div class='col-lg-5'>
                 
 <pre><code class='javascript'>MG.data_graphic({
-    title: "Glorious Graphic",
+    title: "Missing Data",
     description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
     chart_type: 'missing-data',
     missing_text: 'This is an example of a missing chart',
-    target: '#glorious_chart',
+    target: '#missing-data',
     width: 600,
     height: 200
 });</code></pre>
@@ -170,12 +170,12 @@ d3.json('data/missing-is-hidden.json', function(data) {
 });
 
 MG.data_graphic({
-    title: "Glorious Graphic",
+    title: "Missing Data",
     chart_type: 'missing-data',
     description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
     missing_text: 'This is an example of a missing chart',
-    target: '#glorious_chart',
+    target: '#missing-data',
     width: 600,
     height: 200
 });
