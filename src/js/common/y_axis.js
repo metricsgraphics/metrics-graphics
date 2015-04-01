@@ -168,7 +168,7 @@ function y_axis(args) {
             };
         } else { //percentage
             yax_format = function(d_) {
-                var n = d3.format('%p');
+                var n = d3.format('2p');
                 return n(d_);
             };
         }
