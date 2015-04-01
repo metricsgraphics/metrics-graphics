@@ -3055,9 +3055,16 @@
                         });
                 }
 
-                //remove active datapoint text on mouse out, except if we have a single point
-                svg.selectAll('circle.mg-line-rollover-circle.mg-area' + (d.line_id) + '-color')
-                    .style('opacity', function() {
+                //remove all active data points when aggregate_rollover is enabled
+                if(args.aggregate_rollover) {
+                    svg.selectAll('circle.mg-line-rollover-circle')
+                        .style('opacity', function() {
+                            return 0;
+                        });
+                //remove active data point text on mouse out, except if we have a single point
+                } else {
+                    svg.selectAll('circle.mg-line-rollover-circle.mg-area' + (d.line_id) + '-color')
+                        .style('opacity', function() {
                             if (args.data[d.line_id - 1].length == 1) {
                                 return 1;
                             }
@@ -3065,6 +3072,7 @@
                                 return 0;
                             }
                         });
+                }
 
                 svg.select('.mg-active-datapoint')
                     .text('');
