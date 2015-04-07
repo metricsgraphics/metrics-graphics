@@ -53,7 +53,6 @@ charts.line = function(args) {
             .y(args.scalefns.yf)
             .interpolate(args.interpolate)
             .tension(args.interpolate_tension);
-
         //for animating line on first load
         var flat_line = d3.svg.line()
             .x(args.scalefns.xf)

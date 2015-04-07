@@ -3,16 +3,15 @@ function x_rug(args) {
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer;
-
     var svg = mg_get_svg_child_of(args.target);
 
-    var all_data=[];
-    for (var i=0; i<args.data.length; i++) {
-        for (var j=0; j<args.data[i].length; j++) {
-            all_data.push(args.data[i][j]);
-        }
-    }
-
+    var all_data = mg_flatten_array(args.data)
+    // for (var i=0; i<args.data.length; i++) {
+    //     for (var j=0; j<args.data[i].length; j++) {
+    //         all_data.push(args.data[i][j]);
+    //     }
+    // }
+    
     var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
@@ -49,7 +48,12 @@ function x_axis(args) {
     var max_x;
 
     args.processed = {};
-
+    var all_data=[];
+    for (var i=0; i<args.data.length; i++) {
+        for (var j=0; j<args.data[i].length; j++) {
+            all_data.push(args.data[i][j]);
+        }
+    }
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
     };
@@ -274,6 +278,7 @@ function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
     }
+    var test_point = mg_flatten_array(args.data)[0][args.x_accessor]
 
     return function(d) {
         var diff;
@@ -306,9 +311,9 @@ function mg_default_xax_format(args) {
 
         // format as date or not, of course user can pass in
         // a custom function if desired
-        if(args.data[0][0][args.x_accessor] instanceof Date) {
+        if(test_point instanceof Date) {
             return args.processed.main_x_time_format(new Date(d));
-        } else if (typeof args.data[0][0][args.x_accessor] === 'number') {
+        } else if (typeof test_point === 'number') {
             if (d < 1.0) {
                 //don't scale tiny values
                 return args.xax_units + d3.round(d, args.decimals);

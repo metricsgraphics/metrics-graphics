@@ -99,9 +99,35 @@ d3.json('data/fake_users3.json', function(data) {
     });
 });</code></pre>
 
+    </div>
+</div>
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='missing-multi'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    // set this to an empty array. 
+    // data[0] and data[2] both still arrays of objects.
+    data[1] = [];
+
+    MG.data_graphic({
+        title: "Missing Time Series Don't Get Drawn",
+        description: "We set the second array to [] instead of the loaded data. The line color order is preserved.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing-multi'
+    });
+});
+});</code></pre>
+
                 </div>
-            </div>
-            
+            </div>      
 <script>
 d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
@@ -170,6 +196,25 @@ d3.json('data/fake_users3.json', function(data) {
         right: 40,
         target: '#linked_multi2',
         linked: true
+    });
+});
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    // set this to an empty array. 
+    // data[0] and data[2] both still arrays of objects.
+    data[1] = [];
+    MG.data_graphic({
+        title: "Missing Time Series Don't Get Drawn",
+        description: "We set the second array to [] instead of the loaded data. The line color order is preserved.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing-multi'
     });
 });
 </script>
