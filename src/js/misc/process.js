@@ -25,13 +25,6 @@ function is_array_of_objects_or_empty(data){
     return is_empty_array(data) || is_array_of_objects(data);
 }
 
-
-function is_array_of_arrays_or_empty(data){
-    return is_empty_array(data) || is_array_of_arrays(data);
-}
-
-
-
 function raw_data_transformation(args) {
     'use strict';
 
@@ -41,49 +34,30 @@ function raw_data_transformation(args) {
     // #3 [[4323, 2343],..]                                      // unnested 2d array
     // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                // nested 2d array
 
-    // ---------
-
-    // check if array is array of arrays.
     var _is_nested_array = is_array_of_arrays(args.data);
 
-    var array_of_objects=false, 
-        array_of_arrays=false, 
-        nested_array_of_arrays=false, 
-        nested_array_of_objects=false;
+    args.array_of_objects=false; 
+    args.array_of_arrays=false;
+    args.nested_array_of_arrays=false; 
+    args.nested_array_of_objects=false;
+
     if (_is_nested_array){
-        nested_array_of_objects = args.data.map(function(d){
+        args.nested_array_of_objects = args.data.map(function(d){
             return is_array_of_objects_or_empty(d);
-        });                                             // Case #2
-        nested_array_of_arrays = args.data.map(function(d){
+        });                                                      // Case #2
+        args.nested_array_of_arrays = args.data.map(function(d){
             return is_array_of_arrays(d);
-        })                                              // Case #4
+        })                                                       // Case #4
     } else {
-        // there shouldn't be any empty arrays here.
-        array_of_objects = is_array_of_objects(args.data);      // Case #1
-        array_of_arrays = is_array_of_arrays(args.data);        // Case #3
+        args.array_of_objects = is_array_of_objects(args.data);       // Case #1
+        args.array_of_arrays = is_array_of_arrays(args.data);         // Case #3
     }
 
-    args.array_of_objects        = array_of_objects;
-    args.array_of_arrays         = array_of_arrays;
-    args.nested_array_of_objects = array_of_arrays;
-    args.nested_array_of_arrays  = array_of_arrays;
-
     if (args.chart_type === 'line') {
-        // var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
-        // var is_unnested_array_of_arrays = (
-        //     args.data[0] instanceof Array &&
-        //     !(args.data[0][0] instanceof Object &&
-        //     !(args.data[0][0] instanceof Date)));
-
         if (args.array_of_objects || args.array_of_arrays) {
             args.data = [args.data];
         }
-    } 
-    // else {
-    //     if (!(args.data[0] instanceof Array)) {
-    //         args.data = [args.data];
-    //     }
-    // }
+    }
 
     if (args.y_accessor instanceof Array) {
         args.data = args.data.map(function(_d) {
