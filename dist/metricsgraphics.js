@@ -1215,16 +1215,15 @@
         var buffer_size = args.chart_type === 'point'
             ? args.buffer / 2
             : args.buffer;
-
         var svg = mg_get_svg_child_of(args.target);
 
-        var all_data=[];
-        for (var i=0; i<args.data.length; i++) {
-            for (var j=0; j<args.data[i].length; j++) {
-                all_data.push(args.data[i][j]);
-            }
-        }
-
+        var all_data = mg_flatten_array(args.data)
+        // for (var i=0; i<args.data.length; i++) {
+        //     for (var j=0; j<args.data[i].length; j++) {
+        //         all_data.push(args.data[i][j]);
+        //     }
+        // }
+        
         var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
         //set the attributes that do not change after initialization, per
@@ -1261,7 +1260,12 @@
         var max_x;
 
         args.processed = {};
-
+        var all_data=[];
+        for (var i=0; i<args.data.length; i++) {
+            for (var j=0; j<args.data[i].length; j++) {
+                all_data.push(args.data[i][j]);
+            }
+        }
         args.scalefns.xf = function(di) {
             return args.scales.X(di[args.x_accessor]);
         };
@@ -1486,6 +1490,7 @@
         if (args.xax_format) {
             return args.xax_format;
         }
+        var test_point = mg_flatten_array(args.data)[0][args.x_accessor]
 
         return function(d) {
             var diff;
@@ -1518,9 +1523,9 @@
 
             // format as date or not, of course user can pass in
             // a custom function if desired
-            if(args.data[0][0][args.x_accessor] instanceof Date) {
+            if(test_point instanceof Date) {
                 return args.processed.main_x_time_format(new Date(d));
-            } else if (typeof args.data[0][0][args.x_accessor] === 'number') {
+            } else if (typeof test_point === 'number') {
                 if (d < 1.0) {
                     //don't scale tiny values
                     return args.xax_units + d3.round(d, args.decimals);
@@ -1784,11 +1789,20 @@
         //but with the intention of using multiple values for multilines, etc.
 
         //do we have a time_series?
-        if (args.data[0][0][args.x_accessor] instanceof Date) {
-            args.time_series = true;
-        } else {
-            args.time_series = false;
+
+        function is_time_series(args){
+            var flat_data = [];
+            var first_elem = mg_flatten_array(args.data)[0];
+            return first_elem[args.x_accessor] instanceof Date;
         }
+
+        args.time_series = is_time_series(args);
+
+        // if (args.data[0][0][args.x_accessor] instanceof Date) {
+        //     args.time_series = true;
+        // } else {
+        //     args.time_series = false;
+        // }
 
         var svg_width = args.width;
         var svg_height = args.height;
@@ -2417,7 +2431,6 @@
                 .y(args.scalefns.yf)
                 .interpolate(args.interpolate)
                 .tension(args.interpolate_tension);
-
             //for animating line on first load
             var flat_line = d3.svg.line()
                 .x(args.scalefns.xf)
@@ -4233,22 +4246,63 @@
         return this;
     };
 
+    function is_array(thing){
+        return Object.prototype.toString.call(thing) === '[object Array]';
+    }
+
+    function is_empty_array(thing){
+        return is_array(thing) && thing.length==0;
+    }
+
+    function is_object(thing){
+        return Object.prototype.toString.call(thing) === '[object Object]';   
+    }
+
+    function is_array_of_arrays(data){
+        var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
+        return d3.sum(all_elements) === data.length;
+    }
+
+    function is_array_of_objects(data){
+        // is every element of data an object?
+        var all_elements = data.map(function(d){return is_object(d)===true});
+        return d3.sum(all_elements) === data.length;
+    }
+
+    function is_array_of_objects_or_empty(data){
+        return is_empty_array(data) || is_array_of_objects(data);
+    }
+
     function raw_data_transformation(args) {
         'use strict';
 
         // We need to account for a few data format cases:
-        // 1. [{key:__, value:__}, ...]                              // unnested obj-arrays
-        // 2. [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
-        // 3. [[4323, 2343],..]                                      // unnested 2d array
-        // 4. [[[4323, 2343],..] , [[4323, 2343],..]]                // nested 2d array
-        if (args.chart_type === 'line') {
-            var is_unnested_obj_array = (args.data[0] instanceof Object && !(args.data[0] instanceof Array));
-            var is_unnested_array_of_arrays = (
-                args.data[0] instanceof Array &&
-                !(args.data[0][0] instanceof Object &&
-                !(args.data[0][0] instanceof Date)));
+        // #1 [{key:__, value:__}, ...]                              // unnested obj-arrays
+        // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
+        // #3 [[4323, 2343],..]                                      // unnested 2d array
+        // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                // nested 2d array
 
-            if (is_unnested_obj_array || is_unnested_array_of_arrays) {
+        var _is_nested_array = is_array_of_arrays(args.data);
+
+        args.array_of_objects=false; 
+        args.array_of_arrays=false;
+        args.nested_array_of_arrays=false; 
+        args.nested_array_of_objects=false;
+
+        if (_is_nested_array){
+            args.nested_array_of_objects = args.data.map(function(d){
+                return is_array_of_objects_or_empty(d);
+            });                                                      // Case #2
+            args.nested_array_of_arrays = args.data.map(function(d){
+                return is_array_of_arrays(d);
+            })                                                       // Case #4
+        } else {
+            args.array_of_objects = is_array_of_objects(args.data);       // Case #1
+            args.array_of_arrays = is_array_of_arrays(args.data);         // Case #3
+        }
+
+        if (args.chart_type === 'line') {
+            if (args.array_of_objects || args.array_of_arrays) {
                 args.data = [args.data];
             }
         } else {
@@ -4291,9 +4345,13 @@
     function process_line(args) {
         'use strict';
         //do we have a time-series?
-        var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
-            ? true
-            : false;
+        var is_time_series = d3.sum(args.data.map(function(series){
+            return series.length > 0 && series[0][args.x_accessor] instanceof Date;
+        })) > 0;
+
+        // var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
+        //     ? true
+        //     : false;
 
         //force linear interpolation when missing_is_hidden is enabled
         if (args.missing_is_hidden) {
@@ -4380,6 +4438,7 @@
 
         // histogram data is always single dimension
         var our_data = args.data[0];
+
         var extracted_data;
         if (args.binned === false) {
             // use d3's built-in layout.histogram functionality to compute what you need.
@@ -4448,7 +4507,6 @@
         var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
         args.categorical_variables = [];
-
         if (args.binned === false) {
             if (typeof(our_data[0]) === 'object') {
                 // we are dealing with an array of objects. Extract the data value of interest.
@@ -4838,6 +4896,11 @@
 
     function mg_get_svg_child_of(selector_or_node) {
         return d3.select(selector_or_node).select('svg');
+    }
+
+    function mg_flatten_array(arr){
+        var flat_data = [];
+        return flat_data.concat.apply(flat_data, arr);
     }
 
     function mg_strip_punctuation(s) {

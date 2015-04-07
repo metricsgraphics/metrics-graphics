@@ -57,6 +57,10 @@ function raw_data_transformation(args) {
         if (args.array_of_objects || args.array_of_arrays) {
             args.data = [args.data];
         }
+    } else {
+        if (!(args.data[0] instanceof Array)) {
+            args.data = [args.data];
+        }
     }
 
     if (args.y_accessor instanceof Array) {
@@ -186,6 +190,7 @@ function process_histogram(args) {
 
     // histogram data is always single dimension
     var our_data = args.data[0];
+
     var extracted_data;
     if (args.binned === false) {
         // use d3's built-in layout.histogram functionality to compute what you need.
@@ -254,7 +259,6 @@ function process_categorical_variables(args) {
     var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
     args.categorical_variables = [];
-
     if (args.binned === false) {
         if (typeof(our_data[0]) === 'object') {
             // we are dealing with an array of objects. Extract the data value of interest.
