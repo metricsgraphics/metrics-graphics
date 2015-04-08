@@ -48,9 +48,9 @@ function x_axis(args) {
     var max_x;
 
     args.processed = {};
-    var all_data=[];
-    for (var i=0; i<args.data.length; i++) {
-        for (var j=0; j<args.data[i].length; j++) {
+    var all_data = [];
+    for (var i = 0; i < args.data.length; i++) {
+        for (var j = 0; j < args.data[i].length; j++) {
             all_data.push(args.data[i][j]);
         }
     }

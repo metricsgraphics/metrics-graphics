@@ -1260,9 +1260,9 @@
         var max_x;
 
         args.processed = {};
-        var all_data=[];
-        for (var i=0; i<args.data.length; i++) {
-            for (var j=0; j<args.data[i].length; j++) {
+        var all_data = [];
+        for (var i = 0; i < args.data.length; i++) {
+            for (var j = 0; j < args.data[i].length; j++) {
                 all_data.push(args.data[i][j]);
             }
         }
@@ -1790,19 +1790,13 @@
 
         //do we have a time_series?
 
-        function is_time_series(args){
+        function is_time_series(args) {
             var flat_data = [];
             var first_elem = mg_flatten_array(args.data)[0];
             return first_elem[args.x_accessor] instanceof Date;
         }
 
         args.time_series = is_time_series(args);
-
-        // if (args.data[0][0][args.x_accessor] instanceof Date) {
-        //     args.time_series = true;
-        // } else {
-        //     args.time_series = false;
-        // }
 
         var svg_width = args.width;
         var svg_height = args.height;
@@ -4246,30 +4240,30 @@
         return this;
     };
 
-    function is_array(thing){
+    function is_array(thing) {
         return Object.prototype.toString.call(thing) === '[object Array]';
     }
 
-    function is_empty_array(thing){
+    function is_empty_array(thing) {
         return is_array(thing) && thing.length==0;
     }
 
-    function is_object(thing){
+    function is_object(thing) {
         return Object.prototype.toString.call(thing) === '[object Object]';   
     }
 
-    function is_array_of_arrays(data){
+    function is_array_of_arrays(data) {
         var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
         return d3.sum(all_elements) === data.length;
     }
 
-    function is_array_of_objects(data){
+    function is_array_of_objects(data) {
         // is every element of data an object?
         var all_elements = data.map(function(d){return is_object(d)===true});
         return d3.sum(all_elements) === data.length;
     }
 
-    function is_array_of_objects_or_empty(data){
+    function is_array_of_objects_or_empty(data) {
         return is_empty_array(data) || is_array_of_objects(data);
     }
 
@@ -4284,12 +4278,12 @@
 
         var _is_nested_array = is_array_of_arrays(args.data);
 
-        args.array_of_objects=false; 
-        args.array_of_arrays=false;
-        args.nested_array_of_arrays=false; 
-        args.nested_array_of_objects=false;
+        args.array_of_objects = false; 
+        args.array_of_arrays = false;
+        args.nested_array_of_arrays = false; 
+        args.nested_array_of_objects = false;
 
-        if (_is_nested_array){
+        if (_is_nested_array) {
             args.nested_array_of_objects = args.data.map(function(d){
                 return is_array_of_objects_or_empty(d);
             });                                                      // Case #2
@@ -4345,7 +4339,7 @@
     function process_line(args) {
         'use strict';
         //do we have a time-series?
-        var is_time_series = d3.sum(args.data.map(function(series){
+        var is_time_series = d3.sum(args.data.map(function(series) {
             return series.length > 0 && series[0][args.x_accessor] instanceof Date;
         })) > 0;
 
@@ -4898,7 +4892,7 @@
         return d3.select(selector_or_node).select('svg');
     }
 
-    function mg_flatten_array(arr){
+    function mg_flatten_array(arr) {
         var flat_data = [];
         return flat_data.concat.apply(flat_data, arr);
     }

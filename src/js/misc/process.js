@@ -1,27 +1,27 @@
-function is_array(thing){
+function is_array(thing) {
     return Object.prototype.toString.call(thing) === '[object Array]';
 }
 
-function is_empty_array(thing){
+function is_empty_array(thing) {
     return is_array(thing) && thing.length==0;
 }
 
-function is_object(thing){
+function is_object(thing) {
     return Object.prototype.toString.call(thing) === '[object Object]';   
 }
 
-function is_array_of_arrays(data){
+function is_array_of_arrays(data) {
     var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
     return d3.sum(all_elements) === data.length;
 }
 
-function is_array_of_objects(data){
+function is_array_of_objects(data) {
     // is every element of data an object?
     var all_elements = data.map(function(d){return is_object(d)===true});
     return d3.sum(all_elements) === data.length;
 }
 
-function is_array_of_objects_or_empty(data){
+function is_array_of_objects_or_empty(data) {
     return is_empty_array(data) || is_array_of_objects(data);
 }
 
@@ -36,12 +36,12 @@ function raw_data_transformation(args) {
 
     var _is_nested_array = is_array_of_arrays(args.data);
 
-    args.array_of_objects=false; 
-    args.array_of_arrays=false;
-    args.nested_array_of_arrays=false; 
-    args.nested_array_of_objects=false;
+    args.array_of_objects = false; 
+    args.array_of_arrays = false;
+    args.nested_array_of_arrays = false; 
+    args.nested_array_of_objects = false;
 
-    if (_is_nested_array){
+    if (_is_nested_array) {
         args.nested_array_of_objects = args.data.map(function(d){
             return is_array_of_objects_or_empty(d);
         });                                                      // Case #2
@@ -97,7 +97,7 @@ function raw_data_transformation(args) {
 function process_line(args) {
     'use strict';
     //do we have a time-series?
-    var is_time_series = d3.sum(args.data.map(function(series){
+    var is_time_series = d3.sum(args.data.map(function(series) {
         return series.length > 0 && series[0][args.x_accessor] instanceof Date;
     })) > 0;
 
