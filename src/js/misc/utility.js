@@ -22,6 +22,116 @@ MG.convert.number = function(data, accessor) {
     return data;
 };
 
+
+function is_array(thing){
+    return Object.prototype.toString.call(thing) === '[object Array]';
+}
+
+function is_function(thing){
+    return Object.prototype.toString.call(thing) === '[object Function]';   
+}
+
+function is_empty_array(thing){
+    return is_array(thing) && thing.length==0;
+}
+
+function is_object(thing){
+    return Object.prototype.toString.call(thing) === '[object Object]';   
+}
+
+function is_array_of_arrays(data){
+    var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
+    return d3.sum(all_elements) === data.length;
+}
+
+function is_array_of_objects(data){
+    // is every element of data an object?
+    var all_elements = data.map(function(d){return is_object(d)===true});
+    return d3.sum(all_elements) === data.length;
+}
+
+function is_array_of_objects_or_empty(data){
+    return is_empty_array(data) || is_array_of_objects(data);
+}
+
+
+function preventHorizontalOverlap(labels, args) {
+    if (!labels || labels.length == 1) {
+        return;
+    }
+
+    //see if each of our labels overlaps any of the other labels
+    for (var i = 0; i < labels.length; i++) {
+        //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+        if (isHorizontallyOverlapping(labels[i], labels)) {
+            var node = d3.select(labels[i]);
+            var newY = +node.attr('y');
+            if (newY + 8 == args.top) {
+                newY = args.top - 16;
+            }
+            node.attr('y', newY);
+        }
+    }
+}
+
+function preventVerticalOverlap(labels, args) {
+    if (!labels || labels.length == 1) {
+        return;
+    }
+
+    //see if each of our labels overlaps any of the other labels
+    for (var i = 0; i < labels.length; i++) {
+        //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+        if (isHorizontallyOverlapping(labels[i], labels)) {
+            var node = d3.select(labels[i]);
+            var newY = +node.attr('y');
+            if (newY + 8 == args.top) {
+                newY = args.top - 16;
+            }
+            node.attr('y', newY);
+        }
+    }
+}
+
+function isHorizontallyOverlapping(element, labels) {
+    var element_bbox = element.getBoundingClientRect();
+
+    for (var i = 0; i < labels.length; i++) {
+        if (labels[i] == element) {
+            continue;
+        }
+
+        //check to see if this label overlaps with any of the other labels
+        var sibling_bbox = labels[i].getBoundingClientRect();
+        if (element_bbox.top === sibling_bbox.top && 
+                !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
+            ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isVerticallyOverlapping(element, labels) {
+    var element_bbox = element.getBoundingClientRect();
+
+    for (var i = 0; i < labels.length; i++) {
+        if (labels[i] == element) {
+            continue;
+        }
+
+        //check to see if this label overlaps with any of the other labels
+        var sibling_bbox = labels[i].getBoundingClientRect();
+        if (element_bbox.left === sibling_bbox.left && 
+                !(sibling_bbox.bottom > element_bbox.top || sibling_bbox.top < element_bbox.bottom)
+            ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 function mg_get_svg_child_of(selector_or_node) {
     return d3.select(selector_or_node).select('svg');
 }
