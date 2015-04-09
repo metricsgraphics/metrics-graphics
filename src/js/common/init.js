@@ -26,19 +26,13 @@ function init(args) {
 
     //do we have a time_series?
 
-    function is_time_series(args){
+    function is_time_series(args) {
         var flat_data = [];
         var first_elem = mg_flatten_array(args.data)[0];
         return first_elem[args.x_accessor] instanceof Date;
     }
 
     args.time_series = is_time_series(args);
-
-    // if (args.data[0][0][args.x_accessor] instanceof Date) {
-    //     args.time_series = true;
-    // } else {
-    //     args.time_series = false;
-    // }
 
     var svg_width = args.width;
     var svg_height = args.height;

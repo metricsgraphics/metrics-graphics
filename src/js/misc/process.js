@@ -9,12 +9,12 @@ function raw_data_transformation(args) {
 
     var _is_nested_array = is_array_of_arrays(args.data);
 
-    args.array_of_objects=false; 
-    args.array_of_arrays=false;
-    args.nested_array_of_arrays=false; 
-    args.nested_array_of_objects=false;
+    args.array_of_objects = false; 
+    args.array_of_arrays = false;
+    args.nested_array_of_arrays = false; 
+    args.nested_array_of_objects = false;
 
-    if (_is_nested_array){
+    if (_is_nested_array) {
         args.nested_array_of_objects = args.data.map(function(d){
             return is_array_of_objects_or_empty(d);
         });                                                      // Case #2
@@ -70,7 +70,7 @@ function raw_data_transformation(args) {
 function process_line(args) {
     'use strict';
     //do we have a time-series?
-    var is_time_series = d3.sum(args.data.map(function(series){
+    var is_time_series = d3.sum(args.data.map(function(series) {
         return series.length > 0 && series[0][args.x_accessor] instanceof Date;
     })) > 0;
 

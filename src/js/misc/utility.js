@@ -136,7 +136,7 @@ function mg_get_svg_child_of(selector_or_node) {
     return d3.select(selector_or_node).select('svg');
 }
 
-function mg_flatten_array(arr){
+function mg_flatten_array(arr) {
     var flat_data = [];
     return flat_data.concat.apply(flat_data, arr);
 }
