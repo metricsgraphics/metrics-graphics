@@ -237,18 +237,23 @@ charts.line = function(args) {
 
                     var last_point = this_data[this_data.length-1];
                     legend_group.append('svg:text')
-                        .classed('linelegend' + (line_id), true)
+                        .classed('linelegend', true)
                         .classed('mg-line' + (line_id) + '-color', true)
                         .attr('x', args.scalefns.xf(last_point))
                         .attr('dx', args.buffer)
                         .attr('y', args.scalefns.yf(last_point))
                         .attr('dy', '.35em')
-                        .attr('font-size', '12')
+                        .attr('font-size', 10)
                         .attr('font-weight', '300')
                         .text(this_legend);
-                    preventVerticalOverlap(legend_group.selectAll('linelegend' + (line_id))[0], args);
+                    preventVerticalOverlap(legend_group.selectAll('.linelegend')[0], args);
+
                 }
             }
+
+        }
+
+        if (args.legend && ! args.legend_target){
 
         }
 
