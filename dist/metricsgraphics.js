@@ -1928,6 +1928,8 @@
         return this;
     }
 
+
+
     function markers(args) {
         'use strict';
         var svg = mg_get_svg_child_of(args.target);
@@ -1966,7 +1968,21 @@
                         return d.label;
                     });
 
-            preventOverlap(gm.selectAll('.mg-marker-text')[0]);
+            preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
+        }
+
+        
+        function xPosition(d) {
+            return args.scales.X(d[args.x_accessor]);
+        }
+
+        function xPositionFixed(d) {
+            return xPosition(d).toFixed(2);
+        }
+
+        function inRange(d) {
+            return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+                && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
         }
 
         if (args.baselines) {
@@ -1997,57 +2013,6 @@
                     .text(function(d) {
                         return d.label;
                     });
-        }
-
-        function preventOverlap(labels) {
-            if (!labels || labels.length == 1) {
-                return;
-            }
-
-            //see if each of our labels overlaps any of the other labels
-            for (var i = 0; i < labels.length; i++) {
-                //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
-                if (isOverlapping(labels[i], labels)) {
-                    var node = d3.select(labels[i]);
-                    var newY = +node.attr('y');
-                    if (newY + 8 == args.top) {
-                        newY = args.top - 16;
-                    }
-                    node.attr('y', newY);
-                }
-            }
-        }
-
-        function isOverlapping(element, labels) {
-            var element_bbox = element.getBoundingClientRect();
-
-            for (var i = 0; i < labels.length; i++) {
-                if (labels[i] == element) {
-                    continue;
-                }
-
-                //check to see if this label overlaps with any of the other labels
-                var sibling_bbox = labels[i].getBoundingClientRect();
-                if (element_bbox.top === sibling_bbox.top && 
-                        !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
-                    ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function xPosition(d) {
-            return args.scales.X(d[args.x_accessor]);
-        }
-
-        function xPositionFixed(d) {
-            return xPosition(d).toFixed(2);
-        }
-
-        function inRange(d) {
-            return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-                && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
         }
 
         return this;
@@ -2391,6 +2356,11 @@
 
         this.mainPlot = function() {
             var svg = mg_get_svg_child_of(args.target);
+            var legend_group;
+            if (args.legend){
+                legend_group = svg.append('g');
+            }
+            var this_legend;
             var g;
             var data_median = 0;
             var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
@@ -2594,13 +2564,38 @@
                 }
 
                 //build legend
-                if (args.legend) {
-                    legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
-                            + args.legend[i] + "&nbsp; </span>" + legend;
+
+                if (args.legend){
+
+                    if (is_array(args.legend)){
+                        this_legend = args.legend[i];
+                    } else if (is_function(args.legend)){
+                        this_legend = args.legend(this_data);
+                    }
+
+                    if (args.legend_target){
+                            legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
+                                + this_legend + "&nbsp; </span>" + legend;
+                    } else {
+
+                        var last_point = this_data[this_data.length-1];
+                        legend_group.append('svg:text')
+                            .classed('linelegend' + (line_id), true)
+                            .classed('mg-line' + (line_id) + '-color', true)
+                            .attr('x', args.scalefns.xf(last_point))
+                            .attr('dx', args.buffer)
+                            .attr('y', args.scalefns.yf(last_point))
+                            .attr('dy', '.35em')
+                            .attr('font-size', '12')
+                            .attr('font-weight', '300')
+                            .text(this_legend);
+                        preventVerticalOverlap(legend_group.selectAll('linelegend' + (line_id))[0], args);
+                    }
                 }
+
             }
 
-            if (args.legend) {
+            if (args.legend_target) {
                 d3.select(args.legend_target).html(legend);
             }
 
@@ -4246,33 +4241,6 @@
         return this;
     };
 
-    function is_array(thing){
-        return Object.prototype.toString.call(thing) === '[object Array]';
-    }
-
-    function is_empty_array(thing){
-        return is_array(thing) && thing.length==0;
-    }
-
-    function is_object(thing){
-        return Object.prototype.toString.call(thing) === '[object Object]';   
-    }
-
-    function is_array_of_arrays(data){
-        var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
-        return d3.sum(all_elements) === data.length;
-    }
-
-    function is_array_of_objects(data){
-        // is every element of data an object?
-        var all_elements = data.map(function(d){return is_object(d)===true});
-        return d3.sum(all_elements) === data.length;
-    }
-
-    function is_array_of_objects_or_empty(data){
-        return is_empty_array(data) || is_array_of_objects(data);
-    }
-
     function raw_data_transformation(args) {
         'use strict';
 
@@ -4893,6 +4861,116 @@
 
         return data;
     };
+
+
+    function is_array(thing){
+        return Object.prototype.toString.call(thing) === '[object Array]';
+    }
+
+    function is_function(thing){
+        return Object.prototype.toString.call(thing) === '[object Function]';   
+    }
+
+    function is_empty_array(thing){
+        return is_array(thing) && thing.length==0;
+    }
+
+    function is_object(thing){
+        return Object.prototype.toString.call(thing) === '[object Object]';   
+    }
+
+    function is_array_of_arrays(data){
+        var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
+        return d3.sum(all_elements) === data.length;
+    }
+
+    function is_array_of_objects(data){
+        // is every element of data an object?
+        var all_elements = data.map(function(d){return is_object(d)===true});
+        return d3.sum(all_elements) === data.length;
+    }
+
+    function is_array_of_objects_or_empty(data){
+        return is_empty_array(data) || is_array_of_objects(data);
+    }
+
+
+    function preventHorizontalOverlap(labels, args) {
+        if (!labels || labels.length == 1) {
+            return;
+        }
+
+        //see if each of our labels overlaps any of the other labels
+        for (var i = 0; i < labels.length; i++) {
+            //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+            if (isHorizontallyOverlapping(labels[i], labels)) {
+                var node = d3.select(labels[i]);
+                var newY = +node.attr('y');
+                if (newY + 8 == args.top) {
+                    newY = args.top - 16;
+                }
+                node.attr('y', newY);
+            }
+        }
+    }
+
+    function preventVerticalOverlap(labels, args) {
+        if (!labels || labels.length == 1) {
+            return;
+        }
+
+        //see if each of our labels overlaps any of the other labels
+        for (var i = 0; i < labels.length; i++) {
+            //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+            if (isHorizontallyOverlapping(labels[i], labels)) {
+                var node = d3.select(labels[i]);
+                var newY = +node.attr('y');
+                if (newY + 8 == args.top) {
+                    newY = args.top - 16;
+                }
+                node.attr('y', newY);
+            }
+        }
+    }
+
+    function isHorizontallyOverlapping(element, labels) {
+        var element_bbox = element.getBoundingClientRect();
+
+        for (var i = 0; i < labels.length; i++) {
+            if (labels[i] == element) {
+                continue;
+            }
+
+            //check to see if this label overlaps with any of the other labels
+            var sibling_bbox = labels[i].getBoundingClientRect();
+            if (element_bbox.top === sibling_bbox.top && 
+                    !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
+                ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isVerticallyOverlapping(element, labels) {
+        var element_bbox = element.getBoundingClientRect();
+
+        for (var i = 0; i < labels.length; i++) {
+            if (labels[i] == element) {
+                continue;
+            }
+
+            //check to see if this label overlaps with any of the other labels
+            var sibling_bbox = labels[i].getBoundingClientRect();
+            if (element_bbox.left === sibling_bbox.left && 
+                    !(sibling_bbox.bottom > element_bbox.top || sibling_bbox.top < element_bbox.bottom)
+                ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     function mg_get_svg_child_of(selector_or_node) {
         return d3.select(selector_or_node).select('svg');

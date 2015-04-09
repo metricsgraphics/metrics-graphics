@@ -1,3 +1,5 @@
+
+
 function markers(args) {
     'use strict';
     var svg = mg_get_svg_child_of(args.target);
@@ -36,7 +38,21 @@ function markers(args) {
                     return d.label;
                 });
 
-        preventOverlap(gm.selectAll('.mg-marker-text')[0]);
+        preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
+    }
+
+    
+    function xPosition(d) {
+        return args.scales.X(d[args.x_accessor]);
+    }
+
+    function xPositionFixed(d) {
+        return xPosition(d).toFixed(2);
+    }
+
+    function inRange(d) {
+        return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
+            && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
     }
 
     if (args.baselines) {
@@ -67,57 +83,6 @@ function markers(args) {
                 .text(function(d) {
                     return d.label;
                 });
-    }
-
-    function preventOverlap(labels) {
-        if (!labels || labels.length == 1) {
-            return;
-        }
-
-        //see if each of our labels overlaps any of the other labels
-        for (var i = 0; i < labels.length; i++) {
-            //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
-            if (isOverlapping(labels[i], labels)) {
-                var node = d3.select(labels[i]);
-                var newY = +node.attr('y');
-                if (newY + 8 == args.top) {
-                    newY = args.top - 16;
-                }
-                node.attr('y', newY);
-            }
-        }
-    }
-
-    function isOverlapping(element, labels) {
-        var element_bbox = element.getBoundingClientRect();
-
-        for (var i = 0; i < labels.length; i++) {
-            if (labels[i] == element) {
-                continue;
-            }
-
-            //check to see if this label overlaps with any of the other labels
-            var sibling_bbox = labels[i].getBoundingClientRect();
-            if (element_bbox.top === sibling_bbox.top && 
-                    !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
-                ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function xPosition(d) {
-        return args.scales.X(d[args.x_accessor]);
-    }
-
-    function xPositionFixed(d) {
-        return xPosition(d).toFixed(2);
-    }
-
-    function inRange(d) {
-        return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-            && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
     }
 
     return this;

@@ -101,6 +101,7 @@ d3.json('data/fake_users3.json', function(data) {
 
     </div>
 </div>
+
 <div class='row trunk-section'>
     <div class='col-lg-7 text-center' id='missing-multi'></div>
     <div class='col-lg-5'>
@@ -126,8 +127,33 @@ d3.json('data/fake_users3.json', function(data) {
 });
 });</code></pre>
 
-                </div>
-            </div>      
+    </div>
+</div>  
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='multi-labelled'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Label the lines of the graph",
+        description: "",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#multi-labelled'
+    });
+});</code></pre>
+
+    </div>
+</div>       
+
 <script>
 d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
@@ -215,6 +241,37 @@ d3.json('data/fake_users3.json', function(data) {
         height: 200,
         right: 40,
         target: '#missing-multi'
+    });
+});
+
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    data[1][data[1].length-1].value = 50000000;
+    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1].value += 10000000;
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': '1st Milestone'
+    }, {
+        'date': new Date('2014-02-02T00:00:00.000Z'),
+        'label': '2nd Milestone'
+    }];
+
+    MG.data_graphic({
+        title: "Label the lines of the graph",
+        description: "",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        legend: ['US', 'CA', 'DE'],
+        line_legends: true,
+        target: '#multi-labelled'
     });
 });
 </script>

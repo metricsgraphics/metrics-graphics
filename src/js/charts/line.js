@@ -13,6 +13,11 @@ charts.line = function(args) {
 
     this.mainPlot = function() {
         var svg = mg_get_svg_child_of(args.target);
+        var legend_group;
+        if (args.legend){
+            legend_group = svg.append('g');
+        }
+        var this_legend;
         var g;
         var data_median = 0;
         var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
@@ -216,13 +221,38 @@ charts.line = function(args) {
             }
 
             //build legend
-            if (args.legend) {
-                legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
-                        + args.legend[i] + "&nbsp; </span>" + legend;
+
+            if (args.legend){
+
+                if (is_array(args.legend)){
+                    this_legend = args.legend[i];
+                } else if (is_function(args.legend)){
+                    this_legend = args.legend(this_data);
+                }
+
+                if (args.legend_target){
+                        legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
+                            + this_legend + "&nbsp; </span>" + legend;
+                } else {
+
+                    var last_point = this_data[this_data.length-1];
+                    legend_group.append('svg:text')
+                        .classed('linelegend' + (line_id), true)
+                        .classed('mg-line' + (line_id) + '-color', true)
+                        .attr('x', args.scalefns.xf(last_point))
+                        .attr('dx', args.buffer)
+                        .attr('y', args.scalefns.yf(last_point))
+                        .attr('dy', '.35em')
+                        .attr('font-size', '12')
+                        .attr('font-weight', '300')
+                        .text(this_legend);
+                    preventVerticalOverlap(legend_group.selectAll('linelegend' + (line_id))[0], args);
+                }
             }
+
         }
 
-        if (args.legend) {
+        if (args.legend_target) {
             d3.select(args.legend_target).html(legend);
         }
 

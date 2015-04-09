@@ -1,30 +1,3 @@
-function is_array(thing){
-    return Object.prototype.toString.call(thing) === '[object Array]';
-}
-
-function is_empty_array(thing){
-    return is_array(thing) && thing.length==0;
-}
-
-function is_object(thing){
-    return Object.prototype.toString.call(thing) === '[object Object]';   
-}
-
-function is_array_of_arrays(data){
-    var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
-    return d3.sum(all_elements) === data.length;
-}
-
-function is_array_of_objects(data){
-    // is every element of data an object?
-    var all_elements = data.map(function(d){return is_object(d)===true});
-    return d3.sum(all_elements) === data.length;
-}
-
-function is_array_of_objects_or_empty(data){
-    return is_empty_array(data) || is_array_of_objects(data);
-}
-
 function raw_data_transformation(args) {
     'use strict';
 
