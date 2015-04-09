@@ -499,8 +499,16 @@ charts.line = function(args) {
         } else if (args.data.length > 1) {
             //otherwise, trigger it for an appropriate line in a multi-line chart
             for (var i = 0; i < args.data.length; i++) {
+                var j = i + 1;
+
+                if (args.custom_line_color_map.length > 0 
+                        && args.custom_line_color_map[i] !== undefined
+                    ) {
+                    j = args.custom_line_color_map[i];
+                }
+
                 if (args.data[i].length == 1) {
-                    svg.selectAll('.mg-voronoi .mg-line' + (i + 1) + '-color')
+                    svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
                         .on('mouseover')(args.data[i][0], 0);
                 }
             }
@@ -735,7 +743,16 @@ charts.line = function(args) {
             } else {
                 svg.selectAll('circle.mg-line-rollover-circle.mg-area' + (d.line_id) + '-color')
                     .style('opacity', function() {
-                        if (args.data[d.line_id - 1].length == 1) {
+                        var id = d.line_id - 1;
+
+                        if (args.custom_line_color_map.length > 0 
+                                && args.custom_line_color_map.indexOf(d.line_id) !== undefined
+                            ) {
+                            id = args.custom_line_color_map.indexOf(d.line_id);
+                        }
+
+                        if (args.data[id].length == 1) {
+                        //if (args.data.length === 1 && args.data[0].length === 1) {
                             return 1;
                         }
                         else {
