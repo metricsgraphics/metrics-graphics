@@ -220,3 +220,26 @@ test('Only one active data point container is added on multiple calls to the sam
 
     equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one active data point container');
 });
+
+test('No zombie lines when custom_line_color_map is set', function() {
+    var data = [];
+    data[0] = [{'date': new Date('2015-03-05'), 'value': 12000}];
+    data[1] = [{'date': new Date('2015-03-06'), 'value': 35000}];
+    data[2] = [{'date': new Date('2015-03-07'), 'value': 23000},{'date': new Date('2015-03-08'), 'value': 20000}];
+
+    MG.data_graphic({
+        data: data,
+        target: '#qunit-fixture',
+        max_data_size: 5,
+        custom_line_color_map: [3,4,5]
+    });
+
+    MG.data_graphic({
+        data: data,
+        target: '#qunit-fixture',
+        max_data_size: 5,
+        custom_line_color_map: [1,2,3]
+    });
+
+    equal(document.querySelectorAll('.mg-main-line.mg-line5-color').length, 0, 'Line 5 was removed on update');
+});
