@@ -78,9 +78,11 @@ function preventVerticalOverlap(labels, args) {
     if (!labels || labels.length == 1) {
         return;
     }
+
     labels.sort(function(b,a){
         return d3.select(a).attr('y') - d3.select(b).attr('y');
     });
+
     labels.reverse();
 
     var overlap_amount, label_i, label_j;
@@ -89,45 +91,30 @@ function preventVerticalOverlap(labels, args) {
     for (var i = 0; i < labels.length; i++) {
         //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
         label_i = d3.select(labels[i]).text();
-        for (var j = 0; j < labels.length; j ++){
+
+        for (var j = 0; j < labels.length; j ++) {
             label_j = d3.select(labels[j]).text(); 
             overlap_amount = isVerticallyOverlapping(labels[i], labels[j]);
 
-            if (overlap_amount !== false && label_i !== label_j){
-
+            if (overlap_amount !== false && label_i !== label_j) {
                 var node = d3.select(labels[i]);
                 var newY = +node.attr('y');
                 newY = newY + overlap_amount;
                 node.attr('y', newY);
-
             }
         }
     }
 }
 
-
 function isVerticallyOverlapping(element, sibling) {
     var element_bbox = element.getBoundingClientRect();
     var sibling_bbox = sibling.getBoundingClientRect();
-    if (element_bbox.top < sibling_bbox.bottom && element_bbox.top > sibling_bbox.top){
+
+    if (element_bbox.top < sibling_bbox.bottom && element_bbox.top > sibling_bbox.top) {
         return sibling_bbox.bottom - element_bbox.top;
     }
-    return false;
-    // for (var i = 0; i < labels.length; i++) {
-    //     if (labels[i] == element) {
-    //         continue;
-    //     }
 
-        //check to see if this label overlaps with any of the other labels
-    //     var sibling_bbox = labels[i].getBoundingClientRect();
-    //     if (
-                
-                 
-    //         ) {
-    //         return sibling_bbox.bottom - element_bbox.top;
-    //     }
-    // }
-    // return false;
+    return false;
 }
 
 function isHorizontallyOverlapping(element, labels) {
@@ -146,11 +133,9 @@ function isHorizontallyOverlapping(element, labels) {
             return true;
         }
     }
+
     return false;
 }
-
-
-
 
 function mg_get_svg_child_of(selector_or_node) {
     return d3.select(selector_or_node).select('svg');

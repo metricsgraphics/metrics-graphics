@@ -247,14 +247,8 @@ charts.line = function(args) {
                         .attr('font-weight', '300')
                         .text(this_legend);
                     preventVerticalOverlap(legend_group.selectAll('.linelegend')[0], args);
-
                 }
             }
-
-        }
-
-        if (args.legend && ! args.legend_target){
-
         }
 
         if (args.legend_target) {
