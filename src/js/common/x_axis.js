@@ -498,10 +498,9 @@ function mg_find_min_max_x(args) {
         });
     }
     //if data set is of length 1, expand the range so that we can build the x-axis
-    //of course, a line chart doesn't make sense in this case, so the preferred
-    //method would be to check for said object's length and, if appropriate,
-    //change the chart type to 'point'
-    if (min_x === max_x) {
+    if (min_x === max_x 
+            && !(args.min_x && args.max_x) 
+        ) {
         if (min_x instanceof Date) {
             var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
             var tomorrow = MG.clone(min_x).setDate(min_x.getDate() + 1);
