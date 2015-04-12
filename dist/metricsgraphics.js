@@ -2350,8 +2350,9 @@
         this.mainPlot = function() {
             var svg = mg_get_svg_child_of(args.target);
             var legend_group;
-            if (args.legend){
-                legend_group = svg.append('g');
+            if (args.legend) {
+                legend_group = svg.append('g')
+                    .attr('class', 'mg-line-legend');
             }
             var this_legend;
             var g;
@@ -2557,32 +2558,28 @@
                 }
 
                 //build legend
-
-                if (args.legend){
-
-                    if (is_array(args.legend)){
+                if (args.legend) {
+                    if (is_array(args.legend)) {
                         this_legend = args.legend[i];
-                    } else if (is_function(args.legend)){
+                    } else if (is_function(args.legend)) {
                         this_legend = args.legend(this_data);
                     }
 
-                    if (args.legend_target){
-                            legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
-                                + this_legend + "&nbsp; </span>" + legend;
+                    if (args.legend_target) {
+                        legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
+                            + this_legend + "&nbsp; </span>" + legend;
                     } else {
-
                         var last_point = this_data[this_data.length-1];
+
                         legend_group.append('svg:text')
-                            .classed('linelegend', true)
-                            .classed('mg-line' + (line_id) + '-color', true)
+                            .classed('mg-line' + (line_id) + '-legend-color', true)
                             .attr('x', args.scalefns.xf(last_point))
                             .attr('dx', args.buffer)
                             .attr('y', args.scalefns.yf(last_point))
                             .attr('dy', '.35em')
-                            .attr('font-size', 10)
-                            .attr('font-weight', '300')
                             .text(this_legend);
-                        preventVerticalOverlap(legend_group.selectAll('.linelegend')[0], args);
+
+                        preventVerticalOverlap(legend_group.selectAll('.mg-line-legend text')[0], args);
                     }
                 }
             }
