@@ -110,7 +110,7 @@ function isVerticallyOverlapping(element, sibling) {
     var element_bbox = element.getBoundingClientRect();
     var sibling_bbox = sibling.getBoundingClientRect();
 
-    if (element_bbox.top < sibling_bbox.bottom && element_bbox.top > sibling_bbox.top) {
+    if (element_bbox.top <= sibling_bbox.bottom && element_bbox.top >= sibling_bbox.top) {
         return sibling_bbox.bottom - element_bbox.top;
     }
 

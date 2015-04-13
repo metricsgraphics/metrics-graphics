@@ -13,12 +13,17 @@ charts.line = function(args) {
 
     this.mainPlot = function() {
         var svg = mg_get_svg_child_of(args.target);
+        
+        //remove any old legends if they exist
+        svg.selectAll('.mg-line-legend').remove();
+
         var legend_group;
+        var this_legend;
         if (args.legend) {
             legend_group = svg.append('g')
                 .attr('class', 'mg-line-legend');
         }
-        var this_legend;
+
         var g;
         var data_median = 0;
         var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;

@@ -243,3 +243,18 @@ test('No zombie lines when custom_line_color_map is set', function() {
 
     equal(document.querySelectorAll('.mg-main-line.mg-line5-color').length, 0, 'Line 5 was removed on update');
 });
+
+test('Only one line legend is added on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        legend: ['US', 'CA'],
+        line_legends: true
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll('.mg-line-legend').length, 1, 'We only have one mg-line-legend');
+});
