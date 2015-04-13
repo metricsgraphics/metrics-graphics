@@ -2842,6 +2842,9 @@
                     if (args.data[i].length == 1) {
                         svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
                             .on('mouseover')(args.data[i][0], 0);
+
+                        svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
+                            .on('mouseout')(args.data[i][0], 0);
                     }
                 }
             }
@@ -2867,20 +2870,17 @@
             }
 
             return function(d, i) {
-
                 if (args.aggregate_rollover && args.data.length > 1) {
-
                     // hide the circles in case a non-contiguous series is present
                     svg.selectAll('circle.mg-line-rollover-circle')
                         .style('opacity', 0);
 
                     d.values.forEach(function(datum) {
-
                       if (datum[args.x_accessor] >= args.processed.min_x &&
                           datum[args.x_accessor] <= args.processed.max_x &&
                           datum[args.y_accessor] >= args.processed.min_y &&
                           datum[args.y_accessor] <= args.processed.max_y
-                      ){
+                      ) {
                         var circle = svg.select('circle.mg-line' + datum.line_id + '-color')
                             .attr({
                                 'cx': function() {
@@ -2898,10 +2898,10 @@
                         && d[args.y_accessor] == 0 
                         && d['missing']
                     ) {
+
                     //disable rollovers for hidden parts of the line
                     return;
                 } else {
-
                     //show circle on mouse-overed rect
                     if (d[args.x_accessor] >= args.processed.min_x &&
                         d[args.x_accessor] <= args.processed.max_x &&
