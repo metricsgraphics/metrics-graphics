@@ -57,6 +57,10 @@
     stroke: none;
 }
 
+.mg-baselines-small text {
+    font-size: 0.6rem;
+}
+
 .mg-chart-title .popover {
     font-size: 0.95rem;
 }
