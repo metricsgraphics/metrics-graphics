@@ -529,8 +529,7 @@
                     var j = i + 1;
 
                     if (args.custom_line_color_map.length > 0
-                            && args.custom_line_color_map[i] !== undefined
-                        ) {
+                        && args.custom_line_color_map[i] !== undefined) {
                         j = args.custom_line_color_map[i];
                     }
 
@@ -541,6 +540,7 @@
                         svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
                             .on('mouseout')(args.data[i][0], 0);
                     }
+                }
             }
 
             MG.call_hook('line.after_rollover', args);

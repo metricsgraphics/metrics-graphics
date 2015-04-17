@@ -134,7 +134,7 @@ function init(args) {
             };
 
             //get an array of lines ids to remove
-            var lines_to_remove = arrDiff(
+            var lines_to_remove = arr_diff(
                 array_full_series(args.max_data_size),
                 args.custom_line_color_map);
 
