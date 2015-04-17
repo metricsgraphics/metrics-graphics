@@ -2458,10 +2458,6 @@ MG.button_layout = function(target) {
                     // passing the data for the current line
                     MG.call_hook('line.before_each_series', [this_data, args]);
 
-                    if (this_data.length === 0) {
-                      continue;
-                    }
-
                     //override increment if we have a custom increment series
                     var line_id = i + 1;
                     if (args.custom_line_color_map.length > 0) {
@@ -2470,22 +2466,26 @@ MG.button_layout = function(target) {
 
                     args.data[i].line_id = line_id;
 
+                    if (this_data.length === 0) {
+                        continue;
+                    }
+
                     //add confidence band
                     if (args.show_confidence_band) {
                         if (!existing_band.empty()) {
                             confidenceBand = existing_band
                                 .transition()
                                 .duration(function() {
-                                  return (args.transition_on_update) ? 1000 : 0;
+                                    return (args.transition_on_update) ? 1000 : 0;
                                 });
                         } else {
                             confidenceBand = svg.append('path')
                                 .attr('class', 'mg-confidence-band');
                         }
 
-                      confidenceBand
-                          .attr('d', confidence_area(args.data[i]))
-                          .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                        confidenceBand
+                            .attr('d', confidence_area(args.data[i]))
+                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
                     }
 
                     //add the area
