@@ -579,7 +579,7 @@
                           datum[args.y_accessor] >= args.processed.min_y &&
                           datum[args.y_accessor] <= args.processed.max_y
                       ){
-                        var circle = svg.select('circle.mg-line' + datum.line_id + '-color')
+                        var circle = svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id + '-color')
                             .attr({
                                 'cx': function() {
                                     return args.scales.X(datum[args.x_accessor]).toFixed(2);
