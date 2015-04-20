@@ -70,8 +70,12 @@ function raw_data_transformation(args) {
     return this;
 }
 
+MG.raw_data_transformation = raw_data_transformation;
+
 function process_line(args) {
     'use strict';
+    var is_time_series;
+
     //do we have a time-series?
     var is_time_series = d3.sum(args.data.map(function(series) {
         return series.length > 0 && series[0][args.x_accessor] instanceof Date;
@@ -154,6 +158,8 @@ function process_line(args) {
     return this;
 }
 
+MG.process_line = process_line;
+
 function process_histogram(args) {
     'use strict';
     // if args.binned=False, then we need to bin the data appropriately.
@@ -226,6 +232,8 @@ function process_histogram(args) {
     return this;
 }
 
+MG.process_histogram = process_histogram;
+
 function process_categorical_variables(args) {
     // For use with bar charts, etc.
     'use strict';
@@ -275,6 +283,8 @@ function process_categorical_variables(args) {
     return this;
 }
 
+MG.process_categorical_variables = process_categorical_variables;
+
 function process_point(args) {
     'use strict';
     var data = args.data[0];
@@ -289,3 +299,5 @@ function process_point(args) {
     return this;
 
 }
+
+MG.process_point = process_point;

@@ -22,6 +22,8 @@ var
   dist = './dist/',
   jsFiles = [
     src + 'MG.js',
+    src + 'common/register.js',
+    src + 'common/hooks.js',
     src + 'common/data_graphic.js',
     src + 'common/bootstrap_tooltip_popover.js',
     src + 'common/chart_title.js',
@@ -92,10 +94,6 @@ gulp.task('build:js', ['clean'], function () {
           }
         }
     ))
-    .pipe(es6ModuleTranspiler({
-      type: 'plain',
-      sourceMaps: false
-    }))
     .pipe(gulp.dest(dist))
     .pipe(rename('metricsgraphics.min.js'))
     .pipe(uglify())

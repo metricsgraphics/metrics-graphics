@@ -40,6 +40,8 @@ function x_rug(args) {
     }
 }
 
+MG.x_rug = x_rug;
+
 function x_axis(args) {
     'use strict';
     var svg = mg_get_svg_child_of(args.target);
@@ -102,6 +104,8 @@ function x_axis(args) {
     return this;
 }
 
+MG.x_axis = x_axis;
+
 function x_axis_categorical(args) {
     var svg = mg_get_svg_child_of(args.target);
 
@@ -150,6 +154,8 @@ function x_axis_categorical(args) {
 
     return this;
 }
+
+MG.x_axis_categorical = x_axis_categorical;
 
 function mg_point_add_color_scale(args) {
     var min_color, max_color,
@@ -259,10 +265,6 @@ function mg_add_x_label(g, args) {
 }
 
 function mg_default_bar_xax_format(args) {
-    if (args.xax_format) {
-        return args.xax_format;
-    }
-
     return function(f) {
         if (f < 1.0) {
             //don't scale tiny values
@@ -341,7 +343,7 @@ function mg_add_x_ticks(g, args) {
         g.append('line')
             .attr('x1', function() {
                 //start the axis line from the beginning, domain's min, or the auto-generated
-                //ticks' first element, depending on whether xax_count is set to 0 or 
+                //ticks' first element, depending on whether xax_count is set to 0 or
                 //xax_start_at_min is set to true
                 if (args.xax_count === 0) {
                     return args.left + args.buffer;
@@ -396,7 +398,7 @@ function mg_add_x_tick_labels(g, args) {
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
-                    return args.xax_units + args.xax_format(d);
+                    return args.xax_units + args.processed.xax_format(d);
                 });
 
     if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
@@ -476,11 +478,6 @@ function mg_find_min_max_x(args) {
         all_data = [].concat.apply([], args.data),
         mapDtoX = function(d) { return d[args.x_accessor]; };
 
-    // clear the cached xax_format in case we need to recalculate
-    if(args.xax_format === null) {
-        delete args.xax_format;
-    }
-
     if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
         extent_x = d3.extent(all_data, mapDtoX);
         min_x = extent_x[0];
@@ -519,14 +516,16 @@ function mg_find_min_max_x(args) {
         args.xax_count = 2;
     }
 
-    min_x = args.min_x ? args.min_x : min_x;
-    max_x = args.max_x ? args.max_x : max_x;
+    min_x = args.min_x || min_x;
+    max_x = args.max_x || max_x;
     args.x_axis_negative = false;
 
     args.processed.min_x = min_x;
     args.processed.max_x = max_x;
 
     mg_select_xax_format(args);
+
+    MG.call_hook('x_axis.process_min_max', args, min_x, max_x);
 
     if (!args.time_series) {
         if (args.processed.min_x < 0) {
@@ -543,8 +542,17 @@ function mg_find_min_max_x(args) {
 }
 
 function mg_select_xax_format(args) {
-    if (!args.xax_format && args.chart_type === 'line') args.xax_format       = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type === 'point') args.xax_format      = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type === 'histogram') args.xax_format  = mg_default_xax_format(args);
-    if (!args.xax_format && args.chart_type === 'bar') args.xax_format        = mg_default_bar_xax_format(args);
+    var c = args.chart_type;
+
+    if (!args.processed.xax_format) {
+        if (args.xax_format) {
+            args.processed.xax_format = args.xax_format;
+        } else {
+          if (c === 'line' || c === 'point' || c === 'histogram') {
+              args.processed.xax_format = mg_default_xax_format(args);
+          } else if (c === 'bar') {
+              args.processed.xax_format = mg_default_bar_xax_format(args);
+          }
+        }
+    }
 }

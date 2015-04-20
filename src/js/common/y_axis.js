@@ -41,6 +41,8 @@ function y_rug(args) {
     }
 }
 
+MG.y_rug = y_rug;
+
 function y_axis(args) {
     if (!args.processed) {
         args.processed = {};
@@ -128,6 +130,13 @@ function y_axis(args) {
         min_y = min_y / args.inflator;
     }
 
+    args.processed.min_y = min_y;
+    args.processed.max_y = max_y;
+
+    MG.call_hook('y_axis.process_min_max', args, min_y, max_y);
+    min_y = args.processed.min_y;
+    max_y = args.processed.max_y;
+
     if (args.y_scale_type === 'log') {
         if (args.chart_type === 'histogram') {
             // log histogram plots should start just below 1
@@ -147,8 +156,7 @@ function y_axis(args) {
             .domain([min_y, max_y])
             .range([args.height - args.bottom - args.buffer, args.top]);
     }
-    args.processed.min_y = min_y;
-    args.processed.max_y = max_y;
+
     //used for ticks and such, and designed to be paired with log or linear
     args.scales.Y_axis = d3.scale.linear()
         .domain([args.processed.min_y, args.processed.max_y])
@@ -292,6 +300,8 @@ function y_axis(args) {
     return this;
 }
 
+MG.y_axis = y_axis;
+
 function y_axis_categorical(args) {
     // first, come up with y_axis
     args.scales.Y = d3.scale.ordinal()
@@ -327,3 +337,5 @@ function y_axis_categorical(args) {
 
     return this;
 }
+
+MG.y_axis_categorical = y_axis_categorical;
