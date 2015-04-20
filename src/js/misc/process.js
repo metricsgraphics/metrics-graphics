@@ -1,6 +1,9 @@
 function raw_data_transformation(args) {
     'use strict';
 
+    // dupe our data so we can modify it without adverse effect
+    args.data = MG.clone(args.data);
+
     // We need to account for a few data format cases:
     // #1 [{key:__, value:__}, ...]                              // unnested obj-arrays
     // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
@@ -9,9 +12,9 @@ function raw_data_transformation(args) {
 
     var _is_nested_array = is_array_of_arrays(args.data);
 
-    args.array_of_objects = false; 
+    args.array_of_objects = false;
     args.array_of_arrays = false;
-    args.nested_array_of_arrays = false; 
+    args.nested_array_of_arrays = false;
     args.nested_array_of_objects = false;
 
     if (_is_nested_array) {
@@ -84,7 +87,7 @@ function process_line(args) {
     }
 
     //are we replacing missing y values with zeros?
-    if ((args.missing_is_zero || args.missing_is_hidden) 
+    if ((args.missing_is_zero || args.missing_is_hidden)
             && args.chart_type === 'line'
             && is_time_series
         ) {
