@@ -140,6 +140,10 @@ d3.json('data/fake_users3.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
+    data[1][data[1].length-1].value = 50000000;
+    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1].value += 10000000;
+
     MG.data_graphic({
         title: "Labeling Lines",
         data: data,
@@ -252,13 +256,6 @@ d3.json('data/fake_users3.json', function(data) {
     data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
     data[2][data[2].length-1].value += 10000000;
 
-    var markers = [{
-        'date': new Date('2014-02-01T00:00:00.000Z'),
-        'label': '1st Milestone'
-    }, {
-        'date': new Date('2014-02-02T00:00:00.000Z'),
-        'label': '2nd Milestone'
-    }];
 
     MG.data_graphic({
         title: "Labeling Lines",
@@ -266,7 +263,6 @@ d3.json('data/fake_users3.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        markers: markers,
         legend: ['US', 'CA', 'DE'],
         target: '#multi-labelled'
     });
