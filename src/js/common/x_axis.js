@@ -339,7 +339,7 @@ function mg_add_x_ticks(g, args) {
     }
 
     if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
-        //extend axis line across bottom, rather than from domain's min..max
+        //draw x-axis line
         g.append('line')
             .attr('x1', function() {
                 //start the axis line from the beginning, domain's min, or the auto-generated
