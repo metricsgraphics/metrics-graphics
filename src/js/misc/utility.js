@@ -28,7 +28,7 @@ function is_array(thing){
 }
 
 function is_function(thing){
-    return Object.prototype.toString.call(thing) === '[object Function]';   
+    return Object.prototype.toString.call(thing) === '[object Function]';
 }
 
 function is_empty_array(thing){
@@ -36,7 +36,7 @@ function is_empty_array(thing){
 }
 
 function is_object(thing){
-    return Object.prototype.toString.call(thing) === '[object Object]';   
+    return Object.prototype.toString.call(thing) === '[object Object]';
 }
 
 function is_array_of_arrays(data){
@@ -93,7 +93,7 @@ function preventVerticalOverlap(labels, args) {
         label_i = d3.select(labels[i]).text();
 
         for (var j = 0; j < labels.length; j ++) {
-            label_j = d3.select(labels[j]).text(); 
+            label_j = d3.select(labels[j]).text();
             overlap_amount = isVerticallyOverlapping(labels[i], labels[j]);
 
             if (overlap_amount !== false && label_i !== label_j) {
@@ -127,7 +127,7 @@ function isHorizontallyOverlapping(element, labels) {
 
         //check to see if this label overlaps with any of the other labels
         var sibling_bbox = labels[i].getBoundingClientRect();
-        if (element_bbox.top === sibling_bbox.top && 
+        if (element_bbox.top === sibling_bbox.top &&
                 !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
             ) {
             return true;
@@ -152,12 +152,11 @@ function mg_strip_punctuation(s) {
     if (typeof(s) == 'string') {
         processed_s = s;
     } else {
-        // args.target is 
         if (s.id != '') {
             processed_s = s.id;
-        } else if (args.target.className != '') {
+        } else if (s.className != '') {
             processed_s = s.className;
-        } else if (args.target.nodeName !='') {
+        } else if (s.nodeName !='') {
             processed_s = s.nodeName;
         } else {
             console.warn('The specified target element ' + s + ' has no unique attributes.');
