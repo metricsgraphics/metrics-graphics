@@ -80,7 +80,7 @@ function init(args) {
     svg.append('defs')
         .attr('class', 'mg-clip-path')
         .append('clipPath')
-            .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+            .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
         .append('svg:rect')
             .attr('x', args.left)
             .attr('y', args.top)
