@@ -39,12 +39,7 @@ test('mg_get_svg_child_of', function(){
 
 
 test('mg_target_ref', function() {
-    var chart_area = document.createElement('div');
-    chart_area.id = 'someChartId';
-    equal(mg_target_ref(chart_area), 'someChartId', 'uses existing DOM ID if present');
-
     var chart_area2 = document.createElement('div');
-    var id = mg_target_ref(chart_area2);
-    equal(mg_target_ref(chart_area2), id, 'reuses generated DOM ID');
-    ok(chart_area2.id.match(/mg-[\d]/), 'applies generated ID to DOM element');
+    mg_target_ref(chart_area2);
+    ok(chart_area2.getAttribute('data-mg').match(/mg-[\d]/), 'applies generated ID to DOM element');
 });

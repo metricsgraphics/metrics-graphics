@@ -155,20 +155,22 @@ function mg_next_id() {
 }
 
 function mg_target_ref(target) {
-    var target_ref;
-
     if (typeof target === 'string') {
-        target_ref = target;
+        return mg_normalize(target);
     } else {
         if (target instanceof HTMLElement) {
-            if (target.id === '') {
-                target.id = mg_next_id();
+            target_ref = target.getAttribute('data-mg');
+            if (!target_ref) {
+                target_ref = mg_next_id();
+                target.setAttribute('data-mg', target_ref);
             }
-            target_ref = target.id;
-        }
-    }
 
-    return mg_normalize(target_ref);
+            return target_ref;
+        }
+    } else {
+        console.warn('The specified target should be a string or an HTMLElement.', target);
+        return mg_normalize(target);
+    }
 }
 
 function mg_normalize(string) {
