@@ -157,16 +157,16 @@ function mg_next_id() {
 function mg_target_ref(target) {
     if (typeof target === 'string') {
         return mg_normalize(target);
-    } else {
-        if (target instanceof HTMLElement) {
-            target_ref = target.getAttribute('data-mg-uid');
-            if (!target_ref) {
-                target_ref = mg_next_id();
-                target.setAttribute('data-mg-uid', target_ref);
-            }
 
-            return target_ref;
+    } else if (target instanceof HTMLElement) {
+        target_ref = target.getAttribute('data-mg-uid');
+        if (!target_ref) {
+            target_ref = mg_next_id();
+            target.setAttribute('data-mg-uid', target_ref);
         }
+
+        return target_ref;
+
     } else {
         console.warn('The specified target should be a string or an HTMLElement.', target);
         return mg_normalize(target);

@@ -41,5 +41,5 @@ test('mg_get_svg_child_of', function(){
 test('mg_target_ref', function() {
     var chart_area2 = document.createElement('div');
     mg_target_ref(chart_area2);
-    ok(chart_area2.getAttribute('data-mg').match(/mg-[\d]/), 'applies generated ID to DOM element');
+    ok(chart_area2.getAttribute('data-mg-uid').match(/mg-[\d]/), 'applies generated ID to DOM element');
 });
