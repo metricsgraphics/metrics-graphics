@@ -146,27 +146,35 @@ function mg_flatten_array(arr) {
     return flat_data.concat.apply(flat_data, arr);
 }
 
-function mg_strip_punctuation(s) {
-    var processed_s;
+function mg_next_id() {
+    if (typeof MG._next_elem_id === 'undefined') {
+        MG._next_elem_id = 0;
+    }
 
-    if (typeof(s) == 'string') {
-        processed_s = s;
+    return 'mg-'+(MG._next_elem_id++);
+}
+
+function mg_target_ref(target) {
+    var target_ref;
+
+    if (typeof target === 'string') {
+        target_ref = target;
     } else {
-        if (s.id != '') {
-            processed_s = s.id;
-        } else if (s.className != '') {
-            processed_s = s.className;
-        } else if (s.nodeName !='') {
-            processed_s = s.nodeName;
-        } else {
-            console.warn('The specified target element ' + s + ' has no unique attributes.');
+        if (target instanceof HTMLElement) {
+            if (target.id === '') {
+                target.id = mg_next_id();
+            }
+            target_ref = target.id;
         }
     }
 
-    var punctuationless = processed_s.replace(/[^a-zA-Z0-9 _]+/g, '');
-    var finalString = punctuationless.replace(/ +?/g, "");
+    return mg_normalize(target_ref);
+}
 
-    return finalString;
+function mg_normalize(string) {
+    return string
+        .replace(/[^a-zA-Z0-9 _-]+/g, '')
+        .replace(/ +?/g, '');
 }
 
 function get_pixel_dimension(target, dimension) {

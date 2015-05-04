@@ -129,7 +129,7 @@
 
                         confidenceBand
                             .attr('d', confidence_area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
                     }
 
                     //add the area
@@ -144,12 +144,12 @@
                                 .transition()
                                     .duration(updateTransitionDuration)
                                     .attr('d', area(args.data[i]))
-                                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
                         } else { //otherwise, add the area
                             svg.append('path')
                                 .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                                 .attr('d', area(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         }
                     } else if (!areas.empty()) {
                         areas.remove();
@@ -182,12 +182,12 @@
                                 .transition()
                                     .duration(1000)
                                     .attr('d', line(args.data[i]))
-                                    .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                    .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         } else { //or just add the line
                             svg.append('path')
                                 .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                                 .attr('d', line(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         }
                     }
 
