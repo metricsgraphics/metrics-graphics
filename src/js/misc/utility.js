@@ -159,10 +159,10 @@ function mg_target_ref(target) {
         return mg_normalize(target);
     } else {
         if (target instanceof HTMLElement) {
-            target_ref = target.getAttribute('data-mg');
+            target_ref = target.getAttribute('data-mg-uid');
             if (!target_ref) {
                 target_ref = mg_next_id();
-                target.setAttribute('data-mg', target_ref);
+                target.setAttribute('data-mg-uid', target_ref);
             }
 
             return target_ref;
