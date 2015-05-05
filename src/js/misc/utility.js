@@ -28,7 +28,7 @@ function is_array(thing){
 }
 
 function is_function(thing){
-    return Object.prototype.toString.call(thing) === '[object Function]';   
+    return Object.prototype.toString.call(thing) === '[object Function]';
 }
 
 function is_empty_array(thing){
@@ -36,7 +36,7 @@ function is_empty_array(thing){
 }
 
 function is_object(thing){
-    return Object.prototype.toString.call(thing) === '[object Object]';   
+    return Object.prototype.toString.call(thing) === '[object Object]';
 }
 
 function is_array_of_arrays(data){
@@ -93,7 +93,7 @@ function preventVerticalOverlap(labels, args) {
         label_i = d3.select(labels[i]).text();
 
         for (var j = 0; j < labels.length; j ++) {
-            label_j = d3.select(labels[j]).text(); 
+            label_j = d3.select(labels[j]).text();
             overlap_amount = isVerticallyOverlapping(labels[i], labels[j]);
 
             if (overlap_amount !== false && label_i !== label_j) {
@@ -127,7 +127,7 @@ function isHorizontallyOverlapping(element, labels) {
 
         //check to see if this label overlaps with any of the other labels
         var sibling_bbox = labels[i].getBoundingClientRect();
-        if (element_bbox.top === sibling_bbox.top && 
+        if (element_bbox.top === sibling_bbox.top &&
                 !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
             ) {
             return true;
@@ -146,28 +146,37 @@ function mg_flatten_array(arr) {
     return flat_data.concat.apply(flat_data, arr);
 }
 
-function mg_strip_punctuation(s) {
-    var processed_s;
-
-    if (typeof(s) == 'string') {
-        processed_s = s;
-    } else {
-        // args.target is 
-        if (s.id != '') {
-            processed_s = s.id;
-        } else if (args.target.className != '') {
-            processed_s = s.className;
-        } else if (args.target.nodeName !='') {
-            processed_s = s.nodeName;
-        } else {
-            console.warn('The specified target element ' + s + ' has no unique attributes.');
-        }
+function mg_next_id() {
+    if (typeof MG._next_elem_id === 'undefined') {
+        MG._next_elem_id = 0;
     }
 
-    var punctuationless = processed_s.replace(/[^a-zA-Z0-9 _]+/g, '');
-    var finalString = punctuationless.replace(/ +?/g, "");
+    return 'mg-'+(MG._next_elem_id++);
+}
 
-    return finalString;
+function mg_target_ref(target) {
+    if (typeof target === 'string') {
+        return mg_normalize(target);
+
+    } else if (target instanceof HTMLElement) {
+        target_ref = target.getAttribute('data-mg-uid');
+        if (!target_ref) {
+            target_ref = mg_next_id();
+            target.setAttribute('data-mg-uid', target_ref);
+        }
+
+        return target_ref;
+
+    } else {
+        console.warn('The specified target should be a string or an HTMLElement.', target);
+        return mg_normalize(target);
+    }
+}
+
+function mg_normalize(string) {
+    return string
+        .replace(/[^a-zA-Z0-9 _-]+/g, '')
+        .replace(/ +?/g, '');
 }
 
 function get_pixel_dimension(target, dimension) {
