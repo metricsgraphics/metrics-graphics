@@ -210,16 +210,6 @@
         editor.gotoLine(persisted.line || 1);
         editor.setHighlightActiveLine(false);
 
-        if (persisted.data) {
-            $('.data textarea').val(JSON.stringify(persisted.data, null, 2));
-            run();
-        } else {
-            d3.json('data/ufo-sightings.json', function(data) {
-                $('.data textarea').val(JSON.stringify(data, null, 2));
-                run();
-            })
-        }
-
         $('.update').on('click', function() {
             persisted.script = editor.getValue();
             persisted.data = JSON.parse($('.data textarea').val());
@@ -231,6 +221,16 @@
             clearState();
             document.location = document.location;
         });
+
+        if (persisted.data) {
+            $('.data textarea').val(JSON.stringify(persisted.data, null, 2));
+            run();
+        } else {
+            d3.json('data/ufo-sightings.json', function(data) {
+                $('.data textarea').val(JSON.stringify(data, null, 2));
+                run();
+            })
+        }
 
         function run() {
             eval(editor.getValue());
