@@ -96,6 +96,8 @@ MG.charts = {};
 MG.data_graphic = function(args) {
     'use strict';
     var defaults = {
+        missing_is_value: false,      // if true, missing values will appear as broken segments (based on the missing_value)
+        missing_value: false,         // the value that should be used to ignore data
         missing_is_zero: false,       // if true, missing values will be treated as zeros
         missing_is_hidden: false,     // if true, missing values will appear as broken segments
         legend: '' ,                  // an array identifying the labels for a chart's lines
@@ -1557,7 +1559,7 @@ function mg_add_x_ticks(g, args) {
     }
 
     if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
-        //extend axis line across bottom, rather than from domain's min..max
+        //draw x-axis line
         g.append('line')
             .attr('x1', function() {
                 //start the axis line from the beginning, domain's min, or the auto-generated
@@ -1857,7 +1859,7 @@ function init(args) {
     svg.append('defs')
         .attr('class', 'mg-clip-path')
         .append('clipPath')
-            .attr('id', 'mg-plot-window-' + mg_strip_punctuation(args.target))
+            .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
         .append('svg:rect')
             .attr('x', args.left)
             .attr('y', args.top)
@@ -2417,6 +2419,7 @@ MG.button_layout = function(target) {
 
             if (args.show_confidence_band) {
                 confidence_area = d3.svg.area()
+                    .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                     .x(args.scalefns.xf)
                     .y0(function(d) {
                         var l = args.show_confidence_band[0];
@@ -2432,6 +2435,7 @@ MG.button_layout = function(target) {
 
             //main line
             var line = d3.svg.line()
+                .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                 .x(args.scalefns.xf)
                 .y(args.scalefns.yf)
                 .interpolate(args.interpolate)
@@ -2439,6 +2443,7 @@ MG.button_layout = function(target) {
 
             //for animating line on first load
             var flat_line = d3.svg.line()
+                .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                 .x(args.scalefns.xf)
                 .y(function() { return args.scales.Y(data_median); })
                 .interpolate(args.interpolate)
@@ -2485,7 +2490,7 @@ MG.button_layout = function(target) {
 
                         confidenceBand
                             .attr('d', confidence_area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
                     }
 
                     //add the area
@@ -2500,12 +2505,12 @@ MG.button_layout = function(target) {
                                 .transition()
                                     .duration(updateTransitionDuration)
                                     .attr('d', area(args.data[i]))
-                                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_strip_punctuation(args.target)+')');
+                                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
                         } else { //otherwise, add the area
                             svg.append('path')
                                 .attr('class', 'mg-main-area ' + 'mg-area' + (line_id) + '-color')
                                 .attr('d', area(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         }
                     } else if (!areas.empty()) {
                         areas.remove();
@@ -2538,12 +2543,12 @@ MG.button_layout = function(target) {
                                 .transition()
                                     .duration(1000)
                                     .attr('d', line(args.data[i]))
-                                    .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                    .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         } else { //or just add the line
                             svg.append('path')
                                 .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                                 .attr('d', line(args.data[i]))
-                                .attr('clip-path', 'url(#mg-plot-window-' + mg_strip_punctuation(args.target) + ')');
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         }
                     }
 
@@ -4408,6 +4413,9 @@ MG.data_table = function(args) {
 function raw_data_transformation(args) {
     'use strict';
 
+    // dupe our data so we can modify it without adverse effect
+    args.data = MG.clone(args.data);
+
     // We need to account for a few data format cases:
     // #1 [{key:__, value:__}, ...]                              // unnested obj-arrays
     // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
@@ -5058,7 +5066,7 @@ function is_array(thing){
 }
 
 function is_function(thing){
-    return Object.prototype.toString.call(thing) === '[object Function]';   
+    return Object.prototype.toString.call(thing) === '[object Function]';
 }
 
 function is_empty_array(thing){
@@ -5066,7 +5074,7 @@ function is_empty_array(thing){
 }
 
 function is_object(thing){
-    return Object.prototype.toString.call(thing) === '[object Object]';   
+    return Object.prototype.toString.call(thing) === '[object Object]';
 }
 
 function is_array_of_arrays(data){
@@ -5123,7 +5131,7 @@ function preventVerticalOverlap(labels, args) {
         label_i = d3.select(labels[i]).text();
 
         for (var j = 0; j < labels.length; j ++) {
-            label_j = d3.select(labels[j]).text(); 
+            label_j = d3.select(labels[j]).text();
             overlap_amount = isVerticallyOverlapping(labels[i], labels[j]);
 
             if (overlap_amount !== false && label_i !== label_j) {
@@ -5157,7 +5165,7 @@ function isHorizontallyOverlapping(element, labels) {
 
         //check to see if this label overlaps with any of the other labels
         var sibling_bbox = labels[i].getBoundingClientRect();
-        if (element_bbox.top === sibling_bbox.top && 
+        if (element_bbox.top === sibling_bbox.top &&
                 !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
             ) {
             return true;
@@ -5176,28 +5184,37 @@ function mg_flatten_array(arr) {
     return flat_data.concat.apply(flat_data, arr);
 }
 
-function mg_strip_punctuation(s) {
-    var processed_s;
-
-    if (typeof(s) == 'string') {
-        processed_s = s;
-    } else {
-        // args.target is 
-        if (s.id != '') {
-            processed_s = s.id;
-        } else if (args.target.className != '') {
-            processed_s = s.className;
-        } else if (args.target.nodeName !='') {
-            processed_s = s.nodeName;
-        } else {
-            console.warn('The specified target element ' + s + ' has no unique attributes.');
-        }
+function mg_next_id() {
+    if (typeof MG._next_elem_id === 'undefined') {
+        MG._next_elem_id = 0;
     }
 
-    var punctuationless = processed_s.replace(/[^a-zA-Z0-9 _]+/g, '');
-    var finalString = punctuationless.replace(/ +?/g, "");
+    return 'mg-'+(MG._next_elem_id++);
+}
 
-    return finalString;
+function mg_target_ref(target) {
+    if (typeof target === 'string') {
+        return mg_normalize(target);
+
+    } else if (target instanceof HTMLElement) {
+        target_ref = target.getAttribute('data-mg-uid');
+        if (!target_ref) {
+            target_ref = mg_next_id();
+            target.setAttribute('data-mg-uid', target_ref);
+        }
+
+        return target_ref;
+
+    } else {
+        console.warn('The specified target should be a string or an HTMLElement.', target);
+        return mg_normalize(target);
+    }
+}
+
+function mg_normalize(string) {
+    return string
+        .replace(/[^a-zA-Z0-9 _-]+/g, '')
+        .replace(/ +?/g, '');
 }
 
 function get_pixel_dimension(target, dimension) {
