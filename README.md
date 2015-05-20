@@ -109,6 +109,11 @@ __I get an error when I load MG alongside library x__
 
 If your project uses Bootstrap, make sure you load MetricsGraphics.js after it. If your project uses jQuery UI, load it after MetricsGraphics.js.
 
+## Gallery
+Feel free to add your addons and websites to this list.
+* [mg-color-scale (addon)](https://github.com/dandehavilland/mg-color-scale)
+* [mg-line-brushing (addon)](https://github.com/dandehavilland/mg-line-brushing)
+
 ## License
 
 The __MetricsGraphics.js__ code is shared under the terms of the [Mozilla Public License v2.0](http://www.mozilla.org/MPL/2.0/). See the `LICENSE` file at the root of the repository. The current logo is courtesy of [Font Awesome](http://fortawesome.github.io/Font-Awesome/).
