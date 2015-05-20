@@ -91,7 +91,7 @@ test('hooks are chained - result from one passed into the next', function() {
     equal(result, 3, 'result has been chained');
 });
 
-test('hooks should return multiple iputs as an array', function() {
+test('hooks should return multiple inputs as an array', function() {
     var result;
 
     function hookOne(arg1, arg2, arg3) {
