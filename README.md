@@ -34,7 +34,7 @@ Though originally envisioned for Mozilla Metrics dashboard projects, we are maki
 
 ## Quick-start guide
 1. Download the [latest release](https://github.com/mozilla/metrics-graphics/releases).
-2. Follow the examples [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/index.htm) and [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/js/main.js) to see how graphics are laid out and built. The examples use json data from [examples/data](https://github.com/mozilla/metrics-graphics/blob/master/examples/data), though you may easily pull data from elsewhere.
+2. Follow the examples [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/index.htm) and [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/js/main.js) to see how graphics are laid out and built. The examples use JSON data from [examples/data](https://github.com/mozilla/metrics-graphics/blob/master/examples/data), though you may easily pull data from elsewhere.
 
 ## Dependencies
 The library depends on [D3](http://d3js.org) and [jQuery](http://jquery.com/). As of v2.2, if you do not wish to use jQuery, set [show_tooltips](https://github.com/mozilla/metrics-graphics/wiki/Graphic#show_tooltips) to false, either globally in ``metricsgraphics.js``, or within every ``MG.data_graphic`` call. Only tooltips and [buttons](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout) depend on jQuery.
@@ -60,6 +60,7 @@ To run the development server (accessible at http://localhost:4300):
 
     gulp serve
 
+You might also be interested in writing addons for the library, in which case, [have a read through this page](https://github.com/mozilla/metrics-graphics/wiki/Developing-Addons).
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
