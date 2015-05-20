@@ -61,6 +61,7 @@
 
             if (args.show_confidence_band) {
                 confidence_area = d3.svg.area()
+                    .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                     .x(args.scalefns.xf)
                     .y0(function(d) {
                         var l = args.show_confidence_band[0];
@@ -76,6 +77,7 @@
 
             //main line
             var line = d3.svg.line()
+                .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                 .x(args.scalefns.xf)
                 .y(args.scalefns.yf)
                 .interpolate(args.interpolate)
@@ -83,6 +85,7 @@
 
             //for animating line on first load
             var flat_line = d3.svg.line()
+                .defined(function(d) { if (args.missing_is_value){return d.value != args.missing_value; }else{return d.value}})
                 .x(args.scalefns.xf)
                 .y(function() { return args.scales.Y(data_median); })
                 .interpolate(args.interpolate)

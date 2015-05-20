@@ -12,6 +12,8 @@ MG.charts = {};
 MG.data_graphic = function(args) {
     'use strict';
     var defaults = {
+        missing_is_value: false,      // if true, missing values will appear as broken segments (based on the missing_value)
+        missing_value: false,         // the value that should be used to ignore data
         missing_is_zero: false,       // if true, missing values will be treated as zeros
         missing_is_hidden: false,     // if true, missing values will appear as broken segments
         legend: '' ,                  // an array identifying the labels for a chart's lines
