@@ -67,7 +67,9 @@ You might also be interested in writing addons for the library, in which case, [
 * [Interactive demo](http://metricsgraphicsjs.org/interactive-demo.htm)
 * [List of options](https://github.com/mozilla/metrics-graphics/wiki/List-of-Options)
 * [Convenience functions](https://github.com/mozilla/metrics-graphics/wiki/Convenience-Functions)
+* [Hooks](https://github.com/mozilla/metrics-graphics/blob/master/HOOKS.md)
 * [Chart types](https://github.com/mozilla/metrics-graphics/wiki/Chart-Types)
+* [Developing addons](https://github.com/mozilla/metrics-graphics/wiki/Developing-Addons)
 * [Building a button layout](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout)
 
 ## Download package
