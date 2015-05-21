@@ -83,6 +83,7 @@
             </div>
 
 <script>
+MG._hooks = {};
 d3.json('data/some_percentage.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');

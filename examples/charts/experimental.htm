@@ -429,6 +429,7 @@ var buttons = MG.button_layout('#buttons')
             </div>
 
 <script>
+MG._hooks = {};
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Simple Scatterplot",

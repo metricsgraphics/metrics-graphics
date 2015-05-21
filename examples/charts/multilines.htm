@@ -159,6 +159,7 @@ d3.json('data/fake_users3.json', function(data) {
 </div>       
 
 <script>
+MG._hooks = {};
 d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');

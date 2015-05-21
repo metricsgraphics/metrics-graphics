@@ -142,7 +142,7 @@
                 }
 
                 var fmt = d3.time.format('%b %e, %Y');
-                var num = rolloverNumberFormatter(args);
+                var num = format_rollover_number(args);
 
                 //update rollover text
                 if (args.show_rollover_text) {

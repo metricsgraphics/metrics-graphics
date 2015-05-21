@@ -128,6 +128,7 @@
             </div>
 
 <script>
+MG._hooks = {};
 d3.json('data/missing-y.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({

@@ -140,7 +140,7 @@
                     .attr('opacity', 0.3);
 
                 var fmt = d3.time.format('%b %e, %Y');
-                var num = rolloverNumberFormatter(args);
+                var num = format_rollover_number(args);
 
                 svg.selectAll('.mg-bar rect')
                     .filter(function(d, j) {
