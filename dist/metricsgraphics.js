@@ -2629,7 +2629,7 @@ MG.button_layout = function(target) {
                                 .attr('font-weight', '300')
                                 .text(this_legend);
 
-                            preventVerticalOverlap(legend_group.selectAll('.mg-line-legend-text')[0], args);
+                            preventVerticalOverlap(legend_group.selectAll('.mg-line-legend text')[0], args);
                         }
                     }
 
