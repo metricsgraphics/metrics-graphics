@@ -143,11 +143,6 @@ function process_line(args) {
                 else {
                     processed_data.push(existing_o);
                 }
-
-                //add the last data item
-                if (Date.parse(d) === Date.parse(new Date(last[args.x_accessor]))) {
-                    processed_data.push(last);
-                }
             }
 
             //update our date object

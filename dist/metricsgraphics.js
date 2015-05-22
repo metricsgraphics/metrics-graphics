@@ -2521,7 +2521,7 @@ MG.button_layout = function(target) {
                             .transition()
                             .duration(updateTransitionDuration);
 
-                        if (!displayArea) {
+                        if (!displayArea && args.transition_on_update) {
                             lineTransition.attrTween('d', path_tween(line(args.data[i]), 4));
                         } else {
                             lineTransition.attr('d', line(args.data[i]));
@@ -4549,11 +4549,6 @@ function process_line(args) {
                 //otherwise, use the existing object for that date
                 else {
                     processed_data.push(existing_o);
-                }
-
-                //add the last data item
-                if (Date.parse(d) === Date.parse(new Date(last[args.x_accessor]))) {
-                    processed_data.push(last);
                 }
             }
 
