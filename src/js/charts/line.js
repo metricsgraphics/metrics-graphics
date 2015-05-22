@@ -165,7 +165,7 @@
                             .transition()
                             .duration(updateTransitionDuration);
 
-                        if (!displayArea) {
+                        if (!displayArea && args.transition_on_update) {
                             lineTransition.attrTween('d', path_tween(line(args.data[i]), 4));
                         } else {
                             lineTransition.attr('d', line(args.data[i]));
