@@ -1201,7 +1201,7 @@ function y_axis_categorical(args) {
         return this;
     }
 
-    g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
         .attr('y', function(d) {
             return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
@@ -1210,6 +1210,16 @@ function y_axis_categorical(args) {
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String);
+
+    if (args.rotate_y_labels) {
+        labels.attr({
+            dy: 0,
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        });
+    }
 
     return this;
 }
@@ -1229,7 +1239,7 @@ function x_rug(args) {
     //         all_data.push(args.data[i][j]);
     //     }
     // }
-    
+
     var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
@@ -1364,11 +1374,24 @@ function x_axis_categorical(args) {
         .attr('text-anchor', 'middle')
         .text(String);
 
-    labels.each(function(d, idx) {
-        var elem = this,
-            width = args.scales.X.rangeBand();
-        truncate_text(elem, d, width);
-    });
+    if (args.rotate_x_labels) {
+        labels.attr({
+            dy: 0,
+            'text-anchor': 'end',
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        });
+    }
+
+    if (args.truncate_x_labels) {
+        labels.each(function(d, idx) {
+            var elem = this,
+                width = args.scales.X.rangeBand();
+            truncate_text(elem, d, width);
+        });
+    }
 
     return this;
 }
@@ -1713,8 +1736,8 @@ function mg_find_min_max_x(args) {
         });
     }
     //if data set is of length 1, expand the range so that we can build the x-axis
-    if (min_x === max_x 
-            && !(args.min_x && args.max_x) 
+    if (min_x === max_x
+            && !(args.min_x && args.max_x)
         ) {
         if (min_x instanceof Date) {
             var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
@@ -4041,7 +4064,11 @@ MG.button_layout = function(target) {
         height: 500,
         top: 20,
         bar_height: 20,
-        left: 70
+        left: 70,
+        truncate_x_labels: true,
+        truncate_y_labels: true,
+        x_label_rotation: 0,
+        y_label_rotation: 0
     };
 
     MG.register('bar', barChart, defaults);
