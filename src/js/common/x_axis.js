@@ -11,7 +11,7 @@ function x_rug(args) {
     //         all_data.push(args.data[i][j]);
     //     }
     // }
-    
+
     var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
     //set the attributes that do not change after initialization, per
@@ -146,11 +146,24 @@ function x_axis_categorical(args) {
         .attr('text-anchor', 'middle')
         .text(String);
 
-    labels.each(function(d, idx) {
-        var elem = this,
-            width = args.scales.X.rangeBand();
-        truncate_text(elem, d, width);
-    });
+    if (args.rotate_x_labels) {
+        labels.attr({
+            dy: 0,
+            'text-anchor': 'end',
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        });
+    }
+
+    if (args.truncate_x_labels) {
+        labels.each(function(d, idx) {
+            var elem = this,
+                width = args.scales.X.rangeBand();
+            truncate_text(elem, d, width);
+        });
+    }
 
     return this;
 }
@@ -495,8 +508,8 @@ function mg_find_min_max_x(args) {
         });
     }
     //if data set is of length 1, expand the range so that we can build the x-axis
-    if (min_x === max_x 
-            && !(args.min_x && args.max_x) 
+    if (min_x === max_x
+            && !(args.min_x && args.max_x)
         ) {
         if (min_x instanceof Date) {
             var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);

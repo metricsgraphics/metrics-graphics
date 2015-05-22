@@ -325,7 +325,7 @@ function y_axis_categorical(args) {
         return this;
     }
 
-    g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
         .attr('x', args.left)
         .attr('y', function(d) {
             return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
@@ -334,6 +334,16 @@ function y_axis_categorical(args) {
         .attr('dy', '.35em')
         .attr('text-anchor', 'end')
         .text(String);
+
+    if (args.rotate_y_labels) {
+        labels.attr({
+            dy: 0,
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        });
+    }
 
     return this;
 }

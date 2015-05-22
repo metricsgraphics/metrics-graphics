@@ -377,7 +377,11 @@
         height: 500,
         top: 20,
         bar_height: 20,
-        left: 70
+        left: 70,
+        truncate_x_labels: true,
+        truncate_y_labels: true,
+        x_label_rotation: 0,
+        y_label_rotation: 0
     };
 
     MG.register('bar', barChart, defaults);
