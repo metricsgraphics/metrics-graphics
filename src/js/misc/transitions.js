@@ -3,8 +3,8 @@ function path_tween(d1, precision) {
   return function() {
     var path0 = this,
         path1 = path0.cloneNode(),
-        n0 = path0.getTotalLength(),
-        n1 = (path1.setAttribute("d", d1), path1).getTotalLength();
+        n0 = path0.getTotalLength() || 0,
+        n1 = (path1.setAttribute("d", d1), path1).getTotalLength() || 0;
 
     // Uniform sampling of distance based on specified precision.
     var distances = [0], i = 0, dt = precision / Math.max(n0, n1);
