@@ -443,6 +443,23 @@
                                     return ((xf[i+1] - xf[i-1]) / 2).toFixed(2);
                                 }
                             })
+                            .attr('class', function(d) {
+                                if (args.linked && d.values.length > 0) {
+                                    var formatter = d3.time.format(args.linked_format);
+
+                                    // add line classes for every line the rect contains
+                                    var line_classes = d.values.map(function(datum) {
+                                        return 'mg-line' + datum.line_id + '-color';
+                                    }).join(" ");
+                                    var first_datum = d.values[0];
+                                    var v = first_datum[args.x_accessor];
+                                    var id = (typeof v === 'number') ? i : formatter(v);
+
+                                    return line_classes + ' roll_' + id;
+                                } else {
+                                    return line_classes;
+                                }
+                            })
                             .attr('height', args.height - args.bottom - args.top - args.buffer)
                             .attr('opacity', 0)
                             .on('mouseover', this.rolloverOn(args))
@@ -618,21 +635,20 @@
                             .attr('r', args.point_size)
                             .style('opacity', 1);
                     }
+                }
 
-                    //trigger mouseover on all rects for this date in .linked charts
-                    if (args.linked && !MG.globals.link) {
-                        MG.globals.link = true;
+                //trigger mouseover on all rects for this date in .linked charts
+                if (args.linked && !MG.globals.link) {
+                    MG.globals.link = true;
 
-                        var v = d[args.x_accessor];
+                    if (!args.aggregate_rollover || d.values.length > 0) {
+                        var datum = args.aggregate_rollover ? d.values[0] : d;
                         var formatter = d3.time.format(args.linked_format);
-
-                        //only format when y-axis is date
-                        var id = (typeof v === 'number')
-                                ? i
-                                : formatter(v);
+                        var v = datum[args.x_accessor];
+                        var id = (typeof v === 'number') ? i : formatter(v);
 
                         //trigger mouseover on matching line in .linked charts
-                        d3.selectAll('.mg-line' + d.line_id + '-color.roll_' + id)
+                        d3.selectAll('.mg-line' + datum.line_id + '-color.roll_' + id)
                             .each(function(d, i) {
                                 d3.select(this).on('mouseover')(d,i);
                             });
@@ -750,18 +766,18 @@
                 if (args.linked && MG.globals.link) {
                     MG.globals.link = false;
 
-                    var v = d[args.x_accessor];
                     var formatter = d3.time.format(args.linked_format);
+                    var datums = args.aggregate_rollover ? d.values : [d];
+                    datums.forEach(function(datum) {
+                        var v = datum[args.x_accessor];
+                        var id = (typeof v === 'number') ? i : formatter(v);
 
-                    //only format when y-axis is date
-                    var id = (typeof v === 'number')
-                            ? i
-                            : formatter(v);
-
-                    d3.selectAll('.roll_' + id)
-                        .each(function(d, i) {
-                            d3.select(this).on('mouseout')(d);
-                        });
+                        //trigger mouseout on matching line in .linked charts
+                        d3.selectAll('.roll_' + id)
+                            .each(function(d, i) {
+                                    d3.select(this).on('mouseout')(d);
+                            });
+                    });
                 }
 
                 //remove all active data points when aggregate_rollover is enabled
