@@ -1,6 +1,5 @@
 {
   "name": "metrics-graphics",
-  "version": "2.5.0",
   "main": [
     "dist/metricsgraphics.js",
     "dist/metricsgraphics.css"
