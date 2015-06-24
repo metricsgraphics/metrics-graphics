@@ -2787,7 +2787,8 @@ MG.button_layout = function(target) {
             else if (args.data.length > 1 && args.aggregate_rollover) {
                 data_nested = d3.nest()
                     .key(function(d) { return d[args.x_accessor]; })
-                    .entries(d3.merge(args.data));
+                    .entries(d3.merge(args.data))
+                    .sort(function(a, b) { return new Date(a.key) - new Date(b.key); });
 
                 xf = data_nested.map(function(di) {
                     return args.scales.X(new Date(di.key));
