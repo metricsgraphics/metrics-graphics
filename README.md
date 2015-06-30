@@ -113,6 +113,7 @@ If your project uses Bootstrap, make sure you load MetricsGraphics.js after it. 
 Feel free to add your addons and websites to this list.
 * [mg-color-scale (addon)](https://github.com/dandehavilland/mg-color-scale)
 * [mg-line-brushing (addon)](https://github.com/dandehavilland/mg-line-brushing)
+* [mg-regions (addon)](https://github.com/senseyeio/mg-regions)
 
 ## License
 
