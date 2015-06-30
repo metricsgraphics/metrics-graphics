@@ -5269,6 +5269,7 @@ function isNumeric(n) {
 
 var each = function(obj, iterator, context) {
     // yanked out of underscore
+    var breaker = {};
     if (obj === null) return obj;
     if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
       obj.forEach(iterator, context);
