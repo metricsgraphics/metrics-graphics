@@ -612,7 +612,7 @@
                     });
                 } else if (args.missing_is_hidden
                             && d[args.y_accessor] == 0
-                            && d['missing']) {
+                            && d[args.missing_is_hidden_accessor]) {
                     //disable rollovers for hidden parts of the line
                     return;
                 } else {
