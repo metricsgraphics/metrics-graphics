@@ -13,7 +13,9 @@
             }
 
             raw_data_transformation(args);
+
             process_line(args);
+            
             init(args);
             x_axis(args);
             y_axis(args);

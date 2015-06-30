@@ -131,12 +131,11 @@ function process_line(args) {
                         return false;
                     }
                 });
-
                 //if we don't have this date in our data object, add it and set it to zero
                 if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
-                    o['missing'] = true; //we want to distinguish between zero-value and missing observations
+                    o[args.missing_is_hidden_accessor] = true; //we want to distinguish between zero-value and missing observations
                     processed_data.push(o);
                 }
                 //otherwise, use the existing object for that date
@@ -144,7 +143,6 @@ function process_line(args) {
                     processed_data.push(existing_o);
                 }
             }
-
             //update our date object
             args.data[i] = processed_data;
         }

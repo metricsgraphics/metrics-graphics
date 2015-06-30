@@ -12,7 +12,6 @@ function init(args) {
     args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
-
     if (d3.select(args.target).empty()) {
         console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
         return;

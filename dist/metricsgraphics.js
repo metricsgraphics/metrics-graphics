@@ -1813,7 +1813,6 @@ function init(args) {
     args = arguments[0];
     if (!args) { args = {}; }
     args = merge_with_defaults(args, defaults);
-
     if (d3.select(args.target).empty()) {
         console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
         return;
@@ -2393,7 +2392,9 @@ MG.button_layout = function(target) {
             }
 
             raw_data_transformation(args);
+
             process_line(args);
+            
             init(args);
             x_axis(args);
             y_axis(args);
@@ -4583,12 +4584,11 @@ function process_line(args) {
                         return false;
                     }
                 });
-
                 //if we don't have this date in our data object, add it and set it to zero
                 if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
-                    o['missing'] = true; //we want to distinguish between zero-value and missing observations
+                    o[args.missing_is_hidden_accessor] = true; //we want to distinguish between zero-value and missing observations
                     processed_data.push(o);
                 }
                 //otherwise, use the existing object for that date
@@ -4596,7 +4596,6 @@ function process_line(args) {
                     processed_data.push(existing_o);
                 }
             }
-
             //update our date object
             args.data[i] = processed_data;
         }
