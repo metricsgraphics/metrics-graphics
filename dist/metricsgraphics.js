@@ -98,7 +98,7 @@ MG.data_graphic = function(args) {
     var defaults = {
         missing_is_zero: false,                // if true, missing values will be treated as zeros
         missing_is_hidden: false,              // if true, missing values will appear as broken segments
-        missing_is_hidden_accessor: 'missing', // the accessor that determins the boolean value for missing data points
+        missing_is_hidden_accessor: null, // the accessor that determines the boolean value for missing data points
         legend: '' ,                           // an array identifying the labels for a chart's lines
         legend_target: '',                     // if set, the specified element is populated with a legend
         error: '',                             // if set, a graph will show an error icon and log the error to the console
@@ -934,7 +934,7 @@ function y_axis(args) {
 
     args.scalefns.yf = function(di) {
         //since we want to show actual zeros when missing_is_hidden is on
-        if(args.missing_is_hidden && di[args.missing_is_hidden_accessor]) {
+        if(args.missing_is_hidden && di['_missing']) {
             return args.scales.Y(di[args.y_accessor]) + 42.1234;
         }
 
@@ -2993,8 +2993,10 @@ MG.button_layout = function(target) {
                     });
                 } else if (args.missing_is_hidden
                             && d[args.y_accessor] == 0
-                            && d[args.missing_is_hidden_accessor]) {
+                            && d['_missing']) {
                     //disable rollovers for hidden parts of the line
+                    //recall that hidden parts are missing data ranges and possibly also
+                    //data points that have been explicitly identified as missing
                     return;
                 } else {
 
@@ -4588,12 +4590,14 @@ function process_line(args) {
                 if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
-                    o[args.missing_is_hidden_accessor] = true; //we want to distinguish between zero-value and missing observations
+                    o['_missing'] = true; //we want to distinguish between zero-value and missing observations
                     processed_data.push(o);
                 } 
-                //if the data point has a 'missing' attribute set, just set its y-value to 0
+                //if the data point has, say, a 'missing' attribute set, just set its 
+                //y-value to 0 and identify it internally as missing
                 else if (existing_o[args.missing_is_hidden_accessor]) {
                     existing_o[args.y_accessor] = 0;
+                    existing_o['_missing'] = true;
                     processed_data.push(existing_o);
                 }
                 //otherwise, use the existing object for that date

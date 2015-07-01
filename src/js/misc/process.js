@@ -135,12 +135,14 @@ function process_line(args) {
                 if (!existing_o) {
                     o[args.x_accessor] = new Date(d);
                     o[args.y_accessor] = 0;
-                    o[args.missing_is_hidden_accessor] = true; //we want to distinguish between zero-value and missing observations
+                    o['_missing'] = true; //we want to distinguish between zero-value and missing observations
                     processed_data.push(o);
                 } 
-                //if the data point has a 'missing' attribute set, just set its y-value to 0
+                //if the data point has, say, a 'missing' attribute set, just set its 
+                //y-value to 0 and identify it internally as missing
                 else if (existing_o[args.missing_is_hidden_accessor]) {
                     existing_o[args.y_accessor] = 0;
+                    existing_o['_missing'] = true;
                     processed_data.push(existing_o);
                 }
                 //otherwise, use the existing object for that date

@@ -614,8 +614,10 @@
                     });
                 } else if (args.missing_is_hidden
                             && d[args.y_accessor] == 0
-                            && d[args.missing_is_hidden_accessor]) {
+                            && d['_missing']) {
                     //disable rollovers for hidden parts of the line
+                    //recall that hidden parts are missing data ranges and possibly also
+                    //data points that have been explicitly identified as missing
                     return;
                 } else {
 
