@@ -55,7 +55,10 @@
                 .y(args.scalefns.yf)
                 .interpolate(args.interpolate)
                 .tension(args.interpolate_tension);
-            
+
+            //if missing_is_zero is not set, then hide data points that fall in missing
+            //data ranges or that have been explicitly identified as missing in the 
+            //data source
             if(!args.missing_is_zero) {
                 line = line.defined(function(d) {
                     return (d['_missing'] == undefined || d['_missing'] != true);
