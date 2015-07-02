@@ -116,7 +116,7 @@ function process_line(args) {
 
             time_frame = mg_get_time_frame((upto-from)/1000);
 
-           if (time_frame == 'default' && args.missing_is_hidden_accessor == null){
+            if (time_frame == 'default' && args.missing_is_hidden_accessor == null) {
                 for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                     var o = {};
                     d.setHours(0, 0, 0, 0);
@@ -146,7 +146,6 @@ function process_line(args) {
                     //if the data point has, say, a 'missing' attribute set, just set its 
                     //y-value to 0 and identify it internally as missing
                     else if (existing_o[args.missing_is_hidden_accessor]) {
-                        existing_o[args.y_accessor] = 0;
                         existing_o['_missing'] = true;
                         processed_data.push(existing_o);
                     }
@@ -157,10 +156,9 @@ function process_line(args) {
                 }        
             }
             else {
-                for (var j=0; j<args.data[i].length; j+=1){
-                    o=MG.clone(args.data[i][j]);
-                    o['_missing']=args.data[i][j][args.missing_is_hidden_accessor];
-                    console.log(o[args.x_accessor], o['_missing']);
+                for (var j = 0; j < args.data[i].length; j += 1) {
+                    o = MG.clone(args.data[i][j]);
+                    o['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
                     processed_data.push(o);
                 }
             }

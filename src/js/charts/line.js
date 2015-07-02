@@ -49,8 +49,32 @@
                 return d[args.y_accessor];
             };
 
+            //main line
+            var line = d3.svg.line()
+                .x(args.scalefns.xf)
+                .y(args.scalefns.yf)
+                .interpolate(args.interpolate)
+                .tension(args.interpolate_tension);
+            
+            if(!args.missing_is_zero) {
+                line = line.defined(function(d) {
+                    return (d['_missing'] == undefined || d['_missing'] != true);
+                })
+            }
+
+            //for animating line on first load
+            var flat_line = d3.svg.line()
+                .defined(function(d) {
+                    return (d['_missing'] == undefined || d['_missing'] != true);
+                })
+                .x(args.scalefns.xf)
+                .y(function() { return args.scales.Y(data_median); })
+                .interpolate(args.interpolate)
+                .tension(args.interpolate_tension);
+
             //main area
             var area = d3.svg.area()
+                .defined(line.defined())
                 .x(args.scalefns.xf)
                 .y0(args.scales.Y.range()[0])
                 .y1(args.scalefns.yf)
@@ -63,6 +87,7 @@
 
             if (args.show_confidence_band) {
                 confidence_area = d3.svg.area()
+                    .defined(line.defined())
                     .x(args.scalefns.xf)
                     .y0(function(d) {
                         var l = args.show_confidence_band[0];
@@ -75,20 +100,6 @@
                     .interpolate(args.interpolate)
                     .tension(args.interpolate_tension);
             }
-
-            //main line
-            var line = d3.svg.line()
-                .x(args.scalefns.xf)
-                .y(args.scalefns.yf)
-                .interpolate(args.interpolate)
-                .tension(args.interpolate_tension);
-
-            //for animating line on first load
-            var flat_line = d3.svg.line()
-                .x(args.scalefns.xf)
-                .y(function() { return args.scales.Y(data_median); })
-                .interpolate(args.interpolate)
-                .tension(args.interpolate_tension);
 
             //for building the optional legend
             var legend = '';
@@ -190,64 +201,6 @@
                                 .attr('class', 'mg-main-line ' + 'mg-line' + (line_id) + '-color')
                                 .attr('d', line(args.data[i]))
                                 .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-                        }
-                    }
-
-                    var the_line = svg.select('.mg-line' + (line_id) + '-color');
-                    if (args.missing_is_hidden && the_line.attr('d') !== null) {
-                        var bits = the_line.attr('d').split('L');
-                        var zero = args.scales.Y(0) + 42.1234;
-                        var dasharray = [];
-                        var singleton_point_length = 2;
-
-                        var x_y,
-                            x_y_plus_1,
-                            x,
-                            y,
-                            x_plus_1,
-                            y_plus_1,
-                            segment_length,
-                            cumulative_segment_length = 0;
-
-                        bits[0] = bits[0].replace('M', '');
-                        bits[bits.length - 1] = bits[bits.length - 1].replace('Z', '');
-
-                        //if we have a min_x, turn the line off first
-                        if (args.min_x) {
-                            dasharray.push(0);
-                        }
-
-                        //build the stroke-dasharray pattern
-                        for (var j = 0; j < bits.length - 1; j++) {
-                            x_y = bits[j].split(',');
-                            x_y_plus_1 = bits[j + 1].split(',');
-                            x = Number(x_y[0]);
-                            y = Number(x_y[1]);
-                            x_plus_1 = Number(x_y_plus_1[0]);
-                            y_plus_1 = Number(x_y_plus_1[1]);
-
-                            segment_length = Math.sqrt(Math.pow(x - x_plus_1, 2) + Math.pow(y - y_plus_1, 2));
-
-                            //do we need to either cover or clear the current stroke
-                            if (y_plus_1 == zero && y != zero) {
-                                dasharray.push(cumulative_segment_length || singleton_point_length);
-                                cumulative_segment_length = (cumulative_segment_length)
-                                    ? segment_length
-                                    : segment_length - singleton_point_length;
-                            } else if (y_plus_1 != zero && y == zero) { //switching on line
-                                dasharray.push(cumulative_segment_length += segment_length);
-                                cumulative_segment_length = 0;
-                            } else {
-                                cumulative_segment_length += segment_length;
-                            }
-                        }
-
-                        //fear not, end bit of line, ye too shall be covered
-                        if (dasharray.length > 0) {
-                            dasharray.push(the_line.node().getTotalLength() - dasharray[dasharray.length - 1]);
-
-                            svg.select('.mg-line' + (line_id) + '-color')
-                                .attr('stroke-dasharray', dasharray.join());
                         }
                     }
 
@@ -613,7 +566,6 @@
                       }
                     });
                 } else if (args.missing_is_hidden
-                            && d[args.y_accessor] == 0
                             && d['_missing']) {
                     //disable rollovers for hidden parts of the line
                     //recall that hidden parts are missing data ranges and possibly also
