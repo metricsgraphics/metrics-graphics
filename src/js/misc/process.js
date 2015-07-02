@@ -75,6 +75,7 @@ MG.raw_data_transformation = raw_data_transformation;
 function process_line(args) {
     'use strict';
     var is_time_series;
+    var time_frame;
 
     //do we have a time-series?
     var is_time_series = d3.sum(args.data.map(function(series) {
@@ -112,42 +113,55 @@ function process_line(args) {
             //if we've set a max_x, add data points up to there
             var from = (args.min_x) ? args.min_x : start_date;
             var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
-            for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
-                var o = {};
-                d.setHours(0, 0, 0, 0);
 
-                //add the first date item (judge me not, world)
-                //we'll be starting from the day after our first date
-                if (Date.parse(d) === Date.parse(new Date(start_date))) {
-                    processed_data.push(MG.clone(args.data[i][0]));
-                }
+            time_frame = mg_get_time_frame((upto-from)/1000);
 
-                //check to see if we already have this date in our data object
-                var existing_o = null;
-                args.data[i].forEach(function(val, i) {
-                    if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
-                        existing_o = val;
+           if (time_frame == 'default' && args.missing_is_hidden_accessor == null){
+                for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
+                    var o = {};
+                    d.setHours(0, 0, 0, 0);
 
-                        return false;
+                    //add the first date item (judge me not, world)
+                    //we'll be starting from the day after our first date
+                    if (Date.parse(d) === Date.parse(new Date(start_date))) {
+                        processed_data.push(MG.clone(args.data[i][0]));
                     }
-                });
-                //if we don't have this date in our data object, add it and set it to zero
-                if (!existing_o) {
-                    o[args.x_accessor] = new Date(d);
-                    o[args.y_accessor] = 0;
-                    o['_missing'] = true; //we want to distinguish between zero-value and missing observations
+
+                    //check to see if we already have this date in our data object
+                    var existing_o = null;
+                    args.data[i].forEach(function(val, i) {
+                        if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
+                            existing_o = val;
+
+                            return false;
+                        }
+                    });
+                    //if we don't have this date in our data object, add it and set it to zero
+                    if (!existing_o) {
+                        o[args.x_accessor] = new Date(d);
+                        o[args.y_accessor] = 0;
+                        o['_missing'] = true; //we want to distinguish between zero-value and missing observations
+                        processed_data.push(o);
+                    } 
+                    //if the data point has, say, a 'missing' attribute set, just set its 
+                    //y-value to 0 and identify it internally as missing
+                    else if (existing_o[args.missing_is_hidden_accessor]) {
+                        existing_o[args.y_accessor] = 0;
+                        existing_o['_missing'] = true;
+                        processed_data.push(existing_o);
+                    }
+                    //otherwise, use the existing object for that date
+                    else {
+                        processed_data.push(existing_o);
+                    }
+                }        
+            }
+            else {
+                for (var j=0; j<args.data[i].length; j+=1){
+                    o=MG.clone(args.data[i][j]);
+                    o['_missing']=args.data[i][j][args.missing_is_hidden_accessor];
+                    console.log(o[args.x_accessor], o['_missing']);
                     processed_data.push(o);
-                } 
-                //if the data point has, say, a 'missing' attribute set, just set its 
-                //y-value to 0 and identify it internally as missing
-                else if (existing_o[args.missing_is_hidden_accessor]) {
-                    existing_o[args.y_accessor] = 0;
-                    existing_o['_missing'] = true;
-                    processed_data.push(existing_o);
-                }
-                //otherwise, use the existing object for that date
-                else {
-                    processed_data.push(existing_o);
                 }
             }
             //update our date object
