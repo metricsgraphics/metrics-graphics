@@ -1518,6 +1518,33 @@ function mg_default_bar_xax_format(args) {
     };
 }
 
+function mg_get_time_frame(diff){
+    // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
+    if (diff < 60) {
+        time_frame = 'seconds';
+    } else if (diff / (60 * 60) <= 24) {
+        time_frame = 'less-than-a-day';
+    } else if (diff / (60 * 60) <= 24 * 4) {
+        time_frame = 'four-days';
+    } else {
+        time_frame = 'default';
+    }
+    return time_frame;
+}
+
+function mg_get_time_format(diff){
+    if (diff < 60) {
+        main_time_format = d3.time.format('%M:%S');
+    } else if (diff / (60 * 60) <= 24) {
+        main_time_format = d3.time.format('%H:%M');
+    } else if (diff / (60 * 60) <= 24 * 4) {
+        main_time_format = d3.time.format('%H:%M');
+    } else {
+        main_time_format = d3.time.format('%b %d');
+    }
+    return main_time_format;
+}
+
 function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
@@ -1532,19 +1559,8 @@ function mg_default_xax_format(args) {
         if (args.time_series) {
             diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
-            if (diff < 60) {
-                main_time_format = d3.time.format('%M:%S');
-                time_frame = 'seconds';
-            } else if (diff / (60 * 60) <= 24) {
-                main_time_format = d3.time.format('%H:%M');
-                time_frame = 'less-than-a-day';
-            } else if (diff / (60 * 60) <= 24 * 4) {
-                main_time_format = d3.time.format('%H:%M');
-                time_frame = 'four-days';
-            } else {
-                main_time_format = d3.time.format('%b %d');
-                time_frame = 'default';
-            }
+            time_frame = mg_get_time_frame(diff);
+            main_time_format = mg_get_time_format(diff);
         }
 
         args.processed.main_x_time_format = main_time_format;
