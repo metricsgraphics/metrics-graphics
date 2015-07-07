@@ -1128,13 +1128,23 @@ function y_axis(args) {
         });
     }
 
-    var last_i = scale_ticks.length - 1;
-    if (!args.x_extended_ticks && !args.y_extended_ticks) {
+    //add the y-axis line; if we have 0s hide the line
+    var tick_length = scale_ticks.length;
+    if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
+        var y1scale, y2scale;
+        if (tick_length) {
+            y1scale = args.scales.Y(scale_ticks[0]).toFixed(2);
+            y2scale = args.scales.Y(scale_ticks[tick_length - 1]).toFixed(2);
+        } else {
+            y1scale = 0;
+            y2scale = 0;
+        }
+
         g.append('line')
             .attr('x1', args.left)
             .attr('x2', args.left)
-            .attr('y1', args.scales.Y(scale_ticks[0]).toFixed(2))
-            .attr('y2', args.scales.Y(scale_ticks[last_i]).toFixed(2));
+            .attr('y1', y1scale)
+            .attr('y2', y2scale);
     }
 
     //add y ticks
