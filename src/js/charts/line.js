@@ -60,15 +60,19 @@
             //data ranges or that have been explicitly identified as missing in the 
             //data source
             if(!args.missing_is_zero) {
+                //a line is defined if the _missing attrib is not set to true
+                //and the y-accessor is not null
                 line = line.defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true);
+                    return (d['_missing'] == undefined || d['_missing'] != true) 
+                        && d[args.y_accessor] != null;
                 })
             }
 
             //for animating line on first load
             var flat_line = d3.svg.line()
                 .defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true);
+                    return (d['_missing'] == undefined || d['_missing'] != true)
+                        && d[args.y_accessor] != null;
                 })
                 .x(args.scalefns.xf)
                 .y(function() { return args.scales.Y(data_median); })
@@ -568,20 +572,20 @@
                             .style('opacity', 1);
                       }
                     });
-                } else if (args.missing_is_hidden
-                            && d['_missing']) {
+                } else if ((args.missing_is_hidden && d['_missing']) 
+                        || d[args.y_accessor] == null
+                    ) {
                     //disable rollovers for hidden parts of the line
                     //recall that hidden parts are missing data ranges and possibly also
                     //data points that have been explicitly identified as missing
                     return;
                 } else {
-
                     //show circle on mouse-overed rect
                     if (d[args.x_accessor] >= args.processed.min_x &&
                         d[args.x_accessor] <= args.processed.max_x &&
                         d[args.y_accessor] >= args.processed.min_y &&
                         d[args.y_accessor] <= args.processed.max_y
-                    ){
+                    ) {
                         svg.selectAll('circle.mg-line-rollover-circle.mg-area' + d.line_id + '-color')
                             .attr('class', "")
                             .attr('class', 'mg-area' + d.line_id + '-color')

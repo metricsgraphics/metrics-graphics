@@ -121,7 +121,7 @@ function process_line(args) {
                     var o = {};
                     d.setHours(0, 0, 0, 0);
 
-                    //add the first date item (judge me not, world)
+                    //add the first date item
                     //we'll be starting from the day after our first date
                     if (Date.parse(d) === Date.parse(new Date(start_date))) {
                         processed_data.push(MG.clone(args.data[i][0]));
@@ -136,6 +136,7 @@ function process_line(args) {
                             return false;
                         }
                     });
+
                     //if we don't have this date in our data object, add it and set it to zero
                     if (!existing_o) {
                         o[args.x_accessor] = new Date(d);
@@ -143,9 +144,11 @@ function process_line(args) {
                         o['_missing'] = true; //we want to distinguish between zero-value and missing observations
                         processed_data.push(o);
                     } 
-                    //if the data point has, say, a 'missing' attribute set, just set its 
-                    //y-value to 0 and identify it internally as missing
-                    else if (existing_o[args.missing_is_hidden_accessor]) {
+                    //if the data point has, say, a 'missing' attribute set or if its 
+                    //y-value is null identify it internally as missing
+                    else if (existing_o[args.missing_is_hidden_accessor] 
+                            || existing_o[args.y_accessor] == null
+                        ) {
                         existing_o['_missing'] = true;
                         processed_data.push(existing_o);
                     }
@@ -153,7 +156,7 @@ function process_line(args) {
                     else {
                         processed_data.push(existing_o);
                     }
-                }        
+                }
             }
             else {
                 for (var j = 0; j < args.data[i].length; j += 1) {
@@ -162,6 +165,7 @@ function process_line(args) {
                     processed_data.push(o);
                 }
             }
+
             //update our date object
             args.data[i] = processed_data;
         }

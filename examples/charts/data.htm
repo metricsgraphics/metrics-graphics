@@ -158,7 +158,7 @@ d3.json('data/missing-is-hidden.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Broken Lines",
-        description: "Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.",
+        description: "Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side. Furthermore, you can hide individual data points on a particular attribute by setting <i>missing_is_hidden_accessor</i>. Data points whose y-accessor values are null are also hidden.",
         data: data,
         missing_is_hidden: true,
         width: 600,

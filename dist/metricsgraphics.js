@@ -2445,17 +2445,24 @@ MG.button_layout = function(target) {
                 .y(args.scalefns.yf)
                 .interpolate(args.interpolate)
                 .tension(args.interpolate_tension);
-            
+
+            //if missing_is_zero is not set, then hide data points that fall in missing
+            //data ranges or that have been explicitly identified as missing in the 
+            //data source
             if(!args.missing_is_zero) {
+                //a line is defined if the _missing attrib is not set to true
+                //and the y-accessor is not null
                 line = line.defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true);
+                    return (d['_missing'] == undefined || d['_missing'] != true) 
+                        && d[args.y_accessor] != null;
                 })
             }
 
             //for animating line on first load
             var flat_line = d3.svg.line()
                 .defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true);
+                    return (d['_missing'] == undefined || d['_missing'] != true)
+                        && d[args.y_accessor] != null;
                 })
                 .x(args.scalefns.xf)
                 .y(function() { return args.scales.Y(data_median); })
@@ -2955,20 +2962,20 @@ MG.button_layout = function(target) {
                             .style('opacity', 1);
                       }
                     });
-                } else if (args.missing_is_hidden
-                            && d['_missing']) {
+                } else if ((args.missing_is_hidden && d['_missing']) 
+                        || d[args.y_accessor] == null
+                    ) {
                     //disable rollovers for hidden parts of the line
                     //recall that hidden parts are missing data ranges and possibly also
                     //data points that have been explicitly identified as missing
                     return;
                 } else {
-
                     //show circle on mouse-overed rect
                     if (d[args.x_accessor] >= args.processed.min_x &&
                         d[args.x_accessor] <= args.processed.max_x &&
                         d[args.y_accessor] >= args.processed.min_y &&
                         d[args.y_accessor] <= args.processed.max_y
-                    ){
+                    ) {
                         svg.selectAll('circle.mg-line-rollover-circle.mg-area' + d.line_id + '-color')
                             .attr('class', "")
                             .attr('class', 'mg-area' + d.line_id + '-color')
@@ -4539,7 +4546,7 @@ function process_line(args) {
                     var o = {};
                     d.setHours(0, 0, 0, 0);
 
-                    //add the first date item (judge me not, world)
+                    //add the first date item
                     //we'll be starting from the day after our first date
                     if (Date.parse(d) === Date.parse(new Date(start_date))) {
                         processed_data.push(MG.clone(args.data[i][0]));
@@ -4554,6 +4561,7 @@ function process_line(args) {
                             return false;
                         }
                     });
+
                     //if we don't have this date in our data object, add it and set it to zero
                     if (!existing_o) {
                         o[args.x_accessor] = new Date(d);
@@ -4561,9 +4569,11 @@ function process_line(args) {
                         o['_missing'] = true; //we want to distinguish between zero-value and missing observations
                         processed_data.push(o);
                     } 
-                    //if the data point has, say, a 'missing' attribute set, just set its 
-                    //y-value to 0 and identify it internally as missing
-                    else if (existing_o[args.missing_is_hidden_accessor]) {
+                    //if the data point has, say, a 'missing' attribute set or if its 
+                    //y-value is null identify it internally as missing
+                    else if (existing_o[args.missing_is_hidden_accessor] 
+                            || existing_o[args.y_accessor] == null
+                        ) {
                         existing_o['_missing'] = true;
                         processed_data.push(existing_o);
                     }
@@ -4571,7 +4581,7 @@ function process_line(args) {
                     else {
                         processed_data.push(existing_o);
                     }
-                }        
+                }
             }
             else {
                 for (var j = 0; j < args.data[i].length; j += 1) {
@@ -4580,6 +4590,7 @@ function process_line(args) {
                     processed_data.push(o);
                 }
             }
+
             //update our date object
             args.data[i] = processed_data;
         }
