@@ -7,7 +7,7 @@
     root.MG = factory(root.d3, root.jQuery);
   }
 }(this, function(d3, $) {
-window.MG = {version: '2.5.0'};
+window.MG = {version: '2.6.0'};
 
 function register(chartType, descriptor, defaults) {
     MG.charts[chartType] = {
