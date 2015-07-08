@@ -380,8 +380,8 @@
         left: 70,
         truncate_x_labels: true,
         truncate_y_labels: true,
-        x_label_rotation: 0,
-        y_label_rotation: 0
+        rotate_x_labels: 0,
+        rotate_y_labels: 0
     };
 
     MG.register('bar', barChart, defaults);
