@@ -48,6 +48,7 @@ MG.data_graphic = function(args) {
         x_accessor: 'date',
         xax_units: '',
         x_label: '',
+        x_sort: true,
         x_axis: true,
         y_axis: true,
         y_accessor: 'value',
