@@ -146,22 +146,22 @@ function x_axis_categorical(args) {
         .attr('text-anchor', 'middle')
         .text(String);
 
-    if (args.rotate_x_labels) {
-        labels.attr({
-            dy: 0,
-            'text-anchor': 'end',
-            transform: function() {
-                var elem = d3.select(this);
-                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-            }
-        });
-    }
-
     if (args.truncate_x_labels) {
         labels.each(function(d, idx) {
             var elem = this,
                 width = args.scales.X.rangeBand();
             truncate_text(elem, d, width);
+        });
+    }
+
+    if (args.rotate_x_labels) {
+        labels.attr({
+            dy: 0,
+            'text-anchor': (args.rotate_x_labels + 360) % 360 > 180 ? 'end' : 'start',
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
         });
     }
 
