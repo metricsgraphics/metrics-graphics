@@ -1381,22 +1381,22 @@ function x_axis_categorical(args) {
         .attr('text-anchor', 'middle')
         .text(String);
 
-    if (args.rotate_x_labels) {
-        labels.attr({
-            dy: 0,
-            'text-anchor': 'end',
-            transform: function() {
-                var elem = d3.select(this);
-                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-            }
-        });
-    }
-
     if (args.truncate_x_labels) {
         labels.each(function(d, idx) {
             var elem = this,
                 width = args.scales.X.rangeBand();
             truncate_text(elem, d, width);
+        });
+    }
+
+    if (args.rotate_x_labels) {
+        labels.attr({
+            dy: 0,
+            'text-anchor': (args.rotate_x_labels + 360) % 360 > 180 ? 'end' : 'start',
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
         });
     }
 
@@ -3006,7 +3006,7 @@ MG.button_layout = function(target) {
                 if (args.linked && !MG.globals.link) {
                     MG.globals.link = true;
 
-                    if (!args.aggregate_rollover || d.value || d.values.length > 0) {
+                    if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
                         var datum = d.values ? d.values[0] : d;
                         var formatter = d3.time.format(args.linked_format);
                         var v = datum[args.x_accessor];
