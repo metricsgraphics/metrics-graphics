@@ -23,7 +23,7 @@ MG.data_table = function(args) {
 
     this._strip_punctuation = function(s) {
         var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
-        var finalString = punctuationless.replace(/ +?/g, "");
+        var finalString = punctuationless.replace(/ +?/g, '');
         return finalString;
     };
 

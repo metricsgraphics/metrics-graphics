@@ -73,7 +73,7 @@ function init(args) {
     args.width = svg_width;
     args.height = svg_height;
 
-    // add clip path element to svg
+    //add clip path element to svg
     svg.selectAll('.mg-clip-path').remove();
 
     svg.append('defs')
@@ -95,17 +95,17 @@ function init(args) {
         svg.attr('height', svg_height);
     }
 
-    // @todo need to reconsider how we handle automatic scaling
+    //we need to reconsider how we handle automatic scaling
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
     if (args.full_width || args.full_height) {
         svg.attr('preserveAspectRatio', 'xMinYMin meet');
     }
 
-    // remove missing class
+    //remove missing class
     svg.classed('mg-missing', false);
 
-    // remove missing text
+    //remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
 

@@ -40,7 +40,7 @@
                 svg.attr('height', svg_height);
             }
 
-            // @todo need to reconsider how we handle automatic scaling
+            //we need to reconsider how we handle automatic scaling
             svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
             // delete child elements
