@@ -2774,8 +2774,15 @@ MG.button_layout = function(target) {
                     .entries(d3.merge(args.data))
                     .sort(function(a, b) { return new Date(a.key) - new Date(b.key); });
 
+                // Undo the keys getting coerced to strings, by setting the keys from the values
+                // This is necessary for when we have X axis keys that are things like 
+                data_nested.forEach(function(entry) {
+                    var datum = entry.values[0];
+                    entry.key = datum[args.x_accessor];
+                });
+
                 xf = data_nested.map(function(di) {
-                    return args.scales.X(new Date(di.key));
+                    return args.scales.X(di.key);
                 });
 
                 g = svg.append('g')
