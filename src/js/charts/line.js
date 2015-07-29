@@ -15,7 +15,7 @@
             raw_data_transformation(args);
 
             process_line(args);
-            
+
             init(args);
             x_axis(args);
             y_axis(args);
@@ -57,13 +57,13 @@
                 .tension(args.interpolate_tension);
 
             //if missing_is_zero is not set, then hide data points that fall in missing
-            //data ranges or that have been explicitly identified as missing in the 
+            //data ranges or that have been explicitly identified as missing in the
             //data source
             if(!args.missing_is_zero) {
                 //a line is defined if the _missing attrib is not set to true
                 //and the y-accessor is not null
                 line = line.defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true) 
+                    return (d['_missing'] == undefined || d['_missing'] != true)
                         && d[args.y_accessor] != null;
                 })
             }
@@ -579,7 +579,7 @@
                             .style('opacity', 1);
                       }
                     });
-                } else if ((args.missing_is_hidden && d['_missing']) 
+                } else if ((args.missing_is_hidden && d['_missing'])
                         || d[args.y_accessor] == null
                     ) {
                     //disable rollovers for hidden parts of the line

@@ -41,7 +41,6 @@ function markers(args) {
         preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
     }
 
-    
     function xPosition(d) {
         return args.scales.X(d[args.x_accessor]);
     }

@@ -22,7 +22,7 @@ if (typeof jQuery !== 'undefined') {
 
     +function ($) {
       'use strict';
-      
+
       if(typeof $().tooltip == 'function')
         return true;
 
@@ -506,7 +506,7 @@ if (typeof jQuery !== 'undefined') {
 
       if(typeof $().popover == 'function')
         return true;
-          
+
       // POPOVER PUBLIC CLASS DEFINITION
       // ===============================
 

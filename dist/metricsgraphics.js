@@ -243,7 +243,7 @@ if (typeof jQuery !== 'undefined') {
 
     +function ($) {
       'use strict';
-      
+
       if(typeof $().tooltip == 'function')
         return true;
 
@@ -727,7 +727,7 @@ if (typeof jQuery !== 'undefined') {
 
       if(typeof $().popover == 'function')
         return true;
-          
+
       // POPOVER PUBLIC CLASS DEFINITION
       // ===============================
 
@@ -1896,7 +1896,7 @@ function init(args) {
     args.width = svg_width;
     args.height = svg_height;
 
-    // add clip path element to svg
+    //add clip path element to svg
     svg.selectAll('.mg-clip-path').remove();
 
     svg.append('defs')
@@ -1918,17 +1918,17 @@ function init(args) {
         svg.attr('height', svg_height);
     }
 
-    // @todo need to reconsider how we handle automatic scaling
+    //we need to reconsider how we handle automatic scaling
     svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
     if (args.full_width || args.full_height) {
         svg.attr('preserveAspectRatio', 'xMinYMin meet');
     }
 
-    // remove missing class
+    //remove missing class
     svg.classed('mg-missing', false);
 
-    // remove missing text
+    //remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
 
@@ -2025,7 +2025,6 @@ function markers(args) {
         preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
     }
 
-    
     function xPosition(d) {
         return args.scales.X(d[args.x_accessor]);
     }
@@ -2076,11 +2075,11 @@ function markers(args) {
 MG.markers = markers;
 
 function mg_window_listeners(args){
-	mg_if_aspect_ratio_resize_svg(args);
+    mg_if_aspect_ratio_resize_svg(args);
 }
 
 function mg_if_aspect_ratio_resize_svg(args){
-	// If we've asked the svg to fill a div, resize with div.
+    //have we asked the svg to fill a div, if so resize with div
     if (args.full_width || args.full_height){
         window.addEventListener('resize', function(){
             var svg = d3.select(args.target).select('svg');
@@ -2283,7 +2282,7 @@ MG.button_layout = function(target) {
 
     this._strip_punctuation = function(s) {
         var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
-        var finalString = punctuationless.replace(/ +?/g, "");
+        var finalString = punctuationless.replace(/ +?/g, '');
         return finalString;
     };
 
@@ -2416,7 +2415,7 @@ MG.button_layout = function(target) {
             raw_data_transformation(args);
 
             process_line(args);
-            
+
             init(args);
             x_axis(args);
             y_axis(args);
@@ -2458,13 +2457,13 @@ MG.button_layout = function(target) {
                 .tension(args.interpolate_tension);
 
             //if missing_is_zero is not set, then hide data points that fall in missing
-            //data ranges or that have been explicitly identified as missing in the 
+            //data ranges or that have been explicitly identified as missing in the
             //data source
             if(!args.missing_is_zero) {
                 //a line is defined if the _missing attrib is not set to true
                 //and the y-accessor is not null
                 line = line.defined(function(d) {
-                    return (d['_missing'] == undefined || d['_missing'] != true) 
+                    return (d['_missing'] == undefined || d['_missing'] != true)
                         && d[args.y_accessor] != null;
                 })
             }
@@ -2980,7 +2979,7 @@ MG.button_layout = function(target) {
                             .style('opacity', 1);
                       }
                     });
-                } else if ((args.missing_is_hidden && d['_missing']) 
+                } else if ((args.missing_is_hidden && d['_missing'])
                         || d[args.y_accessor] == null
                     ) {
                     //disable rollovers for hidden parts of the line
@@ -4109,7 +4108,7 @@ MG.data_table = function(args) {
 
     this._strip_punctuation = function(s) {
         var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
-        var finalString = punctuationless.replace(/ +?/g, "");
+        var finalString = punctuationless.replace(/ +?/g, '');
         return finalString;
     };
 
@@ -4341,7 +4340,7 @@ MG.data_table = function(args) {
                 svg.attr('height', svg_height);
             }
 
-            // @todo need to reconsider how we handle automatic scaling
+            //we need to reconsider how we handle automatic scaling
             svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
 
             // delete child elements
