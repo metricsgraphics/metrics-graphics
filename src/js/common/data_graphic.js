@@ -74,6 +74,7 @@ MG.data_graphic = function(args) {
         markers: null,                         // sets the marker lines
         scalefns: {},
         scales: {},
+        utc_time: false,
         show_year_markers: false,
         show_secondary_x_label: true,
         target: '#viz',

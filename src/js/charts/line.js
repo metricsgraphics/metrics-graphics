@@ -349,7 +349,7 @@
                             .attr('class', function(d) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -415,7 +415,7 @@
                             })
                             .attr('class', function(d) {
                                 if (args.linked && d.values.length > 0) {
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     // add line classes for every line the rect contains
                                     var line_classes = d.values.map(function(datum) {
@@ -456,7 +456,7 @@
                             .attr('class', function(d, i) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -540,16 +540,16 @@
             var fmt;
             switch(args.processed.x_time_frame) {
                 case 'seconds':
-                    fmt = d3.time.format('%b %e, %Y  %H:%M:%S');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
                     break;
                 case 'less-than-a-day':
-                    fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
                     break;
                 case 'four-days':
-                    fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
                     break;
                 default:
-                    fmt = d3.time.format('%b %e, %Y');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y');
             }
 
             return function(d, i) {
@@ -614,7 +614,7 @@
 
                     if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
                         var datum = d.values ? d.values[0] : d;
-                        var formatter = d3.time.format(args.linked_format);
+                        var formatter = MG.time_format(args.utc_time, args.linked_format);
                         var v = datum[args.x_accessor];
                         var id = (typeof v === 'number') ? i : formatter(v);
 
@@ -737,7 +737,7 @@
                 if (args.linked && MG.globals.link) {
                     MG.globals.link = false;
 
-                    var formatter = d3.time.format(args.linked_format);
+                    var formatter = MG.time_format(args.utc_time, args.linked_format);
                     var datums = d.values ? d.values : [d];
                     datums.forEach(function(datum) {
                         var v = datum[args.x_accessor];

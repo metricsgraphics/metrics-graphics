@@ -67,8 +67,12 @@ function x_axis(args) {
 
     mg_find_min_max_x(args);
 
+    var time_scale = (args.utc_time)
+        ? d3.time.scale.utc()
+        : d3.time.scale();
+
     args.scales.X = (args.time_series)
-        ? d3.time.scale()
+        ? time_scale
         : d3.scale.linear();
 
     args.scales.X
@@ -303,15 +307,15 @@ function mg_get_time_frame(diff){
     return time_frame;
 }
 
-function mg_get_time_format(diff){
+function mg_get_time_format(utc, diff){
     if (diff < 60) {
-        main_time_format = d3.time.format('%M:%S');
+        main_time_format = MG.time_format(utc, '%M:%S');
     } else if (diff / (60 * 60) <= 24) {
-        main_time_format = d3.time.format('%H:%M');
+        main_time_format = MG.time_format(utc, '%H:%M');
     } else if (diff / (60 * 60) <= 24 * 4) {
-        main_time_format = d3.time.format('%H:%M');
+        main_time_format = MG.time_format(utc, '%H:%M');
     } else {
-        main_time_format = d3.time.format('%b %d');
+        main_time_format = MG.time_format(utc, '%b %d');
     }
     return main_time_format;
 }
@@ -331,13 +335,13 @@ function mg_default_xax_format(args) {
             diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
             time_frame = mg_get_time_frame(diff);
-            main_time_format = mg_get_time_format(diff);
+            main_time_format = mg_get_time_format(args.utc_time, diff);
         }
 
         args.processed.main_x_time_format = main_time_format;
         args.processed.x_time_frame = time_frame;
 
-        var df = d3.time.format('%b %d');
+        var df = MG.time_format(args.utc_time, '%b %d');
         var pf = d3.formatPrefix(d);
 
         // format as date or not, of course user can pass in
@@ -439,19 +443,19 @@ function mg_add_x_tick_labels(g, args) {
         switch(time_frame) {
             case 'seconds':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%I %p');
+                yformat = MG.time_format(args.utc_time, '%I %p');
                 break;
             case 'less-than-a-day':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%b %d');
+                yformat = MG.time_format(args.utc_time, '%b %d');
                 break;
             case 'four-days':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%b %d');
+                yformat = MG.time_format(args.utc_time, '%b %d');
                 break;
             default:
                 secondary_function = d3.time.years;
-                yformat = d3.time.format('%Y');
+                yformat = MG.time_format(args.utc_time, '%Y');
         }
 
         var years = secondary_function(args.processed.min_x, args.processed.max_x);
