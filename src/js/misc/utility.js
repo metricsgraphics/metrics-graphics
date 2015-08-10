@@ -22,6 +22,9 @@ MG.convert.number = function(data, accessor) {
     return data;
 };
 
+MG.time_format = function(utc, specifier) {
+    return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
+};
 
 function is_array(thing){
     return Object.prototype.toString.call(thing) === '[object Array]';

@@ -141,7 +141,7 @@
                         });
                 }
 
-                var fmt = d3.time.format('%b %e, %Y');
+                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 //update rollover text
