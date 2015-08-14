@@ -98,7 +98,7 @@ function process_line(args) {
         ) {
         for (var i = 0; i < args.data.length; i++) {
             //we need to have a dataset of length > 2, so if it's less than that, skip
-            if (args.data[i].length == 1) {
+            if (args.data[i].length <= 1) {
                 continue;
             }
 
