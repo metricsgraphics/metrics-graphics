@@ -258,3 +258,17 @@ test('Only one line legend is added on multiple calls to the same target element
 
     equal(document.querySelectorAll('.mg-line-legend').length, 1, 'We only have one mg-line-legend');
 });
+
+test('When 1 data series is empty (out of 2) and missing_is_zero is true, remaining line is rendered', function() {
+    var data = [];
+    data[0] = [];
+    data[1] = [{'date': new Date('2015-03-07'), 'value': 23000},{'date': new Date('2015-03-08'), 'value': 20000}];
+
+    MG.data_graphic({
+        target: '#qunit-fixture',
+        data: data,
+        missing_is_zero: true
+    });
+
+    equal(document.querySelectorAll('.mg-main-line').length, 1, 'Line for non-empty data series is still rendered');
+});
