@@ -158,6 +158,7 @@ MG.data_graphic = function(args) {
         markers: null,                         // sets the marker lines
         scalefns: {},
         scales: {},
+        utc_time: false,
         show_year_markers: false,
         show_secondary_x_label: true,
         target: '#viz',
@@ -1302,8 +1303,12 @@ function x_axis(args) {
 
     mg_find_min_max_x(args);
 
+    var time_scale = (args.utc_time)
+        ? d3.time.scale.utc()
+        : d3.time.scale();
+
     args.scales.X = (args.time_series)
-        ? d3.time.scale()
+        ? time_scale
         : d3.scale.linear();
 
     args.scales.X
@@ -1538,15 +1543,15 @@ function mg_get_time_frame(diff){
     return time_frame;
 }
 
-function mg_get_time_format(diff){
+function mg_get_time_format(utc, diff){
     if (diff < 60) {
-        main_time_format = d3.time.format('%M:%S');
+        main_time_format = MG.time_format(utc, '%M:%S');
     } else if (diff / (60 * 60) <= 24) {
-        main_time_format = d3.time.format('%H:%M');
+        main_time_format = MG.time_format(utc, '%H:%M');
     } else if (diff / (60 * 60) <= 24 * 4) {
-        main_time_format = d3.time.format('%H:%M');
+        main_time_format = MG.time_format(utc, '%H:%M');
     } else {
-        main_time_format = d3.time.format('%b %d');
+        main_time_format = MG.time_format(utc, '%b %d');
     }
     return main_time_format;
 }
@@ -1566,13 +1571,13 @@ function mg_default_xax_format(args) {
             diff = (args.processed.max_x - args.processed.min_x) / 1000;
 
             time_frame = mg_get_time_frame(diff);
-            main_time_format = mg_get_time_format(diff);
+            main_time_format = mg_get_time_format(args.utc_time, diff);
         }
 
         args.processed.main_x_time_format = main_time_format;
         args.processed.x_time_frame = time_frame;
 
-        var df = d3.time.format('%b %d');
+        var df = MG.time_format(args.utc_time, '%b %d');
         var pf = d3.formatPrefix(d);
 
         // format as date or not, of course user can pass in
@@ -1674,19 +1679,19 @@ function mg_add_x_tick_labels(g, args) {
         switch(time_frame) {
             case 'seconds':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%I %p');
+                yformat = MG.time_format(args.utc_time, '%I %p');
                 break;
             case 'less-than-a-day':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%b %d');
+                yformat = MG.time_format(args.utc_time, '%b %d');
                 break;
             case 'four-days':
                 secondary_function = d3.time.days;
-                yformat = d3.time.format('%b %d');
+                yformat = MG.time_format(args.utc_time, '%b %d');
                 break;
             default:
                 secondary_function = d3.time.years;
-                yformat = d3.time.format('%Y');
+                yformat = MG.time_format(args.utc_time, '%Y');
         }
 
         var years = secondary_function(args.processed.min_x, args.processed.max_x);
@@ -2749,7 +2754,7 @@ MG.button_layout = function(target) {
                             .attr('class', function(d) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -2815,7 +2820,7 @@ MG.button_layout = function(target) {
                             })
                             .attr('class', function(d) {
                                 if (args.linked && d.values.length > 0) {
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     // add line classes for every line the rect contains
                                     var line_classes = d.values.map(function(datum) {
@@ -2856,7 +2861,7 @@ MG.button_layout = function(target) {
                             .attr('class', function(d, i) {
                                 if (args.linked) {
                                     var v = d[args.x_accessor];
-                                    var formatter = d3.time.format(args.linked_format);
+                                    var formatter = MG.time_format(args.utc_time, args.linked_format);
 
                                     //only format when x-axis is date
                                     var id = (typeof v === 'number')
@@ -2920,7 +2925,9 @@ MG.button_layout = function(target) {
                         j = args.custom_line_color_map[i];
                     }
 
-                    if (args.data[i].length == 1) {
+                    if (args.data[i].length == 1 
+                            && !svg.selectAll('.mg-voronoi .mg-line' + j + '-color').empty()
+                        ) {
                         svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
                             .on('mouseover')(args.data[i][0], 0);
 
@@ -2940,16 +2947,16 @@ MG.button_layout = function(target) {
             var fmt;
             switch(args.processed.x_time_frame) {
                 case 'seconds':
-                    fmt = d3.time.format('%b %e, %Y  %H:%M:%S');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
                     break;
                 case 'less-than-a-day':
-                    fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
                     break;
                 case 'four-days':
-                    fmt = d3.time.format('%b %e, %Y  %I:%M%p');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
                     break;
                 default:
-                    fmt = d3.time.format('%b %e, %Y');
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y');
             }
 
             return function(d, i) {
@@ -3014,7 +3021,7 @@ MG.button_layout = function(target) {
 
                     if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
                         var datum = d.values ? d.values[0] : d;
-                        var formatter = d3.time.format(args.linked_format);
+                        var formatter = MG.time_format(args.utc_time, args.linked_format);
                         var v = datum[args.x_accessor];
                         var id = (typeof v === 'number') ? i : formatter(v);
 
@@ -3137,7 +3144,7 @@ MG.button_layout = function(target) {
                 if (args.linked && MG.globals.link) {
                     MG.globals.link = false;
 
-                    var formatter = d3.time.format(args.linked_format);
+                    var formatter = MG.time_format(args.utc_time, args.linked_format);
                     var datums = d.values ? d.values : [d];
                     datums.forEach(function(datum) {
                         var v = datum[args.x_accessor];
@@ -3339,7 +3346,7 @@ MG.button_layout = function(target) {
 
         this.rolloverOn = function(args) {
             var svg = mg_get_svg_child_of(args.target);
-            var x_formatter = d3.time.format('%Y-%m-%d');
+            var x_formatter = MG.time_format(args.utc_time, '%Y-%m-%d');
 
             return function(d, i) {
                 svg.selectAll('text')
@@ -3348,7 +3355,7 @@ MG.button_layout = function(target) {
                     })
                     .attr('opacity', 0.3);
 
-                var fmt = d3.time.format('%b %e, %Y');
+                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 svg.selectAll('.mg-bar rect')
@@ -3596,7 +3603,7 @@ MG.button_layout = function(target) {
                         });
                 }
 
-                var fmt = d3.time.format('%b %e, %Y');
+                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 //update rollover text
@@ -3994,7 +4001,7 @@ MG.button_layout = function(target) {
                     })
                     .attr('opacity', 0.3);
 
-                var fmt = d3.time.format('%b %e, %Y');
+                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 //highlight active bar
@@ -5106,6 +5113,9 @@ MG.convert.number = function(data, accessor) {
     return data;
 };
 
+MG.time_format = function(utc, specifier) {
+    return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
+};
 
 function is_array(thing){
     return Object.prototype.toString.call(thing) === '[object Array]';

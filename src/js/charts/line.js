@@ -520,7 +520,9 @@
                         j = args.custom_line_color_map[i];
                     }
 
-                    if (args.data[i].length == 1) {
+                    if (args.data[i].length == 1 
+                            && !svg.selectAll('.mg-voronoi .mg-line' + j + '-color').empty()
+                        ) {
                         svg.selectAll('.mg-voronoi .mg-line' + j + '-color')
                             .on('mouseover')(args.data[i][0], 0);
 
