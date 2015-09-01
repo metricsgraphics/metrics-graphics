@@ -1,8 +1,8 @@
 function add_ls(args) {
     var svg = mg_get_svg_child_of(args.target);
     var data = args.data[0];
-    var min_x = d3.min(args.data[0], function(d) { return d[args.x_accessor]; });
-    var max_x = d3.max(args.data[0], function(d) { return d[args.x_accessor]; });
+    var min_x = d3.min(data, function(d) { return d[args.x_accessor]; });
+    var max_x = d3.max(data, function(d) { return d[args.x_accessor]; });
 
     d3.select(args.target).selectAll('.mg-least-squares-line').remove();
 
