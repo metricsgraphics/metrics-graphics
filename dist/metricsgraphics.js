@@ -4358,7 +4358,7 @@ MG.data_table = function(args) {
 
             // do we need to clear the legend?
             if (args.legend_target) {
-                $(args.legend_target).html('');
+                d3.select(args.legend_target).html('');
             }
 
             //are we adding a background placeholder
@@ -4547,7 +4547,7 @@ function process_line(args) {
         ) {
         for (var i = 0; i < args.data.length; i++) {
             //we need to have a dataset of length > 2, so if it's less than that, skip
-            if (args.data[i].length == 1) {
+            if (args.data[i].length <= 1) {
                 continue;
             }
 
@@ -4770,8 +4770,8 @@ MG.process_point = process_point;
 function add_ls(args) {
     var svg = mg_get_svg_child_of(args.target);
     var data = args.data[0];
-    var min_x = args.scales.X.ticks(args.xax_count)[0];
-    var max_x = args.scales.X.ticks(args.xax_count)[args.scales.X.ticks(args.xax_count).length - 1];
+    var min_x = d3.min(data, function(d) { return d[args.x_accessor]; });
+    var max_x = d3.max(data, function(d) { return d[args.x_accessor]; });
 
     d3.select(args.target).selectAll('.mg-least-squares-line').remove();
 
