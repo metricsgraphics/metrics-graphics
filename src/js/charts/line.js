@@ -510,7 +510,7 @@
             if (args.data.length == 1 && args.data[0].length == 1) {
                 svg.select('.mg-rollover-rect rect')
                     .on('mouseover')(args.data[0][0], 0);
-            } else if (args.data.length > 1) {
+            } else if (args.data.length > 1 && !args.aggregate_rollover) {
                 //otherwise, trigger it for an appropriate line in a multi-line chart
                 for (var i = 0; i < args.data.length; i++) {
                     var j = i + 1;
@@ -530,6 +530,10 @@
                             .on('mouseout')(args.data[i][0], 0);
                     }
                 }
+            } else if (args.data.length > 1 && args.aggregate_rollover) {
+                // trigger for the first line only, because values are aggregated
+                var rect = svg.selectAll('.mg-rollover-rect rect');
+                rect.on('mouseover')(rect[0][0].__data__, 0);
             }
 
             MG.call_hook('line.after_rollover', args);
