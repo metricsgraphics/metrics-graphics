@@ -114,6 +114,9 @@ Feel free to add your addons and websites to this list.
 * [mg-color-scale (addon)](https://github.com/dandehavilland/mg-color-scale)
 * [mg-line-brushing (addon)](https://github.com/dandehavilland/mg-line-brushing)
 * [mg-regions (addon)](https://github.com/senseyeio/mg-regions)
+* [Rails wrapper gem](https://github.com/dgilperez/metrics-graphics-rails)
+* [R package (htmlwidget)](https://github.com/hrbrmstr/metricsgraphics)
+* [Python library - using Pyxley](http://multithreaded.stitchfix.com/blog/2015/07/16/pyxley)
 
 ## License
 
