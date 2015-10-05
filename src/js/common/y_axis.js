@@ -108,17 +108,13 @@ function y_axis(args) {
             return Math.max.apply(null, trio);
         });
     }
-    //if a min_y or max_y have been set, use those instead
+
+    //if a min_y or max_y has been set, use those instead
     min_y = args.min_y !== null ? args.min_y : min_y;
     max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
-    if (args.y_scale_type !== 'log') {
-        //we are currently saying that if the min val > 0, set 0 as min y
-        if (min_y >= 0) {
-            args.y_axis_negative = false;
-        } else {
-            min_y = min_y  - (max_y * (args.inflator - 1));
-            args.y_axis_negative = true;
-        }
+
+    if (args.y_scale_type !== 'log' && min_y < 0) {
+        min_y = min_y  - (max_y * (args.inflator - 1));
     }
 
     if (!args.min_y && args.min_y_from_data) {

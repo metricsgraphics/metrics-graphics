@@ -154,7 +154,7 @@
 
                     //add the area
                     var areas = svg.selectAll('.mg-main-area.mg-area' + (line_id) + '-color');
-                    var displayArea = args.area && !args.use_data_y_min && !args.y_axis_negative && args.data.length <= 1;
+                    var displayArea = args.area && !args.use_data_y_min && args.data.length <= 1;
                     if (displayArea) {
                         //if area already exists, transition it
                         if (!areas.empty()) {
