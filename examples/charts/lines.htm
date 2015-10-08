@@ -131,8 +131,41 @@ d3.json('data/brief-2.json', function(data) {
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='custom-color'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Singleton",
+    description: "Handling a solitary data point.",
+    data: [{'date': new Date('2015-03-05T21:00:00Z'), 'value': 12000}],
+    width: 600,
+    height: 200,
+    right: 40,
+    target: '#singleton'
+});</code></pre>
+
+                </div>
+            </div>
 
 <script>
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Changing Single Line Color",
+        description: "For single line charts, there are two simple ways to change a line color. The first is to change the css (described on the wiki). The other is to specify a color value using color: <em>string</em> or colors: <em>string</em>.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        color: '#8C001A',
+        target: 'div#custom-color',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
 MG._hooks = {};
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');

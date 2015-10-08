@@ -81,6 +81,7 @@ MG.data_graphic = function(args) {
         interpolate: 'cardinal',               // interpolation method to use when rendering lines
         interpolate_tension: 0.7,              // its range is from 0 to 1; increase if your data is irregular and you notice artifacts
         custom_line_color_map: [],             // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
+        colors: null,                          // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
         max_data_size: null,                   // explicitly specify the the max number of line series, for use with custom_line_color_map
         aggregate_rollover: false,             // links the lines in a multi-line chart
         show_tooltips: true                    // if enabled, a chart's description will appear in a tooltip (requires jquery)

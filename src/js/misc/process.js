@@ -58,6 +58,15 @@ function raw_data_transformation(args) {
         args.y_accessor = 'multiline_y_accessor';
     }
 
+    // if user supplies keyword in args.color, change to arg.colors. 
+    // This is so that the API remains fairly sensible and legible.
+    if (args.color !== undefined){
+        args.colors = args.color;
+    }
+    // if user has supplied args.colors, and that value is a string, turn it into an array.
+    if (args.colors !== null && typeof args.colors === 'string'){
+            args.colors = [args.colors];
+    }
     //sort x-axis data
     if (args.chart_type === 'line' && args.x_sort === true) {
         for (var i = 0; i < args.data.length; i++) {
@@ -90,12 +99,12 @@ function process_line(args) {
     if (args.missing_is_hidden) {
         args.interpolate = 'linear';
     }
-
     //are we replacing missing y values with zeros?
     if ((args.missing_is_zero || args.missing_is_hidden)
             && args.chart_type === 'line'
             && is_time_series
         ) {
+
         for (var i = 0; i < args.data.length; i++) {
             //we need to have a dataset of length > 2, so if it's less than that, skip
             if (args.data[i].length <= 1) {

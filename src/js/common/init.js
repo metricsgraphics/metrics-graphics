@@ -142,7 +142,7 @@ function init(args) {
                     .remove();
             }
         }
-        //if we don't have a customer line-color map, just remove the lines from the end
+        //if we don't have a custom line-color map, just remove the lines from the end
         else {
             var num_of_new = args.data.length;
             var num_of_existing = svg.selectAll('.mg-main-line')[0].length;
