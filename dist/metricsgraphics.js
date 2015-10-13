@@ -1282,7 +1282,10 @@ function x_axis(args) {
     var min_x;
     var max_x;
 
-    args.processed = {};
+    if (!args.processed) {
+        args.processed = {};
+    }
+
     var all_data = [];
     for (var i = 0; i < args.data.length; i++) {
         for (var j = 0; j < args.data[i].length; j++) {
@@ -1557,7 +1560,8 @@ function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
     }
-    var test_point = mg_flatten_array(args.data)[0][args.x_accessor]
+    var data = args.processed.original_data || args.data;
+    var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor]
 
     return function(d) {
         var diff;
@@ -1836,6 +1840,11 @@ function init(args) {
 
     args = arguments[0];
     if (!args) { args = {}; }
+
+    if (!args.processed) {
+        args.processed = {};
+    }
+
     args = merge_with_defaults(args, defaults);
     if (d3.select(args.target).empty()) {
         console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
@@ -1850,13 +1859,13 @@ function init(args) {
 
     //do we have a time_series?
 
-    function is_time_series(args) {
+    function is_time_series() {
         var flat_data = [];
-        var first_elem = mg_flatten_array(args.data)[0];
-        return first_elem[args.x_accessor] instanceof Date;
+        var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
+        return first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
     }
 
-    args.time_series = is_time_series(args);
+    args.time_series = is_time_series();
 
     var svg_width = args.width;
     var svg_height = args.height;
@@ -4761,6 +4770,14 @@ function process_histogram(args) {
             }
         }
     }
+    
+    // capture the original data and accessors before replacing args.data
+    if (!args.processed) {
+        args.processed = {};
+    }
+    args.processed.original_data = args.data;
+    args.processed.original_x_accessor = args.x_accessor;
+    args.processed.original_y_accessor = args.y_accessor;
 
     args.data = [args.processed_data];
     args.x_accessor = args.processed_x_accessor;

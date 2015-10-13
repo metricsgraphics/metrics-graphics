@@ -49,7 +49,10 @@ function x_axis(args) {
     var min_x;
     var max_x;
 
-    args.processed = {};
+    if (!args.processed) {
+        args.processed = {};
+    }
+
     var all_data = [];
     for (var i = 0; i < args.data.length; i++) {
         for (var j = 0; j < args.data[i].length; j++) {
@@ -324,7 +327,8 @@ function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
     }
-    var test_point = mg_flatten_array(args.data)[0][args.x_accessor]
+    var data = args.processed.original_data || args.data;
+    var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor]
 
     return function(d) {
         var diff;

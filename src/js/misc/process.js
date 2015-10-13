@@ -249,6 +249,14 @@ function process_histogram(args) {
             }
         }
     }
+    
+    // capture the original data and accessors before replacing args.data
+    if (!args.processed) {
+        args.processed = {};
+    }
+    args.processed.original_data = args.data;
+    args.processed.original_x_accessor = args.x_accessor;
+    args.processed.original_y_accessor = args.y_accessor;
 
     args.data = [args.processed_data];
     args.x_accessor = args.processed_x_accessor;

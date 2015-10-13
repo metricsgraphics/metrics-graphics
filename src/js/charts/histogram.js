@@ -130,7 +130,6 @@
 
         this.rolloverOn = function(args) {
             var svg = mg_get_svg_child_of(args.target);
-            var x_formatter = MG.time_format(args.utc_time, '%Y-%m-%d');
 
             return function(d, i) {
                 svg.selectAll('text')
@@ -139,7 +138,7 @@
                     })
                     .attr('opacity', 0.3);
 
-                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+                var fmt = args.processed.xax_format || MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 svg.selectAll('.mg-bar rect')
