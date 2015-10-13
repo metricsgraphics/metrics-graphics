@@ -153,7 +153,7 @@
                     }
 
                     //add the area
-                    var areas = svg.selectAll('.mg-main-area.mg-area' + (line_id));
+                    var areas = svg.selectAll('.mg-main-area.mg-area' + line_id);
                     var displayArea = args.area && !args.use_data_y_min && args.data.length <= 1;
                     if (displayArea) {
                         //if area already exists, transition it
@@ -197,22 +197,22 @@
                     else { //otherwise...
                         //if we're animating on load, animate the line from its median value
                         var this_path =  svg.append('path')
-                                .attr('class', 'mg-main-line');
+                            .attr('class', 'mg-main-line');
 
                         // UNFINISHED - if we have args.colors, color the line appropriately.
-                        if (args.colors){
+                        if (args.colors) {
                             // for now, if args.colors is not an array, then keep moving as if nothing happened.
-                            // If args.colors is not long enough, default to the usual line_id color.
+                            // if args.colors is not long enough, default to the usual line_id color.
                             if (args.colors.constructor === Array) {
                                 this_path.attr('stroke', args.colors[i]);
-                                if (args.colors.length < i+1){
+                                if (args.colors.length < i + 1) {
                                     // Go with default coloring.
                                     this_path.classed('mg-line' + (line_id) + '-color', true);
                                 }
                             }
                             else { 
                                 this_path.classed('mg-line' + (line_id) + '-color', true);
-                            };
+                            }
                         } else {
                             // this is the typical workflow
                             this_path.classed('mg-line' + (line_id) + '-color', true);
@@ -240,16 +240,16 @@
                         }
 
                         if (args.legend_target) {
-
-                            if (args.colors && args.colors.constructor === Array){
-                                legend = "<span style='color:"+ args.colors[i]+"'>&mdash; " + this_legend + '&nbsp; </span>' + legend;
+                            if (args.colors && args.colors.constructor === Array) {
+                                legend = "<span style='color:" + args.colors[i] + "'>&mdash; "
+                                    + this_legend + '&nbsp; </span>' + legend;
                             } else {
                                 legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
-                                    + this_legend + "&nbsp; </span>" + legend;    
+                                    + this_legend + "&nbsp; </span>" + legend;
                             }
                         } else {
 
-                            var last_point = this_data[this_data.length-1];
+                            var last_point = this_data[this_data.length - 1];
                             var legend_text = legend_group.append('svg:text')
                                 .attr('x', args.scalefns.xf(last_point))
                                 .attr('dx', args.buffer)
@@ -259,17 +259,15 @@
                                 .attr('font-weight', '300')
                                 .text(this_legend);
 
-                            if (args.colors && args.colors.constructor === Array){
-                                if (args.colors.length < i+1){
+                            if (args.colors && args.colors.constructor === Array) {
+                                if (args.colors.length < i + 1) {
                                     legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
                                 } else {
                                     legend_text.attr('fill', args.colors[i]);    
                                 }
-                                
                             } else {
                                 legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
                             }
-                            
 
                             preventVerticalOverlap(legend_group.selectAll('.mg-line-legend text')[0], args);
                         }
@@ -328,13 +326,13 @@
 
             if (args.colors && args.colors.constructor === Array) {
                 circle
-                    .attr('class', function(d){
+                    .attr('class', function(d) {
                         return 'mg-line' + d.line_id;
                     })
-                    .attr('fill', function(d,i){
+                    .attr('fill', function(d,i) {
                         return args.colors[i];
                     })
-                    .attr('stroke', function(d,i){
+                    .attr('stroke', function(d,i) {
                         return args.colors[i];
                     })
             } else {
@@ -478,7 +476,7 @@
                                     var lc = 'mg-line' + d.line_id;
                                     if (args.colors === null) lc += ' mg-line' + datum.line_id + '-color';
                                     return lc;
-                                }).join(" ");
+                                }).join(' ');
                                 if (args.linked && d.values.length > 0) {
                                     var formatter = MG.time_format(args.utc_time, args.linked_format);
 
@@ -736,7 +734,7 @@
                                     })
                                     .text('\u2014 ') // mdash
                                     .classed('mg-hover-line' + datum.line_id +'-color', args.colors === null)
-                                    .attr('fill', args.colors === null ? '' : args.colors[datum.line_id-1])
+                                    .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
                                     .style('font-weight', 'bold');
 
                                 lineCount++;
@@ -763,7 +761,7 @@
                                       y: (lineCount * lineHeight) + 'em'
                                     })
                                     .text('\u2014 ') // mdash
-                                    .classed('mg-hover-line' + datum.line_id +'-color', true)
+                                    .classed('mg-hover-line' + datum.line_id + '-color', true)
                                     .style('font-weight', 'bold');
 
                                 lineCount++;

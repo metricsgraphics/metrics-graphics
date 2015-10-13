@@ -59,13 +59,14 @@ function raw_data_transformation(args) {
     }
 
     // if user supplies keyword in args.color, change to arg.colors. 
-    // This is so that the API remains fairly sensible and legible.
-    if (args.color !== undefined){
+    // this is so that the API remains fairly sensible and legible.
+    if (args.color !== undefined) {
         args.colors = args.color;
     }
+
     // if user has supplied args.colors, and that value is a string, turn it into an array.
-    if (args.colors !== null && typeof args.colors === 'string'){
-            args.colors = [args.colors];
+    if (args.colors !== null && typeof args.colors === 'string') {
+        args.colors = [args.colors];
     }
     //sort x-axis data
     if (args.chart_type === 'line' && args.x_sort === true) {

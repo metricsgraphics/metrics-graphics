@@ -2569,7 +2569,7 @@ MG.button_layout = function(target) {
                     }
 
                     //add the area
-                    var areas = svg.selectAll('.mg-main-area.mg-area' + (line_id));
+                    var areas = svg.selectAll('.mg-main-area.mg-area' + line_id);
                     var displayArea = args.area && !args.use_data_y_min && args.data.length <= 1;
                     if (displayArea) {
                         //if area already exists, transition it
@@ -2613,22 +2613,22 @@ MG.button_layout = function(target) {
                     else { //otherwise...
                         //if we're animating on load, animate the line from its median value
                         var this_path =  svg.append('path')
-                                .attr('class', 'mg-main-line');
+                            .attr('class', 'mg-main-line');
 
                         // UNFINISHED - if we have args.colors, color the line appropriately.
-                        if (args.colors){
+                        if (args.colors) {
                             // for now, if args.colors is not an array, then keep moving as if nothing happened.
-                            // If args.colors is not long enough, default to the usual line_id color.
+                            // if args.colors is not long enough, default to the usual line_id color.
                             if (args.colors.constructor === Array) {
                                 this_path.attr('stroke', args.colors[i]);
-                                if (args.colors.length < i+1){
+                                if (args.colors.length < i + 1) {
                                     // Go with default coloring.
                                     this_path.classed('mg-line' + (line_id) + '-color', true);
                                 }
                             }
                             else { 
                                 this_path.classed('mg-line' + (line_id) + '-color', true);
-                            };
+                            }
                         } else {
                             // this is the typical workflow
                             this_path.classed('mg-line' + (line_id) + '-color', true);
@@ -2656,16 +2656,16 @@ MG.button_layout = function(target) {
                         }
 
                         if (args.legend_target) {
-
-                            if (args.colors && args.colors.constructor === Array){
-                                legend = "<span style='color:"+ args.colors[i]+"'>&mdash; " + this_legend + '&nbsp; </span>' + legend;
+                            if (args.colors && args.colors.constructor === Array) {
+                                legend = "<span style='color:" + args.colors[i] + "'>&mdash; "
+                                    + this_legend + '&nbsp; </span>' + legend;
                             } else {
                                 legend = "<span class='mg-line" + line_id  + "-legend-color'>&mdash; "
-                                    + this_legend + "&nbsp; </span>" + legend;    
+                                    + this_legend + "&nbsp; </span>" + legend;
                             }
                         } else {
 
-                            var last_point = this_data[this_data.length-1];
+                            var last_point = this_data[this_data.length - 1];
                             var legend_text = legend_group.append('svg:text')
                                 .attr('x', args.scalefns.xf(last_point))
                                 .attr('dx', args.buffer)
@@ -2675,17 +2675,15 @@ MG.button_layout = function(target) {
                                 .attr('font-weight', '300')
                                 .text(this_legend);
 
-                            if (args.colors && args.colors.constructor === Array){
-                                if (args.colors.length < i+1){
+                            if (args.colors && args.colors.constructor === Array) {
+                                if (args.colors.length < i + 1) {
                                     legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
                                 } else {
                                     legend_text.attr('fill', args.colors[i]);    
                                 }
-                                
                             } else {
                                 legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
                             }
-                            
 
                             preventVerticalOverlap(legend_group.selectAll('.mg-line-legend text')[0], args);
                         }
@@ -2744,13 +2742,13 @@ MG.button_layout = function(target) {
 
             if (args.colors && args.colors.constructor === Array) {
                 circle
-                    .attr('class', function(d){
+                    .attr('class', function(d) {
                         return 'mg-line' + d.line_id;
                     })
-                    .attr('fill', function(d,i){
+                    .attr('fill', function(d,i) {
                         return args.colors[i];
                     })
-                    .attr('stroke', function(d,i){
+                    .attr('stroke', function(d,i) {
                         return args.colors[i];
                     })
             } else {
@@ -2894,7 +2892,7 @@ MG.button_layout = function(target) {
                                     var lc = 'mg-line' + d.line_id;
                                     if (args.colors === null) lc += ' mg-line' + datum.line_id + '-color';
                                     return lc;
-                                }).join(" ");
+                                }).join(' ');
                                 if (args.linked && d.values.length > 0) {
                                     var formatter = MG.time_format(args.utc_time, args.linked_format);
 
@@ -3152,7 +3150,7 @@ MG.button_layout = function(target) {
                                     })
                                     .text('\u2014 ') // mdash
                                     .classed('mg-hover-line' + datum.line_id +'-color', args.colors === null)
-                                    .attr('fill', args.colors === null ? '' : args.colors[datum.line_id-1])
+                                    .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
                                     .style('font-weight', 'bold');
 
                                 lineCount++;
@@ -3179,7 +3177,7 @@ MG.button_layout = function(target) {
                                       y: (lineCount * lineHeight) + 'em'
                                     })
                                     .text('\u2014 ') // mdash
-                                    .classed('mg-hover-line' + datum.line_id +'-color', true)
+                                    .classed('mg-hover-line' + datum.line_id + '-color', true)
                                     .style('font-weight', 'bold');
 
                                 lineCount++;
@@ -4500,6 +4498,13 @@ MG.data_table = function(args) {
                 .attr('text-anchor', 'middle')
                 .text(args.missing_text);
 
+            this.windowListeners();
+
+            return this;
+        };
+
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
             return this;
         };
 
@@ -4587,13 +4592,14 @@ function raw_data_transformation(args) {
     }
 
     // if user supplies keyword in args.color, change to arg.colors. 
-    // This is so that the API remains fairly sensible and legible.
-    if (args.color !== undefined){
+    // this is so that the API remains fairly sensible and legible.
+    if (args.color !== undefined) {
         args.colors = args.color;
     }
+
     // if user has supplied args.colors, and that value is a string, turn it into an array.
-    if (args.colors !== null && typeof args.colors === 'string'){
-            args.colors = [args.colors];
+    if (args.colors !== null && typeof args.colors === 'string') {
+        args.colors = [args.colors];
     }
     //sort x-axis data
     if (args.chart_type === 'line' && args.x_sort === true) {
