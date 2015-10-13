@@ -75,6 +75,7 @@ MG.data_graphic = function(args) {
         scalefns: {},
         scales: {},
         utc_time: false,
+        european_clock: false,
         show_year_markers: false,
         show_secondary_x_label: true,
         target: '#viz',

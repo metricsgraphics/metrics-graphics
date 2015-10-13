@@ -37,7 +37,7 @@ function init(args) {
     }
 
     args.time_series = is_time_series();
-
+    
     var svg_width = args.width;
     var svg_height = args.height;
 

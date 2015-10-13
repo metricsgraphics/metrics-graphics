@@ -159,6 +159,7 @@ MG.data_graphic = function(args) {
         scalefns: {},
         scales: {},
         utc_time: false,
+        european_clock: false,
         show_year_markers: false,
         show_secondary_x_label: true,
         target: '#viz',
@@ -1531,6 +1532,7 @@ function mg_default_bar_xax_format(args) {
 
 function mg_get_time_frame(diff){
     // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
+    var time_frame;
     if (diff < 10) {
         time_frame = 'millis'
     } else if (diff < 60) {
@@ -1566,7 +1568,6 @@ function mg_default_xax_format(args) {
     }
     var data = args.processed.original_data || args.data;
     var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor]
-
     return function(d) {
         var diff;
         var main_time_format;
@@ -1574,7 +1575,6 @@ function mg_default_xax_format(args) {
 
         if (args.time_series) {
             diff = (args.processed.max_x - args.processed.min_x) / 1000;
-
             time_frame = mg_get_time_frame(diff);
             main_time_format = mg_get_time_format(args.utc_time, diff);
         }
@@ -1664,28 +1664,41 @@ function mg_add_x_tick_labels(g, args) {
         ticks[0] = args.processed.min_x;
     }
 
-    g.selectAll('.mg-xax-labels')
+    var labels = g.selectAll('.mg-xax-labels')
         .data(ticks).enter()
             .append('text')
                 .attr('x', function(d) { return args.scales.X(d).toFixed(2); })
                 .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
                 .attr('dy', '.50em')
-                .attr('text-anchor', 'middle')
-                .text(function(d) {
-                    return args.xax_units + args.processed.xax_format(d);
-                });
+                .attr('text-anchor', 'middle');
+
+    if (args.time_series && args.european_clock){
+        labels.append('tspan').classed('mg-european-hours', true).text(function(_d,i){
+            var d = new Date(_d);
+            if (i === 0) return d3.time.format('%H')(d);
+            else return ''
+        });
+        labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d,i){
+            var d = new Date(_d);
+            return ":" + args.processed.xax_format(d);
+        });
+    } else {
+        labels.text(function(d) {
+            return args.xax_units + args.processed.xax_format(d);
+        });
+    }
 
     if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
         var secondary_marks,
             secondary_function, yformat;
 
         var time_frame = args.processed.x_time_frame;
-
         switch(time_frame) {
             case 'millis':
             case 'seconds':
                 secondary_function = d3.time.days;
-                yformat = MG.time_format(args.utc_time, '%I %p');
+                if (args.european_clock) yformat = MG.time_format(args.utc_time, '%b %d');
+                else yformat = MG.time_format(args.utc_time, '%I %p');
                 break;
             case 'less-than-a-day':
                 secondary_function = d3.time.days;
@@ -1733,7 +1746,6 @@ function mg_add_x_tick_labels(g, args) {
                         if (args.xax_start_at_min && i == 0) {
                             d = ticks[0];
                         }
-
                         return args.scales.X(d).toFixed(2);
                     })
                     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))
@@ -1742,6 +1754,8 @@ function mg_add_x_tick_labels(g, args) {
                     .text(function(d) {
                         return yformat(new Date(d));
                     });
+    } else {
+
     }
 }
 
@@ -1827,7 +1841,7 @@ function mg_select_xax_format(args) {
               args.processed.xax_format = mg_default_xax_format(args);
           } else if (c === 'bar') {
               args.processed.xax_format = mg_default_bar_xax_format(args);
-          }
+          } 
         }
     }
 }
@@ -1871,7 +1885,7 @@ function init(args) {
     }
 
     args.time_series = is_time_series();
-
+    
     var svg_width = args.width;
     var svg_height = args.height;
 
@@ -4500,6 +4514,13 @@ MG.data_table = function(args) {
                 .attr('text-anchor', 'middle')
                 .text(args.missing_text);
 
+            this.windowListeners();
+
+            return this;
+        };
+
+        this.windowListeners = function() {
+            mg_window_listeners(this.args);
             return this;
         };
 

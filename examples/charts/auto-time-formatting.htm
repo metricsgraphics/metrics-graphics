@@ -79,6 +79,30 @@ MG.data_graphic({
                 </div>
             </div>
 
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='european'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                
+                <pre><code class='javascript'>MG.data_graphic({
+    title: "European Clock",
+    description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
+    data: data1,
+    target: '#european',
+    european_clock: true,
+    width: 600,
+    height: 200,
+    right: 40
+});
+                </code></pre>
+
+                </div>
+            </div>
+
 <script>
 MG._hooks = {};
 function fake_data(length, seconds) {
@@ -111,6 +135,18 @@ var data1 = fake_data(25, 1);
 var data2 = fake_data(25,60 * 20);
 var data3 = fake_data(75,60 * 60);
 var data4 = fake_days(25);
+
+
+MG.data_graphic({
+    title: "European Clock", 
+    description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
+    data: data1,
+    target: '#european',
+    european_clock: true,
+    width: 600,
+    height: 200,
+    right: 40
+});
 
 MG.data_graphic({
     title: "Less Than A Minute",
