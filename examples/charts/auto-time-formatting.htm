@@ -35,14 +35,14 @@ function fake_days(length) {
     return data;
 }
 
-var data1 = fake_data(25, 1);
-var data2 = fake_data(25,60 * 20);
-var data3 = fake_data(75,60 * 60);
-var data4 = fake_days(25);
+var less_than_a_minute = fake_data(25, 1);
+var less_than_a_day = fake_data(25,60 * 20);
+var a_few_days = fake_data(75,60 * 60);
+var many_days = fake_days(25);
 
 MG.data_graphic({
     title: "Less Than A Minute",
-    data: data1,
+    data: less_than_a_minute,
     target: '#time1',
     width: 600,
     height: 200,
@@ -51,7 +51,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "Less Than A Day",
-    data: data2,
+    data: less_than_a_day,
     target: '#time2',
     width: 600,
     height: 200,
@@ -60,7 +60,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "A Few Days",
-    data: data3,
+    data: a_few_days,
     target: '#time3',
     width: 600,
     height: 200,
@@ -69,7 +69,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "Over A Large Span of Days",
-    data: data4,
+    data: many_days,
     target: '#time4',
     width: 600,
     height: 200,
@@ -91,7 +91,7 @@ MG.data_graphic({
                 <pre><code class='javascript'>MG.data_graphic({
     title: "European Clock",
     description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
-    data: data1,
+    data: less_than_a_minute,
     target: '#european',
     european_clock: true,
     width: 600,
@@ -131,16 +131,16 @@ function fake_days(length) {
     return data;
 }
 
-var data1 = fake_data(25, 1);
-var data2 = fake_data(25,60 * 20);
-var data3 = fake_data(75,60 * 60);
-var data4 = fake_days(25);
+var less_than_a_minute = fake_data(25, 1);
+var less_than_a_day = fake_data(25,60 * 20);
+var a_few_days = fake_data(75,60 * 60);
+var many_days = fake_days(25);
 
 
 MG.data_graphic({
     title: "European Clock", 
     description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
-    data: data1,
+    data: less_than_a_minute,
     target: '#european',
     european_clock: true,
     width: 600,
@@ -150,7 +150,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "Less Than A Minute",
-    data: data1,
+    data: less_than_a_minute,
     target: '#time1',
     width: 600,
     height: 200,
@@ -159,7 +159,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "Less Than A Day",
-    data: data2,
+    data: less_than_a_day,
     target: '#time2',
     width: 600,
     height: 200,
@@ -168,7 +168,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "A Few Days",
-    data: data3,
+    data: a_few_days,
     target: '#time3',
     width: 600,
     height: 200,
@@ -177,7 +177,7 @@ MG.data_graphic({
 
 MG.data_graphic({
     title: "Over A Large Span of Days",
-    data: data4,
+    data: many_days,
     target: '#time4',
     width: 600,
     height: 200,
