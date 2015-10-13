@@ -11,6 +11,11 @@ function init(args) {
 
     args = arguments[0];
     if (!args) { args = {}; }
+
+    if (!args.processed) {
+        args.processed = {};
+    }
+
     args = merge_with_defaults(args, defaults);
     if (d3.select(args.target).empty()) {
         console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
@@ -25,13 +30,13 @@ function init(args) {
 
     //do we have a time_series?
 
-    function is_time_series(args) {
+    function is_time_series() {
         var flat_data = [];
-        var first_elem = mg_flatten_array(args.data)[0];
-        return first_elem[args.x_accessor] instanceof Date;
+        var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
+        return first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
     }
 
-    args.time_series = is_time_series(args);
+    args.time_series = is_time_series();
 
     var svg_width = args.width;
     var svg_height = args.height;
