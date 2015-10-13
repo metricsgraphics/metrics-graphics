@@ -3204,18 +3204,25 @@ MG.button_layout = function(target) {
                             .attr('y', (lineCount * lineHeight) + 'em')
                             .text('\u00A0');
                     } else {
+                        // y rollover element.
                         if (args.time_series) {
+                            textContainer.select('*').remove();
+
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
 
                             textContainer.append('tspan')
-                                .text(fmt(dd) + '  ' + args.yax_units
-                                    + num(d[args.y_accessor]));
+                                .classed('mg-x-rollover-text', true)
+                                .text(fmt(dd) + '  ');
+                            textContainer.append('tspan')
+                                .classed('mg-y-rollover-text', true)
+                                .text(args.yax_units + num(d[args.y_accessor]));
                         }
                         else {
                             textContainer.append('tspan')
-                                .text(args.x_accessor + ': ' + d[args.x_accessor]
-                                    + ', ' + args.y_accessor + ': ' + args.yax_units
+                                .text(args.x_accessor + ': ' + d[args.x_accessor] + ', ');
+                            textContainer.append('tspan')
+                                .text(args.y_accessor + ': ' + args.yax_units
                                     + num(d[args.y_accessor]));
                         }
                     }
