@@ -1531,7 +1531,9 @@ function mg_default_bar_xax_format(args) {
 
 function mg_get_time_frame(diff){
     // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
-    if (diff < 60) {
+    if (diff < 10) {
+        time_frame = 'millis'
+    } else if (diff < 60) {
         time_frame = 'seconds';
     } else if (diff / (60 * 60) <= 24) {
         time_frame = 'less-than-a-day';
@@ -1544,7 +1546,9 @@ function mg_get_time_frame(diff){
 }
 
 function mg_get_time_format(utc, diff){
-    if (diff < 60) {
+    if (diff < 10) {
+        main_time_format = MG.time_format(utc, '%M:%S.%L');
+    } else if (diff < 60) {
         main_time_format = MG.time_format(utc, '%M:%S');
     } else if (diff / (60 * 60) <= 24) {
         main_time_format = MG.time_format(utc, '%H:%M');
@@ -1678,6 +1682,7 @@ function mg_add_x_tick_labels(g, args) {
         var time_frame = args.processed.x_time_frame;
 
         switch(time_frame) {
+            case 'millis':
             case 'seconds':
                 secondary_function = d3.time.days;
                 yformat = MG.time_format(args.utc_time, '%I %p');
@@ -3019,6 +3024,9 @@ MG.button_layout = function(target) {
             var svg = mg_get_svg_child_of(args.target);
             var fmt;
             switch(args.processed.x_time_frame) {
+                case 'millis':
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+                    break;
                 case 'seconds':
                     fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
                     break;
@@ -3418,7 +3426,6 @@ MG.button_layout = function(target) {
 
         this.rolloverOn = function(args) {
             var svg = mg_get_svg_child_of(args.target);
-            var x_formatter = MG.time_format(args.utc_time, '%Y-%m-%d');
 
             return function(d, i) {
                 svg.selectAll('text')
@@ -3427,7 +3434,7 @@ MG.button_layout = function(target) {
                     })
                     .attr('opacity', 0.3);
 
-                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+                var fmt = args.processed.xax_format || MG.time_format(args.utc_time, '%b %e, %Y');
                 var num = format_rollover_number(args);
 
                 svg.selectAll('.mg-bar rect')

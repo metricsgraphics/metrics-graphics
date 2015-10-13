@@ -608,6 +608,9 @@
             var svg = mg_get_svg_child_of(args.target);
             var fmt;
             switch(args.processed.x_time_frame) {
+                case 'millis':
+                    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+                    break;
                 case 'seconds':
                     fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
                     break;
