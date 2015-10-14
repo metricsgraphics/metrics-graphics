@@ -2038,13 +2038,18 @@ function markers(args) {
                 .attr('y2', function() {
                     return args.height - args.bottom - args.buffer;
                 })
+                .attr('class', function (d) {
+                    return d.lineclass;
+                })
                 .attr('stroke-dasharray', '3,1');
 
         gm.selectAll('.mg-markers')
             .data(args.markers.filter(inRange))
             .enter()
             .append('text')
-                .attr('class', 'mg-marker-text')
+                .attr('class', function (d) {
+                    return d.textclass ? 'mg-marker-text ' + d.textclass : 'mg-marker-text';
+                })
                 .attr('x', xPosition)
                 .attr('y', args.top - 8)
                 .attr('text-anchor', 'middle')
