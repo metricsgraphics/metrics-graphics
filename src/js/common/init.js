@@ -17,12 +17,14 @@ function init(args) {
     }
 
     args = merge_with_defaults(args, defaults);
-    if (d3.select(args.target).empty()) {
+    var container = d3.select(args.target);
+
+
+    if (container.empty()) {
         console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
         return;
     }
 
-    var container = d3.select(args.target);
     var svg = container.selectAll('svg');
 
     //this is how we're dealing with passing in a single array of data,
