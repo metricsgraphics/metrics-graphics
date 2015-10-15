@@ -737,7 +737,6 @@
                         }
                         return fd;
                     }
-
              
                     if (args.y_rollover_format != null) {
                         if (args.aggregate_rollover) formatted_y = '';
