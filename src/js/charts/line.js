@@ -780,7 +780,7 @@
                         var time_rollover_format = function(f,d,args,accessor){
                             var fd;
                             if (typeof f === 'string'){
-                                fd = d3.format(f)(d[accessor]);
+                                fd = MG.time_format(args.utc, f)(d[accessor]);
                             } else if (typeof f === 'function') {
                                 fd = f(d);
                             } else {
@@ -793,7 +793,7 @@
                             var fd;
                             if (typeof f === 'string'){
                                 //fd = d3.format(f)(d[accessor]);
-                                fd = MG.time_format(args.utc, f)(d[accessor]);
+                                fd = d3.format(f)(d[accessor]);
                             } else if (typeof f === 'function') {
                                 fd = f(d);
                             } else {
@@ -802,23 +802,31 @@
                             return fd;
                         }
 
-                        // y rollover element.
+                 
+                        
+                        if (args.y_rollover_format != null){
+                            formatted_y = number_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
+                        } else {
+                            if (args.time_series) formatted_y = args.yax_units + num(d[args.y_accessor]);
+                            else                  formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+                        }
+                        
+                        if (args.x_rollover_format != null){
+                            if (args.time_series) formatted_x = time_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
+                            else                  formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
+                        } else {
+                            if (args.time_series) {
+                                var dd = new Date(+d[args.x_accessor]);
+                                dd.setDate(dd.getDate());
+                                formatted_x  = fmt(dd) + '  ';
+                            } else {
+                                formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+                            }
+                        }
+
                         if (args.time_series) {
                             textContainer.select('*').remove();
 
-                            var dd = new Date(+d[args.x_accessor]);
-                            dd.setDate(dd.getDate());
-                            // this is for the default y.
-                            if (args.y_rollover_format != null){
-                                formatted_y = time_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
-                            } else {
-                                formatted_y = args.yax_units + num(d[args.y_accessor]);
-                            }
-                            if (args.x_rollover_format != null){
-                                formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
-                            } else {
-                                formatted_x = fmt(dd) + '  ';
-                            }
                             textContainer.append('tspan')
                                 .classed('mg-x-rollover-text', true)
                                 .text(formatted_x);
@@ -827,16 +835,7 @@
                                 .text(formatted_y);
                         }
                         else {
-                            if (args.y_rollover_format != null){
-                                formatted_y = number_rollover_format(args.y_rollover_format, d, args, args.y_accessor)
-                            } else {
-                                formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
-                            }
-                            if (args.x_rollover_format != null){
-                                formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
-                            } else {
-                                formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
-                            }
+
                             textContainer.append('tspan')
                                 .text(formatted_x);
                             textContainer.append('tspan')
