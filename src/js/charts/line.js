@@ -220,7 +220,7 @@
 
                         if (args.animate_on_load) {
                             data_median = d3.median(args.data[i], mapToY);
-                            this.path.attr('d', flat_line(args.data[i]))
+                            this_path.attr('d', flat_line(args.data[i]))
                                 .transition()
                                     .duration(1000)
                                     .attr('d', line(args.data[i]))
