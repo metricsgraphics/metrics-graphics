@@ -379,14 +379,14 @@ function mg_add_x_ticks(g, args) {
             .attr('x1', function() {
                 if (args.xax_count === 0) {
                     return args.left + args.buffer;
-                } else if (args.xax_not_compact && args.chart_type !== 'bar') {
+                } else if (args.axes_not_compact && args.chart_type !== 'bar') {
                     return args.left;
                 } else {
                     return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2);
                 }
             })
             .attr('x2', function() {
-                if (args.xax_count === 0 || (args.xax_not_compact && args.chart_type !== 'bar')) {
+                if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
                     return args.width - args.right - args.buffer;
                 } else {
                     return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);

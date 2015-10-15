@@ -252,7 +252,7 @@ function y_axis(args) {
     if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
         var y1scale, y2scale;
 
-        if (args.xax_not_compact && args.chart_type !== 'bar') {
+        if (args.axes_not_compact && args.chart_type !== 'bar') {
             y1scale = args.height - args.bottom;
             y2scale = args.top;
         } else if (tick_length) {
