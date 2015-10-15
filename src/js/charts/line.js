@@ -776,23 +776,28 @@
                     } else {
 
                         var formatted_x, formatted_y;
-                        function y_rollover_format(f,d,args,accessor){
+
+                        var y_rollover_format = function(f,d,args,accessor){
                             var fd;
                             if (typeof f === 'string'){
                                 fd = d3.format(f)(d[accessor]);
-                            } else {
+                            } else if (typeof f === 'function') {
                                 fd = f(d);
+                            } else {
+                                fd = d[accessor];
                             }
                             return fd;
                         }
 
-                        function x_rollover_format(f, d, args, accessor){
+                        var x_rollover_format = function(f, d, args, accessor){
                             var fd;
                             if (typeof f === 'string'){
                                 //fd = d3.format(f)(d[accessor]);
                                 fd = MG.time_format(args.utc, f)(d[accessor]);
-                            } else {
+                            } else if (typeof f === 'function') {
                                 fd = f(d);
+                            } else {
+                                fd = d[accessor];
                             }
                             return fd;
                         }
@@ -804,12 +809,12 @@
                             var dd = new Date(+d[args.x_accessor]);
                             dd.setDate(dd.getDate());
                             // this is for the default y.
-                            if (args.y_rollover_format){
+                            if (args.y_rollover_format != null){
                                 formatted_y = y_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
                             } else {
                                 formatted_y = args.yax_units + num(d[args.y_accessor]);
                             }
-                            if (args.x_rollover_format){
+                            if (args.x_rollover_format != null){
                                 formatted_x = x_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
                             } else {
                                 formatted_x = fmt(dd) + '  ';
