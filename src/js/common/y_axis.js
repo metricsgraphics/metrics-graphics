@@ -110,11 +110,18 @@ function y_axis(args) {
     }
 
     //if a min_y or max_y has been set, use those instead
-    min_y = args.min_y !== null ? args.min_y : min_y;
-    max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
+    min_y = (args.min_y !== null)
+        ? args.min_y
+        : min_y;
+
+    max_y = (args.max_y !== null)
+        ? args.max_y
+        : (max_y < 0)
+            ? max_y + (max_y - max_y * args.inflator)
+            : max_y * args.inflator;
 
     if (args.y_scale_type !== 'log' && min_y < 0) {
-        min_y = min_y  - (max_y * (args.inflator - 1));
+        min_y = min_y  - (min_y - min_y * args.inflator);
     }
 
     if (!args.min_y && args.min_y_from_data) {

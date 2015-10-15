@@ -87,7 +87,7 @@ MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
     rollout_callback: { replacement: 'mouseout', version: '2.0' },
     show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
-    xax_start_at_min: { replacement: 'xax_not_compact', version: '2.7' }
+    xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' }
 };
 MG.globals.link = false;
 MG.globals.version = "1.1";
@@ -118,7 +118,7 @@ MG.data_graphic = function(args) {
         small_text: false,                     // coerces small text regardless of graphic size
         xax_count: 6,                          // number of x axis ticks
         xax_tick_length: 5,                    // x axis tick length
-        xax_not_compact: true,
+        axes_not_compact: true,
         yax_count: 5,                          // number of y axis ticks
         yax_tick_length: 5,                    // y axis tick length
         x_extended_ticks: false,               // extends x axis ticks across chart - useful for tall charts
@@ -994,11 +994,18 @@ function y_axis(args) {
     }
 
     //if a min_y or max_y has been set, use those instead
-    min_y = args.min_y !== null ? args.min_y : min_y;
-    max_y = args.max_y !== null ? args.max_y : max_y * args.inflator;
+    min_y = (args.min_y !== null)
+        ? args.min_y
+        : min_y;
+
+    max_y = (args.max_y !== null)
+        ? args.max_y
+        : (max_y < 0)
+            ? max_y + (max_y - max_y * args.inflator)
+            : max_y * args.inflator;
 
     if (args.y_scale_type !== 'log' && min_y < 0) {
-        min_y = min_y  - (max_y * (args.inflator - 1));
+        min_y = min_y  - (min_y - min_y * args.inflator);
     }
 
     if (!args.min_y && args.min_y_from_data) {
@@ -1136,7 +1143,7 @@ function y_axis(args) {
     if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
         var y1scale, y2scale;
 
-        if (args.xax_not_compact && args.chart_type !== 'bar') {
+        if (args.axes_not_compact && args.chart_type !== 'bar') {
             y1scale = args.height - args.bottom;
             y2scale = args.top;
         } else if (tick_length) {
@@ -1620,14 +1627,14 @@ function mg_add_x_ticks(g, args) {
             .attr('x1', function() {
                 if (args.xax_count === 0) {
                     return args.left + args.buffer;
-                } else if (args.xax_not_compact && args.chart_type !== 'bar') {
+                } else if (args.axes_not_compact && args.chart_type !== 'bar') {
                     return args.left;
                 } else {
                     return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2);
                 }
             })
             .attr('x2', function() {
-                if (args.xax_count === 0 || (args.xax_not_compact && args.chart_type !== 'bar')) {
+                if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
                     return args.width - args.right - args.buffer;
                 } else {
                     return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
