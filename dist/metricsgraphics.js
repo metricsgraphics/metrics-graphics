@@ -2657,7 +2657,7 @@ MG.button_layout = function(target) {
 
                         if (args.animate_on_load) {
                             data_median = d3.median(args.data[i], mapToY);
-                            this.path.attr('d', flat_line(args.data[i]))
+                            this_path.attr('d', flat_line(args.data[i]))
                                 .transition()
                                     .duration(1000)
                                     .attr('d', line(args.data[i]))
@@ -3214,7 +3214,7 @@ MG.button_layout = function(target) {
 
                         var formatted_x, formatted_y;
 
-                        var y_rollover_format = function(f,d,args,accessor){
+                        var time_rollover_format = function(f,d,args,accessor){
                             var fd;
                             if (typeof f === 'string'){
                                 fd = d3.format(f)(d[accessor]);
@@ -3226,7 +3226,7 @@ MG.button_layout = function(target) {
                             return fd;
                         }
 
-                        var x_rollover_format = function(f, d, args, accessor){
+                        var number_rollover_format = function(f, d, args, accessor){
                             var fd;
                             if (typeof f === 'string'){
                                 //fd = d3.format(f)(d[accessor]);
@@ -3247,12 +3247,12 @@ MG.button_layout = function(target) {
                             dd.setDate(dd.getDate());
                             // this is for the default y.
                             if (args.y_rollover_format != null){
-                                formatted_y = y_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
+                                formatted_y = time_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
                             } else {
                                 formatted_y = args.yax_units + num(d[args.y_accessor]);
                             }
                             if (args.x_rollover_format != null){
-                                formatted_x = x_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
+                                formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
                             } else {
                                 formatted_x = fmt(dd) + '  ';
                             }
@@ -3264,11 +3264,20 @@ MG.button_layout = function(target) {
                                 .text(formatted_y);
                         }
                         else {
+                            if (args.y_rollover_format != null){
+                                formatted_y = number_rollover_format(args.y_rollover_format, d, args, args.y_accessor)
+                            } else {
+                                formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+                            }
+                            if (args.x_rollover_format != null){
+                                formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
+                            } else {
+                                formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+                            }
                             textContainer.append('tspan')
-                                .text(args.x_accessor + ': ' + d[args.x_accessor] + ', ');
+                                .text(formatted_x);
                             textContainer.append('tspan')
-                                .text(args.y_accessor + ': ' + args.yax_units
-                                    + num(d[args.y_accessor]));
+                                .text(formatted_y);
                         }
                     }
                 }
