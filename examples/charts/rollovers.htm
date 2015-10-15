@@ -119,10 +119,10 @@ d3.json('data/some_percentage.json', function(data) {
             </div>
 
 
-            <div class='row trunk-section'>
-                <div class='col-lg-7 text-center' id='y-formatting'></div>
-                <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='formatting-with-strings'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
 
 <pre><code class='javascript'>
 d3.json('data/float.json', function(data) {
@@ -145,8 +145,39 @@ d3.json('data/float.json', function(data) {
 })
 </code></pre>
 
-                </div>
-            </div>
+    </div>
+</div>
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='formatting-with-functions'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>
+d3.json('data/float.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Rollover Formatting With Functions",
+        description: "You can also pass in a function, whose arguments are the data point and the index.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_rollover_format: function(d){
+            return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
+        },
+        x_rollover_format: function(d){
+            var today = new Date()
+            return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
+        },
+        target: '#formatting-with-functions'
+    });
+})
+</code></pre>
+
+    </div>
+</div>
 
 
 <script>
@@ -155,7 +186,7 @@ d3.json('data/float.json', function(data) {
     data = MG.convert.date(data, 'date');
 
      MG.data_graphic({
-        title: "Rollover Formatting With Strings",
+        title: "Updating Rollover Accessor Formatting With Strings",
         description: "Metrics Graphics comes with two arguments: y_rollover_format and x_rollover_format. These arguments take either strings or functions. Strings are formatted according to D3's number format, or D3's time formatting, if the accessor pulls out Date objects.",
         data: data,
         width: 600,
@@ -163,7 +194,24 @@ d3.json('data/float.json', function(data) {
         right: 40,
         y_rollover_format: '%d',
         x_rollover_format: '%e of %b? Well, ',
-        target: '#y-formatting'
+        target: '#formatting-with-strings'
+    });
+
+    MG.data_graphic({
+        title: "Updating Rollover Accessor Formatting With Functions",
+        description: "You can also pass in a function, whose arguments are the data point and the index.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_rollover_format: function(d){
+            return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
+        },
+        x_rollover_format: function(d){
+            var today = new Date()
+            return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
+        },
+        target: '#formatting-with-functions'
     });
 
     MG.data_graphic({
