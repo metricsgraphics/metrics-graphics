@@ -86,7 +86,8 @@ MG.globals = {};
 MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
     rollout_callback: { replacement: 'mouseout', version: '2.0' },
-    show_years: { replacement: 'show_secondary_x_label', version: '2.1' }
+    show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
+    xax_start_at_min: { replacement: 'xax_not_compact', version: '2.7' }
 };
 MG.globals.link = false;
 MG.globals.version = "1.1";
@@ -117,7 +118,7 @@ MG.data_graphic = function(args) {
         small_text: false,                     // coerces small text regardless of graphic size
         xax_count: 6,                          // number of x axis ticks
         xax_tick_length: 5,                    // x axis tick length
-        xax_start_at_min: false,
+        xax_not_compact: true,
         yax_count: 5,                          // number of y axis ticks
         yax_tick_length: 5,                    // y axis tick length
         x_extended_ticks: false,               // extends x axis ticks across chart - useful for tall charts
@@ -1134,7 +1135,11 @@ function y_axis(args) {
     var tick_length = scale_ticks.length;
     if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
         var y1scale, y2scale;
-        if (tick_length) {
+
+        if (args.xax_not_compact && args.chart_type !== 'bar') {
+            y1scale = args.height - args.bottom;
+            y2scale = args.top;
+        } else if (tick_length) {
             y1scale = args.scales.Y(scale_ticks[0]).toFixed(2);
             y2scale = args.scales.Y(scale_ticks[tick_length - 1]).toFixed(2);
         } else {
@@ -1609,33 +1614,25 @@ function mg_add_x_ticks(g, args) {
     var last_i = args.scales.X.ticks(args.xax_count).length - 1;
     var ticks = args.scales.X.ticks(args.xax_count);
 
-    //force min to be the first tick rather than the first element in ticks
-    if(args.xax_start_at_min) {
-        ticks[0] = args.processed.min_x;
-    }
-
     if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
         //draw x-axis line
         g.append('line')
             .attr('x1', function() {
-                //start the axis line from the beginning, domain's min, or the auto-generated
-                //ticks' first element, depending on whether xax_count is set to 0 or
-                //xax_start_at_min is set to true
                 if (args.xax_count === 0) {
                     return args.left + args.buffer;
-                }
-                else if (args.xax_start_at_min) {
-                    return args.scales.X(args.processed.min_x).toFixed(2)
-                }
-                else {
+                } else if (args.xax_not_compact && args.chart_type !== 'bar') {
+                    return args.left;
+                } else {
                     return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2);
                 }
             })
-            .attr('x2',
-                (args.xax_count === 0)
-                    ? args.width - args.right - args.buffer
-                    : (args.scales.X(args.scales.X.ticks(args.xax_count)[last_i])).toFixed(2)
-            )
+            .attr('x2', function() {
+                if (args.xax_count === 0 || (args.xax_not_compact && args.chart_type !== 'bar')) {
+                    return args.width - args.right - args.buffer;
+                } else {
+                    return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
+                }
+            })
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
@@ -1660,11 +1657,6 @@ function mg_add_x_ticks(g, args) {
 
 function mg_add_x_tick_labels(g, args) {
     var ticks = args.scales.X.ticks(args.xax_count);
-
-    //force min to be the first tick rather than the first element in ticks
-    if(args.xax_start_at_min) {
-        ticks[0] = args.processed.min_x;
-    }
 
     var labels = g.selectAll('.mg-xax-labels')
         .data(ticks).enter()
@@ -1717,11 +1709,7 @@ function mg_add_x_tick_labels(g, args) {
 
         var years = secondary_function(args.processed.min_x, args.processed.max_x);
 
-        //if xax_start_at_min is set
-        if (args.xax_start_at_min && years.length === 0) {
-            var first_tick = ticks[0];
-            years = [first_tick];
-        } else if (years.length === 0) {
+        if (years.length === 0) {
             var first_tick = args.scales.X.ticks(args.xax_count)[0];
             years = [first_tick];
         }
@@ -1745,9 +1733,6 @@ function mg_add_x_tick_labels(g, args) {
             .data(years).enter()
                 .append('text')
                     .attr('x', function(d, i) {
-                        if (args.xax_start_at_min && i == 0) {
-                            d = ticks[0];
-                        }
                         return args.scales.X(d).toFixed(2);
                     })
                     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))

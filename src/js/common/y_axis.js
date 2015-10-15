@@ -251,7 +251,11 @@ function y_axis(args) {
     var tick_length = scale_ticks.length;
     if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
         var y1scale, y2scale;
-        if (tick_length) {
+
+        if (args.xax_not_compact && args.chart_type !== 'bar') {
+            y1scale = args.height - args.bottom;
+            y2scale = args.top;
+        } else if (tick_length) {
             y1scale = args.scales.Y(scale_ticks[0]).toFixed(2);
             y2scale = args.scales.Y(scale_ticks[tick_length - 1]).toFixed(2);
         } else {
