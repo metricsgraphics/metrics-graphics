@@ -3132,22 +3132,86 @@ MG.button_layout = function(target) {
 
                     textContainer.select('*').remove();
 
+                    var formatted_x, formatted_y;
+
+                    var time_rollover_format = function(f, d, accessor, utc){
+                        var fd;
+                        if (typeof f === 'string'){
+                            fd = MG.time_format(utc, f)(d[accessor]);
+                        } else if (typeof f === 'function') {
+                            fd = f(d);
+                        } else {
+                            fd = d[accessor];
+                        }
+                        return fd;
+                    }
+
+                    var number_rollover_format = function(f, d, accessor){
+                        var fd;
+                        if (typeof f === 'string'){
+                            //fd = d3.format(f)(d[accessor]);
+                            fd = d3.format(f)(d[accessor]);
+                        } else if (typeof f === 'function') {
+                            fd = f(d);
+                        } else {
+                            fd = d[accessor];
+                        }
+                        return fd;
+                    }
+
+             
+                    if (args.y_rollover_format != null){
+                        if (args.aggregate_rollover) formatted_y = '';
+                        else formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+                    } else {
+                        if (args.time_series) {
+                            if (args.aggregate_rollover) formatted_y = ''
+                            else formatted_y = args.yax_units + num(d[args.y_accessor]);
+                        }
+                        else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+                    }
+
+                    if (args.x_rollover_format != null){
+                        if (args.time_series) {
+                            if (args.aggregate_rollover) formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
+                            else                         formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+                        }
+                        else                  formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
+                    } else {
+                        if (args.time_series) {
+
+                            if (args.aggregate_rollover && args.data.length > 1){
+                                var date = new Date(d.key);
+                            } else {
+                                var date = new Date(+d[args.x_accessor]);
+                                date.setDate(date.getDate());    
+                            }
+                            formatted_x  = (fmt(date) + '  ' + args.yax_units);
+                        } else {
+                            formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+                        }
+                    }
+
                     if (args.aggregate_rollover && args.data.length > 1) {
                         if (args.time_series) {
-                            var date = new Date(d.key);
-
+                            //var date = new Date(d.key);
                             textContainer.append('tspan')
-                                .text((fmt(date) + '  ' + args.yax_units).trim());
+                                .text(formatted_x.trim());
 
                             lineCount = 1;
+                            
+                            var fy;
 
                             d.values.forEach(function(datum) {
+                                if (args.y_rollover_format != null) formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+                                else formatted_y = num(datum[args.y_accessor]);
+
                                 var label = textContainer.append('tspan')
                                     .attr({
                                       x: 0,
                                       y: (lineCount * lineHeight) + 'em'
                                     })
-                                    .text(num(datum[args.y_accessor]));
+                                    .text(formatted_y);
 
                                 textContainer.append('tspan')
                                     .attr({
@@ -3168,14 +3232,15 @@ MG.button_layout = function(target) {
                                 .text('\u00A0');
                         } else {
                             d.values.forEach(function(datum) {
+                                if (args.y_rollover_format != null) formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+                                else formatted_y = args.yax_units + num(datum[args.y_accessor]);
+
                                 var label = textContainer.append('tspan')
                                     .attr({
                                       x: 0,
                                       y: (lineCount * lineHeight) + 'em'
                                     })
-                                    .text(args.x_accessor + ': ' + datum[args.x_accessor]
-                                        + ', ' + args.y_accessor + ': ' + args.yax_units
-                                        + num(datum[args.y_accessor]));
+                                    .text(formatted_x + ' ' + formatted_y);
 
                                 textContainer.append('tspan')
                                     .attr({
@@ -3196,55 +3261,6 @@ MG.button_layout = function(target) {
                             .attr('y', (lineCount * lineHeight) + 'em')
                             .text('\u00A0');
                     } else {
-
-                        var formatted_x, formatted_y;
-
-                        var time_rollover_format = function(f,d,args,accessor){
-                            var fd;
-                            if (typeof f === 'string'){
-                                fd = MG.time_format(args.utc, f)(d[accessor]);
-                            } else if (typeof f === 'function') {
-                                fd = f(d);
-                            } else {
-                                fd = d[accessor];
-                            }
-                            return fd;
-                        }
-
-                        var number_rollover_format = function(f, d, args, accessor){
-                            var fd;
-                            if (typeof f === 'string'){
-                                //fd = d3.format(f)(d[accessor]);
-                                fd = d3.format(f)(d[accessor]);
-                            } else if (typeof f === 'function') {
-                                fd = f(d);
-                            } else {
-                                fd = d[accessor];
-                            }
-                            return fd;
-                        }
-
-                 
-                        
-                        if (args.y_rollover_format != null){
-                            formatted_y = number_rollover_format(args.y_rollover_format, d, args, args.y_accessor);
-                        } else {
-                            if (args.time_series) formatted_y = args.yax_units + num(d[args.y_accessor]);
-                            else                  formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
-                        }
-                        
-                        if (args.x_rollover_format != null){
-                            if (args.time_series) formatted_x = time_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
-                            else                  formatted_x = number_rollover_format(args.x_rollover_format, d, args, args.x_accessor);
-                        } else {
-                            if (args.time_series) {
-                                var dd = new Date(+d[args.x_accessor]);
-                                dd.setDate(dd.getDate());
-                                formatted_x  = fmt(dd) + '  ';
-                            } else {
-                                formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
-                            }
-                        }
 
                         if (args.time_series) {
                             textContainer.select('*').remove();
