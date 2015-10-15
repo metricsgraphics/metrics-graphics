@@ -56,6 +56,8 @@ MG.data_graphic = function(args) {
         yax_units: '',
         x_rug: false,
         y_rug: false,
+        x_rollover_format: null,               //
+        y_rollover_format: null,               //
         transition_on_update: true,
         mouseover: null,
         show_rollover_text: true,
