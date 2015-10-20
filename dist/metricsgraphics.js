@@ -2076,7 +2076,7 @@ function markers(args) {
                     return d.textclass ? 'mg-marker-text ' + d.textclass : 'mg-marker-text';
                 })
                 .attr('x', xPosition)
-                .attr('y', args.top - 8)
+                .attr('y', args.top * 0.9)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;
@@ -2767,7 +2767,7 @@ MG.button_layout = function(target) {
             //rollover text
             svg.append('g')
                 .attr('class', 'mg-active-datapoint-container')
-                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.9) + ')')
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.75) + ')')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
                     .classed('mg-active-datapoint-small', args.use_small_class)
@@ -3203,7 +3203,7 @@ MG.button_layout = function(target) {
                         else formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
                     } else {
                         if (args.time_series) {
-                            if (args.aggregate_rollover) formatted_y = ''
+                            if (args.aggregate_rollover) formatted_y = '';
                             else formatted_y = args.yax_units + num(d[args.y_accessor]);
                         }
                         else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
@@ -3224,7 +3224,7 @@ MG.button_layout = function(target) {
                                 var date = new Date(+d[args.x_accessor]);
                                 date.setDate(date.getDate());    
                             }
-                            formatted_x  = (fmt(date) + '  ' + args.yax_units);
+                            formatted_x  = (fmt(date) + '  ');
                         } else {
                             formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
                         }
@@ -3302,7 +3302,6 @@ MG.button_layout = function(target) {
 
                         if (args.time_series) {
                             textContainer.select('*').remove();
-
                             textContainer.append('tspan')
                                 .classed('mg-x-rollover-text', true)
                                 .text(formatted_x);
@@ -3487,7 +3486,7 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.75)
                 .attr('text-anchor', 'end');
 
             var g = svg.append('g')
@@ -3730,7 +3729,7 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.75)
                 .attr('text-anchor', 'end');
 
             //add rollover paths
@@ -4141,7 +4140,7 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.75)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end');
 
