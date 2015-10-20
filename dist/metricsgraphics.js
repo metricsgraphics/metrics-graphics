@@ -967,17 +967,23 @@ function y_axis(args) {
     var svg = mg_get_svg_child_of(args.target);
 
     var g;
-
-    var min_y,
-        max_y;
+    var min_y;
+    var max_y;
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
     };
 
-    var _set = false,
-        gtZeroFilter = function(d) { return d[args.y_accessor] > 0; },
-        mapToY = function(d) { return d[args.y_accessor]; };
+    var _set = false;
+
+    var gtZeroFilter = function(d) {
+        return d[args.y_accessor] > 0;
+    };
+
+    var mapToY = function(d) {
+        return d[args.y_accessor];
+    };
+
     for (var i = 0; i < args.data.length; i++) {
         var a = args.data[i];
 
@@ -1079,6 +1085,12 @@ function y_axis(args) {
     var yax_format = args.yax_format;
     if (!yax_format) {
         if (args.format === 'count') {
+            if (max_y < 0.0001) {
+                args.decimals = 6;
+            } else if (max_y < 0.1) {
+                args.decimals = 4;
+            }
+
             yax_format = function(f) {
                 if (f < 1.0) {
                     // Don't scale tiny values.
