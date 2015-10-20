@@ -170,6 +170,10 @@ pre, code, text-area {
     font-family: "Menlo", monospace;
 }
 
+svg {
+    margin-top: 30px;
+}
+
 #table1 .chart_title {
     margin-left: 0;
 }

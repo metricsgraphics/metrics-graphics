@@ -13,7 +13,8 @@ test('Chart title is updated', function() {
 
     MG.data_graphic(params);
     MG.data_graphic(params2);
-    equal(document.querySelector('.mg-chart-title').innerText, 'bar', 'Chart title is foo');
+
+    equal(document.querySelector('.mg-chart-title').textContent, 'bar', 'Chart title is foo');
 });
 
 test('Chart title is removed if title is set to blank', function() {
@@ -59,7 +60,7 @@ test('When a description is set, we get a question mark', function() {
     };
 
     MG.data_graphic(params);
-    ok(document.querySelector('.mg-chart-title .description'), 'Description icon exists');
+    ok(document.querySelector('.mg-chart-description'), 'Description icon exists');
 });
 
 test('When an error is set, we get an exclamation icon', function() {

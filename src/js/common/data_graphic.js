@@ -20,7 +20,7 @@ MG.data_graphic = function(args) {
         legend_target: '',                     // if set, the specified element is populated with a legend
         error: '',                             // if set, a graph will show an error icon and log the error to the console
         animate_on_load: false,                // animate lines on load
-        top: 40,                               // the size of the top margin
+        top: 60,                               // the size of the top margin
         bottom: 30,                            // the size of the bottom margin
         right: 10,                             // size of the right margin
         left: 50,                              // size of the left margin

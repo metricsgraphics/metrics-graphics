@@ -61,40 +61,31 @@
     font-size: 0.6rem;
 }
 
-.mg-chart-title .popover {
-    font-size: 0.95rem;
-}
-
-.mg-chart-title .popover-content {
-    cursor: auto;
-    line-height: 17px;
-}
-
-.mg-chart-title .popover.top,
-.mg-data-table .popover.top {
-    margin-top: 0;
-}
-
-.mg-chart-title {
+.mg-header {
     cursor: default;
-    font-size: 1.8rem;
-    padding-top: 8px;
-    text-align: center;
-}
-
-.mg-chart-title .fa {
-    color: #ccc;
     font-size: 1.2rem;
-    padding-left: 4px;
-    vertical-align: top;
 }
 
-.mg-chart-title .fa.warning {
-    font-weight: 300;
+.mg-header .mg-chart-description {
+    fill: #ccc;
+    font-size: 1.8rem;
 }
 
 .mg-points circle {
     opacity: 0.85;
+}
+
+.mg-popover {
+    font-size: 0.95rem;
+}
+
+.mg-popover-content {
+    cursor: auto;
+    line-height: 17px;
+}
+
+.mg-popover.top {
+    margin-top: 0;
 }
 
 .mg-data-table {
