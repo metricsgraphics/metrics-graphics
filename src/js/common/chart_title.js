@@ -10,20 +10,21 @@ function chart_title(args) {
         var chartTitle = svg.insert('text')
             .attr('class', 'mg-header')
             .attr('x', (args.width + args.left - args.right) / 2)
-            .attr('y', 10)
+            .attr('y', args.title_y_position)
             .attr('text-anchor', 'middle')
             .attr('dy', '0.55em');
 
+        //show the title
         chartTitle.append('tspan')
             .attr('class', 'mg-chart-title')
             .text(args.title);
 
-        //show and activate the question mark if we have a description
+        //show and activate the description icon if we have a description
         if (args.show_tooltips && args.description) {
             chartTitle.append('tspan')
                 .attr('class', 'mg-chart-description')
-                .attr('dx', '0.1em')
-                .text('⊛');
+                .attr('dx', '0.3em')
+                .text('\uf059');
 
             //now that the title is an svg text element, we'll have to trigger
             //mouseenter, mouseleave events manually for the popover to work properly
@@ -31,8 +32,8 @@ function chart_title(args) {
             $chartTitle.popover({
                 html: true,
                 animation: false,
-                content: args.description,
                 placement: 'top',
+                content: args.description,
                 container: args.target,
                 trigger: 'manual',
                 template: '<div class="popover mg-popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'

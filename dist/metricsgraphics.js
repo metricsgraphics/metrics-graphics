@@ -99,12 +99,13 @@ MG.data_graphic = function(args) {
     var defaults = {
         missing_is_zero: false,                // if true, missing values will be treated as zeros
         missing_is_hidden: false,              // if true, missing values will appear as broken segments
-        missing_is_hidden_accessor: null, // the accessor that determines the boolean value for missing data points
+        missing_is_hidden_accessor: null,      // the accessor that determines the boolean value for missing data points
         legend: '' ,                           // an array identifying the labels for a chart's lines
         legend_target: '',                     // if set, the specified element is populated with a legend
         error: '',                             // if set, a graph will show an error icon and log the error to the console
         animate_on_load: false,                // animate lines on load
-        top: 60,                               // the size of the top margin
+        top: 65,                               // the size of the top margin
+        title_y_position: 10,                  // how many pixels from the top edge (0) should we show the title at
         bottom: 30,                            // the size of the bottom margin
         right: 10,                             // size of the right margin
         left: 50,                              // size of the left margin
@@ -863,20 +864,21 @@ function chart_title(args) {
         var chartTitle = svg.insert('text')
             .attr('class', 'mg-header')
             .attr('x', (args.width + args.left - args.right) / 2)
-            .attr('y', 10)
+            .attr('y', args.title_y_position)
             .attr('text-anchor', 'middle')
             .attr('dy', '0.55em');
 
+        //show the title
         chartTitle.append('tspan')
             .attr('class', 'mg-chart-title')
             .text(args.title);
 
-        //show and activate the question mark if we have a description
+        //show and activate the description icon if we have a description
         if (args.show_tooltips && args.description) {
             chartTitle.append('tspan')
                 .attr('class', 'mg-chart-description')
-                .attr('dx', '0.1em')
-                .text('⊛');
+                .attr('dx', '0.3em')
+                .text('\uf059');
 
             //now that the title is an svg text element, we'll have to trigger
             //mouseenter, mouseleave events manually for the popover to work properly
@@ -884,8 +886,8 @@ function chart_title(args) {
             $chartTitle.popover({
                 html: true,
                 animation: false,
-                content: args.description,
                 placement: 'top',
+                content: args.description,
                 container: args.target,
                 trigger: 'manual',
                 template: '<div class="popover mg-popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -1278,17 +1280,13 @@ MG.y_axis_categorical = y_axis_categorical;
 
 function x_rug(args) {
     'use strict';
+
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer;
-    var svg = mg_get_svg_child_of(args.target);
 
+    var svg = mg_get_svg_child_of(args.target);
     var all_data = mg_flatten_array(args.data)
-    // for (var i=0; i<args.data.length; i++) {
-    //     for (var j=0; j<args.data[i].length; j++) {
-    //         all_data.push(args.data[i][j]);
-    //     }
-    // }
 
     var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
@@ -1306,8 +1304,8 @@ function x_rug(args) {
 
     rug.attr('x1', args.scalefns.xf)
         .attr('x2', args.scalefns.xf)
-        .attr('y1', args.height-args.top+buffer_size)
-        .attr('y2', args.height-args.top);
+        .attr('y1', args.height - args.bottom - buffer_size)
+        .attr('y2', args.height - args.bottom);
 
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
@@ -1322,6 +1320,7 @@ MG.x_rug = x_rug;
 
 function x_axis(args) {
     'use strict';
+    
     var svg = mg_get_svg_child_of(args.target);
     var g;
     var min_x;
@@ -2768,7 +2767,7 @@ MG.button_layout = function(target) {
             //rollover text
             svg.append('g')
                 .attr('class', 'mg-active-datapoint-container')
-                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top / 2) + ')')
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.9) + ')')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
                     .classed('mg-active-datapoint-small', args.use_small_class)
@@ -2832,7 +2831,7 @@ MG.button_layout = function(target) {
                 var voronoi = d3.geom.voronoi()
                     .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
                     .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
-                    .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+                    .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
                 g = svg.append('g')
                     .attr('class', 'mg-voronoi');
@@ -3488,7 +3487,7 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('text-anchor', 'end');
 
             var g = svg.append('g')
@@ -3511,7 +3510,7 @@ MG.button_layout = function(target) {
 
             bar.append('rect')
                 .attr('x', 1)
-                .attr('y', 0)
+                .attr('y', args.buffer + args.title_y_position)
                 .attr('width', function(d, i) {
                     //if data set is of length 1
                     if (args.data[0].length === 1) {
@@ -3731,14 +3730,14 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('text-anchor', 'end');
 
             //add rollover paths
             var voronoi = d3.geom.voronoi()
                 .x(args.scalefns.xf)
                 .y(args.scalefns.yf)
-                .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+                .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
             var paths = svg.append('g')
                 .attr('class', 'mg-voronoi');
@@ -4142,7 +4141,7 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end');
 
@@ -4268,8 +4267,8 @@ MG.button_layout = function(target) {
         padding_percentage: 0,
         outer_padding_percentage: 0.1,
         height: 500,
-        top: 20,
         bar_height: 20,
+        top: 45,
         left: 70,
         truncate_x_labels: true,
         truncate_y_labels: true,

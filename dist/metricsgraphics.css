@@ -68,7 +68,8 @@
 
 .mg-header .mg-chart-description {
     fill: #ccc;
-    font-size: 1.8rem;
+    font-family: FontAwesome;
+    font-size: 1.2rem;
 }
 
 .mg-points circle {
@@ -82,10 +83,6 @@
 .mg-popover-content {
     cursor: auto;
     line-height: 17px;
-}
-
-.mg-popover.top {
-    margin-top: 0;
 }
 
 .mg-data-table {

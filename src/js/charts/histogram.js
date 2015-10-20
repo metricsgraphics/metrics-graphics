@@ -80,7 +80,7 @@
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('text-anchor', 'end');
 
             var g = svg.append('g')
@@ -103,7 +103,7 @@
 
             bar.append('rect')
                 .attr('x', 1)
-                .attr('y', 0)
+                .attr('y', args.buffer + args.title_y_position)
                 .attr('width', function(d, i) {
                     //if data set is of length 1
                     if (args.data[0].length === 1) {

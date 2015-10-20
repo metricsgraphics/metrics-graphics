@@ -307,7 +307,7 @@
             //rollover text
             svg.append('g')
                 .attr('class', 'mg-active-datapoint-container')
-                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top / 2) + ')')
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.9) + ')')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
                     .classed('mg-active-datapoint-small', args.use_small_class)
@@ -371,7 +371,7 @@
                 var voronoi = d3.geom.voronoi()
                     .x(function(d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
                     .y(function(d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
-                    .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+                    .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
                 g = svg.append('g')
                     .attr('class', 'mg-voronoi');

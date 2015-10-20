@@ -249,7 +249,7 @@
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'end');
 
@@ -375,8 +375,8 @@
         padding_percentage: 0,
         outer_padding_percentage: 0.1,
         height: 500,
-        top: 20,
         bar_height: 20,
+        top: 45,
         left: 70,
         truncate_x_labels: true,
         truncate_y_labels: true,

@@ -1,16 +1,12 @@
 function x_rug(args) {
     'use strict';
+
     var buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer;
-    var svg = mg_get_svg_child_of(args.target);
 
+    var svg = mg_get_svg_child_of(args.target);
     var all_data = mg_flatten_array(args.data)
-    // for (var i=0; i<args.data.length; i++) {
-    //     for (var j=0; j<args.data[i].length; j++) {
-    //         all_data.push(args.data[i][j]);
-    //     }
-    // }
 
     var rug = svg.selectAll('line.mg-x-rug').data(all_data);
 
@@ -28,8 +24,8 @@ function x_rug(args) {
 
     rug.attr('x1', args.scalefns.xf)
         .attr('x2', args.scalefns.xf)
-        .attr('y1', args.height-args.top+buffer_size)
-        .attr('y2', args.height-args.top);
+        .attr('y1', args.height - args.bottom - buffer_size)
+        .attr('y2', args.height - args.bottom);
 
     if (args.color_accessor) {
         rug.attr('stroke', args.scalefns.color);
@@ -44,6 +40,7 @@ MG.x_rug = x_rug;
 
 function x_axis(args) {
     'use strict';
+    
     var svg = mg_get_svg_child_of(args.target);
     var g;
     var min_x;

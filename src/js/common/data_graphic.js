@@ -15,12 +15,13 @@ MG.data_graphic = function(args) {
     var defaults = {
         missing_is_zero: false,                // if true, missing values will be treated as zeros
         missing_is_hidden: false,              // if true, missing values will appear as broken segments
-        missing_is_hidden_accessor: null, // the accessor that determines the boolean value for missing data points
+        missing_is_hidden_accessor: null,      // the accessor that determines the boolean value for missing data points
         legend: '' ,                           // an array identifying the labels for a chart's lines
         legend_target: '',                     // if set, the specified element is populated with a legend
         error: '',                             // if set, a graph will show an error icon and log the error to the console
         animate_on_load: false,                // animate lines on load
         top: 65,                               // the size of the top margin
+        title_y_position: 10,                  // how many pixels from the top edge (0) should we show the title at
         bottom: 30,                            // the size of the bottom margin
         right: 10,                             // size of the right margin
         left: 50,                              // size of the left margin

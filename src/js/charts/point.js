@@ -78,14 +78,14 @@
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top / 2)
+                .attr('y', args.top * 0.9)
                 .attr('text-anchor', 'end');
 
             //add rollover paths
             var voronoi = d3.geom.voronoi()
                 .x(args.scalefns.xf)
                 .y(args.scalefns.yf)
-                .clipExtent([[args.buffer, args.buffer], [args.width - args.buffer, args.height - args.buffer]]);
+                .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
             var paths = svg.append('g')
                 .attr('class', 'mg-voronoi');
