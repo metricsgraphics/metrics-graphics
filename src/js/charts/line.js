@@ -307,7 +307,7 @@
             //rollover text
             svg.append('g')
                 .attr('class', 'mg-active-datapoint-container')
-                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.9) + ')')
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.75) + ')')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
                     .classed('mg-active-datapoint-small', args.use_small_class)

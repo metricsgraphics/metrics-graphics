@@ -78,7 +78,7 @@
                 .attr('class', 'mg-active-datapoint')
                 .attr('xml:space', 'preserve')
                 .attr('x', args.width - args.right)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.75)
                 .attr('text-anchor', 'end');
 
             //add rollover paths
