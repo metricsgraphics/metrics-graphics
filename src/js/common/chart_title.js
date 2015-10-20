@@ -1,32 +1,53 @@
 function chart_title(args) {
     'use strict';
 
-    var container = d3.select(args.target);
+    var svg = mg_get_svg_child_of(args.target);
 
-    // remove the current title if it exists
-    container.select('.mg-chart-title').remove();
+    //remove the current title if it exists
+    svg.select('.mg-header').remove();
 
     if (args.target && args.title) {
-        //only show question mark if there's a description
-        var optional_question_mark = (args.show_tooltips && args.description)
-            ? '<i class="fa fa-question-circle fa-inverse description"></i>'
-            : '';
+        var chartTitle = svg.insert('text')
+            .attr('class', 'mg-header')
+            .attr('x', (args.width + args.left - args.right) / 2)
+            .attr('y', 10)
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.55em');
 
-        container.insert('h2', ':first-child')
+        chartTitle.append('tspan')
             .attr('class', 'mg-chart-title')
-            .html(args.title + optional_question_mark);
+            .text(args.title);
 
-        //activate the question mark if we have a description
+        //show and activate the question mark if we have a description
         if (args.show_tooltips && args.description) {
-            var $newTitle = $(container.node()).find('h2.mg-chart-title');
+            chartTitle.append('tspan')
+                .attr('class', 'mg-chart-description')
+                .attr('dx', '0.1em')
+                .text('⊛');
 
-            $newTitle.popover({
+            //now that the title is an svg text element, we'll have to trigger
+            //mouseenter, mouseleave events manually for the popover to work properly
+            var $chartTitle = $(chartTitle.node());
+            $chartTitle.popover({
                 html: true,
                 animation: false,
                 content: args.description,
-                trigger: 'hover',
                 placement: 'top',
-                container: $newTitle
+                container: args.target,
+                trigger: 'manual',
+                template: '<div class="popover mg-popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            }).on('mouseenter', function() {
+                $(this).popover('show');
+                $(args.target).select('.popover')
+                    .on('mouseleave', function () {
+                        $chartTitle.popover('hide');
+                    });
+            }).on('mouseleave', function () {
+                setTimeout(function () {
+                    if (!$('.popover:hover').length) {
+                        $chartTitle.popover('hide');
+                    }
+                }, 120);
             });
         }
     }
