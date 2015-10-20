@@ -743,7 +743,7 @@
                         else formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
                     } else {
                         if (args.time_series) {
-                            if (args.aggregate_rollover) formatted_y = ''
+                            if (args.aggregate_rollover) formatted_y = '';
                             else formatted_y = args.yax_units + num(d[args.y_accessor]);
                         }
                         else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
@@ -764,7 +764,7 @@
                                 var date = new Date(+d[args.x_accessor]);
                                 date.setDate(date.getDate());    
                             }
-                            formatted_x  = (fmt(date) + '  ' + args.yax_units);
+                            formatted_x  = (fmt(date) + '  ');
                         } else {
                             formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
                         }
@@ -842,7 +842,6 @@
 
                         if (args.time_series) {
                             textContainer.select('*').remove();
-
                             textContainer.append('tspan')
                                 .classed('mg-x-rollover-text', true)
                                 .text(formatted_x);

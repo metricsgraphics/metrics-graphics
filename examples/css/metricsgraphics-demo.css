@@ -192,11 +192,14 @@ pre, code, text-area {
     font-size: 1.2rem;
 }
 
+
+
 #trunk h2.trunk-title {
     font-size: 2.2rem;
     font-weight: 300;
     text-transform: uppercase;
 }
+
 
 .trunk-section {
     border-top: 1px solid #ccc;
