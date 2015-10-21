@@ -170,6 +170,10 @@ li {
     fill: #e8e8e8;
 }
 
+.mg-chart-title {
+    fill: #cfcfcf;
+}
+
 .mg-main-area-solid svg .mg-main-area {
     fill: #52491f;
 }

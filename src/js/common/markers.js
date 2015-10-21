@@ -37,7 +37,7 @@ function markers(args) {
                     return d.textclass ? 'mg-marker-text ' + d.textclass : 'mg-marker-text';
                 })
                 .attr('x', xPosition)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.95)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;

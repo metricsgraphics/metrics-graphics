@@ -1085,6 +1085,7 @@ function y_axis(args) {
     var yax_format = args.yax_format;
     if (!yax_format) {
         if (args.format === 'count') {
+            //increase decimals if we have small values, useful for realtime data
             if (max_y < 0.0001) {
                 args.decimals = 6;
             } else if (max_y < 0.1) {
@@ -2088,7 +2089,7 @@ function markers(args) {
                     return d.textclass ? 'mg-marker-text ' + d.textclass : 'mg-marker-text';
                 })
                 .attr('x', xPosition)
-                .attr('y', args.top * 0.9)
+                .attr('y', args.top * 0.95)
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;
