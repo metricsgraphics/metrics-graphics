@@ -52,8 +52,8 @@
 
 .mg-baselines text {
     fill: black;
-    font-size: 0.7rem;
-    opacity: 0.5;
+    font-size: 0.9rem;
+    opacity: 0.6;
     stroke: none;
 }
 
@@ -235,7 +235,7 @@
 }
 
 .mg-markers line {
-    opacity: 0.9;
+    opacity: 1;
     shape-rendering: auto;
     stroke: #b3b2b2;
     stroke-width: 1px;
@@ -243,9 +243,8 @@
 
 .mg-markers text {
     fill: black;
-    font-size: 0.7rem;
-    opacity: 0.5;
-    stroke: none;
+    font-size: 0.9rem;
+    opacity: 0.6;
 }
 
 .mg-missing-text {
@@ -326,7 +325,7 @@ circle.mg-points-mono {
 .mg-histogram .axis text {
     fill: black;
     font-size: 0.9rem;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .mg-x-axis .label,
@@ -354,7 +353,7 @@ circle.mg-points-mono {
 .mg-year-marker text {
     fill: black;
     font-size: 0.7rem;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .mg-year-marker line {
