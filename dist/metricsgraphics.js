@@ -2094,6 +2094,15 @@ function markers(args) {
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;
+                })
+                .each(function(d) {
+                    if(d.click) {
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+                            .on('click', function(d) {
+                                d.click();
+                            });
+                    }
                 });
 
         preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
@@ -2623,7 +2632,7 @@ MG.button_layout = function(target) {
 
                         confidenceBand
                             .attr('d', confidence_area(args.data[i]))
-                            .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
+                            .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                     }
 
                     //add the area
@@ -2634,11 +2643,10 @@ MG.button_layout = function(target) {
                         if (!areas.empty()) {
                             svg.node().appendChild(areas.node());
 
-                            areas
-                                .transition()
-                                    .duration(updateTransitionDuration)
-                                    .attr('d', area(args.data[i]))
-                                    .attr('clip-path', 'url(#mg-plot-window-'+ mg_target_ref(args.target)+')');
+                            areas.transition()
+                                .duration(updateTransitionDuration)
+                                .attr('d', area(args.data[i]))
+                                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
                         } else { //otherwise, add the area
                             svg.append('path')
                             .classed('mg-main-area', true)
@@ -2655,11 +2663,9 @@ MG.button_layout = function(target) {
                     //add the line, if it already exists, transition the fine gentleman
                     var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
                     if (!existing_line.empty()) {
-                        //$(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
                         svg.node().appendChild(existing_line.node());
 
-                        var lineTransition = existing_line
-                            .transition()
+                        var lineTransition = existing_line.transition()
                             .duration(updateTransitionDuration);
 
                         if (!displayArea && args.transition_on_update) {

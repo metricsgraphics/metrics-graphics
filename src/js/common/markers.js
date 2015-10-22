@@ -41,6 +41,15 @@ function markers(args) {
                 .attr('text-anchor', 'middle')
                 .text(function(d) {
                     return d.label;
+                })
+                .each(function(d) {
+                    if(d.click) {
+                        d3.select(this)
+                            .style('cursor', 'pointer')
+                            .on('click', function(d) {
+                                d.click();
+                            });
+                    }
                 });
 
         preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
