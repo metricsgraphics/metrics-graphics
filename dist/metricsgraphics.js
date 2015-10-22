@@ -984,6 +984,7 @@ function y_axis(args) {
         return d[args.y_accessor];
     };
 
+    //get min_y and max_y from data
     for (var i = 0; i < args.data.length; i++) {
         var a = args.data[i];
 
@@ -992,7 +993,12 @@ function y_axis(args) {
             a = a.filter(gtZeroFilter);
         }
 
-        if (a.length > 0) { // get min/max in one pass
+        //get min/max in one pass, consider baselines to be part of data
+        if (a.length > 0) { 
+            if (args.baselines) {
+                a = a.concat(args.baselines);
+            }
+
             var extent = d3.extent(a, mapToY);
 
             if (!_set) {
@@ -1007,8 +1013,8 @@ function y_axis(args) {
         }
     }
 
-    // the default case is for the y-axis to start at 0, unless we explicitly want it
-    // to start at an arbitrary number or from the data's minimum value
+    //the default case is for the y-axis to start at 0, unless we explicitly want it
+    //to start at an arbitrary number or from the data's minimum value
     if (min_y >= 0 && !args.min_y && !args.min_y_from_data) {
         min_y = 0;
     }
