@@ -350,7 +350,7 @@ function mg_default_xax_format(args) {
 
         // format as date or not, of course user can pass in
         // a custom function if desired
-        if(test_point instanceof Date) {
+        if (test_point instanceof Date) {
             return args.processed.main_x_time_format(new Date(d));
         } else if (typeof test_point === 'number') {
             if (d < 1.0) {

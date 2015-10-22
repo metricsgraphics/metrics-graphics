@@ -59,7 +59,7 @@
             //if missing_is_zero is not set, then hide data points that fall in missing
             //data ranges or that have been explicitly identified as missing in the
             //data source
-            if(!args.missing_is_zero) {
+            if (!args.missing_is_zero) {
                 //a line is defined if the _missing attrib is not set to true
                 //and the y-accessor is not null
                 line = line.defined(function(d) {
@@ -453,7 +453,7 @@
                         .append('rect')
                             .attr('x', function(d, i) {
                                 //if data set is of length 1
-                                if(xf.length === 1) {
+                                if (xf.length === 1) {
                                     return args.left + args.buffer;
                                 } else if (i === 0) {
                                     return xf[i].toFixed(2);
@@ -464,7 +464,7 @@
                             .attr('y', args.top)
                             .attr('width', function(d, i) {
                                 //if data set is of length 1
-                                if(xf.length === 1) {
+                                if (xf.length === 1) {
                                     return args.width - args.right - args.buffer;
                                 } else if (i === 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
