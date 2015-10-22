@@ -31,7 +31,46 @@
 
                 </div>
             </div>
-            
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers-clickable'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var clicker = function() {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    };
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Click me",
+        'click': clicker
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Clickable Markers",
+        description: "You can assign arbitrary functions to markers' click events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-clickable'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center' id='baselines'></div>
                 <div class='col-lg-5'>
@@ -107,6 +146,31 @@ d3.json('data/some_percentage.json', function(data) {
         markers: markers,
         format: 'percentage',
         target: '#markers'
+    });
+
+    var clicker = function() {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    };
+
+    markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Click me",
+        'click': clicker
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Clickable Markers",
+        description: "You can assign arbitrary functions to markers' click events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-clickable'
     });
 });
 

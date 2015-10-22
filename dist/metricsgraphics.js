@@ -2099,9 +2099,7 @@ function markers(args) {
                     if(d.click) {
                         d3.select(this)
                             .style('cursor', 'pointer')
-                            .on('click', function(d) {
-                                d.click();
-                            });
+                            .on('click', d.click);
                     }
                 });
 
