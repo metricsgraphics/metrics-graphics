@@ -385,12 +385,13 @@
                     .rollup(function(v) { return v[0]; })
                     .entries(d3.merge(args.data.map(function(d) { return d; })))
                     .map(function(d) { return d.values; });
+
                 //add the voronoi rollovers
                 g.selectAll('path')
                     .data(voronoi(data_nested))
                     .enter()
                         .append('path')
-                            .filter(function(d) { return d !== undefined; })
+                            .filter(function(d) { return d !== undefined && d.length > 0; })
                             .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
                             .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
                             .attr('class', function(d) {

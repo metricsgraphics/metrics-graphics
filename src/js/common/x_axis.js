@@ -526,6 +526,7 @@ function mg_find_min_max_x(args) {
             return Math.max.apply(null, trio);
         });
     }
+
     //if data set is of length 1, expand the range so that we can build the x-axis
     if (min_x === max_x
             && !(args.min_x && args.max_x)

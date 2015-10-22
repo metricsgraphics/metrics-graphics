@@ -39,6 +39,7 @@ function raw_data_transformation(args) {
         }
     }
 
+    //if the y_accessor is an array, break it up and store the result in args.data
     if (args.y_accessor instanceof Array) {
         args.data = args.data.map(function(_d) {
             return args.y_accessor.map(function(ya) {

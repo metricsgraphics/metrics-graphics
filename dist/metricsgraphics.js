@@ -1819,6 +1819,7 @@ function mg_find_min_max_x(args) {
             return Math.max.apply(null, trio);
         });
     }
+
     //if data set is of length 1, expand the range so that we can build the x-axis
     if (min_x === max_x
             && !(args.min_x && args.max_x)
@@ -2858,12 +2859,13 @@ MG.button_layout = function(target) {
                     .rollup(function(v) { return v[0]; })
                     .entries(d3.merge(args.data.map(function(d) { return d; })))
                     .map(function(d) { return d.values; });
+
                 //add the voronoi rollovers
                 g.selectAll('path')
                     .data(voronoi(data_nested))
                     .enter()
                         .append('path')
-                            .filter(function(d) { return d !== undefined; })
+                            .filter(function(d) { return d !== undefined && d.length > 0; })
                             .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
                             .datum(function(d) { return d.point; }) //because of d3.nest, reassign d
                             .attr('class', function(d) {
@@ -4697,6 +4699,7 @@ function raw_data_transformation(args) {
         }
     }
 
+    //if the y_accessor is an array, break it up and store the result in args.data
     if (args.y_accessor instanceof Array) {
         args.data = args.data.map(function(_d) {
             return args.y_accessor.map(function(ya) {
