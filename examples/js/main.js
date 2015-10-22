@@ -54,6 +54,7 @@ var theme = 'light';
             $(this).toggleClass('active');
             $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
             $('#dark-code').attr({href : 'css/railscasts.css'});
+            $('#accessible').attr({href : ''});
 
             return false;
         });
@@ -77,6 +78,15 @@ var theme = 'light';
             $(this).toggleClass('active');
             $('#dark').attr({href : ''});
             $('#dark-code').attr({href : ''});
+            $('#accessible').attr({href : ''});
+
+            return false;
+        });
+
+        $('#accessible-css').on('click', function () {
+            $('.head ul li a.pill').removeClass('active');
+            $(this).toggleClass('active');
+            $('#accessible').attr({href : 'css/metricsgraphics-demo-accessible.css'});
 
             return false;
         });
