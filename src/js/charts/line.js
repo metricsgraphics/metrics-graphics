@@ -158,7 +158,7 @@
                     if (displayArea) {
                         //if area already exists, transition it
                         if (!areas.empty()) {
-                            svg.select('.mg-y-axis').node().parentNode.appendChild(areas.node());
+                            svg.node().appendChild(areas.node());
 
                             areas
                                 .transition()
@@ -182,7 +182,7 @@
                     var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
                     if (!existing_line.empty()) {
                         //$(svg.node()).find('.mg-y-axis').after($(existing_line.node()).detach());
-                        svg.select('.mg-y-axis').node().parentNode.appendChild(existing_line.node());
+                        svg.node().appendChild(existing_line.node());
 
                         var lineTransition = existing_line
                             .transition()
