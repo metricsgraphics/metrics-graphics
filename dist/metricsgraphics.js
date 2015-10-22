@@ -1790,14 +1790,13 @@ function mg_add_x_tick_labels(g, args) {
                     .attr('x', function(d, i) {
                         return args.scales.X(d).toFixed(2);
                     })
-                    .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 1.3).toFixed(2))
+                    .attr('y', (args.height - (args.bottom / 2) + args.xax_tick_length).toFixed(2))
                     .attr('dy', args.use_small_class ? -3 : 0)
                     .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'hanging')
                     .text(function(d) {
                         return yformat(new Date(d));
                     });
-    } else {
-
     }
 }
 
