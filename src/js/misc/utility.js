@@ -69,7 +69,7 @@ function preventHorizontalOverlap(labels, args) {
         if (isHorizontallyOverlapping(labels[i], labels)) {
             var node = d3.select(labels[i]);
             var newY = +node.attr('y');
-            if (newY + 8 == args.top) {
+            if (newY + 8 >= args.top) {
                 newY = args.top - 16;
             }
             node.attr('y', newY);
