@@ -20,10 +20,10 @@ function raw_data_transformation(args) {
     if (_is_nested_array) {
         args.nested_array_of_objects = args.data.map(function(d) {
             return is_array_of_objects_or_empty(d);
-        });                                                      // Case #2
+        });                                                           // Case #2
         args.nested_array_of_arrays = args.data.map(function(d) {
             return is_array_of_arrays(d);
-        })                                                       // Case #4
+        });                                                           // Case #4
     } else {
         args.array_of_objects = is_array_of_objects(args.data);       // Case #1
         args.array_of_arrays = is_array_of_arrays(args.data);         // Case #3
@@ -85,17 +85,13 @@ MG.raw_data_transformation = raw_data_transformation;
 
 function process_line(args) {
     'use strict';
-    var is_time_series;
+
     var time_frame;
 
     //do we have a time-series?
     var is_time_series = d3.sum(args.data.map(function(series) {
         return series.length > 0 && series[0][args.x_accessor] instanceof Date;
     })) > 0;
-
-    // var is_time_series = args.data[0][0][args.x_accessor] instanceof Date
-    //     ? true
-    //     : false;
 
     //force linear interpolation when missing_is_hidden is enabled
     if (args.missing_is_hidden) {
@@ -127,7 +123,7 @@ function process_line(args) {
 
             time_frame = mg_get_time_frame((upto-from)/1000);
 
-            if (time_frame == 'default' && args.missing_is_hidden_accessor == null) {
+            if (time_frame == 'default' && args.missing_is_hidden_accessor === null) {
                 for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
                     var o = {};
                     d.setHours(0, 0, 0, 0);
@@ -158,7 +154,7 @@ function process_line(args) {
                     //if the data point has, say, a 'missing' attribute set or if its
                     //y-value is null identify it internally as missing
                     else if (existing_o[args.missing_is_hidden_accessor]
-                            || existing_o[args.y_accessor] == null
+                            || existing_o[args.y_accessor] === null
                         ) {
                         existing_o['_missing'] = true;
                         processed_data.push(existing_o);
@@ -171,7 +167,7 @@ function process_line(args) {
             }
             else {
                 for (var j = 0; j < args.data[i].length; j += 1) {
-                    o = MG.clone(args.data[i][j]);
+                    var o = MG.clone(args.data[i][j]);
                     o['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
                     processed_data.push(o);
                 }
