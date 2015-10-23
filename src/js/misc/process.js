@@ -18,10 +18,10 @@ function raw_data_transformation(args) {
     args.nested_array_of_objects = false;
 
     if (_is_nested_array) {
-        args.nested_array_of_objects = args.data.map(function(d){
+        args.nested_array_of_objects = args.data.map(function(d) {
             return is_array_of_objects_or_empty(d);
         });                                                      // Case #2
-        args.nested_array_of_arrays = args.data.map(function(d){
+        args.nested_array_of_arrays = args.data.map(function(d) {
             return is_array_of_arrays(d);
         })                                                       // Case #4
     } else {

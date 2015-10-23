@@ -10,8 +10,7 @@ html {
 
 .mg-x-axis line,
 .mg-y-axis line {
-    opacity: 0.9;
-    stroke: black;
+    opacity: 1;
 }
 
 .mg-markers text,
@@ -23,6 +22,5 @@ html {
 .mg-markers line,
 .mg-year-marker line,
 .mg-baselines line {
-    opacity: 0.9;
-    stroke: black;
+    opacity: 1;
 }

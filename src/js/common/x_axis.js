@@ -293,7 +293,7 @@ function mg_default_bar_xax_format(args) {
     };
 }
 
-function mg_get_time_frame(diff){
+function mg_get_time_frame(diff) {
     // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
     var time_frame;
     if (diff < 10) {
@@ -310,7 +310,7 @@ function mg_get_time_frame(diff){
     return time_frame;
 }
 
-function mg_get_time_format(utc, diff){
+function mg_get_time_format(utc, diff) {
     if (diff < 10) {
         main_time_format = MG.time_format(utc, '%M:%S.%L');
     } else if (diff < 60) {
@@ -422,13 +422,13 @@ function mg_add_x_tick_labels(g, args) {
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle');
 
-    if (args.time_series && args.european_clock){
-        labels.append('tspan').classed('mg-european-hours', true).text(function(_d,i){
+    if (args.time_series && args.european_clock) {
+        labels.append('tspan').classed('mg-european-hours', true).text(function(_d,i) {
             var d = new Date(_d);
             if (i === 0) return d3.time.format('%H')(d);
             else return ''
         });
-        labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d,i){
+        labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d,i) {
             var d = new Date(_d);
             return ":" + args.processed.xax_format(d);
         });
@@ -491,10 +491,14 @@ function mg_add_x_tick_labels(g, args) {
                     .attr('x', function(d, i) {
                         return args.scales.X(d).toFixed(2);
                     })
-                    .attr('y', (args.height - (args.bottom / 2) + args.xax_tick_length).toFixed(2))
-                    .attr('dy', args.use_small_class ? -3 : 0)
+                    .attr('y', function() {
+                        var xAxisTextElement = d3.select(args.target)
+                            .select('.mg-x-axis text').node().getBoundingClientRect();
+
+                        return (args.height - args.bottom + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
+                    })
+                    .attr('dy', '.50em')
                     .attr('text-anchor', 'middle')
-                    .attr('dominant-baseline', 'hanging')
                     .text(function(d) {
                         return yformat(new Date(d));
                     });
