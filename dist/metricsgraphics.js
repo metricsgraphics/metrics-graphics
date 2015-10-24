@@ -892,6 +892,10 @@ function chart_title(args) {
                 trigger: 'manual',
                 template: '<div class="popover mg-popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
             }).on('mouseenter', function() {
+                d3.selectAll(args.target)
+                    .selectAll('.mg-popover')
+                    .remove();
+
                 $(this).popover('show');
                 $(args.target).select('.popover')
                     .on('mouseleave', function () {
@@ -3197,10 +3201,13 @@ MG.button_layout = function(target) {
                         lineCount = 0,
                         lineHeight = 1.1;
 
-                    textContainer.select('*').remove();
+                    textContainer
+                        .selectAll('*')
+                        .remove();
 
                     var formatted_x, formatted_y;
 
+                    //define our rollover format for time
                     var time_rollover_format = function(f, d, accessor, utc) {
                         var fd;
                         if (typeof f === 'string') {
@@ -3213,6 +3220,7 @@ MG.button_layout = function(target) {
                         return fd;
                     }
 
+                    //define our rollover format for numbers
                     var number_rollover_format = function(f, d, accessor) {
                         var fd;
                         if (typeof f === 'string') {
@@ -3224,52 +3232,66 @@ MG.button_layout = function(target) {
                         }
                         return fd;
                     }
-             
-                    if (args.y_rollover_format != null) {
-                        if (args.aggregate_rollover) formatted_y = '';
-                        else formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+
+                    //format the y-accessor value to show
+                    if (args.y_rollover_format !== null) {
+                        if (args.aggregate_rollover) {
+                            formatted_y = '';
+                        } else {
+                            formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+                        }
                     } else {
                         if (args.time_series) {
-                            if (args.aggregate_rollover) formatted_y = '';
-                            else formatted_y = args.yax_units + num(d[args.y_accessor]);
+                            if (args.aggregate_rollover) {
+                                formatted_y = '';
+                            } else {
+                                formatted_y = args.yax_units + num(d[args.y_accessor]);
+                            }
                         }
                         else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
                     }
 
-                    if (args.x_rollover_format != null) {
+                    //format the x-accessor value to show
+                    if (args.x_rollover_format !== null) {
                         if (args.time_series) {
-                            if (args.aggregate_rollover) formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
-                            else                         formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+                            if (args.aggregate_rollover) {
+                                formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
+                            } else {
+                                formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+                            }
+                        } else {
+                            formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
                         }
-                        else                  formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
                     } else {
                         if (args.time_series) {
-
                             if (args.aggregate_rollover && args.data.length > 1) {
                                 var date = new Date(d.key);
                             } else {
                                 var date = new Date(+d[args.x_accessor]);
                                 date.setDate(date.getDate());    
                             }
-                            formatted_x  = (fmt(date) + '  ');
+
+                            formatted_x  = fmt(date) + '  ';
                         } else {
                             formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
                         }
                     }
 
+                    //rollover text when aggregate_rollover is enabled
                     if (args.aggregate_rollover && args.data.length > 1) {
                         if (args.time_series) {
-                            //var date = new Date(d.key);
                             textContainer.append('tspan')
                                 .text(formatted_x.trim());
 
                             lineCount = 1;
-                            
                             var fy;
 
                             d.values.forEach(function(datum) {
-                                if (args.y_rollover_format != null) formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
-                                else formatted_y = num(datum[args.y_accessor]);
+                                if (args.y_rollover_format != null) {
+                                    formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+                                } else {
+                                    formatted_y = num(datum[args.y_accessor]);
+                                }
 
                                 var label = textContainer.append('tspan')
                                     .attr({
@@ -3297,8 +3319,11 @@ MG.button_layout = function(target) {
                                 .text('\u00A0');
                         } else {
                             d.values.forEach(function(datum) {
-                                if (args.y_rollover_format != null) formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
-                                else formatted_y = args.yax_units + num(datum[args.y_accessor]);
+                                if (args.y_rollover_format != null) {
+                                    formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+                                } else {
+                                    formatted_y = args.yax_units + num(datum[args.y_accessor]);
+                                }
 
                                 var label = textContainer.append('tspan')
                                     .attr({
@@ -3326,7 +3351,7 @@ MG.button_layout = function(target) {
                             .attr('y', (lineCount * lineHeight) + 'em')
                             .text('\u00A0');
                     } else {
-
+                        //rollover text when aggregate_rollover is not enabled
                         if (args.time_series) {
                             textContainer.select('*').remove();
                             textContainer.append('tspan')
@@ -3335,9 +3360,7 @@ MG.button_layout = function(target) {
                             textContainer.append('tspan')
                                 .classed('mg-y-rollover-text', true)
                                 .text(formatted_y);
-                        }
-                        else {
-
+                        } else {
                             textContainer.append('tspan')
                                 .text(formatted_x);
                             textContainer.append('tspan')

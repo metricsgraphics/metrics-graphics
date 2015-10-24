@@ -38,6 +38,10 @@ function chart_title(args) {
                 trigger: 'manual',
                 template: '<div class="popover mg-popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
             }).on('mouseenter', function() {
+                d3.selectAll(args.target)
+                    .selectAll('.mg-popover')
+                    .remove();
+
                 $(this).popover('show');
                 $(args.target).select('.popover')
                     .on('mouseleave', function () {
