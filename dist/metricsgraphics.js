@@ -2810,9 +2810,9 @@ MG.button_layout = function(target) {
                 var yPos;
                 svg.selectAll('.mg-marker-text')
                     .each(function() {
-                        if(!yPos) {
+                        if (!yPos) {
                             yPos = d3.select(this).attr('y');
-                        } else if(yPos !== d3.select(this).attr('y')) {
+                        } else if (yPos !== d3.select(this).attr('y')) {
                             activeDatapointYnudge = 0.56;
                         }
                     })
