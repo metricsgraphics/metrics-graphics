@@ -320,7 +320,7 @@
                         if(!yPos) {
                             yPos = d3.select(this).attr('y');
                         } else if(yPos !== d3.select(this).attr('y')) {
-                            activeDatapointYnudge = 0.60;
+                            activeDatapointYnudge = 0.56;
                         }
                     })
             }
