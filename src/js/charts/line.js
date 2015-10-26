@@ -302,14 +302,30 @@
             svg.selectAll('.mg-active-datapoint-container').remove();
 
             //rollover text
-            svg.append('g')
+            var activeDatapointContainer = svg.append('g')
                 .attr('class', 'mg-active-datapoint-container')
-                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * 0.75) + ')')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
                     .classed('mg-active-datapoint-small', args.use_small_class)
                     .attr('xml:space', 'preserve')
                     .attr('text-anchor', 'end');
+
+            //set the rollover text's position; if we have markers on two lines,
+            //nudge up the rollover text a bit
+            var activeDatapointYnudge = 0.75;
+            if(args.markers) {
+                var yPos;
+                svg.selectAll('.mg-marker-text')
+                    .each(function() {
+                        if(!yPos) {
+                            yPos = d3.select(this).attr('y');
+                        } else if(yPos !== d3.select(this).attr('y')) {
+                            activeDatapointYnudge = 0.60;
+                        }
+                    })
+            }
+            activeDatapointContainer
+                .attr('transform', 'translate(' + (args.width - args.right) + ',' + (args.top * activeDatapointYnudge) + ')')
 
             //append circle
             var circle = svg.selectAll('.mg-line-rollover-circle')
