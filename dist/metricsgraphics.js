@@ -3090,7 +3090,7 @@ MG.button_layout = function(target) {
                         j = args.custom_line_color_map[i];
                     }
 
-                    if (args.data[i].length == 1 
+                    if (args.data[i].length === 1 
                             && !svg.selectAll('.mg-voronoi .mg-line' + j).empty()
                         ) {
                         svg.selectAll('.mg-voronoi .mg-line' + j)
@@ -3101,9 +3101,12 @@ MG.button_layout = function(target) {
                     }
                 }
             } else if (args.data.length > 1 && args.aggregate_rollover) {
-                // trigger for the first line only, because values are aggregated
+                //if any of the series is of length 1, trigger for the first line
+                //since they're aggregated
                 var rect = svg.selectAll('.mg-rollover-rect rect');
-                rect.on('mouseover')(rect[0][0].__data__, 0);
+                if (args.data.filter(function(d) { return d.length === 1; }).length > 0) {
+                    rect.on('mouseover')(rect[0][0].__data__, 0);
+                }
             }
 
             MG.call_hook('line.after_rollover', args);
@@ -3139,23 +3142,23 @@ MG.button_layout = function(target) {
 
                     d.values.forEach(function(datum) {
 
-                      if (datum[args.x_accessor] >= args.processed.min_x &&
-                          datum[args.x_accessor] <= args.processed.max_x &&
-                          datum[args.y_accessor] >= args.processed.min_y &&
-                          datum[args.y_accessor] <= args.processed.max_y
-                      ) {
-                    var circle = svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
-                            .attr({
-                                'cx': function() {
-                                    return args.scales.X(datum[args.x_accessor]).toFixed(2);
-                                },
-                                'cy': function() {
-                                    return args.scales.Y(datum[args.y_accessor]).toFixed(2);
-                                },
-                                'r': args.point_size
-                            })
-                            .style('opacity', 1);
-                      }
+                        if (datum[args.x_accessor] >= args.processed.min_x &&
+                            datum[args.x_accessor] <= args.processed.max_x &&
+                            datum[args.y_accessor] >= args.processed.min_y &&
+                            datum[args.y_accessor] <= args.processed.max_y
+                        ) {
+                            var circle = svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
+                                .attr({
+                                    'cx': function() {
+                                        return args.scales.X(datum[args.x_accessor]).toFixed(2);
+                                    },
+                                    'cy': function() {
+                                        return args.scales.Y(datum[args.y_accessor]).toFixed(2);
+                                    },
+                                    'r': args.point_size
+                                })
+                                .style('opacity', 1);
+                        }
                     });
                 } else if ((args.missing_is_hidden && d['_missing'])
                         || d[args.y_accessor] == null
