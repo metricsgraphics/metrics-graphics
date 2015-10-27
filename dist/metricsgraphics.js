@@ -1920,7 +1920,7 @@ function mg_init_compute_width(args){
         // get parent element
         svg_width = get_width(args.target);
     }
-    args.width=svg_width;
+    args.width = svg_width;
 }
 
 function mg_init_compute_height(args){
@@ -2059,7 +2059,7 @@ function init(args) {
     mg_is_time_series(args);
     mg_init_compute_width(args);
     mg_init_compute_height(args);
-    
+
     mg_remove_svg_if_chart_type_has_changed(svg, args);
     svg = mg_add_svg_if_it_doesnt_exist(svg, args);
 

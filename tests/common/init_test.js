@@ -1,5 +1,40 @@
 module('init');
 
+test('MG properly detects time series vs. not.', function() {
+    var params1 = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-02'), 'value': 18}],
+        x_accessor:'date'
+    };
+
+    var params2 = {
+        target: '#qunit-fixture',
+        data: [{'date': 5434, 'value': 12},
+               {'date': 5435, 'value': 18}],
+        x_accessor:'date'
+    };
+
+    var params3 = {
+        target: '#qunit-fixture',
+        data: [[{'date': new Date('2014-11-01'), 'value': 12},
+               {'date': new Date('2014-11-02'), 'value': 18}],
+               [{'date': new Date('2014-11-01'), 'value': 32},
+               {'date': new Date('2014-11-02'), 'value': 43}]],
+        x_accessor:'date'
+    };
+    mg_merge_args_with_defaults(params1);
+    mg_merge_args_with_defaults(params2);
+    mg_merge_args_with_defaults(params3);
+    mg_is_time_series(params1);
+    mg_is_time_series(params2);
+    mg_is_time_series(params3);
+
+    ok(params1.time_series === true,  'Date-accessed data set is a time series.');
+    ok(params2.time_series === false, 'Number-accessed data set is not a time series.');
+    ok(params3.time_series === true,  'Nested data set w/ dates detected as time series.');
+});
+
 test('Chart\'s width is set correctly on subsequent calls to existing chart', function() {
     var params_0 = {
         target: '#qunit-fixture',
