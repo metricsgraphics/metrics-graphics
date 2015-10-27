@@ -68,8 +68,7 @@ function markers(args) {
 
     if (args.baselines) {
         gb = svg.append('g')
-            .attr('class', 'mg-baselines')
-            .classed('mg-baselines-small', args.use_small_class);
+            .attr('class', 'mg-baselines');
 
         gb.selectAll('.mg-baselines')
             .data(args.baselines)

@@ -81,28 +81,28 @@ test('X-axis doesn\'t break when data object is of length 1', function() {
     ok(document.querySelector('.mg-x-axis'), 'X-axis exists');
 });
 
-test('args.small_text', function() {
-    var params = {
-        target: '#qunit-fixture',
-        data: [{'date': new Date('2014-01-01'), 'value': 12}],
-        small_text: true,
-    };
+// test('args.small_text', function() {
+//     var params = {
+//         target: '#qunit-fixture',
+//         data: [{'date': new Date('2014-01-01'), 'value': 12}],
+//         small_text: true,
+//     };
 
-    MG.data_graphic(params);
-    ok(document.querySelector('.mg-x-axis-small'), 'Small x-axis is set');
-});
+//     MG.data_graphic(params);
+//     ok(document.querySelector('.mg-x-axis-small'), 'Small x-axis is set');
+// });
 
-test('args.small_text and args.show_secondary_x_label', function() {
-    var params = {
-        target: '#qunit-fixture',
-        data: [{'date': new Date('2014-01-01'), 'value': 12},
-               {'date': new Date('2014-03-01'), 'value': 18}],
-        small_text: true
-    };
+// test('args.small_text and args.show_secondary_x_label', function() {
+//     var params = {
+//         target: '#qunit-fixture',
+//         data: [{'date': new Date('2014-01-01'), 'value': 12},
+//                {'date': new Date('2014-03-01'), 'value': 18}],
+//         small_text: true
+//     };
 
-    MG.data_graphic(params);
-    ok(document.querySelector('.mg-year-marker-small'), 'Small year-marker is set');
-});
+//     MG.data_graphic(params);
+//     ok(document.querySelector('.mg-year-marker-small'), 'Small year-marker is set');
+// });
 
 test('args.x_rug', function() {
     var params = {
