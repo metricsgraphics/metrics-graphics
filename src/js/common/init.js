@@ -1,3 +1,19 @@
+function mg_merge_args_with_defaults(args){
+    var defaults = {
+        target: null,
+        title: null,
+        description: null
+    };
+    if (!args) { args = {}; }
+
+    if (!args.processed) {
+        args.processed = {};
+    }
+
+    args = merge_with_defaults(args, defaults);
+    return args;
+}
+
 function mg_is_time_series(args) {
     var flat_data = [];
     var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
@@ -133,23 +149,11 @@ function mg_remove_outdated_lines(svg, args){
 
 function init(args) {
     'use strict';
-    var defaults = {
-        target: null,
-        title: null,
-        description: null
-    };
+    args = arguments[0];
+    args = mg_merge_args_with_defaults(args);
 
     // If you pass in a dom element for args.target, the expectation
     // of a string elsewhere will break.
-
-    args = arguments[0];
-    if (!args) { args = {}; }
-
-    if (!args.processed) {
-        args.processed = {};
-    }
-
-    args = merge_with_defaults(args, defaults);
     var container = d3.select(args.target);
 
     if (container.empty()) {
@@ -162,8 +166,8 @@ function init(args) {
     mg_is_time_series(args);
     mg_init_compute_width(args);
     mg_init_compute_height(args);
+    
     mg_remove_svg_if_chart_type_has_changed(svg, args);
-
     svg = mg_add_svg_if_it_doesnt_exist(svg, args);
 
     mg_add_clip_path_for_plot_area(svg, args);
