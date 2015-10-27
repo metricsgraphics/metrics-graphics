@@ -494,7 +494,7 @@ function mg_add_x_tick_labels(g, args) {
 
                         return (args.height - args.bottom + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
                     })
-                    .attr('dy', '.20em')
+                    .attr('dy', '.50em')
                     .attr('text-anchor', 'middle')
                     .text(function(d) {
                         return yformat(new Date(d));
