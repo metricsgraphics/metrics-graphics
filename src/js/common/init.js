@@ -1,54 +1,21 @@
-function init(args) {
-    'use strict';
-    var defaults = {
-        target: null,
-        title: null,
-        description: null
-    };
+function mg_is_time_series(args) {
+    var flat_data = [];
+    var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
+    args.time_series=first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
+}
 
-    // If you pass in a dom element for args.target, the expectation
-    // of a string elsewhere will break.
-
-    args = arguments[0];
-    if (!args) { args = {}; }
-
-    if (!args.processed) {
-        args.processed = {};
-    }
-
-    args = merge_with_defaults(args, defaults);
-    var container = d3.select(args.target);
-
-
-    if (container.empty()) {
-        console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
-        return;
-    }
-
-    var svg = container.selectAll('svg');
-
-    //this is how we're dealing with passing in a single array of data,
-    //but with the intention of using multiple values for multilines, etc.
-
-    //do we have a time_series?
-
-    function is_time_series() {
-        var flat_data = [];
-        var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
-        return first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
-    }
-
-    args.time_series = is_time_series();
-    
+function mg_init_compute_width(args){
     var svg_width = args.width;
-    var svg_height = args.height;
-
-    //are we setting the aspect ratio
+    //are we setting the aspect ratio?
     if (args.full_width) {
         // get parent element
         svg_width = get_width(args.target);
     }
+    args.width=svg_width;
+}
 
+function mg_init_compute_height(args){
+    var svg_height = args.height;
     if (args.full_height) {
         svg_height = get_height(args.target);
     }
@@ -57,32 +24,35 @@ function init(args) {
         svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
     }
 
-    //remove the svg if the chart type has changed
-    if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line')
-            || (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point')
-            || (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram')
-            || (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
-        ) {
-        svg.remove();
-    }
+    args.height=svg_height;
+   
+}
 
-    //add svg if it doesn't already exist
-    //using trim on html rather than :empty to ignore white spaces if they exist
+function mg_remove_svg_if_chart_type_has_changed(svg, args){
+    if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line')
+        || (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point')
+        || (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram')
+        || (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
+    ) {
+        svg.remove();
+     }
+}
+
+function mg_add_svg_if_it_doesnt_exist(svg, args){
     if (mg_get_svg_child_of(args.target).empty()) {
-        //add svg
         svg = d3.select(args.target)
             .append('svg')
                 .classed('linked', args.linked)
-                .attr('width', svg_width)
-                .attr('height', svg_height);
-    }
+                .attr('width', args.width)
+                .attr('height', args.height);
+        }
+    return svg;
+}
 
-    args.width = svg_width;
-    args.height = svg_height;
 
-    //add clip path element to svg
+
+function mg_add_clip_path_for_plot_area(svg,args){
     svg.selectAll('.mg-clip-path').remove();
-
     svg.append('defs')
         .attr('class', 'mg-clip-path')
         .append('clipPath')
@@ -92,33 +62,36 @@ function init(args) {
             .attr('y', args.top)
             .attr('width', args.width - args.left - args.right - args.buffer)
             .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
+}
 
-    //has the width or height changed?
-    if (svg_width !== Number(svg.attr('width'))) {
-        svg.attr('width', svg_width);
+function mg_adjust_width_and_height_if_changed(svg, args){
+    if (args.width !== Number(svg.attr('width'))) {
+        svg.attr('width', args.width);
     }
+    if (args.height !== Number(svg.attr('height'))) {
+        svg.attr('height', args.height);
+    }     
+}
 
-    if (svg_height !== Number(svg.attr('height'))) {
-        svg.attr('height', svg_height);
-    }
-
+function mg_set_viewbox_for_scaling(svg, args){
     //we need to reconsider how we handle automatic scaling
-    svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
-
+    svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
     if (args.full_width || args.full_height) {
         svg.attr('preserveAspectRatio', 'xMinYMin meet');
     }
+}
 
+
+function mg_remove_missing_classes_and_text(svg){
     //remove missing class
     svg.classed('mg-missing', false);
 
     //remove missing text
     svg.selectAll('.mg-missing-text').remove();
     svg.selectAll('.mg-missing-pane').remove();
+}
 
-    //add chart title if it's different than existing one
-    chart_title(args);
-
+function mg_remove_outdated_lines(svg, args){  
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
@@ -155,7 +128,50 @@ function init(args) {
                     .remove();
             }
         }
+    }        
+}
+
+function init(args) {
+    'use strict';
+    var defaults = {
+        target: null,
+        title: null,
+        description: null
+    };
+
+    // If you pass in a dom element for args.target, the expectation
+    // of a string elsewhere will break.
+
+    args = arguments[0];
+    if (!args) { args = {}; }
+
+    if (!args.processed) {
+        args.processed = {};
     }
+
+    args = merge_with_defaults(args, defaults);
+    var container = d3.select(args.target);
+
+    if (container.empty()) {
+        console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
+        return;
+    }
+
+    var svg = container.selectAll('svg');
+
+    mg_is_time_series(args);
+    mg_init_compute_width(args);
+    mg_init_compute_height(args);
+    mg_remove_svg_if_chart_type_has_changed(svg, args);
+
+    svg = mg_add_svg_if_it_doesnt_exist(svg, args);
+
+    mg_add_clip_path_for_plot_area(svg, args);
+    mg_adjust_width_and_height_if_changed(svg, args);
+    mg_set_viewbox_for_scaling(svg, args);
+    mg_remove_missing_classes_and_text(svg);
+    chart_title(args);
+    mg_remove_outdated_lines(svg, args);
 
     return this;
 }
