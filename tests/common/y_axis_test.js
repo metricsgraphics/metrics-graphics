@@ -58,16 +58,16 @@ test('Y-axis doesn\'t break when data object is of length 1', function() {
     ok(document.querySelector('.mg-y-axis'), 'Y-axis exists');
 });
 
-test('args.small_text', function() {
-    var params = {
-        target: '#qunit-fixture',
-        data: [{'date': new Date('2014-01-01'), 'value': 12}],
-        small_text: true,
-    };
+// test('args.small_text', function() {
+//     var params = {
+//         target: '#qunit-fixture',
+//         data: [{'date': new Date('2014-01-01'), 'value': 12}],
+//         small_text: true,
+//     };
 
-    MG.data_graphic(params);
-    ok(document.querySelector('.mg-y-axis-small'), 'Small y-axis is set');
-});
+//     MG.data_graphic(params);
+//     ok(document.querySelector('.mg-y-axis-small'), 'Small y-axis is set');
+// });
 
 test('args.y_rug', function() {
     var params = {

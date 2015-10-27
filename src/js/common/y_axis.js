@@ -208,8 +208,7 @@ function y_axis(args) {
 
     //y axis
     g = svg.append('g')
-        .classed('mg-y-axis', true)
-        .classed('mg-y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true);
 
     //are we adding a label?
     if (args.y_label) {
@@ -349,8 +348,7 @@ function y_axis_categorical(args) {
     svg.selectAll('.mg-y-axis').remove();
 
     var g = svg.append('g')
-        .classed('mg-y-axis', true)
-        .classed('mg-y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true);
 
     if (!args.y_axis) {
         return this;
