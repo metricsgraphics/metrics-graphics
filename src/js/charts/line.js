@@ -306,7 +306,6 @@
                 .attr('class', 'mg-active-datapoint-container')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
-                    .classed('mg-active-datapoint-small', args.use_small_class)
                     .attr('xml:space', 'preserve')
                     .attr('text-anchor', 'end');
 

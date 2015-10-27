@@ -116,7 +116,7 @@ MG.data_graphic = function(args) {
         full_height: false,                    // sets the graphic width to be the width of the parent element and resizes dynamically
         small_height_threshold: 120,           // the height threshold for when smaller text appears
         small_width_threshold: 160,            // the width  threshold for when smaller text appears
-        small_text: false,                     // coerces small text regardless of graphic size
+        //small_text: false,                     // coerces small text regardless of graphic size
         xax_count: 6,                          // number of x axis ticks
         xax_tick_length: 5,                    // x axis tick length
         axes_not_compact: true,
@@ -1128,8 +1128,7 @@ function y_axis(args) {
 
     //y axis
     g = svg.append('g')
-        .classed('mg-y-axis', true)
-        .classed('mg-y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true);
 
     //are we adding a label?
     if (args.y_label) {
@@ -1269,8 +1268,7 @@ function y_axis_categorical(args) {
     svg.selectAll('.mg-y-axis').remove();
 
     var g = svg.append('g')
-        .classed('mg-y-axis', true)
-        .classed('mg-y-axis-small', args.use_small_class);
+        .classed('mg-y-axis', true);
 
     if (!args.y_axis) {
         return this;
@@ -1391,8 +1389,7 @@ function x_axis(args) {
 
     //x axis
     g = svg.append('g')
-        .classed('mg-x-axis', true)
-        .classed('mg-x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true);
 
     var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
@@ -1435,8 +1432,7 @@ function x_axis_categorical(args) {
     svg.selectAll('.mg-x-axis').remove();
 
     var g = svg.append('g')
-        .classed('mg-x-axis', true)
-        .classed('mg-x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true);
 
     if (!args.x_axis) {
         return this;
@@ -1776,7 +1772,6 @@ function mg_add_x_tick_labels(g, args) {
         //append year marker to x-axis group
         g = g.append('g')
             .classed('mg-year-marker', true)
-            .classed('mg-year-marker-small', args.use_small_class);
 
         if (time_frame === 'default' && args.show_year_markers) {
             g.selectAll('.mg-year-marker')
@@ -2017,10 +2012,6 @@ function init(args) {
     //add chart title if it's different than existing one
     chart_title(args);
 
-    //draw axes
-    args.use_small_class = args.height - args.top - args.bottom - args.buffer
-            <= args.small_height_threshold && args.width - args.left-args.right - args.buffer * 2
-            <= args.small_width_threshold || args.small_text;
 
     //if we're updating an existing chart and we have fewer lines than
     //before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
@@ -2134,8 +2125,7 @@ function markers(args) {
 
     if (args.baselines) {
         gb = svg.append('g')
-            .attr('class', 'mg-baselines')
-            .classed('mg-baselines-small', args.use_small_class);
+            .attr('class', 'mg-baselines');
 
         gb.selectAll('.mg-baselines')
             .data(args.baselines)
@@ -2799,7 +2789,6 @@ MG.button_layout = function(target) {
                 .attr('class', 'mg-active-datapoint-container')
                 .append('text')
                     .attr('class', 'mg-active-datapoint')
-                    .classed('mg-active-datapoint-small', args.use_small_class)
                     .attr('xml:space', 'preserve')
                     .attr('text-anchor', 'end');
 

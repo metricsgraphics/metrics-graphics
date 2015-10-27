@@ -88,8 +88,7 @@ function x_axis(args) {
 
     //x axis
     g = svg.append('g')
-        .classed('mg-x-axis', true)
-        .classed('mg-x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true);
 
     var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
@@ -132,8 +131,7 @@ function x_axis_categorical(args) {
     svg.selectAll('.mg-x-axis').remove();
 
     var g = svg.append('g')
-        .classed('mg-x-axis', true)
-        .classed('mg-x-axis-small', args.use_small_class);
+        .classed('mg-x-axis', true);
 
     if (!args.x_axis) {
         return this;
@@ -473,7 +471,6 @@ function mg_add_x_tick_labels(g, args) {
         //append year marker to x-axis group
         g = g.append('g')
             .classed('mg-year-marker', true)
-            .classed('mg-year-marker-small', args.use_small_class);
 
         if (time_frame === 'default' && args.show_year_markers) {
             g.selectAll('.mg-year-marker')
