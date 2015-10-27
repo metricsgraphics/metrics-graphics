@@ -117,6 +117,7 @@ Feel free to add your addons and websites to this list.
 * [Rails wrapper gem](https://github.com/dgilperez/metrics-graphics-rails)
 * [R package (htmlwidget)](https://github.com/hrbrmstr/metricsgraphics)
 * [Python library - using Pyxley](http://multithreaded.stitchfix.com/blog/2015/07/16/pyxley)
+* [Angular directive](https://github.com/elmarquez/angular-metrics-graphics)
 
 ## License
 
