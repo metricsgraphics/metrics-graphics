@@ -1,0 +1,101 @@
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='crashes_amd_all'></div>
+</div>
+
+<script>
+MG._hooks = {};
+$(".data textarea").val("");
+
+items = [{"date":"2015-09-01","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-01&date=%3C2015-09-02&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-02","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-02&date=%3C2015-09-03&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-03","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-03&date=%3C2015-09-04&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-04","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-04&date=%3C2015-09-05&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-05","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-05&date=%3C2015-09-06&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-06","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-06&date=%3C2015-09-07&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-07","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-07&date=%3C2015-09-08&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-08","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-08&date=%3C2015-09-09&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-09","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-09&date=%3C2015-09-10&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-10","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-10&date=%3C2015-09-11&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-11","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-11&date=%3C2015-09-12&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-12","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-12&date=%3C2015-09-13&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-13","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-13&date=%3C2015-09-14&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-14","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-14&date=%3C2015-09-15&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-15","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-15&date=%3C2015-09-16&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-16","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-16&date=%3C2015-09-17&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-17","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-17&date=%3C2015-09-18&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-18","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-18&date=%3C2015-09-19&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-19","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-19&date=%3C2015-09-20&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-20","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-20&date=%3C2015-09-21&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-21","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-21&date=%3C2015-09-22&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-22","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-22&date=%3C2015-09-23&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-23","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-23&date=%3C2015-09-24&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-24","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-24&date=%3C2015-09-25&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-25","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-25&date=%3C2015-09-26&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-26","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-26&date=%3C2015-09-27&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-27","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-27&date=%3C2015-09-28&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-28","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-28&date=%3C2015-09-29&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-29","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-29&date=%3C2015-09-30&adapter_vendor_id=0x1002"},
+         {"date":"2015-09-30","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-09-30&date=%3C2015-10-01&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-01","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-01&date=%3C2015-10-02&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-02","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-02&date=%3C2015-10-03&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-03","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-03&date=%3C2015-10-04&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-04","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-04&date=%3C2015-10-05&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-05","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-05&date=%3C2015-10-06&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-06","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-06&date=%3C2015-10-07&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-07","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-07&date=%3C2015-10-08&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-08","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-08&date=%3C2015-10-09&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-09","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-09&date=%3C2015-10-10&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-10","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-10&date=%3C2015-10-11&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-11","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-11&date=%3C2015-10-12&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-12","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-12&date=%3C2015-10-13&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-13","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-13&date=%3C2015-10-14&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-14","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-14&date=%3C2015-10-15&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-15","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-15&date=%3C2015-10-16&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-16","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-16&date=%3C2015-10-17&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-17","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-17&date=%3C2015-10-18&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-18","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-18&date=%3C2015-10-19&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-19","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-19&date=%3C2015-10-20&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-20","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-20&date=%3C2015-10-21&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-21","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-21&date=%3C2015-10-22&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-22","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-22&date=%3C2015-10-23&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-23","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-23&date=%3C2015-10-24&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-24","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-24&date=%3C2015-10-25&adapter_vendor_id=0x1002"},
+         {"date":"2015-10-25","source":"https://crash-stats.mozilla.com/api/SuperSearch/?date=%3E%3D2015-10-25&date=%3C2015-10-26&adapter_vendor_id=0x1002"}];
+
+function map(s) {
+        s = MG.convert.date(s, 'date');
+        MG.data_graphic({
+                title: "All Crashes with AMD GPUs",
+                data: s,
+                width: 1200,
+                height: 750,
+                target: document.getElementById('crashes_amd_all'),
+                x_accessor: "date",
+                y_accessor: "total",
+                interpolate: "monotone",
+                chart_type: "line"
+        });
+}
+
+json_string = '['
+i = 0
+
+function readJSON(URL, date) {
+    $.getJSON(URL, function(data){
+        json_string = json_string.concat('{"date":"' + date + '","total":' + data.total + '}');
+        i += 1
+        if (i < items.length) {
+            readJSON(items[i].source, items[i].date)
+        }
+    }).done(function() {
+        if (i >= items.length) {
+            json_string = json_string.concat(']');
+            json_string = json_string.replace(/}{/g, '},{');
+            map(JSON.parse(json_string))
+        }
+    });
+}
+
+readJSON(items[i].source, items[i].date);
+
+</script>
