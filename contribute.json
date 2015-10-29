@@ -1,0 +1,29 @@
+{
+    "name": "MetricsGraphics.js",
+    "description": "A library optimized for concise, principled data graphics and layouts.",
+    "repository": {
+        "url": "https://github.com/mozilla/metrics-graphics",
+        "license": "MPL2",
+        "tests": "https://travis-ci.org/mozilla/metrics-graphics/"
+    },
+    "participate": {
+        "home": "http://metricsgraphicsjs.org/",
+        "docs": "https://github.com/mozilla/metrics-graphics/wiki#resources",
+        "irc": "irc://irc.mozilla.org/#metrics",
+        "irc-contacts": [
+            "almossawi",
+            "hulmer"
+        ]
+    },
+    "bugs": {
+        "list": "https://github.com/mozilla/metrics-graphics/issues",
+        "report": "https://github.com/mozilla/metrics-graphics/issues/new",
+        "mentored": "https://github.com/mozilla/metrics-graphics/labels/help%20wanted"
+    },
+    "keywords": [
+        "nodejs",
+        "d3",
+        "data",
+        "graphics"
+    ]
+}
