@@ -148,22 +148,27 @@ li {
 
 .mg-line1-legend-color {
     color: #ffd300;
+    fill: #ffd300;
 }
 
 .mg-line2-legend-color {
     color: #18ff00;
+    fill: #18ff00;
 }
 
 .mg-line3-legend-color {
     color: #f57070;
+    fill: #f57070;
 }
 
 .mg-line4-legend-color {
     color: #f8b128;
+    fill: #f8b128;
 }
 
 .mg-line5-legend-color {
     color: #f7f7f7;
+    fill: #f7f7f7;
 }
 
 #logo g path {
