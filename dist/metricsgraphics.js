@@ -2068,8 +2068,19 @@ function init (args) {
 
 MG.init = init;
 
-function mg_plot_area_bottom (args) {
+function mg_get_plot_bottom (args) {
+  // returns the pixel location of the bottom side of the plot area.
   return args.height - args.bottom - args.buffer;
+}
+
+function mg_get_plot_left (args) {
+    // returns the pixel location of the left side of the plot area.
+    return args.left + args.buffer;
+}
+
+function mg_get_plot_right (args) {
+    // returns the pixel location of the right side of the plot area.
+    return args.width - args.right - args.buffer;
 }
 
 function mg_return_label (d) {
@@ -2083,8 +2094,8 @@ function mg_remove_existing_markers (svg) {
 
 function mg_in_range (args) {
   return function (d) {
-    return (args.scales.X(d[args.x_accessor]) > args.buffer + args.left)
-    && (args.scales.X(d[args.x_accessor]) < args.width - args.buffer - args.right);
+    return (args.scales.X(d[args.x_accessor]) > mg_get_plot_left(args))
+    && (args.scales.X(d[args.x_accessor]) < mg_get_plot_right(args));
   };
 }
 
@@ -2134,7 +2145,7 @@ function mg_place_marker_lines (gm, args) {
     .attr('x1', x_pos_fixed)
     .attr('x2', x_pos_fixed)
     .attr('y1', args.top)
-    .attr('y2', mg_plot_area_bottom(args))
+    .attr('y2', mg_get_plot_bottom(args))
     .attr('class', function (d) {
       return d.lineclass;
     })
@@ -2164,8 +2175,8 @@ function mg_place_baseline_lines (gb, args) {
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('line')
-    .attr('x1', args.left + args.buffer)
-    .attr('x2', args.width - args.right - args.buffer)
+    .attr('x1', mg_get_plot_left(args))
+    .attr('x2', mg_get_plot_right(args))
     .attr('y1', y_pos)
     .attr('y2', y_pos);
 }
@@ -2175,7 +2186,7 @@ function mg_place_baseline_text (gb, args) {
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('text')
-    .attr('x', args.width - args.right - args.buffer)
+    .attr('x', mg_get_plot_right(args))
     .attr('y', y_pos)
     .attr('dy', -3)
     .attr('text-anchor', 'end')
