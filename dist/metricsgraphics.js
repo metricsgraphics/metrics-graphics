@@ -2108,14 +2108,22 @@ function mg_y_position_fixed (args) {
   };
 }
 
+function mg_place_annotations(checker, class_name, args, svg, line_fcn, text_fcn){
+    var g;
+    if (checker) {
+        g = svg.append('g')
+                .attr('class', class_name)
+        line_fcn(g, args);
+        text_fcn(g, args);
+    }
+}
+
 function mg_place_markers (args, svg) {
-  var gm;
-  if (args.markers) {
-    gm = svg.append('g')
-      .attr('class', 'mg-markers');
-    mg_place_marker_lines(gm, args);
-    mg_place_marker_text(gm, args);
-  }
+  mg_place_annotations(args.markers, 'mg-markers', args, svg, mg_place_marker_lines, mg_place_marker_text);
+}
+
+function mg_place_baselines (args, svg) {
+  mg_place_annotations(args.baselines, 'mg-baselines', args, svg, mg_place_baseline_lines, mg_place_baseline_text);   
 }
 
 function mg_place_marker_lines (gm, args) {
@@ -2150,16 +2158,6 @@ function mg_place_marker_text (gm, args) {
       if (d.click) d3.select(this).style('cursor', 'pointer').on('click', d.click);
     });
   preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
-}
-
-function mg_place_baselines (args, svg) {
-  var gb;
-  if (args.baselines) {
-    gb = svg.append('g')
-      .attr('class', 'mg-baselines');
-    mg_place_baseline_lines(gb, args);
-    mg_place_baseline_text(gb, args);
-  }
 }
 
 function mg_place_baseline_lines (gb, args) {
