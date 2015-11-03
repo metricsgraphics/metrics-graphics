@@ -266,7 +266,7 @@
                                 legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
                             }
 
-                            preventVerticalOverlap(legend_group.selectAll('.mg-line-legend text')[0], args);
+                            mg_prevent_vertical_overlap(legend_group.selectAll('.mg-line-legend text')[0], args);
                         }
                     }
 

@@ -1,18 +1,3 @@
-function mg_get_plot_bottom (args) {
-  // returns the pixel location of the bottom side of the plot area.
-  return args.height - args.bottom - args.buffer;
-}
-
-function mg_get_plot_left (args) {
-    // returns the pixel location of the left side of the plot area.
-    return args.left + args.buffer;
-}
-
-function mg_get_plot_right (args) {
-    // returns the pixel location of the right side of the plot area.
-    return args.width - args.right - args.buffer;
-}
-
 function mg_return_label (d) {
   return d.label;
 }
@@ -97,7 +82,7 @@ function mg_place_marker_text (gm, args) {
     .each(function (d) {
       if (d.click) d3.select(this).style('cursor', 'pointer').on('click', d.click);
     });
-  preventHorizontalOverlap(gm.selectAll('.mg-marker-text')[0], args);
+  mg_prevent_horizontal_overlap(gm.selectAll('.mg-marker-text')[0], args);
 }
 
 function mg_place_baseline_lines (gb, args) {

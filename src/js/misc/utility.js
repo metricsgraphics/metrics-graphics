@@ -57,8 +57,23 @@ function is_array_of_objects_or_empty(data){
     return is_empty_array(data) || is_array_of_objects(data);
 }
 
+function mg_get_plot_bottom (args) {
+  // returns the pixel location of the bottom side of the plot area.
+  return args.height - args.bottom - args.buffer;
+}
 
-function preventHorizontalOverlap(labels, args) {
+function mg_get_plot_left (args) {
+    // returns the pixel location of the left side of the plot area.
+    return args.left + args.buffer;
+}
+
+function mg_get_plot_right (args) {
+    // returns the pixel location of the right side of the plot area.
+    return args.width - args.right - args.buffer;
+}
+
+
+function mg_prevent_horizontal_overlap(labels, args) {
     if (!labels || labels.length == 1) {
         return;
     }
@@ -66,7 +81,7 @@ function preventHorizontalOverlap(labels, args) {
     //see if each of our labels overlaps any of the other labels
     for (var i = 0; i < labels.length; i++) {
         //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
-        if (isHorizontallyOverlapping(labels[i], labels)) {
+        if (mg_is_horizontally_overlapping(labels[i], labels)) {
             var node = d3.select(labels[i]);
             var newY = +node.attr('y');
             if (newY + 8 >= args.top) {
@@ -77,7 +92,7 @@ function preventHorizontalOverlap(labels, args) {
     }
 }
 
-function preventVerticalOverlap(labels, args) {
+function mg_prevent_vertical_overlap(labels, args) {
     if (!labels || labels.length == 1) {
         return;
     }
@@ -97,7 +112,7 @@ function preventVerticalOverlap(labels, args) {
 
         for (var j = 0; j < labels.length; j ++) {
             label_j = d3.select(labels[j]).text();
-            overlap_amount = isVerticallyOverlapping(labels[i], labels[j]);
+            overlap_amount = mg_is_vertically_overlapping(labels[i], labels[j]);
 
             if (overlap_amount !== false && label_i !== label_j) {
                 var node = d3.select(labels[i]);
@@ -109,7 +124,7 @@ function preventVerticalOverlap(labels, args) {
     }
 }
 
-function isVerticallyOverlapping(element, sibling) {
+function mg_is_vertically_overlapping(element, sibling) {
     var element_bbox = element.getBoundingClientRect();
     var sibling_bbox = sibling.getBoundingClientRect();
 
@@ -120,7 +135,7 @@ function isVerticallyOverlapping(element, sibling) {
     return false;
 }
 
-function isHorizontallyOverlapping(element, labels) {
+function mg_is_horizontally_overlapping(element, labels) {
     var element_bbox = element.getBoundingClientRect();
 
     for (var i = 0; i < labels.length; i++) {
