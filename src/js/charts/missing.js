@@ -63,7 +63,7 @@
 
                 args.scales.X = d3.scale.linear()
                     .domain([0, data.length])
-                    .range([args.left + args.buffer, svg_width - args.right - args.buffer]);
+                    .range([mg_get_plot_left(args), svg_width - args.right - args.buffer]);
 
                 args.scales.Y = d3.scale.linear()
                     .domain([-2, 2])

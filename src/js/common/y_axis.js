@@ -159,18 +159,18 @@ function y_axis(args) {
         }
         args.scales.Y = d3.scale.log()
             .domain([min_y, max_y])
-            .range([args.height - args.bottom - args.buffer, args.top])
+            .range([mg_get_plot_bottom(args), args.top])
             .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
             .domain([min_y, max_y])
-            .range([args.height - args.bottom - args.buffer, args.top]);
+            .range([mg_get_plot_bottom(args), args.top]);
     }
 
     //used for ticks and such, and designed to be paired with log or linear
     args.scales.Y_axis = d3.scale.linear()
         .domain([args.processed.min_y, args.processed.max_y])
-        .range([args.height - args.bottom - args.buffer, args.top]);
+        .range([mg_get_plot_bottom(args), args.top]);
 
     var yax_format = args.yax_format;
     if (!yax_format) {
@@ -215,9 +215,9 @@ function y_axis(args) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return -1 * (args.top + args.buffer +
-                        ((args.height - args.bottom - args.buffer)
-                            - (args.top + args.buffer)) / 2);
+                return -1 * (mg_get_plot_top(args) +
+                        ((mg_get_plot_bottom(args))
+                            - (mg_get_plot_top(args))) / 2);
             })
             .attr('y', function() {
                 return args.left / 2;
@@ -313,7 +313,8 @@ function y_axis(args) {
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                .attr('dx', -3).attr('y', function(d) {
+                .attr('dx', -3)
+                .attr('y', function(d) {
                     return args.scales.Y(d).toFixed(2);
                 })
                 .attr('dy', '.35em')
@@ -336,7 +337,7 @@ function y_axis_categorical(args) {
     // first, come up with y_axis
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
-        .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
+        .rangeRoundBands([mg_get_plot_bottom(args), args.top], args.padding_percentage, args.outer_padding_percentage);
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);

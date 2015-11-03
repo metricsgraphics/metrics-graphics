@@ -62,6 +62,11 @@ function mg_get_plot_bottom (args) {
   return args.height - args.bottom - args.buffer;
 }
 
+function mg_get_plot_top (args) {
+    // returns the pixel location of the top side of the plot area.
+    return args.top + args.buffer;
+}
+
 function mg_get_plot_left (args) {
     // returns the pixel location of the left side of the plot area.
     return args.left + args.buffer;

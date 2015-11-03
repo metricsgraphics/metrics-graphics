@@ -466,7 +466,7 @@
                             .attr('x', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.left + args.buffer;
+                                    return mg_get_plot_left(args);
                                 } else if (i === 0) {
                                     return xf[i].toFixed(2);
                                 } else {
@@ -477,7 +477,7 @@
                             .attr('width', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.width - args.right - args.buffer;
+                                    return mg_get_plot_right(args);
                                 } else if (i === 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
                                 } else if (i == xf.length - 1) {
@@ -547,7 +547,7 @@
                             .attr('x', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.left + args.buffer;
+                                    return mg_get_plot_left(args);
                                 } else if (i === 0) {
                                     return xf[i].toFixed(2);
                                 } else {
@@ -562,7 +562,7 @@
                             .attr('width', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.width - args.right - args.buffer;
+                                    return mg_get_plot_right(args);
                                 } else if (i === 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
                                 } else if (i === xf.length - 1) {

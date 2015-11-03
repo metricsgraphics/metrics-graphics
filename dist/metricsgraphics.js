@@ -1079,18 +1079,18 @@ function y_axis(args) {
         }
         args.scales.Y = d3.scale.log()
             .domain([min_y, max_y])
-            .range([args.height - args.bottom - args.buffer, args.top])
+            .range([mg_get_plot_bottom(args), args.top])
             .clamp(true);
     } else {
         args.scales.Y = d3.scale.linear()
             .domain([min_y, max_y])
-            .range([args.height - args.bottom - args.buffer, args.top]);
+            .range([mg_get_plot_bottom(args), args.top]);
     }
 
     //used for ticks and such, and designed to be paired with log or linear
     args.scales.Y_axis = d3.scale.linear()
         .domain([args.processed.min_y, args.processed.max_y])
-        .range([args.height - args.bottom - args.buffer, args.top]);
+        .range([mg_get_plot_bottom(args), args.top]);
 
     var yax_format = args.yax_format;
     if (!yax_format) {
@@ -1135,9 +1135,9 @@ function y_axis(args) {
         g.append('text')
             .attr('class', 'label')
             .attr('x', function() {
-                return -1 * (args.top + args.buffer +
-                        ((args.height - args.bottom - args.buffer)
-                            - (args.top + args.buffer)) / 2);
+                return -1 * (mg_get_plot_top(args) +
+                        ((mg_get_plot_bottom(args))
+                            - (mg_get_plot_top(args))) / 2);
             })
             .attr('y', function() {
                 return args.left / 2;
@@ -1233,7 +1233,8 @@ function y_axis(args) {
         .data(scale_ticks).enter()
             .append('text')
                 .attr('x', args.left - args.yax_tick_length * 3 / 2)
-                .attr('dx', -3).attr('y', function(d) {
+                .attr('dx', -3)
+                .attr('y', function(d) {
                     return args.scales.Y(d).toFixed(2);
                 })
                 .attr('dy', '.35em')
@@ -1256,7 +1257,7 @@ function y_axis_categorical(args) {
     // first, come up with y_axis
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
-        .rangeRoundBands([args.height - args.bottom - args.buffer, args.top], args.padding_percentage, args.outer_padding_percentage);
+        .rangeRoundBands([mg_get_plot_bottom(args), args.top], args.padding_percentage, args.outer_padding_percentage);
 
     args.scalefns.yf = function(di) {
         return args.scales.Y(di[args.y_accessor]);
@@ -1378,7 +1379,7 @@ function x_axis(args) {
 
     args.scales.X
         .domain([args.processed.min_x, args.processed.max_x])
-        .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
+        .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
 
     //remove the old x-axis, add new one
     svg.selectAll('.mg-x-axis').remove();
@@ -1422,7 +1423,7 @@ function x_axis_categorical(args) {
 
     args.scales.X = d3.scale.ordinal()
         .domain(args.categorical_variables.reverse())
-        .rangeRoundBands([args.left, args.width - args.right - args.buffer - additional_buffer]);
+        .rangeRoundBands([args.left, mg_get_plot_right(args) - additional_buffer]);
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
@@ -1444,7 +1445,7 @@ function x_axis_categorical(args) {
             return args.scales.X(d) + args.scales.X.rangeBand() / 2
                 + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
         })
-        .attr('y', args.height - args.bottom + args.buffer)
+        .attr('y', mg_get_plot_bottom(args))
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
         .text(String);
@@ -1674,7 +1675,7 @@ function mg_add_x_ticks(g, args) {
         g.append('line')
             .attr('x1', function() {
                 if (args.xax_count === 0) {
-                    return args.left + args.buffer;
+                    return mg_get_plot_left(args);
                 } else if (args.axes_not_compact && args.chart_type !== 'bar') {
                     return args.left;
                 } else {
@@ -1683,7 +1684,7 @@ function mg_add_x_ticks(g, args) {
             })
             .attr('x2', function() {
                 if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
-                    return args.width - args.right - args.buffer;
+                    return mg_get_plot_right(args);
                 } else {
                     return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
                 }
@@ -2980,7 +2981,7 @@ MG.button_layout = function(target) {
                             .attr('x', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.left + args.buffer;
+                                    return mg_get_plot_left(args);
                                 } else if (i === 0) {
                                     return xf[i].toFixed(2);
                                 } else {
@@ -2991,7 +2992,7 @@ MG.button_layout = function(target) {
                             .attr('width', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.width - args.right - args.buffer;
+                                    return mg_get_plot_right(args);
                                 } else if (i === 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
                                 } else if (i == xf.length - 1) {
@@ -3061,7 +3062,7 @@ MG.button_layout = function(target) {
                             .attr('x', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.left + args.buffer;
+                                    return mg_get_plot_left(args);
                                 } else if (i === 0) {
                                     return xf[i].toFixed(2);
                                 } else {
@@ -3076,7 +3077,7 @@ MG.button_layout = function(target) {
                             .attr('width', function(d, i) {
                                 //if data set is of length 1
                                 if (xf.length === 1) {
-                                    return args.width - args.right - args.buffer;
+                                    return mg_get_plot_right(args);
                                 } else if (i === 0) {
                                     return ((xf[i+1] - xf[i]) / 2).toFixed(2);
                                 } else if (i === xf.length - 1) {
@@ -4648,7 +4649,7 @@ MG.data_table = function(args) {
 
                 args.scales.X = d3.scale.linear()
                     .domain([0, data.length])
-                    .range([args.left + args.buffer, svg_width - args.right - args.buffer]);
+                    .range([mg_get_plot_left(args), svg_width - args.right - args.buffer]);
 
                 args.scales.Y = d3.scale.linear()
                     .domain([-2, 2])
@@ -5451,6 +5452,11 @@ function is_array_of_objects_or_empty(data){
 function mg_get_plot_bottom (args) {
   // returns the pixel location of the bottom side of the plot area.
   return args.height - args.bottom - args.buffer;
+}
+
+function mg_get_plot_top (args) {
+    // returns the pixel location of the top side of the plot area.
+    return args.top + args.buffer;
 }
 
 function mg_get_plot_left (args) {

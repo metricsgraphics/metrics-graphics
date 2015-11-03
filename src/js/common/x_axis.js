@@ -77,7 +77,7 @@ function x_axis(args) {
 
     args.scales.X
         .domain([args.processed.min_x, args.processed.max_x])
-        .range([args.left + args.buffer, args.width - args.right - args.buffer - args.additional_buffer]);
+        .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
 
     //remove the old x-axis, add new one
     svg.selectAll('.mg-x-axis').remove();
@@ -121,7 +121,7 @@ function x_axis_categorical(args) {
 
     args.scales.X = d3.scale.ordinal()
         .domain(args.categorical_variables.reverse())
-        .rangeRoundBands([args.left, args.width - args.right - args.buffer - additional_buffer]);
+        .rangeRoundBands([args.left, mg_get_plot_right(args) - additional_buffer]);
 
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
@@ -143,7 +143,7 @@ function x_axis_categorical(args) {
             return args.scales.X(d) + args.scales.X.rangeBand() / 2
                 + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
         })
-        .attr('y', args.height - args.bottom + args.buffer)
+        .attr('y', mg_get_plot_bottom(args))
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
         .text(String);
@@ -373,7 +373,7 @@ function mg_add_x_ticks(g, args) {
         g.append('line')
             .attr('x1', function() {
                 if (args.xax_count === 0) {
-                    return args.left + args.buffer;
+                    return mg_get_plot_left(args);
                 } else if (args.axes_not_compact && args.chart_type !== 'bar') {
                     return args.left;
                 } else {
@@ -382,7 +382,7 @@ function mg_add_x_ticks(g, args) {
             })
             .attr('x2', function() {
                 if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
-                    return args.width - args.right - args.buffer;
+                    return mg_get_plot_right(args);
                 } else {
                     return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
                 }
