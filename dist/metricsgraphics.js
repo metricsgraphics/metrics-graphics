@@ -2111,8 +2111,7 @@ function mg_y_position_fixed (args) {
 function mg_place_annotations(checker, class_name, args, svg, line_fcn, text_fcn){
     var g;
     if (checker) {
-        g = svg.append('g')
-                .attr('class', class_name)
+        g = svg.append('g').attr('class', class_name);
         line_fcn(g, args);
         text_fcn(g, args);
     }
