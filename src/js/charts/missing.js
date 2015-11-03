@@ -6,42 +6,24 @@
         this.init = function(args) {
             this.args = args;
 
-            var svg_width,
-                svg_height;
-
-            svg_width = args.width;
-            svg_height = args.height;
-
-            if (args.full_width) {
-                // get parent element
-                svg_width = get_width(args.target);
-            }
-
-            if (args.full_height) {
-                svg_height = get_height(args.target);
-            }
+            mg_init_compute_width(args);
+            mg_init_compute_height(args);
 
             chart_title(args);
 
             // create svg if one doesn't exist
             d3.select(args.target).selectAll('svg').data([args])
               .enter().append('svg')
-                .attr('width', svg_width)
-                .attr('height', svg_height);
+                .attr('width', args.width)
+                .attr('height', args.height);
 
             var svg = mg_get_svg_child_of(args.target);
 
             // has the width or height changed?
-            if (svg_width !== Number(svg.attr('width'))) {
-                svg.attr('width', svg_width);
-            }
-
-            if (svg_height !== Number(svg.attr('height'))) {
-                svg.attr('height', svg_height);
-            }
+            mg_adjust_width_and_height_if_changed(svg, args);
 
             //we need to reconsider how we handle automatic scaling
-            svg.attr('viewBox', '0 0 ' + svg_width + ' ' + svg_height);
+            svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
 
             // delete child elements
             d3.select(args.target).selectAll('svg *').remove();
@@ -63,11 +45,11 @@
 
                 args.scales.X = d3.scale.linear()
                     .domain([0, data.length])
-                    .range([mg_get_plot_left(args), svg_width - args.right - args.buffer]);
+                    .range([mg_get_plot_left(args), args.width - args.right - args.buffer]);
 
                 args.scales.Y = d3.scale.linear()
                     .domain([-2, 2])
-                    .range([svg_height - args.bottom - args.buffer*2, args.top]);
+                    .range([args.height - args.bottom - args.buffer*2, args.top]);
 
                 args.scalefns.xf = function(di) { return args.scales.X(di.x); };
                 args.scalefns.yf = function(di) { return args.scales.Y(di.y); };
@@ -90,8 +72,8 @@
                     .classed('mg-missing-background', true)
                     .attr('x', args.buffer)
                     .attr('y', args.buffer)
-                    .attr('width', svg_width - args.buffer*2)
-                    .attr('height', svg_height - args.buffer*2)
+                    .attr('width', args.width - args.buffer*2)
+                    .attr('height', args.height - args.buffer*2)
                     .attr('rx',15)
                     .attr('ry', 15);
 
@@ -108,8 +90,8 @@
             svg.selectAll('.mg-missing-text').data([args.missing_text])
               .enter().append('text')
                 .attr('class', 'mg-missing-text')
-                .attr('x', svg_width / 2)
-                .attr('y', svg_height / 2)
+                .attr('x', args.width / 2)
+                .attr('y', args.height / 2)
                 .attr('dy', '.50em')
                 .attr('text-anchor', 'middle')
                 .text(args.missing_text);
