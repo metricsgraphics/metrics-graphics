@@ -141,6 +141,13 @@ function mg_remove_outdated_lines (svg, args) {
   }
 }
 
+function mg_raise_container_error(container, args){
+  if (container.empty()) {
+    console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
+    return;
+  }
+}
+
 function init (args) {
   'use strict';
   args = arguments[0];
@@ -148,11 +155,7 @@ function init (args) {
   // If you pass in a dom element for args.target, the expectation
   // of a string elsewhere will break.
   var container = d3.select(args.target);
-
-  if (container.empty()) {
-    console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
-    return;
-  }
+  mg_raise_container_error(container, args);
 
   var svg = container.selectAll('svg');
 

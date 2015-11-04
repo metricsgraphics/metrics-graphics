@@ -1,130 +1,151 @@
-(function() {
-    'use strict';
+(function () {
+  'use strict';
 
-    function missingData(args) {
+  function mg_missing_add_text (svg, args) {
+    svg.selectAll('.mg-missing-text').data([args.missing_text])
+      .enter().append('text')
+      .attr('class', 'mg-missing-text')
+      .attr('x', args.width / 2)
+      .attr('y', args.height / 2)
+      .attr('dy', '.50em')
+      .attr('text-anchor', 'middle')
+      .text(args.missing_text);
+  }
 
-        this.init = function(args) {
-            this.args = args;
+  function mg_missing_x_scale (args) {
+    args.scales.X = d3.scale.linear()
+      .domain([0, args.data.length])
+      .range([mg_get_plot_left(args), mg_get_plot_right(args)]);
+    args.scalefns.yf = function (di) { return args.scales.Y(di.y); };
+  }
 
-            mg_init_compute_width(args);
-            mg_init_compute_height(args);
+  function mg_missing_y_scale (args) {
+    args.scales.Y = d3.scale.linear()
+      .domain([-2, 2])
+      .range([args.height - args.bottom - args.buffer * 2, args.top]);
+    args.scalefns.xf = function (di) { return args.scales.X(di.x); };
+  }
 
-            chart_title(args);
-
-            // create svg if one doesn't exist
-            d3.select(args.target).selectAll('svg').data([args])
-              .enter().append('svg')
-                .attr('width', args.width)
-                .attr('height', args.height);
-
-            var svg = mg_get_svg_child_of(args.target);
-
-            // has the width or height changed?
-            mg_adjust_width_and_height_if_changed(svg, args);
-
-            //we need to reconsider how we handle automatic scaling
-            svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
-
-            // delete child elements
-            d3.select(args.target).selectAll('svg *').remove();
-
-            // add missing class
-            svg.classed('mg-missing', true);
-
-            // do we need to clear the legend?
-            if (args.legend_target) {
-                d3.select(args.legend_target).html('');
-            }
-
-            //are we adding a background placeholder
-            if (args.show_missing_background) {
-                var data = [];
-                for (var x = 1; x <= 50; x++) {
-                    data.push({'x': x, 'y': Math.random() - (x * 0.03)});
-                }
-
-                args.scales.X = d3.scale.linear()
-                    .domain([0, data.length])
-                    .range([mg_get_plot_left(args), args.width - args.right - args.buffer]);
-
-                args.scales.Y = d3.scale.linear()
-                    .domain([-2, 2])
-                    .range([args.height - args.bottom - args.buffer*2, args.top]);
-
-                args.scalefns.xf = function(di) { return args.scales.X(di.x); };
-                args.scalefns.yf = function(di) { return args.scales.Y(di.y); };
-
-                var line = d3.svg.line()
-                    .x(args.scalefns.xf)
-                    .y(args.scalefns.yf)
-                    .interpolate(args.interpolate);
-
-                var area = d3.svg.area()
-                    .x(args.scalefns.xf)
-                    .y0(args.scales.Y.range()[0])
-                    .y1(args.scalefns.yf)
-                    .interpolate(args.interpolate);
-
-                var g = svg.append('g')
-                    .attr('class', 'mg-missing-pane');
-
-                g.append('svg:rect')
-                    .classed('mg-missing-background', true)
-                    .attr('x', args.buffer)
-                    .attr('y', args.buffer)
-                    .attr('width', args.width - args.buffer*2)
-                    .attr('height', args.height - args.buffer*2)
-                    .attr('rx',15)
-                    .attr('ry', 15);
-
-                g.append('path')
-                    .attr('class', 'mg-main-line mg-line1-color')
-                    .attr('d', line(data));
-
-                g.append('path')
-                    .attr('class', 'mg-main-area mg-area1-color')
-                    .attr('d', area(data));
-            }
-
-            // add missing text
-            svg.selectAll('.mg-missing-text').data([args.missing_text])
-              .enter().append('text')
-                .attr('class', 'mg-missing-text')
-                .attr('x', args.width / 2)
-                .attr('y', args.height / 2)
-                .attr('dy', '.50em')
-                .attr('text-anchor', 'middle')
-                .text(args.missing_text);
-
-            this.windowListeners();
-
-            return this;
-        };
-
-        this.windowListeners = function() {
-            mg_window_listeners(this.args);
-            return this;
-        };
-
-        this.init(args);
+  function mg_make_fake_data (args) {
+    var data = [];
+    for (var x = 1; x <= 50; x++) {
+      data.push({'x': x, 'y': Math.random() - (x * 0.03)});
     }
+    args.data = data;
+  }
 
-    var defaults = {
-        top: 40,                      // the size of the top margin
-        bottom: 30,                   // the size of the bottom margin
-        right: 10,                    // size of the right margin
-        left: 10,                     // size of the left margin
-        buffer: 8,                    // the buffer between the actual chart area and the margins
-        legend_target: '',
-        width: 350,
-        height: 220,
-        missing_text: 'Data currently missing or unavailable',
-        scalefns: {},
-        scales: {},
-        show_tooltips: true,
-        show_missing_background: true,
-        interpolate: 'cardinal'
+  function mg_add_g (svg, cl) {
+    return svg.append('g').attr('class', cl);
+  }
+
+  function mg_add_missing_background_rect (g, args) {
+    g.append('svg:rect')
+      .classed('mg-missing-background', true)
+      .attr('x', args.buffer)
+      .attr('y', args.buffer)
+      .attr('width', args.width - args.buffer * 2)
+      .attr('height', args.height - args.buffer * 2)
+      .attr('rx', 15)
+      .attr('ry', 15);
+  }
+
+  function mg_missing_add_line (g, args) {
+    var line = d3.svg.line()
+      .x(args.scalefns.xf)
+      .y(args.scalefns.yf)
+      .interpolate(args.interpolate);
+    g.append('path')
+      .attr('class', 'mg-main-line mg-line1-color')
+      .attr('d', line(args.data));
+  }
+
+  function mg_missing_add_area (g, args) {
+    var area = d3.svg.area()
+      .x(args.scalefns.xf)
+      .y0(args.scales.Y.range()[0])
+      .y1(args.scalefns.yf)
+      .interpolate(args.interpolate);
+    g.append('path')
+      .attr('class', 'mg-main-area mg-area1-color')
+      .attr('d', area(args.data));
+  }
+
+  function mg_remove_all_children (args) {
+    d3.select(args.target).selectAll('svg *').remove();
+  }
+
+  function mg_missing_remove_legend (args) {
+    if (args.legend_target) {
+      d3.select(args.legend_target).html('');
+    }
+  }
+
+  function missingData (args) {
+    this.init = function (args) {
+      this.args = args;
+
+      mg_init_compute_width(args);
+      mg_init_compute_height(args);
+
+      chart_title(args);
+
+      // create svg if one doesn't exist
+
+      var container = d3.select(args.target);
+      mg_raise_container_error(container, args);
+      var svg = container.selectAll('svg');
+      mg_remove_svg_if_chart_type_has_changed(svg, args);
+      svg = mg_add_svg_if_it_doesnt_exist(svg, args);
+      mg_adjust_width_and_height_if_changed(svg, args);
+      mg_set_viewbox_for_scaling(svg, args);
+      mg_remove_all_children(args);
+
+      svg.classed('mg-missing', true);
+      mg_missing_remove_legend(args);
+
+      // are we adding a background placeholder
+      if (args.show_missing_background) {
+        mg_make_fake_data(args);
+        mg_missing_x_scale(args);
+        mg_missing_y_scale(args);
+        var g = mg_add_g(svg, 'mg-missing-pane');
+
+        mg_add_missing_background_rect(g, args);
+        mg_missing_add_line(g, args);
+        mg_missing_add_area(g, args);
+      }
+
+      mg_missing_add_text(svg, args);
+
+      this.windowListeners();
+
+      return this;
     };
 
-    MG.register('missing-data', missingData, defaults);
+    this.windowListeners = function () {
+      mg_window_listeners(this.args);
+      return this;
+    };
+
+    this.init(args);
+  }
+
+  var defaults = {
+    top: 40, // the size of the top margin
+    bottom: 30, // the size of the bottom margin
+    right: 10, // size of the right margin
+    left: 10, // size of the left margin
+    buffer: 8, // the buffer between the actual chart area and the margins
+    legend_target: '',
+    width: 350,
+    height: 220,
+    missing_text: 'Data currently missing or unavailable',
+    scalefns: {},
+    scales: {},
+    show_tooltips: true,
+    show_missing_background: true,
+    interpolate: 'cardinal'
+  };
+
+  MG.register('missing-data', missingData, defaults);
 }).call(this);
