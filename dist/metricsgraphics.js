@@ -1340,32 +1340,26 @@ function x_rug(args) {
 
 MG.x_rug = x_rug;
 
-function x_axis(args) {
-    'use strict';
-    
-    var svg = mg_get_svg_child_of(args.target);
-    var g;
-    var min_x;
-    var max_x;
-
+function mg_add_processed_object (args) {
     if (!args.processed) {
         args.processed = {};
     }
+}
 
+function mg_flatten_all_data (args) {
     var all_data = [];
     for (var i = 0; i < args.data.length; i++) {
         for (var j = 0; j < args.data[i].length; j++) {
             all_data.push(args.data[i][j]);
         }
     }
+    return all_data;
+}
+
+function mg_add_x_scale (args) {
     args.scalefns.xf = function(di) {
         return args.scales.X(di[args.x_accessor]);
     };
-
-    if (args.chart_type === 'point') {
-        mg_point_add_color_scale(args);
-        mg_point_add_size_scale(args);
-    }
 
     mg_find_min_max_x(args);
 
@@ -1380,9 +1374,28 @@ function x_axis(args) {
     args.scales.X
         .domain([args.processed.min_x, args.processed.max_x])
         .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
+}
+
+function mg_remove_x_axis (svg) { svg.selectAll('.mg-x-axis').remove(); }
+
+function x_axis(args) {
+    'use strict';
+    
+    var svg = mg_get_svg_child_of(args.target);
+    var g;
+    var min_x;
+    var max_x;
+
+    mg_add_processed_object(args);
+    mg_add_x_scale(args);
+
+    if (args.chart_type === 'point') {
+        mg_point_add_color_scale(args);
+        mg_point_add_size_scale(args);
+    }
 
     //remove the old x-axis, add new one
-    svg.selectAll('.mg-x-axis').remove();
+    mg_remove_x_axis(svg);
 
     if (!args.x_axis) {
         return this;
@@ -1392,7 +1405,7 @@ function x_axis(args) {
     g = svg.append('g')
         .classed('mg-x-axis', true);
 
-    var last_i = args.scales.X.ticks(args.xax_count).length - 1;
+    //var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
     //are we adding a label?
     if (args.x_label) {
@@ -2146,9 +2159,7 @@ function mg_place_marker_text (gm, args) {
     .data(args.markers.filter(mg_in_range(args)))
     .enter()
     .append('text')
-    .attr('class', function(d){
-      return d.textclass || '';
-    })
+    .attr('class', function (d) { return d.textclass || ''; })
     .classed('mg-marker-text', true)
     .attr('x', mg_x_position(args))
     .attr('y', args.top * 0.95)
