@@ -4688,7 +4688,8 @@ MG.data_table = function(args) {
         mg_make_fake_data(args);
         mg_missing_x_scale(args);
         mg_missing_y_scale(args);
-        var g = mg_add_g(svg, 'mg-missing-point');
+        var g = mg_add_g(svg, 'mg-missing-pane');
+
         mg_add_missing_background_rect(g, args);
         mg_missing_add_line(g, args);
         mg_missing_add_area(g, args);
