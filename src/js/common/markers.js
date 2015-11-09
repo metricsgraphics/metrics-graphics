@@ -72,9 +72,10 @@ function mg_place_marker_text (gm, args) {
     .data(args.markers.filter(mg_in_range(args)))
     .enter()
     .append('text')
-    .attr('class', function (d) {
-      return d.textclass ? 'mg-marker-text ' + d.textclass : 'mg-marker-text';
+    .attr('class', function(d){
+      return d.textclass || '';
     })
+    .classed('mg-marker-text', true)
     .attr('x', mg_x_position(args))
     .attr('y', args.top * 0.95)
     .attr('text-anchor', 'middle')
