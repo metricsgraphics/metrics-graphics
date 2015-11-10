@@ -6,9 +6,11 @@
       this.args = args;
 
       if (!args.data || args.data.length === 0) {
-        args.error = 'No data was supplied';
-        error(args);
+        args.internal_error = 'No data was supplied';
+        internal_error(args);
         return this;
+      } else {
+        args.internal_error = undefined;
       }
 
       raw_data_transformation(args);

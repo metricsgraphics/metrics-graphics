@@ -2536,9 +2536,11 @@ MG.button_layout = function(target) {
       this.args = args;
 
       if (!args.data || args.data.length === 0) {
-        args.error = 'No data was supplied';
-        error(args);
+        args.internal_error = 'No data was supplied';
+        internal_error(args);
         return this;
+      } else {
+        args.internal_error = undefined;
       }
 
       raw_data_transformation(args);
@@ -5809,13 +5811,17 @@ function wrap_text(text, width, token, tspanAttrs) {
 
 MG.wrap_text = wrap_text;
 
-//call this to add a warning icon to a graph and log an error to the console
-function error(args) {
-    console.log('ERROR : ', args.target, ' : ', args.error);
+// call this to add a warning icon to a graph and log an error to the console
+function error (args) {
+  console.log('ERROR : ', args.target, ' : ', args.error);
 
-    d3.select(args.target).select('.mg-chart-title')
-        .append('i')
-            .attr('class', 'fa fa-x fa-exclamation-circle warning');
+  d3.select(args.target).select('.mg-chart-title')
+    .append('i')
+    .attr('class', 'fa fa-x fa-exclamation-circle warning');
+}
+
+function internal_error (args) {
+  console.log('INTERNAL ERROR : ', args.target, ' : ', args.internal_error);
 }
 
 MG.error = error;
