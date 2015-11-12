@@ -1,11 +1,19 @@
+function mg_remove_element (svg, elem) {
+    svg.select(elem).remove();
+}
+
+function mg_add_chart_title_element (svg, args) {
+    
+}
+
 function chart_title(args) {
     'use strict';
 
     var svg = mg_get_svg_child_of(args.target);
 
     //remove the current title if it exists
-    svg.select('.mg-header').remove();
-
+    //svg.select('.mg-header').remove();
+    mg_remove_element(svg, '.mg-header');
     if (args.target && args.title) {
         var chartTitle = svg.insert('text')
             .attr('class', 'mg-header')

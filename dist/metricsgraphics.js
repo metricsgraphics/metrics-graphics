@@ -852,14 +852,22 @@ if (typeof jQuery !== 'undefined') {
 
     }(jQuery);
 }
+function mg_remove_element (svg, elem) {
+    svg.select(elem).remove();
+}
+
+function mg_add_chart_title_element (svg, args) {
+    
+}
+
 function chart_title(args) {
     'use strict';
 
     var svg = mg_get_svg_child_of(args.target);
 
     //remove the current title if it exists
-    svg.select('.mg-header').remove();
-
+    //svg.select('.mg-header').remove();
+    mg_remove_element(svg, '.mg-header');
     if (args.target && args.title) {
         var chartTitle = svg.insert('text')
             .attr('class', 'mg-header')
@@ -918,47 +926,22 @@ function chart_title(args) {
 
 MG.chart_title = chart_title;
 
+
+
 function y_rug(args) {
     'use strict';
-    var svg = mg_get_svg_child_of(args.target);
-
-    var buffer_size = args.chart_type === 'point'
+    args.rug_buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;
 
-    var all_data = [];
-    for (var i = 0; i < args.data.length; i++) {
-        for (var j = 0; j < args.data[i].length; j++) {
-            all_data.push(args.data[i][j]);
-        }
-    }
-
-    var rug = svg.selectAll('line.mg-y-rug').data(all_data);
-
-    //set the attributes that do not change after initialization, per
-    //D3's general update pattern
-    rug.enter().append('svg:line')
-        .attr('class', 'mg-y-rug')
-        .attr('opacity', 0.3);
-
-    //remove rug elements that are no longer in use
-    rug.exit().remove();
-
-    //set coordinates of new rug elements
-    rug.exit().remove();
+    var rug = mg_make_rug(args, 'mg-y-rug');
 
     rug.attr('x1', args.left + 1)
-        .attr('x2', args.left+buffer_size)
+        .attr('x2', args.left + args.rug_buffer_size)
         .attr('y1', args.scalefns.yf)
         .attr('y2', args.scalefns.yf);
 
-    if (args.color_accessor) {
-        rug.attr('stroke', args.scalefns.color);
-        rug.classed('mg-y-rug-mono', false);
-    } else {
-        rug.attr('stroke', null);
-        rug.classed('mg-y-rug-mono', true);
-    }
+    mg_add_color_accessor_to_rug(rug, args, 'mg-y-rug-mono');
 }
 
 MG.y_rug = y_rug;
@@ -1300,42 +1283,22 @@ function y_axis_categorical(args) {
 
 MG.y_axis_categorical = y_axis_categorical;
 
+
 function x_rug(args) {
     'use strict';
-
-    var buffer_size = args.chart_type === 'point'
+    args.rug_buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer;
 
-    var svg = mg_get_svg_child_of(args.target);
-    var all_data = mg_flatten_array(args.data)
-
-    var rug = svg.selectAll('line.mg-x-rug').data(all_data);
-
-    //set the attributes that do not change after initialization, per
-    //D3's general update pattern
-    rug.enter().append('svg:line')
-        .attr('class', 'mg-x-rug')
-        .attr('opacity', 0.3);
-
-    //remove rug elements that are no longer in use
-    rug.exit().remove();
-
-    //set coordinates of new rug elements
-    rug.exit().remove();
+    var rug = mg_make_rug(args, 'mg-x-rug');
 
     rug.attr('x1', args.scalefns.xf)
         .attr('x2', args.scalefns.xf)
-        .attr('y1', args.height - args.bottom - buffer_size)
+        .attr('y1', args.height - args.bottom - args.rug_buffer_size)
         .attr('y2', args.height - args.bottom);
 
-    if (args.color_accessor) {
-        rug.attr('stroke', args.scalefns.color);
-        rug.classed('mg-x-rug-mono', false);
-    } else {
-        rug.attr('stroke', null);
-        rug.classed('mg-x-rug-mono', true);
-    }
+    mg_add_color_accessor_to_rug(rug, args, 'mg-x-rug-mono');
+
 }
 
 MG.x_rug = x_rug;
@@ -5479,6 +5442,39 @@ function mg_get_plot_right (args) {
     // returns the pixel location of the right side of the plot area.
     return args.width - args.right - args.buffer;
 }
+
+//////// axis helper functions ////////////
+
+function mg_make_rug(args, rug_class){
+    var svg = mg_get_svg_child_of(args.target);
+    var all_data = mg_flatten_array(args.data)
+    var rug = svg.selectAll('line.'+rug_class).data(all_data);
+    //set the attributes that do not change after initialization, per
+    rug.enter().append('svg:line')
+        .attr('class', rug_class)
+        .attr('opacity', 0.3);
+    //remove rug elements that are no longer in use
+    mg_exit_and_remove(rug);
+    //set coordinates of new rug elements
+    mg_exit_and_remove(rug);
+    return rug;
+}
+
+function mg_exit_and_remove (elem) {
+    elem.exit().remove();
+}
+
+function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
+    if (args.color_accessor) {
+        rug.attr('stroke', args.scalefns.color);
+        rug.classed(rug_mono_class, false);
+    } else {
+        rug.attr('stroke', null);
+        rug.classed(rug_mono_class, true);
+    }
+}
+
+//////////////////////////////////////////////////
 
 
 function mg_prevent_horizontal_overlap(labels, args) {

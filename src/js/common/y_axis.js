@@ -1,44 +1,19 @@
+
+
 function y_rug(args) {
     'use strict';
-    var svg = mg_get_svg_child_of(args.target);
-
-    var buffer_size = args.chart_type === 'point'
+    args.rug_buffer_size = args.chart_type === 'point'
         ? args.buffer / 2
         : args.buffer * 2 / 3;
 
-    var all_data = [];
-    for (var i = 0; i < args.data.length; i++) {
-        for (var j = 0; j < args.data[i].length; j++) {
-            all_data.push(args.data[i][j]);
-        }
-    }
-
-    var rug = svg.selectAll('line.mg-y-rug').data(all_data);
-
-    //set the attributes that do not change after initialization, per
-    //D3's general update pattern
-    rug.enter().append('svg:line')
-        .attr('class', 'mg-y-rug')
-        .attr('opacity', 0.3);
-
-    //remove rug elements that are no longer in use
-    rug.exit().remove();
-
-    //set coordinates of new rug elements
-    rug.exit().remove();
+    var rug = mg_make_rug(args, 'mg-y-rug');
 
     rug.attr('x1', args.left + 1)
-        .attr('x2', args.left+buffer_size)
+        .attr('x2', args.left + args.rug_buffer_size)
         .attr('y1', args.scalefns.yf)
         .attr('y2', args.scalefns.yf);
 
-    if (args.color_accessor) {
-        rug.attr('stroke', args.scalefns.color);
-        rug.classed('mg-y-rug-mono', false);
-    } else {
-        rug.attr('stroke', null);
-        rug.classed('mg-y-rug-mono', true);
-    }
+    mg_add_color_accessor_to_rug(rug, args, 'mg-y-rug-mono');
 }
 
 MG.y_rug = y_rug;

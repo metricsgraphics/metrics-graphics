@@ -77,6 +77,39 @@ function mg_get_plot_right (args) {
     return args.width - args.right - args.buffer;
 }
 
+//////// axis helper functions ////////////
+
+function mg_make_rug(args, rug_class){
+    var svg = mg_get_svg_child_of(args.target);
+    var all_data = mg_flatten_array(args.data)
+    var rug = svg.selectAll('line.'+rug_class).data(all_data);
+    //set the attributes that do not change after initialization, per
+    rug.enter().append('svg:line')
+        .attr('class', rug_class)
+        .attr('opacity', 0.3);
+    //remove rug elements that are no longer in use
+    mg_exit_and_remove(rug);
+    //set coordinates of new rug elements
+    mg_exit_and_remove(rug);
+    return rug;
+}
+
+function mg_exit_and_remove (elem) {
+    elem.exit().remove();
+}
+
+function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
+    if (args.color_accessor) {
+        rug.attr('stroke', args.scalefns.color);
+        rug.classed(rug_mono_class, false);
+    } else {
+        rug.attr('stroke', null);
+        rug.classed(rug_mono_class, true);
+    }
+}
+
+//////////////////////////////////////////////////
+
 
 function mg_prevent_horizontal_overlap(labels, args) {
     if (!labels || labels.length == 1) {
