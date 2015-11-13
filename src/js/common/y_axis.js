@@ -109,7 +109,14 @@ function set_min_max_y (args) {
     args.processed.max_y = my.max;
 }
 
+function mg_y_domain_range(args,scale){
+    scale.domain([args.processed.min_y, args.processed.max_y])
+        .range([mg_get_plot_bottom(args), args.top]);
+    return scale;
+}
+
 function mg_define_y_scales (args) {
+    var scale = args.y_scale_type === 'log' ? d3.scale.log() : d3.scale.linear();
     if (args.y_scale_type === 'log') {
         if (args.chart_type === 'histogram') {
             // log histogram plots should start just below 1
@@ -120,20 +127,12 @@ function mg_define_y_scales (args) {
                 args.processed.min_y = 1;
             }
         }
-        args.scales.Y = d3.scale.log()
-            .domain([args.processed.min_y, args.processed.max_y])
-            .range([mg_get_plot_bottom(args), args.top])
-            .clamp(true);
-    } else {
-        args.scales.Y = d3.scale.linear()
-            .domain([args.processed.min_y, args.processed.max_y])
-            .range([mg_get_plot_bottom(args), args.top]);
-    }
+    } 
+    args.scales.Y = mg_y_domain_range(args, scale);
+    args.scales.Y.clamp(args.y_scale_type==='log');
 
     //used for ticks and such, and designed to be paired with log or linear
-    args.scales.Y_axis = d3.scale.linear()
-        .domain([args.processed.min_y, args.processed.max_y])
-        .range([mg_get_plot_bottom(args), args.top]);
+    args.scales.Y_axis = mg_y_domain_range(args, d3.scale.linear());
 }
 
 function mg_add_y_label(g, args){
