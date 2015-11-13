@@ -35,10 +35,7 @@ function mg_flatten_all_data (args) {
 }
 
 function mg_add_x_scale (args) {
-    args.scalefns.xf = function(di) {
-        return args.scales.X(di[args.x_accessor]);
-    };
-
+    mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
     mg_find_min_max_x(args);
 
     var time_scale = (args.utc_time)

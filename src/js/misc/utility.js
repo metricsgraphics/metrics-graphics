@@ -77,6 +77,16 @@ function mg_get_plot_right (args) {
     return args.width - args.right - args.buffer;
 }
 
+//////// adding elements, removing elements /////////////
+
+function mg_exit_and_remove (elem) {
+    elem.exit().remove();
+}
+
+function mg_add_g (svg, cl) {
+    return svg.append('g').classed(cl, true);
+}
+
 //////// axis helper functions ////////////
 
 function mg_make_rug(args, rug_class){
@@ -94,8 +104,10 @@ function mg_make_rug(args, rug_class){
     return rug;
 }
 
-function mg_exit_and_remove (elem) {
-    elem.exit().remove();
+function mg_add_scale_function(args, scalefcn_name, scale, accessor){
+    args.scalefns[scalefcn_name] = function(di){
+        return args.scales[scale](di[accessor])
+    }
 }
 
 function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
