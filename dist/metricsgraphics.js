@@ -131,6 +131,7 @@ MG.data_graphic = function(args) {
         min_y: null,                           // if set, y axis starts at an arbitrary value
         min_y_from_data: false,                // if set, y axis will start at minimum value rather than at 0
         point_size: 2.5,                       // the size of the dot that appears on a line on mouse-over
+        points_always_visible: false,          // whether to always display data points and not just on hover
         x_accessor: 'date',
         xax_units: '',
         x_label: '',
@@ -2603,6 +2604,23 @@ MG.button_layout = function(target) {
 
           args.data[i].line_id = line_id;
 
+          if (args.points_always_visible) {
+            svg.selectAll('circle-' + line_id)
+              .data(args.data[i])
+              .enter()
+              .append('circle')
+              .attr('class', 'mg-area' + (line_id) + '-color')
+              .attr('cx', args.scalefns.xf)
+              .attr('cy', args.scalefns.yf)
+              .attr('r', function(data) {
+                if (data._missing) {
+                  return 0;
+                } else {
+                  return args.point_size;
+                }
+              });
+          }
+
           if (this_data.length === 0) {
             continue;
           }
@@ -2915,7 +2933,7 @@ MG.button_layout = function(target) {
           .sort(function (a, b) { return new Date(a.key) - new Date(b.key); });
 
         // Undo the keys getting coerced to strings, by setting the keys from the values
-        // This is necessary for when we have X axis keys that are things like 
+        // This is necessary for when we have X axis keys that are things like
         data_nested.forEach(function (entry) {
           var datum = entry.values[0];
           entry.key = datum[args.x_accessor];
