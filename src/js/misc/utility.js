@@ -83,6 +83,10 @@ function mg_exit_and_remove (elem) {
     elem.exit().remove();
 }
 
+function mg_selectAll_and_remove (svg, cl) {
+    svg.selectAll(cl).remove();
+}
+
 function mg_add_g (svg, cl) {
     return svg.append('g').classed(cl, true);
 }

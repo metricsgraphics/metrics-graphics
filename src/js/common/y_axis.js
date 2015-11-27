@@ -271,8 +271,7 @@ function y_axis(args) {
     mg_define_y_scales(args);
     mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
 
-    //remove the old y-axis, add new one
-    svg.selectAll('.mg-y-axis').remove();
+    mg_selectAll_and_remove(svg, '.mg-y-axis');
 
     if (!args.y_axis) { return this; }
 
@@ -290,47 +289,42 @@ function y_axis(args) {
 
 MG.y_axis = y_axis;
 
-function y_axis_categorical(args) {
+function mg_add_categorical_labels (args) {
+    var svg = mg_get_svg_child_of(args.target);
+    mg_selectAll_and_remove(svg, '.mg-y-axis');
+    var g = mg_add_g(svg, 'mg-y-axis');
+    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+            .attr('x', args.left)
+            .attr('y', function(d) {
+                return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
+                    + (args.buffer)*args.outer_padding_percentage;
+            })
+            .attr('dy', '.35em')
+            .attr('text-anchor', 'end')
+            .text(String);
+
+        if (args.rotate_y_labels) {
+            labels.attr({
+                dy: 0,
+                transform: function() {
+                    var elem = d3.select(this);
+                    return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+                }
+            });
+        }
+}
+
+function y_axis_categorical (args) {
     // first, come up with y_axis
     args.scales.Y = d3.scale.ordinal()
         .domain(args.categorical_variables)
         .rangeRoundBands([mg_get_plot_bottom(args), args.top], args.padding_percentage, args.outer_padding_percentage);
 
-    args.scalefns.yf = function(di) {
-        return args.scales.Y(di[args.y_accessor]);
-    };
+    mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
 
-    var svg = mg_get_svg_child_of(args.target);
+    if (!args.y_axis) { return this; }
 
-    //remove the old y-axis, add new one
-    svg.selectAll('.mg-y-axis').remove();
-
-    var g = svg.append('g')
-        .classed('mg-y-axis', true);
-
-    if (!args.y_axis) {
-        return this;
-    }
-
-    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-        .attr('x', args.left)
-        .attr('y', function(d) {
-            return args.scales.Y(d) + args.scales.Y.rangeBand() / 2
-                + (args.buffer)*args.outer_padding_percentage;
-        })
-        .attr('dy', '.35em')
-        .attr('text-anchor', 'end')
-        .text(String);
-
-    if (args.rotate_y_labels) {
-        labels.attr({
-            dy: 0,
-            transform: function() {
-                var elem = d3.select(this);
-                return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-            }
-        });
-    }
+    mg_add_categorical_labels(args);
 
     return this;
 }
