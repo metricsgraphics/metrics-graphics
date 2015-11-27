@@ -91,12 +91,17 @@ function x_axis_categorical(args) {
     mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
     mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
     mg_selectAll_and_remove(svg, '.mg-x-axis');
+
     var g = mg_add_g(svg, 'mg-x-axis');
 
     if (!args.x_axis) { return this; }
 
-    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
+    mg_add_x_axis_categorical_labels(g, args, additional_buffer);
+    return this;
+}
 
+function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
+    var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
     labels.attr('x', function(d) {
             return args.scales.X(d) + args.scales.X.rangeBand() / 2
                 + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
@@ -114,51 +119,18 @@ function x_axis_categorical(args) {
         });
     }
     mg_rotate_labels(labels, args.rotate_x_labels);
-
-    return this;
 }
+
 
 MG.x_axis_categorical = x_axis_categorical;
 
+
 function mg_point_add_color_scale(args) {
-    var min_color, max_color,
-        color_domain, color_range;
+    var color_domain, color_range;
 
     if (args.color_accessor !== null) {
-        if (args.color_domain === null) {
-            if (args.color_type === 'number') {
-                min_color = d3.min(args.data[0], function(d) {
-                    return d[args.color_accessor];
-                });
-
-                max_color = d3.max(args.data[0], function(d) {
-                    return d[args.color_accessor];
-                });
-
-                color_domain = [min_color, max_color];
-            }
-            else if (args.color_type === 'category') {
-                color_domain = d3.set(args.data[0]
-                    .map(function(d) {
-                        return d[args.color_accessor];
-                    }))
-                    .values();
-
-                color_domain.sort();
-            }
-        } else {
-            color_domain = args.color_domain;
-        }
-
-        if (args.color_range === null) {
-            if (args.color_type === 'number') {
-                color_range = ['blue', 'red'];
-            } else {
-                color_range = null;
-            }
-        } else {
-            color_range = args.color_range;
-        }
+        color_domain = mg_get_color_domain(args);
+        color_range  = mg_get_color_range(args);
 
     if (args.color_type === 'number') {
             args.scales.color = d3.scale.linear()
@@ -177,27 +149,54 @@ function mg_point_add_color_scale(args) {
     }
 }
 
+function mg_get_color_domain(args) {
+    var min_color, max_color;
+    if (args.color_domain === null) {
+        if (args.color_type === 'number') {
+            min_color = d3.min(args.data[0], function(d) {
+                return d[args.color_accessor];
+            });
+
+            max_color = d3.max(args.data[0], function(d) {
+                return d[args.color_accessor];
+            });
+
+            color_domain = [min_color, max_color];
+        }
+        else if (args.color_type === 'category') {
+            color_domain = d3.set(args.data[0]
+                .map(function(d) {
+                    return d[args.color_accessor];
+                }))
+                .values();
+
+            color_domain.sort();
+        }
+    } else {
+        color_domain = args.color_domain;
+    }
+    return color_domain;
+}
+
+function mg_get_color_range(args) {
+    var color_range;
+    if (args.color_range === null) {
+        if (args.color_type === 'number') {
+            color_range = ['blue', 'red'];
+        } else {
+            color_range = null;
+        }
+    } else {
+        color_range = args.color_range;
+    }
+    return color_range;
+}
+
 function mg_point_add_size_scale(args) {
     var min_size, max_size, size_domain, size_range;
     if (args.size_accessor !== null) {
-        if (args.size_domain === null) {
-            min_size = d3.min(args.data[0], function(d) {
-                return d[args.size_accessor];
-            });
-
-            max_size = d3.max(args.data[0], function(d) {
-                return d[args.size_accessor];
-            });
-
-            size_domain = [min_size, max_size];
-        } else {
-            size_domain = args.size_domain;
-        }
-        if (args.size_range === null) {
-            size_range = [1,5]; //args.size_domain;
-        } else {
-            size_range = args.size_range;
-        }
+        size_domain = mg_get_size_domain(args);
+        size_range  = mg_get_size_range(args);
 
         args.scales.size = d3.scale.linear()
             .domain(size_domain)
@@ -207,6 +206,34 @@ function mg_point_add_size_scale(args) {
         mg_add_scale_function(args, 'size', 'size', args.size_accessor);
 
     }
+}
+
+function mg_get_size_domain (args) {
+    var size_domain;
+    if (args.size_domain === null) {
+        min_size = d3.min(args.data[0], function(d) {
+            return d[args.size_accessor];
+        });
+
+        max_size = d3.max(args.data[0], function(d) {
+            return d[args.size_accessor];
+        });
+
+        size_domain = [min_size, max_size];
+    } else {
+        size_domain = args.size_domain;
+    }
+    return size_domain;
+}
+
+function mg_get_size_range (args) {
+    var size_range;
+    if (args.size_range === null) {
+        size_range = [1,5]; //args.size_domain;
+    } else {
+        size_range = args.size_range;
+    }
+    return size_range;
 }
 
 function mg_add_x_label(g, args) {
@@ -365,8 +392,13 @@ function mg_add_x_axis_tick_lines(args, g) {
 }
 
 function mg_add_x_tick_labels(g, args) {
-    var ticks = args.scales.X.ticks(args.xax_count);
+    mg_add_primary_x_axis_label(args, g);
+    mg_add_secondary_x_axis_label(args,g);
 
+}
+
+function mg_add_primary_x_axis_label(args,g) {
+    var ticks = args.scales.X.ticks(args.xax_count);
     var labels = g.selectAll('.mg-xax-labels')
         .data(ticks).enter()
             .append('text')
@@ -390,71 +422,83 @@ function mg_add_x_tick_labels(g, args) {
             return args.xax_units + args.processed.xax_format(d);
         });
     }
+}
 
+function mg_add_secondary_x_axis_label(args,g) {
     if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-        var secondary_marks,
-            secondary_function, yformat;
-
-        var time_frame = args.processed.x_time_frame;
-        switch(time_frame) {
-            case 'millis':
-            case 'seconds':
-                secondary_function = d3.time.days;
-                if (args.european_clock) yformat = MG.time_format(args.utc_time, '%b %d');
-                else yformat = MG.time_format(args.utc_time, '%I %p');
-                break;
-            case 'less-than-a-day':
-                secondary_function = d3.time.days;
-                yformat = MG.time_format(args.utc_time, '%b %d');
-                break;
-            case 'four-days':
-                secondary_function = d3.time.days;
-                yformat = MG.time_format(args.utc_time, '%b %d');
-                break;
-            default:
-                secondary_function = d3.time.years;
-                yformat = MG.time_format(args.utc_time, '%Y');
-        }
-
-        var years = secondary_function(args.processed.min_x, args.processed.max_x);
-
-        if (years.length === 0) {
-            var first_tick = args.scales.X.ticks(args.xax_count)[0];
-            years = [first_tick];
-        }
-
-        //append year marker to x-axis group
-        g = g.append('g')
-            .classed('mg-year-marker', true)
-
-        if (time_frame === 'default' && args.show_year_markers) {
-            g.selectAll('.mg-year-marker')
-                .data(years).enter()
-                    .append('line')
-                        .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
-                        .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
-                        .attr('y1', args.top)
-                        .attr('y2', args.height - args.bottom);
-        }
-
-        g.selectAll('.mg-year-marker')
-            .data(years).enter()
-                .append('text')
-                    .attr('x', function(d, i) {
-                        return args.scales.X(d).toFixed(2);
-                    })
-                    .attr('y', function() {
-                        var xAxisTextElement = d3.select(args.target)
-                            .select('.mg-x-axis text').node().getBoundingClientRect();
-
-                        return (args.height - args.bottom + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
-                    })
-                    .attr('dy', '.50em')
-                    .attr('text-anchor', 'middle')
-                    .text(function(d) {
-                        return yformat(new Date(d));
-                    });
+        var tf = mg_get_yformat_and_secondary_time_function(args);
+        mg_add_secondary_x_axis_elements(args, g, tf.timeframe, tf.yformat, tf.secondary);
     }
+}
+
+function mg_get_yformat_and_secondary_time_function (args) {
+    var tf = {};
+    tf.timeframe = args.processed.x_time_frame;
+    switch(tf.timeframe) {
+        case 'millis':
+        case 'seconds':
+            tf.secondary = d3.time.days;
+            if (args.european_clock) tf.yformat = MG.time_format(args.utc_time, '%b %d');
+            else yformat = MG.time_format(args.utc_time, '%I %p');
+            break;
+        case 'less-than-a-day':
+            tf.secondary = d3.time.days;
+            tf.yformat = MG.time_format(args.utc_time, '%b %d');
+            break;
+        case 'four-days':
+            tf.secondary = d3.time.days;
+            tf.yformat = MG.time_format(args.utc_time, '%b %d');
+            break;
+        default:
+            tf.secondary = d3.time.years;
+            tf.yformat = MG.time_format(args.utc_time, '%Y');
+    }
+    return tf;
+}
+
+function mg_add_secondary_x_axis_elements(args, g, time_frame, yformat, secondary_function) {
+    var years = secondary_function(args.processed.min_x, args.processed.max_x);
+    if (years.length === 0) {
+        var first_tick = args.scales.X.ticks(args.xax_count)[0];
+        years = [first_tick];
+    }
+
+    var g = mg_add_g(g, 'mg-year-marker');
+
+    if (time_frame === 'default' && args.show_year_markers) {
+        mg_add_year_marker_line(args, g, years, yformat);
+    }
+    mg_add_year_marker_text(args, g, years, yformat);
+
+}
+
+function mg_add_year_marker_line (args, g, years, yformat) {
+    g.selectAll('.mg-year-marker')
+        .data(years).enter()
+            .append('line')
+                .attr('x1', function(d) { return args.scales.X(d).toFixed(2); })
+                .attr('x2', function(d) { return args.scales.X(d).toFixed(2); })
+                .attr('y1', args.top)
+                .attr('y2', args.height - args.bottom);
+}
+
+function mg_add_year_marker_text (args, g, years, yformat) {
+    g.selectAll('.mg-year-marker')
+        .data(years).enter()
+            .append('text')
+                .attr('x', function(d, i) {
+                    return args.scales.X(d).toFixed(2);
+                })
+                .attr('y', function() {
+                    var xAxisTextElement = d3.select(args.target)
+                        .select('.mg-x-axis text').node().getBoundingClientRect();
+                    return (mg_get_bottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
+                })
+                .attr('dy', '.50em')
+                .attr('text-anchor', 'middle')
+                .text(function(d) {
+                    return yformat(new Date(d));
+                });
 }
 
 function mg_min_max_x_for_nonbars (mx, args, data) {

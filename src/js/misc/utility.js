@@ -67,19 +67,31 @@ function mg_get_plot_bottom (args) {
   return mg_get_bottom(args) - args.buffer;
 }
 
+function mg_get_top (args) {
+    return args.top;
+}
+
 function mg_get_plot_top (args) {
     // returns the pixel location of the top side of the plot area.
-    return args.top + args.buffer;
+    return mg_get_top(args) + args.buffer;
+}
+
+function mg_get_left (args) {
+    return args.left;
 }
 
 function mg_get_plot_left (args) {
     // returns the pixel location of the left side of the plot area.
-    return args.left + args.buffer;
+    return mg_get_left(args) + args.buffer;
+}
+
+function mg_get_right (args) {
+    return args.width - args.right;
 }
 
 function mg_get_plot_right (args) {
     // returns the pixel location of the right side of the plot area.
-    return args.width - args.right - args.buffer;
+    return mg_get_right(args) - args.buffer;
 }
 
 //////// adding elements, removing elements /////////////
