@@ -1383,24 +1383,14 @@ function mg_point_add_color_scale (args) {
 }
 
 function mg_get_color_domain (args) {
-  var min_color, max_color, color_domain;
+  var color_domain;
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
-      min_color = d3.min(args.data[0], function (d) {
-        return d[args.color_accessor];
-      });
-
-      max_color = d3.max(args.data[0], function (d) {
-        return d[args.color_accessor];
-      });
-
-      color_domain = [min_color, max_color];
+      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor]});
     }
     else if (args.color_type === 'category') {
       color_domain = d3.set(args.data[0]
-        .map(function (d) {
-          return d[args.color_accessor];
-        }))
+        .map(function (d) { return d[args.color_accessor]; }))
         .values();
 
       color_domain.sort();
@@ -1441,21 +1431,9 @@ function mg_point_add_size_scale (args) {
 }
 
 function mg_get_size_domain (args) {
-  var size_domain, min_size, max_size;
-  if (args.size_domain === null) {
-    min_size = d3.min(args.data[0], function (d) {
-      return d[args.size_accessor];
-    });
-
-    max_size = d3.max(args.data[0], function (d) {
-      return d[args.size_accessor];
-    });
-
-    size_domain = [min_size, max_size];
-  } else {
-    size_domain = args.size_domain;
-  }
-  return size_domain;
+  return args.size_domain === null ? 
+        d3.extents(args.data[0], function(d){return d[args.size_accessor]}) : 
+        args.size_domain;
 }
 
 function mg_get_size_range (args) {
@@ -1706,8 +1684,8 @@ function mg_add_year_marker_line (args, g, years, yformat) {
     .append('line')
     .attr('x1', function (d) { return args.scales.X(d).toFixed(2); })
     .attr('x2', function (d) { return args.scales.X(d).toFixed(2); })
-    .attr('y1', args.top)
-    .attr('y2', args.height - args.bottom);
+    .attr('y1', mg_get_top(args))
+    .attr('y2', mg_get_bottom(args));
 }
 
 function mg_add_year_marker_text (args, g, years, yformat) {
