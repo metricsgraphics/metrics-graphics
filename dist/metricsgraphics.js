@@ -1221,6 +1221,7 @@ function mg_add_categorical_labels (args) {
     var svg = mg_get_svg_child_of(args.target);
     mg_selectAll_and_remove(svg, '.mg-y-axis');
     var g = mg_add_g(svg, 'mg-y-axis');
+
     var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
             .attr('x', args.left)
             .attr('y', function(d) {
@@ -1231,27 +1232,22 @@ function mg_add_categorical_labels (args) {
             .attr('text-anchor', 'end')
             .text(String);
 
-        if (args.rotate_y_labels) {
-            labels.attr({
-                dy: 0,
-                transform: function() {
-                    var elem = d3.select(this);
-                    return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-                }
-            });
-        }
+    mg_rotate_labels(labels, args.rotate_y_labels);
+    // if (args.rotate_y_labels) {
+    //     labels.attr({
+    //         dy: 0,
+    //         transform: function() {
+    //             var elem = d3.select(this);
+    //             return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+    //         }
+    //     });
+    // }
 }
 
 function y_axis_categorical (args) {
-    // first, come up with y_axis
-    args.scales.Y = d3.scale.ordinal()
-        .domain(args.categorical_variables)
-        .rangeRoundBands([mg_get_plot_bottom(args), args.top], args.padding_percentage, args.outer_padding_percentage);
-
+    mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), args.top,  args.padding_percentage, args.outer_padding_percentage);
     mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
-
     if (!args.y_axis) { return this; }
-
     mg_add_categorical_labels(args);
 
     return this;
@@ -1312,7 +1308,6 @@ function mg_define_x_scale (args) {
         .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
 }
 
-function mg_remove_x_axis (svg) { svg.selectAll('.mg-x-axis').remove(); }
 
 function x_axis(args) {
     'use strict';
@@ -1325,12 +1320,9 @@ function x_axis(args) {
         mg_point_add_color_scale(args);
         mg_point_add_size_scale(args);
     }
-
-    //remove the old x-axis, add new one
-    mg_remove_x_axis(svg);
+    mg_selectAll_and_remove(svg, '.mg-x-axis');
 
     if (!args.x_axis) { return this; }
-
     var g = mg_add_g(svg, 'mg-x-axis');
 
     if (args.x_label) { mg_add_x_label(g, args); }
@@ -1351,14 +1343,9 @@ function x_axis_categorical(args) {
     var svg_width = args.width,
         additional_buffer = 0;
 
-    if (args.chart_type === 'bar') {
-        additional_buffer = args.buffer + 5;
-    }
+    if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
 
-    args.scales.X = d3.scale.ordinal()
-        .domain(args.categorical_variables.reverse())
-        .rangeRoundBands([args.left, mg_get_plot_right(args) - additional_buffer]);
-
+    mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
     mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
     mg_selectAll_and_remove(svg, '.mg-x-axis');
     var g = mg_add_g(svg, 'mg-x-axis');
@@ -1383,17 +1370,7 @@ function x_axis_categorical(args) {
             truncate_text(elem, d, width);
         });
     }
-
-    if (args.rotate_x_labels) {
-        labels.attr({
-            dy: 0,
-            'text-anchor': (args.rotate_x_labels + 360) % 360 > 180 ? 'end' : 'start',
-            transform: function() {
-                var elem = d3.select(this);
-                return 'rotate('+args.rotate_x_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-            }
-        });
-    }
+    mg_rotate_labels(labels, args.rotate_x_labels);
 
     return this;
 }
@@ -1547,31 +1524,32 @@ function mg_get_time_format(utc, diff) {
     return main_time_format;
 }
 
+function mg_process_time_format (args) { 
+    var diff;
+    var main_time_format;
+    var time_frame;
+
+    if (args.time_series) {
+        diff = (args.processed.max_x - args.processed.min_x) / 1000;
+        time_frame = mg_get_time_frame(diff);
+        main_time_format = mg_get_time_format(args.utc_time, diff);
+    }
+
+    args.processed.main_x_time_format = main_time_format;
+    args.processed.x_time_frame = time_frame;
+}
+
 function mg_default_xax_format(args) {
     if (args.xax_format) {
         return args.xax_format;
     }
     var data = args.processed.original_data || args.data;
-    var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor]
+    var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor];
     return function(d) {
-        var diff;
-        var main_time_format;
-        var time_frame;
-
-        if (args.time_series) {
-            diff = (args.processed.max_x - args.processed.min_x) / 1000;
-            time_frame = mg_get_time_frame(diff);
-            main_time_format = mg_get_time_format(args.utc_time, diff);
-        }
-
-        args.processed.main_x_time_format = main_time_format;
-        args.processed.x_time_frame = time_frame;
-
+        
+        mg_process_time_format(args);
         var df = MG.time_format(args.utc_time, '%b %d');
         var pf = d3.formatPrefix(d);
-
-        // format as date or not, of course user can pass in
-        // a custom function if desired
         if (test_point instanceof Date) {
             return args.processed.main_x_time_format(new Date(d));
         } else if (typeof test_point === 'number') {
@@ -1590,10 +1568,16 @@ function mg_default_xax_format(args) {
 
 function mg_add_x_ticks(g, args) {
     var last_i = args.scales.X.ticks(args.xax_count).length - 1;
-    var ticks = args.scales.X.ticks(args.xax_count);
 
-    if (args.chart_type !== 'bar' && !args.x_extended_ticks && !args.y_extended_ticks) {
-        //draw x-axis line
+    if (args.chart_type !== 'bar' && !args.y_extended_ticks) {
+        mg_add_x_axis_rim(args, g);
+        mg_add_x_axis_tick_lines(args, g);
+    }
+
+}
+
+function mg_add_x_axis_rim(args, g) {
+    if (!args.x_extended_ticks){
         g.append('line')
             .attr('x1', function() {
                 if (args.xax_count === 0) {
@@ -1614,7 +1598,11 @@ function mg_add_x_ticks(g, args) {
             .attr('y1', args.height - args.bottom)
             .attr('y2', args.height - args.bottom);
     }
+}
 
+
+function mg_add_x_axis_tick_lines(args, g) {
+    var ticks = args.scales.X.ticks(args.xax_count);
     g.selectAll('.mg-xax-ticks')
         .data(ticks).enter()
             .append('line')
@@ -1726,63 +1714,87 @@ function mg_add_x_tick_labels(g, args) {
     }
 }
 
-function mg_find_min_max_x(args) {
-    var last_i,
-        extent_x = [],
-        min_x,
-        max_x,
-        all_data = [].concat.apply([], args.data),
-        mapDtoX = function(d) { return d[args.x_accessor]; };
+function mg_min_max_x_for_nonbars (mx, args, data) {
+    var extent_x = d3.extent(data, function(d) { return d[args.x_accessor]; } );
+    mx.min = extent_x[0];
+    mx.max = extent_x[1];
+}
 
+function mg_min_max_x_for_bars (mx, args, data) {
+    mx.min = 0;
+    mx.max = d3.max(data, function(d) {
+        var trio = [
+            d[args.x_accessor],
+            (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
+            (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
+        ];
+        return Math.max.apply(null, trio);
+    });
+}
+
+function mg_min_max_x_for_dates (mx) {
+    var yesterday = MG.clone(mx.min).setDate(mx.min.getDate() - 1);
+    var tomorrow = MG.clone(mx.min).setDate(mx.min.getDate() + 1);
+    mx.min = yesterday;
+    mx.max = tomorrow;
+}
+
+function mg_min_max_x_for_numbers (mx) {
+    // this seems silly. I envision a problem with something this simplistic.
+    mx.min = mx.min - 1;
+    mx.max = mx.max + 1;
+}
+
+function mg_min_max_x_for_strings (mx) {
+    // ok. Not sure who wrote this, but this seems also pretty silly. We 
+    // should not be allowing strings here to be coerced into numbers. Veto.
+    mx.min = Number(mx.min) - 1;
+    mx.max = Number(mx.max) + 1;
+}
+
+function mg_force_xax_count_to_be_two (args) {
+    args.xax_count = 2;
+}
+
+function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data) {
     if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
-        extent_x = d3.extent(all_data, mapDtoX);
-        min_x = extent_x[0];
-        max_x = extent_x[1];
+        mg_min_max_x_for_nonbars(mx, args, data);
 
     } else if (args.chart_type === 'bar') {
-        min_x = 0;
-        max_x = d3.max(all_data, function(d) {
-            var trio = [
-                d[args.x_accessor],
-                (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
-                (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
-            ];
-            return Math.max.apply(null, trio);
-        });
+        mg_min_max_x_for_bars(mx, args, data);
     }
-
     //if data set is of length 1, expand the range so that we can build the x-axis
-    if (min_x === max_x
+    if (mx.min === mx.max
             && !(args.min_x && args.max_x)
         ) {
-        if (min_x instanceof Date) {
-            var yesterday = MG.clone(min_x).setDate(min_x.getDate() - 1);
-            var tomorrow = MG.clone(min_x).setDate(min_x.getDate() + 1);
-
-            min_x = yesterday;
-            max_x = tomorrow;
+        if (mx.min instanceof Date) {
+            mg_min_max_x_for_dates(mx);
         } else if (typeof min_x === 'number') {
-            min_x = min_x - 1;
-            max_x = max_x + 1;
+            mg_min_max_x_for_numbers(mx);
         } else if (typeof min_x === 'string') {
-            min_x = Number(min_x) - 1;
-            max_x = Number(max_x) + 1;
+            mg_min_max_x_for_strings(mx);
         }
-
         //force xax_count to be 2
-        args.xax_count = 2;
+        mg_force_xax_count_to_be_two(args);
     }
+}
 
-    min_x = args.min_x || min_x;
-    max_x = args.max_x || max_x;
+function mg_find_min_max_x_from_data(args, mx, data) {
+    var all_data = mg_flatten_array(args.data);    
+    var mx = {min:null, max:null};
+    mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, all_data);
+    mx.min = args.min_x || mx.min;
+    mx.max = args.max_x || mx.max;
     args.x_axis_negative = false;
+    args.processed.min_x = mx.min;
+    args.processed.max_x = mx.max;
+}
 
-    args.processed.min_x = min_x;
-    args.processed.max_x = max_x;
 
+function mg_find_min_max_x(args) {
+    mg_find_min_max_x_from_data(args);
     mg_select_xax_format(args);
-
-    MG.call_hook('x_axis.process_min_max', args, min_x, max_x);
+    MG.call_hook('x_axis.process_min_max', args, args.min_x, args.max_x);
 
     if (!args.time_series) {
         if (args.processed.min_x < 0) {
@@ -5367,9 +5379,14 @@ function is_array_of_objects_or_empty(data){
     return is_empty_array(data) || is_array_of_objects(data);
 }
 
+
+function mg_get_bottom (args) {
+    return args.height - args.bottom;
+}
+
 function mg_get_plot_bottom (args) {
   // returns the pixel location of the bottom side of the plot area.
-  return args.height - args.bottom - args.buffer;
+  return mg_get_bottom(args) - args.buffer;
 }
 
 function mg_get_plot_top (args) {
@@ -5400,6 +5417,8 @@ function mg_selectAll_and_remove (svg, cl) {
 function mg_add_g (svg, cl) {
     return svg.append('g').classed(cl, true);
 }
+
+
 
 //////// axis helper functions ////////////
 
@@ -5433,6 +5452,25 @@ function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
         rug.classed(rug_mono_class, true);
     }
 }
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+    args.scales[scale_name] = d3.scale.ordinal()
+        .domain(categorical_variables)
+        .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+function mg_rotate_labels (labels, rotation_degree) {
+    if (rotation_degree) {
+        labels.attr({
+            dy: 0,
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+rotation_degree+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        }); 
+    }
+}
+
 
 //////////////////////////////////////////////////
 

@@ -57,9 +57,14 @@ function is_array_of_objects_or_empty(data){
     return is_empty_array(data) || is_array_of_objects(data);
 }
 
+
+function mg_get_bottom (args) {
+    return args.height - args.bottom;
+}
+
 function mg_get_plot_bottom (args) {
   // returns the pixel location of the bottom side of the plot area.
-  return args.height - args.bottom - args.buffer;
+  return mg_get_bottom(args) - args.buffer;
 }
 
 function mg_get_plot_top (args) {
@@ -90,6 +95,8 @@ function mg_selectAll_and_remove (svg, cl) {
 function mg_add_g (svg, cl) {
     return svg.append('g').classed(cl, true);
 }
+
+
 
 //////// axis helper functions ////////////
 
@@ -123,6 +130,25 @@ function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
         rug.classed(rug_mono_class, true);
     }
 }
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+    args.scales[scale_name] = d3.scale.ordinal()
+        .domain(categorical_variables)
+        .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+function mg_rotate_labels (labels, rotation_degree) {
+    if (rotation_degree) {
+        labels.attr({
+            dy: 0,
+            transform: function() {
+                var elem = d3.select(this);
+                return 'rotate('+rotation_degree+' '+elem.attr('x')+','+elem.attr('y')+')';
+            }
+        }); 
+    }
+}
+
 
 //////////////////////////////////////////////////
 

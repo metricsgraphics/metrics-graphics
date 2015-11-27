@@ -293,6 +293,7 @@ function mg_add_categorical_labels (args) {
     var svg = mg_get_svg_child_of(args.target);
     mg_selectAll_and_remove(svg, '.mg-y-axis');
     var g = mg_add_g(svg, 'mg-y-axis');
+
     var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
             .attr('x', args.left)
             .attr('y', function(d) {
@@ -303,27 +304,22 @@ function mg_add_categorical_labels (args) {
             .attr('text-anchor', 'end')
             .text(String);
 
-        if (args.rotate_y_labels) {
-            labels.attr({
-                dy: 0,
-                transform: function() {
-                    var elem = d3.select(this);
-                    return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-                }
-            });
-        }
+    mg_rotate_labels(labels, args.rotate_y_labels);
+    // if (args.rotate_y_labels) {
+    //     labels.attr({
+    //         dy: 0,
+    //         transform: function() {
+    //             var elem = d3.select(this);
+    //             return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
+    //         }
+    //     });
+    // }
 }
 
 function y_axis_categorical (args) {
-    // first, come up with y_axis
-    args.scales.Y = d3.scale.ordinal()
-        .domain(args.categorical_variables)
-        .rangeRoundBands([mg_get_plot_bottom(args), args.top], args.padding_percentage, args.outer_padding_percentage);
-
+    mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), args.top,  args.padding_percentage, args.outer_padding_percentage);
     mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
-
     if (!args.y_axis) { return this; }
-
     mg_add_categorical_labels(args);
 
     return this;
