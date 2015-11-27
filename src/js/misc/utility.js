@@ -35,7 +35,7 @@ function is_function(thing){
 }
 
 function is_empty_array(thing){
-    return is_array(thing) && thing.length==0;
+    return is_array(thing) && thing.length === 0;
 }
 
 function is_object(thing){
@@ -43,7 +43,7 @@ function is_object(thing){
 }
 
 function is_array_of_arrays(data){
-    var all_elements = data.map(function(d){return is_array(d)===true && d.length>0});
+    var all_elements = data.map(function(d){return is_array(d) === true && d.length > 0});
     return d3.sum(all_elements) === data.length;
 }
 
@@ -114,12 +114,10 @@ function mg_add_g (svg, cl) {
 
 function mg_make_rug(args, rug_class){
     var svg = mg_get_svg_child_of(args.target);
-    var all_data = mg_flatten_array(args.data)
+    var all_data = mg_flatten_array(args.data);
     var rug = svg.selectAll('line.'+rug_class).data(all_data);
     //set the attributes that do not change after initialization, per
-    rug.enter().append('svg:line')
-        .attr('class', rug_class)
-        .attr('opacity', 0.3);
+    rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
     //remove rug elements that are no longer in use
     mg_exit_and_remove(rug);
     //set coordinates of new rug elements
@@ -129,7 +127,7 @@ function mg_make_rug(args, rug_class){
 
 function mg_add_scale_function(args, scalefcn_name, scale, accessor){
     args.scalefns[scalefcn_name] = function(di){
-        return args.scales[scale](di[accessor])
+        return args.scales[scale](di[accessor]);
     }
 }
 
