@@ -34,7 +34,7 @@ function mg_flatten_all_data (args) {
     return all_data;
 }
 
-function mg_add_x_scale (args) {
+function mg_define_x_scale (args) {
     mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
     mg_find_min_max_x(args);
 
@@ -57,12 +57,8 @@ function x_axis(args) {
     'use strict';
     
     var svg = mg_get_svg_child_of(args.target);
-    var g;
-    var min_x;
-    var max_x;
-
     mg_add_processed_object(args);
-    mg_add_x_scale(args);
+    mg_define_x_scale(args);
 
     if (args.chart_type === 'point') {
         mg_point_add_color_scale(args);
@@ -72,27 +68,16 @@ function x_axis(args) {
     //remove the old x-axis, add new one
     mg_remove_x_axis(svg);
 
-    if (!args.x_axis) {
-        return this;
-    }
+    if (!args.x_axis) { return this; }
 
-    //x axis
-    g = svg.append('g')
-        .classed('mg-x-axis', true);
+    var g = mg_add_g(svg, 'mg-x-axis');
 
-    //var last_i = args.scales.X.ticks(args.xax_count).length - 1;
-
-    //are we adding a label?
-    if (args.x_label) {
-        mg_add_x_label(g, args);
-    }
+    if (args.x_label) { mg_add_x_label(g, args); }
 
     mg_add_x_ticks(g, args);
     mg_add_x_tick_labels(g, args);
 
-    if (args.x_rug) {
-        x_rug(args);
-    }
+    if (args.x_rug) { x_rug(args); }
 
     return this;
 }
@@ -113,19 +98,11 @@ function x_axis_categorical(args) {
         .domain(args.categorical_variables.reverse())
         .rangeRoundBands([args.left, mg_get_plot_right(args) - additional_buffer]);
 
-    args.scalefns.xf = function(di) {
-        return args.scales.X(di[args.x_accessor]);
-    };
+    mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
+    mg_selectAll_and_remove(svg, '.mg-x-axis');
+    var g = mg_add_g(svg, 'mg-x-axis');
 
-    //remove the old x-axis, add new one
-    svg.selectAll('.mg-x-axis').remove();
-
-    var g = svg.append('g')
-        .classed('mg-x-axis', true);
-
-    if (!args.x_axis) {
-        return this;
-    }
+    if (!args.x_axis) { return this; }
 
     var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
 
@@ -215,10 +192,7 @@ function mg_point_add_color_scale(args) {
 
             args.scales.color.domain(color_domain);
         }
-
-        args.scalefns.color = function(di) {
-            return args.scales.color(di[args.color_accessor]);
-        };
+        mg_add_scale_function(args, 'color', 'color', args.color_accessor);
     }
 }
 
@@ -249,9 +223,8 @@ function mg_point_add_size_scale(args) {
             .range(size_range)
             .clamp(true);
 
-        args.scalefns.size = function(di) {
-            return args.scales.size(di[args.size_accessor]);
-        };
+        mg_add_scale_function(args, 'size', 'size', args.size_accessor);
+
     }
 }
 
