@@ -1,6 +1,177 @@
 (function () {
   'use strict';
 
+  function mg_line_graph_generators(args) {
+    mg_add_line_generator(args);
+    mg_add_area_generator(args);
+    mg_add_flat_line_generator(args);
+    mg_add_confidence_band_generator(args);
+  }
+
+  function mg_add_confidence_band_generator(args) {
+    args.plot.existing_band = args.plot.svg.selectAll('.mg-confidence-band');
+    if (args.show_confidence_band) {
+      args.plot.confidence_area = d3.svg.area()
+        .defined(args.plot.line.defined())
+        .x(args.scalefns.xf)
+        .y0(function (d) {
+          var l = args.show_confidence_band[0];
+          return args.scales.Y(d[l]);
+        })
+        .y1(function (d) {
+          var u = args.show_confidence_band[1];
+          return args.scales.Y(d[u]);
+        })
+        .interpolate(args.interpolate)
+        .tension(args.interpolate_tension);
+    }
+  }
+
+  function mg_add_area_generator(args) {
+    args.plot.area = d3.svg.area()
+      .defined(args.plot.line.defined())
+      .x(args.scalefns.xf)
+      .y0(args.scales.Y.range()[0])
+      .y1(args.scalefns.yf)
+      .interpolate(args.interpolate)
+      .tension(args.interpolate_tension);
+  }
+
+  function mg_add_flat_line_generator(args) {
+    args.plot.flat_line = d3.svg.line()
+      .defined(function (d) {
+        return (d['_missing'] == undefined || d['_missing'] != true)
+        && d[args.y_accessor] != null;
+      })
+      .x(args.scalefns.xf)
+      .y(function () { return args.scales.Y(args.plot.data_median); })
+      .interpolate(args.interpolate)
+      .tension(args.interpolate_tension);
+  }
+
+  function mg_add_line_generator(args) {
+    args.plot.line = d3.svg.line()
+        .x(args.scalefns.xf)
+        .y(args.scalefns.yf)
+        .interpolate(args.interpolate)
+        .tension(args.interpolate_tension);
+
+    // if missing_is_zero is not set, then hide data points that fall in missing
+    // data ranges or that have been explicitly identified as missing in the
+    // data source.
+    if (!args.missing_is_zero) {
+      // a line is defined if the _missing attrib is not set to true
+      // and the y-accessor is not null
+      args.plot.line = args.plot.line.defined(function (d) {
+        return (d['_missing'] == undefined || d['_missing'] != true)
+        && d[args.y_accessor] != null;
+      });
+    }
+  }
+
+  function mg_add_confidence_band(args, series_index) {
+    var confidenceBand;
+
+    if (args.show_confidence_band) {
+      if (!args.plot.existing_band.empty()) {
+        confidenceBand = args.plot.existing_band
+          .transition()
+          .duration(function () {
+            return (args.transition_on_update) ? 1000 : 0;
+          });
+      } else {
+        confidenceBand = args.plot.svg.append('path')
+          .attr('class', 'mg-confidence-band');
+      }
+
+      confidenceBand
+        .attr('d', args.plot.confidence_area(args.data[series_index]))
+        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+    }
+  }
+
+  function mg_add_area (args, line_index, line_id) {
+    var areas = args.plot.svg.selectAll('.mg-main-area.mg-area' + line_id);
+    if (args.plot.display_area) {
+      // if area already exists, transition it
+      if (!areas.empty()) {
+        args.plot.svg.node().appendChild(areas.node());
+
+        areas.transition()
+          .duration(args.plot.update_transition_duration)
+          .attr('d', args.plot.area(args.data[line_index]))
+          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+      } else { // otherwise, add the area
+        args.plot.svg.append('path')
+          .classed('mg-main-area', true)
+          .classed('mg-area' + line_id, true)
+          .classed('mg-area' + line_id + '-color', args.colors === null)
+          .attr('d', args.plot.area(args.data[line_index]))
+          .attr('fill', args.colors === null ? '' : args.colors[line_index])
+          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+      }
+    } else if (!areas.empty()) {
+      areas.remove();
+    }
+  }
+
+  function mg_transition_line(args, existing_line, line_index) {
+    args.plot.svg.node().appendChild(existing_line.node());
+
+    var lineTransition = existing_line.transition()
+      .duration(args.plot.update_transition_duration);
+
+    if (!args.plot.display_area && args.transition_on_update) {
+      lineTransition.attrTween('d', path_tween(args.plot.line(args.data[line_index]), 4));
+    } else {
+      lineTransition.attr('d', args.plot.line(args.data[line_index]));
+    }
+  }
+
+  function mg_color_line (colors, this_path, line_index, line_id) {
+    if (colors) {
+      // for now, if args.colors is not an array, then keep moving as if nothing happened.
+      // if args.colors is not long enough, default to the usual line_id color.
+      if (colors.constructor === Array) {
+        this_path.attr('stroke', colors[line_index]);
+        if (colors.length < line_index + 1) {
+          // Go with default coloring.
+          this_path.classed('mg-line' + (line_id) + '-color', true);
+        }
+      } else {
+        this_path.classed('mg-line' + (line_id) + '-color', true);
+      }
+    } else {
+      // this is the typical workflow
+      this_path.classed('mg-line' + (line_id) + '-color', true);
+    }
+  }
+
+  function mg_add_line (args, existing_line, line_index, line_id) {
+    if (!existing_line.empty()) {
+      mg_transition_line(args, existing_line, line_index);
+    } else { // otherwise...
+      // if we're animating on load, animate the line from its median value
+      var this_path = args.plot.svg.append('path')
+        .attr('class', 'mg-main-line')
+        .classed('mg-line' + (line_id), true);
+
+      mg_color_line(args.colors, this_path, line_index, line_id);
+      
+      if (args.animate_on_load) {
+        args.plot.data_median = d3.median(args.data[line_index], function (d) { return d[args.y_accessor]; });
+        this_path.attr('d', args.plot.flat_line(args.data[line_index]))
+          .transition()
+          .duration(1000)
+          .attr('d', args.plot.line(args.data[line_index]))
+          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+      } else { // or just add the line
+        this_path.attr('d', args.plot.line(args.data[line_index]))
+          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+      }
+    }
+  }
+
   function lineChart (args) {
     this.init = function (args) {
       this.args = args;
@@ -32,102 +203,47 @@
     };
 
     this.mainPlot = function () {
-      var svg = mg_get_svg_child_of(args.target);
+      args.plot = {};
 
-      // remove any old legends if they exist
-      svg.selectAll('.mg-line-legend').remove();
+      args.plot.svg = mg_get_svg_child_of(args.target);
+      args.plot.update_transition_duration = (args.transition_on_update) ? 1000 : 0;
+      args.plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1;
+      mg_selectAll_and_remove(args.plot.svg, '.mg-line-legend');
 
       var legend_group;
       var this_legend;
       if (args.legend) {
-        legend_group = svg.append('g')
+        legend_group = args.plot.svg.append('g')
           .attr('class', 'mg-line-legend');
       }
       var g;
-      var data_median = 0;
-      var updateTransitionDuration = (args.transition_on_update) ? 1000 : 0;
-      var mapToY = function (d) {
-        return d[args.y_accessor];
-      };
+      args.plot.data_median = 0;
 
-      // main line
-      var line = d3.svg.line()
-        .x(args.scalefns.xf)
-        .y(args.scalefns.yf)
-        .interpolate(args.interpolate)
-        .tension(args.interpolate_tension);
-
-      // if missing_is_zero is not set, then hide data points that fall in missing
-      // data ranges or that have been explicitly identified as missing in the
-      // data source
-      if (!args.missing_is_zero) {
-        // a line is defined if the _missing attrib is not set to true
-        // and the y-accessor is not null
-        line = line.defined(function (d) {
-          return (d['_missing'] == undefined || d['_missing'] != true)
-          && d[args.y_accessor] != null;
-        });
-      }
-
+      mg_line_graph_generators(args);
       // for animating line on first load
-      var flat_line = d3.svg.line()
-        .defined(function (d) {
-          return (d['_missing'] == undefined || d['_missing'] != true)
-          && d[args.y_accessor] != null;
-        })
-        .x(args.scalefns.xf)
-        .y(function () { return args.scales.Y(data_median); })
-        .interpolate(args.interpolate)
-        .tension(args.interpolate_tension);
-
-      // main area
-      var area = d3.svg.area()
-        .defined(line.defined())
-        .x(args.scalefns.xf)
-        .y0(args.scales.Y.range()[0])
-        .y1(args.scalefns.yf)
-        .interpolate(args.interpolate)
-        .tension(args.interpolate_tension);
-
-      // confidence band
-      var confidence_area;
-      var existing_band = svg.selectAll('.mg-confidence-band');
-
-      if (args.show_confidence_band) {
-        confidence_area = d3.svg.area()
-          .defined(line.defined())
-          .x(args.scalefns.xf)
-          .y0(function (d) {
-            var l = args.show_confidence_band[0];
-            return args.scales.Y(d[l]);
-          })
-          .y1(function (d) {
-            var u = args.show_confidence_band[1];
-            return args.scales.Y(d[u]);
-          })
-          .interpolate(args.interpolate)
-          .tension(args.interpolate_tension);
-      }
 
       // for building the optional legend
       var legend = '';
       var this_data;
-      var confidenceBand;
 
       // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
       var continueWithDefault = MG.call_hook('line.before_all_series', [args]);
+      var existing_line;
       if (continueWithDefault !== false) {
         for (var i = args.data.length - 1; i >= 0; i--) {
           this_data = args.data[i];
-
           // passing the data for the current line
           MG.call_hook('line.before_each_series', [this_data, args]);
 
+
           // override increment if we have a custom increment series
           var line_id = i + 1;
+
           if (args.custom_line_color_map.length > 0) {
             line_id = args.custom_line_color_map[i];
           }
+
+          existing_line = args.plot.svg.select('path.mg-main-line.mg-line' + (line_id));
 
           args.data[i].line_id = line_id;
 
@@ -135,97 +251,13 @@
             continue;
           }
 
-          // add confidence band
-          if (args.show_confidence_band) {
-            if (!existing_band.empty()) {
-              confidenceBand = existing_band
-                .transition()
-                .duration(function () {
-                  return (args.transition_on_update) ? 1000 : 0;
-                });
-            } else {
-              confidenceBand = svg.append('path')
-                .attr('class', 'mg-confidence-band');
-            }
-
-            confidenceBand
-              .attr('d', confidence_area(args.data[i]))
-              .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-          }
-
-          // add the area
-          var areas = svg.selectAll('.mg-main-area.mg-area' + line_id);
-          var displayArea = args.area && !args.use_data_y_min && args.data.length <= 1;
-          if (displayArea) {
-            // if area already exists, transition it
-            if (!areas.empty()) {
-              svg.node().appendChild(areas.node());
-
-              areas.transition()
-                .duration(updateTransitionDuration)
-                .attr('d', area(args.data[i]))
-                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-            } else { // otherwise, add the area
-              svg.append('path')
-                .classed('mg-main-area', true)
-                .classed('mg-area' + line_id, true)
-                .classed('mg-area' + line_id + '-color', args.colors === null)
-                .attr('d', area(args.data[i]))
-                .attr('fill', args.colors === null ? '' : args.colors[line_id - 1])
-                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-            }
-          } else if (!areas.empty()) {
-            areas.remove();
-          }
+          mg_add_confidence_band(args, i);
+          mg_add_area(args, i, line_id);
 
           // add the line, if it already exists, transition the fine gentleman
-          var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
-          if (!existing_line.empty()) {
-            svg.node().appendChild(existing_line.node());
 
-            var lineTransition = existing_line.transition()
-              .duration(updateTransitionDuration);
 
-            if (!displayArea && args.transition_on_update) {
-              lineTransition.attrTween('d', path_tween(line(args.data[i]), 4));
-            } else {
-              lineTransition.attr('d', line(args.data[i]));
-            }
-          } else { // otherwise...
-            // if we're animating on load, animate the line from its median value
-            var this_path = svg.append('path')
-              .attr('class', 'mg-main-line');
-
-            // UNFINISHED - if we have args.colors, color the line appropriately.
-            if (args.colors) {
-              // for now, if args.colors is not an array, then keep moving as if nothing happened.
-              // if args.colors is not long enough, default to the usual line_id color.
-              if (args.colors.constructor === Array) {
-                this_path.attr('stroke', args.colors[i]);
-                if (args.colors.length < i + 1) {
-                  // Go with default coloring.
-                  this_path.classed('mg-line' + (line_id) + '-color', true);
-                }
-              } else {
-                this_path.classed('mg-line' + (line_id) + '-color', true);
-              }
-            } else {
-              // this is the typical workflow
-              this_path.classed('mg-line' + (line_id) + '-color', true);
-            }
-
-            if (args.animate_on_load) {
-              data_median = d3.median(args.data[i], mapToY);
-              this_path.attr('d', flat_line(args.data[i]))
-                .transition()
-                .duration(1000)
-                .attr('d', line(args.data[i]))
-                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-            } else { // or just add the line
-              this_path.attr('d', line(args.data[i]))
-                .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
-            }
-          }
+          mg_add_line(args, existing_line, i, line_id);
 
           // build legend
           if (args.legend) {
