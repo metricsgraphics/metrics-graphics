@@ -114,6 +114,10 @@
     }
   }
 
+  function mg_default_color_for_path (this_path, line_id) {
+    this_path.classed('mg-line' + (line_id) + '-color', true);
+  }
+
   function mg_color_line (args, this_path, which_line, line_id) {
     if (args.colors) {
       // for now, if args.colors is not an array, then keep moving as if nothing happened.
@@ -122,14 +126,17 @@
         this_path.attr('stroke', args.colors[which_line]);
         if (args.colors.length < which_line + 1) {
           // Go with default coloring.
-          this_path.classed('mg-line' + (line_id) + '-color', true);
+          //this_path.classed('mg-line' + (line_id) + '-color', true);
+          mg_default_color_for_path(this_path, line_id);
         }
       } else {
-        this_path.classed('mg-line' + (line_id) + '-color', true);
+        //this_path.classed('mg-line' + (line_id) + '-color', true);
+        mg_default_color_for_path(this_path, line_id);
       }
     } else {
       // this is the typical workflow
-      this_path.classed('mg-line' + (line_id) + '-color', true);
+      //this_path.classed('mg-line' + (line_id) + '-color', true);
+      mg_default_color_for_path(this_path, line_id);
     }        
   }
 
@@ -262,22 +269,13 @@
       mg_selectAll_and_remove(svg, '.mg-line-legend');
       mg_add_legend_group(args, plot, svg);
 
-      var g;
       plot.data_median = 0;
       plot.update_transition_duration = (args.transition_on_update) ? 1000 : 0;
       plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1;
       plot.legend_text = '';
       mg_line_graph_generators(args, plot, svg);
-
-      // confidence band
-      var confidence_area;
       plot.existing_band = svg.selectAll('.mg-confidence-band');
-
-
-      // for building the optional legend
-      var legend = '';
       var this_data;
-      var confidenceBand;
 
       // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
       var continueWithDefault = MG.call_hook('line.before_all_series', [args]);
