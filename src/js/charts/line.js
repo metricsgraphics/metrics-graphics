@@ -1,15 +1,15 @@
 (function () {
   'use strict';
 
-  function mg_line_graph_generators(args) {
+  function mg_line_graph_generators(args, svg) {
     mg_add_line_generator(args);
     mg_add_area_generator(args);
     mg_add_flat_line_generator(args);
-    mg_add_confidence_band_generator(args);
+    mg_add_confidence_band_generator(args, svg);
   }
 
-  function mg_add_confidence_band_generator(args) {
-    args.plot.existing_band = args.plot.svg.selectAll('.mg-confidence-band');
+  function mg_add_confidence_band_generator(args, svg) {
+    args.plot.existing_band = svg.selectAll('.mg-confidence-band');
     if (args.show_confidence_band) {
       args.plot.confidence_area = d3.svg.area()
         .defined(args.plot.line.defined())
@@ -69,7 +69,7 @@
     }
   }
 
-  function mg_add_confidence_band(args, series_index) {
+  function mg_add_confidence_band(args, series_index, svg) {
     var confidenceBand;
 
     if (args.show_confidence_band) {
@@ -80,7 +80,7 @@
             return (args.transition_on_update) ? 1000 : 0;
           });
       } else {
-        confidenceBand = args.plot.svg.append('path')
+        confidenceBand = svg.append('path')
           .attr('class', 'mg-confidence-band');
       }
 
@@ -90,19 +90,19 @@
     }
   }
 
-  function mg_add_area (args, line_index, line_id) {
-    var areas = args.plot.svg.selectAll('.mg-main-area.mg-area' + line_id);
+  function mg_add_area (args, line_index, line_id, svg) {
+    var areas = svg.selectAll('.mg-main-area.mg-area' + line_id);
     if (args.plot.display_area) {
       // if area already exists, transition it
       if (!areas.empty()) {
-        args.plot.svg.node().appendChild(areas.node());
+        svg.node().appendChild(areas.node());
 
         areas.transition()
           .duration(args.plot.update_transition_duration)
           .attr('d', args.plot.area(args.data[line_index]))
           .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
       } else { // otherwise, add the area
-        args.plot.svg.append('path')
+        svg.append('path')
           .classed('mg-main-area', true)
           .classed('mg-area' + line_id, true)
           .classed('mg-area' + line_id + '-color', args.colors === null)
@@ -115,8 +115,8 @@
     }
   }
 
-  function mg_transition_line(args, existing_line, line_index) {
-    args.plot.svg.node().appendChild(existing_line.node());
+  function mg_transition_line(args, existing_line, line_index, svg) {
+    svg.node().appendChild(existing_line.node());
 
     var lineTransition = existing_line.transition()
       .duration(args.plot.update_transition_duration);
@@ -134,10 +134,7 @@
       // if args.colors is not long enough, default to the usual line_id color.
       if (colors.constructor === Array) {
         this_path.attr('stroke', colors[line_index]);
-        if (colors.length < line_index + 1) {
-          // Go with default coloring.
-          this_path.classed('mg-line' + (line_id) + '-color', true);
-        }
+        if (colors.length < line_index + 1) this_path.classed('mg-line' + (line_id) + '-color', true);
       } else {
         this_path.classed('mg-line' + (line_id) + '-color', true);
       }
@@ -147,12 +144,12 @@
     }
   }
 
-  function mg_add_line (args, existing_line, line_index, line_id) {
+  function mg_add_line (args, existing_line, line_index, line_id, svg) {
     if (!existing_line.empty()) {
       mg_transition_line(args, existing_line, line_index);
     } else { // otherwise...
       // if we're animating on load, animate the line from its median value
-      var this_path = args.plot.svg.append('path')
+      var this_path = svg.append('path')
         .attr('class', 'mg-main-line')
         .classed('mg-line' + (line_id), true);
 
@@ -169,6 +166,82 @@
         this_path.attr('d', args.plot.line(args.data[line_index]))
           .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
       }
+    }
+  }
+
+  function mg_line_id (args, line_index) {
+    var line_id = line_index + 1;
+    if (args.custom_line_color_map.length > 0) {
+      line_id = args.custom_line_color_map[line_index];
+    }
+    return line_id;
+  }
+
+  function mg_add_legend_group (args, svg) {
+    if (args.legend) args.plot.legend_group = mg_add_g(svg, 'mg-line-legend');
+  }
+
+  function mg_add_to_html_legend (args, line_index, line_id, this_legend) {
+    if (args.colors && args.colors.constructor === Array) {
+      args.plot.legend = mg_legend_span_with_custom_color(this_legend, args.colors[line_index]) + args.plot.legend;
+    } else {
+      args.plot.legend = mg_legend_span(this_legend, line_id) + args.plot.legend;
+    };
+  }
+
+  function mg_legend_span_with_custom_color (legend_text, color) {
+    return "<span style='color:" + color + "'>&mdash; " + legend_text + '&nbsp; </span>';
+  }
+
+  function mg_legend_span (legend_text, line_id) { 
+    return "<span class='mg-line" + line_id + "-legend-color'>&mdash; " + legend_text + '&nbsp; </span>';
+  }
+
+  function mg_add_to_svg_legend (args, line_index, line_id, legend_text) {
+    var last_point = args.data[line_index][args.data[line_index].length - 1];
+    var legend_element = args.plot.legend_group.append('svg:text')
+      .attr('x', args.scalefns.xf(last_point))
+      .attr('dx', args.buffer)
+      .attr('y', args.scalefns.yf(last_point))
+      .attr('dy', '.35em')
+      .attr('font-size', 10)
+      .attr('font-weight', '300')
+      .text(legend_text);
+
+    if (args.colors && args.colors.constructor === Array) {
+      if (args.colors.length < line_index + 1) legend_element.classed('mg-line' + (line_id) + '-legend-color', true);
+      else legend_element.attr('fill', args.colors[line_index]);
+    } else {
+      legend_element.classed('mg-line' + (line_id) + '-legend-color', true);
+    }
+  }
+
+  function mg_add_legend_element (args, line_index, line_id, svg) {
+    var this_legend;
+    if (args.legend) {
+      this_legend = mg_pull_legend_text(args.legend, args.data, line_index);
+      if (args.legend_target) {
+        mg_add_to_html_legend(args, line_index, line_id, this_legend);
+      } else {
+        mg_add_to_svg_legend(args, line_index, line_id, this_legend);
+        mg_prevent_vertical_overlap(args.plot.legend_group.selectAll('.mg-line-legend text')[0], args);
+      }
+    }
+  }
+
+  function mg_pull_legend_text (legend, data, line_index) {
+    var this_legend;
+    if (is_array(legend)) {
+      this_legend = legend[line_index];
+    } else if (is_function(legend)) {
+      this_legend = legend(data[line_index]);
+    }
+    return this_legend;
+  }
+
+  function mg_plot_legend_if_legend_target(target, legend) {
+    if (target) {
+      d3.select(target).html(legend);
     }
   }
 
@@ -202,24 +275,23 @@
       return this;
     };
 
+
     this.mainPlot = function () {
       args.plot = {};
 
-      args.plot.svg = mg_get_svg_child_of(args.target);
+      var svg = mg_get_svg_child_of(args.target);
       args.plot.update_transition_duration = (args.transition_on_update) ? 1000 : 0;
       args.plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1;
-      mg_selectAll_and_remove(args.plot.svg, '.mg-line-legend');
+      args.plot.legend = '';
 
-      var legend_group;
+      mg_selectAll_and_remove(svg, '.mg-line-legend');
+
+      mg_add_legend_group(args, svg);
       var this_legend;
-      if (args.legend) {
-        legend_group = args.plot.svg.append('g')
-          .attr('class', 'mg-line-legend');
-      }
       var g;
       args.plot.data_median = 0;
 
-      mg_line_graph_generators(args);
+      mg_line_graph_generators(args, svg);
       // for animating line on first load
 
       // for building the optional legend
@@ -234,80 +306,23 @@
           this_data = args.data[i];
           // passing the data for the current line
           MG.call_hook('line.before_each_series', [this_data, args]);
-
-
-          // override increment if we have a custom increment series
-          var line_id = i + 1;
-
-          if (args.custom_line_color_map.length > 0) {
-            line_id = args.custom_line_color_map[i];
-          }
-
-          existing_line = args.plot.svg.select('path.mg-main-line.mg-line' + (line_id));
+          var line_id = mg_line_id(args, i);
+          existing_line = svg.select('path.mg-main-line.mg-line' + (line_id));
 
           args.data[i].line_id = line_id;
 
           if (this_data.length === 0) {
             continue;
           }
-
-          mg_add_confidence_band(args, i);
-          mg_add_area(args, i, line_id);
-
-          // add the line, if it already exists, transition the fine gentleman
-
-
-          mg_add_line(args, existing_line, i, line_id);
-
-          // build legend
-          if (args.legend) {
-            if (is_array(args.legend)) {
-              this_legend = args.legend[i];
-            } else if (is_function(args.legend)) {
-              this_legend = args.legend(this_data);
-            }
-
-            if (args.legend_target) {
-              if (args.colors && args.colors.constructor === Array) {
-                legend = "<span style='color:" + args.colors[i] + "'>&mdash; "
-                  + this_legend + '&nbsp; </span>' + legend;
-              } else {
-                legend = "<span class='mg-line" + line_id + "-legend-color'>&mdash; "
-                  + this_legend + '&nbsp; </span>' + legend;
-              }
-            } else {
-              var last_point = this_data[this_data.length - 1];
-              var legend_text = legend_group.append('svg:text')
-                .attr('x', args.scalefns.xf(last_point))
-                .attr('dx', args.buffer)
-                .attr('y', args.scalefns.yf(last_point))
-                .attr('dy', '.35em')
-                .attr('font-size', 10)
-                .attr('font-weight', '300')
-                .text(this_legend);
-
-              if (args.colors && args.colors.constructor === Array) {
-                if (args.colors.length < i + 1) {
-                  legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
-                } else {
-                  legend_text.attr('fill', args.colors[i]);
-                }
-              } else {
-                legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
-              }
-
-              mg_prevent_vertical_overlap(legend_group.selectAll('.mg-line-legend text')[0], args);
-            }
-          }
-
-          // passing the data for the current line
+          mg_add_confidence_band(args, i, svg);
+          mg_add_area(args, i, line_id, svg);
+          mg_add_line(args, existing_line, i, line_id, svg);
+          mg_add_legend_element(args, i, line_id, svg);
           MG.call_hook('line.after_each_series', [this_data, existing_line, args]);
         }
       }
 
-      if (args.legend_target) {
-        d3.select(args.legend_target).html(legend);
-      }
+      mg_plot_legend_if_legend_target(args.legend_target, args.plot.legend);
 
       return this;
     };

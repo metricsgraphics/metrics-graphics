@@ -17,12 +17,12 @@ test('Only one confidence is added on multiple calls to the same target element'
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-01-01'), 'value': 12, 'l': 10, 'u': 14},
                {'date': new Date('2014-03-01'), 'value': 18, 'l': 16, 'u': 20}],
-        show_confidence_band: ['l', 'u']
+        show_confidence_band: ['l', 'u'],
+        title: 'confidence added multiple calls'
     };
-
+    var params2 = MG.clone(params)
     MG.data_graphic(params);
-    MG.data_graphic(MG.clone(params));
-
+    MG.data_graphic(params2);
     equal(document.querySelectorAll(params.target + ' .mg-confidence-band').length, 1, 'We only have one confidence band');
 });
 
@@ -168,9 +168,9 @@ test('There are as many lines as data series (two) on multiple calls to an exist
                [{'date': new Date('2014-01-01'), 'value': 120},
                {'date': new Date('2014-03-01'), 'value': 180}]]
     };
-
+    var params2 = MG.clone(params);
     MG.data_graphic(params);
-    MG.data_graphic(MG.clone(params));
+    MG.data_graphic(params2);
 
     equal(document.querySelectorAll('.mg-main-line').length, 2, 'Two lines exist');
 });
