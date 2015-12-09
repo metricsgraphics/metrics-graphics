@@ -571,8 +571,7 @@ function mg_find_min_max_x_from_data (args) {
 function mg_find_min_max_x (args) {
   mg_find_min_max_x_from_data(args);
   mg_select_xax_format(args);
-  MG.call_hook('x_axis.process_min_max', args, args.min_x, args.max_x);
-
+  MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
   if (!args.time_series) {
     if (args.processed.min_x < 0) {
       args.processed.min_x = args.processed.min_x - (args.processed.max_x * (args.inflator - 1));

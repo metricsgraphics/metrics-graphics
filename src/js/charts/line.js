@@ -623,7 +623,6 @@
       mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
     }
 
-    MG.call_hook('line.after_rollover', args);
   }
 
   function lineChart (args) {
@@ -669,6 +668,7 @@
     this.rollover = function () {
       var that = this;
       mg_line_rollover_setup(args, that);
+      MG.call_hook('line.after_rollover', args);
 
       return this;
     };

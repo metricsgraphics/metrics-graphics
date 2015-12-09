@@ -315,6 +315,7 @@ MG.add_hook('line.after_init', function(lineChart) {
 });
 
 function processXAxis(args, min_x, max_x) {
+    
   if (args.brushing) {
     args.processed.min_x = args.brushed_min_x ? Math.max(args.brushed_min_x, min_x) : min_x;
     args.processed.max_x = args.brushed_max_x ? Math.min(args.brushed_max_x, max_x) : max_x;

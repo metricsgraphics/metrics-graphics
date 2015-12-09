@@ -1824,8 +1824,7 @@ function mg_find_min_max_x_from_data (args) {
 function mg_find_min_max_x (args) {
   mg_find_min_max_x_from_data(args);
   mg_select_xax_format(args);
-  MG.call_hook('x_axis.process_min_max', args, args.min_x, args.max_x);
-
+  MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
   if (!args.time_series) {
     if (args.processed.min_x < 0) {
       args.processed.min_x = args.processed.min_x - (args.processed.max_x * (args.inflator - 1));
@@ -3104,7 +3103,6 @@ MG.button_layout = function(target) {
       mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
     }
 
-    MG.call_hook('line.after_rollover', args);
   }
 
   function lineChart (args) {
@@ -3150,6 +3148,7 @@ MG.button_layout = function(target) {
     this.rollover = function () {
       var that = this;
       mg_line_rollover_setup(args, that);
+      MG.call_hook('line.after_rollover', args);
 
       return this;
     };
