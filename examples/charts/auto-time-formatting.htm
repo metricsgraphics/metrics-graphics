@@ -236,7 +236,7 @@ function fake_years(length) {
 var less_than_a_minute = fake_data(25, 1);
 var less_than_a_day = fake_data(25,60 * 20);
 var a_few_days = fake_data(75,60 * 60);
-var many_days = fake_days(60);
+var many_days = fake_days(80);
 var many_many_many_days = fake_days(365*2);
 
 MG.data_graphic({
@@ -280,8 +280,8 @@ MG.data_graphic({
 MG.data_graphic({
     title: "Over A Large Span of Days",
     data: many_days,
+    width:600,
     target: '#time4',
-    width: 600,
     height: 200,
     right: 40
 });
@@ -297,10 +297,6 @@ MG.data_graphic({
 
 d3.csv('data/evictions-sf.csv', function(data) {
     data = MG.convert.date(data, 'date');
-    // data = data.map(function(d){
-    //     d.value = d.value * 10000;
-    //     return d;
-    // })
     MG.data_graphic({
         title: "A Few Years",
         data: data,

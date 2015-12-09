@@ -1618,7 +1618,8 @@ function mg_add_x_axis_tick_lines (args, g) {
       if (args.x_extended_ticks) {
         return 'mg-extended-x-ticks';
       }
-    });
+    })
+    .classed('mg-xax-ticks', true);
 }
 
 function mg_add_x_tick_labels (g, args) {
@@ -1651,6 +1652,17 @@ function mg_add_primary_x_axis_label (args, g) {
     labels.text(function (d) {
       return args.xax_units + args.processed.xax_format(d);
     });
+  }
+  // CHECK TO SEE IF OVERLAP for labels. If so,
+  // remove half of them. This is a dirty hack.
+  // We will need to figure out a more principled way of doing this.
+  if (mg_elements_are_overlapping(labels)) {
+    labels.filter(function(d,i) {
+      return (i+1) % 2 == 0;
+    }).remove();
+    var svg = mg_get_svg_child_of(args.target);
+    var ticks = svg.selectAll('.mg-xax-ticks').filter(function(d,i){return (i+1) % 2 == 0;})
+      .remove();
   }
 }
 
@@ -5555,6 +5567,14 @@ function mg_rotate_labels (labels, rotation_degree) {
 //////////////////////////////////////////////////
 
 
+function mg_elements_are_overlapping(labels) {
+    labels = labels[0];
+    for (var i =0; i < labels.length; i++) {
+            if ( mg_is_horizontally_overlapping(labels[i], labels)) return true;
+    };
+    return false;
+}
+
 function mg_prevent_horizontal_overlap(labels, args) {
     if (!labels || labels.length == 1) {
         return;
@@ -5614,6 +5634,16 @@ function mg_is_vertically_overlapping(element, sibling) {
         return sibling_bbox.bottom - element_bbox.top;
     }
 
+    return false;
+}
+
+function mg_is_horiz_overlap(element, sibling) {
+    var element_bbox = element.getBoundingClientRect();
+    var sibling_bbox = sibling.getBoundingClientRect();
+
+    if (element_bbox.right >= sibling_bbox.left || element_bbox.top >= sibling_bbox.top) {
+        return sibling_bbox.bottom - element_bbox.top;
+    }
     return false;
 }
 
