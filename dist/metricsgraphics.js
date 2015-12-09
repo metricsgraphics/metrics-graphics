@@ -2846,27 +2846,16 @@ MG.button_layout = function(target) {
       .data(data_nested).enter()
       .append('rect')
       .attr('x', function (d, i) {
-        // if data set is of length 1
-        if (xf.length === 1) {
-          return mg_get_plot_left(args);
-        } else if (i === 0) {
-          return xf[i].toFixed(2);
-        } else {
-          return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
-        }
+        if (xf.length === 1) return mg_get_plot_left(args);
+        else if (i === 0)    return xf[i].toFixed(2);
+        else                 return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
       .attr('y', args.top)
       .attr('width', function (d, i) {
-        // if data set is of length 1
-        if (xf.length === 1) {
-          return mg_get_plot_right(args);
-        } else if (i === 0) {
-          return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
-        } else if (i == xf.length - 1) {
-          return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
-        } else {
-          return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
-        }
+        if (xf.length === 1)         return   mg_get_plot_right(args);
+        else if (i === 0)            return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
+        else if (i == xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
+        else                         return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
       })
       .attr('class', function (d) {
         var line_classes = d.values.map(function (datum) {
@@ -2875,8 +2864,7 @@ MG.button_layout = function(target) {
           return lc;
         }).join(' ');
         if (args.linked && d.values.length > 0) {
-          var first_datum = d.values[0];
-          line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(first_datum, 0, args));
+          line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(d.values[0], 0, args));
         }
         return line_classes;
       })
@@ -2951,13 +2939,9 @@ MG.button_layout = function(target) {
       })
       .attr('x', function (d, i) {
         // if data set is of length 1
-        if (xf.length === 1) {
-          return mg_get_plot_left(args);
-        } else if (i === 0) {
-          return xf[i].toFixed(2);
-        } else {
-          return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
-        }
+        if (xf.length === 1)    return mg_get_plot_left(args);
+        else if (i === 0)       return xf[i].toFixed(2);
+        else                    return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
       .attr('y', function (d, i) {
         return (args.data.length > 1)
@@ -2966,15 +2950,10 @@ MG.button_layout = function(target) {
       })
       .attr('width', function (d, i) {
         // if data set is of length 1
-        if (xf.length === 1) {
-          return mg_get_plot_right(args);
-        } else if (i === 0) {
-          return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
-        } else if (i === xf.length - 1) {
-          return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
-        } else {
-          return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
-        }
+        if (xf.length === 1)          return mg_get_plot_right(args);
+        else if (i === 0)             return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
+        else if (i === xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
+        else                          return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
       })
       .attr('height', function (d, i) {
         return (args.data.length > 1)
@@ -3009,11 +2988,40 @@ MG.button_layout = function(target) {
     return args.data.length == 1 && args.data[0].length == 1;
   }
 
+  function mg_draw_all_line_elements(args, plot, svg) {
+    for (var i = args.data.length - 1; i >= 0; i--) {
+      var this_data = args.data[i];
+
+      // passing the data for the current line
+      MG.call_hook('line.before_each_series', [this_data, args]);
+
+      // override increment if we have a custom increment series
+      var line_id = i + 1;
+      var this_data = args.data[i];
+      if (args.custom_line_color_map.length > 0) {
+        line_id = args.custom_line_color_map[i];
+      }
+
+      args.data[i].line_id = line_id;
+
+      if (this_data.length === 0) {
+        continue;
+      }
+      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
+
+      mg_add_confidence_band(args, plot, svg, i);
+      mg_add_area(args, plot, svg, i, line_id);
+      mg_add_line(args, plot, svg, existing_line, i, line_id);
+      mg_add_legend_element(args, plot, i, line_id);
+      // passing the data for the current line
+      MG.call_hook('line.after_each_series', [this_data, existing_line, args]);
+    }
+  }
 
   function mg_line_main_plot(args) {
     var plot = {};
     var svg = mg_get_svg_child_of(args.target);
-    
+
     // remove any old legends if they exist
     mg_selectAll_and_remove(svg, '.mg-line-legend');
     mg_add_legend_group(args, plot, svg);
@@ -3029,32 +3037,7 @@ MG.button_layout = function(target) {
     // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
     var continueWithDefault = MG.call_hook('line.before_all_series', [args]);
     if (continueWithDefault !== false) {
-      for (var i = args.data.length - 1; i >= 0; i--) {
-        this_data = args.data[i];
-
-        // passing the data for the current line
-        MG.call_hook('line.before_each_series', [this_data, args]);
-
-        // override increment if we have a custom increment series
-        var line_id = i + 1;
-        if (args.custom_line_color_map.length > 0) {
-          line_id = args.custom_line_color_map[i];
-        }
-
-        args.data[i].line_id = line_id;
-
-        if (this_data.length === 0) {
-          continue;
-        }
-        var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
-
-        mg_add_confidence_band(args, plot, svg, i);
-        mg_add_area(args, plot, svg, i, line_id);
-        mg_add_line(args, plot, svg, existing_line, i, line_id);
-        mg_add_legend_element(args, plot, i, line_id);
-        // passing the data for the current line
-        MG.call_hook('line.after_each_series', [this_data, existing_line, args]);
-      }
+      mg_draw_all_line_elements(args, plot, svg);
     }
 
     mg_plot_legend_if_legend_target(args.legend_target, plot.legend_text);
@@ -3185,7 +3168,6 @@ MG.button_layout = function(target) {
           return;
         } else {
           // show circle on mouse-overed rect
-
           if (d[args.x_accessor] >= args.processed.min_x &&
             d[args.x_accessor] <= args.processed.max_x &&
             d[args.y_accessor] >= args.processed.min_y &&
@@ -3210,11 +3192,9 @@ MG.button_layout = function(target) {
 
           if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
             var datum = d.values ? d.values[0] : d;
-            var formatter = MG.time_format(args.utc_time, args.linked_format);
-            var v = datum[args.x_accessor];
-            var id = (typeof v === 'number') ? i : formatter(v);
+            var id = mg_rollover_format_id(datum, i, args);
             // trigger mouseover on matching line in .linked charts
-            d3.selectAll('.mg-line' + datum.line_id + '.roll_' + id)
+            d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
               .each(function (d) {
                 d3.select(this).on('mouseover')(d, i);
               });
@@ -3406,8 +3386,6 @@ MG.button_layout = function(target) {
         if (args.mouseover) {
           args.mouseover(d, i);
         }
-
-      // MG.call_hook()
       };
     };
 
