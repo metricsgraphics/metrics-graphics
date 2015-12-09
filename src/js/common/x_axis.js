@@ -179,7 +179,7 @@ function mg_point_add_size_scale (args) {
 
 function mg_get_size_domain (args) {
   return args.size_domain === null ? 
-        d3.extents(args.data[0], function(d){return d[args.size_accessor]}) : 
+        d3.extent(args.data[0], function(d){return d[args.size_accessor]}) : 
         args.size_domain;
 }
 
