@@ -26,6 +26,34 @@ MG.time_format = function(utc, specifier) {
     return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
 };
 
+function mg_get_rollover_time_format(args) {
+  var fmt;
+  switch (args.processed.x_time_frame) {
+    case 'millis':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+      break;
+    case 'seconds':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
+      break;
+    case 'less-than-a-day':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+      break;
+    case 'four-days':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+      break;
+    default:
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  }
+  return fmt;
+}
+
+function mg_data_in_plot_bounds (datum, args) {
+  return datum[args.x_accessor] >= args.processed.min_x &&
+          datum[args.x_accessor] <= args.processed.max_x &&
+          datum[args.y_accessor] >= args.processed.min_y &&
+          datum[args.y_accessor] <= args.processed.max_y
+}
+
 function is_array(thing){
     return Object.prototype.toString.call(thing) === '[object Array]';
 }

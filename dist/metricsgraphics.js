@@ -3105,6 +3105,320 @@ MG.button_layout = function(target) {
 
   }
 
+
+  function mg_update_rollover_circle(args, svg, d) { 
+    if (args.aggregate_rollover && args.data.length > 1) {
+      // hide the circles in case a non-contiguous series is present
+      svg.selectAll('circle.mg-line-rollover-circle')
+        .style('opacity', 0);
+
+      d.values.forEach(function (datum) {
+        if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
+      });
+    } else if ((args.missing_is_hidden && d['_missing'])
+      || d[args.y_accessor] == null
+    ) {
+      // disable rollovers for hidden parts of the line
+      // recall that hidden parts are missing data ranges and possibly also
+      // data points that have been explicitly identified as missing
+      return;
+    } else {
+      // show circle on mouse-overed rect
+      if (mg_data_in_plot_bounds(d, args)) {
+        mg_update_generic_rollover_circle(args, svg, d);
+      }
+    }
+  }
+
+  function mg_update_aggregate_rollover_circle(args, svg, datum) {
+    var circle = svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
+    .attr({
+      'cx': function () {
+        return args.scales.X(datum[args.x_accessor]).toFixed(2);
+      },
+      'cy': function () {
+        return args.scales.Y(datum[args.y_accessor]).toFixed(2);
+      },
+      'r': args.point_size
+    })
+    .style('opacity', 1);
+  }
+
+  function mg_update_generic_rollover_circle(args, svg, d) {
+    var circle = svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
+      .classed('mg-line-rollover-circle', true)
+      .attr('cx', function () {
+        return args.scales.X(d[args.x_accessor]).toFixed(2);
+      })
+      .attr('cy', function () {
+        return args.scales.Y(d[args.y_accessor]).toFixed(2);
+      })
+      .attr('r', args.point_size)
+      .style('opacity', 1);
+  }
+
+  function mg_trigger_linked_mouseovers(args, d, i) {
+    if (args.linked && !MG.globals.link) {
+    MG.globals.link = true;
+    if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
+      var datum = d.values ? d.values[0] : d;
+      var id = mg_rollover_format_id(datum, i, args);
+      // trigger mouseover on matching line in .linked charts
+      d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
+        .each(function (d) {
+          d3.select(this).on('mouseover')(d, i);
+        });
+      }
+    }
+  }
+
+  var time_rollover_format = function (f, d, accessor, utc) {
+    var fd;
+    if (typeof f === 'string') {
+      fd = MG.time_format(utc, f)(d[accessor]);
+    } else if (typeof f === 'function') {
+      fd = f(d);
+    } else {
+      fd = d[accessor];
+    }
+    return fd;
+  };
+
+  // define our rollover format for numbers
+  var number_rollover_format = function (f, d, accessor) {
+    var fd;
+    if (typeof f === 'string') {
+      fd = d3.format(f)(d[accessor]);
+    } else if (typeof f === 'function') {
+      fd = f(d);
+    } else {
+      fd = d[accessor];
+    }
+    return fd;
+  };
+
+  function mg_format_y_rollover(args, num, d) {
+    var formatted_y;
+    if (args.y_rollover_format !== null) {
+      if (args.aggregate_rollover) {
+        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);;
+      } else {
+        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      }
+    } else {
+      if (args.time_series) {
+        if (args.aggregate_rollover) {
+          formatted_y = num(d[args.y_accessor]);//number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+        } else {
+          formatted_y = args.yax_units + num(d[args.y_accessor]);
+        }
+      }
+      else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+    }
+    return formatted_y;
+  }
+
+
+  function mg_format_x_rollover(args, fmt, d) {
+    var formatted_x;
+    if (args.x_rollover_format !== null) {
+      if (args.time_series) {
+        if (args.aggregate_rollover) {
+          formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
+        } else {
+          formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+        }
+      } else {
+        formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
+      }
+    } else {
+      if (args.time_series) {
+        if (args.aggregate_rollover && args.data.length > 1) {
+          var date = new Date(d.key);
+        } else {
+          var date = new Date(+d[args.x_accessor]);
+          date.setDate(date.getDate());
+        }
+
+        formatted_x = fmt(date) + '  ';
+      } else {
+        formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+      }
+    }       
+    return formatted_x;   
+  }
+
+  function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
+    var lineCount = 0;
+    var lineHeight = 1.1;
+    var formatted_y;
+    textContainer.append('tspan')
+      .text(formatted_x.trim());
+
+    lineCount = 1;
+    var fy;
+
+    d.values.forEach(function (datum) {
+      formatted_y = mg_format_y_rollover(args, num, datum);
+
+      var label = textContainer.append('tspan')
+        .attr({
+          x: 0,
+          y: (lineCount * lineHeight) + 'em'
+        })
+        .text(formatted_y);
+
+      textContainer.append('tspan')
+        .attr({
+          x: -label.node().getComputedTextLength(),
+          y: (lineCount * lineHeight) + 'em'
+        })
+        .text('\u2014 ') // mdash
+        .classed('mg-hover-line' + datum.line_id + '-color', args.colors === null)
+        .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
+        .style('font-weight', 'bold');
+
+      lineCount++;
+    });
+
+    textContainer.append('tspan')
+      .attr('x', 0)
+      .attr('y', (lineCount * lineHeight) + 'em')
+      .text('\u00A0');
+  }
+
+  function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num) {  
+    var lineCount = 0;
+    var lineHeight = 1.1; 
+    d.values.forEach(function (datum) {
+      formatted_y = mg_format_y_rollover(args, num, datum);
+
+      if (args.y_rollover_format != null) {
+        formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+      } else {
+        formatted_y = args.yax_units + num(datum[args.y_accessor]);
+      }
+
+      var label = textContainer.append('tspan')
+        .attr({
+          x: 0,
+          y: (lineCount * lineHeight) + 'em'
+        })
+        .text(formatted_x + ' ' + formatted_y);
+
+      textContainer.append('tspan')
+        .attr({
+          x: -label.node().getComputedTextLength(),
+          y: (lineCount * lineHeight) + 'em'
+        })
+        .text('\u2014 ') // mdash
+        .classed('mg-hover-line' + datum.line_id + '-color', true)
+        .style('font-weight', 'bold');
+
+      lineCount++;
+    });
+  }
+
+
+  function mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i) {
+    var lineCount = 0;
+    var lineHeight = 1.1;
+    if (args.time_series) {
+      mg_append_aggregate_rollover_timeseries(args, textContainer, formatted_x, d, num);
+
+    } else {
+      mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num);
+  }
+
+    // append an blank (&nbsp;) line to mdash positioning
+    textContainer.append('tspan')
+      .attr('x', 0)
+      .attr('y', (lineCount * lineHeight) + 'em')
+      .text('\u00A0');
+  }
+
+  function mg_update_line_rollover_text(args, svg, fmt, d, i) {
+        var num = format_rollover_number(args);
+        var textContainer = svg.select('.mg-active-datapoint');
+
+        textContainer
+          .selectAll('*')
+          .remove();
+
+        var formatted_x, formatted_y;
+
+        var formatted_y = mg_format_y_rollover(args, num, d);
+        var formatted_x = mg_format_x_rollover(args, fmt, d);
+
+        // rollover text when aggregate_rollover is enabled
+        if (args.aggregate_rollover && args.data.length > 1) {
+          mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
+        } else {
+          // rollover text when aggregate_rollover is not enabled
+          if (args.time_series) {
+            textContainer.select('*').remove();
+            textContainer.append('tspan')
+              .classed('mg-x-rollover-text', true)
+              .text(formatted_x);
+            textContainer.append('tspan')
+              .classed('mg-y-rollover-text', true)
+              .text(formatted_y);
+          } else {
+            textContainer.append('tspan')
+              .text(formatted_x);
+            textContainer.append('tspan')
+              .text(formatted_y);
+          }
+        }
+  }
+
+  function mg_trigger_linked_mouseouts(args, d, i) {
+    if (args.linked && MG.globals.link) {
+      MG.globals.link = false;
+
+      var formatter = MG.time_format(args.utc_time, args.linked_format);
+      var datums = d.values ? d.values : [d];
+      datums.forEach(function (datum) {
+        var v = datum[args.x_accessor];
+        var id = (typeof v === 'number') ? i : formatter(v);
+
+        // trigger mouseout on matching line in .linked charts
+        d3.selectAll('.roll_' + id)
+          .each(function (d) {
+            d3.select(this).on('mouseout')(d);
+          });
+      });
+    }
+  }
+
+  function mg_remove_active_data_points_for_aggregate_rollover(args, svg) {
+    svg.selectAll('circle.mg-line-rollover-circle').style('opacity', 0);
+  }
+
+  function mg_remove_active_data_points_for_generic_rollover(args, svg, d) {
+  svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
+    .style('opacity', function () {
+      var id = d.line_id - 1;
+
+      if (args.custom_line_color_map.length > 0
+        && args.custom_line_color_map.indexOf(d.line_id) !== undefined
+      ) {
+        id = args.custom_line_color_map.indexOf(d.line_id);
+      }
+
+      if (args.data[id].length == 1) {
+        // if (args.data.length === 1 && args.data[0].length === 1) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });            
+  }
+
+  function mg_remove_active_text(svg) {
+    svg.select('.mg-active-datapoint').text('');
+  }
+
   function lineChart (args) {
     this.init = function (args) {
       this.args = args;
@@ -3155,90 +3469,11 @@ MG.button_layout = function(target) {
 
     this.rolloverOn = function (args) {
       var svg = mg_get_svg_child_of(args.target);
-      var fmt;
-      switch (args.processed.x_time_frame) {
-        case 'millis':
-          fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
-          break;
-        case 'seconds':
-          fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
-          break;
-        case 'less-than-a-day':
-          fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-          break;
-        case 'four-days':
-          fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-          break;
-        default:
-          fmt = MG.time_format(args.utc_time, '%b %e, %Y');
-      }
+      var fmt = mg_get_rollover_time_format(args);
 
       return function (d, i) {
-        if (args.aggregate_rollover && args.data.length > 1) {
-          // hide the circles in case a non-contiguous series is present
-          svg.selectAll('circle.mg-line-rollover-circle')
-            .style('opacity', 0);
-
-          d.values.forEach(function (datum) {
-            if (datum[args.x_accessor] >= args.processed.min_x &&
-              datum[args.x_accessor] <= args.processed.max_x &&
-              datum[args.y_accessor] >= args.processed.min_y &&
-              datum[args.y_accessor] <= args.processed.max_y
-            ) {
-              var circle = svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
-                .attr({
-                  'cx': function () {
-                    return args.scales.X(datum[args.x_accessor]).toFixed(2);
-                  },
-                  'cy': function () {
-                    return args.scales.Y(datum[args.y_accessor]).toFixed(2);
-                  },
-                  'r': args.point_size
-                })
-                .style('opacity', 1);
-            }
-          });
-        } else if ((args.missing_is_hidden && d['_missing'])
-          || d[args.y_accessor] == null
-        ) {
-          // disable rollovers for hidden parts of the line
-          // recall that hidden parts are missing data ranges and possibly also
-          // data points that have been explicitly identified as missing
-          return;
-        } else {
-          // show circle on mouse-overed rect
-          if (d[args.x_accessor] >= args.processed.min_x &&
-            d[args.x_accessor] <= args.processed.max_x &&
-            d[args.y_accessor] >= args.processed.min_y &&
-            d[args.y_accessor] <= args.processed.max_y
-          ) {
-            var circle = svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
-              .classed('mg-line-rollover-circle', true)
-              .attr('cx', function () {
-                return args.scales.X(d[args.x_accessor]).toFixed(2);
-              })
-              .attr('cy', function () {
-                return args.scales.Y(d[args.y_accessor]).toFixed(2);
-              })
-              .attr('r', args.point_size)
-              .style('opacity', 1);
-          }
-        }
-
-        // trigger mouseover on all rects for this date in .linked charts
-        if (args.linked && !MG.globals.link) {
-          MG.globals.link = true;
-
-          if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
-            var datum = d.values ? d.values[0] : d;
-            var id = mg_rollover_format_id(datum, i, args);
-            // trigger mouseover on matching line in .linked charts
-            d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
-              .each(function (d) {
-                d3.select(this).on('mouseover')(d, i);
-              });
-          }
-        }
+        mg_update_rollover_circle(args, svg, d);
+        mg_trigger_linked_mouseovers(args, d, i);
 
         svg.selectAll('text')
           .filter(function (g, j) {
@@ -3246,180 +3481,9 @@ MG.button_layout = function(target) {
           })
           .attr('opacity', 0.3);
 
-        var num = format_rollover_number(args);
-
         // update rollover text
         if (args.show_rollover_text) {
-          var textContainer = svg.select('.mg-active-datapoint'),
-            lineCount = 0,
-            lineHeight = 1.1;
-
-          textContainer
-            .selectAll('*')
-            .remove();
-
-          var formatted_x, formatted_y;
-
-          // define our rollover format for time
-          var time_rollover_format = function (f, d, accessor, utc) {
-            var fd;
-            if (typeof f === 'string') {
-              fd = MG.time_format(utc, f)(d[accessor]);
-            } else if (typeof f === 'function') {
-              fd = f(d);
-            } else {
-              fd = d[accessor];
-            }
-            return fd;
-          };
-
-          // define our rollover format for numbers
-          var number_rollover_format = function (f, d, accessor) {
-            var fd;
-            if (typeof f === 'string') {
-              fd = d3.format(f)(d[accessor]);
-            } else if (typeof f === 'function') {
-              fd = f(d);
-            } else {
-              fd = d[accessor];
-            }
-            return fd;
-          };
-
-          // format the y-accessor value to show
-          if (args.y_rollover_format !== null) {
-            if (args.aggregate_rollover) {
-              formatted_y = '';
-            } else {
-              formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-            }
-          } else {
-            if (args.time_series) {
-              if (args.aggregate_rollover) {
-                formatted_y = '';
-              } else {
-                formatted_y = args.yax_units + num(d[args.y_accessor]);
-              }
-            }
-            else formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
-          }
-
-          // format the x-accessor value to show
-          if (args.x_rollover_format !== null) {
-            if (args.time_series) {
-              if (args.aggregate_rollover) {
-                formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
-              } else {
-                formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
-              }
-            } else {
-              formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
-            }
-          } else {
-            if (args.time_series) {
-              if (args.aggregate_rollover && args.data.length > 1) {
-                var date = new Date(d.key);
-              } else {
-                var date = new Date(+d[args.x_accessor]);
-                date.setDate(date.getDate());
-              }
-
-              formatted_x = fmt(date) + '  ';
-            } else {
-              formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
-            }
-          }
-
-          // rollover text when aggregate_rollover is enabled
-          if (args.aggregate_rollover && args.data.length > 1) {
-            if (args.time_series) {
-              textContainer.append('tspan')
-                .text(formatted_x.trim());
-
-              lineCount = 1;
-              var fy;
-
-              d.values.forEach(function (datum) {
-                if (args.y_rollover_format != null) {
-                  formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
-                } else {
-                  formatted_y = num(datum[args.y_accessor]);
-                }
-
-                var label = textContainer.append('tspan')
-                  .attr({
-                    x: 0,
-                    y: (lineCount * lineHeight) + 'em'
-                  })
-                  .text(formatted_y);
-
-                textContainer.append('tspan')
-                  .attr({
-                    x: -label.node().getComputedTextLength(),
-                    y: (lineCount * lineHeight) + 'em'
-                  })
-                  .text('\u2014 ') // mdash
-                  .classed('mg-hover-line' + datum.line_id + '-color', args.colors === null)
-                  .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
-                  .style('font-weight', 'bold');
-
-                lineCount++;
-              });
-
-              textContainer.append('tspan')
-                .attr('x', 0)
-                .attr('y', (lineCount * lineHeight) + 'em')
-                .text('\u00A0');
-            } else {
-              d.values.forEach(function (datum) {
-                if (args.y_rollover_format != null) {
-                  formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
-                } else {
-                  formatted_y = args.yax_units + num(datum[args.y_accessor]);
-                }
-
-                var label = textContainer.append('tspan')
-                  .attr({
-                    x: 0,
-                    y: (lineCount * lineHeight) + 'em'
-                  })
-                  .text(formatted_x + ' ' + formatted_y);
-
-                textContainer.append('tspan')
-                  .attr({
-                    x: -label.node().getComputedTextLength(),
-                    y: (lineCount * lineHeight) + 'em'
-                  })
-                  .text('\u2014 ') // mdash
-                  .classed('mg-hover-line' + datum.line_id + '-color', true)
-                  .style('font-weight', 'bold');
-
-                lineCount++;
-              });
-            }
-
-            // append an blank (&nbsp;) line to mdash positioning
-            textContainer.append('tspan')
-              .attr('x', 0)
-              .attr('y', (lineCount * lineHeight) + 'em')
-              .text('\u00A0');
-          } else {
-            // rollover text when aggregate_rollover is not enabled
-            if (args.time_series) {
-              textContainer.select('*').remove();
-              textContainer.append('tspan')
-                .classed('mg-x-rollover-text', true)
-                .text(formatted_x);
-              textContainer.append('tspan')
-                .classed('mg-y-rollover-text', true)
-                .text(formatted_y);
-            } else {
-              textContainer.append('tspan')
-                .text(formatted_x);
-              textContainer.append('tspan')
-                .text(formatted_y);
-            }
-          }
+          mg_update_line_rollover_text(args, svg, fmt, d, i);
         }
 
         if (args.mouseover) {
@@ -3432,52 +3496,15 @@ MG.button_layout = function(target) {
       var svg = mg_get_svg_child_of(args.target);
 
       return function (d, i) {
-        if (args.linked && MG.globals.link) {
-          MG.globals.link = false;
 
-          var formatter = MG.time_format(args.utc_time, args.linked_format);
-          var datums = d.values ? d.values : [d];
-          datums.forEach(function (datum) {
-            var v = datum[args.x_accessor];
-            var id = (typeof v === 'number') ? i : formatter(v);
-
-            // trigger mouseout on matching line in .linked charts
-            d3.selectAll('.roll_' + id)
-              .each(function (d) {
-                d3.select(this).on('mouseout')(d);
-              });
-          });
-        }
-
-        // remove all active data points when aggregate_rollover is enabled
+        mg_trigger_linked_mouseouts(args, d, i);
         if (args.aggregate_rollover) {
-          svg.selectAll('circle.mg-line-rollover-circle')
-            .style('opacity', function () {
-              return 0;
-            });
-        // remove active data point text on mouse out, except if we have a single point
+          mg_remove_active_data_points_for_aggregate_rollover(args, svg);
         } else {
-          svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
-            .style('opacity', function () {
-              var id = d.line_id - 1;
-
-              if (args.custom_line_color_map.length > 0
-                && args.custom_line_color_map.indexOf(d.line_id) !== undefined
-              ) {
-                id = args.custom_line_color_map.indexOf(d.line_id);
-              }
-
-              if (args.data[id].length == 1) {
-                // if (args.data.length === 1 && args.data[0].length === 1) {
-                return 1;
-              } else {
-                return 0;
-              }
-            });
+          mg_remove_active_data_points_for_generic_rollover(args, svg, d);
         }
 
-        svg.select('.mg-active-datapoint')
-          .text('');
+        mg_remove_active_text(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -5428,6 +5455,34 @@ MG.convert.number = function(data, accessor) {
 MG.time_format = function(utc, specifier) {
     return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
 };
+
+function mg_get_rollover_time_format(args) {
+  var fmt;
+  switch (args.processed.x_time_frame) {
+    case 'millis':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+      break;
+    case 'seconds':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
+      break;
+    case 'less-than-a-day':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+      break;
+    case 'four-days':
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+      break;
+    default:
+      fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  }
+  return fmt;
+}
+
+function mg_data_in_plot_bounds (datum, args) {
+  return datum[args.x_accessor] >= args.processed.min_x &&
+          datum[args.x_accessor] <= args.processed.max_x &&
+          datum[args.y_accessor] >= args.processed.min_y &&
+          datum[args.y_accessor] <= args.processed.max_y
+}
 
 function is_array(thing){
     return Object.prototype.toString.call(thing) === '[object Array]';
