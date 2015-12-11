@@ -1,0 +1,126 @@
+function mg_reset_active_datapoint_text(svg) {
+    var textContainer = svg.select('.mg-active-datapoint');
+    textContainer
+      .selectAll('*')
+      .remove();  
+    return textContainer;  
+}
+
+function mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i) {
+  var lineCount = 0;
+  var lineHeight = 1.1;
+  if (args.time_series) {
+    mg_append_aggregate_rollover_timeseries(args, textContainer, formatted_x, d, num);
+
+  } else {
+    mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num);
+}
+
+  // append an blank (&nbsp;) line to mdash positioning
+  textContainer.append('tspan')
+    .attr('x', 0)
+    .attr('y', (lineCount * lineHeight) + 'em')
+    .text('\u00A0');
+}
+
+function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
+  var lineCount = 0;
+  var lineHeight = 1.1;
+  var formatted_y;
+  textContainer.append('tspan')
+    .text(formatted_x.trim());
+
+  lineCount = 1;
+  var fy;
+
+  d.values.forEach(function (datum) {
+    formatted_y = mg_format_y_rollover(args, num, datum);
+
+    var label = textContainer.append('tspan')
+      .attr({
+        x: 0,
+        y: (lineCount * lineHeight) + 'em'
+      })
+      .text(formatted_y);
+
+    textContainer.append('tspan')
+      .attr({
+        x: -label.node().getComputedTextLength(),
+        y: (lineCount * lineHeight) + 'em'
+      })
+      .text('\u2014 ') // mdash
+      .classed('mg-hover-line' + datum.line_id + '-color', args.colors === null)
+      .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
+      .style('font-weight', 'bold');
+
+    lineCount++;
+  });
+
+  textContainer.append('tspan')
+    .attr('x', 0)
+    .attr('y', (lineCount * lineHeight) + 'em')
+    .text('\u00A0');
+}
+
+function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num) {  
+  var lineCount = 0;
+  var lineHeight = 1.1; 
+  d.values.forEach(function (datum) {
+    formatted_y = mg_format_y_rollover(args, num, datum);
+
+    if (args.y_rollover_format != null) {
+      formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+    } else {
+      formatted_y = args.yax_units + num(datum[args.y_accessor]);
+    }
+
+    var label = textContainer.append('tspan')
+      .attr({
+        x: 0,
+        y: (lineCount * lineHeight) + 'em'
+      })
+      .text(formatted_x + ' ' + formatted_y);
+
+    textContainer.append('tspan')
+      .attr({
+        x: -label.node().getComputedTextLength(),
+        y: (lineCount * lineHeight) + 'em'
+      })
+      .text('\u2014 ') // mdash
+      .classed('mg-hover-line' + datum.line_id + '-color', true)
+      .style('font-weight', 'bold');
+
+    lineCount++;
+  });
+}
+
+function mg_update_rollover_text(args, svg, fmt, d, i) {
+    var num = format_rollover_number(args);
+    var textContainer = mg_reset_active_datapoint_text(svg);
+
+    var formatted_x, formatted_y;
+
+    var formatted_y = mg_format_y_rollover(args, num, d);
+    var formatted_x = mg_format_x_rollover(args, fmt, d);
+
+    // rollover text when aggregate_rollover is enabled
+    if (args.aggregate_rollover && args.data.length > 1) {
+      mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
+    } else {
+      // rollover text when aggregate_rollover is not enabled
+      if (args.time_series) {
+        textContainer.select('*').remove();
+        textContainer.append('tspan')
+          .classed('mg-x-rollover-text', true)
+          .text(formatted_x);
+        textContainer.append('tspan')
+          .classed('mg-y-rollover-text', true)
+          .text(formatted_y);
+      } else {
+        textContainer.append('tspan')
+          .text(formatted_x);
+        textContainer.append('tspan')
+          .text(formatted_y);
+      }
+    }
+}

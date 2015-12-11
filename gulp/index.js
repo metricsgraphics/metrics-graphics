@@ -31,6 +31,7 @@ var
     src + 'common/x_axis.js',
     src + 'common/init.js',
     src + 'common/markers.js',
+    src + 'common/rollover.js',
     src + 'common/window_listeners.js',
     src + 'layout/bootstrap_dropdown.js',
     src + 'layout/button.js',

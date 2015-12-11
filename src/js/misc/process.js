@@ -325,7 +325,6 @@ function process_point(args) {
     if (args.least_squares) {
         args.ls_line = least_squares(x,y);
     }
-
     //args.lowess_line = lowess_robust(x,y, .5, 100)
     return this;
 
