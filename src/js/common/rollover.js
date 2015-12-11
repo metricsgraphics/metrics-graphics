@@ -55,7 +55,7 @@ function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted
 
     lineCount++;
   });
-
+  // necessary blank line.
   textContainer.append('tspan')
     .attr('x', 0)
     .attr('y', (lineCount * lineHeight) + 'em')
@@ -94,7 +94,7 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
   });
 }
 
-function mg_update_rollover_text(args, svg, fmt, d, i) {
+function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
     var num = format_rollover_number(args);
     var textContainer = mg_reset_active_datapoint_text(svg);
 
@@ -108,8 +108,42 @@ function mg_update_rollover_text(args, svg, fmt, d, i) {
       mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
     } else {
       // rollover text when aggregate_rollover is not enabled
+      if (args.time_series) textContainer.select('*').remove();
+
+      // label.
+      if (args.legend || args.label_accessor) {
+        var label=textContainer.append('tspan')
+          .text(args.chart_type ==='line' ? args.legend[d.line_id-1] + '  ' : d[args.label_accessor] + '  ');
+        if (args.chart_type==='line') {
+          label.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+            .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
+        } else if (args.chart_type==='point') {
+          if (args.color_accessor !== null) {
+              label.attr('fill',   args.scalefns.color(d));
+          } else {
+              label.classed('mg-points-mono', true);
+          }
+        }
+      }
+
+      if (args.data.length > 1 || args.chart_type == 'point') {
+        var shape_color = textContainer.append('tspan')
+          .text(shape + '  ')
+          .style('font-weight', 'bold');
+        if (args.chart_type==='line') {
+          shape_color.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+            .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
+        } else if (args.chart_type==='point') {
+          if (args.color_accessor !== null) {
+              shape_color.attr('fill',   args.scalefns.color(d));
+              shape_color.attr('stroke', args.scalefns.color(d));
+          } else {
+              shape_color.classed('mg-points-mono', true);
+          }
+        }
+      } 
+
       if (args.time_series) {
-        textContainer.select('*').remove();
         textContainer.append('tspan')
           .classed('mg-x-rollover-text', true)
           .text(formatted_x);

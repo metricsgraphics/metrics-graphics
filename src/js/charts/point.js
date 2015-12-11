@@ -144,7 +144,7 @@
 
                 if (args.show_rollover_text) {
                     var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
-                    mg_update_rollover_text(args,svg,fmt,d.point, i);
+                    mg_update_rollover_text(args,svg,fmt, '\u2022', d.point, i);
                 }
 
                 if (args.mouseover) {
