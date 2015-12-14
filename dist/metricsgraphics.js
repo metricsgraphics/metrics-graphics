@@ -2155,6 +2155,18 @@ function markers (args) {
 
 MG.markers = markers;
 
+function mg_append_tspan_to_container(svg, text) {
+  var cl = null;
+  if (arguments.length===3) {
+    cl = arguments[2];
+  }
+  var elem = svg.append('tspan').text(text);
+  if (cl) elem.classed(cl, true);
+  return elem;
+}
+
+
+
 function mg_reset_active_datapoint_text(svg) {
     var textContainer = svg.select('.mg-active-datapoint');
     textContainer
@@ -2251,43 +2263,52 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
   });
 }
 
+function mg_color_rollover_line (args, svg_elem, d) {
+  svg_elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+    .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
+}
+
+function mg_add_label_rollover_text (args, textContainer, d) {
+  // label.
+  if (args.legend || args.label_accessor) {
+    var label=textContainer.append('tspan')
+      .text(args.chart_type ==='line' ? args.legend[d.line_id-1] + '  ' : d[args.label_accessor] + '  ');
+    if (args.chart_type==='line') {
+      mg_color_rollover_line(args, label, d);
+
+    } else if (args.chart_type==='point') {
+      if (args.color_accessor !== null) {
+          label.attr('fill',   args.scalefns.color(d));
+      } else {
+          label.classed('mg-points-mono', true);
+      }
+    }
+  }
+}
+
 function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
     var num = format_rollover_number(args);
     var textContainer = mg_reset_active_datapoint_text(svg);
-
     var formatted_y = mg_format_y_rollover(args, num, d);
     var formatted_x = mg_format_x_rollover(args, fmt, d);
 
     // rollover text when aggregate_rollover is enabled
     if (args.aggregate_rollover && args.data.length > 1) {
       mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
+
     } else {
       // rollover text when aggregate_rollover is not enabled
       if (args.time_series) textContainer.select('*').remove();
 
-      // label.
-      if (args.legend || args.label_accessor) {
-        var label=textContainer.append('tspan')
-          .text(args.chart_type ==='line' ? args.legend[d.line_id-1] + '  ' : d[args.label_accessor] + '  ');
-        if (args.chart_type==='line') {
-          label.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
-            .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
-        } else if (args.chart_type==='point') {
-          if (args.color_accessor !== null) {
-              label.attr('fill',   args.scalefns.color(d));
-          } else {
-              label.classed('mg-points-mono', true);
-          }
-        }
-      }
+      mg_add_label_rollover_text(args, textContainer, d);
 
       if (args.data.length > 1 || args.chart_type == 'point') {
         var shape_color = textContainer.append('tspan')
           .text(shape + '  ')
           .style('font-weight', 'bold');
         if (args.chart_type==='line') {
-          shape_color.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
-            .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
+          mg_color_rollover_line(args, shape_color, d);
+
         } else if (args.chart_type==='point') {
           if (args.color_accessor !== null) {
               shape_color.attr('fill',   args.scalefns.color(d));
@@ -2299,12 +2320,8 @@ function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
       } 
 
       if (args.time_series) {
-        textContainer.append('tspan')
-          .classed('mg-x-rollover-text', true)
-          .text(formatted_x);
-        textContainer.append('tspan')
-          .classed('mg-y-rollover-text', true)
-          .text(formatted_y);
+        mg_append_tspan_to_container(textContainer, formatted_x, 'mg-x-rollover-text');
+        mg_append_tspan_to_container(textContainer, formatted_y, 'mg-y-rollover-text');
       } else {
         textContainer.append('tspan')
           .text(formatted_x);
@@ -5351,26 +5368,26 @@ var number_rollover_format = function (f, d, accessor) {
 };
 
 function mg_format_y_rollover(args, num, d) {
-    var formatted_y;
-    if (args.y_rollover_format !== null) {
-      if (args.aggregate_rollover) {
-        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-      } else {
-        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-      }
+  var formatted_y;
+  if (args.y_rollover_format !== null) {
+    if (args.aggregate_rollover) {
+      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
     } else {
-      if (args.time_series) {
-        if (args.aggregate_rollover) {
-          formatted_y = num(d[args.y_accessor]);//number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-        } else {
-          formatted_y = args.yax_units + num(d[args.y_accessor]);
-        }
-      }
-      else {
-        formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+    }
+  } else {
+    if (args.time_series) {
+      if (args.aggregate_rollover) {
+        formatted_y = num(d[args.y_accessor]);//number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      } else {
+        formatted_y = args.yax_units + num(d[args.y_accessor]);
       }
     }
-    return formatted_y;
+    else {
+      formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+    }
+  }
+  return formatted_y;
 }
 
 

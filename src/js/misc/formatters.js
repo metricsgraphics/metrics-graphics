@@ -43,26 +43,26 @@ var number_rollover_format = function (f, d, accessor) {
 };
 
 function mg_format_y_rollover(args, num, d) {
-    var formatted_y;
-    if (args.y_rollover_format !== null) {
-      if (args.aggregate_rollover) {
-        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-      } else {
-        formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-      }
+  var formatted_y;
+  if (args.y_rollover_format !== null) {
+    if (args.aggregate_rollover) {
+      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
     } else {
-      if (args.time_series) {
-        if (args.aggregate_rollover) {
-          formatted_y = num(d[args.y_accessor]);//number_rollover_format(args.y_rollover_format, d, args.y_accessor);
-        } else {
-          formatted_y = args.yax_units + num(d[args.y_accessor]);
-        }
-      }
-      else {
-        formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+    }
+  } else {
+    if (args.time_series) {
+      if (args.aggregate_rollover) {
+        formatted_y = num(d[args.y_accessor]);//number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      } else {
+        formatted_y = args.yax_units + num(d[args.y_accessor]);
       }
     }
-    return formatted_y;
+    else {
+      formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor]);
+    }
+  }
+  return formatted_y;
 }
 
 
