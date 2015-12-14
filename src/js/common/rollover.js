@@ -70,15 +70,13 @@ function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted
 
   lineCount = 1;
   var fy;
-
+  var sub_container;
   d.values.forEach(function (datum) {
+    sub_container = textContainer.append('tspan').attr('x',0).attr('y', (lineCount * lineHeight) + 'em');
     formatted_y = mg_format_y_rollover(args, num, datum);
-    var label = rollover_tspan(textContainer, formatted_y).x(0).y((lineCount * lineHeight) + 'em').elem();
-
-    rollover_tspan(textContainer, '\u2014 ')
-      .x(-label.node().getComputedTextLength())
-      .y((lineCount * lineHeight) + 'em')
+    rollover_tspan(sub_container, '\u2014  ')
       .color(args, datum);
+    rollover_tspan(sub_container, formatted_y);
 
     lineCount++;
   });
@@ -98,11 +96,11 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
       formatted_y = args.yax_units + num(datum[args.y_accessor]);
     }
 
-    var label = rollover_tspan(textContainer, formatted_x + ' ' + formatted_y)
-      .x(0)
-      .y((lineCount * lineHeight) + 'em')
-      .elem();
-    rollover_tspan(textContainer, '\u2014 ').bold().color(args, datum);
+    sub_container = textContainer.append('tspan').attr('x',0).attr('y', (lineCount * lineHeight) + 'em');
+    formatted_y = mg_format_y_rollover(args, num, datum);
+    rollover_tspan(sub_container, '\u2014  ')
+      .color(args, datum);
+    rollover_tspan(sub_container, formatted_x + ' ' + formatted_y);
 
     lineCount++;
   });

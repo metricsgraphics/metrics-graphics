@@ -262,7 +262,7 @@
         });
     }
     activeDatapointContainer
-      .attr('transform', 'translate(' + (mg_get_right(args)) + ',' + (mg_get_top(args) * activeDatapointYnudge) + ')');
+      .attr('transform', 'translate(' + (mg_get_plot_right(args)) + ',' + (mg_get_top(args) * activeDatapointYnudge) + ')');
   }
 
   function mg_add_rollover_circle (args, svg) {
