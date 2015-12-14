@@ -68,7 +68,7 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
   d.values.forEach(function (datum) {
     formatted_y = mg_format_y_rollover(args, num, datum);
 
-    if (args.y_rollover_format != null) {
+    if (args.y_rollover_format !== null) {
       formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
     } else {
       formatted_y = args.yax_units + num(datum[args.y_accessor]);
@@ -97,8 +97,6 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
 function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
     var num = format_rollover_number(args);
     var textContainer = mg_reset_active_datapoint_text(svg);
-
-    var formatted_x, formatted_y;
 
     var formatted_y = mg_format_y_rollover(args, num, d);
     var formatted_x = mg_format_x_rollover(args, fmt, d);
