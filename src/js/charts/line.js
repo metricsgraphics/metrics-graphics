@@ -590,7 +590,6 @@
     }
 
     mg_plot_legend_if_legend_target(args.legend_target, plot.legend_text);
-
   }
 
   function mg_line_rollover_setup (args, graph) {
@@ -608,7 +607,6 @@
     } else {
       mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
     }
-
   }
 
   function mg_update_rollover_circle (args, svg, d) {
@@ -703,13 +701,13 @@
       .style('opacity', function () {
         var id = d.line_id - 1;
 
-        if (args.custom_line_color_map.length > 0
-          && args.custom_line_color_map.indexOf(d.line_id) !== undefined
+        if (args.custom_line_color_map.length > 0 && 
+          args.custom_line_color_map.indexOf(d.line_id) !== undefined
         ) {
           id = args.custom_line_color_map.indexOf(d.line_id);
         }
 
-        if (args.data[id].length == 1) {
+        if (args.data[id].length === 1) {
           // if (args.data.length === 1 && args.data[0].length === 1) {
           return 1;
         } else {

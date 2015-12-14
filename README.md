@@ -1,4 +1,4 @@
-[![Build Status][travis-badge]][travis-badge-url] [![Code Climate][code-climate-badge]][code-climate-url]
+[![Build Status][travis-badge]][travis-badge-url] [![Code Climate][code-climate-badge]][code-climate-url] [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
