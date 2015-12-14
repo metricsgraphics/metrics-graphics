@@ -1,14 +1,44 @@
-function mg_append_tspan_to_container(svg, text) {
+function rollover_tspan (svg, text) {
+  var tspan = '';
   var cl = null;
-  if (arguments.length===3) {
-    cl = arguments[2];
-  }
-  var elem = svg.append('tspan').text(text);
-  if (cl) elem.classed(cl, true);
-  return elem;
+  if (arguments.length===3) cl = arguments[2];
+  tspan = svg.append('tspan').text(text);
+  if (cl!==null) tspan.classed(cl, true);
+
+  return function () {
+    this.tspan=tspan;
+
+    this.bold = function () {
+      this.tspan.attr('font-weight', 'bold');
+      return this;
+    }
+    this.color = function (args, d) {
+      if (args.chart_type==='line') {
+        this.tspan.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+          .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
+      } else if (args.chart_type==='point') {
+        if (args.color_accessor !== null) {
+            this.tspan.attr('fill',   args.scalefns.color(d));
+            this.tspan.attr('stroke', args.scalefns.color(d));
+        } else {
+            this.tspan.classed('mg-points-mono', true);
+        }
+      }
+    }
+    this.x    = function (x) {
+      this.tspan.attr('x', x);
+      return this;
+    }
+    this.y    = function(y) {
+      this.tspan.attr('y', y);
+      return this;
+    }
+    this.elem = function() {
+      return this.tspan;
+    }
+    return this;
+  }();
 }
-
-
 
 function mg_reset_active_datapoint_text(svg) {
     var textContainer = svg.select('.mg-active-datapoint');
@@ -23,55 +53,37 @@ function mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x
   var lineHeight = 1.1;
   if (args.time_series) {
     mg_append_aggregate_rollover_timeseries(args, textContainer, formatted_x, d, num);
-
   } else {
     mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num);
 }
 
   // append an blank (&nbsp;) line to mdash positioning
-  textContainer.append('tspan')
-    .attr('x', 0)
-    .attr('y', (lineCount * lineHeight) + 'em')
-    .text('\u00A0');
+  rollover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
 }
 
 function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
   var lineCount = 0;
   var lineHeight = 1.1;
   var formatted_y;
-  textContainer.append('tspan')
-    .text(formatted_x.trim());
+
+  rollover_tspan(textContainer, formatted_x.trim());
 
   lineCount = 1;
   var fy;
 
   d.values.forEach(function (datum) {
     formatted_y = mg_format_y_rollover(args, num, datum);
+    var label = rollover_tspan(textContainer, formatted_y).x(0).y((lineCount * lineHeight) + 'em').elem();
 
-    var label = textContainer.append('tspan')
-      .attr({
-        x: 0,
-        y: (lineCount * lineHeight) + 'em'
-      })
-      .text(formatted_y);
-
-    textContainer.append('tspan')
-      .attr({
-        x: -label.node().getComputedTextLength(),
-        y: (lineCount * lineHeight) + 'em'
-      })
-      .text('\u2014 ') // mdash
-      .classed('mg-hover-line' + datum.line_id + '-color', args.colors === null)
-      .attr('fill', args.colors === null ? '' : args.colors[datum.line_id - 1])
-      .style('font-weight', 'bold');
+    rollover_tspan(textContainer, '\u2014 ')
+      .x(-label.node().getComputedTextLength())
+      .y((lineCount * lineHeight) + 'em')
+      .color(args, datum);
 
     lineCount++;
   });
   // necessary blank line.
-  textContainer.append('tspan')
-    .attr('x', 0)
-    .attr('y', (lineCount * lineHeight) + 'em')
-    .text('\u00A0');
+  rollover_tspan(textContainer, '\u00A0').x(0).y((lineCount*lineHeight) + 'em');
 }
 
 function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num) {  
@@ -86,47 +98,14 @@ function mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, 
       formatted_y = args.yax_units + num(datum[args.y_accessor]);
     }
 
-    var label = textContainer.append('tspan')
-      .attr({
-        x: 0,
-        y: (lineCount * lineHeight) + 'em'
-      })
-      .text(formatted_x + ' ' + formatted_y);
-
-    textContainer.append('tspan')
-      .attr({
-        x: -label.node().getComputedTextLength(),
-        y: (lineCount * lineHeight) + 'em'
-      })
-      .text('\u2014 ') // mdash
-      .classed('mg-hover-line' + datum.line_id + '-color', true)
-      .style('font-weight', 'bold');
+    var label = rollover_tspan(textContainer, formatted_x + ' ' + formatted_y)
+      .x(0)
+      .y((lineCount * lineHeight) + 'em')
+      .elem();
+    rollover_tspan(textContainer, '\u2014 ').bold().color(args, datum);
 
     lineCount++;
   });
-}
-
-function mg_color_rollover_line (args, svg_elem, d) {
-  svg_elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
-    .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]); 
-}
-
-function mg_add_label_rollover_text (args, textContainer, d) {
-  // label.
-  if (args.legend || args.label_accessor) {
-    var label=textContainer.append('tspan')
-      .text(args.chart_type ==='line' ? args.legend[d.line_id-1] + '  ' : d[args.label_accessor] + '  ');
-    if (args.chart_type==='line') {
-      mg_color_rollover_line(args, label, d);
-
-    } else if (args.chart_type==='point') {
-      if (args.color_accessor !== null) {
-          label.attr('fill',   args.scalefns.color(d));
-      } else {
-          label.classed('mg-points-mono', true);
-      }
-    }
-  }
 }
 
 function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
@@ -143,33 +122,19 @@ function mg_update_rollover_text(args, svg, fmt, shape, d, i) {
       // rollover text when aggregate_rollover is not enabled
       if (args.time_series) textContainer.select('*').remove();
 
-      mg_add_label_rollover_text(args, textContainer, d);
-
-      if (args.data.length > 1 || args.chart_type == 'point') {
-        var shape_color = textContainer.append('tspan')
-          .text(shape + '  ')
-          .style('font-weight', 'bold');
-        if (args.chart_type==='line') {
-          mg_color_rollover_line(args, shape_color, d);
-
-        } else if (args.chart_type==='point') {
-          if (args.color_accessor !== null) {
-              shape_color.attr('fill',   args.scalefns.color(d));
-              shape_color.attr('stroke', args.scalefns.color(d));
-          } else {
-              shape_color.classed('mg-points-mono', true);
-          }
-        }
-      } 
-
-      if (args.time_series) {
-        mg_append_tspan_to_container(textContainer, formatted_x, 'mg-x-rollover-text');
-        mg_append_tspan_to_container(textContainer, formatted_y, 'mg-y-rollover-text');
-      } else {
-        textContainer.append('tspan')
-          .text(formatted_x);
-        textContainer.append('tspan')
-          .text(formatted_y);
+      // label.
+      if (args.legend || args.label_accessor) {
+        rollover_tspan(textContainer, 
+          args.chart_type ==='line' ? args.legend[d.line_id-1] + '  ' : d[args.label_accessor] + '  ')
+          .color(args, d);
       }
+
+      // shape to accompany rollover.
+      if (args.data.length > 1 || args.chart_type == 'point') {
+        rollover_tspan(textContainer, shape + '  ').color(args, d);
+      } 
+      // rollover text.
+      rollover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
+      rollover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
     }
 }
