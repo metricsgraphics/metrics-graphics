@@ -369,6 +369,7 @@
       .on('mouseover', rollover_on)
       .on('mouseout', rollover_off)
       .on('mousemove', rollover_move);
+    
     mg_configure_voronoi_rollover(args, svg);
   }
 

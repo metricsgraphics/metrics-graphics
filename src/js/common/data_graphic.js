@@ -62,6 +62,7 @@ MG.data_graphic = function(args) {
         y_rollover_format: null,               //
         transition_on_update: true,
         mouseover: null,
+        click: null,
         show_rollover_text: true,
         show_confidence_band: null,            // given [l, u] shows a confidence at each point from l to u
         xax_format: null,                      // xax_format is a function that formats the labels for the x axis.

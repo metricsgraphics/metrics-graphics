@@ -1,4 +1,4 @@
-function rollover_tspan (svg, text) {
+function mouseover_tspan (svg, text) {
   var tspan = '';
   var cl = null;
   if (arguments.length === 3) cl = arguments[2];
@@ -58,7 +58,7 @@ function mg_format_aggregate_rollover_text (args, svg, textContainer, formatted_
   }
 
   // append an blank (&nbsp;) line to mdash positioning
-  rollover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
+  mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
 }
 
 function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
@@ -66,21 +66,21 @@ function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted
   var lineHeight = 1.1;
   var formatted_y;
 
-  rollover_tspan(textContainer, formatted_x.trim());
+  mouseover_tspan(textContainer, formatted_x.trim());
 
   lineCount = 1;
   var sub_container;
   d.values.forEach(function (datum) {
     sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
     formatted_y = mg_format_y_rollover(args, num, datum);
-    rollover_tspan(sub_container, '\u2014  ')
+    mouseover_tspan(sub_container, '\u2014  ')
       .color(args, datum);
-    rollover_tspan(sub_container, formatted_y);
+    mouseover_tspan(sub_container, formatted_y);
 
     lineCount++;
   });
   // necessary blank line.
-  rollover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
+  mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
 }
 
 function mg_append_aggregate_rollover_text (args, textContainer, formatted_x, d, num) {
@@ -97,9 +97,9 @@ function mg_append_aggregate_rollover_text (args, textContainer, formatted_x, d,
 
     sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
     formatted_y = mg_format_y_rollover(args, num, datum);
-    rollover_tspan(sub_container, '\u2014  ')
+    mouseover_tspan(sub_container, '\u2014  ')
       .color(args, datum);
-    rollover_tspan(sub_container, formatted_x + ' ' + formatted_y);
+    mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
 
     lineCount++;
   });
@@ -121,17 +121,17 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
 
     // label.
     if (args.legend || args.label_accessor) {
-      rollover_tspan(textContainer,
+      mouseover_tspan(textContainer,
         args.chart_type === 'line' ? args.legend[d.line_id - 1] + '  ' : d[args.label_accessor] + '  ')
         .color(args, d);
     }
 
     // shape to accompany rollover.
     if (args.data.length > 1 || args.chart_type === 'point') {
-      rollover_tspan(textContainer, shape + '  ').color(args, d);
+      mouseover_tspan(textContainer, shape + '  ').color(args, d);
     }
     // rollover text.
-    rollover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
-    rollover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
+    mouseover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
+    mouseover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
   }
 }
