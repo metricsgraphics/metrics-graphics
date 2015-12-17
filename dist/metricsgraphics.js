@@ -86,6 +86,8 @@ MG.globals = {};
 MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
     rollout_callback: { replacement: 'mouseout', version: '2.0' },
+    x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
+    y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
     show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
     xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' }
 };
@@ -142,8 +144,8 @@ MG.data_graphic = function(args) {
         yax_units: '',
         x_rug: false,
         y_rug: false,
-        x_rollover_format: null,               //
-        y_rollover_format: null,               //
+        x_mouseover: null,               //
+        y_mouseover: null,               //
         transition_on_update: true,
         mouseover: null,
         click: null,
@@ -2788,7 +2790,7 @@ MG.button_layout = function(target) {
     } else { // otherwise...
       // if we're animating on load, animate the line from its median value
       var this_path = svg.append('path')
-        .attr('class', 'mg-main-line');
+        .attr('class', 'mg-main-line mg-line' + line_id);
 
       mg_color_line(args, this_path, which_line, line_id);
       mg_add_line_element(args, plot, this_path, which_line);
@@ -3177,7 +3179,7 @@ MG.button_layout = function(target) {
       if (this_data.length === 0) {
         continue;
       }
-      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
+      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id));
 
       mg_add_confidence_band(args, plot, svg, i);
       mg_add_area(args, plot, svg, i, line_id);
@@ -5332,11 +5334,11 @@ var number_rollover_format = function (f, d, accessor) {
 
 function mg_format_y_rollover(args, num, d) {
   var formatted_y;
-  if (args.y_rollover_format !== null) {
+  if (args.y_mouseover !== null) {
     if (args.aggregate_rollover) {
-      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor);
     } else {
-      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor);
     }
   } else {
     if (args.time_series) {
@@ -5356,15 +5358,15 @@ function mg_format_y_rollover(args, num, d) {
 
 function mg_format_x_rollover(args, fmt, d) {
     var formatted_x;
-    if (args.x_rollover_format !== null) {
+    if (args.x_mouseover !== null) {
       if (args.time_series) {
         if (args.aggregate_rollover) {
-          formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
+          formatted_x = time_rollover_format(args.x_mouseover, d, 'key', args.utc);
         } else {
-          formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+          formatted_x = time_rollover_format(args.x_mouseover, d, args.x_accessor, args.utc);
         }
       } else {
-        formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
+        formatted_x = number_rollover_format(args.x_mouseover, d, args.x_accessor);
       }
     } else {
       if (args.time_series) {

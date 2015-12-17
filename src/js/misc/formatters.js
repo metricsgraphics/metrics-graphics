@@ -44,11 +44,11 @@ var number_rollover_format = function (f, d, accessor) {
 
 function mg_format_y_rollover(args, num, d) {
   var formatted_y;
-  if (args.y_rollover_format !== null) {
+  if (args.y_mouseover !== null) {
     if (args.aggregate_rollover) {
-      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor);
     } else {
-      formatted_y = number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor);
     }
   } else {
     if (args.time_series) {
@@ -68,15 +68,15 @@ function mg_format_y_rollover(args, num, d) {
 
 function mg_format_x_rollover(args, fmt, d) {
     var formatted_x;
-    if (args.x_rollover_format !== null) {
+    if (args.x_mouseover !== null) {
       if (args.time_series) {
         if (args.aggregate_rollover) {
-          formatted_x = time_rollover_format(args.x_rollover_format, d, 'key', args.utc);
+          formatted_x = time_rollover_format(args.x_mouseover, d, 'key', args.utc);
         } else {
-          formatted_x = time_rollover_format(args.x_rollover_format, d, args.x_accessor, args.utc);
+          formatted_x = time_rollover_format(args.x_mouseover, d, args.x_accessor, args.utc);
         }
       } else {
-        formatted_x = number_rollover_format(args.x_rollover_format, d, args.x_accessor);
+        formatted_x = number_rollover_format(args.x_mouseover, d, args.x_accessor);
       }
     } else {
       if (args.time_series) {
