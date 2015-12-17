@@ -169,7 +169,7 @@
     } else { // otherwise...
       // if we're animating on load, animate the line from its median value
       var this_path = svg.append('path')
-        .attr('class', 'mg-main-line');
+        .attr('class', 'mg-main-line mg-line' + line_id);
 
       mg_color_line(args, this_path, which_line, line_id);
       mg_add_line_element(args, plot, this_path, which_line);
@@ -558,7 +558,7 @@
       if (this_data.length === 0) {
         continue;
       }
-      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id) + '-color');
+      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id));
 
       mg_add_confidence_band(args, plot, svg, i);
       mg_add_area(args, plot, svg, i, line_id);
