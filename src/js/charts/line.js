@@ -376,13 +376,17 @@
   function nest_data_for_aggregate_rollover (args) {
     var data_nested = d3.nest()
       .key(function (d) { return d[args.x_accessor]; })
-      .entries(d3.merge(args.data))
-      .sort(function (a, b) { return new Date(a.key) - new Date(b.key); });
+      .entries(d3.merge(args.data));
     data_nested.forEach(function (entry) {
       var datum = entry.values[0];
       entry.key = datum[args.x_accessor];
     });
-    return data_nested;
+    
+    if(args.x_sort) {
+        return data_nested.sort(function (a, b) { return new Date(a.key) - new Date(b.key); });
+    } else {
+        return data_nested;
+    }
   }
 
   function mg_add_aggregate_rollover (args, svg, rollover_on, rollover_off, rollover_move) {
