@@ -108,6 +108,9 @@ function mg_add_g (svg, cl) {
     return svg.append('g').classed(cl, true);
 }
 
+function mg_remove_element(svg, elem) {
+    svg.select(elem).remove();
+}
 
 
 //////// axis helper functions ////////////
@@ -155,7 +158,7 @@ function mg_rotate_labels (labels, rotation_degree) {
                 var elem = d3.select(this);
                 return 'rotate('+rotation_degree+' '+elem.attr('x')+','+elem.attr('y')+')';
             }
-        }); 
+        });
     }
 }
 

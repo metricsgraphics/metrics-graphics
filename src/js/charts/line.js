@@ -137,7 +137,7 @@
       // this is the typical workflow
       //this_path.classed('mg-line' + (line_id) + '-color', true);
       mg_default_color_for_path(this_path, line_id);
-    }        
+    }
   }
 
   function mg_add_line_element (args, plot, this_path, which_line) {
@@ -240,7 +240,7 @@
     mg_selectAll_and_remove(svg, '.mg-active-datapoint-container');
   }
 
-  function mg_add_line_active_datapoint_container(args, svg) { 
+  function mg_add_line_active_datapoint_container(args, svg) {
     var activeDatapointContainer = mg_add_g(svg, 'mg-active-datapoint-container')
       .append('text')
       .attr('class', 'mg-active-datapoint')
@@ -391,7 +391,7 @@
 
   function mg_add_aggregate_rollover (args, svg, rollover_on, rollover_off, rollover_move) {
     // Undo the keys getting coerced to strings, by setting the keys from the values
-    // This is necessary for when we have X axis keys that are things like 
+    // This is necessary for when we have X axis keys that are things like
     var data_nested = nest_data_for_aggregate_rollover(args);
 
     var xf = data_nested.map(function (di) {
@@ -533,7 +533,7 @@
     var rect = svg.selectAll('.mg-rollover-rect rect');
     if (args.data.filter(function (d) { return d.length === 1; }).length > 0) {
       rect.on('mouseover')(rect[0][0].__data__, 0);
-    }        
+    }
   }
 
   function mg_is_standard_multiline(args) {
