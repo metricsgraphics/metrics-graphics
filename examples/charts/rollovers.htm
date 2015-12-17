@@ -138,8 +138,8 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_rollover_format: '%d',
-        x_rollover_format: '%e of %b? Well, ',
+        y_mouseover: '%d',
+        x_mouseover: '%e of %b? Well, ',
         target: '#y-formatting'
     });
 })
@@ -192,8 +192,8 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_rollover_format: '%d',
-        x_rollover_format: '%e of %b? Well, ',
+        y_mouseover: '%d',
+        x_mouseover: '%e of %b? Well, ',
         target: '#formatting-with-strings'
     });
 
@@ -204,10 +204,10 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_rollover_format: function(d){
+        y_mouseover: function(d){
             return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
         },
-        x_rollover_format: function(d){
+        x_mouseover: function(d){
             var today = new Date()
             return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
         },

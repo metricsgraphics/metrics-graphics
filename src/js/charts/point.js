@@ -1,3 +1,5 @@
+
+
 (function() {
     'use strict';
 
@@ -32,7 +34,6 @@
         this.mainPlot = function() {
             var svg = mg_get_svg_child_of(args.target);
             var g;
-
             //remove the old points, add new one
             svg.selectAll('.mg-points').remove();
 
@@ -116,7 +117,7 @@
 
             return function(d, i) {
                 svg.selectAll('.mg-points circle')
-                    .classed('selected', false);
+                    .classed('selected', false);                
 
                 //highlight active point
                 var pts = svg.selectAll('.mg-points circle.path-' + i)
@@ -124,10 +125,10 @@
 
                 if (args.size_accessor) {
                     pts.attr('r', function(di) {
-                        return args.scalefns.size(di) + 1;
+                        return args.scalefns.size(di) + args.active_point_size_increase;
                     });
                 } else {
-                    pts.attr('r', args.point_size);
+                    pts.attr('r', args.point_size + args.active_point_size_increase);
                 }
 
                 //trigger mouseover on all points for this class name in .linked charts
@@ -141,24 +142,9 @@
                         });
                 }
 
-                var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
-                var num = format_rollover_number(args);
-
-                //update rollover text
                 if (args.show_rollover_text) {
-                    svg.select('.mg-active-datapoint')
-                        .text(function() {
-                            if (args.time_series) {
-                                var dd = new Date(+d.point[args.x_accessor]);
-                                dd.setDate(dd.getDate());
-
-                                return fmt(dd) + '  ' + args.yax_units + num(d.point[args.y_accessor]);
-                            } else {
-                                return args.x_accessor + ': ' + num(d.point[args.x_accessor])
-                                    + ', ' + args.y_accessor + ': ' + args.yax_units
-                                    + num(d.point[args.y_accessor]);
-                            }
-                        });
+                    var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+                    mg_update_rollover_text(args,svg,fmt, '\u2022', d.point, i);
                 }
 
                 if (args.mouseover) {
@@ -226,12 +212,14 @@
         ls: false,
         lowess: false,
         point_size: 2.5,
+        label_accessor: null,
         size_accessor: null,
         color_accessor: null,
         size_range: null,              // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
         color_range: null,             // e.g. ['blue', 'red'] to color different groups of points
         size_domain: null,
         color_domain: null,
+        active_point_size_increase: 1,
         color_type: 'number'           // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
     };
 

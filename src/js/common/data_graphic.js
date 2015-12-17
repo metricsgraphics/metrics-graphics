@@ -2,6 +2,8 @@ MG.globals = {};
 MG.deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
     rollout_callback: { replacement: 'mouseout', version: '2.0' },
+    x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
+    y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
     show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
     xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' }
 };
@@ -58,10 +60,11 @@ MG.data_graphic = function(args) {
         yax_units: '',
         x_rug: false,
         y_rug: false,
-        x_rollover_format: null,               //
-        y_rollover_format: null,               //
+        x_mouseover: null,               //
+        y_mouseover: null,               //
         transition_on_update: true,
         mouseover: null,
+        click: null,
         show_rollover_text: true,
         show_confidence_band: null,            // given [l, u] shows a confidence at each point from l to u
         xax_format: null,                      // xax_format is a function that formats the labels for the x axis.

@@ -337,7 +337,6 @@ function process_point(args) {
 
   //args.lowess_line = lowess_robust(x,y, .5, 100)
   return this;
-
 }
 
 MG.process_point = process_point;
