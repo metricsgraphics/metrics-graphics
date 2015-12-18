@@ -4,11 +4,11 @@ function raw_data_transformation(args) {
   // dupe our data so we can modify it without adverse effect
   args.data = MG.clone(args.data);
 
-  // We need to account for a few data format cases:
-  // #1 [{key:__, value:__}, ...]                // unnested obj-arrays
-  // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
-  // #3 [[4323, 2343],..]                    // unnested 2d array
-  // #4 [[[4323, 2343],..] , [[4323, 2343],..]]        // nested 2d array
+  // we need to account for a few data format cases:
+  // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
+  // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
+  // #3 [[4323, 2343],..]                                       // unnested 2d array
+  // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
 
   args.array_of_objects = false;
   args.array_of_arrays = false;
@@ -66,24 +66,24 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_y_accessors(args) {
   if (args.y_accessor instanceof Array) {
-  args.data = args.data.map(function(_d) {
-    return args.y_accessor.map(function(ya) {
-    return _d.map(function(di) {
-      di = MG.clone(di);
+    args.data = args.data.map(function(_d) {
+      return args.y_accessor.map(function(ya) {
+        return _d.map(function(di) {
+          di = MG.clone(di);
 
-      if (di[ya] === undefined) {
-      return undefined;
-      }
+          if (di[ya] === undefined) {
+            return undefined;
+          }
 
-      di['multiline_y_accessor'] = di[ya];
-      return di;
-    }).filter(function(di) {
-      return di !== undefined;
-    });
-    });
-  })[0];
+          di['multiline_y_accessor'] = di[ya];
+          return di;
+        }).filter(function(di) {
+          return di !== undefined;
+        });
+      });
+    })[0];
 
-  args.y_accessor = 'multiline_y_accessor';
+    args.y_accessor = 'multiline_y_accessor';
   }
 }
 
@@ -94,36 +94,37 @@ function process_line(args) {
 
   var time_frame;
 
-  //do we have a time-series?
+  // do we have a time-series?
   var is_time_series = d3.sum(args.data.map(function(series) {
     return series.length > 0 && series[0][args.x_accessor] instanceof Date;
   })) > 0;
 
-  //force linear interpolation when missing_is_hidden is enabled
+  // force linear interpolation when missing_is_hidden is enabled
   if (args.missing_is_hidden) {
     args.interpolate = 'linear';
   }
-  //are we replacing missing y values with zeros?
+
+  // are we replacing missing y values with zeros?
   if ((args.missing_is_zero || args.missing_is_hidden)
       && args.chart_type === 'line'
       && is_time_series
     ) {
-
     for (var i = 0; i < args.data.length; i++) {
-      //we need to have a dataset of length > 2, so if it's less than that, skip
+      // we need to have a dataset of length > 2, so if it's less than that, skip
       if (args.data[i].length <= 1) {
         continue;
       }
 
       var first = args.data[i][0];
       var last = args.data[i][args.data[i].length-1];
-      //initialize our new array for storing the processed data
+
+      // initialize our new array for storing the processed data
       var processed_data = [];
 
-      //we'll be starting from the day after our first date
+      // we'll be starting from the day after our first date
       var start_date = MG.clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
-      //if we've set a max_x, add data points up to there
+      // if we've set a max_x, add data points up to there
       var from = (args.min_x) ? args.min_x : start_date;
       var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
 
@@ -134,13 +135,12 @@ function process_line(args) {
           var o = {};
           d.setHours(0, 0, 0, 0);
 
-          //add the first date item
-          //we'll be starting from the day after our first date
+          // add the first date item, we'll be starting from the day after our first date
           if (Date.parse(d) === Date.parse(new Date(start_date))) {
             processed_data.push(MG.clone(args.data[i][0]));
           }
 
-          //check to see if we already have this date in our data object
+          // check to see if we already have this date in our data object
           var existing_o = null;
           args.data[i].forEach(function(val, i) {
             if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
@@ -150,28 +150,29 @@ function process_line(args) {
             }
           });
 
-          //if we don't have this date in our data object, add it and set it to zero
+          // if we don't have this date in our data object, add it and set it to zero
           if (!existing_o) {
             o[args.x_accessor] = new Date(d);
             o[args.y_accessor] = 0;
             o['_missing'] = true; //we want to distinguish between zero-value and missing observations
             processed_data.push(o);
           }
-          //if the data point has, say, a 'missing' attribute set or if its
-          //y-value is null identify it internally as missing
+
+          // if the data point has, say, a 'missing' attribute set or if its
+          // y-value is null identify it internally as missing
           else if (existing_o[args.missing_is_hidden_accessor]
               || existing_o[args.y_accessor] === null
             ) {
             existing_o['_missing'] = true;
             processed_data.push(existing_o);
           }
+
           //otherwise, use the existing object for that date
           else {
             processed_data.push(existing_o);
           }
         }
-      }
-      else {
+      } else {
         for (var j = 0; j < args.data[i].length; j += 1) {
           var o = MG.clone(args.data[i][j]);
           o['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
@@ -179,7 +180,7 @@ function process_line(args) {
         }
       }
 
-      //update our date object
+      // update our date object
       args.data[i] = processed_data;
     }
   }
@@ -192,8 +193,8 @@ MG.process_line = process_line;
 function process_histogram(args) {
   'use strict';
 
-  // if args.binned=False, then we need to bin the data appropriately.
-  // if args.binned=True, then we need to make sure to compute the relevant computed data.
+  // if args.binned == false, then we need to bin the data appropriately.
+  // if args.binned == true, then we need to make sure to compute the relevant computed data.
   // the outcome of either of these should be something in args.computed_data.
   // the histogram plotting function will be looking there for the data to plot.
 
@@ -284,7 +285,7 @@ function process_categorical_variables(args) {
   args.categorical_variables = [];
   if (args.binned === false) {
     if (typeof(our_data[0]) === 'object') {
-      // we are dealing with an array of objects. Extract the data value of interest.
+      // we are dealing with an array of objects, extract the data value of interest
       extracted_data = our_data
         .map(function(d) {
           return d[label_accessor];
@@ -310,7 +311,7 @@ function process_categorical_variables(args) {
       return obj;
     });
   } else {
-    // nothing needs to really happen here.
+    // nothing needs to really happen here
     processed_data = our_data;
     args.categorical_variables = d3.set(processed_data.map(function(d) {
       return d[label_accessor];
@@ -335,7 +336,6 @@ function process_point(args) {
     args.ls_line = least_squares(x,y);
   }
 
-  //args.lowess_line = lowess_robust(x,y, .5, 100)
   return this;
 }
 
