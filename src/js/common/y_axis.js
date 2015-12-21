@@ -79,7 +79,7 @@ function mg_bar_add_zero_line (args) {
     .attr('y1', r[0] + mg_get_plot_top(args))
     .attr('y2', r[r.length-1] + g + args.scales.Y_ingroup.rangeBand())
     .attr('stroke', 'black')
-    .attr('opacity', .2);  
+    .attr('opacity', .2);
   }
 }
 
@@ -94,7 +94,7 @@ function set_min_max_y (args) {
 
   var my = {};
   my.min = extents[0];
-  my.max = extents[1];
+  my.max = (args.max_y_floor === null) ? extents[1] : Math.max(extents[1], args.max_y_floor);
   // the default case is for the y-axis to start at 0, unless we explicitly want it
   // to start at an arbitrary number or from the data's minimum value
   if (my.min >= 0 && !args.min_y && !args.min_y_from_data) {
