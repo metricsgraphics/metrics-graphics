@@ -63,8 +63,8 @@
       // a line is defined if the _missing attrib is not set to true
       // and the y-accessor is not null
       plot.line = plot.line.defined(function (d) {
-        return (d['_missing'] == undefined || d['_missing'] != true)
-        && d[args.y_accessor] != null;
+        return (d['_missing'] === undefined || d['_missing'] !== true)
+        && d[args.y_accessor] !== null;
       });
     }
   }
@@ -381,7 +381,7 @@
       var datum = entry.values[0];
       entry.key = datum[args.x_accessor];
     });
-    
+
     if(args.x_sort) {
         return data_nested.sort(function (a, b) { return new Date(a.key) - new Date(b.key); });
     } else {
@@ -623,7 +623,7 @@
       d.values.forEach(function (datum) {
         if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
       });
-    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] == null) {
+    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null) {
       // disable rollovers for hidden parts of the line
       // recall that hidden parts are missing data ranges and possibly also
       // data points that have been explicitly identified as missing

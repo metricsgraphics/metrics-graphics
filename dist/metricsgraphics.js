@@ -84,12 +84,12 @@ MG.call_hook = function(name) {
 
 MG.globals = {};
 MG.deprecations = {
-    rollover_callback: { replacement: 'mouseover', version: '2.0' },
-    rollout_callback: { replacement: 'mouseout', version: '2.0' },
-    x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
-    y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
-    show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
-    xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' }
+  rollover_callback: { replacement: 'mouseover', version: '2.0' },
+  rollout_callback: { replacement: 'mouseout', version: '2.0' },
+  x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
+  y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
+  show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
+  xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' }
 };
 MG.globals.link = false;
 MG.globals.version = "1.1";
@@ -97,136 +97,136 @@ MG.globals.version = "1.1";
 MG.charts = {};
 
 MG.data_graphic = function(args) {
-    'use strict';
-    var defaults = {
-        missing_is_zero: false,                // if true, missing values will be treated as zeros
-        missing_is_hidden: false,              // if true, missing values will appear as broken segments
-        missing_is_hidden_accessor: null,      // the accessor that determines the boolean value for missing data points
-        legend: '' ,                           // an array identifying the labels for a chart's lines
-        legend_target: '',                     // if set, the specified element is populated with a legend
-        error: '',                             // if set, a graph will show an error icon and log the error to the console
-        animate_on_load: false,                // animate lines on load
-        top: 65,                               // the size of the top margin
-        title_y_position: 10,                  // how many pixels from the top edge (0) should we show the title at
-        bottom: 30,                            // the size of the bottom margin
-        right: 10,                             // size of the right margin
-        left: 50,                              // size of the left margin
-        buffer: 8,                             // the buffer between the actual chart area and the margins
-        width: 350,                            // the width of the entire graphic
-        height: 220,                           // the height of the entire graphic
-        full_width: false,                     // sets the graphic width to be the width of the parent element and resizes dynamically
-        full_height: false,                    // sets the graphic width to be the width of the parent element and resizes dynamically
-        small_height_threshold: 120,           // the height threshold for when smaller text appears
-        small_width_threshold: 160,            // the width  threshold for when smaller text appears
-        //small_text: false,                     // coerces small text regardless of graphic size
-        xax_count: 6,                          // number of x axis ticks
-        xax_tick_length: 5,                    // x axis tick length
-        axes_not_compact: true,
-        yax_count: 5,                          // number of y axis ticks
-        yax_tick_length: 5,                    // y axis tick length
-        x_extended_ticks: false,               // extends x axis ticks across chart - useful for tall charts
-        y_extended_ticks: false,               // extends y axis ticks across chart - useful for long charts
-        y_scale_type: 'linear',
-        max_x: null,
-        max_y: null,
-        min_x: null,
-        min_y: null,                           // if set, y axis starts at an arbitrary value
-        min_y_from_data: false,                // if set, y axis will start at minimum value rather than at 0
-        point_size: 2.5,                       // the size of the dot that appears on a line on mouse-over
-        x_accessor: 'date',
-        xax_units: '',
-        x_label: '',
-        x_sort: true,
-        x_axis: true,
-        y_axis: true,
-        y_accessor: 'value',
-        y_label: '',
-        yax_units: '',
-        x_rug: false,
-        y_rug: false,
-        x_mouseover: null,               //
-        y_mouseover: null,               //
-        transition_on_update: true,
-        mouseover: null,
-        click: null,
-        show_rollover_text: true,
-        show_confidence_band: null,            // given [l, u] shows a confidence at each point from l to u
-        xax_format: null,                      // xax_format is a function that formats the labels for the x axis.
-        area: true,
-        chart_type: 'line',
-        data: [],
-        decimals: 2,                           // the number of decimals in any rollover
-        format: 'count',                       // format = {count, percentage}
-        inflator: 10/9,                        // for setting y axis max
-        linked: false,                         // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
-        linked_format: '%Y-%m-%d',             // What granularity to link on for graphs. Default is at day
-        list: false,
-        baselines: null,                       // sets the baseline lines
-        markers: null,                         // sets the marker lines
-        scalefns: {},
-        scales: {},
-        utc_time: false,
-        european_clock: false,
-        show_year_markers: false,
-        show_secondary_x_label: true,
-        target: '#viz',
-        interpolate: 'cardinal',               // interpolation method to use when rendering lines
-        interpolate_tension: 0.7,              // its range is from 0 to 1; increase if your data is irregular and you notice artifacts
-        custom_line_color_map: [],             // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
-        colors: null,                          // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
-        max_data_size: null,                   // explicitly specify the the max number of line series, for use with custom_line_color_map
-        aggregate_rollover: false,             // links the lines in a multi-line chart
-        show_tooltips: true                    // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    };
+  'use strict';
+  var defaults = {
+    missing_is_zero: false,        // if true, missing values will be treated as zeros
+    missing_is_hidden: false,        // if true, missing values will appear as broken segments
+    missing_is_hidden_accessor: null,    // the accessor that determines the boolean value for missing data points
+    legend: '' ,               // an array identifying the labels for a chart's lines
+    legend_target: '',           // if set, the specified element is populated with a legend
+    error: '',               // if set, a graph will show an error icon and log the error to the console
+    animate_on_load: false,        // animate lines on load
+    top: 65,                 // the size of the top margin
+    title_y_position: 10,          // how many pixels from the top edge (0) should we show the title at
+    bottom: 30,              // the size of the bottom margin
+    right: 10,               // size of the right margin
+    left: 50,                // size of the left margin
+    buffer: 8,               // the buffer between the actual chart area and the margins
+    width: 350,              // the width of the entire graphic
+    height: 220,               // the height of the entire graphic
+    full_width: false,           // sets the graphic width to be the width of the parent element and resizes dynamically
+    full_height: false,          // sets the graphic width to be the width of the parent element and resizes dynamically
+    small_height_threshold: 120,       // the height threshold for when smaller text appears
+    small_width_threshold: 160,      // the width  threshold for when smaller text appears
+    //small_text: false,           // coerces small text regardless of graphic size
+    xax_count: 6,              // number of x axis ticks
+    xax_tick_length: 5,          // x axis tick length
+    axes_not_compact: true,
+    yax_count: 5,              // number of y axis ticks
+    yax_tick_length: 5,          // y axis tick length
+    x_extended_ticks: false,         // extends x axis ticks across chart - useful for tall charts
+    y_extended_ticks: false,         // extends y axis ticks across chart - useful for long charts
+    y_scale_type: 'linear',
+    max_x: null,
+    max_y: null,
+    min_x: null,
+    min_y: null,               // if set, y axis starts at an arbitrary value
+    min_y_from_data: false,        // if set, y axis will start at minimum value rather than at 0
+    point_size: 2.5,             // the size of the dot that appears on a line on mouse-over
+    x_accessor: 'date',
+    xax_units: '',
+    x_label: '',
+    x_sort: true,
+    x_axis: true,
+    y_axis: true,
+    y_accessor: 'value',
+    y_label: '',
+    yax_units: '',
+    x_rug: false,
+    y_rug: false,
+    x_mouseover: null,         //
+    y_mouseover: null,         //
+    transition_on_update: true,
+    mouseover: null,
+    click: null,
+    show_rollover_text: true,
+    show_confidence_band: null,      // given [l, u] shows a confidence at each point from l to u
+    xax_format: null,            // xax_format is a function that formats the labels for the x axis.
+    area: true,
+    chart_type: 'line',
+    data: [],
+    decimals: 2,               // the number of decimals in any rollover
+    format: 'count',             // format = {count, percentage}
+    inflator: 10/9,            // for setting y axis max
+    linked: false,             // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+    linked_format: '%Y-%m-%d',       // What granularity to link on for graphs. Default is at day
+    list: false,
+    baselines: null,             // sets the baseline lines
+    markers: null,             // sets the marker lines
+    scalefns: {},
+    scales: {},
+    utc_time: false,
+    european_clock: false,
+    show_year_markers: false,
+    show_secondary_x_label: true,
+    target: '#viz',
+    interpolate: 'cardinal',         // interpolation method to use when rendering lines
+    interpolate_tension: 0.7,        // its range is from 0 to 1; increase if your data is irregular and you notice artifacts
+    custom_line_color_map: [],       // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
+    colors: null,              // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
+    max_data_size: null,           // explicitly specify the the max number of line series, for use with custom_line_color_map
+    aggregate_rollover: false,       // links the lines in a multi-line chart
+    show_tooltips: true          // if enabled, a chart's description will appear in a tooltip (requires jquery)
+  };
 
-    MG.call_hook('global.defaults', defaults);
+  MG.call_hook('global.defaults', defaults);
 
-    if (!args) { args = {}; }
+  if (!args) { args = {}; }
 
-    var selected_chart = MG.charts[args.chart_type || defaults.chart_type];
-    merge_with_defaults(args, selected_chart.defaults, defaults);
+  var selected_chart = MG.charts[args.chart_type || defaults.chart_type];
+  merge_with_defaults(args, selected_chart.defaults, defaults);
 
-    if (args.list) {
-        args.x_accessor = 0;
-        args.y_accessor = 1;
-    }
+  if (args.list) {
+    args.x_accessor = 0;
+    args.y_accessor = 1;
+  }
 
-    // check for deprecated parameters
-    for (var key in MG.deprecations) {
-        if (args.hasOwnProperty(key)) {
-            var deprecation = MG.deprecations[key],
-                message = 'Use of `args.' + key + '` has been deprecated',
-                replacement = deprecation.replacement,
-                version;
+  // check for deprecated parameters
+  for (var key in MG.deprecations) {
+    if (args.hasOwnProperty(key)) {
+      var deprecation = MG.deprecations[key],
+        message = 'Use of `args.' + key + '` has been deprecated',
+        replacement = deprecation.replacement,
+        version;
 
-            // transparently alias the deprecated
-            if (replacement) {
-                if (args[replacement]) {
-                    message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.';
-                } else {
-                    args[replacement] = args[key];
-                }
-            }
-
-            if (deprecation.warned) {
-                continue;
-            }
-
-            deprecation.warned = true;
-
-            if (replacement) {
-                message += ' in favor of `args.' + replacement + '`';
-            }
-
-            warn_deprecation(message, deprecation.version);
+      // transparently alias the deprecated
+      if (replacement) {
+        if (args[replacement]) {
+          message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.';
+        } else {
+          args[replacement] = args[key];
         }
+      }
+
+      if (deprecation.warned) {
+        continue;
+      }
+
+      deprecation.warned = true;
+
+      if (replacement) {
+        message += ' in favor of `args.' + replacement + '`';
+      }
+
+      warn_deprecation(message, deprecation.version);
     }
+  }
 
-    MG.call_hook('global.before_init', args);
+  MG.call_hook('global.before_init', args);
 
-    new selected_chart.descriptor(args);
+  new selected_chart.descriptor(args);
 
-    return args.data;
+  return args.data;
 };
 
 if (typeof jQuery !== 'undefined') {
@@ -1387,7 +1387,7 @@ function mg_get_color_domain (args) {
   var color_domain;
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
-      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor]});
+      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
     }
     else if (args.color_type === 'category') {
       color_domain = d3.set(args.data[0]
@@ -1432,9 +1432,9 @@ function mg_point_add_size_scale (args) {
 }
 
 function mg_get_size_domain (args) {
-  return args.size_domain === null ? 
-        d3.extent(args.data[0], function(d){return d[args.size_accessor]}) : 
-        args.size_domain;
+  return args.size_domain === null ?
+    d3.extent(args.data[0], function(d) { return d[args.size_accessor]; }) :
+    args.size_domain;
 }
 
 function mg_get_size_range (args) {
@@ -1496,13 +1496,13 @@ function mg_get_time_frame (diff) {
   return time_frame;
 }
 
-function mg_milisec_diff       (diff) { return diff < 10}
-function mg_sec_diff           (diff) { return diff < 60}
-function mg_day_diff           (diff) { return diff / (60 * 60) <= 24 }
-function mg_four_days          (diff) { return diff / (60 * 60) <= 24 * 4 }
-function mg_many_days          (diff) { return diff / (60 * 60 * 24) <= 93}
-function mg_many_months        (diff) { return diff / (60*60*24) < 365*2}
-function mg_years              (diff) { return diff / (60*60*24) >=365*2}
+function mg_milisec_diff       (diff) { return diff < 10; }
+function mg_sec_diff           (diff) { return diff < 60; }
+function mg_day_diff           (diff) { return diff / (60 * 60) <= 24; }
+function mg_four_days          (diff) { return diff / (60 * 60) <= 24 * 4; }
+function mg_many_days          (diff) { return diff / (60 * 60 * 24) <= 93; }
+function mg_many_months        (diff) { return diff / (60*60*24) < 365*2; }
+function mg_years              (diff) { return diff / (60*60*24) >= 365*2; }
 
 function mg_get_time_format (utc, diff) {
   var main_time_format;
@@ -1659,10 +1659,11 @@ function mg_add_primary_x_axis_label (args, g) {
   // We will need to figure out a more principled way of doing this.
   if (mg_elements_are_overlapping(labels)) {
     labels.filter(function(d,i) {
-      return (i+1) % 2 == 0;
+      return (i+1) % 2 === 0;
     }).remove();
+
     var svg = mg_get_svg_child_of(args.target);
-    var ticks = svg.selectAll('.mg-xax-ticks').filter(function(d,i){return (i+1) % 2 == 0;})
+    svg.selectAll('.mg-xax-ticks').filter(function(d,i){ return (i+1) % 2 === 0; })
       .remove();
   }
 }
@@ -1693,11 +1694,13 @@ function mg_get_yformat_and_secondary_time_function (args) {
       tf.yformat = MG.time_format(args.utc_time, '%b %d');
       break;
     case 'many-days':
-        tf.secondary = d3.time.years;
-        tf.yformat = MG.time_format(args.utc_time, '%Y');  
+      tf.secondary = d3.time.years;
+      tf.yformat = MG.time_format(args.utc_time, '%Y');
+      break;
     case 'many-months':
-        tf.secondary = d3.time.years;
-        tf.yformat = MG.time_format(args.utc_time, '%b');
+      tf.secondary = d3.time.years;
+      tf.yformat = MG.time_format(args.utc_time, '%b');
+      break;
     default:
       tf.secondary = d3.time.years;
       tf.yformat = MG.time_format(args.utc_time, '%Y');
@@ -1780,7 +1783,7 @@ function mg_min_max_x_for_numbers (mx) {
 }
 
 function mg_min_max_x_for_strings (mx) {
-  // ok. Not sure who wrote this, but this seems also pretty silly. We 
+  // ok. Not sure who wrote this, but this seems also pretty silly. We
   // should not be allowing strings here to be coerced into numbers. Veto.
   mx.min = Number(mx.min) - 1;
   mx.max = Number(mx.max) + 1;
@@ -2301,14 +2304,18 @@ function mg_window_listeners(args) {
 function mg_if_aspect_ratio_resize_svg(args) {
   // have we asked the svg to fill a div, if so resize with div
   if (args.full_width || args.full_height) {
-    if (window.onresize == null) {
+    if (window.onresize === null) {
       window.onresize = window_listener;
     }
   }
 
   function window_listener() {
     var svg = d3.select(args.target).select('svg');
-    var aspect = (svg.attr('width') != 0)?(svg.attr('height') / svg.attr('width')):0;
+
+    var aspect = svg.attr('width') !== 0
+        ? (svg.attr('height') / svg.attr('width'))
+        : 0;
+
     var newWidth = get_width(args.target);
 
     svg.attr('width', newWidth);
@@ -2686,8 +2693,8 @@ MG.button_layout = function(target) {
       // a line is defined if the _missing attrib is not set to true
       // and the y-accessor is not null
       plot.line = plot.line.defined(function (d) {
-        return (d['_missing'] == undefined || d['_missing'] != true)
-        && d[args.y_accessor] != null;
+        return (d['_missing'] === undefined || d['_missing'] !== true)
+        && d[args.y_accessor] !== null;
       });
     }
   }
@@ -3004,7 +3011,7 @@ MG.button_layout = function(target) {
       var datum = entry.values[0];
       entry.key = datum[args.x_accessor];
     });
-    
+
     if(args.x_sort) {
         return data_nested.sort(function (a, b) { return new Date(a.key) - new Date(b.key); });
     } else {
@@ -3246,7 +3253,7 @@ MG.button_layout = function(target) {
       d.values.forEach(function (datum) {
         if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
       });
-    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] == null) {
+    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null) {
       // disable rollovers for hidden parts of the line
       // recall that hidden parts are missing data ranges and possibly also
       // data points that have been explicitly identified as missing
@@ -4693,11 +4700,11 @@ function raw_data_transformation(args) {
   // dupe our data so we can modify it without adverse effect
   args.data = MG.clone(args.data);
 
-  // We need to account for a few data format cases:
-  // #1 [{key:__, value:__}, ...]                // unnested obj-arrays
-  // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]] // nested obj-arrays
-  // #3 [[4323, 2343],..]                    // unnested 2d array
-  // #4 [[[4323, 2343],..] , [[4323, 2343],..]]        // nested 2d array
+  // we need to account for a few data format cases:
+  // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
+  // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
+  // #3 [[4323, 2343],..]                                       // unnested 2d array
+  // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
 
   args.array_of_objects = false;
   args.array_of_arrays = false;
@@ -4755,24 +4762,24 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_y_accessors(args) {
   if (args.y_accessor instanceof Array) {
-  args.data = args.data.map(function(_d) {
-    return args.y_accessor.map(function(ya) {
-    return _d.map(function(di) {
-      di = MG.clone(di);
+    args.data = args.data.map(function(_d) {
+      return args.y_accessor.map(function(ya) {
+        return _d.map(function(di) {
+          di = MG.clone(di);
 
-      if (di[ya] === undefined) {
-      return undefined;
-      }
+          if (di[ya] === undefined) {
+            return undefined;
+          }
 
-      di['multiline_y_accessor'] = di[ya];
-      return di;
-    }).filter(function(di) {
-      return di !== undefined;
-    });
-    });
-  })[0];
+          di['multiline_y_accessor'] = di[ya];
+          return di;
+        }).filter(function(di) {
+          return di !== undefined;
+        });
+      });
+    })[0];
 
-  args.y_accessor = 'multiline_y_accessor';
+    args.y_accessor = 'multiline_y_accessor';
   }
 }
 
@@ -4783,36 +4790,37 @@ function process_line(args) {
 
   var time_frame;
 
-  //do we have a time-series?
+  // do we have a time-series?
   var is_time_series = d3.sum(args.data.map(function(series) {
     return series.length > 0 && series[0][args.x_accessor] instanceof Date;
   })) > 0;
 
-  //force linear interpolation when missing_is_hidden is enabled
+  // force linear interpolation when missing_is_hidden is enabled
   if (args.missing_is_hidden) {
     args.interpolate = 'linear';
   }
-  //are we replacing missing y values with zeros?
+
+  // are we replacing missing y values with zeros?
   if ((args.missing_is_zero || args.missing_is_hidden)
       && args.chart_type === 'line'
       && is_time_series
     ) {
-
     for (var i = 0; i < args.data.length; i++) {
-      //we need to have a dataset of length > 2, so if it's less than that, skip
+      // we need to have a dataset of length > 2, so if it's less than that, skip
       if (args.data[i].length <= 1) {
         continue;
       }
 
       var first = args.data[i][0];
       var last = args.data[i][args.data[i].length-1];
-      //initialize our new array for storing the processed data
+
+      // initialize our new array for storing the processed data
       var processed_data = [];
 
-      //we'll be starting from the day after our first date
+      // we'll be starting from the day after our first date
       var start_date = MG.clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
-      //if we've set a max_x, add data points up to there
+      // if we've set a max_x, add data points up to there
       var from = (args.min_x) ? args.min_x : start_date;
       var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
 
@@ -4823,13 +4831,12 @@ function process_line(args) {
           var o = {};
           d.setHours(0, 0, 0, 0);
 
-          //add the first date item
-          //we'll be starting from the day after our first date
+          // add the first date item, we'll be starting from the day after our first date
           if (Date.parse(d) === Date.parse(new Date(start_date))) {
             processed_data.push(MG.clone(args.data[i][0]));
           }
 
-          //check to see if we already have this date in our data object
+          // check to see if we already have this date in our data object
           var existing_o = null;
           args.data[i].forEach(function(val, i) {
             if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
@@ -4839,36 +4846,37 @@ function process_line(args) {
             }
           });
 
-          //if we don't have this date in our data object, add it and set it to zero
+          // if we don't have this date in our data object, add it and set it to zero
           if (!existing_o) {
             o[args.x_accessor] = new Date(d);
             o[args.y_accessor] = 0;
             o['_missing'] = true; //we want to distinguish between zero-value and missing observations
             processed_data.push(o);
           }
-          //if the data point has, say, a 'missing' attribute set or if its
-          //y-value is null identify it internally as missing
+
+          // if the data point has, say, a 'missing' attribute set or if its
+          // y-value is null identify it internally as missing
           else if (existing_o[args.missing_is_hidden_accessor]
               || existing_o[args.y_accessor] === null
             ) {
             existing_o['_missing'] = true;
             processed_data.push(existing_o);
           }
+
           //otherwise, use the existing object for that date
           else {
             processed_data.push(existing_o);
           }
         }
-      }
-      else {
+      } else {
         for (var j = 0; j < args.data[i].length; j += 1) {
-          var o = MG.clone(args.data[i][j]);
-          o['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
-          processed_data.push(o);
+          var obj = MG.clone(args.data[i][j]);
+          obj['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
+          processed_data.push(obj);
         }
       }
 
-      //update our date object
+      // update our date object
       args.data[i] = processed_data;
     }
   }
@@ -4881,8 +4889,8 @@ MG.process_line = process_line;
 function process_histogram(args) {
   'use strict';
 
-  // if args.binned=False, then we need to bin the data appropriately.
-  // if args.binned=True, then we need to make sure to compute the relevant computed data.
+  // if args.binned == false, then we need to bin the data appropriately.
+  // if args.binned == true, then we need to make sure to compute the relevant computed data.
   // the outcome of either of these should be something in args.computed_data.
   // the histogram plotting function will be looking there for the data to plot.
 
@@ -4973,7 +4981,7 @@ function process_categorical_variables(args) {
   args.categorical_variables = [];
   if (args.binned === false) {
     if (typeof(our_data[0]) === 'object') {
-      // we are dealing with an array of objects. Extract the data value of interest.
+      // we are dealing with an array of objects, extract the data value of interest
       extracted_data = our_data
         .map(function(d) {
           return d[label_accessor];
@@ -4999,7 +5007,7 @@ function process_categorical_variables(args) {
       return obj;
     });
   } else {
-    // nothing needs to really happen here.
+    // nothing needs to really happen here
     processed_data = our_data;
     args.categorical_variables = d3.set(processed_data.map(function(d) {
       return d[label_accessor];
@@ -5024,7 +5032,6 @@ function process_point(args) {
     args.ls_line = least_squares(x,y);
   }
 
-  //args.lowess_line = lowess_robust(x,y, .5, 100)
   return this;
 }
 
@@ -5304,47 +5311,47 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
 }
 
 function format_rollover_number(args) {
-    var num;
-    if (args.format === 'count') {
-        num = function(d_) {
-            var is_float = d_ % 1 !== 0;
-            var n = d3.format("0,000");
-            d_ = is_float ? d3.round(d_, args.decimals) : d_;
-            return n(d_);
-        };
-    } else {
-        num = function(d_) {
-            var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
-            var n = d3.format(fmt_string);
-            return n(d_);
-        };
-    }
-    return num;
+  var num;
+  if (args.format === 'count') {
+    num = function(d_) {
+      var is_float = d_ % 1 !== 0;
+      var n = d3.format("0,000");
+      d_ = is_float ? d3.round(d_, args.decimals) : d_;
+      return n(d_);
+    };
+  } else {
+    num = function(d_) {
+      var fmt_string = (args.decimals ? '.' + args.decimals : '' ) + '%';
+      var n = d3.format(fmt_string);
+      return n(d_);
+    };
+  }
+  return num;
 }
 
 var time_rollover_format = function (f, d, accessor, utc) {
-    var fd;
-    if (typeof f === 'string') {
-      fd = MG.time_format(utc, f)(d[accessor]);
-    } else if (typeof f === 'function') {
-      fd = f(d);
-    } else {
-      fd = d[accessor];
-    }
-    return fd;
+  var fd;
+  if (typeof f === 'string') {
+    fd = MG.time_format(utc, f)(d[accessor]);
+  } else if (typeof f === 'function') {
+    fd = f(d);
+  } else {
+    fd = d[accessor];
+  }
+  return fd;
 };
 
 // define our rollover format for numbers
 var number_rollover_format = function (f, d, accessor) {
-    var fd;
-    if (typeof f === 'string') {
-      fd = d3.format(f)(d[accessor]);
-    } else if (typeof f === 'function') {
-      fd = f(d);
-    } else {
-      fd = d[accessor];
-    }
-    return fd;
+  var fd;
+  if (typeof f === 'string') {
+    fd = d3.format(f)(d[accessor]);
+  } else if (typeof f === 'function') {
+    fd = f(d);
+  } else {
+    fd = d[accessor];
+  }
+  return fd;
 };
 
 function mg_format_y_rollover(args, num, d) {
@@ -5372,32 +5379,34 @@ function mg_format_y_rollover(args, num, d) {
 
 
 function mg_format_x_rollover(args, fmt, d) {
-    var formatted_x;
-    if (args.x_mouseover !== null) {
-      if (args.time_series) {
-        if (args.aggregate_rollover) {
-          formatted_x = time_rollover_format(args.x_mouseover, d, 'key', args.utc);
-        } else {
-          formatted_x = time_rollover_format(args.x_mouseover, d, args.x_accessor, args.utc);
-        }
+  var formatted_x;
+  if (args.x_mouseover !== null) {
+    if (args.time_series) {
+      if (args.aggregate_rollover) {
+        formatted_x = time_rollover_format(args.x_mouseover, d, 'key', args.utc);
       } else {
-        formatted_x = number_rollover_format(args.x_mouseover, d, args.x_accessor);
+        formatted_x = time_rollover_format(args.x_mouseover, d, args.x_accessor, args.utc);
       }
     } else {
-      if (args.time_series) {
-        if (args.aggregate_rollover && args.data.length > 1) {
-          var date = new Date(d.key);
-        } else {
-          var date = new Date(+d[args.x_accessor]);
-          date.setDate(date.getDate());
-        }
+      formatted_x = number_rollover_format(args.x_mouseover, d, args.x_accessor);
+    }
+  } else {
+    if (args.time_series) {
+    var date;
 
-        formatted_x = fmt(date) + '  ';
-      } else {
-        formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
-      }
-    }       
-    return formatted_x;   
+    if (args.aggregate_rollover && args.data.length > 1) {
+      date = new Date(d.key);
+    } else {
+      date = new Date(+d[args.x_accessor]);
+      date.setDate(date.getDate());
+    }
+
+    formatted_x = fmt(date) + '  ';
+    } else {
+      formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+    }
+  }
+  return formatted_x;
 }
 
 MG.format_rollover_number = format_rollover_number;
@@ -5435,91 +5444,97 @@ MG.path_tween = path_tween;
 MG.convert = {};
 
 MG.convert.date = function(data, accessor, time_format) {
-    time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
-    data = data.map(function(d) {
-        var fff = d3.time.format(time_format);
-        d[accessor] = fff.parse(d[accessor]);
-        return d;
-    });
+  time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
+  data = data.map(function(d) {
+    var fff = d3.time.format(time_format);
+    d[accessor] = fff.parse(d[accessor]);
+    return d;
+  });
 
-    return data;
+  return data;
 };
 
 MG.convert.number = function(data, accessor) {
-    data = data.map(function(d) {
-        d[accessor] = Number(d[accessor]);
-        return d;
-    });
+  data = data.map(function(d) {
+    d[accessor] = Number(d[accessor]);
+    return d;
+  });
 
-    return data;
+  return data;
 };
 
 MG.time_format = function(utc, specifier) {
-    return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
+  return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
 };
 
 function mg_get_rollover_time_format(args) {
   var fmt;
   switch (args.processed.x_time_frame) {
-    case 'millis':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
-      break;
-    case 'seconds':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
-      break;
-    case 'less-than-a-day':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
-    case 'four-days':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
-    default:
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  case 'millis':
+    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+    break;
+  case 'seconds':
+    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
+    break;
+  case 'less-than-a-day':
+    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+    break;
+  case 'four-days':
+    fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+    break;
+  default:
+    fmt = MG.time_format(args.utc_time, '%b %e, %Y');
   }
   return fmt;
 }
 
 function mg_data_in_plot_bounds (datum, args) {
   return datum[args.x_accessor] >= args.processed.min_x &&
-          datum[args.x_accessor] <= args.processed.max_x &&
-          datum[args.y_accessor] >= args.processed.min_y &&
-          datum[args.y_accessor] <= args.processed.max_y
+      datum[args.x_accessor] <= args.processed.max_x &&
+      datum[args.y_accessor] >= args.processed.min_y &&
+      datum[args.y_accessor] <= args.processed.max_y;
 }
 
-function is_array(thing){
-    return Object.prototype.toString.call(thing) === '[object Array]';
+function is_array(thing) {
+  return Object.prototype.toString.call(thing) === '[object Array]';
 }
 
-function is_function(thing){
-    return Object.prototype.toString.call(thing) === '[object Function]';
+function is_function(thing) {
+  return Object.prototype.toString.call(thing) === '[object Function]';
 }
 
-function is_empty_array(thing){
-    return is_array(thing) && thing.length === 0;
+function is_empty_array(thing) {
+  return is_array(thing) && thing.length === 0;
 }
 
-function is_object(thing){
-    return Object.prototype.toString.call(thing) === '[object Object]';
+function is_object(thing) {
+  return Object.prototype.toString.call(thing) === '[object Object]';
 }
 
-function is_array_of_arrays(data){
-    var all_elements = data.map(function(d){return is_array(d) === true && d.length > 0});
-    return d3.sum(all_elements) === data.length;
+function is_array_of_arrays(data) {
+  var all_elements = data.map(function(d) {
+    return is_array(d) === true && d.length > 0;
+  });
+
+  return d3.sum(all_elements) === data.length;
 }
 
-function is_array_of_objects(data){
-    // is every element of data an object?
-    var all_elements = data.map(function(d){return is_object(d)===true});
-    return d3.sum(all_elements) === data.length;
+function is_array_of_objects(data) {
+  // is every element of data an object?
+  var all_elements = data.map(function(d) {
+    return is_object(d)===true;
+  });
+
+  return d3.sum(all_elements) === data.length;
 }
 
-function is_array_of_objects_or_empty(data){
-    return is_empty_array(data) || is_array_of_objects(data);
+function is_array_of_objects_or_empty(data) {
+  return is_empty_array(data) || is_array_of_objects(data);
 }
 
 
 function mg_get_bottom (args) {
-    return args.height - args.bottom;
+  return args.height - args.bottom;
 }
 
 function mg_get_plot_bottom (args) {
@@ -5528,98 +5543,98 @@ function mg_get_plot_bottom (args) {
 }
 
 function mg_get_top (args) {
-    return args.top;
+  return args.top;
 }
 
 function mg_get_plot_top (args) {
-    // returns the pixel location of the top side of the plot area.
-    return mg_get_top(args) + args.buffer;
+  // returns the pixel location of the top side of the plot area.
+  return mg_get_top(args) + args.buffer;
 }
 
 function mg_get_left (args) {
-    return args.left;
+  return args.left;
 }
 
 function mg_get_plot_left (args) {
-    // returns the pixel location of the left side of the plot area.
-    return mg_get_left(args) + args.buffer;
+  // returns the pixel location of the left side of the plot area.
+  return mg_get_left(args) + args.buffer;
 }
 
 function mg_get_right (args) {
-    return args.width - args.right;
+  return args.width - args.right;
 }
 
 function mg_get_plot_right (args) {
-    // returns the pixel location of the right side of the plot area.
-    return mg_get_right(args) - args.buffer;
+  // returns the pixel location of the right side of the plot area.
+  return mg_get_right(args) - args.buffer;
 }
 
 //////// adding elements, removing elements /////////////
 
 function mg_exit_and_remove (elem) {
-    elem.exit().remove();
+  elem.exit().remove();
 }
 
 function mg_selectAll_and_remove (svg, cl) {
-    svg.selectAll(cl).remove();
+  svg.selectAll(cl).remove();
 }
 
 function mg_add_g (svg, cl) {
-    return svg.append('g').classed(cl, true);
+  return svg.append('g').classed(cl, true);
 }
 
 function mg_remove_element(svg, elem) {
-    svg.select(elem).remove();
+  svg.select(elem).remove();
 }
 
 
 //////// axis helper functions ////////////
 
-function mg_make_rug(args, rug_class){
-    var svg = mg_get_svg_child_of(args.target);
-    var all_data = mg_flatten_array(args.data);
-    var rug = svg.selectAll('line.'+rug_class).data(all_data);
-    //set the attributes that do not change after initialization, per
-    rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
-    //remove rug elements that are no longer in use
-    mg_exit_and_remove(rug);
-    //set coordinates of new rug elements
-    mg_exit_and_remove(rug);
-    return rug;
+function mg_make_rug(args, rug_class) {
+  var svg = mg_get_svg_child_of(args.target);
+  var all_data = mg_flatten_array(args.data);
+  var rug = svg.selectAll('line.'+rug_class).data(all_data);
+  //set the attributes that do not change after initialization, per
+  rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
+  //remove rug elements that are no longer in use
+  mg_exit_and_remove(rug);
+  //set coordinates of new rug elements
+  mg_exit_and_remove(rug);
+  return rug;
 }
 
-function mg_add_scale_function(args, scalefcn_name, scale, accessor){
-    args.scalefns[scalefcn_name] = function(di){
-        return args.scales[scale](di[accessor]);
-    }
+function mg_add_scale_function(args, scalefcn_name, scale, accessor) {
+  args.scalefns[scalefcn_name] = function(di) {
+    return args.scales[scale](di[accessor]);
+  };
 }
 
 function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
-    if (args.color_accessor) {
-        rug.attr('stroke', args.scalefns.color);
-        rug.classed(rug_mono_class, false);
-    } else {
-        rug.attr('stroke', null);
-        rug.classed(rug_mono_class, true);
-    }
+  if (args.color_accessor) {
+    rug.attr('stroke', args.scalefns.color);
+    rug.classed(rug_mono_class, false);
+  } else {
+    rug.attr('stroke', null);
+    rug.classed(rug_mono_class, true);
+  }
 }
 
 function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
-    args.scales[scale_name] = d3.scale.ordinal()
-        .domain(categorical_variables)
-        .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+  args.scales[scale_name] = d3.scale.ordinal()
+    .domain(categorical_variables)
+    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
 }
 
 function mg_rotate_labels (labels, rotation_degree) {
-    if (rotation_degree) {
-        labels.attr({
-            dy: 0,
-            transform: function() {
-                var elem = d3.select(this);
-                return 'rotate('+rotation_degree+' '+elem.attr('x')+','+elem.attr('y')+')';
-            }
-        });
-    }
+  if (rotation_degree) {
+    labels.attr({
+      dy: 0,
+      transform: function() {
+        var elem = d3.select(this);
+        return 'rotate('+rotation_degree+' '+elem.attr('x')+','+elem.attr('y')+')';
+      }
+    });
+  }
 }
 
 
@@ -5627,274 +5642,275 @@ function mg_rotate_labels (labels, rotation_degree) {
 
 
 function mg_elements_are_overlapping(labels) {
-    labels = labels[0];
-    for (var i =0; i < labels.length; i++) {
-            if ( mg_is_horizontally_overlapping(labels[i], labels)) return true;
-    };
-    return false;
+  labels = labels[0];
+  for (var i =0; i < labels.length; i++) {
+    if ( mg_is_horizontally_overlapping(labels[i], labels)) return true;
+  }
+
+  return false;
 }
 
 function mg_prevent_horizontal_overlap(labels, args) {
-    if (!labels || labels.length == 1) {
-        return;
-    }
+  if (!labels || labels.length == 1) {
+    return;
+  }
 
-    //see if each of our labels overlaps any of the other labels
-    for (var i = 0; i < labels.length; i++) {
-        //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
-        if (mg_is_horizontally_overlapping(labels[i], labels)) {
-            var node = d3.select(labels[i]);
-            var newY = +node.attr('y');
-            if (newY + 8 >= args.top) {
-                newY = args.top - 16;
-            }
-            node.attr('y', newY);
-        }
+  //see if each of our labels overlaps any of the other labels
+  for (var i = 0; i < labels.length; i++) {
+    //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+    if (mg_is_horizontally_overlapping(labels[i], labels)) {
+      var node = d3.select(labels[i]);
+      var newY = +node.attr('y');
+      if (newY + 8 >= args.top) {
+        newY = args.top - 16;
+      }
+      node.attr('y', newY);
     }
+  }
 }
 
 function mg_prevent_vertical_overlap(labels, args) {
-    if (!labels || labels.length == 1) {
-        return;
+  if (!labels || labels.length == 1) {
+    return;
+  }
+
+  labels.sort(function(b,a) {
+    return d3.select(a).attr('y') - d3.select(b).attr('y');
+  });
+
+  labels.reverse();
+
+  var overlap_amount, label_i, label_j;
+
+  //see if each of our labels overlaps any of the other labels
+  for (var i = 0; i < labels.length; i++) {
+    //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+    label_i = d3.select(labels[i]).text();
+
+    for (var j = 0; j < labels.length; j ++) {
+      label_j = d3.select(labels[j]).text();
+      overlap_amount = mg_is_vertically_overlapping(labels[i], labels[j]);
+
+      if (overlap_amount !== false && label_i !== label_j) {
+        var node = d3.select(labels[i]);
+        var newY = +node.attr('y');
+        newY = newY + overlap_amount;
+        node.attr('y', newY);
+      }
     }
-
-    labels.sort(function(b,a){
-        return d3.select(a).attr('y') - d3.select(b).attr('y');
-    });
-
-    labels.reverse();
-
-    var overlap_amount, label_i, label_j;
-
-    //see if each of our labels overlaps any of the other labels
-    for (var i = 0; i < labels.length; i++) {
-        //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
-        label_i = d3.select(labels[i]).text();
-
-        for (var j = 0; j < labels.length; j ++) {
-            label_j = d3.select(labels[j]).text();
-            overlap_amount = mg_is_vertically_overlapping(labels[i], labels[j]);
-
-            if (overlap_amount !== false && label_i !== label_j) {
-                var node = d3.select(labels[i]);
-                var newY = +node.attr('y');
-                newY = newY + overlap_amount;
-                node.attr('y', newY);
-            }
-        }
-    }
+  }
 }
 
 function mg_is_vertically_overlapping(element, sibling) {
-    var element_bbox = element.getBoundingClientRect();
-    var sibling_bbox = sibling.getBoundingClientRect();
+  var element_bbox = element.getBoundingClientRect();
+  var sibling_bbox = sibling.getBoundingClientRect();
 
-    if (element_bbox.top <= sibling_bbox.bottom && element_bbox.top >= sibling_bbox.top) {
-        return sibling_bbox.bottom - element_bbox.top;
-    }
+  if (element_bbox.top <= sibling_bbox.bottom && element_bbox.top >= sibling_bbox.top) {
+    return sibling_bbox.bottom - element_bbox.top;
+  }
 
-    return false;
+  return false;
 }
 
 function mg_is_horiz_overlap(element, sibling) {
-    var element_bbox = element.getBoundingClientRect();
-    var sibling_bbox = sibling.getBoundingClientRect();
+  var element_bbox = element.getBoundingClientRect();
+  var sibling_bbox = sibling.getBoundingClientRect();
 
-    if (element_bbox.right >= sibling_bbox.left || element_bbox.top >= sibling_bbox.top) {
-        return sibling_bbox.bottom - element_bbox.top;
-    }
-    return false;
+  if (element_bbox.right >= sibling_bbox.left || element_bbox.top >= sibling_bbox.top) {
+    return sibling_bbox.bottom - element_bbox.top;
+  }
+  return false;
 }
 
 function mg_is_horizontally_overlapping(element, labels) {
-    var element_bbox = element.getBoundingClientRect();
+  var element_bbox = element.getBoundingClientRect();
 
-    for (var i = 0; i < labels.length; i++) {
-        if (labels[i] == element) {
-            continue;
-        }
-
-        //check to see if this label overlaps with any of the other labels
-        var sibling_bbox = labels[i].getBoundingClientRect();
-        if (element_bbox.top === sibling_bbox.top &&
-                !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
-            ) {
-            return true;
-        }
+  for (var i = 0; i < labels.length; i++) {
+    if (labels[i] == element) {
+      continue;
     }
 
-    return false;
+    //check to see if this label overlaps with any of the other labels
+    var sibling_bbox = labels[i].getBoundingClientRect();
+    if (element_bbox.top === sibling_bbox.top &&
+        !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
+      ) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function mg_get_svg_child_of(selector_or_node) {
-    return d3.select(selector_or_node).select('svg');
+  return d3.select(selector_or_node).select('svg');
 }
 
 function mg_flatten_array(arr) {
-    var flat_data = [];
-    return flat_data.concat.apply(flat_data, arr);
+  var flat_data = [];
+  return flat_data.concat.apply(flat_data, arr);
 }
 
 function mg_next_id() {
-    if (typeof MG._next_elem_id === 'undefined') {
-        MG._next_elem_id = 0;
-    }
+  if (typeof MG._next_elem_id === 'undefined') {
+    MG._next_elem_id = 0;
+  }
 
-    return 'mg-'+(MG._next_elem_id++);
+  return 'mg-'+(MG._next_elem_id++);
 }
 
 function mg_target_ref(target) {
-    if (typeof target === 'string') {
-        return mg_normalize(target);
+  if (typeof target === 'string') {
+    return mg_normalize(target);
 
-    } else if (target instanceof HTMLElement) {
-        target_ref = target.getAttribute('data-mg-uid');
-        if (!target_ref) {
-            target_ref = mg_next_id();
-            target.setAttribute('data-mg-uid', target_ref);
-        }
-
-        return target_ref;
-
-    } else {
-        console.warn('The specified target should be a string or an HTMLElement.', target);
-        return mg_normalize(target);
+  } else if (target instanceof HTMLElement) {
+    target_ref = target.getAttribute('data-mg-uid');
+    if (!target_ref) {
+      target_ref = mg_next_id();
+      target.setAttribute('data-mg-uid', target_ref);
     }
+
+    return target_ref;
+
+  } else {
+    console.warn('The specified target should be a string or an HTMLElement.', target);
+    return mg_normalize(target);
+  }
 }
 
 function mg_normalize(string) {
-    return string
-        .replace(/[^a-zA-Z0-9 _-]+/g, '')
-        .replace(/ +?/g, '');
+  return string
+    .replace(/[^a-zA-Z0-9 _-]+/g, '')
+    .replace(/ +?/g, '');
 }
 
 function get_pixel_dimension(target, dimension) {
-    return Number(d3.select(target).style(dimension).replace(/px/g, ''));
+  return Number(d3.select(target).style(dimension).replace(/px/g, ''));
 }
 
 function get_width(target) {
-    return get_pixel_dimension(target, 'width');
+  return get_pixel_dimension(target, 'width');
 }
 
 function get_height(target) {
-    return get_pixel_dimension(target, 'height');
+  return get_pixel_dimension(target, 'height');
 }
 
 function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 var each = function(obj, iterator, context) {
-    // yanked out of underscore
-    var breaker = {};
-    if (obj === null) return obj;
-    if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
-      obj.forEach(iterator, context);
-    } else if (obj.length === +obj.length) {
-      for (var i = 0, length = obj.length; i < length; i++) {
-        if (iterator.call(context, obj[i], i, obj) === breaker) return;
-      }
-    } else {
-      for (var k in obj) {
-        if (iterator.call(context, obj[k], k, obj) === breaker) return;
-      }
+  // yanked out of underscore
+  var breaker = {};
+  if (obj === null) return obj;
+  if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+    obj.forEach(iterator, context);
+  } else if (obj.length === +obj.length) {
+    for (var i = 0, length = obj.length; i < length; i++) {
+      if (iterator.call(context, obj[i], i, obj) === breaker) return;
     }
+  } else {
+    for (var k in obj) {
+      if (iterator.call(context, obj[k], k, obj) === breaker) return;
+    }
+  }
 
-    return obj;
+  return obj;
 };
 
 function merge_with_defaults(obj) {
-    // taken from underscore
-    each(Array.prototype.slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          if (obj[prop] === void 0) obj[prop] = source[prop];
-        }
-      }
-    });
+  // taken from underscore
+  each(Array.prototype.slice.call(arguments, 1), function(source) {
+    if (source) {
+    for (var prop in source) {
+      if (obj[prop] === void 0) obj[prop] = source[prop];
+    }
+    }
+  });
 
-    return obj;
+  return obj;
 }
 
 MG.merge_with_defaults = merge_with_defaults;
 
 function number_of_values(data, accessor, value) {
-    var values = data.filter(function(d) {
-        return d[accessor] === value;
-    });
+  var values = data.filter(function(d) {
+    return d[accessor] === value;
+  });
 
-    return values.length;
+  return values.length;
 }
 
 function has_values_below(data, accessor, value) {
-    var values = data.filter(function(d) {
-        return d[accessor] <= value;
-    });
+  var values = data.filter(function(d) {
+    return d[accessor] <= value;
+  });
 
-    return values.length > 0;
+  return values.length > 0;
 }
 
 function has_too_many_zeros(data, accessor, zero_count) {
-    return number_of_values(data, accessor, 0) >= zero_count;
+  return number_of_values(data, accessor, 0) >= zero_count;
 }
 
 //deep copy
 //http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
-    var copy;
+  var copy;
 
-    // Handle the 3 simple types, and null or undefined
-    if (null === obj || "object" !== typeof obj) return obj;
+  // Handle the 3 simple types, and null or undefined
+  if (null === obj || "object" !== typeof obj) return obj;
 
-    // Handle Date
-    if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
+  // Handle Date
+  if (obj instanceof Date) {
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
+  }
+
+  // Handle Array
+  if (obj instanceof Array) {
+    copy = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      copy[i] = MG.clone(obj[i]);
     }
+    return copy;
+  }
 
-    // Handle Array
-    if (obj instanceof Array) {
-        copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = MG.clone(obj[i]);
-        }
-        return copy;
+  // Handle Object
+  if (obj instanceof Object) {
+    copy = {};
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
     }
+    return copy;
+  }
 
-    // Handle Object
-    if (obj instanceof Object) {
-        copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
-        }
-        return copy;
-    }
-
-    throw new Error("Unable to copy obj! Its type isn't supported.");
+  throw new Error("Unable to copy obj! Its type isn't supported.");
 };
 
 //give us the difference of two int arrays
 //http://radu.cotescu.com/javascript-diff-function/
 function arr_diff(a,b) {
-    var seen = [],
-        diff = [],
-        i;
-    for (i = 0; i < b.length; i++)
-        seen[b[i]] = true;
-    for (i = 0; i < a.length; i++)
-        if (!seen[a[i]])
-            diff.push(a[i]);
-    return diff;
+  var seen = [],
+    diff = [],
+    i;
+  for (i = 0; i < b.length; i++)
+    seen[b[i]] = true;
+  for (i = 0; i < a.length; i++)
+    if (!seen[a[i]])
+      diff.push(a[i]);
+  return diff;
 }
 
 MG.arr_diff = arr_diff;
 
 /**
-    Print warning message to the console when a feature has been scheduled for removal
+  Print warning message to the console when a feature has been scheduled for removal
 
-    @author Dan de Havilland (github.com/dandehavilland)
-    @date 2014-12
+  @author Dan de Havilland (github.com/dandehavilland)
+  @date 2014-12
 */
 function warn_deprecation(message, untilVersion) {
   console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'));
@@ -5904,15 +5920,15 @@ function warn_deprecation(message, untilVersion) {
 MG.warn_deprecation = warn_deprecation;
 
 /**
-    Truncate a string to fit within an SVG text node
-    CSS text-overlow doesn't apply to SVG <= 1.2
+  Truncate a string to fit within an SVG text node
+  CSS text-overlow doesn't apply to SVG <= 1.2
 
-    @author Dan de Havilland (github.com/dandehavilland)
-    @date 2014-12-02
+  @author Dan de Havilland (github.com/dandehavilland)
+  @date 2014-12-02
 */
 function truncate_text(textObj, textString, width) {
   var bbox,
-    position = 0;
+  position = 0;
 
   textObj.textContent = textString;
   bbox = textObj.getBBox();
@@ -5941,18 +5957,18 @@ MG.truncate_text = truncate_text;
 function wrap_text(text, width, token, tspanAttrs) {
   text.each(function() {
     var text = d3.select(this),
-        words = text.text().split(token || /\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.1, // ems
-        y = text.attr("y"),
-        dy = 0,
-        tspan = text.text(null)
-          .append("tspan")
-          .attr("x", 0)
-          .attr("y", dy + "em")
-          .attr(tspanAttrs || {});
+      words = text.text().split(token || /\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 1.1, // ems
+      y = text.attr("y"),
+      dy = 0,
+      tspan = text.text(null)
+        .append("tspan")
+        .attr("x", 0)
+        .attr("y", dy + "em")
+        .attr(tspanAttrs || {});
 
     while (!!(word = words.pop())) {
       line.push(word);
@@ -5962,11 +5978,11 @@ function wrap_text(text, width, token, tspanAttrs) {
         tspan.text(line.join(" "));
         line = [word];
         tspan = text
-            .append("tspan")
-            .attr("x", 0)
-            .attr("y", ++lineNumber * lineHeight + dy + "em")
-            .attr(tspanAttrs || {})
-            .text(word);
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", ++lineNumber * lineHeight + dy + "em")
+          .attr(tspanAttrs || {})
+          .text(word);
       }
     }
   });

@@ -133,7 +133,7 @@ function mg_get_color_domain (args) {
   var color_domain;
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
-      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor]});
+      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
     }
     else if (args.color_type === 'category') {
       color_domain = d3.set(args.data[0]
@@ -178,9 +178,9 @@ function mg_point_add_size_scale (args) {
 }
 
 function mg_get_size_domain (args) {
-  return args.size_domain === null ? 
-        d3.extent(args.data[0], function(d){return d[args.size_accessor]}) : 
-        args.size_domain;
+  return args.size_domain === null ?
+    d3.extent(args.data[0], function(d) { return d[args.size_accessor]; }) :
+    args.size_domain;
 }
 
 function mg_get_size_range (args) {
@@ -242,13 +242,13 @@ function mg_get_time_frame (diff) {
   return time_frame;
 }
 
-function mg_milisec_diff       (diff) { return diff < 10}
-function mg_sec_diff           (diff) { return diff < 60}
-function mg_day_diff           (diff) { return diff / (60 * 60) <= 24 }
-function mg_four_days          (diff) { return diff / (60 * 60) <= 24 * 4 }
-function mg_many_days          (diff) { return diff / (60 * 60 * 24) <= 93}
-function mg_many_months        (diff) { return diff / (60*60*24) < 365*2}
-function mg_years              (diff) { return diff / (60*60*24) >=365*2}
+function mg_milisec_diff       (diff) { return diff < 10; }
+function mg_sec_diff           (diff) { return diff < 60; }
+function mg_day_diff           (diff) { return diff / (60 * 60) <= 24; }
+function mg_four_days          (diff) { return diff / (60 * 60) <= 24 * 4; }
+function mg_many_days          (diff) { return diff / (60 * 60 * 24) <= 93; }
+function mg_many_months        (diff) { return diff / (60*60*24) < 365*2; }
+function mg_years              (diff) { return diff / (60*60*24) >= 365*2; }
 
 function mg_get_time_format (utc, diff) {
   var main_time_format;
@@ -405,10 +405,11 @@ function mg_add_primary_x_axis_label (args, g) {
   // We will need to figure out a more principled way of doing this.
   if (mg_elements_are_overlapping(labels)) {
     labels.filter(function(d,i) {
-      return (i+1) % 2 == 0;
+      return (i+1) % 2 === 0;
     }).remove();
+
     var svg = mg_get_svg_child_of(args.target);
-    var ticks = svg.selectAll('.mg-xax-ticks').filter(function(d,i){return (i+1) % 2 == 0;})
+    svg.selectAll('.mg-xax-ticks').filter(function(d,i){ return (i+1) % 2 === 0; })
       .remove();
   }
 }
@@ -439,11 +440,13 @@ function mg_get_yformat_and_secondary_time_function (args) {
       tf.yformat = MG.time_format(args.utc_time, '%b %d');
       break;
     case 'many-days':
-        tf.secondary = d3.time.years;
-        tf.yformat = MG.time_format(args.utc_time, '%Y');  
+      tf.secondary = d3.time.years;
+      tf.yformat = MG.time_format(args.utc_time, '%Y');
+      break;
     case 'many-months':
-        tf.secondary = d3.time.years;
-        tf.yformat = MG.time_format(args.utc_time, '%b');
+      tf.secondary = d3.time.years;
+      tf.yformat = MG.time_format(args.utc_time, '%b');
+      break;
     default:
       tf.secondary = d3.time.years;
       tf.yformat = MG.time_format(args.utc_time, '%Y');
@@ -526,7 +529,7 @@ function mg_min_max_x_for_numbers (mx) {
 }
 
 function mg_min_max_x_for_strings (mx) {
-  // ok. Not sure who wrote this, but this seems also pretty silly. We 
+  // ok. Not sure who wrote this, but this seems also pretty silly. We
   // should not be allowing strings here to be coerced into numbers. Veto.
   mx.min = Number(mx.min) - 1;
   mx.max = Number(mx.max) + 1;

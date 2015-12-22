@@ -174,9 +174,9 @@ function process_line(args) {
         }
       } else {
         for (var j = 0; j < args.data[i].length; j += 1) {
-          var o = MG.clone(args.data[i][j]);
-          o['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
-          processed_data.push(o);
+          var obj = MG.clone(args.data[i][j]);
+          obj['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
+          processed_data.push(obj);
         }
       }
 
