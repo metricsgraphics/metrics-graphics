@@ -15,40 +15,40 @@ MG.charts = {};
 MG.data_graphic = function(args) {
   'use strict';
   var defaults = {
-    missing_is_zero: false,        // if true, missing values will be treated as zeros
-    missing_is_hidden: false,        // if true, missing values will appear as broken segments
-    missing_is_hidden_accessor: null,    // the accessor that determines the boolean value for missing data points
-    legend: '' ,               // an array identifying the labels for a chart's lines
-    legend_target: '',           // if set, the specified element is populated with a legend
-    error: '',               // if set, a graph will show an error icon and log the error to the console
-    animate_on_load: false,        // animate lines on load
-    top: 65,                 // the size of the top margin
-    title_y_position: 10,          // how many pixels from the top edge (0) should we show the title at
-    bottom: 30,              // the size of the bottom margin
-    right: 10,               // size of the right margin
-    left: 50,                // size of the left margin
-    buffer: 8,               // the buffer between the actual chart area and the margins
-    width: 350,              // the width of the entire graphic
-    height: 220,               // the height of the entire graphic
-    full_width: false,           // sets the graphic width to be the width of the parent element and resizes dynamically
-    full_height: false,          // sets the graphic width to be the width of the parent element and resizes dynamically
-    small_height_threshold: 120,       // the height threshold for when smaller text appears
-    small_width_threshold: 160,      // the width  threshold for when smaller text appears
-    //small_text: false,           // coerces small text regardless of graphic size
-    xax_count: 6,              // number of x axis ticks
-    xax_tick_length: 5,          // x axis tick length
+    missing_is_zero: false,             // if true, missing values will be treated as zeros
+    missing_is_hidden: false,           // if true, missing values will appear as broken segments
+    missing_is_hidden_accessor: null,   // the accessor that determines the boolean value for missing data points
+    legend: '' ,                        // an array identifying the labels for a chart's lines
+    legend_target: '',                  // if set, the specified element is populated with a legend
+    error: '',                          // if set, a graph will show an error icon and log the error to the console
+    animate_on_load: false,             // animate lines on load
+    top: 65,                            // the size of the top margin
+    title_y_position: 10,               // how many pixels from the top edge (0) should we show the title at
+    bottom: 30,                         // the size of the bottom margin
+    right: 10,                          // size of the right margin
+    left: 50,                           // size of the left margin
+    buffer: 8,                          // the buffer between the actual chart area and the margins
+    width: 350,                         // the width of the entire graphic
+    height: 220,                        // the height of the entire graphic
+    full_width: false,                  // sets the graphic width to be the width of the parent element and resizes dynamically
+    full_height: false,                 // sets the graphic width to be the width of the parent element and resizes dynamically
+    small_height_threshold: 120,        // the height threshold for when smaller text appears
+    small_width_threshold: 160,         // the width  threshold for when smaller text appears
+    //small_text: false,                // coerces small text regardless of graphic size
+    xax_count: 6,                       // number of x axis ticks
+    xax_tick_length: 5,                 // x axis tick length
     axes_not_compact: true,
-    yax_count: 5,              // number of y axis ticks
-    yax_tick_length: 5,          // y axis tick length
-    x_extended_ticks: false,         // extends x axis ticks across chart - useful for tall charts
-    y_extended_ticks: false,         // extends y axis ticks across chart - useful for long charts
+    yax_count: 5,                       // number of y axis ticks
+    yax_tick_length: 5,                 // y axis tick length
+    x_extended_ticks: false,            // extends x axis ticks across chart - useful for tall charts
+    y_extended_ticks: false,            // extends y axis ticks across chart - useful for long charts
     y_scale_type: 'linear',
     max_x: null,
     max_y: null,
     min_x: null,
-    min_y: null,               // if set, y axis starts at an arbitrary value
-    min_y_from_data: false,        // if set, y axis will start at minimum value rather than at 0
-    point_size: 2.5,             // the size of the dot that appears on a line on mouse-over
+    min_y: null,                        // if set, y axis starts at an arbitrary value
+    min_y_from_data: false,             // if set, y axis will start at minimum value rather than at 0
+    point_size: 2.5,                    // the size of the dot that appears on a line on mouse-over
     x_accessor: 'date',
     xax_units: '',
     x_label: '',
@@ -60,25 +60,25 @@ MG.data_graphic = function(args) {
     yax_units: '',
     x_rug: false,
     y_rug: false,
-    x_mouseover: null,         //
-    y_mouseover: null,         //
+    x_mouseover: null,
+    y_mouseover: null,
     transition_on_update: true,
     mouseover: null,
     click: null,
     show_rollover_text: true,
-    show_confidence_band: null,      // given [l, u] shows a confidence at each point from l to u
-    xax_format: null,            // xax_format is a function that formats the labels for the x axis.
+    show_confidence_band: null,         // given [l, u] shows a confidence at each point from l to u
+    xax_format: null,                   // xax_format is a function that formats the labels for the x axis.
     area: true,
     chart_type: 'line',
     data: [],
-    decimals: 2,               // the number of decimals in any rollover
-    format: 'count',             // format = {count, percentage}
-    inflator: 10/9,            // for setting y axis max
-    linked: false,             // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
-    linked_format: '%Y-%m-%d',       // What granularity to link on for graphs. Default is at day
+    decimals: 2,                        // the number of decimals in any rollover
+    format: 'count',                    // format = {count, percentage}
+    inflator: 10/9,                     // for setting y axis max
+    linked: false,                      // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
+    linked_format: '%Y-%m-%d',          // What granularity to link on for graphs. Default is at day
     list: false,
-    baselines: null,             // sets the baseline lines
-    markers: null,             // sets the marker lines
+    baselines: null,                    // sets the baseline lines
+    markers: null,                      // sets the marker lines
     scalefns: {},
     scales: {},
     utc_time: false,
@@ -86,13 +86,13 @@ MG.data_graphic = function(args) {
     show_year_markers: false,
     show_secondary_x_label: true,
     target: '#viz',
-    interpolate: 'cardinal',         // interpolation method to use when rendering lines
-    interpolate_tension: 0.7,        // its range is from 0 to 1; increase if your data is irregular and you notice artifacts
-    custom_line_color_map: [],       // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
-    colors: null,              // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
-    max_data_size: null,           // explicitly specify the the max number of line series, for use with custom_line_color_map
-    aggregate_rollover: false,       // links the lines in a multi-line chart
-    show_tooltips: true          // if enabled, a chart's description will appear in a tooltip (requires jquery)
+    interpolate: 'cardinal',            // interpolation method to use when rendering lines
+    interpolate_tension: 0.7,           // its range is from 0 to 1; increase if your data is irregular and you notice artifacts
+    custom_line_color_map: [],          // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
+    colors: null,                       // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
+    max_data_size: null,                // explicitly specify the the max number of line series, for use with custom_line_color_map
+    aggregate_rollover: false,          // links the lines in a multi-line chart
+    show_tooltips: true                 // if enabled, a chart's description will appear in a tooltip (requires jquery)
   };
 
   MG.call_hook('global.defaults', defaults);
