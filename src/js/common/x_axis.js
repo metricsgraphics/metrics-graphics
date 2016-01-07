@@ -445,7 +445,7 @@ function mg_get_yformat_and_secondary_time_function (args) {
       break;
     case 'many-months':
       tf.secondary = d3.time.years;
-      tf.yformat = MG.time_format(args.utc_time, '%b');
+      tf.yformat = MG.time_format(args.utc_time, '%Y');
       break;
     default:
       tf.secondary = d3.time.years;
