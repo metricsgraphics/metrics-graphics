@@ -862,7 +862,9 @@ function chart_title(args) {
 
   // remove the current title, and its associated event listeners, if it exists
   if (args.show_tooltips && args.description) {
-    $('.mg-header').remove();
+    // TODO possible issue with memory leak due to d3's remove? investigate.
+    // tooltips are the only feature that require jquery
+    $(args.target + ' .mg-header').remove();
   } else {
     mg_remove_element(svg, '.mg-header');
   }
