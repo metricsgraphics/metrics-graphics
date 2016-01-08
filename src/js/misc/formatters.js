@@ -65,7 +65,6 @@ function mg_format_y_rollover(args, num, d) {
   return formatted_y;
 }
 
-
 function mg_format_x_rollover(args, fmt, d) {
   var formatted_x;
   if (args.x_mouseover !== null) {

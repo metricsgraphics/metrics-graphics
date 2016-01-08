@@ -34,8 +34,6 @@
     args.data = data;
   }
 
-
-
   function mg_add_missing_background_rect (g, args) {
     g.append('svg:rect')
       .classed('mg-missing-background', true)

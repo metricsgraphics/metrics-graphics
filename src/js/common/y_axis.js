@@ -301,15 +301,6 @@ function mg_add_categorical_labels (args) {
     .text(String);
 
   mg_rotate_labels(labels, args.rotate_y_labels);
-// if (args.rotate_y_labels) {
-//     labels.attr({
-//         dy: 0,
-//         transform: function() {
-//             var elem = d3.select(this);
-//             return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-//         }
-//     });
-// }
 }
 
 function y_axis_categorical (args) {

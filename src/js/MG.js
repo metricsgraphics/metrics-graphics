@@ -1,1 +1,1 @@
-window.MG = {version: '2.7.0'};
+window.MG = {version: '2.8.0'};
