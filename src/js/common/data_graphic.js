@@ -34,7 +34,6 @@ MG.data_graphic = function(args) {
     full_height: false,                 // sets the graphic width to be the width of the parent element and resizes dynamically
     small_height_threshold: 120,        // the height threshold for when smaller text appears
     small_width_threshold: 160,         // the width  threshold for when smaller text appears
-    //small_text: false,                // coerces small text regardless of graphic size
     xax_count: 6,                       // number of x axis ticks
     xax_tick_length: 5,                 // x axis tick length
     axes_not_compact: true,
