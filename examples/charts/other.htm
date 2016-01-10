@@ -25,46 +25,6 @@
                 </div>
             </div>
 
-            <div class='row trunk-section'>
-                <div class='col-lg-7 text-center'>
-                    <div class='col-lg-6' id='small1'></div>
-                    <div class='col-lg-6' id='small2'></div>
-                </div>
-                <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
-
-<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "Small Text Inferred By Size",
-        description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i>, and the similarly for the height, the text size automatically scales so that it is slightly smaller.",
-        data: data,
-        width: 240,
-        height: 140,
-        right: 20,
-        xax_count: 4,
-        target: '#small1'
-    });
-});
-
-d3.json('data/brief-2.json', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "Small Text",
-        description: "By adding <i>small_text</i> to true, we can force the use of smaller axis text regardless of the width or height.",
-        data: data,
-        width: 295,
-        height: 150,
-        right: 10,
-        small_text: true,
-        xax_count: 4,
-        target: '#small2'
-    });
-});</code></pre>
-
-                </div>
-            </div>
-
 <script>
 MG._hooks = {};
 d3.json('data/fake_users3.json', function(data) {
@@ -83,35 +43,6 @@ d3.json('data/fake_users3.json', function(data) {
         target: '#aspect1',
         x_accessor: 'date',
         y_accessor: 'value'
-    });
-});
-
-d3.json('data/brief-1.json', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "Small Text Inferred By Size",
-        description: "If <i>args.width - args.left - args.right</i> is smaller than <i>args.small_width_threshold</i>, and the similarly for the height, the text size automatically scales so that it is slightly smaller.",
-        data: data,
-        width: 240,
-        height: 140,
-        right: 20,
-        xax_count: 4,
-        target: '#small1'
-    });
-});
-
-d3.json('data/brief-2.json', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "Small Text",
-        description: "By adding <i>small_text</i> to true, we can force the use of smaller axis text regardless of the width or height.",
-        data: data,
-        width: 295,
-        height: 150,
-        right: 10,
-        small_text: true,
-        xax_count: 4,
-        target: '#small2'
     });
 });
 </script>
