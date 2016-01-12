@@ -24,7 +24,7 @@ MG.data_graphic = function(args) {
     animate_on_load: false,             // animate lines on load
     top: 65,                            // the size of the top margin
     title_y_position: 10,               // how many pixels from the top edge (0) should we show the title at
-    bottom: 30,                         // the size of the bottom margin
+    bottom: 45,                         // the size of the bottom margin
     right: 10,                          // size of the right margin
     left: 50,                           // size of the left margin
     buffer: 8,                          // the buffer between the actual chart area and the margins

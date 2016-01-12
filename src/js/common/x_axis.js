@@ -52,10 +52,10 @@ function x_axis (args) {
   if (!args.x_axis) { return this; }
   var g = mg_add_g(svg, 'mg-x-axis');
 
-  if (args.x_label) { mg_add_x_label(g, args); }
 
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
+  if (args.x_label) { mg_add_x_label(g, args); }
 
   if (args.x_rug) { x_rug(args); }
 
@@ -197,10 +197,15 @@ function mg_add_x_label (g, args) {
   g.append('text')
     .attr('class', 'label')
     .attr('x', function () {
-      return (args.left + args.width - args.right) / 2;
+      return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
     })
-    .attr('y', (args.height - args.bottom / 2).toFixed(2))
-    .attr('dy', '.50em')
+    .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+    .attr('y', function(){
+      var xAxisTextElement = d3.select(args.target)
+        .select('.mg-x-axis text').node().getBoundingClientRect();
+      return mg_get_bottom(args) + args.xax_tick_length *(7/3) + xAxisTextElement.height * 0.8  + 10;
+    })
+    .attr('dy', '.5em')
     .attr('text-anchor', 'middle')
     .text(function (d) {
       return args.x_label;
