@@ -131,7 +131,7 @@
 
         bars.attr('y', args.scalefns.yf)
           .attr('x', function(d) {
-            return args.scalefns.xf(d) + appropriate_size/2;
+            return args.scalefns.xf(d)// + appropriate_size/2;
           })
           .attr('width', appropriate_size)
           .attr('height', function(d) {

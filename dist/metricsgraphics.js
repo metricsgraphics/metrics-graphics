@@ -1305,7 +1305,6 @@ MG.x_axis = x_axis;
 function x_axis_categorical (args) {
   var svg = mg_get_svg_child_of(args.target);
   var additional_buffer = 0;
-
   if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
 
   mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
@@ -1321,6 +1320,7 @@ function x_axis_categorical (args) {
 }
 
 function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
+
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function (d) {
     return args.scales.X(d) + args.scales.X.rangeBand() / 2
@@ -4060,7 +4060,7 @@ MG.button_layout = function(target) {
 
         bars.attr('y', args.scalefns.yf)
           .attr('x', function(d) {
-            return args.scalefns.xf(d) + appropriate_size/2;
+            return args.scalefns.xf(d)// + appropriate_size/2;
           })
           .attr('width', appropriate_size)
           .attr('height', function(d) {
@@ -4719,8 +4719,8 @@ function raw_data_transformation(args) {
       args.data = [args.data];
     }
   }
-
   // if the y_accessor is an array, break it up and store the result in args.data
+  mg_process_multiple_x_accessors(args);
   mg_process_multiple_y_accessors(args);
 
   // if user supplies keyword in args.color, change to arg.colors.
@@ -4746,7 +4746,7 @@ function raw_data_transformation(args) {
   return this;
 }
 
-function mg_process_multiple_y_accessors(args) {
+function mg_process_multiple_accessors(args, which_accessor) {
   if (args.y_accessor instanceof Array) {
     args.data = args.data.map(function(_d) {
       return args.y_accessor.map(function(ya) {
@@ -4757,7 +4757,7 @@ function mg_process_multiple_y_accessors(args) {
             return undefined;
           }
 
-          di['multiline_y_accessor'] = di[ya];
+          di['multiline_' + which_accessor] = di[ya];
           return di;
         }).filter(function(di) {
           return di !== undefined;
@@ -4765,9 +4765,12 @@ function mg_process_multiple_y_accessors(args) {
       });
     })[0];
 
-    args.y_accessor = 'multiline_y_accessor';
+    args.y_accessor = 'multiline_' + which_accessor;
   }
 }
+
+function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
+function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
 
 MG.raw_data_transformation = raw_data_transformation;
 
