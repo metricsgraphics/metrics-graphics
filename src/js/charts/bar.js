@@ -190,9 +190,9 @@
 
         bars.attr('x', args.scales.X(0))
           .attr('y', function(d) {
-            return args.scalefns.yf(d) + appropriate_size/2;
+            return args.scalefns.yf(d)// + appropriate_size/2;
           })
-          .attr('height', appropriate_size)
+          .attr('height', args.scales.Y.rangeBand())
           .attr('width', function(d) {
             return args.scalefns.xf(d) - args.scales.X(0);
           });
@@ -372,10 +372,9 @@
     predictor_proportion: 5,
     dodge_accessor: null,
     binned: true,
-    padding_percentage: 0,
-    outer_padding_percentage: 0.1,
-    height: 500,
-    bar_height: 20,
+    padding_percentage: .1,
+    outer_padding_percentage: 0,
+    bar_height: 25,
     top: 45,
     left: 70,
     truncate_x_labels: true,

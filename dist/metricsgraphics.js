@@ -981,7 +981,7 @@ function mg_compute_yax_format (args) {
       };
     } else { // percentage
       yax_format = function (d_) {
-        var n = d3.format('2p');
+        var n = d3.format('.2p');
         return n(d_);
       };
     }
@@ -1212,11 +1212,10 @@ function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
   var g = mg_add_g(svg, 'mg-y-axis');
-
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-    .attr('x', args.left)
+    .attr('x', args.left - args.buffer)
     .attr('y', function (d) {
-      return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 + (args.buffer) * args.outer_padding_percentage;
+      return args.scales.Y(d) + args.scales.Y.rangeBand() / 2// + (args.buffer) * args.outer_padding_percentage;
     })
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
@@ -1226,7 +1225,7 @@ function mg_add_categorical_labels (args) {
 }
 
 function y_axis_categorical (args) {
-  mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), args.top, args.padding_percentage, args.outer_padding_percentage);
+  mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), mg_get_plot_top(args), args.padding_percentage, args.outer_padding_percentage);
   mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
@@ -1320,7 +1319,7 @@ function x_axis_categorical (args) {
 }
 
 function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
-
+  
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function (d) {
     return args.scales.X(d) + args.scales.X.rangeBand() / 2
@@ -4119,9 +4118,9 @@ MG.button_layout = function(target) {
 
         bars.attr('x', args.scales.X(0))
           .attr('y', function(d) {
-            return args.scalefns.yf(d) + appropriate_size/2;
+            return args.scalefns.yf(d)// + appropriate_size/2;
           })
-          .attr('height', appropriate_size)
+          .attr('height', args.scales.Y.rangeBand())
           .attr('width', function(d) {
             return args.scalefns.xf(d) - args.scales.X(0);
           });
@@ -4301,10 +4300,9 @@ MG.button_layout = function(target) {
     predictor_proportion: 5,
     dodge_accessor: null,
     binned: true,
-    padding_percentage: 0,
-    outer_padding_percentage: 0.1,
-    height: 500,
-    bar_height: 20,
+    padding_percentage: .1,
+    outer_padding_percentage: 0,
+    bar_height: 25,
     top: 45,
     left: 70,
     truncate_x_labels: true,

@@ -82,7 +82,7 @@ function x_axis_categorical (args) {
 }
 
 function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
-
+  
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function (d) {
     return args.scales.X(d) + args.scales.X.rangeBand() / 2
