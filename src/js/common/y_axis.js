@@ -59,7 +59,7 @@ function mg_compute_yax_format (args) {
       };
     } else { // percentage
       yax_format = function (d_) {
-        var n = d3.format('2p');
+        var n = d3.format('.2p');
         return n(d_);
       };
     }
