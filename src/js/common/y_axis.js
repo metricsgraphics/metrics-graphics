@@ -290,21 +290,53 @@ function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
   var g = mg_add_g(svg, 'mg-y-axis');
-  var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-    .attr('x', args.left - args.buffer)
-    .attr('y', function (d) {
-      return args.scales.Y(d) + args.scales.Y.rangeBand() / 2// + (args.buffer) * args.outer_padding_percentage;
-    })
-    .attr('dy', '.35em')
-    .attr('text-anchor', 'end')
-    .text(String);
+  var group_g;
+  (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function(group){
+    group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group))
+    var labels = group_g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+      .attr('x', args.left - args.buffer)
+      .attr('y', function (d) {
+        return args.scales.Y_outgroup(group) + args.scales.Y_ingroup(d) + args.scales.Y_ingroup.rangeBand() / 2;// + (args.buffer) * args.outer_padding_percentage;
+      })
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(String);
+      mg_rotate_labels(labels, args.rotate_y_labels);
 
-  mg_rotate_labels(labels, args.rotate_y_labels);
+  });
 }
 
+
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+  args.scales[scale_name] = d3.scale.ordinal()
+    .domain(categorical_variables)
+    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+  args.scales[scale_name] = d3.scale.ordinal()
+    .domain(categorical_variables)
+    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+
+
 function y_axis_categorical (args) {
-  mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), mg_get_plot_top(args), args.padding_percentage, args.outer_padding_percentage);
-  mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
+  // in_group_scale
+  mg_add_categorical_scale(args, 'Y_ingroup', args.categorical_variables, 0, args.group_height, args.bar_padding_percentage, args.bar_outer_padding_percentage);
+  mg_add_scale_function(args, 'yf_in', 'Y_ingroup', args.y_accessor);
+
+  // out_group_scale
+  if (args.group_accessor) {
+      mg_add_categorical_scale(args, 'Y_outgroup', args.categorical_groups, mg_get_plot_top(args), mg_get_plot_bottom(args), args.group_padding_percentage, args.group_outer_padding_percentage);
+
+    mg_add_scale_function(args, 'yf_out', 'Y_outgroup', args.group_accessor)
+  }
+  else {
+    args.scales.Y_outgroup = function(d) { return mg_get_plot_top(args)};
+    args.scalefns.yf_out = function(d) {return mg_get_plot_top(args)};
+  }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
 

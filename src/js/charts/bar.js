@@ -66,7 +66,7 @@
 
       if (args.predictor_accessor) {
         predictor_bars = barplot.selectAll('.mg-bar-prediction')
-          .data(data);
+          .data(data.filter(function(d){return d.hasOwnProperty(args.predictor_accessor)}));
 
         predictor_bars.exit().remove();
 
@@ -76,7 +76,7 @@
 
       if (args.baseline_accessor) {
         baseline_marks = barplot.selectAll('.mg-bar-baseline')
-          .data(data);
+          .data(data.filter(function(d){return d.hasOwnProperty(args.baseline_accessor)}));
 
         baseline_marks.exit().remove();
 
@@ -106,72 +106,72 @@
       svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
 
       if (this.is_vertical) {
-        appropriate_size = args.scales.X.rangeBand()/1.5;
+        // appropriate_size = args.scales.X.rangeBand()/1.5;
 
-        if (perform_load_animation) {
-          bars.attr({
-            height: 0,
-            y: args.scales.Y(0)
-          });
+        // if (perform_load_animation) {
+        //   bars.attr({
+        //     height: 0,
+        //     y: args.scales.Y(0)
+        //   });
 
-          if (predictor_bars) {
-            predictor_bars.attr({
-              height: 0,
-              y: args.scales.Y(0)
-            });
-          }
+        //   if (predictor_bars) {
+        //     predictor_bars.attr({
+        //       height: 0,
+        //       y: args.scales.Y(0)
+        //     });
+        //   }
 
-          if (baseline_marks) {
-            baseline_marks.attr({
-              y1: args.scales.Y(0),
-              y2: args.scales.Y(0)
-            });
-          }
-        }
+        //   if (baseline_marks) {
+        //     baseline_marks.attr({
+        //       y1: args.scales.Y(0),
+        //       y2: args.scales.Y(0)
+        //     });
+        //   }
+        // }
 
-        bars.attr('y', args.scalefns.yf)
-          .attr('x', function(d) {
-            return args.scalefns.xf(d)// + appropriate_size/2;
-          })
-          .attr('width', appropriate_size)
-          .attr('height', function(d) {
-            return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
-          });
+        // bars.attr('y', args.scalefns.yf)
+        //   .attr('x', function(d) {
+        //     return args.scalefns.xf(d)// + appropriate_size/2;
+        //   })
+        //   .attr('width', appropriate_size)
+        //   .attr('height', function(d) {
+        //     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
+        //   });
 
 
-        if (args.predictor_accessor) {
-          pp = args.predictor_proportion;
-          pp0 = pp-1;
+        // if (args.predictor_accessor) {
+        //   pp = args.predictor_proportion;
+        //   pp0 = pp-1;
 
-          // thick line through bar;
-          predictor_bars
-            .attr('y', function(d) {
-              return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
-            })
-            .attr('x', function(d) {
-              return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
-            })
-            .attr('width', appropriate_size/pp)
-            .attr('height', function(d) {
-              return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
-            });
-        }
+        //   // thick line through bar;
+        //   predictor_bars
+        //     .attr('y', function(d) {
+        //       return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
+        //     })
+        //     .attr('x', function(d) {
+        //       return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
+        //     })
+        //     .attr('width', appropriate_size/pp)
+        //     .attr('height', function(d) {
+        //       return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
+        //     });
+        // }
 
-        if (args.baseline_accessor) {
-          pp = args.predictor_proportion;
+        // if (args.baseline_accessor) {
+        //   pp = args.predictor_proportion;
 
-          baseline_marks
-            .attr('x1', function(d) {
-              return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
-            })
-            .attr('x2', function(d) {
-              return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
-            })
-            .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
-            .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
-        }
+        //   baseline_marks
+        //     .attr('x1', function(d) {
+        //       return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
+        //     })
+        //     .attr('x2', function(d) {
+        //       return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
+        //     })
+        //     .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
+        //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
+        // }
       } else {
-        appropriate_size = args.scales.Y.rangeBand()/1.5;
+        appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
 
         if (perform_load_animation) {
           bars.attr('width', 0);
@@ -190,40 +190,39 @@
 
         bars.attr('x', args.scales.X(0))
           .attr('y', function(d) {
-            return args.scalefns.yf(d)// + appropriate_size/2;
+            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
-          .attr('height', args.scales.Y.rangeBand())
+          .attr('height', args.bar_height)
           .attr('width', function(d) {
             return args.scalefns.xf(d) - args.scales.X(0);
           });
 
         if (args.predictor_accessor) {
-          pp = args.predictor_proportion;
-          pp0 = pp-1;
+          // pp = args.predictor_proportion;
+          // pp0 = pp-1;
 
           // thick line  through bar;
           predictor_bars
             .attr('x', args.scales.X(0))
             .attr('y', function(d) {
-              return args.scalefns.yf(d) + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand() * (7/16)// + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
             })
-            .attr('height', appropriate_size / pp)
+            .attr('height', args.scales.Y_ingroup.rangeBand()/8)//appropriate_size / pp)
             .attr('width', function(d) {
               return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
             });
         }
 
         if (args.baseline_accessor) {
-          pp = args.predictor_proportion;
 
           baseline_marks
             .attr('x1', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('x2', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('y1', function(d) {
-              return args.scalefns.yf(d) + appropriate_size / 2 - appropriate_size / pp + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()/4
             })
             .attr('y2', function(d) {
-              return args.scalefns.yf(d) + appropriate_size / 2 + appropriate_size / pp + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()*3/4
             });
         }
       }
@@ -263,21 +262,23 @@
           .attr('class', 'mg-bar-rollover');
 
       if (this.is_vertical) {
-        bar.attr("x", args.scalefns.xf)
-          .attr("y", function() {
-            return args.scales.Y(0) - args.height;
-          })
-          .attr('width', args.scales.X.rangeBand())
-          .attr('height', args.height)
-          .attr('opacity', 0)
-          .on('mouseover', this.rolloverOn(args))
-          .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
+        // bar.attr("x", args.scalefns.xf)
+        //   .attr("y", function() {
+        //     return args.scales.Y(0) - args.height;
+        //   })
+        //   .attr('width', args.scales.X.rangeBand())
+        //   .attr('height', args.height)
+        //   .attr('opacity', 0)
+        //   .on('mouseover', this.rolloverOn(args))
+        //   .on('mouseout', this.rolloverOff(args))
+        //   .on('mousemove', this.rolloverMove(args));
       } else {
         bar.attr("x", args.scales.X(0))
-          .attr("y", args.scalefns.yf)
+          .attr("y", function(d){
+            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);
+          })
           .attr('width', args.width)
-          .attr('height', args.scales.Y.rangeBand()+2)
+          .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))
@@ -373,8 +374,10 @@
     predictor_proportion: 5,
     dodge_accessor: null,
     binned: true,
-    padding_percentage: .1,
-    outer_padding_percentage: 0,
+    bar_padding_percentage: .1,
+    bar_outer_padding_percentage: 0,
+    group_padding_percentage:.15,
+    group_outer_padding_percentage: 0,
     bar_height: 20,
     top: 45,
     left: 70,

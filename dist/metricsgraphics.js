@@ -1212,21 +1212,53 @@ function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
   var g = mg_add_g(svg, 'mg-y-axis');
-  var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-    .attr('x', args.left - args.buffer)
-    .attr('y', function (d) {
-      return args.scales.Y(d) + args.scales.Y.rangeBand() / 2// + (args.buffer) * args.outer_padding_percentage;
-    })
-    .attr('dy', '.35em')
-    .attr('text-anchor', 'end')
-    .text(String);
+  var group_g;
+  (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function(group){
+    group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group))
+    var labels = group_g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+      .attr('x', args.left - args.buffer)
+      .attr('y', function (d) {
+        return args.scales.Y_outgroup(group) + args.scales.Y_ingroup(d) + args.scales.Y_ingroup.rangeBand() / 2;// + (args.buffer) * args.outer_padding_percentage;
+      })
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(String);
+      mg_rotate_labels(labels, args.rotate_y_labels);
 
-  mg_rotate_labels(labels, args.rotate_y_labels);
+  });
 }
 
+
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+  args.scales[scale_name] = d3.scale.ordinal()
+    .domain(categorical_variables)
+    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+  args.scales[scale_name] = d3.scale.ordinal()
+    .domain(categorical_variables)
+    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+}
+
+
+
 function y_axis_categorical (args) {
-  mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), mg_get_plot_top(args), args.padding_percentage, args.outer_padding_percentage);
-  mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
+  // in_group_scale
+  mg_add_categorical_scale(args, 'Y_ingroup', args.categorical_variables, 0, args.group_height, args.bar_padding_percentage, args.bar_outer_padding_percentage);
+  mg_add_scale_function(args, 'yf_in', 'Y_ingroup', args.y_accessor);
+
+  // out_group_scale
+  if (args.group_accessor) {
+      mg_add_categorical_scale(args, 'Y_outgroup', args.categorical_groups, mg_get_plot_top(args), mg_get_plot_bottom(args), args.group_padding_percentage, args.group_outer_padding_percentage);
+
+    mg_add_scale_function(args, 'yf_out', 'Y_outgroup', args.group_accessor)
+  }
+  else {
+    args.scales.Y_outgroup = function(d) { return mg_get_plot_top(args)};
+    args.scalefns.yf_out = function(d) {return mg_get_plot_top(args)};
+  }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
 
@@ -1323,7 +1355,7 @@ function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function (d) {
     return args.scales.X(d) + args.scales.X.rangeBand() / 2
-    + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
+    + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
   })
     .attr('y', mg_get_plot_bottom(args))
     .attr('dy', '.35em')
@@ -1884,7 +1916,7 @@ function mg_init_compute_height (args) {
     svg_height = get_height(args.target);
   }
   if (args.chart_type === 'bar' && svg_height === null) {
-    svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
+    svg_height = mg_barchart_calculate_height(args);
   }
 
   args.height = svg_height;
@@ -1996,6 +2028,39 @@ function mg_raise_container_error(container, args){
   }
 }
 
+function mg_barchart_init(args){
+  mg_barchart_count_number_of_groups(args);
+  mg_barchart_count_number_of_bars(args);
+  mg_barchart_calculate_group_height(args);
+}
+
+function mg_barchart_count_number_of_groups(args){
+  args.categorical_groups = [];
+  if (args.group_accessor) {
+    var data = args.data[0];
+    args.categorical_groups = d3.set(data.map(function(d){return d[args.group_accessor]})).values() ;
+  }  
+}
+
+function mg_barchart_count_number_of_bars(args){
+  args.total_bars = args.data[0].length;
+  if (args.group_accessor){
+    var group_bars  = count_array_elements(pluck(args.data[0], args.group_accessor));
+    group_bars  = d3.max(Object.keys(group_bars).map(function(d){return group_bars[d]}));
+    args.bars_per_group = group_bars;
+  } else {
+    args.bars_per_group = args.data[0].length;
+  }
+}
+
+function mg_barchart_calculate_group_height(args){
+  args.group_height = args.bars_per_group * (1 + args.bar_padding_percentage + args.bar_outer_padding_percentage) * args.bar_height;
+}
+
+function mg_barchart_calculate_height(args){
+  return (args.group_height * (1 + args.group_padding_percentage + args.group_outer_padding_percentage)) * (args.categorical_groups.length || 1) + args.top + args.bottom;//args.data[0].length * args.bar_height + args.top + args.bottom;
+}
+
 function init (args) {
   'use strict';
   args = arguments[0];
@@ -2006,6 +2071,8 @@ function init (args) {
   mg_raise_container_error(container, args);
 
   var svg = container.selectAll('svg');
+
+  if (args.chart_type === 'bar') mg_barchart_init(args);
 
   mg_is_time_series(args);
   mg_init_compute_width(args);
@@ -3993,7 +4060,7 @@ MG.button_layout = function(target) {
 
       if (args.predictor_accessor) {
         predictor_bars = barplot.selectAll('.mg-bar-prediction')
-          .data(data);
+          .data(data.filter(function(d){return d.hasOwnProperty(args.predictor_accessor)}));
 
         predictor_bars.exit().remove();
 
@@ -4003,7 +4070,7 @@ MG.button_layout = function(target) {
 
       if (args.baseline_accessor) {
         baseline_marks = barplot.selectAll('.mg-bar-baseline')
-          .data(data);
+          .data(data.filter(function(d){return d.hasOwnProperty(args.baseline_accessor)}));
 
         baseline_marks.exit().remove();
 
@@ -4033,72 +4100,72 @@ MG.button_layout = function(target) {
       svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
 
       if (this.is_vertical) {
-        appropriate_size = args.scales.X.rangeBand()/1.5;
+        // appropriate_size = args.scales.X.rangeBand()/1.5;
 
-        if (perform_load_animation) {
-          bars.attr({
-            height: 0,
-            y: args.scales.Y(0)
-          });
+        // if (perform_load_animation) {
+        //   bars.attr({
+        //     height: 0,
+        //     y: args.scales.Y(0)
+        //   });
 
-          if (predictor_bars) {
-            predictor_bars.attr({
-              height: 0,
-              y: args.scales.Y(0)
-            });
-          }
+        //   if (predictor_bars) {
+        //     predictor_bars.attr({
+        //       height: 0,
+        //       y: args.scales.Y(0)
+        //     });
+        //   }
 
-          if (baseline_marks) {
-            baseline_marks.attr({
-              y1: args.scales.Y(0),
-              y2: args.scales.Y(0)
-            });
-          }
-        }
+        //   if (baseline_marks) {
+        //     baseline_marks.attr({
+        //       y1: args.scales.Y(0),
+        //       y2: args.scales.Y(0)
+        //     });
+        //   }
+        // }
 
-        bars.attr('y', args.scalefns.yf)
-          .attr('x', function(d) {
-            return args.scalefns.xf(d)// + appropriate_size/2;
-          })
-          .attr('width', appropriate_size)
-          .attr('height', function(d) {
-            return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
-          });
+        // bars.attr('y', args.scalefns.yf)
+        //   .attr('x', function(d) {
+        //     return args.scalefns.xf(d)// + appropriate_size/2;
+        //   })
+        //   .attr('width', appropriate_size)
+        //   .attr('height', function(d) {
+        //     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
+        //   });
 
 
-        if (args.predictor_accessor) {
-          pp = args.predictor_proportion;
-          pp0 = pp-1;
+        // if (args.predictor_accessor) {
+        //   pp = args.predictor_proportion;
+        //   pp0 = pp-1;
 
-          // thick line through bar;
-          predictor_bars
-            .attr('y', function(d) {
-              return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
-            })
-            .attr('x', function(d) {
-              return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
-            })
-            .attr('width', appropriate_size/pp)
-            .attr('height', function(d) {
-              return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
-            });
-        }
+        //   // thick line through bar;
+        //   predictor_bars
+        //     .attr('y', function(d) {
+        //       return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
+        //     })
+        //     .attr('x', function(d) {
+        //       return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
+        //     })
+        //     .attr('width', appropriate_size/pp)
+        //     .attr('height', function(d) {
+        //       return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
+        //     });
+        // }
 
-        if (args.baseline_accessor) {
-          pp = args.predictor_proportion;
+        // if (args.baseline_accessor) {
+        //   pp = args.predictor_proportion;
 
-          baseline_marks
-            .attr('x1', function(d) {
-              return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
-            })
-            .attr('x2', function(d) {
-              return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
-            })
-            .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
-            .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
-        }
+        //   baseline_marks
+        //     .attr('x1', function(d) {
+        //       return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
+        //     })
+        //     .attr('x2', function(d) {
+        //       return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
+        //     })
+        //     .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
+        //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
+        // }
       } else {
-        appropriate_size = args.scales.Y.rangeBand()/1.5;
+        appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
 
         if (perform_load_animation) {
           bars.attr('width', 0);
@@ -4117,40 +4184,39 @@ MG.button_layout = function(target) {
 
         bars.attr('x', args.scales.X(0))
           .attr('y', function(d) {
-            return args.scalefns.yf(d)// + appropriate_size/2;
+            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
-          .attr('height', args.scales.Y.rangeBand())
+          .attr('height', args.bar_height)
           .attr('width', function(d) {
             return args.scalefns.xf(d) - args.scales.X(0);
           });
 
         if (args.predictor_accessor) {
-          pp = args.predictor_proportion;
-          pp0 = pp-1;
+          // pp = args.predictor_proportion;
+          // pp0 = pp-1;
 
           // thick line  through bar;
           predictor_bars
             .attr('x', args.scales.X(0))
             .attr('y', function(d) {
-              return args.scalefns.yf(d) + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand() * (7/16)// + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
             })
-            .attr('height', appropriate_size / pp)
+            .attr('height', args.scales.Y_ingroup.rangeBand()/8)//appropriate_size / pp)
             .attr('width', function(d) {
               return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
             });
         }
 
         if (args.baseline_accessor) {
-          pp = args.predictor_proportion;
 
           baseline_marks
             .attr('x1', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('x2', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('y1', function(d) {
-              return args.scalefns.yf(d) + appropriate_size / 2 - appropriate_size / pp + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()/4
             })
             .attr('y2', function(d) {
-              return args.scalefns.yf(d) + appropriate_size / 2 + appropriate_size / pp + appropriate_size / 2;
+              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()*3/4
             });
         }
       }
@@ -4190,21 +4256,23 @@ MG.button_layout = function(target) {
           .attr('class', 'mg-bar-rollover');
 
       if (this.is_vertical) {
-        bar.attr("x", args.scalefns.xf)
-          .attr("y", function() {
-            return args.scales.Y(0) - args.height;
-          })
-          .attr('width', args.scales.X.rangeBand())
-          .attr('height', args.height)
-          .attr('opacity', 0)
-          .on('mouseover', this.rolloverOn(args))
-          .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
+        // bar.attr("x", args.scalefns.xf)
+        //   .attr("y", function() {
+        //     return args.scales.Y(0) - args.height;
+        //   })
+        //   .attr('width', args.scales.X.rangeBand())
+        //   .attr('height', args.height)
+        //   .attr('opacity', 0)
+        //   .on('mouseover', this.rolloverOn(args))
+        //   .on('mouseout', this.rolloverOff(args))
+        //   .on('mousemove', this.rolloverMove(args));
       } else {
         bar.attr("x", args.scales.X(0))
-          .attr("y", args.scalefns.yf)
+          .attr("y", function(d){
+            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);
+          })
           .attr('width', args.width)
-          .attr('height', args.scales.Y.rangeBand()+2)
+          .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))
@@ -4300,8 +4368,10 @@ MG.button_layout = function(target) {
     predictor_proportion: 5,
     dodge_accessor: null,
     binned: true,
-    padding_percentage: .1,
-    outer_padding_percentage: 0,
+    bar_padding_percentage: .1,
+    bar_outer_padding_percentage: 0,
+    group_padding_percentage:.15,
+    group_outer_padding_percentage: 0,
     bar_height: 20,
     top: 45,
     left: 70,
@@ -4697,29 +4767,26 @@ function raw_data_transformation(args) {
   args.nested_array_of_objects = false;
 
   // is the data object a nested array?
-  if (is_object(args.data) && args.chart_type === 'bar') {   // Case #0
-    args.single_object = true;
-  } else {
-    if (is_array_of_arrays(args.data)) {
-      args.nested_array_of_objects = args.data.map(function(d) {
-        return is_array_of_objects_or_empty(d);
-      });                               // Case #2
-      args.nested_array_of_arrays = args.data.map(function(d) {
-        return is_array_of_arrays(d);
-      });                               // Case #4
-    } else {
-      args.array_of_objects = is_array_of_objects(args.data);     // Case #1
-      args.array_of_arrays = is_array_of_arrays(args.data);     // Case #3
-    }
 
-    if (args.chart_type === 'line') {
-      if (args.array_of_objects || args.array_of_arrays) {
-        args.data = [args.data];
-      }
-    } else {
-      if (!(args.data[0] instanceof Array)) {
-        args.data = [args.data];
-      }
+  if (is_array_of_arrays(args.data)) {
+    args.nested_array_of_objects = args.data.map(function(d) {
+      return is_array_of_objects_or_empty(d);
+    });                               // Case #2
+    args.nested_array_of_arrays = args.data.map(function(d) {
+      return is_array_of_arrays(d);
+    });                               // Case #4
+  } else {
+    args.array_of_objects = is_array_of_objects(args.data);     // Case #1
+    args.array_of_arrays = is_array_of_arrays(args.data);     // Case #3
+  }
+
+  if (args.chart_type === 'line') {
+    if (args.array_of_objects || args.array_of_arrays) {
+      args.data = [args.data];
+    }
+  } else {
+    if (!(args.data[0] instanceof Array)) {
+      args.data = [args.data];
     }
   }
   // if the y_accessor is an array, break it up and store the result in args.data
@@ -4751,7 +4818,6 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_accessors(args, which_accessor) {
   if (args[which_accessor] instanceof Array) {
-    if (!args.single_object) {
       args.data = args.data.map(function(_d) {
         return args[which_accessor].map(function(ya) {
           return _d.map(function(di) {
@@ -4770,17 +4836,7 @@ function mg_process_multiple_accessors(args, which_accessor) {
       })[0];
       args[which_accessor] = 'multiline_' + which_accessor;
 
-    } else {
-      args.data = args[which_accessor].map(function(d){
-        return {'value': args.data[d], 'label': d};
-      })
-      args.categorical_variables = args[which_accessor];
-      if (which_accessor = 'x_accessor') {
-        args.x_accessor = 'value';  
-        args.y_accessor = 'label';
-      } 
-    }    
-  }
+    } 
 }
 
 function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
@@ -5011,17 +5067,10 @@ function process_categorical_variables(args) {
     });
   } else {
 
-    // rewrite this to appeal to single object, or array of objects
-
-    if (args.single_object) {
-      processed_data = args.data;
-    }
-    else {
-      processed_data = args.data[0];
-      args.categorical_variables = d3.set(processed_data.map(function(d) {
-        return d[label_accessor];
-      })).values();  
-    }
+    processed_data = args.data[0];
+    args.categorical_variables = d3.set(processed_data.map(function(d) {
+      return d[label_accessor];
+    })).values();  
     
     args.categorical_variables.reverse();
   }
@@ -5542,6 +5591,13 @@ function is_array_of_objects_or_empty(data) {
   return is_empty_array(data) || is_array_of_objects(data);
 }
 
+function pluck(arr,accessor){
+  return arr.map(function(d){ return d[accessor]});
+}
+
+function count_array_elements (arr) {
+  return arr.reduce(function (a,b) { a[b] = a[b]+1 || 1; return a; }, {});
+}
 
 function mg_get_bottom (args) {
   return args.height - args.bottom;

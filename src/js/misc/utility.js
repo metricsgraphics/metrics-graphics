@@ -91,6 +91,13 @@ function is_array_of_objects_or_empty(data) {
   return is_empty_array(data) || is_array_of_objects(data);
 }
 
+function pluck(arr,accessor){
+  return arr.map(function(d){ return d[accessor]});
+}
+
+function count_array_elements (arr) {
+  return arr.reduce(function (a,b) { a[b] = a[b]+1 || 1; return a; }, {});
+}
 
 function mg_get_bottom (args) {
   return args.height - args.bottom;

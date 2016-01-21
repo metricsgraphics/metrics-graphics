@@ -86,7 +86,7 @@ function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function (d) {
     return args.scales.X(d) + args.scales.X.rangeBand() / 2
-    + (args.buffer) * args.outer_padding_percentage + (additional_buffer / 2);
+    + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
   })
     .attr('y', mg_get_plot_bottom(args))
     .attr('dy', '.35em')
