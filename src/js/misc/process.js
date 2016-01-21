@@ -5,17 +5,19 @@ function raw_data_transformation(args) {
   args.data = MG.clone(args.data);
 
   // we need to account for a few data format cases:
+  // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
   // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
   // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
   // #3 [[4323, 2343],..]                                       // unnested 2d array
   // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
-
+  args.single_object    = false; // for bar charts.
   args.array_of_objects = false;
   args.array_of_arrays = false;
   args.nested_array_of_arrays = false;
   args.nested_array_of_objects = false;
 
   // is the data object a nested array?
+
   if (is_array_of_arrays(args.data)) {
     args.nested_array_of_objects = args.data.map(function(d) {
       return is_array_of_objects_or_empty(d);
@@ -65,30 +67,30 @@ function raw_data_transformation(args) {
 }
 
 function mg_process_multiple_accessors(args, which_accessor) {
-  if (args.y_accessor instanceof Array) {
-    args.data = args.data.map(function(_d) {
-      return args.y_accessor.map(function(ya) {
-        return _d.map(function(di) {
-          di = MG.clone(di);
+  if (args[which_accessor] instanceof Array) {
+      args.data = args.data.map(function(_d) {
+        return args[which_accessor].map(function(ya) {
+          return _d.map(function(di) {
+            di = MG.clone(di);
 
-          if (di[ya] === undefined) {
-            return undefined;
-          }
+            if (di[ya] === undefined) {
+              return undefined;
+            }
 
-          di['multiline_' + which_accessor] = di[ya];
-          return di;
-        }).filter(function(di) {
-          return di !== undefined;
+            di['multiline_' + which_accessor] = di[ya];
+            return di;
+          }).filter(function(di) {
+            return di !== undefined;
+          });
         });
-      });
-    })[0];
+      })[0];
+      args[which_accessor] = 'multiline_' + which_accessor;
 
-    args.y_accessor = 'multiline_' + which_accessor;
-  }
+    } 
 }
 
-function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
 function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
+function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
 
 MG.raw_data_transformation = raw_data_transformation;
 
@@ -281,12 +283,12 @@ function process_categorical_variables(args) {
   'use strict';
 
   var extracted_data, processed_data={}, pd=[];
-  var our_data = args.data[0];
+  //var our_data = args.data[0];
   var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
   var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
-  args.categorical_variables = [];
   if (args.binned === false) {
+    args.categorical_variables = [];
     if (typeof(our_data[0]) === 'object') {
       // we are dealing with an array of objects, extract the data value of interest
       extracted_data = our_data
@@ -314,11 +316,12 @@ function process_categorical_variables(args) {
       return obj;
     });
   } else {
-    // nothing needs to really happen here
-    processed_data = our_data;
+
+    processed_data = args.data[0];
     args.categorical_variables = d3.set(processed_data.map(function(d) {
       return d[label_accessor];
-    })).values();
+    })).values();  
+    
     args.categorical_variables.reverse();
   }
 

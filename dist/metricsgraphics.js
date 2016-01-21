@@ -1307,7 +1307,7 @@ function x_axis_categorical (args) {
   if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
 
   mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
-  mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
+  mg_add_scale_function(args, 'xf', 'X', 'value')//args.x_accessor);
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   var g = mg_add_g(svg, 'mg-x-axis');
@@ -1883,7 +1883,6 @@ function mg_init_compute_height (args) {
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
-
   if (args.chart_type === 'bar' && svg_height === null) {
     svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
   }
@@ -4295,6 +4294,7 @@ MG.button_layout = function(target) {
   var defaults = {
     y_accessor: 'factor',
     x_accessor: 'value',
+    height:null,
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
@@ -4302,7 +4302,7 @@ MG.button_layout = function(target) {
     binned: true,
     padding_percentage: .1,
     outer_padding_percentage: 0,
-    bar_height: 25,
+    bar_height: 20,
     top: 45,
     left: 70,
     truncate_x_labels: true,
@@ -4685,36 +4685,41 @@ function raw_data_transformation(args) {
   args.data = MG.clone(args.data);
 
   // we need to account for a few data format cases:
+  // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
   // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
   // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
   // #3 [[4323, 2343],..]                                       // unnested 2d array
   // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
-
+  args.single_object    = false; // for bar charts.
   args.array_of_objects = false;
   args.array_of_arrays = false;
   args.nested_array_of_arrays = false;
   args.nested_array_of_objects = false;
 
   // is the data object a nested array?
-  if (is_array_of_arrays(args.data)) {
-    args.nested_array_of_objects = args.data.map(function(d) {
-      return is_array_of_objects_or_empty(d);
-    });                               // Case #2
-    args.nested_array_of_arrays = args.data.map(function(d) {
-      return is_array_of_arrays(d);
-    });                               // Case #4
+  if (is_object(args.data) && args.chart_type === 'bar') {   // Case #0
+    args.single_object = true;
   } else {
-    args.array_of_objects = is_array_of_objects(args.data);     // Case #1
-    args.array_of_arrays = is_array_of_arrays(args.data);     // Case #3
-  }
-
-  if (args.chart_type === 'line') {
-    if (args.array_of_objects || args.array_of_arrays) {
-      args.data = [args.data];
+    if (is_array_of_arrays(args.data)) {
+      args.nested_array_of_objects = args.data.map(function(d) {
+        return is_array_of_objects_or_empty(d);
+      });                               // Case #2
+      args.nested_array_of_arrays = args.data.map(function(d) {
+        return is_array_of_arrays(d);
+      });                               // Case #4
+    } else {
+      args.array_of_objects = is_array_of_objects(args.data);     // Case #1
+      args.array_of_arrays = is_array_of_arrays(args.data);     // Case #3
     }
-  } else {
-    if (!(args.data[0] instanceof Array)) {
-      args.data = [args.data];
+
+    if (args.chart_type === 'line') {
+      if (args.array_of_objects || args.array_of_arrays) {
+        args.data = [args.data];
+      }
+    } else {
+      if (!(args.data[0] instanceof Array)) {
+        args.data = [args.data];
+      }
     }
   }
   // if the y_accessor is an array, break it up and store the result in args.data
@@ -4745,30 +4750,41 @@ function raw_data_transformation(args) {
 }
 
 function mg_process_multiple_accessors(args, which_accessor) {
-  if (args.y_accessor instanceof Array) {
-    args.data = args.data.map(function(_d) {
-      return args.y_accessor.map(function(ya) {
-        return _d.map(function(di) {
-          di = MG.clone(di);
+  if (args[which_accessor] instanceof Array) {
+    if (!args.single_object) {
+      args.data = args.data.map(function(_d) {
+        return args[which_accessor].map(function(ya) {
+          return _d.map(function(di) {
+            di = MG.clone(di);
 
-          if (di[ya] === undefined) {
-            return undefined;
-          }
+            if (di[ya] === undefined) {
+              return undefined;
+            }
 
-          di['multiline_' + which_accessor] = di[ya];
-          return di;
-        }).filter(function(di) {
-          return di !== undefined;
+            di['multiline_' + which_accessor] = di[ya];
+            return di;
+          }).filter(function(di) {
+            return di !== undefined;
+          });
         });
-      });
-    })[0];
+      })[0];
+      args[which_accessor] = 'multiline_' + which_accessor;
 
-    args.y_accessor = 'multiline_' + which_accessor;
+    } else {
+      args.data = args[which_accessor].map(function(d){
+        return {'value': args.data[d], 'label': d};
+      })
+      args.categorical_variables = args[which_accessor];
+      if (which_accessor = 'x_accessor') {
+        args.x_accessor = 'value';  
+        args.y_accessor = 'label';
+      } 
+    }    
   }
 }
 
-function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
 function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
+function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
 
 MG.raw_data_transformation = raw_data_transformation;
 
@@ -4961,12 +4977,12 @@ function process_categorical_variables(args) {
   'use strict';
 
   var extracted_data, processed_data={}, pd=[];
-  var our_data = args.data[0];
+  //var our_data = args.data[0];
   var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
   var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
-  args.categorical_variables = [];
   if (args.binned === false) {
+    args.categorical_variables = [];
     if (typeof(our_data[0]) === 'object') {
       // we are dealing with an array of objects, extract the data value of interest
       extracted_data = our_data
@@ -4994,11 +5010,19 @@ function process_categorical_variables(args) {
       return obj;
     });
   } else {
-    // nothing needs to really happen here
-    processed_data = our_data;
-    args.categorical_variables = d3.set(processed_data.map(function(d) {
-      return d[label_accessor];
-    })).values();
+
+    // rewrite this to appeal to single object, or array of objects
+
+    if (args.single_object) {
+      processed_data = args.data;
+    }
+    else {
+      processed_data = args.data[0];
+      args.categorical_variables = d3.set(processed_data.map(function(d) {
+        return d[label_accessor];
+      })).values();  
+    }
+    
     args.categorical_variables.reverse();
   }
 

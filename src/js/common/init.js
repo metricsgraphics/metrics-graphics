@@ -34,7 +34,6 @@ function mg_init_compute_height (args) {
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
-
   if (args.chart_type === 'bar' && svg_height === null) {
     svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
   }

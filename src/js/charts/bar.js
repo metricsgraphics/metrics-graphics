@@ -367,6 +367,7 @@
   var defaults = {
     y_accessor: 'factor',
     x_accessor: 'value',
+    height:null,
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
@@ -374,7 +375,7 @@
     binned: true,
     padding_percentage: .1,
     outer_padding_percentage: 0,
-    bar_height: 25,
+    bar_height: 20,
     top: 45,
     left: 70,
     truncate_x_labels: true,

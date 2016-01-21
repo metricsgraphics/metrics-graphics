@@ -70,7 +70,7 @@ function x_axis_categorical (args) {
   if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
 
   mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
-  mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
+  mg_add_scale_function(args, 'xf', 'X', 'value')//args.x_accessor);
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   var g = mg_add_g(svg, 'mg-x-axis');
