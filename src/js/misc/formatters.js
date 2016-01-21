@@ -90,7 +90,7 @@ function mg_format_x_rollover(args, fmt, d) {
 
     formatted_x = fmt(date) + '  ';
     } else {
-      formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + ', ';
+      formatted_x = args.x_accessor + ': ' + d[args.x_accessor] + '   ';
     }
   }
   return formatted_x;

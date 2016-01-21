@@ -107,6 +107,7 @@ function mg_append_aggregate_rollover_text (args, textContainer, formatted_x, d,
 
 function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
   var num = format_rollover_number(args);
+  if (args.chart_type === 'bar') num = function(d){return d};
   var textContainer = mg_reset_active_datapoint_text(svg);
   var formatted_y = mg_format_y_rollover(args, num, d);
   var formatted_x = mg_format_x_rollover(args, fmt, d);
@@ -126,6 +127,8 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
         .color(args, d);
     }
 
+    if (args.chart_type === 'bar' && args.group_accessor) mouseover_tspan(textContainer, d[args.group_accessor] + '   ', 'mg-bar-group-rollover-text').bold();
+
     // shape to accompany rollover.
     if (args.data.length > 1 || args.chart_type === 'point') {
       mouseover_tspan(textContainer, shape + '  ').color(args, d);
@@ -133,5 +136,7 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
     // rollover text.
     mouseover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
     mouseover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
+    if (args.chart_type === 'bar' && args.predictor_accessor) mouseover_tspan(textContainer, '   ' + args.predictor_accessor + ': ' + d[args.predictor_accessor], 'mg-bar-predictor-rollover-text')
+    if (args.chart_type === 'bar' && args.baseline_accessor) mouseover_tspan(textContainer, '   ' + args.baseline_accessor + ': ' + d[args.baseline_accessor], 'mg-bar-baseline-rollover-text')
   }
 }

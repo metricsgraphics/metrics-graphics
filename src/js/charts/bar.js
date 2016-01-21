@@ -294,11 +294,11 @@
       var label_units = this.is_vertical ? args.yax_units : args.xax_units;
 
       return function(d, i) {
-        svg.selectAll('text')
-          .filter(function(g, j) {
-            return d === g;
-          })
-          .attr('opacity', 0.3);
+        // svg.selectAll('text')
+        //   .filter(function(g, j) {
+        //     return d === g;
+        //   })
+        //   .attr('opacity', 0.3);
 
         var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
         var num = format_rollover_number(args);
@@ -312,17 +312,21 @@
 
         //update rollover text
         if (args.show_rollover_text) {
-          svg.select('.mg-active-datapoint')
-            .text(function() {
-              if (args.time_series) {
-                var dd = new Date(+d[data_accessor]);
-                dd.setDate(dd.getDate());
 
-                return fmt(dd) + '  ' + label_units + num(d[label_accessor]);
-              } else {
-                return d[label_accessor] + ': ' + num(d[data_accessor]);
-              }
-            });
+
+
+          //svg.select('.mg-active-datapoint')
+            mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+            // .text(function() {
+            //   if (args.time_series) {
+            //     var dd = new Date(+d[data_accessor]);
+            //     dd.setDate(dd.getDate());
+
+            //     return fmt(dd) + '  ' + label_units + num(d[label_accessor]);
+            //   } else {
+            //     return d[label_accessor] + ': ' + num(d[data_accessor]);
+            //   }
+            // });
         }
 
         if (args.mouseover) {
