@@ -29,6 +29,7 @@ var
     src + 'common/chart_title.js',
     src + 'common/y_axis.js',
     src + 'common/x_axis.js',
+    src + 'common/scales.js',
     src + 'common/init.js',
     src + 'common/markers.js',
     src + 'common/rollover.js',

@@ -173,11 +173,13 @@ function mg_barchart_count_number_of_bars(args){
 }
 
 function mg_barchart_calculate_group_height(args){
-  args.group_height = args.bars_per_group * (1 + args.bar_padding_percentage + args.bar_outer_padding_percentage) * args.bar_height;
+  args.group_height = args.bars_per_group * args.bar_height + (((args.bars_per_group-1) * args.bar_height) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
 }
 
 function mg_barchart_calculate_height(args){
-  return (args.group_height * (1 + args.group_padding_percentage + args.group_outer_padding_percentage)) * (args.categorical_groups.length || 1) + args.top + args.bottom;//args.data[0].length * args.bar_height + args.top + args.bottom;
+  return (args.group_height) * 
+         (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
+         (args.categorical_groups.length * args.group_height * (args.group_padding_percentage + args.group_outer_padding_percentage));
 }
 
 function init (args) {

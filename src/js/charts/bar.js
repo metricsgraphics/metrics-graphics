@@ -11,6 +11,7 @@
     this.args = args;
 
     this.init = function(args) {
+
       this.args = args;
 
       raw_data_transformation(args);
@@ -26,6 +27,7 @@
         x_axis(args);
         y_axis_categorical(args);
       }
+      //console.log(mg_get_plot_top(args), args.scales.Y_outgroup(args.categorical_groups[0]), d3.min(args.data[0], function(d) {return args.scalefns.yf_in(d)} ) );
 
       this.mainPlot();
       this.markers();
@@ -63,6 +65,14 @@
 
       bars.enter().append('rect')
         .classed('mg-bar', true);
+
+      // add new white lines.
+      // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
+      //   .attr('x1', args.scales.X)
+      //   .attr('x2', args.scales.X)
+      //   .attr('y1', mg_get_plot_top(args))
+      //   .attr('y2', mg_get_plot_bottom(args))
+      //   .attr('stroke', 'white');
 
       if (args.predictor_accessor) {
         predictor_bars = barplot.selectAll('.mg-bar-prediction')
@@ -171,8 +181,7 @@
         //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
         // }
       } else {
-        appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-
+        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
         if (perform_load_animation) {
           bars.attr('width', 0);
 
@@ -188,13 +197,18 @@
           }
         }
 
-        bars.attr('x', args.scales.X(0))
+        bars.attr('x', function(d) {
+          var x = args.scales.X(0);
+          if (d[args.x_accessor] < 0) {
+            x = args.scalefns.xf(d);
+          } return x;
+        })
           .attr('y', function(d) {
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
-          .attr('height', args.bar_height)
+          .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('width', function(d) {
-            return args.scalefns.xf(d) - args.scales.X(0);
+            return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
           });
 
         if (args.predictor_accessor) {
@@ -273,11 +287,11 @@
         //   .on('mouseout', this.rolloverOff(args))
         //   .on('mousemove', this.rolloverMove(args));
       } else {
-        bar.attr("x", args.scales.X(0))
+        bar.attr("x", mg_get_plot_left(args))
           .attr("y", function(d){
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);
           })
-          .attr('width', args.width)
+          .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
           .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
@@ -372,19 +386,23 @@
   var defaults = {
     y_accessor: 'factor',
     x_accessor: 'value',
+    x_extended_ticks: true,
+    color_accessor: null,
     height:null,
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
-    dodge_accessor: null,
+    show_bar_zero: true,
     binned: true,
-    bar_padding_percentage: .1,
-    bar_outer_padding_percentage: 0,
-    group_padding_percentage:.15,
+    width: 400,
+    bar_padding_percentage: 0.1,
+    bar_outer_padding_percentage: .1,
+    group_padding_percentage:.35,
     group_outer_padding_percentage: 0,
-    bar_height: 20,
+    bar_height: 15,
     top: 45,
-    left: 70,
+    left: 90,
+    right:5,
     truncate_x_labels: true,
     truncate_y_labels: true,
     rotate_x_labels: 0,

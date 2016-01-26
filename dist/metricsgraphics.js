@@ -989,6 +989,22 @@ function mg_compute_yax_format (args) {
   return yax_format;
 }
 
+function mg_bar_add_zero_line (args) {
+  var svg = mg_get_svg_child_of(args.target);
+  var extents = args.scales.X.domain();
+  if (0 >= extents[0] && extents[1] >= 0) {
+    var r = args.scales.Y_ingroup.range();
+    var g = args.categorical_groups.length ? args.scales.Y_outgroup(args.categorical_groups[args.categorical_groups.length-1]) : args.scales.Y_outgroup()
+    svg.append('svg:line')
+    .attr('x1', args.scales.X(0))
+    .attr('x2', args.scales.X(0))
+    .attr('y1', r[0] + mg_get_plot_top(args))
+    .attr('y2', r[r.length-1] + g + args.scales.Y_ingroup.rangeBand())
+    .attr('stroke', 'black')
+    .attr('opacity', .2);  
+  }
+}
+
 function set_min_max_y (args) {
   // flatten data
   // remove weird data, if log.
@@ -1215,31 +1231,36 @@ function mg_add_categorical_labels (args) {
   var group_g;
   (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function(group){
     group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group))
-    var labels = group_g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+
+    if (args.group_accessor) {
+      mg_add_group_label(group_g, group, args);
+    }
+    else {
+      var labels = mg_add_graphic_labels(group_g, group, args);
+      mg_rotate_labels(labels, args.rotate_y_labels);
+    }
+  });
+}
+
+function mg_add_graphic_labels (g, group, args) {
+  return g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
       .attr('x', args.left - args.buffer)
       .attr('y', function (d) {
-        return args.scales.Y_outgroup(group) + args.scales.Y_ingroup(d) + args.scales.Y_ingroup.rangeBand() / 2;// + (args.buffer) * args.outer_padding_percentage;
+        return args.scales.Y_outgroup(group) + args.scales.Y_ingroup(d) + args.scales.Y_ingroup.rangeBand() / 2;
       })
       .attr('dy', '.35em')
       .attr('text-anchor', 'end')
       .text(String);
-      mg_rotate_labels(labels, args.rotate_y_labels);
-
-  });
 }
 
-
-
-function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
-  args.scales[scale_name] = d3.scale.ordinal()
-    .domain(categorical_variables)
-    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
-}
-
-function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
-  args.scales[scale_name] = d3.scale.ordinal()
-    .domain(categorical_variables)
-    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+function mg_add_group_label (g, group, args) {
+    g.append('svg:text')
+      .classed('mg-barplot-group-label', true)
+      .attr('x', args.left - args.buffer)
+      .attr('y', args.scales.Y_outgroup(group) + args.scales.Y_outgroup.rangeBand()/2)
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(group);
 }
 
 
@@ -1248,12 +1269,10 @@ function y_axis_categorical (args) {
   // in_group_scale
   mg_add_categorical_scale(args, 'Y_ingroup', args.categorical_variables, 0, args.group_height, args.bar_padding_percentage, args.bar_outer_padding_percentage);
   mg_add_scale_function(args, 'yf_in', 'Y_ingroup', args.y_accessor);
-
   // out_group_scale
   if (args.group_accessor) {
       mg_add_categorical_scale(args, 'Y_outgroup', args.categorical_groups, mg_get_plot_top(args), mg_get_plot_bottom(args), args.group_padding_percentage, args.group_outer_padding_percentage);
-
-    mg_add_scale_function(args, 'yf_out', 'Y_outgroup', args.group_accessor)
+      mg_add_scale_function(args, 'yf_out', 'Y_outgroup', args.group_accessor);
   }
   else {
     args.scales.Y_outgroup = function(d) { return mg_get_plot_top(args)};
@@ -1261,6 +1280,7 @@ function y_axis_categorical (args) {
   }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
+  if (args.show_bar_zero) mg_bar_add_zero_line(args);
 
   return this;
 }
@@ -1325,7 +1345,6 @@ function x_axis (args) {
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
   if (args.x_label) { mg_add_x_label(g, args); }
-
   if (args.x_rug) { x_rug(args); }
 
   return this;
@@ -1590,7 +1609,7 @@ function mg_default_xax_format (args) {
 }
 
 function mg_add_x_ticks (g, args) {
-  if (args.chart_type !== 'bar' && !args.y_extended_ticks) {
+  if (!args.y_extended_ticks) {
     mg_add_x_axis_rim(args, g);
     mg_add_x_axis_tick_lines(args, g);
   }
@@ -1778,7 +1797,17 @@ function mg_min_max_x_for_nonbars (mx, args, data) {
 }
 
 function mg_min_max_x_for_bars (mx, args, data) {
-  mx.min = 0;
+  mx.min = d3.min(data, function (d) {
+    var trio = [
+      d[args.x_accessor],
+      (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
+      (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
+    ];
+    return Math.min.apply(null, trio);
+  });
+
+  if (mx.min > 0) mx.min = 0;
+
   mx.max = d3.max(data, function (d) {
     var trio = [
       d[args.x_accessor],
@@ -1787,6 +1816,7 @@ function mg_min_max_x_for_bars (mx, args, data) {
     ];
     return Math.max.apply(null, trio);
   });
+  return mx;
 }
 
 function mg_min_max_x_for_dates (mx) {
@@ -1879,6 +1909,65 @@ function mg_select_xax_format (args) {
   }
 }
 
+//
+// scales.js
+// ---------
+//
+// This module will become the home for much of the scale-based logic.
+// Over time we will be moving some of the aspects of scale creation
+// from y_axis.js and x_axis.js and adapting and generalizing them here.
+// With that in mind, y_axis.js and x_axis.js will be concerned chiefly
+// with the drawing of the axes.
+//
+
+function mg_add_bar_color_scale(args) {
+	// if default args.group_accessor, then add a 
+	if (args.group_accessor) {
+		// add a custom accessor element.
+		args.color_accessor = args.y_accessor;
+		mg_add_color_categorical_scale(args, args.categorical_set);
+	}
+}
+
+function mg_add_color_categorical_scale(args, domain) {
+	args.scales.color = d3.scale.ordinal().domain(domain);
+}
+
+
+function mg_get_color_domain (args) {
+  var color_domain;
+  if (args.color_domain === null) {
+    if (args.color_type === 'number') {
+      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
+    }
+    else if (args.color_type === 'category') {
+      color_domain = d3.set(args.data[0]
+        .map(function (d) { return d[args.color_accessor]; }))
+        .values();
+
+      color_domain.sort();
+    }
+  } else {
+    color_domain = args.color_domain;
+  }
+  return color_domain;
+}
+
+
+
+function mg_get_color_range (args) {
+  var color_range;
+  if (args.color_range === null) {
+    if (args.color_type === 'number') {
+      color_range = ['blue', 'red'];
+    } else {
+      color_range = null;
+    }
+  } else {
+    color_range = args.color_range;
+  }
+  return color_range;
+}
 function mg_merge_args_with_defaults (args) {
   var defaults = {
     target: null,
@@ -2054,11 +2143,13 @@ function mg_barchart_count_number_of_bars(args){
 }
 
 function mg_barchart_calculate_group_height(args){
-  args.group_height = args.bars_per_group * (1 + args.bar_padding_percentage + args.bar_outer_padding_percentage) * args.bar_height;
+  args.group_height = args.bars_per_group * args.bar_height + (((args.bars_per_group-1) * args.bar_height) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
 }
 
 function mg_barchart_calculate_height(args){
-  return (args.group_height * (1 + args.group_padding_percentage + args.group_outer_padding_percentage)) * (args.categorical_groups.length || 1) + args.top + args.bottom;//args.data[0].length * args.bar_height + args.top + args.bottom;
+  return (args.group_height) * 
+         (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
+         (args.categorical_groups.length * args.group_height * (args.group_padding_percentage + args.group_outer_padding_percentage));
 }
 
 function init (args) {
@@ -4010,6 +4101,7 @@ MG.button_layout = function(target) {
     this.args = args;
 
     this.init = function(args) {
+
       this.args = args;
 
       raw_data_transformation(args);
@@ -4025,6 +4117,7 @@ MG.button_layout = function(target) {
         x_axis(args);
         y_axis_categorical(args);
       }
+      //console.log(mg_get_plot_top(args), args.scales.Y_outgroup(args.categorical_groups[0]), d3.min(args.data[0], function(d) {return args.scalefns.yf_in(d)} ) );
 
       this.mainPlot();
       this.markers();
@@ -4062,6 +4155,14 @@ MG.button_layout = function(target) {
 
       bars.enter().append('rect')
         .classed('mg-bar', true);
+
+      // add new white lines.
+      // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
+      //   .attr('x1', args.scales.X)
+      //   .attr('x2', args.scales.X)
+      //   .attr('y1', mg_get_plot_top(args))
+      //   .attr('y2', mg_get_plot_bottom(args))
+      //   .attr('stroke', 'white');
 
       if (args.predictor_accessor) {
         predictor_bars = barplot.selectAll('.mg-bar-prediction')
@@ -4170,8 +4271,7 @@ MG.button_layout = function(target) {
         //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
         // }
       } else {
-        appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-
+        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
         if (perform_load_animation) {
           bars.attr('width', 0);
 
@@ -4187,13 +4287,18 @@ MG.button_layout = function(target) {
           }
         }
 
-        bars.attr('x', args.scales.X(0))
+        bars.attr('x', function(d) {
+          var x = args.scales.X(0);
+          if (d[args.x_accessor] < 0) {
+            x = args.scalefns.xf(d);
+          } return x;
+        })
           .attr('y', function(d) {
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
-          .attr('height', args.bar_height)
+          .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('width', function(d) {
-            return args.scalefns.xf(d) - args.scales.X(0);
+            return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
           });
 
         if (args.predictor_accessor) {
@@ -4272,11 +4377,11 @@ MG.button_layout = function(target) {
         //   .on('mouseout', this.rolloverOff(args))
         //   .on('mousemove', this.rolloverMove(args));
       } else {
-        bar.attr("x", args.scales.X(0))
+        bar.attr("x", mg_get_plot_left(args))
           .attr("y", function(d){
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);
           })
-          .attr('width', args.width)
+          .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
           .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
@@ -4371,19 +4476,23 @@ MG.button_layout = function(target) {
   var defaults = {
     y_accessor: 'factor',
     x_accessor: 'value',
+    x_extended_ticks: true,
+    color_accessor: null,
     height:null,
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
-    dodge_accessor: null,
+    show_bar_zero: true,
     binned: true,
-    bar_padding_percentage: .1,
-    bar_outer_padding_percentage: 0,
-    group_padding_percentage:.15,
+    width: 400,
+    bar_padding_percentage: 0.1,
+    bar_outer_padding_percentage: .1,
+    group_padding_percentage:.35,
     group_outer_padding_percentage: 0,
-    bar_height: 20,
+    bar_height: 15,
     top: 45,
-    left: 70,
+    left: 90,
+    right:5,
     truncate_x_labels: true,
     truncate_y_labels: true,
     rotate_x_labels: 0,
@@ -5697,10 +5806,10 @@ function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
   }
 }
 
-function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, padding_percentage) {
+function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, outer_padding) {
   args.scales[scale_name] = d3.scale.ordinal()
     .domain(categorical_variables)
-    .rangeRoundBands([low, high], padding || 0, padding_percentage || 0);
+    .rangeBands([low, high], padding, outer_padding);
 }
 
 function mg_rotate_labels (labels, rotation_degree) {

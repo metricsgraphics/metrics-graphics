@@ -56,7 +56,6 @@ function x_axis (args) {
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
   if (args.x_label) { mg_add_x_label(g, args); }
-
   if (args.x_rug) { x_rug(args); }
 
   return this;
@@ -321,7 +320,7 @@ function mg_default_xax_format (args) {
 }
 
 function mg_add_x_ticks (g, args) {
-  if (args.chart_type !== 'bar' && !args.y_extended_ticks) {
+  if (!args.y_extended_ticks) {
     mg_add_x_axis_rim(args, g);
     mg_add_x_axis_tick_lines(args, g);
   }
@@ -509,7 +508,17 @@ function mg_min_max_x_for_nonbars (mx, args, data) {
 }
 
 function mg_min_max_x_for_bars (mx, args, data) {
-  mx.min = 0;
+  mx.min = d3.min(data, function (d) {
+    var trio = [
+      d[args.x_accessor],
+      (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
+      (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
+    ];
+    return Math.min.apply(null, trio);
+  });
+
+  if (mx.min > 0) mx.min = 0;
+
   mx.max = d3.max(data, function (d) {
     var trio = [
       d[args.x_accessor],
@@ -518,6 +527,7 @@ function mg_min_max_x_for_bars (mx, args, data) {
     ];
     return Math.max.apply(null, trio);
   });
+  return mx;
 }
 
 function mg_min_max_x_for_dates (mx) {

@@ -25,6 +25,10 @@
     fill: #5c5c5c;
 }
 
+text.mg-barplot-group-label {
+    font-weight:900;
+}
+
 .mg-barplot rect.mg-bar {
     shape-rendering: auto;
     fill: #b6b6fc;
