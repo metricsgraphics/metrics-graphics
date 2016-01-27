@@ -358,6 +358,7 @@ function y_axis_categorical (args) {
   }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
+
   if (args.show_bar_zero) mg_bar_add_zero_line(args);
 
   return this;

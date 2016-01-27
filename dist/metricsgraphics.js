@@ -4348,13 +4348,26 @@ MG.button_layout = function(target) {
       svg.selectAll('.mg-active-datapoint').remove();
 
       //rollover text
+      var rollover_x, rollover_anchor;
+      if (args.rollover_align === 'right') {
+        rollover_x = args.width-args.right;
+        rollover_anchor = 'end';
+      } else if (args.rollover_align === 'left') {
+        rollover_x = args.left;
+        rollover_anchor = 'start';
+      } else {
+        // middle
+        rollover_x = (args.width - args.left - args.right) / 2 + args.left;
+        rollover_anchor = 'middle';
+      }
+
       svg.append('text')
         .attr('class', 'mg-active-datapoint')
         .attr('xml:space', 'preserve')
-        .attr('x', args.width - args.right)
+        .attr('x', rollover_x)
         .attr('y', args.top * 0.75)
         .attr('dy', '.35em')
-        .attr('text-anchor', 'end');
+        .attr('text-anchor', rollover_anchor);
 
       g = svg.append('g')
         .attr('class', 'mg-rollover-rect');
@@ -4479,6 +4492,7 @@ MG.button_layout = function(target) {
     x_extended_ticks: true,
     color_accessor: null,
     height:null,
+    rollover_align: 'middle',
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
@@ -4491,7 +4505,7 @@ MG.button_layout = function(target) {
     group_outer_padding_percentage: 0,
     bar_height: 15,
     top: 45,
-    left: 90,
+    left: 105,
     right:5,
     truncate_x_labels: true,
     truncate_y_labels: true,
