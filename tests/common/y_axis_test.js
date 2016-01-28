@@ -153,6 +153,20 @@ test('args.format is set to percentage', function() {
     equal(document.querySelector('.mg-y-axis text').textContent.slice(-1), '%', 'Y-axis units are %');
 });
 
+test('percentage args.format is correct', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 0.80},
+               {'date': new Date('2014-03-01'), 'value': 1.20}],
+        format: 'percentage',
+        height: 400,
+        min_y_from_data: true
+    };
+    
+    MG.data_graphic(params);
+    equal(document.querySelectorAll('.mg-y-axis text')[3].textContent, '110%', 'Y-axis label formats correctly');
+});
+
 test('args.yax_units', function() {
     var params = {
         target: '#qunit-fixture',

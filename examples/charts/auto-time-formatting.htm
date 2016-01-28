@@ -5,6 +5,11 @@
                         <div class='col-lg-12 text-center' id='time2'></div>
                         <div class='col-lg-12 text-center' id='time3'></div>
                         <div class='col-lg-12 text-center' id='time4'></div>
+                        <div class='col-lg-12 text-center' id='many-months'></div>
+                        <div class='col-lg-12 text-center' id='years'></div>
+                        <div class='col-lg-12 text-center' id='decades'></div>
+                        <div class='col-lg-12 text-center' id='centuries'></div>
+
                     </div>
                 </div>
                 <div class='col-lg-5'>
@@ -29,16 +34,45 @@ function fake_days(length) {
     var data = [];
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
+        if (v < 0) v = 0;
         data.push({date: MG.clone(d), value: v});
         d.setDate(d.getDate() + 1);
     }
     return data;
 }
 
+function fake_years(length) {
+    var y = 2015;
+    var d = new Date(y,0,1);
+    out = [];
+    v = 100000;
+    for (var i = 0; i < length; i++) {
+        v += (Math.random()-.5) * 10000;
+        out.push({value:v, date: MG.clone(d)});
+        y -=1;
+        d = new Date(y,0,1);
+    }
+    out.reverse();
+    return out;
+}
+
+
 var less_than_a_minute = fake_data(25, 1);
 var less_than_a_day = fake_data(25,60 * 20);
 var a_few_days = fake_data(75,60 * 60);
-var many_days = fake_days(25);
+var many_days = fake_days(60);
+var many_many_many_days = fake_days(365*2);
+
+MG.data_graphic({
+    title: "European Clock", 
+    description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
+    data: less_than_a_minute,
+    target: '#european',
+    european_clock: true,
+    width: 600,
+    height: 200,
+    right: 40
+});
 
 MG.data_graphic({
     title: "Less Than A Minute",
@@ -71,6 +105,57 @@ MG.data_graphic({
     title: "Over A Large Span of Days",
     data: many_days,
     target: '#time4',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    title: "Over Many Months",
+    data: many_many_many_days,
+    target: '#many-months',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+d3.csv('data/evictions-sf.csv', function(data) {
+    data = MG.convert.date(data, 'date');
+    data = data.map(function(d){
+        d.value = d.value * 10000;
+        return d;
+    })
+    MG.data_graphic({
+        title: "A Few Years",
+        data: data,
+        target: '#years',
+        width: 600,
+        height: 200,
+        right: 40
+    });    
+})
+
+
+d3.csv('data/crude-oil.csv', function(data) {
+    data = MG.convert.date(data, 'date');
+    data = MG.convert.number(data, 'price');
+    MG.data_graphic({
+        title: "Over Decades",
+        data: data,
+        target: '#decades',
+        y_accessor: 'price',
+        yax_units: '$',
+        width: 600,
+        height: 200,
+        right: 40
+    });    
+})
+
+
+MG.data_graphic({
+    title: "Over Centuries",
+    data: fake_years(300),
+    target: '#centuries',
     width: 600,
     height: 200,
     right: 40
@@ -125,17 +210,34 @@ function fake_days(length) {
     var data = [];
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
+        if (v < 0) v = 0;
         data.push({date: MG.clone(d), value: v});
         d.setDate(d.getDate() + 1);
     }
     return data;
 }
 
+function fake_years(length) {
+    var y = 2015;
+    var d = new Date(y,0,1);
+    out = [];
+    v = 100000;
+    for (var i = 0; i < length; i++) {
+        v += (Math.random()-.5) * 10000;
+        out.push({value:v, date: MG.clone(d)});
+        y -=1;
+        d = new Date(y,0,1);
+    }
+    out.reverse();
+    return out;
+}
+
+
 var less_than_a_minute = fake_data(25, 1);
 var less_than_a_day = fake_data(25,60 * 20);
 var a_few_days = fake_data(75,60 * 60);
-var many_days = fake_days(25);
-
+var many_days = fake_days(80);
+var many_many_many_days = fake_days(365*2);
 
 MG.data_graphic({
     title: "European Clock", 
@@ -178,9 +280,58 @@ MG.data_graphic({
 MG.data_graphic({
     title: "Over A Large Span of Days",
     data: many_days,
+    width:600,
     target: '#time4',
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    title: "Over Many Months",
+    data: many_many_many_days,
+    target: '#many-months',
     width: 600,
     height: 200,
     right: 40
 });
+
+d3.csv('data/evictions-sf.csv', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "A Few Years",
+        data: data,
+        target: '#years',
+        width: 600,
+        height: 200,
+        right: 40
+    });    
+})
+
+
+d3.csv('data/crude-oil.csv', function(data) {
+    data = MG.convert.date(data, 'date');
+    data = MG.convert.number(data, 'price');
+    MG.data_graphic({
+        title: "Over Decades",
+        data: data,
+        target: '#decades',
+        y_accessor: 'price',
+        yax_units: '$',
+        width: 600,
+        height: 200,
+        right: 40
+    });    
+})
+
+
+MG.data_graphic({
+    title: "Over Centuries",
+    data: fake_years(300),
+    target: '#centuries',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+
 </script>

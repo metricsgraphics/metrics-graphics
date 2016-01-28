@@ -59,12 +59,28 @@ function mg_compute_yax_format (args) {
       };
     } else { // percentage
       yax_format = function (d_) {
-        var n = d3.format('2p');
+        var n = d3.format('.2p');
         return n(d_);
       };
     }
   }
   return yax_format;
+}
+
+function mg_bar_add_zero_line (args) {
+  var svg = mg_get_svg_child_of(args.target);
+  var extents = args.scales.X.domain();
+  if (0 >= extents[0] && extents[1] >= 0) {
+    var r = args.scales.Y_ingroup.range();
+    var g = args.categorical_groups.length ? args.scales.Y_outgroup(args.categorical_groups[args.categorical_groups.length-1]) : args.scales.Y_outgroup()
+    svg.append('svg:line')
+    .attr('x1', args.scales.X(0))
+    .attr('x2', args.scales.X(0))
+    .attr('y1', r[0] + mg_get_plot_top(args))
+    .attr('y2', r[r.length-1] + g + args.scales.Y_ingroup.rangeBand())
+    .attr('stroke', 'black')
+    .attr('opacity', .2);  
+  }
 }
 
 function set_min_max_y (args) {
@@ -290,33 +306,60 @@ function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
   var g = mg_add_g(svg, 'mg-y-axis');
+  var group_g;
+  (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function(group){
+    group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group))
 
-  var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
-    .attr('x', args.left)
-    .attr('y', function (d) {
-      return args.scales.Y(d) + args.scales.Y.rangeBand() / 2 + (args.buffer) * args.outer_padding_percentage;
-    })
-    .attr('dy', '.35em')
-    .attr('text-anchor', 'end')
-    .text(String);
-
-  mg_rotate_labels(labels, args.rotate_y_labels);
-// if (args.rotate_y_labels) {
-//     labels.attr({
-//         dy: 0,
-//         transform: function() {
-//             var elem = d3.select(this);
-//             return 'rotate('+args.rotate_y_labels+' '+elem.attr('x')+','+elem.attr('y')+')';
-//         }
-//     });
-// }
+    if (args.group_accessor) {
+      mg_add_group_label(group_g, group, args);
+    }
+    else {
+      var labels = mg_add_graphic_labels(group_g, group, args);
+      mg_rotate_labels(labels, args.rotate_y_labels);
+    }
+  });
 }
 
+function mg_add_graphic_labels (g, group, args) {
+  return g.selectAll('text').data(args.categorical_variables).enter().append('svg:text')
+      .attr('x', args.left - args.buffer)
+      .attr('y', function (d) {
+        return args.scales.Y_outgroup(group) + args.scales.Y_ingroup(d) + args.scales.Y_ingroup.rangeBand() / 2;
+      })
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(String);
+}
+
+function mg_add_group_label (g, group, args) {
+    g.append('svg:text')
+      .classed('mg-barplot-group-label', true)
+      .attr('x', args.left - args.buffer)
+      .attr('y', args.scales.Y_outgroup(group) + args.scales.Y_outgroup.rangeBand()/2)
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(group);
+}
+
+
+
 function y_axis_categorical (args) {
-  mg_add_categorical_scale(args, 'Y', args.categorical_variables, mg_get_plot_bottom(args), args.top, args.padding_percentage, args.outer_padding_percentage);
-  mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
+  // in_group_scale
+  mg_add_categorical_scale(args, 'Y_ingroup', args.categorical_variables, 0, args.group_height, args.bar_padding_percentage, args.bar_outer_padding_percentage);
+  mg_add_scale_function(args, 'yf_in', 'Y_ingroup', args.y_accessor);
+  // out_group_scale
+  if (args.group_accessor) {
+      mg_add_categorical_scale(args, 'Y_outgroup', args.categorical_groups, mg_get_plot_top(args), mg_get_plot_bottom(args), args.group_padding_percentage, args.group_outer_padding_percentage);
+      mg_add_scale_function(args, 'yf_out', 'Y_outgroup', args.group_accessor);
+  }
+  else {
+    args.scales.Y_outgroup = function(d) { return mg_get_plot_top(args)};
+    args.scalefns.yf_out = function(d) {return mg_get_plot_top(args)};
+  }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
+
+  if (args.show_bar_zero) mg_bar_add_zero_line(args);
 
   return this;
 }

@@ -34,9 +34,8 @@ function mg_init_compute_height (args) {
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
-
   if (args.chart_type === 'bar' && svg_height === null) {
-    svg_height = args.height = args.data[0].length * args.bar_height + args.top + args.bottom;
+    svg_height = mg_barchart_calculate_height(args);
   }
 
   args.height = svg_height;
@@ -148,6 +147,41 @@ function mg_raise_container_error(container, args){
   }
 }
 
+function mg_barchart_init(args){
+  mg_barchart_count_number_of_groups(args);
+  mg_barchart_count_number_of_bars(args);
+  mg_barchart_calculate_group_height(args);
+}
+
+function mg_barchart_count_number_of_groups(args){
+  args.categorical_groups = [];
+  if (args.group_accessor) {
+    var data = args.data[0];
+    args.categorical_groups = d3.set(data.map(function(d){return d[args.group_accessor]})).values() ;
+  }  
+}
+
+function mg_barchart_count_number_of_bars(args){
+  args.total_bars = args.data[0].length;
+  if (args.group_accessor){
+    var group_bars  = count_array_elements(pluck(args.data[0], args.group_accessor));
+    group_bars  = d3.max(Object.keys(group_bars).map(function(d){return group_bars[d]}));
+    args.bars_per_group = group_bars;
+  } else {
+    args.bars_per_group = args.data[0].length;
+  }
+}
+
+function mg_barchart_calculate_group_height(args){
+  args.group_height = args.bars_per_group * args.bar_height + (((args.bars_per_group-1) * args.bar_height) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+}
+
+function mg_barchart_calculate_height(args){
+  return (args.group_height) * 
+         (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
+         (args.categorical_groups.length * args.group_height * (args.group_padding_percentage + args.group_outer_padding_percentage));
+}
+
 function init (args) {
   'use strict';
   args = arguments[0];
@@ -158,6 +192,8 @@ function init (args) {
   mg_raise_container_error(container, args);
 
   var svg = container.selectAll('svg');
+
+  if (args.chart_type === 'bar') mg_barchart_init(args);
 
   mg_is_time_series(args);
   mg_init_compute_width(args);

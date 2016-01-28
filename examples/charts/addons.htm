@@ -35,7 +35,6 @@ d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-
     MG.data_graphic({
         title: "Brushing Addon by Dan De Havilland",
         description: "Drag the crosshair over the chart to zoom. For further details about this addon, take a look at its <a href='https://github.com/dandehavilland/mg-line-brushing'>GitHub repo</a>.",

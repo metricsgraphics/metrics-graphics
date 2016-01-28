@@ -289,72 +289,77 @@ MG.data_graphic({
 
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
-                    <div class='col-lg-12 text-center' id='bar1'></div>
-                    <div class='col-lg-6 text-center' id='bar2'></div>
-                    <div class='col-lg-6 text-center' id='bar3'></div>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='iowa-dems'></div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='nh-gop'></div>
+                    </div>
                 </div>
+
+
                 <div class='col-lg-5'>
 
-<pre><code class='javascript'>var bar_data = [
-    {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
-    {'label': 'second', 'value':2.1, 'baseline':3.1, 'prediction': 3},
-    {'label': 'third', 'value':6.3, 'baseline':6.3, 'prediction': 4},
-    {'label': 'fourth', 'value':5.7, 'baseline':3.2, 'prediction': 5},
-    {'label': 'fifth', 'value':5, 'baseline':4.2, 'prediction': 3},
-    {'label': 'sixth', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
-];
+<pre><code class='javascript'>
+d3.tsv('data/iowa-dems.csv', function(data){
+    var polls = [];
+    var who = ['Clinton', 'Sanders', 'Omalley'];
+    data.forEach(function(p){
+        who.forEach(function(d){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            //if (Math.random() > .8) out.number = -out.number;
 
-MG.data_graphic({
-    title: "Bar Prototype",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    x_accessor: 'value',
-    y_accessor: 'label',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    width: 295,
-    right: 10,
-    target: '#bar1',
-    animate_on_load: true,
-    x_axis: false
-});
+            out.when = p.Date;
+            polls.push(out);
 
-MG.data_graphic({
-    title: "No Axis",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    x_accessor: 'value',
-    y_accessor: 'label',
-    width: 295,
-    height: 220,
-    right: 10,
-    animate_on_load: true,
-    target: '#bar2'
-});
+        })
+    });
+    MG.data_graphic({
+        title: 'Iowa Democratic Primary Polls',
+        data: polls,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        group_accessor: 'poll',
+        target: 'div#iowa-dems',
 
-MG.data_graphic({
-    title: "Vertical Bars",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    bar_orientation: 'vertical',
-    y_accessor: 'value',
-    x_accessor: 'label',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    width: 295,
-    height: 220,
-    right: 10,
-    animate_on_load: true,
-    target: '#bar3'
-});</code></pre>
+    })
+})
+
+d3.tsv('data/nh-gop.csv', function(data) {
+    var polls = [];
+    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
+    data.forEach(function(p){
+        who.forEach(function(d){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            //if (Math.random() > .8) out.number = -out.number;
+
+            out.when = p.Date;
+            polls.push(out);
+
+        })
+    });
+
+    MG.data_graphic({
+        title: 'New Hampshire Polling (groups)',
+        data: polls,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        group_accessor: 'poll',
+        target: 'div#nh-gop',
+
+    })
+
+})
+
+</code></pre>
 
                 </div>
             </div>
@@ -688,66 +693,95 @@ MG.data_graphic({
     binned: true,
 });
 
-var bar_data = [
-    {'label': 'first', 'value':4, 'baseline':4.2, 'prediction': 2},
-    {'label': 'second', 'value':2.1, 'baseline':3.1, 'prediction': 3},
-    {'label': 'third', 'value':6.3, 'baseline':6.3, 'prediction': 4},
-    {'label': 'fourth', 'value':5.7, 'baseline':3.2, 'prediction': 5},
-    {'label': 'fifth', 'value':5, 'baseline':4.2, 'prediction': 3},
-    {'label': 'sixth', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'yet another', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'and again', 'value':4.2, 'baseline':10.2, 'prediction': 3},
-    {'label': 'and sss', 'value':4.2, 'baseline':10.2, 'prediction': 3}
-];
+d3.tsv('data/iowa-dems.csv', function(data){
+    var polls = [];
+    var who = ['Clinton', 'Sanders', 'Omalley'];
+    data.forEach(function(p){
+        who.forEach(function(d){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            //if (Math.random() > .8) out.number = -out.number;
 
-MG.data_graphic({
-    title: "Bar Prototype",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    x_accessor: 'value',
-    y_accessor: 'label',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    width: 295,
-    right: 10,
-    target: '#bar1',
-    animate_on_load: true,
-    x_axis: false
-});
+            out.when = p.Date;
+            polls.push(out);
 
-MG.data_graphic({
-    title: "No Axis",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    x_accessor: 'value',
-    y_accessor: 'label',
-    width: 295,
-    height: 220,
-    right: 10,
-    animate_on_load: true,
-    target: '#bar2'
-});
+        })
+    });
+    MG.data_graphic({
+        title: 'Iowa Democratic Primary Polls',
+        data: polls,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        group_accessor: 'poll',
+        target: 'div#iowa-dems'
+    })
+})
 
-MG.data_graphic({
-    title: "Vertical Bars",
-    description: "Work-in-progress",
-    data: bar_data,
-    chart_type: 'bar',
-    bar_orientation: 'vertical',
-    y_accessor: 'value',
-    x_accessor: 'label',
-    baseline_accessor: 'baseline',
-    predictor_accessor: 'prediction',
-    width: 295,
-    height: 220,
-    right: 10,
-    animate_on_load: true,
-    target: '#bar3'
-});
+
+d3.tsv('data/nh-gop.csv', function(data) {
+    var polls = [];
+    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
+    data.forEach(function(p){
+        who.forEach(function(d){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            //if (Math.random() > .8) out.number = -out.number;
+
+            out.when = p.Date;
+            polls.push(out);
+
+        })
+    });
+
+    MG.data_graphic({
+        title: 'New Hampshire Polling (groups)',
+        data: polls,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        group_accessor: 'poll',
+        target: 'div#nh-gop',
+
+    })
+
+})
+
+// MG.data_graphic({
+//     title: "No Axis",
+//     description: "Work-in-progress",
+//     data: bar_data,
+//     chart_type: 'bar',
+//     baseline_accessor: 'baseline',
+//     predictor_accessor: 'prediction',
+//     x_accessor: 'value',
+//     y_accessor: 'label',
+//     width: 295,
+//     right: 10,
+//     animate_on_load: true,
+//     target: '#bar2'
+// });
+
+// MG.data_graphic({
+//     title: "Vertical Bars",
+//     description: "Work-in-progress",
+//     data: bar_data,
+//     chart_type: 'bar',
+//     bar_orientation: 'vertical',
+//     y_accessor: 'value',
+//     x_accessor: 'label',
+//     baseline_accessor: 'baseline',
+//     predictor_accessor: 'prediction',
+//     width: 295,
+//     height: 220,
+//     right: 10,
+//     animate_on_load: true,
+//     target: '#bar3'
+// });
 
 var table_data = [
     { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },

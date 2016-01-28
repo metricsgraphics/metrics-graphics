@@ -1,6 +1,6 @@
 {
   "name": "metrics-graphics",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/metricsgraphics.js",
   "scripts": {
@@ -34,7 +34,7 @@
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
     "jquery": ">=1.11.1",
-    "d3": ">=3.4.8"
+    "d3": "<4"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
