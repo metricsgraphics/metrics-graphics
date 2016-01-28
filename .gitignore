@@ -8,3 +8,9 @@ other/htaccess.txt
 .DS_Store
 
 bare.html
+/.svn
+.idea
+*.iml
+libs
+import.js
+

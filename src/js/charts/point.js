@@ -106,7 +106,8 @@
                     .style('fill-opacity', 0)
                     .on('mouseover', this.rolloverOn(args))
                     .on('mouseout', this.rolloverOff(args))
-                    .on('mousemove', this.rolloverMove(args));
+                    .on('mousemove', this.rolloverMove(args))
+                    .on("click", function(d){return args.click(d.point);});
 
             return this;
         };
