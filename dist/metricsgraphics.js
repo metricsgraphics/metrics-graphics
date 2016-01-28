@@ -4104,6 +4104,25 @@ MG.button_layout = function(target) {
   'use strict';
 
   // barchart re-write.
+function mg_targeted_legend (args) {
+  var plot = '';
+  if (args.legend_target) {
+
+    var div = d3.select(args.legend_target).append('div').classed('mg-bar-target-legend', true);
+    var labels = args.categorical_variables;
+    labels.forEach(function(label){
+      var outer_span = div.append('span').classed('mg-bar-target-element', true);
+      outer_span.append('span')
+        .classed('mg-bar-target-legend-shape', true)
+        .style('color', args.scales.color(label))
+        .text('\u25FC ');
+      outer_span.append('span')
+        .classed('mg-bar-target-legend-text', true)
+        .text(label)
+
+    });
+  }
+}
 
   function legend_on_graph (svg, args) {
     // draw each element at the top right
@@ -4393,8 +4412,9 @@ MG.button_layout = function(target) {
             });
         }
       }
-      if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor && !args.legend_target) {
-        legend_on_graph(svg, args);
+      if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor) {
+        if (!args.legend_target) legend_on_graph(svg, args);
+        else mg_targeted_legend(args);
       }
       return this;
     };
