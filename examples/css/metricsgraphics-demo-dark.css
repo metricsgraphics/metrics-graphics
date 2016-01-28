@@ -111,7 +111,7 @@ li {
 }
 
 .mg-hover-line1-color {
-    stroke: #ffd300;
+    fill: #ffd300;
 }
 
 .mg-line2-color {
@@ -119,7 +119,7 @@ li {
 }
 
 .mg-hover-line2-color {
-    stroke: #18ff00;
+    fill: #18ff00;
 }
 
 .mg-line3-color {
@@ -127,7 +127,7 @@ li {
 }
 
 .mg-hover-line3-color {
-    stroke: #f57070;
+    fill: #f57070;
 }
 
 .mg-line4-color {
@@ -135,7 +135,7 @@ li {
 }
 
 .mg-hover-line4-color {
-    stroke: #f8b128;
+    fill: #f8b128;
 }
 
 .mg-line5-color {
@@ -143,7 +143,7 @@ li {
 }
 
 .mg-hover-line5-color {
-    stroke: #f7f7f7;
+    fill: #f7f7f7;
 }
 
 .mg-line1-legend-color {
@@ -667,3 +667,4 @@ fieldset[disabled] .btn-link:focus {
 .btn-link,.btn-link:hover {
     border-color: transparent;
 }
+
