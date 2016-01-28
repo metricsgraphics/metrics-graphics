@@ -23,13 +23,13 @@ function mg_bar_color_scale(args) {
     }
     // get color domain.
     var domain = mg_get_color_domain(args);
-    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain);
+    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain, args.color_accessor);
   }
 }
 
-function mg_add_color_categorical_scale(args, domain) {
+function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scale.category20().domain(domain);
-  args.scalefns.color = function(d){return args.scales.color(d[args.y_accessor])};
+  args.scalefns.color = function(d){return args.scales.color(d[accessor])};
 }
   
 function mg_get_categorical_domain (data, accessor) {

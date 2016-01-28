@@ -115,8 +115,7 @@
 
       bars.enter().append('rect')
         .classed('mg-bar', true)
-        .classed('default-bar', args.scales.color ? false : true);
-
+        .classed('default-bar', args.scales.hasOwnProperty('color') ? false : true);
       // add new white lines.
       // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
       //   .attr('x1', args.scales.X)
@@ -292,7 +291,8 @@
             });
         }
       }
-      if (args.legend && args.group_accessor && !args.legend_target) {
+      console.log(args.group_accessor, args.color_accessor)
+      if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor && !args.legend_target) {
         legend_on_graph(svg, args);
       }
       return this;

@@ -1935,13 +1935,13 @@ function mg_bar_color_scale(args) {
     }
     // get color domain.
     var domain = mg_get_color_domain(args);
-    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain);
+    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain, args.color_accessor);
   }
 }
 
-function mg_add_color_categorical_scale(args, domain) {
+function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scale.category20().domain(domain);
-  args.scalefns.color = function(d){return args.scales.color(d[args.y_accessor])};
+  args.scalefns.color = function(d){return args.scales.color(d[accessor])};
 }
   
 function mg_get_categorical_domain (data, accessor) {
@@ -4217,8 +4217,7 @@ MG.button_layout = function(target) {
 
       bars.enter().append('rect')
         .classed('mg-bar', true)
-        .classed('default-bar', args.scales.color ? false : true);
-
+        .classed('default-bar', args.scales.hasOwnProperty('color') ? false : true);
       // add new white lines.
       // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
       //   .attr('x1', args.scales.X)
@@ -4394,7 +4393,8 @@ MG.button_layout = function(target) {
             });
         }
       }
-      if (args.legend && args.group_accessor && !args.legend_target) {
+      console.log(args.group_accessor, args.color_accessor)
+      if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor && !args.legend_target) {
         legend_on_graph(svg, args);
       }
       return this;
