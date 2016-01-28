@@ -291,7 +291,6 @@
             });
         }
       }
-      console.log(args.group_accessor, args.color_accessor)
       if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor && !args.legend_target) {
         legend_on_graph(svg, args);
       }
