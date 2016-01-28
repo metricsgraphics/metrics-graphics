@@ -31,10 +31,13 @@ text.mg-barplot-group-label {
 
 .mg-barplot rect.mg-bar {
     shape-rendering: auto;
+}
+
+.mg-barplot rect.mg-bar.default-bar {
     fill: #b6b6fc;
 }
 
-.mg-barplot rect.mg-bar.active {
+.mg-barplot rect.mg-bar.default-active {
     fill: #9e9efc;
 }
 

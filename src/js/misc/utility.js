@@ -557,3 +557,35 @@ function wrap_text(text, width, token, tspanAttrs) {
 }
 
 MG.wrap_text = wrap_text;
+
+function scaffold(args) {
+  var svg = mg_get_svg_child_of(args.target);
+
+  svg.append('svg:line')
+    .attr('x1', mg_get_left(args))
+    .attr('x2', mg_get_left(args))
+    .attr('y1', 0)
+    .attr('y2', args.height)
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', mg_get_right(args))
+    .attr('x2', mg_get_right(args))
+    .attr('y1', 0)
+    .attr('y2', args.height)
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', 0)
+    .attr('x2', args.width)
+    .attr('y1', mg_get_top(args))
+    .attr('y2', mg_get_top(args))
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', 0)
+    .attr('x2', args.width)
+    .attr('y1', mg_get_bottom(args))
+    .attr('y2', mg_get_bottom(args))
+    .attr('stroke', 'black');
+}

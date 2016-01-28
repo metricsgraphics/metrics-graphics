@@ -1,12 +1,61 @@
 (function() {
   'use strict';
 
-  // BARCHART:
-  // x - function that processes data
-  //   - pass in a feature name, get a count
-  //   - have raw feature: value function
-  // - need a way of changing the y axis and x axis
-  // - need to sort out rollovers
+  // barchart re-write.
+
+  function legend_on_graph (svg, args) {
+    // draw each element at the top right
+    // get labels
+    var labels = args.categorical_variables;
+    var lineCount = 0;
+    var lineHeight = 1.1;
+    var g = svg.append('g').classed("mg-bar-legend", true);
+    var textContainer = g.append('text');
+    textContainer
+      .selectAll('*')
+      .remove();
+    textContainer
+      .attr('width', args.right)
+      .attr('height', 100)
+      .attr('text-anchor', 'start');
+
+
+    labels.forEach(function(label){
+      var sub_container = textContainer.append('tspan')
+            .attr('x', mg_get_plot_right(args))
+            .attr('y', args.height/2)
+            .attr('dy', (lineCount * lineHeight) + 'em');
+      sub_container.append('tspan')
+            .text('\u25a0 ')
+            .attr('fill', args.scales.color(label))
+            .attr('font-size', 20)
+      sub_container.append('tspan')
+            .text(label)
+            .attr('font-weight', 300)
+            .attr('font-size', 10);
+      lineCount++;
+
+    })
+
+    // d.values.forEach(function (datum) {
+    //   formatted_y = mg_format_y_rollover(args, num, datum);
+
+    //   if (args.y_rollover_format !== null) {
+    //     formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+    //   } else {
+    //     formatted_y = args.yax_units + num(datum[args.y_accessor]);
+    //   }
+
+    //   sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
+    //   formatted_y = mg_format_y_rollover(args, num, datum);
+    //   mouseover_tspan(sub_container, '\u2014  ')
+    //     .color(args, datum);
+    //   mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
+
+    //   lineCount++;
+    // });
+  }
+
   function barChart(args) {
     this.args = args;
 
@@ -27,13 +76,14 @@
         x_axis(args);
         y_axis_categorical(args);
       }
-      //console.log(mg_get_plot_top(args), args.scales.Y_outgroup(args.categorical_groups[0]), d3.min(args.data[0], function(d) {return args.scalefns.yf_in(d)} ) );
+      // work in progress. If grouped bars, add color scale.
+      mg_bar_color_scale(args);
 
       this.mainPlot();
       this.markers();
       this.rollover();
       this.windowListeners();
-
+      //if (args.scaffold) scaffold(args);
       return this;
     };
 
@@ -58,13 +108,14 @@
           .classed('mg-barplot', true);
       }
 
-      bars = bars = barplot.selectAll('.mg-bar')
+      bars = barplot.selectAll('.mg-bar')
         .data(data);
 
       bars.exit().remove();
 
       bars.enter().append('rect')
-        .classed('mg-bar', true);
+        .classed('mg-bar', true)
+        .classed('default-bar', args.scales.color ? false : true);
 
       // add new white lines.
       // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
@@ -206,6 +257,7 @@
           .attr('y', function(d) {
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
+          .attr('fill', args.scalefns.color)
           .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('width', function(d) {
             return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
@@ -240,7 +292,9 @@
             });
         }
       }
-
+      if (args.legend && args.group_accessor && !args.legend_target) {
+        legend_on_graph(svg, args);
+      }
       return this;
     };
 
@@ -331,31 +385,21 @@
         var num = format_rollover_number(args);
 
         //highlight active bar
-        svg.selectAll('g.mg-barplot .mg-bar')
+        var bar = svg.selectAll('g.mg-barplot .mg-bar')
           .filter(function(d, j) {
             return j === i;
-          })
-          .classed('active', true);
+          }).classed('active', true);
+        if (args.scales.hasOwnProperty('color')) {
+          bar.attr('fill', d3.rgb(args.scalefns.color(d)).darker());
+        } else {
+          bar.classed('default-active', true);
+        }
 
         //update rollover text
         if (args.show_rollover_text) {
-
-
-
           //svg.select('.mg-active-datapoint')
             mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
-            // .text(function() {
-            //   if (args.time_series) {
-            //     var dd = new Date(+d[data_accessor]);
-            //     dd.setDate(dd.getDate());
-
-            //     return fmt(dd) + '  ' + label_units + num(d[label_accessor]);
-            //   } else {
-            //     return d[label_accessor] + ': ' + num(d[data_accessor]);
-            //   }
-            // });
         }
-
         if (args.mouseover) {
           args.mouseover(d, i);
         }
@@ -367,8 +411,13 @@
 
       return function(d, i) {
         //reset active bar
-        svg.selectAll('g.mg-barplot .mg-bar')
-          .classed('active', false);
+        var bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false);
+        
+        if (args.scales.hasOwnProperty('color')) {
+          bar.attr('fill', args.scalefns.color(d));
+        } else {
+          bar.classed('default-active', false);
+        }
 
         //reset active data point text
         svg.select('.mg-active-datapoint')
@@ -402,6 +451,10 @@
     secondary_label_accessor: null,
     x_extended_ticks: true,
     color_accessor: null,
+    color_type: 'category',
+    color_domain: null,
+    legend: true,
+    legend_target: null,
     height:null,
     rollover_align: 'middle',
     baseline_accessor: null,
@@ -409,15 +462,15 @@
     predictor_proportion: 5,
     show_bar_zero: true,
     binned: true,
-    width: 400,
+    width: 480,
     bar_padding_percentage: 0.05,
     bar_outer_padding_percentage: .1,
     group_padding_percentage:.25,
     group_outer_padding_percentage: 0,
-    bar_height: 15,
+    bar_height: 12,
     top: 45,
     left: 105,
-    right:5,
+    right:65,
     truncate_x_labels: true,
     truncate_y_labels: true,
     rotate_x_labels: 0,

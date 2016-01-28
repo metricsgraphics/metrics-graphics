@@ -1280,6 +1280,7 @@ function y_axis_categorical (args) {
   }
   if (!args.y_axis) { return this; }
   mg_add_categorical_labels(args);
+
   if (args.show_bar_zero) mg_bar_add_zero_line(args);
 
   return this;
@@ -1920,19 +1921,33 @@ function mg_select_xax_format (args) {
 // with the drawing of the axes.
 //
 
-function mg_add_bar_color_scale(args) {
+function mg_bar_color_scale(args) {
 	// if default args.group_accessor, then add a 
-	if (args.group_accessor) {
-		// add a custom accessor element.
-		args.color_accessor = args.y_accessor;
-		mg_add_color_categorical_scale(args, args.categorical_set);
-	}
+  if (args.color_accessor !== false) {
+    if (args.group_accessor) {
+      // add a custom accessor element.
+      if (args.color_accessor === null) {
+        args.color_accessor = args.y_accessor;
+      }
+      else {
+
+      }
+    }
+    // get color domain.
+    var domain = mg_get_color_domain(args);
+    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain);
+  }
 }
 
 function mg_add_color_categorical_scale(args, domain) {
-	args.scales.color = d3.scale.ordinal().domain(domain);
+  args.scales.color = d3.scale.category20().domain(domain);
+  args.scalefns.color = function(d){return args.scales.color(d[args.y_accessor])};
 }
-
+  
+function mg_get_categorical_domain (data, accessor) {
+  return d3.set(data.map(function (d) { return d[accessor]; }))
+        .values();
+}
 
 function mg_get_color_domain (args) {
   var color_domain;
@@ -1941,11 +1956,8 @@ function mg_get_color_domain (args) {
       color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
     }
     else if (args.color_type === 'category') {
-      color_domain = d3.set(args.data[0]
-        .map(function (d) { return d[args.color_accessor]; }))
-        .values();
+      color_domain = mg_get_categorical_domain(args.data[0], args.color_accessor);
 
-      color_domain.sort();
     }
   } else {
     color_domain = args.color_domain;
@@ -2427,7 +2439,7 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
     if (args.time_series) textContainer.select('*').remove();
 
     // label.
-    if (args.legend || args.label_accessor) {
+    if (!args.chart_type === 'bar' && (args.legend || args.label_accessor)) {
       mouseover_tspan(textContainer,
         args.chart_type === 'line' ? args.legend[d.line_id - 1] + '  ' : d[args.label_accessor] + '  ')
         .color(args, d);
@@ -4091,12 +4103,61 @@ MG.button_layout = function(target) {
 (function() {
   'use strict';
 
-  // BARCHART:
-  // x - function that processes data
-  //   - pass in a feature name, get a count
-  //   - have raw feature: value function
-  // - need a way of changing the y axis and x axis
-  // - need to sort out rollovers
+  // barchart re-write.
+
+  function legend_on_graph (svg, args) {
+    // draw each element at the top right
+    // get labels
+    var labels = args.categorical_variables;
+    var lineCount = 0;
+    var lineHeight = 1.1;
+    var g = svg.append('g').classed("mg-bar-legend", true);
+    var textContainer = g.append('text');
+    textContainer
+      .selectAll('*')
+      .remove();
+    textContainer
+      .attr('width', args.right)
+      .attr('height', 100)
+      .attr('text-anchor', 'start');
+
+
+    labels.forEach(function(label){
+      var sub_container = textContainer.append('tspan')
+            .attr('x', mg_get_plot_right(args))
+            .attr('y', args.height/2)
+            .attr('dy', (lineCount * lineHeight) + 'em');
+      sub_container.append('tspan')
+            .text('\u25a0 ')
+            .attr('fill', args.scales.color(label))
+            .attr('font-size', 20)
+      sub_container.append('tspan')
+            .text(label)
+            .attr('font-weight', 300)
+            .attr('font-size', 10);
+      lineCount++;
+
+    })
+
+    // d.values.forEach(function (datum) {
+    //   formatted_y = mg_format_y_rollover(args, num, datum);
+
+    //   if (args.y_rollover_format !== null) {
+    //     formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+    //   } else {
+    //     formatted_y = args.yax_units + num(datum[args.y_accessor]);
+    //   }
+
+    //   sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
+    //   formatted_y = mg_format_y_rollover(args, num, datum);
+    //   mouseover_tspan(sub_container, '\u2014  ')
+    //     .color(args, datum);
+    //   mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
+
+    //   lineCount++;
+    // });
+  }
+
   function barChart(args) {
     this.args = args;
 
@@ -4117,13 +4178,14 @@ MG.button_layout = function(target) {
         x_axis(args);
         y_axis_categorical(args);
       }
-      //console.log(mg_get_plot_top(args), args.scales.Y_outgroup(args.categorical_groups[0]), d3.min(args.data[0], function(d) {return args.scalefns.yf_in(d)} ) );
+      // work in progress. If grouped bars, add color scale.
+      mg_bar_color_scale(args);
 
       this.mainPlot();
       this.markers();
       this.rollover();
       this.windowListeners();
-
+      //if (args.scaffold) scaffold(args);
       return this;
     };
 
@@ -4148,13 +4210,14 @@ MG.button_layout = function(target) {
           .classed('mg-barplot', true);
       }
 
-      bars = bars = barplot.selectAll('.mg-bar')
+      bars = barplot.selectAll('.mg-bar')
         .data(data);
 
       bars.exit().remove();
 
       bars.enter().append('rect')
-        .classed('mg-bar', true);
+        .classed('mg-bar', true)
+        .classed('default-bar', args.scales.color ? false : true);
 
       // add new white lines.
       // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
@@ -4296,6 +4359,7 @@ MG.button_layout = function(target) {
           .attr('y', function(d) {
             return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
           })
+          .attr('fill', args.scalefns.color)
           .attr('height', args.scales.Y_ingroup.rangeBand())
           .attr('width', function(d) {
             return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
@@ -4330,7 +4394,9 @@ MG.button_layout = function(target) {
             });
         }
       }
-
+      if (args.legend && args.group_accessor && !args.legend_target) {
+        legend_on_graph(svg, args);
+      }
       return this;
     };
 
@@ -4421,31 +4487,21 @@ MG.button_layout = function(target) {
         var num = format_rollover_number(args);
 
         //highlight active bar
-        svg.selectAll('g.mg-barplot .mg-bar')
+        var bar = svg.selectAll('g.mg-barplot .mg-bar')
           .filter(function(d, j) {
             return j === i;
-          })
-          .classed('active', true);
+          }).classed('active', true);
+        if (args.scales.hasOwnProperty('color')) {
+          bar.attr('fill', d3.rgb(args.scalefns.color(d)).darker());
+        } else {
+          bar.classed('default-active', true);
+        }
 
         //update rollover text
         if (args.show_rollover_text) {
-
-
-
           //svg.select('.mg-active-datapoint')
             mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
-            // .text(function() {
-            //   if (args.time_series) {
-            //     var dd = new Date(+d[data_accessor]);
-            //     dd.setDate(dd.getDate());
-
-            //     return fmt(dd) + '  ' + label_units + num(d[label_accessor]);
-            //   } else {
-            //     return d[label_accessor] + ': ' + num(d[data_accessor]);
-            //   }
-            // });
         }
-
         if (args.mouseover) {
           args.mouseover(d, i);
         }
@@ -4457,8 +4513,13 @@ MG.button_layout = function(target) {
 
       return function(d, i) {
         //reset active bar
-        svg.selectAll('g.mg-barplot .mg-bar')
-          .classed('active', false);
+        var bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false);
+        
+        if (args.scales.hasOwnProperty('color')) {
+          bar.attr('fill', args.scalefns.color(d));
+        } else {
+          bar.classed('default-active', false);
+        }
 
         //reset active data point text
         svg.select('.mg-active-datapoint')
@@ -4489,8 +4550,13 @@ MG.button_layout = function(target) {
   var defaults = {
     y_accessor: 'factor',
     x_accessor: 'value',
+    secondary_label_accessor: null,
     x_extended_ticks: true,
     color_accessor: null,
+    color_type: 'category',
+    color_domain: null,
+    legend: true,
+    legend_target: null,
     height:null,
     rollover_align: 'middle',
     baseline_accessor: null,
@@ -4498,15 +4564,15 @@ MG.button_layout = function(target) {
     predictor_proportion: 5,
     show_bar_zero: true,
     binned: true,
-    width: 400,
-    bar_padding_percentage: 0.1,
+    width: 480,
+    bar_padding_percentage: 0.05,
     bar_outer_padding_percentage: .1,
-    group_padding_percentage:.35,
+    group_padding_percentage:.25,
     group_outer_padding_percentage: 0,
-    bar_height: 15,
+    bar_height: 12,
     top: 45,
     left: 105,
-    right:5,
+    right:65,
     truncate_x_labels: true,
     truncate_y_labels: true,
     rotate_x_labels: 0,
@@ -6190,6 +6256,37 @@ function wrap_text(text, width, token, tspanAttrs) {
 
 MG.wrap_text = wrap_text;
 
+function scaffold(args) {
+  var svg = mg_get_svg_child_of(args.target);
+
+  svg.append('svg:line')
+    .attr('x1', mg_get_left(args))
+    .attr('x2', mg_get_left(args))
+    .attr('y1', 0)
+    .attr('y2', args.height)
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', mg_get_right(args))
+    .attr('x2', mg_get_right(args))
+    .attr('y1', 0)
+    .attr('y2', args.height)
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', 0)
+    .attr('x2', args.width)
+    .attr('y1', mg_get_top(args))
+    .attr('y2', mg_get_top(args))
+    .attr('stroke', 'black');
+
+  svg.append('svg:line')
+    .attr('x1', 0)
+    .attr('x2', args.width)
+    .attr('y1', mg_get_bottom(args))
+    .attr('y2', mg_get_bottom(args))
+    .attr('stroke', 'black');
+}
 // call this to add a warning icon to a graph and log an error to the console
 function error (args) {
   console.log('ERROR : ', args.target, ' : ', args.error);

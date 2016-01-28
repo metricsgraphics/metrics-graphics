@@ -9,19 +9,33 @@
 // with the drawing of the axes.
 //
 
-function mg_add_bar_color_scale(args) {
+function mg_bar_color_scale(args) {
 	// if default args.group_accessor, then add a 
-	if (args.group_accessor) {
-		// add a custom accessor element.
-		args.color_accessor = args.y_accessor;
-		mg_add_color_categorical_scale(args, args.categorical_set);
-	}
+  if (args.color_accessor !== false) {
+    if (args.group_accessor) {
+      // add a custom accessor element.
+      if (args.color_accessor === null) {
+        args.color_accessor = args.y_accessor;
+      }
+      else {
+
+      }
+    }
+    // get color domain.
+    var domain = mg_get_color_domain(args);
+    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain);
+  }
 }
 
 function mg_add_color_categorical_scale(args, domain) {
-	args.scales.color = d3.scale.ordinal().domain(domain);
+  args.scales.color = d3.scale.category20().domain(domain);
+  args.scalefns.color = function(d){return args.scales.color(d[args.y_accessor])};
 }
-
+  
+function mg_get_categorical_domain (data, accessor) {
+  return d3.set(data.map(function (d) { return d[accessor]; }))
+        .values();
+}
 
 function mg_get_color_domain (args) {
   var color_domain;
@@ -30,11 +44,8 @@ function mg_get_color_domain (args) {
       color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
     }
     else if (args.color_type === 'category') {
-      color_domain = d3.set(args.data[0]
-        .map(function (d) { return d[args.color_accessor]; }))
-        .values();
+      color_domain = mg_get_categorical_domain(args.data[0], args.color_accessor);
 
-      color_domain.sort();
     }
   } else {
     color_domain = args.color_domain;
