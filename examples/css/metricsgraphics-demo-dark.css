@@ -29,7 +29,7 @@ a.active {
 }
 
 .mg-area4-color {
-    fill: #f8b128;
+    fill: #28c5f8;
 }
 
 .mg-area5-color {
@@ -131,11 +131,11 @@ li {
 }
 
 .mg-line4-color {
-    stroke: #f8b128;
+    stroke: #28c5f8;
 }
 
 .mg-hover-line4-color {
-    fill: #f8b128;
+    fill: #28c5f8;
 }
 
 .mg-line5-color {
@@ -162,8 +162,8 @@ li {
 }
 
 .mg-line4-legend-color {
-    color: #f8b128;
-    fill: #f8b128;
+    color: #28c5f8;
+    fill: #28c5f8;
 }
 
 .mg-line5-legend-color {
