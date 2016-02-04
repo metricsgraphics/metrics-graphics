@@ -14,6 +14,11 @@
 
       this.mainPlot();
       this.markers();
+
+      //insert a client layers for drawing more wonderful things
+      args.selectLayer = mg_get_svg_child_of(args.target).append("g");
+      args.hoverLayer = mg_get_svg_child_of(args.target).append("g");
+
       this.rollover();
       this.windowListeners();
 
@@ -106,7 +111,8 @@
           .style('fill-opacity', 0)
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
+          .on('mousemove', this.rolloverMove(args))
+          .on('click', function(v){args.click(v.point);});
 
       return this;
     };
@@ -147,7 +153,7 @@
         }
 
         if (args.mouseover) {
-          args.mouseover(d, i);
+          args.mouseover(d.point, i);
         }
       };
     };
@@ -156,7 +162,9 @@
       var svg = mg_get_svg_child_of(args.target);
 
       return function(d,i) {
-        if (args.linked && MG.globals.link) {
+          args.hoverLayer.html("");
+
+          if (args.linked && MG.globals.link) {
           MG.globals.link = false;
 
           d3.selectAll('.mg-voronoi .path-' + i)
