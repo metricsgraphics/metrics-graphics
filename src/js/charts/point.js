@@ -161,9 +161,9 @@
       var svg = mg_get_svg_child_of(args.target);
 
       return function(d,i) {
-          args.hoverLayer.html("");
+        args.hoverLayer.html("");
 
-          if (args.linked && MG.globals.link) {
+        if (args.linked && MG.globals.link) {
           MG.globals.link = false;
 
           d3.selectAll('.mg-voronoi .path-' + i)
