@@ -69,8 +69,8 @@ function mg_add_clip_path_for_plot_area (svg, args) {
     .append('clipPath')
     .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
     .append('svg:rect')
-    .attr('x', args.left)
-    .attr('y', args.top)
+    .attr('x', mg_get_left(args))
+    .attr('y', mg_get_top(args))
     .attr('width', args.width - args.left - args.right - args.buffer)
     .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
 }

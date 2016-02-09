@@ -2051,8 +2051,8 @@ function mg_add_clip_path_for_plot_area (svg, args) {
     .append('clipPath')
     .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
     .append('svg:rect')
-    .attr('x', args.left)
-    .attr('y', args.top)
+    .attr('x', mg_get_left(args))
+    .attr('y', mg_get_top(args))
     .attr('width', args.width - args.left - args.right - args.buffer)
     .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
 }
@@ -3877,6 +3877,19 @@ MG.button_layout = function(target) {
 (function() {
   'use strict';
 
+  function mg_filter_out_plot_bounds (data, args) {
+    // max_x, min_x, max_y, min_y;
+    var x = args.x_accessor;
+    var y = args.y_accessor;
+    var new_data = data.filter(function(d){
+      return (args.min_x === null || d[x] >= args.min_x) && 
+             (args.max_x === null || d[x] <= args.max_x) &&
+             (args.min_y === null || d[y] >= args.min_y) &&
+             (args.max_y === null || d[y] <= args.max_y);
+    })
+    return new_data;
+  }
+
   function pointChart(args) {
     this.init = function(args) {
       this.args = args;
@@ -3908,6 +3921,8 @@ MG.button_layout = function(target) {
       var svg = mg_get_svg_child_of(args.target);
       var g;
 
+      var data = mg_filter_out_plot_bounds(args.data[0], args);
+      // console.log(data);
       //remove the old points, add new one
       svg.selectAll('.mg-points').remove();
 
@@ -3916,9 +3931,10 @@ MG.button_layout = function(target) {
         .classed('mg-points', true);
 
       var pts = g.selectAll('circle')
-        .data(args.data[0])
+        .data(data)
         .enter().append('svg:circle')
           .attr('class', function(d, i) { return 'path-' + i; })
+          //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
           .attr('cx', args.scalefns.xf)
           .attr('cy', args.scalefns.yf);
 
@@ -3966,7 +3982,7 @@ MG.button_layout = function(target) {
         .attr('class', 'mg-voronoi');
 
       paths.selectAll('path')
-        .data(voronoi(args.data[0]))
+        .data(voronoi(mg_filter_out_plot_bounds(args.data[0], args)))
         .enter().append('path')
           .attr('d', function(d) {
             if (d === undefined) {
