@@ -1,3 +1,11 @@
+// function mg_rollover(svg, rargs) {
+//   return (function(){
+//     this.rollover = mg_reset_active_datapoint_text(svg);
+//     this.target = rargs.target;
+
+//   })
+// }
+
 function mouseover_tspan (svg, text) {
   var tspan = '';
   var cl = null;

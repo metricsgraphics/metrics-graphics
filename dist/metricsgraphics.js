@@ -1039,7 +1039,10 @@ function set_min_max_y (args) {
   }
 
   if (!args.min_y && args.min_y_from_data) {
-    my.min = my.min / args.inflator;
+
+      var buff = (my.max - my.min) *.01;
+      my.min = extents[0] - buff;
+      my.max = extents[1] + buff;
   }
   args.processed.min_y = my.min;
   args.processed.max_y = my.max;
@@ -2315,6 +2318,14 @@ function markers (args) {
 }
 
 MG.markers = markers;
+
+// function mg_rollover(svg, rargs) {
+//   return (function(){
+//     this.rollover = mg_reset_active_datapoint_text(svg);
+//     this.target = rargs.target;
+
+//   })
+// }
 
 function mouseover_tspan (svg, text) {
   var tspan = '';
