@@ -129,7 +129,7 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
     if (args.time_series) textContainer.select('*').remove();
 
     // label.
-    if (!args.chart_type === 'bar' && (args.legend || args.label_accessor)) {
+    if (args.chart_type !== 'bar' && (args.legend || args.label_accessor)) {
       mouseover_tspan(textContainer,
         args.chart_type === 'line' ? args.legend[d.line_id - 1] + '  ' : d[args.label_accessor] + '  ')
         .color(args, d);
