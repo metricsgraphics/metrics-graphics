@@ -308,6 +308,11 @@ circle.mg-points-mono {
     stroke: #0000ff;
 }
 
+tspan.mg-points-mono {
+    fill: #0000ff;
+    stroke: #0000ff; 
+}
+
 /* a selected point in a scatterplot */
 .mg-points circle.selected {
     fill-opacity: 1;

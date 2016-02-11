@@ -416,8 +416,17 @@ function mg_targeted_legend (args) {
 
         //update rollover text
         if (args.show_rollover_text) {
-          //svg.select('.mg-active-datapoint')
-            mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+          var mouseover = mg_mouseover_text(args, {svg: svg});
+          var row = mouseover.mouseover_row()
+          if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+          row.text(mg_format_x_mouseover(args, d));
+          row.text(args.y_accessor + ': ' + d[args.y_accessor]);
+          if (args.predictor_accessor || args.baseline_accessor) {
+            row = mouseover.mouseover_row();
+
+            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false))
+            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false))
+          }
         }
         if (args.mouseover) {
           args.mouseover(d, i);

@@ -143,6 +143,7 @@ MG.data_graphic = function(args) {
     yax_units: '',
     x_rug: false,
     y_rug: false,
+    mouseover_align: 'right',           // implemented in point.js
     x_mouseover: null,
     y_mouseover: null,
     transition_on_update: true,
@@ -2470,6 +2471,112 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
   }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// New setup for mouseovers ////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+function mg_remove_mouseover_container(svg) {
+  svg.select('.mg-active-datapoint-container').remove();
+}
+
+function mg_setup_mouseover_container (svg, args) {
+  svg.selectAll('.mg-active-datapoint').remove();
+  var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
+  var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width-args.left-args.right) / 2 + args.left);
+  var active_datapoint = mg_add_g(svg, 'mg-active-datapoint-container')
+    .append('text')
+    .attr('class', 'mg-active-datapoint')
+    .attr('xml:space', 'preserve')
+    .attr('text-anchor', text_anchor);
+
+  // set the rollover text's position; if we have markers on two lines,
+  // nudge up the rollover text a bit
+  var active_datapoint_y_nudge = 0.75;
+  if (args.markers) {
+    var yPos;
+    svg.selectAll('.mg-marker-text')
+      .each(function () {
+        if (!yPos) {
+          yPos = d3.select(this).attr('y');
+        } else if (yPos !== d3.select(this).attr('y')) {
+          active_datapoint_y_nudge = 0.56;
+        }
+      });
+  }
+  active_datapoint
+    .attr('transform', 'translate(' + mouseover_x + ',' + (mg_get_top(args) * active_datapoint_y_nudge) + ')');
+}
+
+function mg_mouseover_tspan (svg, text) {
+
+  var tspan = '';
+  var cl = null;
+  if (arguments.length === 3) cl = arguments[2];
+  tspan = svg.append('tspan').text(text);
+  if (cl !== null) tspan.classed(cl, true);
+  this.tspan = tspan;
+
+  this.bold = function () {
+    this.tspan.attr('font-weight', 'bold');
+    return this;
+  };
+
+  this.x = function (x) {
+    this.tspan.attr('x', x);
+    return this;
+  };
+  this.y = function (y) {
+    this.tspan.attr('y', y);
+    return this;
+  };
+  this.elem = function () {
+    return this.tspan;
+  };
+  return this;
+}
+
+function mg_reset_text_container (svg) {
+  var textContainer = svg.select('.mg-active-datapoint');
+  textContainer
+    .selectAll('*')
+    .remove();
+  return textContainer;
+}
+
+function mg_mouseover_row(row_number, container, rargs){
+  var lineHeight = 1.1;
+  this.rargs = rargs;
+  var rrr = container.append('tspan').attr('x', 0).attr('y', (row_number * lineHeight) + 'em');
+  //this.row.append('tspan').text('hello??');
+  this.text = function(text) {
+    return mg_mouseover_tspan(rrr, text);
+  }
+  return this;
+}
+
+function mg_mouseover_text(args, rargs) {
+  var lineHeight = 1.1;
+  this.row_number = 0;
+  this.rargs = rargs;
+  mg_setup_mouseover_container(rargs.svg, args);
+
+  this.text_container = mg_reset_text_container(rargs.svg);
+
+  this.mouseover_row = function(rargs) {
+    var that = this;
+    var rrr = mg_mouseover_row(that.row_number, that.text_container, rargs);
+    that.row_number +=1;
+    return rrr;
+  }
+
+  return this;
+}
+
+
+
+
 function mg_window_listeners(args) {
   mg_if_aspect_ratio_resize_svg(args);
 }
@@ -3884,6 +3991,30 @@ MG.button_layout = function(target) {
   MG.register('histogram', histogram, defaults);
 }).call(this);
 
+function point_mouseover (args, svg, d) {
+  var mouseover = mg_mouseover_text(args, {svg: svg});
+  var row = mouseover.mouseover_row();
+
+  if (args.color_accessor !== null && args.color_type === 'category') {
+    var label = d[args.color_accessor]
+    //else label = mg_format_number_mouseover(args, d.point);
+    row.text(label + '  ').bold().elem().attr('fill', args.scalefns.color(d));
+  }
+
+  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
+  row.text(mg_format_x_mouseover(args, d)); // x
+  row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+}
+
+function mg_color_point_mouseover(args, elem, d) {
+  if (args.color_accessor !== null) {
+      elem.attr('fill', args.scalefns.color(d));
+      elem.attr('stroke', args.scalefns.color(d));
+  } else {
+    elem.classed('mg-points-mono', true);
+  }
+}
+
 
 (function() {
   'use strict';
@@ -3933,7 +4064,6 @@ MG.button_layout = function(target) {
       var g;
 
       var data = mg_filter_out_plot_bounds(args.data[0], args);
-      // console.log(data);
       //remove the old points, add new one
       svg.selectAll('.mg-points').remove();
 
@@ -3972,17 +4102,6 @@ MG.button_layout = function(target) {
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-voronoi').remove();
 
-      //remove the old rollover text and circle if they already exist
-      svg.selectAll('.mg-active-datapoint').remove();
-
-      //add rollover text
-      svg.append('text')
-        .attr('class', 'mg-active-datapoint')
-        .attr('xml:space', 'preserve')
-        .attr('x', args.width - args.right)
-        .attr('y', args.top * 0.75)
-        .attr('text-anchor', 'end');
-
       //add rollover paths
       var voronoi = d3.geom.voronoi()
         .x(args.scalefns.xf)
@@ -4009,7 +4128,9 @@ MG.button_layout = function(target) {
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))
           .on('mousemove', this.rolloverMove(args));
-
+      if (args.data[0].length === 1) {
+        point_mouseover(args, svg, args.data[0][0]);
+      }
       return this;
     };
 
@@ -4044,8 +4165,13 @@ MG.button_layout = function(target) {
         }
 
         if (args.show_rollover_text) {
-          var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
-          mg_update_rollover_text(args,svg,fmt, '\u2022', d.point, i);
+
+          point_mouseover(args, svg, d.point);
+
+
+          //mouseover.mouseover_row({}).text('another row, another dollar');
+
+          //mg_update_rollover_text(args,svg,fmt, '\u2022', d.point, i);
         }
 
         if (args.mouseover) {
@@ -4079,8 +4205,9 @@ MG.button_layout = function(target) {
         }
 
         //reset active data point text
-        svg.select('.mg-active-datapoint')
-          .text('');
+        if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
+        // svg.select('.mg-active-datapoint')
+        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -4545,8 +4672,17 @@ function mg_targeted_legend (args) {
 
         //update rollover text
         if (args.show_rollover_text) {
-          //svg.select('.mg-active-datapoint')
-            mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+          var mouseover = mg_mouseover_text(args, {svg: svg});
+          var row = mouseover.mouseover_row()
+          if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+          row.text(mg_format_x_mouseover(args, d));
+          row.text(args.y_accessor + ': ' + d[args.y_accessor]);
+          if (args.predictor_accessor || args.baseline_accessor) {
+            row = mouseover.mouseover_row();
+
+            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false))
+            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false))
+          }
         }
         if (args.mouseover) {
           args.mouseover(d, i);
@@ -5711,6 +5847,29 @@ function mg_format_x_rollover(args, fmt, d) {
   }
   return formatted_x;
 }
+
+/// Updated functions. Cleaner design.
+//  As of right now, only implemented for point.js.
+
+function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
+  var formatted_data;
+  var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  var num_fmt = format_rollover_number(args);
+  if (mouseover_fcn !== null) {
+    if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
+    else                  formatted_data = number_rollover_format(mouseover_fcn, d, accessor);
+    
+  } else {
+    if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  ';
+    else formatted_data = (args.time_series ? '' : accessor +': ') + num_fmt(d[accessor]) + '   ';
+  }
+  return formatted_data;
+}
+function mg_format_number_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, false); }
+function mg_format_x_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, args.time_series); }
+function mg_format_y_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.y_accessor, false); }
+
+
 
 MG.format_rollover_number = format_rollover_number;
 
