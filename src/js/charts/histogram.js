@@ -75,14 +75,6 @@
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
 
-      //rollover text
-      svg.append('text')
-        .attr('class', 'mg-active-datapoint')
-        .attr('xml:space', 'preserve')
-        .attr('x', args.width - args.right)
-        .attr('y', args.top * 0.75)
-        .attr('text-anchor', 'end');
-
       var g = svg.append('g')
         .attr('class', 'mg-rollover-rect');
 
@@ -160,24 +152,17 @@
 
         //update rollover text
         if (args.show_rollover_text) {
-          svg.select('.mg-active-datapoint')
-            .text(function() {
-              if (args.time_series) {
-                var dd = new Date(+d[args.x_accessor]);
-                dd.setDate(dd.getDate());
+          var mo = mg_mouseover_text(args, {svg: svg});
+          var row = mo.mouseover_row();
+          row.text('\u259F  ').elem()
+            .classed('hist-symbol', true);
 
-                return fmt(dd) + '  ' + args.yax_units
-                  + num(d[args.y_accessor]);
-              }
-              else {
-                return args.x_accessor + ': ' + num(d[args.x_accessor])
-                  + ', ' + args.y_accessor + ': ' + args.yax_units
-                  + num(d[args.y_accessor]);
-              }
-            });
+          row.text(mg_format_x_mouseover(args, d)); // x
+          row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
         }
 
         if (args.mouseover) {
+          mg_setup_mouseover_container(svg, args);
           args.mouseover(d, i);
         }
       };
@@ -202,8 +187,9 @@
           .classed('active', false);
 
         //reset active data point text
-        svg.select('.mg-active-datapoint')
-          .text('');
+        mg_remove_mouseover_container(svg);
+        // svg.select('.mg-active-datapoint')
+        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -228,10 +214,6 @@
   }
 
   var defaults = {
-    mouseover: function(d, i) {
-      d3.select('#histogram svg .mg-active-datapoint')
-        .text('Frequency Count: ' + d.y);
-    },
     binned: false,
     bins: null,
     processed_x_accessor: 'x',

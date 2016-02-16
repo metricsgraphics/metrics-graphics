@@ -417,8 +417,10 @@ function mg_targeted_legend (args) {
         //update rollover text
         if (args.show_rollover_text) {
           var mouseover = mg_mouseover_text(args, {svg: svg});
-          var row = mouseover.mouseover_row()
+          var row = mouseover.mouseover_row();
+
           if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+
           row.text(mg_format_x_mouseover(args, d));
           row.text(args.y_accessor + ': ' + d[args.y_accessor]);
           if (args.predictor_accessor || args.baseline_accessor) {
@@ -450,6 +452,8 @@ function mg_targeted_legend (args) {
         //reset active data point text
         svg.select('.mg-active-datapoint')
           .text('');
+
+        mg_remove_mouseover_container(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -484,7 +488,7 @@ function mg_targeted_legend (args) {
     legend: true,
     legend_target: null,
     height:null,
-    rollover_align: 'middle',
+    mouseover_align: 'middle',
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,

@@ -2320,156 +2320,156 @@ function markers (args) {
 
 MG.markers = markers;
 
-// function mg_rollover(svg, rargs) {
-//   return (function(){
-//     this.rollover = mg_reset_active_datapoint_text(svg);
-//     this.target = rargs.target;
+// // function mg_rollover(svg, rargs) {
+// //   return (function(){
+// //     this.rollover = mg_reset_active_datapoint_text(svg);
+// //     this.target = rargs.target;
 
-//   })
+// //   })
+// // }
+
+// function mouseover_tspan (svg, text) {
+//   var tspan = '';
+//   var cl = null;
+//   if (arguments.length === 3) cl = arguments[2];
+//   tspan = svg.append('tspan').text(text);
+//   if (cl !== null) tspan.classed(cl, true);
+
+//   return (function () {
+//     this.tspan = tspan;
+
+//     this.bold = function () {
+//       this.tspan.attr('font-weight', 'bold');
+//       return this;
+//     };
+//     this.color = function (args, d) {
+//       if (args.chart_type === 'line') {
+//         this.tspan.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+//           .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]);
+//       } else if (args.chart_type === 'point') {
+//         if (args.color_accessor !== null) {
+//           this.tspan.attr('fill', args.scalefns.color(d));
+//           this.tspan.attr('stroke', args.scalefns.color(d));
+//         } else {
+//           this.tspan.classed('mg-points-mono', true);
+//         }
+//       }
+//     };
+//     this.x = function (x) {
+//       this.tspan.attr('x', x);
+//       return this;
+//     };
+//     this.y = function (y) {
+//       this.tspan.attr('y', y);
+//       return this;
+//     };
+//     this.elem = function () {
+//       return this.tspan;
+//     };
+//     return this;
+//   })();
 // }
 
-function mouseover_tspan (svg, text) {
-  var tspan = '';
-  var cl = null;
-  if (arguments.length === 3) cl = arguments[2];
-  tspan = svg.append('tspan').text(text);
-  if (cl !== null) tspan.classed(cl, true);
+// function mg_reset_active_datapoint_text (svg) {
+//   var textContainer = svg.select('.mg-active-datapoint');
+//   textContainer
+//     .selectAll('*')
+//     .remove();
+//   return textContainer;
+// }
 
-  return (function () {
-    this.tspan = tspan;
+// function mg_format_aggregate_rollover_text (args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i) {
+//   var lineCount = 0;
+//   var lineHeight = 1.1;
+//   if (args.time_series) {
+//     mg_append_aggregate_rollover_timeseries(args, textContainer, formatted_x, d, num);
+//   } else {
+//     mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num);
+//   }
 
-    this.bold = function () {
-      this.tspan.attr('font-weight', 'bold');
-      return this;
-    };
-    this.color = function (args, d) {
-      if (args.chart_type === 'line') {
-        this.tspan.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
-          .attr('stroke', args.colors === null ? '' : args.colors[d.line_id - 1]);
-      } else if (args.chart_type === 'point') {
-        if (args.color_accessor !== null) {
-          this.tspan.attr('fill', args.scalefns.color(d));
-          this.tspan.attr('stroke', args.scalefns.color(d));
-        } else {
-          this.tspan.classed('mg-points-mono', true);
-        }
-      }
-    };
-    this.x = function (x) {
-      this.tspan.attr('x', x);
-      return this;
-    };
-    this.y = function (y) {
-      this.tspan.attr('y', y);
-      return this;
-    };
-    this.elem = function () {
-      return this.tspan;
-    };
-    return this;
-  })();
-}
+//   // append an blank (&nbsp;) line to mdash positioning
+//   mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
+// }
 
-function mg_reset_active_datapoint_text (svg) {
-  var textContainer = svg.select('.mg-active-datapoint');
-  textContainer
-    .selectAll('*')
-    .remove();
-  return textContainer;
-}
+// function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
+//   var lineCount = 0;
+//   var lineHeight = 1.1;
+//   var formatted_y;
 
-function mg_format_aggregate_rollover_text (args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i) {
-  var lineCount = 0;
-  var lineHeight = 1.1;
-  if (args.time_series) {
-    mg_append_aggregate_rollover_timeseries(args, textContainer, formatted_x, d, num);
-  } else {
-    mg_append_aggregate_rollover_text(args, textContainer, formatted_x, d, num);
-  }
+//   mouseover_tspan(textContainer, formatted_x.trim());
 
-  // append an blank (&nbsp;) line to mdash positioning
-  mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
-}
+//   lineCount = 1;
+//   var sub_container;
+//   d.values.forEach(function (datum) {
+//     sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
+//     formatted_y = mg_format_y_rollover(args, num, datum);
+//     mouseover_tspan(sub_container, '\u2014  ')
+//       .color(args, datum);
+//     mouseover_tspan(sub_container, formatted_y);
 
-function mg_append_aggregate_rollover_timeseries (args, textContainer, formatted_x, d, num) {
-  var lineCount = 0;
-  var lineHeight = 1.1;
-  var formatted_y;
+//     lineCount++;
+//   });
+//   // necessary blank line.
+//   mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
+// }
 
-  mouseover_tspan(textContainer, formatted_x.trim());
+// function mg_append_aggregate_rollover_text (args, textContainer, formatted_x, d, num) {
+//   var lineCount = 0;
+//   var lineHeight = 1.1;
+//   d.values.forEach(function (datum) {
+//     formatted_y = mg_format_y_rollover(args, num, datum);
 
-  lineCount = 1;
-  var sub_container;
-  d.values.forEach(function (datum) {
-    sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
-    formatted_y = mg_format_y_rollover(args, num, datum);
-    mouseover_tspan(sub_container, '\u2014  ')
-      .color(args, datum);
-    mouseover_tspan(sub_container, formatted_y);
+//     if (args.y_rollover_format !== null) {
+//       formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+//     } else {
+//       formatted_y = args.yax_units + num(datum[args.y_accessor]);
+//     }
 
-    lineCount++;
-  });
-  // necessary blank line.
-  mouseover_tspan(textContainer, '\u00A0').x(0).y((lineCount * lineHeight) + 'em');
-}
+//     sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
+//     formatted_y = mg_format_y_rollover(args, num, datum);
+//     mouseover_tspan(sub_container, '\u2014  ')
+//       .color(args, datum);
+//     mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
 
-function mg_append_aggregate_rollover_text (args, textContainer, formatted_x, d, num) {
-  var lineCount = 0;
-  var lineHeight = 1.1;
-  d.values.forEach(function (datum) {
-    formatted_y = mg_format_y_rollover(args, num, datum);
+//     lineCount++;
+//   });
+// }
 
-    if (args.y_rollover_format !== null) {
-      formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
-    } else {
-      formatted_y = args.yax_units + num(datum[args.y_accessor]);
-    }
+// function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
+//   var num = format_rollover_number(args);
+//   if (args.chart_type === 'bar') num = function(d){return d};
+//   var textContainer = mg_reset_active_datapoint_text(svg);
+//   var formatted_y = mg_format_y_rollover(args, num, d);
+//   var formatted_x = mg_format_x_rollover(args, fmt, d);
 
-    sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
-    formatted_y = mg_format_y_rollover(args, num, datum);
-    mouseover_tspan(sub_container, '\u2014  ')
-      .color(args, datum);
-    mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
+//   // rollover text when aggregate_rollover is enabled
+//   if (args.aggregate_rollover && args.data.length > 1) {
+//     mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
 
-    lineCount++;
-  });
-}
+//   } else {
+//     // rollover text when aggregate_rollover is not enabled
+//     if (args.time_series) textContainer.select('*').remove();
 
-function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
-  var num = format_rollover_number(args);
-  if (args.chart_type === 'bar') num = function(d){return d};
-  var textContainer = mg_reset_active_datapoint_text(svg);
-  var formatted_y = mg_format_y_rollover(args, num, d);
-  var formatted_x = mg_format_x_rollover(args, fmt, d);
+//     // label.
+//     if (!args.chart_type === 'bar' && (args.legend || args.label_accessor)) {
+//       mouseover_tspan(textContainer,
+//         args.chart_type === 'line' ? args.legend[d.line_id - 1] + '  ' : d[args.label_accessor] + '  ')
+//         .color(args, d);
+//     }
 
-  // rollover text when aggregate_rollover is enabled
-  if (args.aggregate_rollover && args.data.length > 1) {
-    mg_format_aggregate_rollover_text(args, svg, textContainer, formatted_x, formatted_y, num, fmt, d, i);
+//     if (args.chart_type === 'bar' && args.group_accessor) mouseover_tspan(textContainer, d[args.group_accessor] + '   ', 'mg-bar-group-rollover-text').bold();
 
-  } else {
-    // rollover text when aggregate_rollover is not enabled
-    if (args.time_series) textContainer.select('*').remove();
-
-    // label.
-    if (!args.chart_type === 'bar' && (args.legend || args.label_accessor)) {
-      mouseover_tspan(textContainer,
-        args.chart_type === 'line' ? args.legend[d.line_id - 1] + '  ' : d[args.label_accessor] + '  ')
-        .color(args, d);
-    }
-
-    if (args.chart_type === 'bar' && args.group_accessor) mouseover_tspan(textContainer, d[args.group_accessor] + '   ', 'mg-bar-group-rollover-text').bold();
-
-    // shape to accompany rollover.
-    if (args.data.length > 1 || args.chart_type === 'point') {
-      mouseover_tspan(textContainer, shape + '  ').color(args, d);
-    }
-    // rollover text.
-    mouseover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
-    mouseover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
-    if (args.chart_type === 'bar' && args.predictor_accessor) mouseover_tspan(textContainer, '   ' + args.predictor_accessor + ': ' + d[args.predictor_accessor], 'mg-bar-predictor-rollover-text')
-    if (args.chart_type === 'bar' && args.baseline_accessor) mouseover_tspan(textContainer, '   ' + args.baseline_accessor + ': ' + d[args.baseline_accessor], 'mg-bar-baseline-rollover-text')
-  }
-}
+//     // shape to accompany rollover.
+//     if (args.data.length > 1 || args.chart_type === 'point') {
+//       mouseover_tspan(textContainer, shape + '  ').color(args, d);
+//     }
+//     // rollover text.
+//     mouseover_tspan(textContainer, formatted_x, args.time_series ? 'mg-x-rollover-text' : null);
+//     mouseover_tspan(textContainer, formatted_y, args.time_series ? 'mg-y-rollover-text' : null);
+//     if (args.chart_type === 'bar' && args.predictor_accessor) mouseover_tspan(textContainer, '   ' + args.predictor_accessor + ': ' + d[args.predictor_accessor], 'mg-bar-predictor-rollover-text')
+//     if (args.chart_type === 'bar' && args.baseline_accessor) mouseover_tspan(textContainer, '   ' + args.baseline_accessor + ': ' + d[args.baseline_accessor], 'mg-bar-baseline-rollover-text')
+//   }
+// }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -2478,11 +2478,11 @@ function mg_update_rollover_text (args, svg, fmt, shape, d, i) {
 
 
 function mg_remove_mouseover_container(svg) {
-  svg.select('.mg-active-datapoint-container').remove();
+  svg.selectAll('.mg-active-datapoint-container').remove();
 }
 
 function mg_setup_mouseover_container (svg, args) {
-  svg.selectAll('.mg-active-datapoint').remove();
+  svg.select('.mg-active-datapoint').remove();
   var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
   var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width-args.left-args.right) / 2 + args.left);
   var active_datapoint = mg_add_g(svg, 'mg-active-datapoint-container')
@@ -2505,6 +2505,7 @@ function mg_setup_mouseover_container (svg, args) {
         }
       });
   }
+
   active_datapoint
     .attr('transform', 'translate(' + mouseover_x + ',' + (mg_get_top(args) * active_datapoint_y_nudge) + ')');
 }
@@ -2522,6 +2523,11 @@ function mg_mouseover_tspan (svg, text) {
     this.tspan.attr('font-weight', 'bold');
     return this;
   };
+
+  this.font_size = function (pts) {
+    this.tspan.attr('font-size', pts);
+    return this;
+  }
 
   this.x = function (x) {
     this.tspan.attr('x', x);
@@ -2968,6 +2974,11 @@ MG.button_layout = function(target) {
 
 (function () {
   'use strict';
+
+  function mg_line_color_text(elem, d, args) {
+    elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+                .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
+  }
 
   function mg_line_graph_generators (args, plot, svg) {
     mg_add_line_generator(args, plot);
@@ -3569,7 +3580,7 @@ MG.button_layout = function(target) {
     var svg = mg_get_svg_child_of(args.target);
 
     mg_remove_existing_line_rollover_elements(svg);
-    mg_add_line_active_datapoint_container(args, svg);
+    //mg_add_line_active_datapoint_container(args, svg);
     mg_add_rollover_circle(args, svg);
     mg_set_unique_line_id_for_each_series(args);
 
@@ -3757,7 +3768,45 @@ MG.button_layout = function(target) {
 
         // update rollover text
         if (args.show_rollover_text) {
-          mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+
+          var mouseover = mg_mouseover_text(args, {svg:svg});
+          var row = mouseover.mouseover_row();
+          if (args.aggregate_rollover) row.text((args.aggregate_rollover ? mg_format_x_aggregate_mouseover : mg_format_x_mouseover)(args, d));
+          var pts = args.aggregate_rollover ? d.values : [d];
+          pts.forEach(function(di){
+            if (args.aggregate_rollover) row = mouseover.mouseover_row();
+            if(args.legend)  mg_line_color_text(row.text(args.legend[di.line_id-1] + '  ').bold().elem(), di, args);
+            mg_line_color_text(row.text('\u2014  ').elem(), di, args);
+            if (!args.aggregate_rollover) row.text(mg_format_x_mouseover(args, di));
+
+            row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+          })
+          // if aggregate rollover, iterate through each one of these.
+
+          // var mouseover = mg_mouseover_text(args, {svg: svg});
+          // if (args.aggregate_rollover) {
+
+          //   var row = mouseover.mouseover_row();
+          //   row.text(mg_format_x_aggregate_mouseover(args, d));
+
+          //   d.values.forEach(function(di){
+          //     var y_row = mouseover.mouseover_row();
+          //     mg_line_color_text(y_row.text('\u2014  ').elem(), di, args);
+          //     y_row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+          //   })
+          // } else {
+
+          //   var row = mouseover.mouseover_row();
+          //   if (args.legend) {
+          //     mg_line_color_text(row.text(args.legend[d.line_id-1] + '  ').bold().elem(), d, args);
+          //   }
+          //   var shape = mg_line_color_text(row.text('\u2014  ').elem(), d, args)
+          //     // .classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+          //     // .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
+
+          //   row.text(mg_format_x_mouseover(args, d)); // x
+          //   row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+          // }
         }
 
         if (args.mouseover) {
@@ -3777,8 +3826,8 @@ MG.button_layout = function(target) {
           mg_remove_active_data_points_for_generic_rollover(args, svg, d);
         }
 
-        mg_remove_active_text(svg);
-
+        //mg_remove_active_text(svg);
+        if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
         if (args.mouseout) {
           args.mouseout(d, i);
         }
@@ -3881,14 +3930,6 @@ MG.button_layout = function(target) {
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
 
-      //rollover text
-      svg.append('text')
-        .attr('class', 'mg-active-datapoint')
-        .attr('xml:space', 'preserve')
-        .attr('x', args.width - args.right)
-        .attr('y', args.top * 0.75)
-        .attr('text-anchor', 'end');
-
       var g = svg.append('g')
         .attr('class', 'mg-rollover-rect');
 
@@ -3966,24 +4007,17 @@ MG.button_layout = function(target) {
 
         //update rollover text
         if (args.show_rollover_text) {
-          svg.select('.mg-active-datapoint')
-            .text(function() {
-              if (args.time_series) {
-                var dd = new Date(+d[args.x_accessor]);
-                dd.setDate(dd.getDate());
+          var mo = mg_mouseover_text(args, {svg: svg});
+          var row = mo.mouseover_row();
+          row.text('\u259F  ').elem()
+            .classed('hist-symbol', true);
 
-                return fmt(dd) + '  ' + args.yax_units
-                  + num(d[args.y_accessor]);
-              }
-              else {
-                return args.x_accessor + ': ' + num(d[args.x_accessor])
-                  + ', ' + args.y_accessor + ': ' + args.yax_units
-                  + num(d[args.y_accessor]);
-              }
-            });
+          row.text(mg_format_x_mouseover(args, d)); // x
+          row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
         }
 
         if (args.mouseover) {
+          mg_setup_mouseover_container(svg, args);
           args.mouseover(d, i);
         }
       };
@@ -4008,8 +4042,9 @@ MG.button_layout = function(target) {
           .classed('active', false);
 
         //reset active data point text
-        svg.select('.mg-active-datapoint')
-          .text('');
+        mg_remove_mouseover_container(svg);
+        // svg.select('.mg-active-datapoint')
+        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -4034,10 +4069,6 @@ MG.button_layout = function(target) {
   }
 
   var defaults = {
-    mouseover: function(d, i) {
-      d3.select('#histogram svg .mg-active-datapoint')
-        .text('Frequency Count: ' + d.y);
-    },
     binned: false,
     bins: null,
     processed_x_accessor: 'x',
@@ -4264,8 +4295,6 @@ function mg_color_point_mouseover(args, elem, d) {
 
         //reset active data point text
         if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
-        // svg.select('.mg-active-datapoint')
-        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -4731,8 +4760,10 @@ function mg_targeted_legend (args) {
         //update rollover text
         if (args.show_rollover_text) {
           var mouseover = mg_mouseover_text(args, {svg: svg});
-          var row = mouseover.mouseover_row()
+          var row = mouseover.mouseover_row();
+
           if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+
           row.text(mg_format_x_mouseover(args, d));
           row.text(args.y_accessor + ': ' + d[args.y_accessor]);
           if (args.predictor_accessor || args.baseline_accessor) {
@@ -4764,6 +4795,8 @@ function mg_targeted_legend (args) {
         //reset active data point text
         svg.select('.mg-active-datapoint')
           .text('');
+
+        mg_remove_mouseover_container(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -4798,7 +4831,7 @@ function mg_targeted_legend (args) {
     legend: true,
     legend_target: null,
     height:null,
-    rollover_align: 'middle',
+    mouseover_align: 'middle',
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
@@ -5926,7 +5959,7 @@ function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_ti
 function mg_format_number_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, false); }
 function mg_format_x_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, args.time_series); }
 function mg_format_y_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.y_accessor, false); }
-
+function mg_format_x_aggregate_mouseover(args, d) { return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)};
 
 
 MG.format_rollover_number = format_rollover_number;

@@ -116,7 +116,7 @@ function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_ti
 function mg_format_number_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, false); }
 function mg_format_x_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, args.time_series); }
 function mg_format_y_mouseover(args, d)  { return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.y_accessor, false); }
-
+function mg_format_x_aggregate_mouseover(args, d) { return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)};
 
 
 MG.format_rollover_number = format_rollover_number;

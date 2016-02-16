@@ -213,8 +213,6 @@ function mg_color_point_mouseover(args, elem, d) {
 
         //reset active data point text
         if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
-        // svg.select('.mg-active-datapoint')
-        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);

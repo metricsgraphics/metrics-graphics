@@ -153,6 +153,10 @@ text.mg-barplot-group-label {
     stroke: #ccc;
 }
 
+tspan.hist-symbol {
+    fill: #9e9efc;
+}
+
 .mg-histogram .mg-bar rect {
     fill: #b6b6fc;
     shape-rendering: auto;
