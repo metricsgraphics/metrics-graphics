@@ -2023,6 +2023,7 @@ function mg_init_compute_height (args) {
   if (args.chart_type === 'bar' && svg_height === null) {
     svg_height = mg_barchart_calculate_height(args);
   }
+  console.log(svg_height, args.bar_thickness);
 
   args.height = svg_height;
 }
@@ -2137,6 +2138,8 @@ function mg_barchart_init(args){
   mg_barchart_count_number_of_groups(args);
   mg_barchart_count_number_of_bars(args);
   mg_barchart_calculate_group_height(args);
+  if (args.height) mg_barchart_calculate_bar_thickness(args);
+
 }
 
 function mg_barchart_count_number_of_groups(args){
@@ -2159,13 +2162,30 @@ function mg_barchart_count_number_of_bars(args){
 }
 
 function mg_barchart_calculate_group_height(args){
-  args.group_height = args.bars_per_group * args.bar_height + (((args.bars_per_group-1) * args.bar_height) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+  if (args.height) {
+    args.group_height = (args.height - args.top - args.bottom - args.buffer*2) / (args.categorical_groups.length || 1) 
+  }
+  else {
+    var step = (1 + args.bar_padding_percentage) * args.bar_thickness;
+    args.group_height = args.bars_per_group * step + args.bar_outer_padding_percentage * 2 * step;//args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+  }
+}
+
+function mg_barchart_calculate_bar_thickness(args){
+  //
+  // take one group height.
+  var step = (args.group_height) / (args.bars_per_group + args.bar_outer_padding_percentage);
+  args.bar_thickness = step - (step * args.bar_padding_percentage);
 }
 
 function mg_barchart_calculate_height(args){
   return (args.group_height) * 
          (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
          (args.categorical_groups.length * args.group_height * (args.group_padding_percentage + args.group_outer_padding_percentage));
+}
+
+function mg_barchart_extrapolate_group_and_thickness_from_height(args){
+  // we need to set args.bar_thickness, group_height
 }
 
 function init (args) {
@@ -4830,7 +4850,6 @@ function mg_targeted_legend (args) {
     color_domain: null,
     legend: true,
     legend_target: null,
-    height:null,
     mouseover_align: 'middle',
     baseline_accessor: null,
     predictor_accessor: null,
@@ -4838,11 +4857,12 @@ function mg_targeted_legend (args) {
     show_bar_zero: true,
     binned: true,
     width: 480,
+    height:null,
     bar_padding_percentage: 0.05,
     bar_outer_padding_percentage: .1,
     group_padding_percentage:.25,
     group_outer_padding_percentage: 0,
-    bar_height: 12,
+    bar_thickness: 12,
     top: 45,
     left: 105,
     right:65,
