@@ -1,6 +1,11 @@
 (function () {
   'use strict';
 
+  function mg_line_color_text(elem, d, args) {
+    elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+                .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
+  }
+
   function mg_line_graph_generators (args, plot, svg) {
     mg_add_line_generator(args, plot);
     mg_add_area_generator(args, plot);
@@ -601,7 +606,7 @@
     var svg = mg_get_svg_child_of(args.target);
 
     mg_remove_existing_line_rollover_elements(svg);
-    mg_add_line_active_datapoint_container(args, svg);
+    //mg_add_line_active_datapoint_container(args, svg);
     mg_add_rollover_circle(args, svg);
     mg_set_unique_line_id_for_each_series(args);
 
@@ -789,7 +794,45 @@
 
         // update rollover text
         if (args.show_rollover_text) {
-          mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+
+          var mouseover = mg_mouseover_text(args, {svg:svg});
+          var row = mouseover.mouseover_row();
+          if (args.aggregate_rollover) row.text((args.aggregate_rollover ? mg_format_x_aggregate_mouseover : mg_format_x_mouseover)(args, d));
+          var pts = args.aggregate_rollover ? d.values : [d];
+          pts.forEach(function(di){
+            if (args.aggregate_rollover) row = mouseover.mouseover_row();
+            if(args.legend)  mg_line_color_text(row.text(args.legend[di.line_id-1] + '  ').bold().elem(), di, args);
+            mg_line_color_text(row.text('\u2014  ').elem(), di, args);
+            if (!args.aggregate_rollover) row.text(mg_format_x_mouseover(args, di));
+
+            row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+          })
+          // if aggregate rollover, iterate through each one of these.
+
+          // var mouseover = mg_mouseover_text(args, {svg: svg});
+          // if (args.aggregate_rollover) {
+
+          //   var row = mouseover.mouseover_row();
+          //   row.text(mg_format_x_aggregate_mouseover(args, d));
+
+          //   d.values.forEach(function(di){
+          //     var y_row = mouseover.mouseover_row();
+          //     mg_line_color_text(y_row.text('\u2014  ').elem(), di, args);
+          //     y_row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+          //   })
+          // } else {
+
+          //   var row = mouseover.mouseover_row();
+          //   if (args.legend) {
+          //     mg_line_color_text(row.text(args.legend[d.line_id-1] + '  ').bold().elem(), d, args);
+          //   }
+          //   var shape = mg_line_color_text(row.text('\u2014  ').elem(), d, args)
+          //     // .classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+          //     // .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
+
+          //   row.text(mg_format_x_mouseover(args, d)); // x
+          //   row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+          // }
         }
 
         if (args.mouseover) {
@@ -809,8 +852,8 @@
           mg_remove_active_data_points_for_generic_rollover(args, svg, d);
         }
 
-        mg_remove_active_text(svg);
-
+        //mg_remove_active_text(svg);
+        if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
         if (args.mouseout) {
           args.mouseout(d, i);
         }

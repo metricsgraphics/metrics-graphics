@@ -8,7 +8,7 @@
                     <div class='col-lg-6 text-center' id='sls-time-series'></div>
                 </div>
                 <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/point1.json'>data</a></div>
+                    <div class='data-column'><a href='data/points1.json'>data</a></div>
 
 <pre><code class='javascript'>d3.json('data/points1.json', function(data) {
     MG.data_graphic({
@@ -745,8 +745,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'number',
         y_accessor: 'candidate',
         group_accessor: 'poll',
-        target: 'div#nh-gop',
-
+        target: 'div#nh-gop'
     })
 
 })

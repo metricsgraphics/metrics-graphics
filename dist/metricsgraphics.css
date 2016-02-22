@@ -153,6 +153,10 @@ text.mg-barplot-group-label {
     stroke: #ccc;
 }
 
+tspan.hist-symbol {
+    fill: #9e9efc;
+}
+
 .mg-histogram .mg-bar rect {
     fill: #b6b6fc;
     shape-rendering: auto;
@@ -306,6 +310,11 @@ path.mg-main-line {
 circle.mg-points-mono {
     fill: #0000ff;
     stroke: #0000ff;
+}
+
+tspan.mg-points-mono {
+    fill: #0000ff;
+    stroke: #0000ff; 
 }
 
 /* a selected point in a scatterplot */

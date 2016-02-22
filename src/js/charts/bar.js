@@ -416,8 +416,19 @@ function mg_targeted_legend (args) {
 
         //update rollover text
         if (args.show_rollover_text) {
-          //svg.select('.mg-active-datapoint')
-            mg_update_rollover_text(args, svg, fmt, '\u2014 ', d, i);
+          var mouseover = mg_mouseover_text(args, {svg: svg});
+          var row = mouseover.mouseover_row();
+
+          if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+
+          row.text(mg_format_x_mouseover(args, d));
+          row.text(args.y_accessor + ': ' + d[args.y_accessor]);
+          if (args.predictor_accessor || args.baseline_accessor) {
+            row = mouseover.mouseover_row();
+
+            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false))
+            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false))
+          }
         }
         if (args.mouseover) {
           args.mouseover(d, i);
@@ -441,6 +452,8 @@ function mg_targeted_legend (args) {
         //reset active data point text
         svg.select('.mg-active-datapoint')
           .text('');
+
+        mg_remove_mouseover_container(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);
@@ -474,19 +487,19 @@ function mg_targeted_legend (args) {
     color_domain: null,
     legend: true,
     legend_target: null,
-    height:null,
-    rollover_align: 'middle',
+    mouseover_align: 'middle',
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
     show_bar_zero: true,
     binned: true,
     width: 480,
+    height:null,
     bar_padding_percentage: 0.05,
     bar_outer_padding_percentage: .1,
     group_padding_percentage:.25,
     group_outer_padding_percentage: 0,
-    bar_height: 12,
+    bar_thickness: 12,
     top: 45,
     left: 105,
     right:65,
