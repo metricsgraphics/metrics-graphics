@@ -21,11 +21,19 @@
         .x(args.scalefns.xf)
         .y0(function (d) {
           var l = args.show_confidence_band[0];
-          return args.scales.Y(d[l]);
+          if(d[l]) {
+            return args.scales.Y(d[l]);
+          } else {
+            return args.scales.Y(d[args.y_accessor]);
+          }
         })
         .y1(function (d) {
           var u = args.show_confidence_band[1];
-          return args.scales.Y(d[u]);
+          if(d[u]) {
+            return args.scales.Y(d[u]);
+          } else {
+            return args.scales.Y(d[args.y_accessor]);
+          }
         })
         .interpolate(args.interpolate)
         .tension(args.interpolate_tension);
@@ -75,22 +83,23 @@
   }
 
   function mg_add_confidence_band (args, plot, svg, which_line) {
-    var confidenceBand;
     if (args.show_confidence_band) {
-      if (!plot.existing_band.empty()) {
-        confidenceBand = plot.existing_band
-          .transition()
-          .duration(function () {
-            return (args.transition_on_update) ? 1000 : 0;
-          });
-      } else {
-        confidenceBand = svg.append('path')
-          .attr('class', 'mg-confidence-band');
+      var confidenceBand;
+      if (svg.select('.mg-confidence-band-' + which_line).empty()) {
+        svg.append('path')
+          .attr('class', 'mg-confidence-band mg-confidence-band-' + which_line)
       }
 
+      // transition this line's confidence band
+      confidenceBand = svg.select('.mg-confidence-band-' + which_line);
+
       confidenceBand
-        .attr('d', plot.confidence_area(args.data[which_line]))
-        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+        .transition()
+        .duration(function () {
+          return (args.transition_on_update) ? 1000 : 0;
+        })
+        .attr('d', plot.confidence_area(args.data[which_line - 1]))
+        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
     }
   }
 
@@ -550,6 +559,8 @@
   }
 
   function mg_draw_all_line_elements (args, plot, svg) {
+    mg_remove_dangling_bands(plot, svg);
+
     for (var i = args.data.length - 1; i >= 0; i--) {
       var this_data = args.data[i];
 
@@ -569,12 +580,19 @@
       }
       var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id));
 
-      mg_add_confidence_band(args, plot, svg, i);
+      mg_add_confidence_band(args, plot, svg, line_id);
       mg_add_area(args, plot, svg, i, line_id);
       mg_add_line(args, plot, svg, existing_line, i, line_id);
       mg_add_legend_element(args, plot, i, line_id);
+
       // passing the data for the current line
       MG.call_hook('line.after_each_series', [this_data, existing_line, args]);
+    }
+  }
+
+  function mg_remove_dangling_bands(plot, svg) {
+    if (plot.existing_band[0].length > svg.selectAll('.mg-main-line')[0].length) {
+      svg.selectAll('.mg-confidence-band').remove();
     }
   }
 
@@ -831,7 +849,7 @@
           //     // .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
 
           //   row.text(mg_format_x_mouseover(args, d)); // x
-          //   row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+          //   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
           // }
         }
 
