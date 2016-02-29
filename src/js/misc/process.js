@@ -58,7 +58,6 @@ function mg_process_scale_ticks (args, axis) {
   } else if(axis === 'y') {
     args.processed.y_ticks = scale_ticks;
   }
-  console.log(args.processed);
 }
 
 function raw_data_transformation(args) {
