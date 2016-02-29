@@ -53,14 +53,14 @@ function mg_process_scale_ticks (args, axis) {
     });
   }
 
-  if(axis === 'x') {
+  if (axis === 'x') {
     args.processed.x_ticks = scale_ticks;
   } else if(axis === 'y') {
     args.processed.y_ticks = scale_ticks;
   }
 }
 
-function raw_data_transformation(args) {
+function raw_data_transformation (args) {
   'use strict';
 
   // dupe our data so we can modify it without adverse effect
