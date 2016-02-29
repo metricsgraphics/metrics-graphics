@@ -29,11 +29,15 @@ function mg_define_x_scale (args) {
 
   args.scales.X = (args.time_series)
     ? time_scale
-    : d3.scale.linear();
+    : (args.x_scale_type === 'log')
+        ? d3.scale.log()
+        : d3.scale.linear();
 
   args.scales.X
     .domain([args.processed.min_x, args.processed.max_x])
     .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
+
+  args.scales.X.clamp(args.x_scale_type === 'log');
 }
 
 function x_axis (args) {
@@ -250,8 +254,8 @@ function mg_sec_diff           (diff) { return diff < 60; }
 function mg_day_diff           (diff) { return diff / (60 * 60) <= 24; }
 function mg_four_days          (diff) { return diff / (60 * 60) <= 24 * 4; }
 function mg_many_days          (diff) { return diff / (60 * 60 * 24) <= 93; }
-function mg_many_months        (diff) { return diff / (60*60*24) < 365*2; }
-function mg_years              (diff) { return diff / (60*60*24) >= 365*2; }
+function mg_many_months        (diff) { return diff / (60 * 60 * 24) < 365 * 2; }
+function mg_years              (diff) { return diff / (60 * 60 * 24) >= 365 * 2; }
 
 function mg_get_time_format (utc, diff) {
   var main_time_format;
@@ -319,12 +323,15 @@ function mg_default_xax_format (args) {
 }
 
 function mg_add_x_ticks (g, args) {
+  mg_process_scale_ticks(args, 'x');
   mg_add_x_axis_rim(args, g);
   mg_add_x_axis_tick_lines(args, g);
 }
 
 function mg_add_x_axis_rim (args, g) {
+  var tick_length = args.processed.x_ticks.length;
   var last_i = args.scales.X.ticks(args.xax_count).length - 1;
+
   if (!args.x_extended_ticks) {
     g.append('line')
       .attr('x1', function () {
@@ -349,9 +356,8 @@ function mg_add_x_axis_rim (args, g) {
 }
 
 function mg_add_x_axis_tick_lines (args, g) {
-  var ticks = args.scales.X.ticks(args.xax_count);
   g.selectAll('.mg-xax-ticks')
-    .data(ticks).enter()
+    .data(args.processed.x_ticks).enter()
     .append('line')
     .attr('x1', function (d) { return args.scales.X(d).toFixed(2); })
     .attr('x2', function (d) { return args.scales.X(d).toFixed(2); })
@@ -376,9 +382,8 @@ function mg_add_x_tick_labels (g, args) {
 }
 
 function mg_add_primary_x_axis_label (args, g) {
-  var ticks = args.scales.X.ticks(args.xax_count);
   var labels = g.selectAll('.mg-xax-labels')
-    .data(ticks).enter()
+    .data(args.processed.x_ticks).enter()
     .append('text')
     .attr('x', function (d) { return args.scales.X(d).toFixed(2); })
     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
@@ -573,10 +578,19 @@ function mg_sort_through_data_type_and_set_x_min_max_accordingly (mx, args, data
 
 function mg_find_min_max_x_from_data (args) {
   var all_data = mg_flatten_array(args.data);
+
+  if (args.x_scale_type === 'log') {
+    all_data = all_data.filter(function (d) {
+      return d[args.x_accessor] > 0;
+    });
+  }
+
   var mx = {};
   mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, all_data);
+
   mx.min = args.min_x || mx.min;
   mx.max = args.max_x || mx.max;
+
   args.x_axis_negative = false;
   args.processed.min_x = mx.min;
   args.processed.max_x = mx.max;

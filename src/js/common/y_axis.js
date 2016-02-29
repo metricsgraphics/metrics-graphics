@@ -79,7 +79,7 @@ function mg_bar_add_zero_line (args) {
     .attr('y1', r[0] + mg_get_plot_top(args))
     .attr('y2', r[r.length-1] + g + args.scales.Y_ingroup.rangeBand())
     .attr('stroke', 'black')
-    .attr('opacity', .2);  
+    .attr('opacity', .2);
   }
 }
 
@@ -87,7 +87,13 @@ function set_min_max_y (args) {
   // flatten data
   // remove weird data, if log.
   var data = mg_flatten_array(args.data);
-  if (args.y_scale_type === 'log') data = data.filter(function (d) { return d[args.y_accessor] > 0; });
+
+  if (args.y_scale_type === 'log') {
+    data = data.filter(function (d) {
+      return d[args.y_accessor] > 0;
+    });
+  }
+
   if (args.baselines) { data = data.concat(args.baselines); }
 
   var extents = d3.extent(data, function (d) { return d[args.y_accessor]; });
@@ -174,49 +180,6 @@ function mg_add_y_label (g, args) {
   }
 }
 
-function mg_process_scale_ticks (args) {
-  var scale_ticks = args.scales.Y.ticks(args.yax_count);
-
-  function log10 (val) {
-    if (val === 1000) {
-      return 3;
-    }
-    if (val === 1000000) {
-      return 7;
-    }
-    return Math.log(val) / Math.LN10;
-  }
-
-  if (args.y_scale_type === 'log') {
-    // get out only whole logs
-    scale_ticks = scale_ticks.filter(function (d) {
-      return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6;
-    });
-  }
-
-  // filter out fraction ticks if our data is ints and if ymax > number of generated ticks
-  var number_of_ticks = args.scales.Y.ticks(args.yax_count).length;
-
-  // is our data object all ints?
-  var data_is_int = true;
-  args.data.forEach(function (d, i) {
-    d.forEach(function (d, i) {
-      if (d[args.y_accessor] % 1 !== 0) {
-        data_is_int = false;
-        return false;
-      }
-    });
-  });
-
-  if (data_is_int && number_of_ticks > args.processed.max_y && args.format === 'count') {
-    // remove non-integer ticks
-    scale_ticks = scale_ticks.filter(function (d) {
-      return d % 1 === 0;
-    });
-  }
-  args.processed.y_ticks = scale_ticks;
-}
-
 function mg_add_y_axis_rim (g, args) {
   var tick_length = args.processed.y_ticks.length;
   if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
@@ -293,7 +256,7 @@ function y_axis (args) {
 
   var g = mg_add_g(svg, 'mg-y-axis');
   mg_add_y_label(g, args);
-  mg_process_scale_ticks(args);
+  mg_process_scale_ticks(args, 'y');
   mg_add_y_axis_rim(g, args);
   mg_add_y_axis_tick_lines(g, args);
   mg_add_y_axis_tick_labels(g, args);
