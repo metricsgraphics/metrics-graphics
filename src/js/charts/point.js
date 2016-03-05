@@ -10,7 +10,7 @@ function point_mouseover (args, svg, d) {
 
   mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
   row.text(mg_format_x_mouseover(args, d)); // x
-  row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+  row.text(mg_format_y_mouseover(args, d, args.time_series === false));
 }
 
 function mg_color_point_mouseover(args, elem, d) {
@@ -31,7 +31,7 @@ function mg_color_point_mouseover(args, elem, d) {
     var x = args.x_accessor;
     var y = args.y_accessor;
     var new_data = data.filter(function(d){
-      return (args.min_x === null || d[x] >= args.min_x) && 
+      return (args.min_x === null || d[x] >= args.min_x) &&
              (args.max_x === null || d[x] <= args.max_x) &&
              (args.min_y === null || d[y] >= args.min_y) &&
              (args.max_y === null || d[y] <= args.max_y);
@@ -105,6 +105,7 @@ function mg_color_point_mouseover(args, elem, d) {
 
     this.rollover = function() {
       var svg = mg_get_svg_child_of(args.target);
+      mg_add_g(svg, 'mg-active-datapoint-container');
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-voronoi').remove();
@@ -212,7 +213,7 @@ function mg_color_point_mouseover(args, elem, d) {
         }
 
         //reset active data point text
-        if (args.data[0].length > 1) mg_remove_mouseover_container(svg);
+        if (args.data[0].length > 1) mg_clear_mouseover_container(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);

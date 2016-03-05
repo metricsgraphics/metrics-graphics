@@ -71,6 +71,8 @@
       var svg = mg_get_svg_child_of(args.target);
       var $svg = $($(args.target).find('svg').get(0));
 
+      mg_add_g(svg, 'mg-active-datapoint-container');
+
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
@@ -158,7 +160,7 @@
             .classed('hist-symbol', true);
 
           row.text(mg_format_x_mouseover(args, d)); // x
-          row.text(mg_format_y_mouseover(args, d, args.time_series === false));            
+          row.text(mg_format_y_mouseover(args, d, args.time_series === false));
         }
 
         if (args.mouseover) {
@@ -187,7 +189,7 @@
           .classed('active', false);
 
         //reset active data point text
-        mg_remove_mouseover_container(svg);
+        mg_clear_mouseover_container(svg);
         // svg.select('.mg-active-datapoint')
         //   .text('');
 

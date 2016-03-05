@@ -326,6 +326,8 @@ function mg_targeted_legend (args) {
       var svg = mg_get_svg_child_of(args.target);
       var g;
 
+      mg_add_g(svg, 'mg-active-datapoint-container');
+
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
@@ -442,7 +444,7 @@ function mg_targeted_legend (args) {
       return function(d, i) {
         //reset active bar
         var bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false);
-        
+
         if (args.scales.hasOwnProperty('color')) {
           bar.attr('fill', args.scalefns.color(d));
         } else {
@@ -453,7 +455,7 @@ function mg_targeted_legend (args) {
         svg.select('.mg-active-datapoint')
           .text('');
 
-        mg_remove_mouseover_container(svg);
+        mg_clear_mouseover_container(svg);
 
         if (args.mouseout) {
           args.mouseout(d, i);
