@@ -155,15 +155,16 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
-function mg_remove_mouseover_container(svg) {
-  svg.selectAll('.mg-active-datapoint-container').remove();
+function mg_clear_mouseover_container (svg) {
+  svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove();
 }
 
 function mg_setup_mouseover_container (svg, args) {
   svg.select('.mg-active-datapoint').remove();
   var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
   var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width-args.left-args.right) / 2 + args.left);
-  var active_datapoint = mg_add_g(svg, 'mg-active-datapoint-container')
+
+  var active_datapoint = svg.select('.mg-active-datapoint-container')
     .append('text')
     .attr('class', 'mg-active-datapoint')
     .attr('xml:space', 'preserve')
