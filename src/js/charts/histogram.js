@@ -8,6 +8,19 @@
       raw_data_transformation(args);
       process_histogram(args);
       init(args);
+
+      new MG.scale_factory(args)
+        .namespace('x')
+        .numericalDomainFromData()
+        .positionRange('bottom')
+
+      var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
+      new MG.scale_factory(args)
+        .namespace('y')
+        .zeroBottom(true)
+        .inflateDomain(true)
+        .numericalDomainFromData(baselines)
+        .positionRange('left');
       x_axis(args);
       y_axis(args);
 

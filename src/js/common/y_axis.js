@@ -251,8 +251,8 @@ function y_axis (args) {
   set_min_max_y(args);
   MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 
-  mg_define_y_scales(args);
-  mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
+  //mg_define_y_scales(args);
+  //mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
 
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 

@@ -92,6 +92,12 @@ function mg_targeted_legend (args) {
         x_axis_categorical(args);
         y_axis(args);
       } else {
+        new MG.scale_factory(args)
+          .namespace('x')
+          .zeroBottom(true)
+          .inflateDomain(true)
+          .numericalDomainFromData()
+          .positionRange('bottom');
         x_axis(args);
         y_axis_categorical(args);
       }

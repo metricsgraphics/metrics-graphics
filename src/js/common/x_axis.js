@@ -19,34 +19,35 @@ function mg_add_processed_object (args) {
   }
 }
 
-function mg_define_x_scale (args) {
-  mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
-  mg_find_min_max_x(args);
+// function mg_define_x_scale (args) {
+//   console.log('THIS IS OBSOLETE NOW')
+//   mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
+//   mg_find_min_max_x(args);
 
-  var time_scale = (args.utc_time)
-    ? d3.time.scale.utc()
-    : d3.time.scale();
+//   var time_scale = (args.utc_time)
+//     ? d3.time.scale.utc()
+//     : d3.time.scale();
 
-  args.scales.X = (args.time_series)
-    ? time_scale
-    : (args.x_scale_type === 'log')
-        ? d3.scale.log()
-        : d3.scale.linear();
+//   args.scales.X = (args.time_series)
+//     ? time_scale
+//     : (args.x_scale_type === 'log')
+//         ? d3.scale.log()
+//         : d3.scale.linear();
 
-  args.scales.X
-    .domain([args.processed.min_x, args.processed.max_x])
-    .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
+//   args.scales.X
+//     .domain([args.processed.min_x, args.processed.max_x])
+//     .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
 
-  args.scales.X.clamp(args.x_scale_type === 'log');
-}
+//   args.scales.X.clamp(args.x_scale_type === 'log');
+// }
 
 function x_axis (args) {
   'use strict';
 
   var svg = mg_get_svg_child_of(args.target);
   mg_add_processed_object(args);
-  mg_define_x_scale(args);
-
+  //mg_define_x_scale(args);
+  mg_select_xax_format(args);
   if (args.chart_type === 'point') {
     mg_point_add_color_scale(args);
     mg_point_add_size_scale(args);

@@ -129,6 +129,7 @@ function raw_data_transformation (args) {
 }
 
 function mg_process_multiple_accessors(args, which_accessor) {
+  // turns an array of accessors into ...
   if (args[which_accessor] instanceof Array) {
       args.data = args.data.map(function(_d) {
         return args[which_accessor].map(function(ya) {
@@ -147,7 +148,6 @@ function mg_process_multiple_accessors(args, which_accessor) {
         });
       })[0];
       args[which_accessor] = 'multiline_' + which_accessor;
-
     }
 }
 

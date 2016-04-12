@@ -740,6 +740,24 @@
       process_line(args);
 
       init(args);
+
+
+      // At the moment, we are not incorporating markers into the calculation of x scales.
+      // Shouldn't we, though?
+      //var markers = (args.markers || []).map(function(d){return d[args.x_accessor]});
+      new MG.scale_factory(args)
+        .namespace('x')
+        .numericalDomainFromData()
+        .positionRange('bottom')
+
+      var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
+      new MG.scale_factory(args)
+        .namespace('y')
+        .zeroBottom(true)
+        .inflateDomain(true)
+        .numericalDomainFromData(baselines)
+        .positionRange('left');
+
       x_axis(args);
       y_axis(args);
 
