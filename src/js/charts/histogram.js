@@ -12,7 +12,7 @@
       new MG.scale_factory(args)
         .namespace('x')
         .numericalDomainFromData()
-        .positionRange('bottom')
+        .numericalRange('bottom');
 
       var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
       new MG.scale_factory(args)
@@ -20,7 +20,7 @@
         .zeroBottom(true)
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
-        .positionRange('left');
+        .numericalRange('left');
       x_axis(args);
       y_axis(args);
 

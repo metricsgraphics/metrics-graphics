@@ -5,7 +5,7 @@ function point_mouseover (args, svg, d) {
   if (args.color_accessor !== null && args.color_type === 'category') {
     var label = d[args.color_accessor]
     //else label = mg_format_number_mouseover(args, d.point);
-    row.text(label + '  ').bold().elem().attr('fill', args.scalefns.color(d));
+    row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
   mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
@@ -15,8 +15,8 @@ function point_mouseover (args, svg, d) {
 
 function mg_color_point_mouseover(args, elem, d) {
   if (args.color_accessor !== null) {
-      elem.attr('fill', args.scalefns.color(d));
-      elem.attr('stroke', args.scalefns.color(d));
+      elem.attr('fill', args.scalefns.colorf(d));
+      elem.attr('stroke', args.scalefns.colorf(d));
   } else {
     elem.classed('mg-points-mono', true);
   }
@@ -53,14 +53,47 @@ function mg_color_point_mouseover(args, elem, d) {
         .namespace('x')
         .inflateDomain(true)
         .numericalDomainFromData(markers)
-        .positionRange('bottom')
+        .numericalRange('bottom')
 
       var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
       new MG.scale_factory(args)
         .namespace('y')
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
-        .positionRange('left');
+        .numericalRange('left');
+
+
+      if (args.color_accessor !== null) {
+        var colorScale = MG.scale_factory(args).namespace('color');
+        if (args.color_type === 'number') {
+          // do the color scale.
+          // etiher get color range, or what.
+          colorScale
+            .numericalDomainFromData(mg_get_color_domain(args))
+            .numericalRange(mg_get_color_range(args))
+            .clamp(true);
+        } else {
+          if (args.color_domain) {
+            colorScale
+              .categoricalDomain(args.color_domain)
+              .categoricalRange(args.color_range);
+          } else {
+            colorScale
+            .categoricalDomainFromData()
+            .categoricalColorRange();  
+          }
+          
+          // handle these things for categories.
+        }
+      }
+      
+      if (args.size_accessor) {
+        new MG.scale_factory(args).namespace('size')
+          .numericalDomainFromData()
+          .numericalRange(mg_get_size_range(args))
+          .clamp(true);
+      }
+
       x_axis(args);
       y_axis(args);
 
@@ -103,14 +136,14 @@ function mg_color_point_mouseover(args, elem, d) {
 
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
-        pts.attr('fill',   args.scalefns.color);
-        pts.attr('stroke', args.scalefns.color);
+        pts.attr('fill',   args.scalefns.colorf);
+        pts.attr('stroke', args.scalefns.colorf);
       } else {
         pts.classed('mg-points-mono', true);
       }
 
       if (args.size_accessor !== null) {
-        pts.attr('r', args.scalefns.size);
+        pts.attr('r', args.scalefns.sizef);
       } else {
         pts.attr('r', args.point_size);
       }
@@ -170,7 +203,7 @@ function mg_color_point_mouseover(args, elem, d) {
 
         if (args.size_accessor) {
           pts.attr('r', function(di) {
-            return args.scalefns.size(di) + args.active_point_size_increase;
+            return args.scalefns.sizef(di) + args.active_point_size_increase;
           });
         } else {
           pts.attr('r', args.point_size + args.active_point_size_increase);
@@ -222,7 +255,7 @@ function mg_color_point_mouseover(args, elem, d) {
           .classed('selected', false);
 
         if (args.size_accessor) {
-          pts.attr('r', args.scalefns.size);
+          pts.attr('r', args.scalefns.sizef);
         } else {
           pts.attr('r', args.point_size);
         }

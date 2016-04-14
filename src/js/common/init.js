@@ -157,16 +157,16 @@ function mg_barchart_init(args){
 
 function mg_barchart_count_number_of_groups(args){
   args.categorical_groups = [];
-  if (args.group_accessor) {
+  if (args.ygroup_accessor) {
     var data = args.data[0];
-    args.categorical_groups = d3.set(data.map(function(d){return d[args.group_accessor]})).values() ;
+    args.categorical_groups = d3.set(data.map(function(d){return d[args.ygroup_accessor]})).values() ;
   }  
 }
 
 function mg_barchart_count_number_of_bars(args){
   args.total_bars = args.data[0].length;
-  if (args.group_accessor){
-    var group_bars  = count_array_elements(pluck(args.data[0], args.group_accessor));
+  if (args.ygroup_accessor){
+    var group_bars  = count_array_elements(pluck(args.data[0], args.ygroup_accessor));
     group_bars  = d3.max(Object.keys(group_bars).map(function(d){return group_bars[d]}));
     args.bars_per_group = group_bars;
   } else {
@@ -179,22 +179,22 @@ function mg_barchart_calculate_group_height(args){
     args.group_height = (args.height - args.top - args.bottom - args.buffer*2) / (args.categorical_groups.length || 1) 
   }
   else {
-    var step = (1 + args.bar_padding_percentage) * args.bar_thickness;
-    args.group_height = args.bars_per_group * step + args.bar_outer_padding_percentage * 2 * step;//args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+    var step = (1 + args.y_padding_percentage) * args.bar_thickness;
+    args.group_height = args.bars_per_group * step + args.y_outer_padding_percentage * 2 * step;//args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
   }
 }
 
 function mg_barchart_calculate_bar_thickness(args){
   //
   // take one group height.
-  var step = (args.group_height) / (args.bars_per_group + args.bar_outer_padding_percentage);
-  args.bar_thickness = step - (step * args.bar_padding_percentage);
+  var step = (args.group_height) / (args.bars_per_group + args.y_outer_padding_percentage);
+  args.bar_thickness = step - (step * args.y_padding_percentage);
 }
 
 function mg_barchart_calculate_height(args){
   return (args.group_height) * 
          (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
-         (args.categorical_groups.length * args.group_height * (args.group_padding_percentage + args.group_outer_padding_percentage));
+         (args.categorical_groups.length * args.group_height * (args.ygroup_padding_percentage + args.ygroup_outer_padding_percentage));
 }
 
 function mg_barchart_extrapolate_group_and_thickness_from_height(args){

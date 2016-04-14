@@ -82,7 +82,7 @@ function MGScale(args){
     for (var i = 0; i < args.data.length; i++) {
       if (args.data[i].length > 0) illustrative_data = args.data[i];
     }
-    scaleArgs.is_time_series = illustrative_data[args[scaleArgs.namespace_accessor_name]] instanceof Date ? true : false;
+    scaleArgs.is_time_series = illustrative_data[0][args[scaleArgs.namespace_accessor_name]] instanceof Date ? true : false;
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
 
@@ -98,10 +98,27 @@ function MGScale(args){
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_'+scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';
+
+    return this;
+  }
+
+  this.categoricalDomain = function(domain) {
+    args.scales[scaleArgs.scale_name] = d3.scale.ordinal().domain(domain);
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
 
   this.categoricalDomainFromData = function() {
+    // make args.categorical_variables.
+    // lets make the categorical variables.
+    var all_data =mg_flatten_array(args.data)
+    
+    //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
+    scaleArgs.categoricalVariables = d3.set(all_data.map(function(d){return d[args[scaleArgs.namespace_accessor_name]]})).values();
+    args.scales[scaleArgs.scale_name] = d3.scale.ordinal()
+      .domain(scaleArgs.categoricalVariables);
+
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     scaleArgs.scaleType = 'categorical';
     return this;
   }
@@ -110,14 +127,42 @@ function MGScale(args){
   ////////// all scale ranges are either positional (for axes, etc) or arbitrary (colors, size, etc) //////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  this.positionRange = function(position_string) {
-    var range = mg_position(position_string, args);
+  this.numericalRange = function(range) {
+    if (typeof range === 'string') {
+      args.scales[scaleArgs.scale_name].range(mg_position(range, args));  
+    } else {
+      args.scales[scaleArgs.scale_name].range(range);  
+    }
+    
+    return this;
+  }
+
+  this.categoricalRangeBands = function(range) {
+    var namespace = scaleArgs.namespace;
+    var paddingPercentage = args[namespace +'_padding_percentage'];
+    var outerPaddingPercentage = args[namespace +'_outer_padding_percentage'];
+
+    if (typeof range === 'string') {
+      // if string, it's a location. Place it accordingly.
+      args.scales[scaleArgs.scale_name].rangeBands(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
+    } else {
+      args.scales[scaleArgs.scale_name].rangeBands(range, paddingPercentage, outerPaddingPercentage);
+    }
+
+    return this;
+  }
+
+  this.categoricalRange = function(range) {
+    // var colorRange = args.scales[scaleArgs.scale_name].domain().length > 10
+    //       ? d3.scale.category20() : d3.scale.category10())
     args.scales[scaleArgs.scale_name].range(range);
     return this;
   }
 
-  this.numericalRange = function(range_array) { 
-    args.scales[scaleArgs.scale_name].range(range_array);
+  this.categoricalColorRange = function() {
+    args.scales[scaleArgs.scale_name] =    args.scales[scaleArgs.scale_name].domain().length > 10
+              ? d3.scale.category20() : d3.scale.category10();
+    args.scales[scaleArgs.scale_name].domain(scaleArgs.categoricalVariables);
     return this;
   }
 
@@ -173,13 +218,14 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // not pulling the bottom of the range from data
   // not zero-bottomed
   // not a time series
-  if (zero_bottom && !args['min_' + namespace + '_from_data'] && (min_val > 0 && !scaleArgs.is_time_series)) {
+  if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_time_series) {
     min_val = args[namespace +'_scale_type'] === 'log' ? 1 : 0;
   }
 
-  if (args[namespace + '_scale_type'] !== 'log' && min_val < 0) {
+  if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_time_series) {
     min_val = min_val - (min_val - min_val * args.inflator) * use_inflator;
   }
+
   if (!scaleArgs.is_time_series) {
     max_val = (max_val < 0)
       ? max_val + (max_val - max_val * args.inflator) * use_inflator
@@ -189,18 +235,15 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   min_val = args['min_' + namespace]  || min_val;
   max_val = args['max_' + namespace]  || max_val;
   // if there's a single data point, we should custom-set the min and max values.
+
   if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
+
     if (min_val instanceof Date) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
       min_val = new Date(MG.clone(min_val).setDate(min_val.getDate() - 1));
     } else if (typeof min_val === 'number') {
       min_val = min_val - 1;
       max_val = min_val + 1;
-      // } else if (typeof min_x === 'string') {
-      //   mg_min_max_x_for_strings(mx);
-      // }
-
-      // force xax_count to be 2
       mg_force_xax_count_to_be_two(args);
     }
   }
@@ -208,8 +251,6 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   args.processed['min_' + namespace] = min_val;
   args.processed['max_' + namespace] = max_val;
 }
-
-
 
 
 
@@ -243,7 +284,7 @@ function mg_define_x_scale (args) {
 
 function mg_bar_color_scale(args) {
   if (args.color_accessor !== false) {
-    if (args.group_accessor) {
+    if (args.ygroup_accessor) {
       // add a custom accessor element.
       if (args.color_accessor === null) {
         args.color_accessor = args.y_accessor;

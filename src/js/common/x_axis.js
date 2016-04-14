@@ -49,8 +49,8 @@ function x_axis (args) {
   //mg_define_x_scale(args);
   mg_select_xax_format(args);
   if (args.chart_type === 'point') {
-    mg_point_add_color_scale(args);
-    mg_point_add_size_scale(args);
+    //mg_point_add_color_scale(args);
+    //mg_point_add_size_scale(args);
   }
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 

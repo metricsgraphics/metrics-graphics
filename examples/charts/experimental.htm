@@ -295,6 +295,9 @@ MG.data_graphic({
                     <div class='row'>
                         <div class='col-lg-12 text-center' id='nh-gop'></div>
                     </div>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='no-group'></div>
+                    </div>
                 </div>
 
 
@@ -715,7 +718,7 @@ d3.tsv('data/iowa-dems.csv', function(data){
         chart_type: 'bar',
         x_accessor: 'number',
         y_accessor: 'candidate',
-        group_accessor: 'poll',
+        ygroup_accessor: 'poll',
         target: 'div#iowa-dems'
     })
 })
@@ -744,8 +747,19 @@ d3.tsv('data/nh-gop.csv', function(data) {
         chart_type: 'bar',
         x_accessor: 'number',
         y_accessor: 'candidate',
-        group_accessor: 'poll',
+        ygroup_accessor: 'poll',
         target: 'div#nh-gop'
+    });
+    var justTrump = polls.filter(function(d){
+        return d.candidate === 'Trump';
+    });
+    MG.data_graphic({
+        title: 'Just Trump',
+        data: justTrump,
+        chart_type:'bar',
+        x_accessor: 'number',
+        y_accessor: 'poll',
+        target: 'div#no-group'
     })
 
 })

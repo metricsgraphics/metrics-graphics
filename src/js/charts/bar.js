@@ -97,8 +97,30 @@ function mg_targeted_legend (args) {
           .zeroBottom(true)
           .inflateDomain(true)
           .numericalDomainFromData()
-          .positionRange('bottom');
+          .numericalRange('bottom');
+
+        new MG.scale_factory(args)
+          .namespace('y')
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.group_height]);
+
+        if (args.ygroup_accessor) {
+          new MG.scale_factory(args)
+            .namespace('ygroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('left');
+        } else {
+          args.scales.YGROUP = function(){ return mg_get_plot_top(args)};
+          args.scalefns.ygroupf = function(){ return mg_get_plot_top(args)};
+        }
+
+
+
         x_axis(args);
+
+
+
+
         y_axis_categorical(args);
       }
       // work in progress. If grouped bars, add color scale.
@@ -279,10 +301,10 @@ function mg_targeted_legend (args) {
           } return x;
         })
           .attr('y', function(d) {
-            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);// + appropriate_size/2;
+            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);// + appropriate_size/2;
           })
           .attr('fill', args.scalefns.color)
-          .attr('height', args.scales.Y_ingroup.rangeBand())
+          .attr('height', args.scales.Y.rangeBand())
           .attr('width', function(d) {
             return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
           });
@@ -295,9 +317,9 @@ function mg_targeted_legend (args) {
           predictor_bars
             .attr('x', args.scales.X(0))
             .attr('y', function(d) {
-              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand() * (7/16)// + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * (7/16)// + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
             })
-            .attr('height', args.scales.Y_ingroup.rangeBand()/8)//appropriate_size / pp)
+            .attr('height', args.scales.Y.rangeBand()/8)//appropriate_size / pp)
             .attr('width', function(d) {
               return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
             });
@@ -309,14 +331,14 @@ function mg_targeted_legend (args) {
             .attr('x1', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('x2', function(d) { return args.scales.X(d[args.baseline_accessor]); })
             .attr('y1', function(d) {
-              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()/4
+              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand()/4
             })
             .attr('y2', function(d) {
-              return args.scalefns.yf_out(d) + args.scalefns.yf_in(d) + args.scales.Y_ingroup.rangeBand()*3/4
+              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand()*3/4
             });
         }
       }
-      if (args.legend && args.group_accessor && args.color_accessor !== false && args.group_accessor !== args.color_accessor) {
+      if (args.legend && args.ygroup_accessor && args.color_accessor !== false && args.ygroup_accessor !== args.color_accessor) {
         if (!args.legend_target) legend_on_graph(svg, args);
         else mg_targeted_legend(args);
       }
@@ -383,10 +405,10 @@ function mg_targeted_legend (args) {
       } else {
         bar.attr("x", mg_get_plot_left(args))
           .attr("y", function(d){
-            return args.scalefns.yf_in(d) + args.scalefns.yf_out(d);
+            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
           })
           .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
-          .attr('height', args.scales.Y_ingroup.rangeBand())
+          .attr('height', args.scales.Y.rangeBand())
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))
@@ -427,7 +449,7 @@ function mg_targeted_legend (args) {
           var mouseover = mg_mouseover_text(args, {svg: svg});
           var row = mouseover.mouseover_row();
 
-          if (args.group_accessor)  row.text(d[args.group_accessor] + '   ').bold();
+          if (args.ygroup_accessor)  row.text(d[args.ygroup_accessor] + '   ').bold();
 
           row.text(mg_format_x_mouseover(args, d));
           row.text(args.y_accessor + ': ' + d[args.y_accessor]);
@@ -503,10 +525,10 @@ function mg_targeted_legend (args) {
     binned: true,
     width: 480,
     height:null,
-    bar_padding_percentage: 0.05,
-    bar_outer_padding_percentage: .1,
-    group_padding_percentage:.25,
-    group_outer_padding_percentage: 0,
+    y_padding_percentage: 0.05,
+    y_outer_padding_percentage: .1,
+    ygroup_padding_percentage:.25,
+    ygroup_outer_padding_percentage: 0,
     bar_thickness: 12,
     top: 45,
     left: 105,

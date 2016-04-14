@@ -188,11 +188,7 @@ function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
   }
 }
 
-function mg_add_categorical_scale (args, scale_name, categorical_variables, low, high, padding, outer_padding) {
-  args.scales[scale_name] = d3.scale.ordinal()
-    .domain(categorical_variables)
-    .rangeBands([low, high], padding, outer_padding);
-}
+
 
 function mg_rotate_labels (labels, rotation_degree) {
   if (rotation_degree) {
