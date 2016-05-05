@@ -12,7 +12,7 @@ function mg_targeted_legend (args) {
       var outer_span = div.append('span').classed('mg-bar-target-element', true);
       outer_span.append('span')
         .classed('mg-bar-target-legend-shape', true)
-        .style('color', args.scales.color(label))
+        .style('color', args.scales.colorf(label))
         .text('\u25FC ');
       outer_span.append('span')
         .classed('mg-bar-target-legend-text', true)
@@ -25,7 +25,7 @@ function mg_targeted_legend (args) {
   function legend_on_graph (svg, args) {
     // draw each element at the top right
     // get labels
-    var labels = args.categorical_variables;
+    var labels = args.scales.Y.domain();
     var lineCount = 0;
     var lineHeight = 1.1;
     var g = svg.append('g').classed("mg-bar-legend", true);
@@ -38,7 +38,6 @@ function mg_targeted_legend (args) {
       .attr('height', 100)
       .attr('text-anchor', 'start');
 
-
     labels.forEach(function(label){
       var sub_container = textContainer.append('tspan')
             .attr('x', mg_get_plot_right(args))
@@ -46,7 +45,7 @@ function mg_targeted_legend (args) {
             .attr('dy', (lineCount * lineHeight) + 'em');
       sub_container.append('tspan')
             .text('\u25a0 ')
-            .attr('fill', args.scales.color(label))
+            .attr('fill', args.scales.COLOR(label))
             .attr('font-size', 20)
       sub_container.append('tspan')
             .text(label)
@@ -102,7 +101,7 @@ function mg_targeted_legend (args) {
         new MG.scale_factory(args)
           .namespace('y')
           .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.group_height]);
+          .categoricalRangeBands([0, args.ygroup_height]);
 
         if (args.ygroup_accessor) {
           new MG.scale_factory(args)
@@ -114,17 +113,17 @@ function mg_targeted_legend (args) {
           args.scalefns.ygroupf = function(){ return mg_get_plot_top(args)};
         }
 
-
-
         x_axis(args);
 
-
-
-
-        y_axis_categorical(args);
+        //y_axis_categorical(args);
+        // new MG.axis_factory(args)
+        //   .namespace('y')
+        //   .type('categorical')
+        //   .position(args.y_axis_position)
+        //   .draw();  
       }
       // work in progress. If grouped bars, add color scale.
-      mg_bar_color_scale(args);
+      mg_categorical_group_color_scale(args);
 
       this.mainPlot();
       this.markers();
@@ -162,7 +161,7 @@ function mg_targeted_legend (args) {
 
       bars.enter().append('rect')
         .classed('mg-bar', true)
-        .classed('default-bar', args.scales.hasOwnProperty('color') ? false : true);
+        .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
       // add new white lines.
       // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
       //   .attr('x1', args.scales.X)
@@ -303,7 +302,7 @@ function mg_targeted_legend (args) {
           .attr('y', function(d) {
             return args.scalefns.yf(d) + args.scalefns.ygroupf(d);// + appropriate_size/2;
           })
-          .attr('fill', args.scalefns.color)
+          .attr('fill', args.scalefns.colorf)
           .attr('height', args.scales.Y.rangeBand())
           .attr('width', function(d) {
             return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
@@ -438,8 +437,8 @@ function mg_targeted_legend (args) {
           .filter(function(d, j) {
             return j === i;
           }).classed('active', true);
-        if (args.scales.hasOwnProperty('color')) {
-          bar.attr('fill', d3.rgb(args.scalefns.color(d)).darker());
+        if (args.scales.hasOwnProperty('COLOR')) {
+          bar.attr('fill', d3.rgb(args.scalefns.colorf(d)).darker());
         } else {
           bar.classed('default-active', true);
         }
@@ -474,7 +473,7 @@ function mg_targeted_legend (args) {
         var bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false);
 
         if (args.scales.hasOwnProperty('color')) {
-          bar.attr('fill', args.scalefns.color(d));
+          bar.attr('fill', args.scalefns.colorf(d));
         } else {
           bar.classed('default-active', false);
         }
@@ -525,18 +524,12 @@ function mg_targeted_legend (args) {
     binned: true,
     width: 480,
     height:null,
-    y_padding_percentage: 0.05,
-    y_outer_padding_percentage: .1,
-    ygroup_padding_percentage:.25,
-    ygroup_outer_padding_percentage: 0,
     bar_thickness: 12,
     top: 45,
     left: 105,
     right:65,
     truncate_x_labels: true,
-    truncate_y_labels: true,
-    rotate_x_labels: 0,
-    rotate_y_labels: 0
+    truncate_y_labels: true
   };
 
   MG.register('bar', barChart, defaults);

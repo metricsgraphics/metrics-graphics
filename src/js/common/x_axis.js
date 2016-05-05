@@ -1,3 +1,7 @@
+
+
+
+
 function x_rug (args) {
   'use strict';
   args.rug_buffer_size = args.chart_type === 'point'
@@ -617,7 +621,6 @@ function mg_find_min_max_x (args) {
 
 function mg_select_xax_format (args) {
   var c = args.chart_type;
-
   if (!args.processed.xax_format) {
     if (args.xax_format) {
       args.processed.xax_format = args.xax_format;

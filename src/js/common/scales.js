@@ -1,44 +1,18 @@
-//
-// scales.js
-// ---------
-//
-// This module will become the home for much of the scale-based logic.
-// Over time we will be moving some of the aspects of scale creation
-// from y_axis.js and x_axis.js and adapting and generalizing them here.
-// With that in mind, y_axis.js and x_axis.js will be concerned chiefly
-// with the drawing of the axes.
-//
 
-
-// The axis scales, like x and y, are 1.) numerical, and 2.) positional.
-// These two elements are somewhat independent of each other.
-
-
-/* 
-
-// x_scale variable automatically creates a date-based scale for the x axis.
-var x_scale = MGScale(args)
-          .namespace('y')
-          .numerical('date')  // accessor namespace, the accessor string value to pull. Auto determines if log.
-          .position('bottom');
-
-var y_scale = MGScale(args)
-          .namespace('y')
-          .numerical('y', 'count')
-          .position('left');
-
-// so, what do we do for color?
-var color_scale = MGScale(args)
-        .namespace('color')
-        .numerical('rating')        // map color to 
-        .range(['red', 'green'])
-        .clamp('true');
-
-
-*/
+function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
+  args.scalefns[scalefcn_name] = function(di) {
+    if (inflation === undefined) return args.scales[scale](di[accessor]);
+    else return args.scales[scale](di[accessor]) + inflation;
+  };
+}
 
 function mg_position(str, args) {
   if (str === 'bottom' || str === 'top') return [mg_get_plot_left(args), mg_get_plot_right(args)]// - args.additional_buffer];
+  if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
+}
+
+function mg_cat_position(str, args) {
+  if (str === 'bottom' || str === 'top') return [mg_get_left(args), mg_get_right(args)]// - args.additional_buffer];
   if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
 }
 
@@ -112,13 +86,11 @@ function MGScale(args){
     // make args.categorical_variables.
     // lets make the categorical variables.
     var all_data =mg_flatten_array(args.data)
-    
+      
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d){return d[args[scaleArgs.namespace_accessor_name]]})).values();
     args.scales[scaleArgs.scale_name] = d3.scale.ordinal()
       .domain(scaleArgs.categoricalVariables);
-
-    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     scaleArgs.scaleType = 'categorical';
     return this;
   }
@@ -137,18 +109,19 @@ function MGScale(args){
     return this;
   }
 
-  this.categoricalRangeBands = function(range) {
+  this.categoricalRangeBands = function(range, halfway) {
+    if (halfway === undefined) halfway = false;
+
     var namespace = scaleArgs.namespace;
     var paddingPercentage = args[namespace +'_padding_percentage'];
     var outerPaddingPercentage = args[namespace +'_outer_padding_percentage'];
-
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
       args.scales[scaleArgs.scale_name].rangeBands(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
     } else {
       args.scales[scaleArgs.scale_name].rangeBands(range, paddingPercentage, outerPaddingPercentage);
     }
-
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand()/2 : 0);
     return this;
   }
 
@@ -156,6 +129,7 @@ function MGScale(args){
     // var colorRange = args.scales[scaleArgs.scale_name].domain().length > 10
     //       ? d3.scale.category20() : d3.scale.category10())
     args.scales[scaleArgs.scale_name].range(range);
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
 
@@ -163,6 +137,7 @@ function MGScale(args){
     args.scales[scaleArgs.scale_name] =    args.scales[scaleArgs.scale_name].domain().length > 10
               ? d3.scale.category20() : d3.scale.category10();
     args.scales[scaleArgs.scale_name].domain(scaleArgs.categoricalVariables);
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
 
@@ -282,7 +257,7 @@ function mg_define_x_scale (args) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-function mg_bar_color_scale(args) {
+function mg_categorical_group_color_scale(args) {
   if (args.color_accessor !== false) {
     if (args.ygroup_accessor) {
       // add a custom accessor element.
@@ -290,12 +265,14 @@ function mg_bar_color_scale(args) {
         args.color_accessor = args.y_accessor;
       }
       else {
-
       }
     }
-    // get color domain.
-    var domain = mg_get_color_domain(args);
-    if (args.color_accessor !== null) mg_add_color_categorical_scale(args, domain, args.color_accessor);
+    if (args.color_accessor !== null) {
+      new MG.scale_factory(args)
+            .namespace('color')
+            .categoricalDomainFromData()
+            .categoricalColorRange();
+    }
   }
 }
 

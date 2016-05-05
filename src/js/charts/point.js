@@ -39,30 +39,96 @@ function mg_color_point_mouseover(args, elem, d) {
     return new_data;
   }
 
+  function inferType(args, ns) {
+    // must return categorical or numerical.
+    var testPoint = mg_flatten_array(args.data);
+
+    testPoint = testPoint[0][args[ns+'_accessor']];
+    return typeof testPoint === 'string' ? 'categorical' : 'numerical';
+
+  }
+
   function pointChart(args) {
     this.init = function(args) {
       this.args = args;
 
+      // infer y_axis and x_axis type;
+      args.x_axis_type = inferType(args, 'x');
+      args.y_axis_type = inferType(args, 'y');
+      
       raw_data_transformation(args);
+
+
       process_point(args);
       init(args);
 
+      var xMaker, yMaker;
 
-      var markers = (args.baselines || []).map(function(d){return d[args.x_accessor]});
-      new MG.scale_factory(args)
-        .namespace('x')
-        .inflateDomain(true)
-        .numericalDomainFromData(markers)
-        .numericalRange('bottom')
+      if (args.x_axis_type === 'categorical') {
+        xMaker = MG.scale_factory(args)
+          .namespace('x')
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
+        
+        if (args.xgroup_accessor) {
+          new MG.scale_factory(args)
+            .namespace('xgroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('bottom');
 
-      var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
-      new MG.scale_factory(args)
-        .namespace('y')
-        .inflateDomain(true)
-        .numericalDomainFromData(baselines)
-        .numericalRange('left');
+        } else {
+          args.scales.XGROUP = function(d){ return mg_get_plot_left(args)};
+          args.scalefns.xgroupf = function(d){ return mg_get_plot_left(args)};
 
+        }
+        args.scalefns.xoutf = function(d) {return args.scalefns.xf(d) + args.scalefns.xgroupf(d)};
 
+      } else {
+
+        xMaker = MG.scale_factory(args)
+          .namespace('x')
+          .inflateDomain(true)
+          .zeroBottom(args.y_axis_type === 'categorical')
+          .numericalDomainFromData((args.baselines || []).map(function(d){return d[args.x_accessor]}))
+          .numericalRange('bottom');
+        args.scalefns.xoutf = args.scalefns.xf;
+      }
+
+      // y-scale generation. This needs to get simplified.
+      if (args.y_axis_type === 'categorical') {
+        yMaker = MG.scale_factory(args)
+          .namespace('y')
+          .zeroBottom(true)
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.ygroup_height], true);
+
+        if (args.ygroup_accessor) {
+
+          new MG.scale_factory(args)
+            .namespace('ygroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('left');
+
+        } else {
+          args.scales.YGROUP = function(){ return mg_get_plot_top(args)};
+          args.scalefns.ygroupf = function(d){ return mg_get_plot_top(args)};
+
+        }
+        args.scalefns.youtf = function(d) {return args.scalefns.yf(d) + args.scalefns.ygroupf(d)};
+
+      } else {
+        var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
+        yMaker = MG.scale_factory(args)
+          .namespace('y')
+          .inflateDomain(true)
+          .zeroBottom(args.x_axis_type === 'categorical')
+          .numericalDomainFromData(baselines)
+          .numericalRange('left');
+
+        args.scalefns.youtf = function(d) {return args.scalefns.yf(d)};
+      }
+
+      /////// COLOR accessor;
       if (args.color_accessor !== null) {
         var colorScale = MG.scale_factory(args).namespace('color');
         if (args.color_type === 'number') {
@@ -82,7 +148,7 @@ function mg_color_point_mouseover(args, elem, d) {
             .categoricalDomainFromData()
             .categoricalColorRange();  
           }
-          
+          //console.log(args.scales.COLOR);
           // handle these things for categories.
         }
       }
@@ -94,8 +160,19 @@ function mg_color_point_mouseover(args, elem, d) {
           .clamp(true);
       }
 
-      x_axis(args);
-      y_axis(args);
+      new MG.axis_factory(args)
+        .namespace('x')
+        .type(args.x_axis_type)
+        .zeroLine(args.y_axis_type === 'categorical')
+        .position(args.x_axis_position)
+        .draw();  
+
+      new MG.axis_factory(args)
+        .namespace('y')
+        .type(args.y_axis_type)
+        .zeroLine(args.x_axis_type === 'categorical')
+        .position(args.y_axis_position)
+        .draw();
 
       this.mainPlot();
       this.markers();
@@ -122,17 +199,19 @@ function mg_color_point_mouseover(args, elem, d) {
       //remove the old points, add new one
       svg.selectAll('.mg-points').remove();
 
-      // plot the points, pretty straight-forward
       g = svg.append('g')
         .classed('mg-points', true);
+
 
       var pts = g.selectAll('circle')
         .data(data)
         .enter().append('svg:circle')
           .attr('class', function(d, i) { return 'path-' + i; })
           //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
-          .attr('cx', args.scalefns.xf)
-          .attr('cy', args.scalefns.yf);
+          .attr('cx', args.scalefns.xoutf)
+          .attr('cy', function(d){
+            return args.scalefns.youtf(d);
+          });
 
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
@@ -160,8 +239,8 @@ function mg_color_point_mouseover(args, elem, d) {
 
       //add rollover paths
       var voronoi = d3.geom.voronoi()
-        .x(args.scalefns.xf)
-        .y(args.scalefns.yf)
+        .x(args.scalefns.xoutf)
+        .y(args.scalefns.youtf)
         .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
       var paths = svg.append('g')
@@ -290,6 +369,16 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
+    y_padding_percentage: 0.05,               // for categorical scales
+    y_outer_padding_percentage: .1,           // for categorical scales
+    ygroup_padding_percentage:.25,            // for categorical scales
+    ygroup_outer_padding_percentage: .1,       // for categorical scales
+    x_padding_percentage: 0.05,               // for categorical scales
+    x_outer_padding_percentage: .1,           // for categorical scales
+    xgroup_padding_percentage:.25,            // for categorical scales
+    xgroup_outer_padding_percentage: 0,       // for categorical scales
+    y_categorical_show_guides: true,
+    x_categorical_show_guides: true,
     buffer: 16,
     ls: false,
     lowess: false,

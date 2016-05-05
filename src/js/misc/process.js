@@ -60,6 +60,8 @@ function mg_process_scale_ticks (args, axis) {
   }
 }
 
+
+
 function raw_data_transformation (args) {
   'use strict';
 
@@ -341,6 +343,8 @@ function process_histogram(args) {
 MG.process_histogram = process_histogram;
 
 // for use with bar charts, etc.
+
+
 function process_categorical_variables(args) {
   'use strict';
 
@@ -349,45 +353,48 @@ function process_categorical_variables(args) {
   var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
   var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
-  if (args.binned === false) {
-    args.categorical_variables = [];
-    if (typeof(our_data[0]) === 'object') {
-      // we are dealing with an array of objects, extract the data value of interest
-      extracted_data = our_data
-        .map(function(d) {
-          return d[label_accessor];
-        });
-    } else {
-      extracted_data = our_data;
-    }
+  // if (args.binned === false) {
+  //   args.categorical_variables = [];
+  //   if (typeof(our_data[0]) === 'object') {
+  //     // we are dealing with an array of objects, extract the data value of interest
+  //     extracted_data = our_data
+  //       .map(function(d) {
+  //         return d[label_accessor];
+  //       });
+  //   } else {
+  //     extracted_data = our_data;
+  //   }
 
-    var this_dp;
+  //   var this_dp;
 
-    for (var i = 0; i < extracted_data.length; i++) {
-      this_dp=extracted_data[i];
-      if (args.categorical_variables.indexOf(this_dp) === -1) args.categorical_variables.push(this_dp);
-      if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp] = 0;
+  //   for (var i = 0; i < extracted_data.length; i++) {
+  //     this_dp=extracted_data[i];
+  //     if (args.categorical_variables.indexOf(this_dp) === -1) args.categorical_variables.push(this_dp);
+  //     if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp] = 0;
 
-      processed_data[this_dp] += 1;
-    }
+  //     processed_data[this_dp] += 1;
+  //   }
 
-    processed_data = Object.keys(processed_data).map(function(d) {
-      var obj = {};
-      obj[data_accessor] = processed_data[d];
-      obj[label_accessor] = d;
-      return obj;
-    });
-  } else {
+  //   processed_data = Object.keys(processed_data).map(function(d) {
+  //     var obj = {};
+  //     obj[data_accessor] = processed_data[d];
+  //     obj[label_accessor] = d;
+  //     return obj;
+  //   });
+  // } else {
 
-    processed_data = args.data[0];
-    args.categorical_variables = d3.set(processed_data.map(function(d) {
-      return d[label_accessor];
-    })).values();
+  //   // make the categorical variables arg.
+  //   mg_extract_categorical_variables(args, label_accessor);
+  //   console.log
+  //   // processed_data = args.data[0];
+  //   // args.categorical_variables = d3.set(processed_data.map(function(d) {
+  //   //   return d[label_accessor];
+  //   // })).values();
 
-    args.categorical_variables.reverse();
-  }
+  //   // args.categorical_variables.reverse();
+  // }
 
-  args.data = [processed_data];
+  //args.data = [args.data];
   return this;
 }
 

@@ -75,7 +75,7 @@ function mg_place_marker_text (gm, args) {
     .attr('class', function (d) { return d.textclass || ''; })
     .classed('mg-marker-text', true)
     .attr('x', mg_x_position(args))
-    .attr('y', args.top * 0.95)
+    .attr('y', args.x_axis_position === 'bottom' ? mg_get_top(args) * 0.95 : mg_get_bottom(args)+args.buffer)
     .attr('text-anchor', 'middle')
     .text(mg_return_label)
     .each(function (d) {

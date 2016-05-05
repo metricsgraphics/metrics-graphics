@@ -172,12 +172,6 @@ function mg_make_rug(args, rug_class) {
   return rug;
 }
 
-function mg_add_scale_function(args, scalefcn_name, scale, accessor) {
-  args.scalefns[scalefcn_name] = function(di) {
-    return args.scales[scale](di[accessor]);
-  };
-}
-
 function mg_add_color_accessor_to_rug (rug, args, rug_mono_class) {
   if (args.color_accessor) {
     rug.attr('stroke', args.scalefns.color);

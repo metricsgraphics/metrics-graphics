@@ -54,6 +54,24 @@ MG.data_graphic = function(args) {
     x_sort: true,
     x_axis: true,
     y_axis: true,
+    x_axis_position: 'bottom',
+    y_axis_position: 'left',
+    x_axis_type: null,            // TO BE INTRODUCED IN 2.10
+    y_axis_type: null,            // TO BE INTRODUCED IN 2.10
+    ygroup_accessor: null,
+    xgroup_accessor:null,
+    y_padding_percentage: 0.05,               // for categorical scales
+    y_outer_padding_percentage: .1,           // for categorical scales
+    ygroup_padding_percentage:.25,            // for categorical scales
+    ygroup_outer_padding_percentage: 0,       // for categorical scales
+    x_padding_percentage: 0.05,               // for categorical scales
+    x_outer_padding_percentage: .1,           // for categorical scales
+    xgroup_padding_percentage:.25,            // for categorical scales
+    xgroup_outer_padding_percentage: 0,       // for categorical scales
+    y_categorical_show_guides: false,
+    x_categorical_show_guide: false,
+    rotate_x_labels: 0,
+    rotate_y_labels: 0,
     y_accessor: 'value',
     y_label: '',
     yax_units: '',

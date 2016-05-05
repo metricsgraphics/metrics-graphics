@@ -19,13 +19,25 @@ function mg_is_time_series (args) {
   args.time_series = first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
 }
 
+// function mg_init_compute_width (args) {
+//   var svg_width = args.width;
+//   // are we setting the aspect ratio?
+//   if (args.full_width) {
+//     // get parent element
+//     svg_width = get_width(args.target);
+//   }
+//   args.width = svg_width;
+// }
+
 function mg_init_compute_width (args) {
   var svg_width = args.width;
-  // are we setting the aspect ratio?
   if (args.full_width) {
-    // get parent element
     svg_width = get_width(args.target);
   }
+  if (args.x_axis_type === 'categorical' && svg_width === null) {
+    svg_width = mg_categorical_calculate_height(args);
+  }
+
   args.width = svg_width;
 }
 
@@ -34,8 +46,8 @@ function mg_init_compute_height (args) {
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
-  if (args.chart_type === 'bar' && svg_height === null) {
-    svg_height = mg_barchart_calculate_height(args);
+  if (args.y_axis_type === 'categorical' && svg_height === null) {
+    svg_height = mg_categorical_calculate_height(args);
   }
 
   args.height = svg_height;
@@ -147,26 +159,32 @@ function mg_raise_container_error(container, args){
   }
 }
 
-function mg_barchart_init(args){
-  mg_barchart_count_number_of_groups(args);
-  mg_barchart_count_number_of_bars(args);
-  mg_barchart_calculate_group_height(args);
-  if (args.height) mg_barchart_calculate_bar_thickness(args);
-
+function categoricalInitialization(args, ns) {
+  var which = ns === 'x' ? args.width : args.height;
+  mg_categorical_count_number_of_groups(args, ns);
+  mg_categorical_count_number_of_lanes(args, ns);
+  mg_categorical_calculate_group_length(args, ns, which);
+  if (which) mg_categorical_calculate_bar_thickness(args, ns);
 }
 
-function mg_barchart_count_number_of_groups(args){
+
+function mg_categorical_count_number_of_groups(args, ns){
+  var accessor_string = ns+'group_accessor';
+  var accessor = args[accessor_string];
   args.categorical_groups = [];
-  if (args.ygroup_accessor) {
+  if (accessor) {
     var data = args.data[0];
-    args.categorical_groups = d3.set(data.map(function(d){return d[args.ygroup_accessor]})).values() ;
+    args.categorical_groups = d3.set(data.map(function(d){return d[accessor]})).values() ;
   }  
 }
 
-function mg_barchart_count_number_of_bars(args){
+function mg_categorical_count_number_of_lanes(args, ns){
+  var accessor_string = ns+'group_accessor';
+  var groupAccessor = args[accessor_string];
+
   args.total_bars = args.data[0].length;
-  if (args.ygroup_accessor){
-    var group_bars  = count_array_elements(pluck(args.data[0], args.ygroup_accessor));
+  if (groupAccessor){
+    var group_bars  = count_array_elements(pluck(args.data[0], groupAccessor));
     group_bars  = d3.max(Object.keys(group_bars).map(function(d){return group_bars[d]}));
     args.bars_per_group = group_bars;
   } else {
@@ -174,27 +192,32 @@ function mg_barchart_count_number_of_bars(args){
   }
 }
 
-function mg_barchart_calculate_group_height(args){
-  if (args.height) {
-    args.group_height = (args.height - args.top - args.bottom - args.buffer*2) / (args.categorical_groups.length || 1) 
+function mg_categorical_calculate_group_length(args, ns, which){
+  var groupHeight = ns +'group_height';
+  if (which) {
+    args[groupHeight] = ns === 'y' ?
+       (args.height - args.top - args.bottom - args.buffer*2) / (args.categorical_groups.length || 1) :
+       (args.width - args.left - args.right - args.buffer*2) / (args.categorical_groups.length || 1)
   }
   else {
-    var step = (1 + args.y_padding_percentage) * args.bar_thickness;
-    args.group_height = args.bars_per_group * step + args.y_outer_padding_percentage * 2 * step;//args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+    var step = (1 + args[ns+'_padding_percentage']) * args.bar_thickness;
+    args[groupHeight] = args.bars_per_group * step + args[ns+'_outer_padding_percentage'] * 2 * step;//args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
   }
 }
 
-function mg_barchart_calculate_bar_thickness(args){
-  //
+function mg_categorical_calculate_bar_thickness(args, ns){
   // take one group height.
-  var step = (args.group_height) / (args.bars_per_group + args.y_outer_padding_percentage);
-  args.bar_thickness = step - (step * args.y_padding_percentage);
+  var step = (args[ns+'group_height']) / (args.bars_per_group + args[ns+'_outer_padding_percentage']);
+  args.bar_thickness = step - (step * args[ns+'_padding_percentage']);
 }
 
-function mg_barchart_calculate_height(args){
-  return (args.group_height) * 
-         (args.categorical_groups.length || 1) + args.top + args.bottom + args.buffer*2 +
-         (args.categorical_groups.length * args.group_height * (args.ygroup_padding_percentage + args.ygroup_outer_padding_percentage));
+function mg_categorical_calculate_height(args, ns){
+  var groupContribution  = (args[ns+'group_height']) * 
+         (args.categorical_groups.length || 1);
+  var marginContribution = ns === 'y' ? args.top + args.bottom + args.buffer*2 : args.left + args.right + args.buffer*2;
+
+  return groupContribution + marginContribution +
+         (args.categorical_groups.length * args[ns+'group_height'] * (args[ns+'group_padding_percentage'] + args[ns+'group_outer_padding_percentage']));
 }
 
 function mg_barchart_extrapolate_group_and_thickness_from_height(args){
@@ -212,7 +235,11 @@ function init (args) {
 
   var svg = container.selectAll('svg');
 
-  if (args.chart_type === 'bar') mg_barchart_init(args);
+  //if (args.chart_type === 'bar') mg_barchart_init(args);
+
+  // some things that will need to be calculated if we have a categorical axis.
+  if (args.y_axis_type === 'categorical') { categoricalInitialization(args, 'y'); }
+  if (args.x_axis_type === 'categorical') { categoricalInitialization(args, 'x');}
 
   mg_is_time_series(args);
   mg_init_compute_width(args);

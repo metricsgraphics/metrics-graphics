@@ -208,13 +208,24 @@
             this_legend + '&nbsp; </span>' + plot.legend_text;
         }
       } else {
-        var last_point = args.data[which_line][args.data[which_line].length - 1];
+        var anchor_point, anchor_orientation, dx;
+        if (args.y_axis_position === 'left') {
+          anchor_point = args.data[which_line][args.data[which_line].length - 1];
+          anchor_orientation = 'start';
+          dx = args.buffer;
+        }
+        else { 
+          anchor_point = args.data[which_line][0];
+          anchor_orientation = 'end';
+          dx = -args.buffer;
+        }
         var legend_text = plot.legend_group.append('svg:text')
-          .attr('x', args.scalefns.xf(last_point))
-          .attr('dx', args.buffer)
-          .attr('y', args.scalefns.yf(last_point))
+          .attr('x', args.scalefns.xf(anchor_point))
+          .attr('dx', dx)
+          .attr('y', args.scalefns.yf(anchor_point))
           .attr('dy', '.35em')
           .attr('font-size', 10)
+          .attr('text-anchor', anchor_orientation)
           .attr('font-weight', '300')
           .text(this_legend);
 
@@ -758,8 +769,20 @@
         .numericalDomainFromData(baselines)
         .numericalRange('left');
 
-      x_axis(args);
-      y_axis(args);
+      if (args.x_axis) {
+        new MG.axis_factory(args)
+            .namespace('x')
+            .type('numerical')
+            .position(args.x_axis_position)
+            .draw();  
+      }
+      if (args.y_axis) {
+        new MG.axis_factory(args)
+            .namespace('y')
+            .type('numerical')
+            .position(args.y_axis_position)
+            .draw();  
+      }
 
       this.markers();
       this.mainPlot();

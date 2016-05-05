@@ -164,6 +164,7 @@ function mg_setup_mouseover_container (svg, args) {
   var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
   var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width-args.left-args.right) / 2 + args.left);
 
+
   var active_datapoint = svg.select('.mg-active-datapoint-container')
     .append('text')
     .attr('class', 'mg-active-datapoint')
@@ -173,6 +174,11 @@ function mg_setup_mouseover_container (svg, args) {
   // set the rollover text's position; if we have markers on two lines,
   // nudge up the rollover text a bit
   var active_datapoint_y_nudge = 0.75;
+
+  var y_position = (args.x_axis_position === 'bottom') ? mg_get_top(args) * active_datapoint_y_nudge : mg_get_bottom(args) + args.buffer*3;
+
+
+
   if (args.markers) {
     var yPos;
     svg.selectAll('.mg-marker-text')
@@ -186,7 +192,7 @@ function mg_setup_mouseover_container (svg, args) {
   }
 
   active_datapoint
-    .attr('transform', 'translate(' + mouseover_x + ',' + (mg_get_top(args) * active_datapoint_y_nudge) + ')');
+    .attr('transform', 'translate(' + mouseover_x + ',' + (y_position) + ')');
 }
 
 function mg_mouseover_tspan (svg, text) {
