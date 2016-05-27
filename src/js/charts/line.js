@@ -625,6 +625,7 @@
 
   function mg_update_rollover_circle (args, svg, d) {
     if (args.aggregate_rollover && args.data.length > 1) {
+      console.log(args.data.length.toString());
       // hide the circles in case a non-contiguous series is present
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0);
