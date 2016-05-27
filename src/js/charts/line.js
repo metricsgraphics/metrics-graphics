@@ -625,7 +625,6 @@
 
   function mg_update_rollover_circle (args, svg, d) {
     if (args.aggregate_rollover && args.data.length > 1) {
-      console.log(args.data.length.toString());
       // hide the circles in case a non-contiguous series is present
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0);
@@ -708,9 +707,10 @@
   }
 
   function mg_remove_active_data_points_for_aggregate_rollover (args, svg) {
-    if (args.data[0].length > 1) {
-      svg.selectAll('circle.mg-line-rollover-circle').style('opacity', 0);
-    }
+      svg.selectAll('circle.mg-line-rollover-circle').filter(function (circle) {
+        return circle.length > 1;
+      })
+      .style('opacity', 0);
   }
 
   function mg_remove_active_data_points_for_generic_rollover (args, svg, d) {
