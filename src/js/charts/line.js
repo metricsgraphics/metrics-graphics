@@ -707,7 +707,10 @@
   }
 
   function mg_remove_active_data_points_for_aggregate_rollover (args, svg) {
-    svg.selectAll('circle.mg-line-rollover-circle').style('opacity', 0);
+      svg.selectAll('circle.mg-line-rollover-circle').filter(function (circle) {
+        return circle.length > 1;
+      })
+      .style('opacity', 0);
   }
 
   function mg_remove_active_data_points_for_generic_rollover (args, svg, d) {
