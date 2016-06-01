@@ -53,7 +53,7 @@ test("Chart's width is set correctly on subsequent calls to existing chart", fun
   MG.data_graphic(params_0);
   MG.data_graphic(params);
 
-  var width = document.querySelector(params.target + ' svg').offsetWidth;
+  var width = document.querySelector(params.target + ' svg').clientWidth;
   ok(width === 200, "SVG's width matches latest specified width");
 });
 
@@ -67,8 +67,8 @@ test("Chart's width is set to parents if full_width: true", function () {
   };
   MG.data_graphic(params);
 
-  var svg_width = document.querySelector(params.target + ' svg').offsetWidth;
-  var div_width = document.querySelector(params.target).offsetWidth;
+  var svg_width = document.querySelector(params.target + ' svg').clientWidth;
+  var div_width = document.querySelector(params.target).clientWidth;
 
   equal(div_width, svg_width, "SVG's width matches parent upon using full_width: true");
 });
@@ -85,8 +85,8 @@ test("Chart's height is set to parents if full_height: true", function () {
   document.querySelector(params.target).style.height = '500px';
   MG.data_graphic(params);
 
-  var svg_height = document.querySelector(params.target + ' svg').offsetHeight;
-  var div_height = document.querySelector(params.target).offsetHeight;
+  var svg_height = document.querySelector(params.target + ' svg').clientHeight;
+  var div_height = document.querySelector(params.target).clientHeight;
 
   equal(div_height, svg_height, "SVG's height matches parent upon using full_height: true");
 });
@@ -129,7 +129,7 @@ test("Chart's height is set correctly on subsequent calls to existing chart", fu
   MG.data_graphic(params_0);
   MG.data_graphic(params);
 
-  var height = document.querySelector(params.target + ' svg').offsetHeight;
+  var height = document.querySelector(params.target + ' svg').clientHeight;
   ok(height == params.height, "SVG's height matches latest specified height");
 });
 

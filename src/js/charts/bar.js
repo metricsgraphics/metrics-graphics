@@ -120,7 +120,7 @@ function mg_targeted_legend (args) {
         //   .namespace('y')
         //   .type('categorical')
         //   .position(args.y_axis_position)
-        //   .draw();  
+        //   .draw();
       }
       // work in progress. If grouped bars, add color scale.
       mg_categorical_group_color_scale(args);
@@ -209,9 +209,12 @@ function mg_targeted_legend (args) {
       }
 
       // move the barplot after the axes so it doesn't overlap
-      svg.select('.mg-y-axis').node().parentNode.appendChild(barplot.node());
-
       if (this.is_vertical) {
+        svg.select('.mg-y-axis')
+          .node()
+          .parentNode
+          .appendChild(barplot.node());
+
         // appropriate_size = args.scales.X.rangeBand()/1.5;
 
         // if (perform_load_animation) {
@@ -299,14 +302,14 @@ function mg_targeted_legend (args) {
             x = args.scalefns.xf(d);
           } return x;
         })
-          .attr('y', function(d) {
-            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);// + appropriate_size/2;
-          })
-          .attr('fill', args.scalefns.colorf)
-          .attr('height', args.scales.Y.rangeBand())
-          .attr('width', function(d) {
-            return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
-          });
+        /*.attr('y', function(d) {
+          return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
+        })
+        .attr('fill', args.scalefns.colorf)
+        .attr('height', args.scales.Y.rangeBand())
+        .attr('width', function(d) {
+          return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
+        });*/
 
         if (args.predictor_accessor) {
           // pp = args.predictor_proportion;
@@ -403,11 +406,11 @@ function mg_targeted_legend (args) {
         //   .on('mousemove', this.rolloverMove(args));
       } else {
         bar.attr("x", mg_get_plot_left(args))
-          .attr("y", function(d){
+          /*.attr("y", function(d){
             return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
           })
           .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
-          .attr('height', args.scales.Y.rangeBand())
+          .attr('height', args.scales.Y.rangeBand())*/
           .attr('opacity', 0)
           .on('mouseover', this.rolloverOn(args))
           .on('mouseout', this.rolloverOff(args))

@@ -85,6 +85,6 @@ test('Missing chart\'s width is set correctly on subsequent calls to existing ch
     MG.data_graphic(params_0);
     MG.data_graphic(params);
 
-    var width = document.querySelector(params.target + ' svg').offsetWidth;
+    var width = document.querySelector(params.target + ' svg').clientWidth;
     ok(width == 200, 'SVG\'s width matches latest specified width');
 });

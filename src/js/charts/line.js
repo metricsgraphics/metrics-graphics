@@ -214,7 +214,7 @@
           anchor_orientation = 'start';
           dx = args.buffer;
         }
-        else { 
+        else {
           anchor_point = args.data[which_line][0];
           anchor_orientation = 'end';
           dx = -args.buffer;
@@ -774,14 +774,26 @@
             .namespace('x')
             .type('numerical')
             .position(args.x_axis_position)
-            .draw();  
+            .draw();
+
+        //TODO move to axis_factory
+        if (args.x_label) {
+          var g = d3.select('.mg-x-axis');
+          mg_add_x_label(g, args);
+        }
       }
       if (args.y_axis) {
         new MG.axis_factory(args)
             .namespace('y')
             .type('numerical')
             .position(args.y_axis_position)
-            .draw();  
+            .draw();
+
+        //TODO move to axis_factory
+        if (args.y_label) {
+          var g = d3.select('.mg-y-axis');
+          mg_add_y_label(g, args);
+        }
       }
 
       this.markers();

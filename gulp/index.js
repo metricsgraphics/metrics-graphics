@@ -27,6 +27,7 @@ var
     src + 'common/data_graphic.js',
     src + 'common/bootstrap_tooltip_popover.js',
     src + 'common/chart_title.js',
+    src + 'common/scales.js',
     src + 'common/y_axis.js',
     src + 'common/x_axis.js',
     src + 'common/scales.js',

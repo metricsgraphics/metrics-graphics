@@ -138,7 +138,7 @@ test('args.y_extended_ticks', function() {
     };
 
     MG.data_graphic(params);
-    ok(document.querySelector('.mg-extended-y-ticks'), 'Y-axis extended ticks exist');
+    ok(document.querySelector('.mg-extended-yax-ticks'), 'Y-axis extended ticks exist');
 });
 
 test('args.format is set to percentage', function() {
@@ -162,7 +162,7 @@ test('percentage args.format is correct', function() {
         height: 400,
         min_y_from_data: true
     };
-    
+
     MG.data_graphic(params);
     equal(document.querySelectorAll('.mg-y-axis text')[3].textContent, '110%', 'Y-axis label formats correctly');
 });

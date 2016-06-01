@@ -61,7 +61,7 @@ function MGScale(args){
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
 
     mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator);
-    
+
     var time_scale = (args.utc_time) ? d3.time.scale.utc() : d3.time.scale();
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
@@ -86,7 +86,7 @@ function MGScale(args){
     // make args.categorical_variables.
     // lets make the categorical variables.
     var all_data =mg_flatten_array(args.data)
-      
+
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d){return d[args[scaleArgs.namespace_accessor_name]]})).values();
     args.scales[scaleArgs.scale_name] = d3.scale.ordinal()
@@ -101,11 +101,11 @@ function MGScale(args){
 
   this.numericalRange = function(range) {
     if (typeof range === 'string') {
-      args.scales[scaleArgs.scale_name].range(mg_position(range, args));  
+      args.scales[scaleArgs.scale_name].range(mg_position(range, args));
     } else {
-      args.scales[scaleArgs.scale_name].range(range);  
+      args.scales[scaleArgs.scale_name].range(range);
     }
-    
+
     return this;
   }
 
@@ -163,7 +163,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   //
   // This may seem arbitrary, but it gives us a lot of flexibility. For instance, if we're calculating
   // the min and max for the y axis of a line chart, we're going to want to also factor in baselines (horizontal lines
-  // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code 
+  // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code
   // & scale creation to just flatten the args.baselines array, pull out hte values, and feed it in
   // so it appears in additional_data_arrays.
   var namespace = scaleArgs.namespace;
@@ -175,7 +175,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // add together all relevant data arrays.
   var all_data = mg_flatten_array(args.data)
       .map(function(dp){return dp[accessor]})
-      .concat(mg_flatten_array(additional_data_arrays));  
+      .concat(mg_flatten_array(additional_data_arrays));
 
   // do processing for log ////////////////////////////////////////////////////////////
   if (args[namespace + '_scale_type'] === 'log') {
@@ -204,7 +204,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   if (!scaleArgs.is_time_series) {
     max_val = (max_val < 0)
       ? max_val + (max_val - max_val * args.inflator) * use_inflator
-      : max_val * (use_inflator ? args.inflator : 1);  
+      : max_val * (use_inflator ? args.inflator : 1);
   }
 
   min_val = args['min_' + namespace]  || min_val;
@@ -280,7 +280,7 @@ function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scale.category20().domain(domain);
   args.scalefns.color = function(d){return args.scales.color(d[accessor])};
 }
-  
+
 function mg_get_categorical_domain (data, accessor) {
   return d3.set(data.map(function (d) { return d[accessor]; }))
         .values();
