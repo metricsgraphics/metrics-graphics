@@ -4049,7 +4049,7 @@ MG.button_layout = function(target) {
         .x(args.scalefns.xf)
         .y0(function (d) {
           var l = args.show_confidence_band[0];
-          if(d[l]) {
+          if(d[l] != undefined) {
             return args.scales.Y(d[l]);
           } else {
             return args.scales.Y(d[args.y_accessor]);
@@ -4057,7 +4057,7 @@ MG.button_layout = function(target) {
         })
         .y1(function (d) {
           var u = args.show_confidence_band[1];
-          if(d[u]) {
+          if(d[u] != undefined) {
             return args.scales.Y(d[u]);
           } else {
             return args.scales.Y(d[args.y_accessor]);
@@ -4735,10 +4735,10 @@ MG.button_layout = function(target) {
   }
 
   function mg_remove_active_data_points_for_aggregate_rollover (args, svg) {
-    svg.selectAll('circle.mg-line-rollover-circle').filter(function (circle) {
-      return circle.length > 1;
-    })
-    .style('opacity', 0);
+      svg.selectAll('circle.mg-line-rollover-circle').filter(function (circle) {
+        return circle.length > 1;
+      })
+      .style('opacity', 0);
   }
 
   function mg_remove_active_data_points_for_generic_rollover (args, svg, d) {

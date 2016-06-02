@@ -21,7 +21,7 @@
         .x(args.scalefns.xf)
         .y0(function (d) {
           var l = args.show_confidence_band[0];
-          if(d[l]) {
+          if(d[l] != undefined) {
             return args.scales.Y(d[l]);
           } else {
             return args.scales.Y(d[args.y_accessor]);
@@ -29,7 +29,7 @@
         })
         .y1(function (d) {
           var u = args.show_confidence_band[1];
-          if(d[u]) {
+          if(d[u] != undefined) {
             return args.scales.Y(d[u]);
           } else {
             return args.scales.Y(d[args.y_accessor]);
