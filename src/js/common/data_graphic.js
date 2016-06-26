@@ -24,6 +24,7 @@ MG.data_graphic = function(args) {
     animate_on_load: false,             // animate lines on load
     top: 65,                            // the size of the top margin
     title_y_position: 10,               // how many pixels from the top edge (0) should we show the title at
+    center_title_full_width: false,     // center the title over the full graph (i.e. ignore left and right margins)
     bottom: 45,                         // the size of the bottom margin
     right: 10,                          // size of the right margin
     left: 50,                           // size of the left margin
