@@ -8,3 +8,5 @@ other/htaccess.txt
 .DS_Store
 
 bare.html
+
+npm-debug.log
