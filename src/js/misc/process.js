@@ -197,9 +197,11 @@ function process_line(args) {
       var from = (args.min_x) ? args.min_x : start_date;
       var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
 
-      time_frame = mg_get_time_frame((upto-from)/1000);
+      time_frame = mg_get_time_frame((upto - from) / 1000);
 
-      if (time_frame == 'default' && args.missing_is_hidden_accessor === null) {
+      if (['four-days','many-days','many-months','years','default'].indexOf(time_frame) !== -1
+          && args.missing_is_hidden_accessor === null)
+        {
         for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
           var o = {};
           d.setHours(0, 0, 0, 0);

@@ -841,15 +841,17 @@
           })
           .attr('opacity', 0.3);
 
-        // update rollover text
-        if (args.show_rollover_text) {
+        // update rollover text except for missing data points
+        if (args.show_rollover_text &&
+            !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null))
+          {
           var mouseover = mg_mouseover_text(args, {svg:svg});
           var row = mouseover.mouseover_row();
           if (args.aggregate_rollover) row.text((args.aggregate_rollover && args.data.length > 1 ? mg_format_x_aggregate_mouseover : mg_format_x_mouseover)(args, d));
           var pts = args.aggregate_rollover  && args.data.length > 1 ? d.values : [d];
-          pts.forEach(function(di){
+          pts.forEach(function(di) {
             if (args.aggregate_rollover) row = mouseover.mouseover_row();
-            if(args.legend)  mg_line_color_text(row.text(args.legend[di.line_id-1] + '  ').bold().elem(), di, args);
+            if (args.legend)  mg_line_color_text(row.text(args.legend[di.line_id-1] + '  ').bold().elem(), di, args);
             mg_line_color_text(row.text('\u2014  ').elem(), di, args);
             if (!args.aggregate_rollover) row.text(mg_format_x_mouseover(args, di));
 
