@@ -15,3 +15,4 @@
 | `line.before_all_series` | `args` | Called before rendering the chart. | Returning `false` will prevent the default rendering process from being executed. |
 | `line.before_each_series` | `data[i]` - The current data in the for loop <br /> `args` | Called within the render loop, before any other render takes place. | |
 | `line.after_each_series` | `data[i]` - The current data in the for loop <br /> `args` | Called within the render loop, after the default render has taken place. | |
+| `line.before_destroy` | `lineChart` - chart descriptor | Called before destroying the chart on a subsequent call to the same target element. | Available as of v2.10 |
