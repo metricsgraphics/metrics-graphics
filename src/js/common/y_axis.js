@@ -973,19 +973,14 @@ function mg_add_y_axis_tick_labels(g, args) {
     });
 }
 
+// seems to be deprecated, only used by bar and histogram
 function y_axis(args) {
   if (!args.processed) {
     args.processed = {};
   }
 
   var svg = mg_get_svg_child_of(args.target);
-
-  //set_min_max_y(args);
   MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
-
-  //mg_define_y_scales(args);
-  //mg_add_scale_function(args, 'yf', 'Y', args.y_accessor);
-
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {

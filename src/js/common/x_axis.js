@@ -17,17 +17,14 @@ function mg_add_processed_object(args) {
   }
 }
 
+// seems to be deprecated, only used by bar and histogram
 function x_axis(args) {
   'use strict';
 
   var svg = mg_get_svg_child_of(args.target);
   mg_add_processed_object(args);
-  //mg_define_x_scale(args);
+
   mg_select_xax_format(args);
-  if (args.chart_type === 'point') {
-    //mg_point_add_color_scale(args);
-    //mg_point_add_size_scale(args);
-  }
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   if (!args.x_axis) {
@@ -571,44 +568,6 @@ function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data)
     }
     // force xax_count to be 2
     mg_force_xax_count_to_be_two(args);
-  }
-}
-
-function mg_find_min_max_x_from_data(args) {
-  var all_data = mg_flatten_array(args.data);
-
-  if (args.x_scale_type === 'log') {
-    all_data = all_data.filter(function(d) {
-      return d[args.x_accessor] > 0;
-    });
-  }
-
-  var mx = {};
-  mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, all_data);
-
-  mx.min = args.min_x || mx.min;
-  mx.max = args.max_x || mx.max;
-
-  args.x_axis_negative = false;
-  args.processed.min_x = mx.min;
-  args.processed.max_x = mx.max;
-}
-
-function mg_find_min_max_x(args) {
-  mg_find_min_max_x_from_data(args);
-  mg_select_xax_format(args);
-  MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
-  if (!args.time_series) {
-    if (args.processed.min_x < 0) {
-      args.processed.min_x = args.processed.min_x - (args.processed.max_x * (args.inflator - 1));
-      args.x_axis_negative = true;
-    }
-  }
-
-  if (args.chart_type === 'bar') {
-    args.additional_buffer = args.buffer * 5;
-  } else {
-    args.additional_buffer = 0;
   }
 }
 

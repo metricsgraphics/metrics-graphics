@@ -221,21 +221,9 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   args.processed['min_' + namespace] = min_val;
   args.processed['max_' + namespace] = max_val;
-}
 
-function mg_define_x_scale(args) {
-  mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
-  mg_find_min_max_x(args);
-
-  var time_scale = (args.utc_time) ? d3.scaleUtc() : d3.scaleTime();
-
-  args.scales.X = (args.time_series) ? time_scale : (args.x_scale_type === 'log') ? d3.scaleLog() : d3.scaleLinear();
-
-  args.scales.X
-    .domain([args.processed.min_x, args.processed.max_x])
-    .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
-
-  args.scales.X.clamp(args.x_scale_type === 'log');
+  MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
+  MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

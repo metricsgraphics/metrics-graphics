@@ -120,59 +120,57 @@ test('args.x_extended_ticks', function() {
 });
 
 test('Correctly calculates min and max values for line, point and histogram charts', function() {
-    var args;
-
     // single series
-    args = {
-        processed: {},
+    var params = {
+        target: '#qunit-fixture',
         x_accessor: 'x',
-        chart_type: 'line',
+        y_accessor: 'y',
         data: [
             [
-                {x: 4},
-                {x: 5},
-                {x: 6},
-                {x: 7}
+                {x: 4, y: 5},
+                {x: 5, y: 5},
+                {x: 6, y: 5},
+                {x: 7, y: 5}
             ]
         ]
     };
-    mg_find_min_max_x(args);
-    equal(args.processed.min_x, 4, 'min is correct for single series');
-    equal(args.processed.max_x, 7, 'max is correct for single series');
+    MG.data_graphic(params);
+    equal(params.processed.min_x, 4, 'min is correct for single series');
+    equal(params.processed.max_x, 7, 'max is correct for single series');
 
     // multiple series
-    args = {
-        processed: {},
+    var params2 = {
+        target: '#qunit-fixture',
         x_accessor: 'x',
-        chart_type: 'line',
+        y_accessor: 'y',
         data: [
             [
-                {x: 1},
-                {x: 2},
-                {x: 3},
-                {x: 4}
+                {x: 1, y: 5},
+                {x: 2, y: 5},
+                {x: 3, y: 5},
+                {x: 4, y: 5}
             ], [
-                {x: 5},
-                {x: 6},
-                {x: 7}
+                {x: 5, y: 5},
+                {x: 6, y: 5},
+                {x: 7, y: 5}
             ]
         ]
     };
-    mg_find_min_max_x(args);
-    equal(args.processed.min_x, 1, 'min is correct for multiple series');
-    equal(args.processed.max_x, 7, 'max is correct for multiple series');
+    MG.data_graphic(params2);
+    equal(params2.processed.min_x, 1, 'min is correct for multiple series');
+    equal(params2.processed.max_x, 7, 'max is correct for multiple series');
 });
 
-test('Correctly calculates min and max values for bar chart', function() {
+/*test('Correctly calculates min and max values for bar chart', function() {
     var args;
 
     // single series
     args = {
-        processed: {},
         x_accessor: 'x',
         baseline_accessor: 'b',
         predictor_accessor: 'p',
         chart_type: 'bar',
+        target: '#qunit-fixture',
         data: [
             [
                 {x: 4, b: 3, p: 2},
@@ -182,10 +180,10 @@ test('Correctly calculates min and max values for bar chart', function() {
             ]
         ]
     };
-    mg_find_min_max_x(args);
+    MG.data_graphic(args);
     equal(args.processed.min_x, 0, 'min is correct');
     equal(args.processed.max_x, 12, 'max is correct');
-});
+});*/
 
 test('Ensure that custom xax_format isn\'t deleted', function() {
     var params = {
