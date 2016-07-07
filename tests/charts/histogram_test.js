@@ -17,7 +17,7 @@ module('histogram');
 test('Rollovers exist', function() {
      var params = {
         target: '#qunit-fixture',
-        data: d3.range(10000).map(d3.random.bates(10)),
+        data: d3.range(10000).map(d3.randomBates(10)),
         chart_type: 'histogram',
         linked: true
     };
@@ -29,7 +29,7 @@ test('Rollovers exist', function() {
 test('We have only one set of rollovers', function() {
      var params = {
         target: '#qunit-fixture',
-        data: d3.range(10000).map(d3.random.bates(10)),
+        data: d3.range(10000).map(d3.randomBates(10)),
         chart_type: 'histogram',
         linked: true
     };
@@ -41,7 +41,7 @@ test('We have only one set of rollovers', function() {
 test('Linked chart has the required class set', function() {
      var params = {
         target: '#qunit-fixture',
-        data: d3.range(10000).map(d3.random.bates(10)),
+        data: d3.range(10000).map(d3.randomBates(10)),
         chart_type: 'histogram',
         linked: true
     };
@@ -54,7 +54,7 @@ test('Linked chart has the required class set', function() {
 test('Histogram exists', function() {
     var params = {
         target: '#qunit-fixture',
-        data: d3.range(10000).map(d3.random.bates(10)),
+        data: d3.range(10000).map(d3.randomBates(10)),
         chart_type: 'histogram',
         linked: true
     };

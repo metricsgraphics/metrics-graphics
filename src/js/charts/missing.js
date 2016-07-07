@@ -13,14 +13,14 @@
   }
 
   function mg_missing_x_scale (args) {
-    args.scales.X = d3.scale.linear()
+    args.scales.X = d3.scaleLinear()
       .domain([0, args.data.length])
       .range([mg_get_plot_left(args), mg_get_plot_right(args)]);
     args.scalefns.yf = function (di) { return args.scales.Y(di.y); };
   }
 
   function mg_missing_y_scale (args) {
-    args.scales.Y = d3.scale.linear()
+    args.scales.Y = d3.scaleLinear()
       .domain([-2, 2])
       .range([args.height - args.bottom - args.buffer * 2, args.top]);
     args.scalefns.xf = function (di) { return args.scales.X(di.x); };
@@ -46,21 +46,23 @@
   }
 
   function mg_missing_add_line (g, args) {
-    var line = d3.svg.line()
+    var line = d3.line()
       .x(args.scalefns.xf)
       .y(args.scalefns.yf)
-      .interpolate(args.interpolate);
+      .curve(args.interpolate);
+
     g.append('path')
       .attr('class', 'mg-main-line mg-line1-color')
       .attr('d', line(args.data));
   }
 
   function mg_missing_add_area (g, args) {
-    var area = d3.svg.area()
+    var area = d3.area()
       .x(args.scalefns.xf)
       .y0(args.scales.Y.range()[0])
       .y1(args.scalefns.yf)
-      .interpolate(args.interpolate);
+      .curve(args.interpolate);
+
     g.append('path')
       .attr('class', 'mg-main-area mg-area1-color')
       .attr('d', area(args.data));
@@ -130,7 +132,7 @@
     top: 40, // the size of the top margin
     bottom: 30, // the size of the bottom margin
     right: 10, // size of the right margin
-    left: 10, // size of the left margin
+    left: 0, // size of the left margin
     buffer: 8, // the buffer between the actual chart area and the margins
     legend_target: '',
     width: 350,
@@ -139,8 +141,7 @@
     scalefns: {},
     scales: {},
     show_tooltips: true,
-    show_missing_background: true,
-    interpolate: 'cardinal'
+    show_missing_background: true
   };
 
   MG.register('missing-data', missingData, defaults);

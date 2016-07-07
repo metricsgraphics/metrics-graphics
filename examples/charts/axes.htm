@@ -191,7 +191,7 @@ d3.json('data/brief-1.json', function(data) {
         description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
         data: data,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
         target: '#neg1'
     });
@@ -205,7 +205,7 @@ d3.json('data/brief-1.json', function(data) {
         title: "Y-Axis Not Zero",
         data: data2,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
         min_y_from_data: true,
         yax_units: '$',
@@ -220,12 +220,8 @@ d3.json('data/neg2.json', function(data) {
         title: "Negative Values 2",
         data: data,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         target: '#neg2',
         x_accessor: 'subject',
         y_accessor: 'measure'
@@ -249,6 +245,7 @@ d3.json('data/xnotdate.json', function(data) {
         right: 40,
         left: 90,
         bottom: 50,
+        y_extended_ticks: true,
         target: '#xnotdate',
         x_accessor: 'males',
         y_accessor: 'females',
@@ -363,7 +360,7 @@ d3.json('data/neg1.json', function(data) {
         description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
         data: data,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
         target: '#neg1'
     });
@@ -377,7 +374,7 @@ d3.json('data/neg1.json', function(data) {
         title: "Y-Axis Not Zero",
         data: data2,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
         min_y_from_data: true,
         yax_units: '$',
@@ -392,12 +389,8 @@ d3.json('data/neg2.json', function(data) {
         title: "Negative Values 2",
         data: data,
         width: 295,
-        height: 200,
+        height: 220,
         right: 10,
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         target: '#neg2',
         x_accessor: 'subject',
         y_accessor: 'measure'

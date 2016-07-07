@@ -14,9 +14,9 @@
   }
 
   function mg_add_confidence_band_generator (args, plot, svg) {
-    plot.existing_band = svg.selectAll('.mg-confidence-band');
+    plot.existing_band = svg.selectAll('.mg-confidence-band').nodes();
     if (args.show_confidence_band) {
-      plot.confidence_area = d3.svg.area()
+      plot.confidence_area = d3.area()
         .defined(plot.line.defined())
         .x(args.scalefns.xf)
         .y0(function (d) {
@@ -35,39 +35,35 @@
             return args.scales.Y(d[args.y_accessor]);
           }
         })
-        .interpolate(args.interpolate)
-        .tension(args.interpolate_tension);
+        .curve(args.interpolate);
     }
   }
 
   function mg_add_area_generator (args, plot) {
-    plot.area = d3.svg.area()
+    plot.area = d3.area()
       .defined(plot.line.defined())
       .x(args.scalefns.xf)
       .y0(args.scales.Y.range()[0])
       .y1(args.scalefns.yf)
-      .interpolate(args.interpolate)
-      .tension(args.interpolate_tension);
+      .curve(args.interpolate);
   }
 
   function mg_add_flat_line_generator (args, plot) {
-    plot.flat_line = d3.svg.line()
+    plot.flat_line = d3.line()
       .defined(function (d) {
         return (d['_missing'] === undefined || d['_missing'] !== true)
         && d[args.y_accessor] !== null;
       })
       .x(args.scalefns.xf)
       .y(function () { return args.scales.Y(plot.data_median); })
-      .interpolate(args.interpolate)
-      .tension(args.interpolate_tension);
+      .curve(args.interpolate);
   }
 
   function mg_add_line_generator (args, plot) {
-    plot.line = d3.svg.line()
+    plot.line = d3.line()
       .x(args.scalefns.xf)
       .y(args.scalefns.yf)
-      .interpolate(args.interpolate)
-      .tension(args.interpolate_tension);
+      .curve(args.interpolate);
 
     // if missing_is_zero is not set, then hide data points that fall in missing
     // data ranges or that have been explicitly identified as missing in the
@@ -268,13 +264,11 @@
   function mg_add_rollover_circle (args, svg) {
     // append circle
     var circle = svg.selectAll('.mg-line-rollover-circle')
-      .data(args.data).enter()
-      .append('circle')
-      .attr({
-        'cx': 0,
-        'cy': 0,
-        'r': 0
-      });
+      .data(args.data)
+      .enter().append('circle')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('r', 0);
 
     if (args.colors && args.colors.constructor === Array) {
       circle
@@ -317,13 +311,17 @@
   }
 
   function mg_nest_data_for_voronoi (args) {
-    return d3.nest()
-      .key(function (d) {
-        return args.scales.X(d[args.x_accessor]) + ',' + args.scales.Y(d[args.y_accessor]);
-      })
-      .rollup(function (v) { return v[0]; })
-      .entries(d3.merge(args.data.map(function (d) { return d; })))
-      .map(function (d) { return d.values; });
+//     var a = d3.nest()
+//       .key(function (d) {
+//         return args.scales.X(d[args.x_accessor]) + ',' + args.scales.Y(d[args.y_accessor]);
+//       })
+//       .rollup(function (v) { return v[0]; })
+//       .entries(d3.merge(args.data.map(function (d) { return d; })))
+//       .map(function (d) {
+//         return {0: args.scales.X(d.value[args.x_accessor]), 1: args.scales.Y(d.value[args.y_accessor])};
+//       });
+
+      return d3.merge(args.data);
   }
 
   function mg_line_class_string (args) {
@@ -352,19 +350,19 @@
   }
 
   function mg_add_voronoi_rollover (args, svg, rollover_on, rollover_off, rollover_move) {
-    var voronoi = d3.geom.voronoi()
+    var voronoi = d3.voronoi()
       .x(function (d) { return args.scales.X(d[args.x_accessor]).toFixed(2); })
       .y(function (d) { return args.scales.Y(d[args.y_accessor]).toFixed(2); })
-      .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
+      .extent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
     var g = mg_add_g(svg, 'mg-voronoi');
     g.selectAll('path')
-      .data(voronoi(mg_nest_data_for_voronoi(args)))
+      .data(voronoi.polygons(mg_nest_data_for_voronoi(args)))
       .enter()
       .append('path')
       .filter(function (d) { return d !== undefined && d.length > 0; })
-      .attr('d', function (d) { return 'M' + d.join('L') + 'Z'; })
-      .datum(function (d) { return d.point; }) // because of d3.nest, reassign d
+      .attr('d', function (d) { return d == null ? null : 'M' + d.join('L') + 'Z'; })
+      .datum(function (d) { return d == null ? null : d.data; }) // because of d3.voronoi, reassign d
       .attr('class', mg_line_class_string(args))
       .on('mouseover', rollover_on)
       .on('mouseout', rollover_off)
@@ -577,7 +575,7 @@
   }
 
   function mg_remove_dangling_bands(plot, svg) {
-    if (plot.existing_band[0].length > svg.selectAll('.mg-main-line')[0].length) {
+    if (plot.existing_band[0] && plot.existing_band[0].length > svg.selectAll('.mg-main-line').node().length) {
       svg.selectAll('.mg-confidence-band').remove();
     }
   }
@@ -595,7 +593,7 @@
     plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false;
     plot.legend_text = '';
     mg_line_graph_generators(args, plot, svg);
-    plot.existing_band = svg.selectAll('.mg-confidence-band');
+    plot.existing_band = svg.selectAll('.mg-confidence-band').nodes();
 
     // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
     var continueWithDefault = MG.call_hook('line.before_all_series', [args]);
@@ -647,15 +645,9 @@
 
   function mg_update_aggregate_rollover_circle (args, svg, datum) {
     svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
-      .attr({
-        'cx': function () {
-          return args.scales.X(datum[args.x_accessor]).toFixed(2);
-        },
-        'cy': function () {
-          return args.scales.Y(datum[args.y_accessor]).toFixed(2);
-        },
-        'r': args.point_size
-      })
+      .attr('cx', args.scales.X(datum[args.x_accessor]).toFixed(2))
+      .attr('cy', args.scales.Y(datum[args.y_accessor]).toFixed(2))
+      .attr('r', args.point_size)
       .style('opacity', 1);
   }
 

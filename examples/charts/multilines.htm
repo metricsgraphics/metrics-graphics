@@ -27,7 +27,7 @@
                 <div class='col-lg-7 text-center legend'></div>
                 <div class='col-lg-5'></div>
             </div>
-            
+
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center' id='missing_is_hidden_multi'></div>
                 <div class='col-lg-5'>
@@ -61,7 +61,7 @@
                 </div>
                 <div class='col-lg-5'>
                     <div class='data-column'>
-                        <a href='data/fake_users2.json'>data 1</a>, 
+                        <a href='data/fake_users2.json'>data 1</a>,
                         <a href='data/fake_users3.json'>data 2</a>
                     </div>
 
@@ -111,7 +111,7 @@ d3.json('data/fake_users3.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-    // set this to an empty array. 
+    // set this to an empty array.
     // data[0] and data[2] both still arrays of objects.
     data[1] = [];
 
@@ -128,7 +128,7 @@ d3.json('data/fake_users3.json', function(data) {
 });</code></pre>
 
     </div>
-</div>  
+</div>
 
 <div class='row trunk-section'>
     <div class='col-lg-7 text-center' id='multi-labelled'></div>
@@ -185,7 +185,7 @@ d3.json('data/fake_users3.json', function(data) {
 </code></pre>
 
     </div>
-</div>  
+</div>
 <div class='row'>
     <div class='col-lg-7 text-center legend' id='custom-color-key'></div>
     <div class='col-lg-5'></div>
@@ -270,7 +270,7 @@ d3.json('data/fake_users3.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    // set this to an empty array. 
+    // set this to an empty array.
     // data[0] and data[2] both still arrays of objects.
     data[1] = [];
     MG.data_graphic({

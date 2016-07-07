@@ -20,10 +20,6 @@
         height: 225,
         right: 10,
         target: '#scatter-simple',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         mouseover: function(d, i) { console.log(d,i); },
@@ -39,10 +35,6 @@
         height: 225,
         right: 10,
         target: '#categorical1',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
@@ -59,10 +51,6 @@
         height: 225,
         right: 10,
         target: '#categorical2',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
@@ -82,10 +70,6 @@
         height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y'
     });
@@ -121,10 +105,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#scatter-size-and-color',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor:'z',
@@ -137,122 +117,6 @@ d3.json('data/points1.json', function(data) {
 
                 </div>
             </div>
-            
-
-<div class='row trunk-section'>
-                <div class='col-lg-7 text-center'>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='point-categorical'></div>
-                    </div>
-
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='point-categorical2'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='point-categorical-group'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='point-categorical-group2'></div>
-                    </div>
-                </div>
-                <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/points1.json'>data</a></div>
-
-<pre><code class='javascript'>
-Code goes here
-</code></pre>
-
-    </div>
-</div>
-
-
-<script>
-d3.tsv('data/nh-gop.csv', function(data) {
-    var polls = [];
-    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
-    data.forEach(function(p){
-        who.forEach(function(d){
-            var out = {};
-            out.candidate = d;
-            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
-            out.poll = p.Poll;
-            //if (Math.random() > .8) out.number = -out.number;
-            out.size = Math.random();
-            out.when = p.Date;
-            polls.push(out);
-
-        })
-    });
-    MG.data_graphic({
-        title: 'Categorical Scale: X, no groups',
-        data: polls,
-        chart_type: 'point',
-        y_accessor: 'number',
-        x_accessor: 'candidate',
-        height:400,
-        width:400,
-        //ygroup_accessor: 'poll',
-        target: 'div#point-categorical',
-    })
-
-        MG.data_graphic({
-        title: 'Categorical Scale: Y, no groups',
-        data: polls,
-        chart_type: 'point',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        height:400,
-        width:400,
-        //ygroup_accessor: 'poll',
-        target: 'div#point-categorical2',
-    })
-
-    MG.data_graphic({
-        title: 'Categorical Scale: Y, groups',
-        data: polls,
-        chart_type: 'point',
-        y_axis_type: 'categorical',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        ygroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
-        height:550,
-        width:400,
-        left:100,
-        //ygroup_accessor: 'poll',
-        target: 'div#point-categorical-group'
-    })
-
-        MG.data_graphic({
-        title: 'Categorical Scale: Y, groups, horizontal',
-        data: polls,
-        chart_type: 'point',
-        y_accessor: 'number',
-        x_accessor: 'candidate',
-        xgroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
-        height:400,
-        width:550,
-        left:100,
-        target: 'div#point-categorical-group2'
-    })
-})
-
-</script>
-
-
-
-
-
-
-
-
-
-
 
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
@@ -266,7 +130,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/ufo_dates.csv'>data</a></div>
 
-<pre><code class='javascript'>var values = d3.range(10000).map(d3.random.bates(10));
+<pre><code class='javascript'>var values = d3.range(10000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -282,7 +146,7 @@ MG.data_graphic({
     y_extended_ticks: true,
     mouseover: function(d, i) {
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
@@ -291,12 +155,10 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         return parseInt(d.value) / 30;
     });
     data.sort();
-    var p75 = data[Math.floor(data.length * 3 / 4)];
     MG.data_graphic({
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
-        description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
         data: data,
-        markers: [{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
         chart_type: 'histogram',
         width: 600,
         height: 300,
@@ -306,12 +168,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         target: '#ufos',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            var string;
-            if (d.x < 12) {
-                string = d3.round(d.x,2) + ' Months';
-            } else {
-                string = d3.round(d.x,2) + ' Months';
-            }
+            var string = Math.round(d.x,2) + ' months';
             d3.select('#ufos svg .mg-active-datapoint')
                 .text(string + '       Volume: ' + d.y);
         }
@@ -319,7 +176,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
 });
 
 var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
-second = d3.layout.histogram()(second)
+second = d3.histogram()(second)
     .map(function(d) {
         return {'count': d.y, 'value': d.x};
 });
@@ -339,11 +196,11 @@ MG.data_graphic({
     y_accessor: 'count',
     mouseover: function(d, i) {
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
-var third = d3.range(1000).map(d3.random.bates(10));
+var third = d3.range(1000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
 MG.data_graphic({
@@ -360,12 +217,12 @@ MG.data_graphic({
     x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
 // check for negative values, for sanity.
-var fourth = d3.range(1000).map(d3.random.bates(10));
+var fourth = d3.range(1000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
 MG.data_graphic({
@@ -381,7 +238,7 @@ MG.data_graphic({
     x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
@@ -399,85 +256,6 @@ MG.data_graphic({
     height: 200,
     binned: true,
 });</code></pre>
-
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-7 text-center'>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='iowa-dems'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='nh-gop'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-lg-12 text-center' id='no-group'></div>
-                    </div>
-                </div>
-
-
-                <div class='col-lg-5'>
-
-<pre><code class='javascript'>
-d3.tsv('data/iowa-dems.csv', function(data){
-    var polls = [];
-    var who = ['Clinton', 'Sanders', 'Omalley'];
-    data.forEach(function(p){
-        who.forEach(function(d){
-            var out = {};
-            out.candidate = d;
-            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
-            out.poll = p.Poll;
-            //if (Math.random() > .8) out.number = -out.number;
-
-            out.when = p.Date;
-            polls.push(out);
-
-        })
-    });
-    MG.data_graphic({
-        title: 'Iowa Democratic Primary Polls',
-        data: polls,
-        chart_type: 'bar',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        group_accessor: 'poll',
-        target: 'div#iowa-dems',
-
-    })
-})
-
-d3.tsv('data/nh-gop.csv', function(data) {
-    var polls = [];
-    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
-    data.forEach(function(p){
-        who.forEach(function(d){
-            var out = {};
-            out.candidate = d;
-            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
-            out.poll = p.Poll;
-            //if (Math.random() > .8) out.number = -out.number;
-
-            out.when = p.Date;
-            polls.push(out);
-
-        })
-    });
-
-    MG.data_graphic({
-        title: 'New Hampshire Polling (groups)',
-        data: polls,
-        chart_type: 'bar',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        group_accessor: 'poll',
-        target: 'div#nh-gop',
-
-    })
-})
-
-</code></pre>
 
                 </div>
             </div>
@@ -524,7 +302,7 @@ var table1 = MG.data_table({
 
                 </div>
             </div>
-            
+
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center' id='buttons'></div>
                 <div class='col-lg-5'>
@@ -563,10 +341,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#scatter-simple',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         y_rug: true
@@ -581,10 +355,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#categorical1',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
@@ -601,10 +371,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#categorical2',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
@@ -624,10 +390,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y'
     });
@@ -663,10 +425,6 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#scatter-size-and-color',
-        xax_format: function(f) {
-            var pf = d3.formatPrefix(f);
-            return Math.round(pf.scale(f)) + pf.symbol;
-        },
         x_accessor: 'x',
         y_accessor: 'y',
         color_accessor: 'z',
@@ -676,8 +434,8 @@ d3.json('data/points1.json', function(data) {
         y_rug: true
     });
 });
-    
-var values = d3.range(10000).map(d3.random.bates(10));
+
+var values = d3.range(10000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -693,7 +451,7 @@ MG.data_graphic({
     y_extended_ticks: true,
     mouseover: function(d, i) {
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
@@ -702,12 +460,10 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         return parseInt(d.value) / 30;
     });
     data.sort();
-    var p75 = data[Math.floor(data.length * 3 / 4)];
     MG.data_graphic({
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
-        description: "Semi-real data about the reported differences between the supposed sighting of a UFO, and the date it was reported. I inflated the low values and inflated the high ones to make the histogram a little more pleasing for the demo. The data set comes from some random UFO sightings csv I had on my computer.",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
         data: data,
-        markers: [{'label': '75% of reports come <' + d3.round(p75 / 12) + ' years after the initial sighting', 'value': p75}],
         chart_type: 'histogram',
         width: 600,
         height: 300,
@@ -717,12 +473,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         target: '#ufos',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            var string;
-            if (d.x < 12) {
-                string = d3.round(d.x,2) + ' Months';
-            } else {
-                string = d3.round(d.x,2) + ' Months';
-            }
+            var string = Math.round(d.x,2) + ' months';
             d3.select('#ufos svg .mg-active-datapoint')
                 .text(string + '       Volume: ' + d.y);
         }
@@ -730,9 +481,9 @@ d3.csv('data/ufo_dates.csv', function(ufos){
 });
 
 var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
-second = d3.layout.histogram()(second)
+second = d3.histogram()(second)
     .map(function(d) {
-        return {'count': d.y, 'value': d.x};
+        return {'count': d.x0, 'value': d.x1};
 });
 
 MG.data_graphic({
@@ -750,11 +501,11 @@ MG.data_graphic({
     y_accessor: 'count',
     mouseover: function(d, i) {
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
-var third = d3.range(1000).map(d3.random.bates(10));
+var third = d3.range(1000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
 MG.data_graphic({
@@ -771,12 +522,12 @@ MG.data_graphic({
     x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
 // check for negative values, for sanity.
-var fourth = d3.range(1000).map(d3.random.bates(10));
+var fourth = d3.range(1000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
 MG.data_graphic({
@@ -792,7 +543,7 @@ MG.data_graphic({
     x_accessor: 'val1',
     mouseover: function(d, i) {
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + d3.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
     }
 });
 
@@ -810,109 +561,6 @@ MG.data_graphic({
     height: 200,
     binned: true,
 });
-
-d3.tsv('data/iowa-dems.csv', function(data){
-    var polls = [];
-    var who = ['Clinton', 'Sanders', 'Omalley'];
-    data.forEach(function(p){
-        who.forEach(function(d){
-            var out = {};
-            out.candidate = d;
-            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
-            out.poll = p.Poll;
-            //if (Math.random() > .8) out.number = -out.number;
-
-            out.when = p.Date;
-            polls.push(out);
-
-        })
-    });
-    MG.data_graphic({
-        title: 'Iowa Democratic Primary Polls',
-        data: polls,
-        chart_type: 'bar',
-        y_axis_type: 'categorical',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        ygroup_accessor: 'poll',
-        target: 'div#iowa-dems'
-    })
-})
-
-
-d3.tsv('data/nh-gop.csv', function(data) {
-    var polls = [];
-    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
-    data.forEach(function(p){
-        who.forEach(function(d){
-            var out = {};
-            out.candidate = d;
-            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
-            out.poll = p.Poll;
-            //if (Math.random() > .8) out.number = -out.number;
-
-            out.when = p.Date;
-            polls.push(out);
-
-        })
-    });
-
-    MG.data_graphic({
-        title: 'New Hampshire Polling (groups)',
-        data: polls,
-        chart_type: 'bar',
-        x_accessor: 'number',
-        y_accessor: 'candidate',
-        y_axis_type: 'categorical',
-        ygroup_accessor: 'poll',
-        target: 'div#nh-gop'
-    });
-    var justTrump = polls.filter(function(d){
-        return d.candidate === 'Trump';
-    });
-    MG.data_graphic({
-        title: 'Just Trump',
-        data: justTrump,
-        chart_type:'bar',
-        x_accessor: 'number',
-        y_accessor: 'poll',
-        y_axis_type: 'categorical',
-        target: 'div#no-group'
-    })
-
-})
-
-// MG.data_graphic({
-//     title: "No Axis",
-//     description: "Work-in-progress",
-//     data: bar_data,
-//     chart_type: 'bar',
-//     baseline_accessor: 'baseline',
-//     predictor_accessor: 'prediction',
-//     x_accessor: 'value',
-//     y_accessor: 'label',
-//     width: 295,
-//     right: 10,
-//     animate_on_load: true,
-//     target: '#bar2'
-// });
-
-// MG.data_graphic({
-//     title: "Vertical Bars",
-//     description: "Work-in-progress",
-//     data: bar_data,
-//     chart_type: 'bar',
-//     bar_orientation: 'vertical',
-//     y_accessor: 'value',
-//     x_accessor: 'label',
-//     baseline_accessor: 'baseline',
-//     predictor_accessor: 'prediction',
-//     width: 295,
-//     height: 220,
-//     right: 10,
-//     animate_on_load: true,
-//     target: '#bar3'
-// });
 
 var table_data = [
     { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
@@ -967,8 +615,8 @@ var buttons = MG.button_layout('#buttons')
         console.log('made it');
         return false;
     })
-    .display();    
-    
+    .display();
+
 addScatterplotSizeAndColor(theme);
 
 function addScatterplotSizeAndColor(theme) {
@@ -985,10 +633,6 @@ function addScatterplotSizeAndColor(theme) {
             height: 225,
             right: 10,
             target: '#scatter-size-and-color',
-            xax_format: function(f) {
-                var pf = d3.formatPrefix(f);
-                return Math.round(pf.scale(f)) + pf.symbol;
-            },
             x_accessor: 'x',
             y_accessor: 'y',
             color_accessor: 'z',

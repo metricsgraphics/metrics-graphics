@@ -52,19 +52,19 @@ function rugPlacement (args, axisArgs) {
     coordinates.x2 = mg_get_left(args) + args.rug_buffer_size;
     coordinates.y1 = args.scalefns[ns +'f'];
     coordinates.y2 = args.scalefns[ns +'f'];
-  } 
+  }
   if (position === 'right') {
     coordinates.x1 = mg_get_right(args)-1,
     coordinates.x2 = mg_get_right(args)-args.rug_buffer_size,
     coordinates.y1 = args.scalefns[ns +'f'];
     coordinates.y2 = args.scalefns[ns +'f'];
-  } 
+  }
   if (position === 'top') {
     coordinates.x1 = args.scalefns[ns +'f'];
     coordinates.x2 = args.scalefns[ns +'f'];
     coordinates.y1 = mg_get_top(args)+1;
     coordinates.y2 = mg_get_top(args)+args.rug_buffer_size;
-  } 
+  }
   if (position === 'bottom') {
     coordinates.x1 = args.scalefns[ns +'f'];
     coordinates.x2 = args.scalefns[ns +'f'];
@@ -132,7 +132,7 @@ function labelPlacement(args, axisArgs) {
 
   if (position === 'left') {
     coordinates.x = mg_get_left(args) - tickLength * 3 / 2;
-    coordinates.y = function(d){return scale(d).toFixed(2)}; 
+    coordinates.y = function(d){return scale(d).toFixed(2)};
     coordinates.dx = -3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
@@ -140,7 +140,7 @@ function labelPlacement(args, axisArgs) {
   }
   if (position === 'right') {
     coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
-    coordinates.y = function(d){return scale(d).toFixed(2)}; 
+    coordinates.y = function(d){return scale(d).toFixed(2)};
     coordinates.dx = 3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'start';
@@ -262,14 +262,14 @@ function addNumericalLabels (g, args, axisArgs) {
     .attr('text-anchor', coords.textAnchor)
     .text(coords.text);
   // move the labels if they overlap.
-  
+
   if (ns == 'x') {
     selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
 
       labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
         var d = new Date(_d);
-        if (i === 0) return d3.time.format('%H')(d);
+        if (i === 0) return d3.timeFormat('%H')(d);
         else return '';
       });
       labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function (_d, i) {
@@ -459,7 +459,7 @@ function categoricalLabels (args, axisArgs) {
   var scale = args.scales[ns.toUpperCase()];
   var groupScale = args.scales[(ns+'group').toUpperCase()]
   var groupAccessor = ns +'group_accessor';
-  
+
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.' + nsClass);
   var g = mg_add_g(svg, nsClass);
@@ -563,7 +563,7 @@ function categoricalGuides (args, axisArgs) {
         y12 = mg_get_plot_top(args);
         y22 = mg_get_plot_top(args);
       }
-      
+
       svg.append('line')
         .attr('x1', x11)
         .attr('x2', x21)
@@ -610,7 +610,7 @@ function zeroLine(args, axisArgs) {
     y1 = mg_get_plot_top(args);
     y2 = mg_get_plot_bottom(args);
     x1 = scale(0)-1;
-    x2 = scale(0)-1; 
+    x2 = scale(0)-1;
   }
 
   svg.append('line')
@@ -631,7 +631,7 @@ mgDrawAxis.categorical = function(args, axisArgs) {
 
   //if (args.show_bar_zero) mg_bar_add_zero_line(args, axisArgs);
   // if (args[ns+'group_accessor']) groupLines(args, axisArgs);
-  
+
   //if (args[ns+'_categorical_show_guides']) mg_y_categorical_show_guides(args, axisArgs);
 }
 
@@ -654,8 +654,8 @@ mgDrawAxis.numerical = function(args, axisArgs) {
   addTickLines(g, args, axisArgs);
   addNumericalLabels(g, args, axisArgs)
 
-  if (args[namespace+'_rug']) { 
-    rug(args, axisArgs); 
+  if (args[namespace+'_rug']) {
+    rug(args, axisArgs);
   }
 
   if (args.show_bar_zero) mg_bar_add_zero_line(args);
@@ -670,7 +670,7 @@ function axisFactory(args) {
   axisArgs.type = 'numerical';
 
   this.namespace = function(ns) {
-    // take the ns in the scale, and use it to 
+    // take the ns in the scale, and use it to
     axisArgs.namespace = ns;
     return this;
   }
@@ -696,7 +696,6 @@ function axisFactory(args) {
   }
 
   this.draw = function() {
-    // ok. Here are all the steps.
     mgDrawAxis[axisArgs.type](args, axisArgs);
     return this;
   }
@@ -763,17 +762,17 @@ function mg_compute_yax_format (args) {
       }
 
       yax_format = function (f) {
-        if (f < 1.0) {
-          // Don't scale tiny values.
-          return args.yax_units + d3.round(f, args.decimals);
+        if(f < 1000) {
+          var pf = d3.format(',.0f');
+          return args.yax_units + pf(f);
         } else {
-          var pf = d3.formatPrefix(f);
-          return args.yax_units + pf.scale(f) + pf.symbol;
+          var pf = d3.format(',.0s');
+          return args.yax_units + pf(f);
         }
       };
     } else { // percentage
       yax_format = function (d_) {
-        var n = d3.format('.2p');
+        var n = d3.format('.0%');
         return n(d_);
       };
     }
@@ -786,7 +785,7 @@ function mg_bar_add_zero_line (args) {
   var extents = args.scales.X.domain();
   if (0 >= extents[0] && extents[1] >= 0) {
     var r = args.scales.Y.range();
-    var g = args.categorical_groups.length ? 
+    var g = args.categorical_groups.length ?
       args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length-1]) : args.scales.YGROUP();
     svg.append('svg:line')
     .attr('x1', args.scales.X(0))
@@ -858,7 +857,7 @@ function mg_y_domain_range (args, scale) {
 }
 
 function mg_define_y_scales (args) {
-  var scale = args.y_scale_type === 'log' ? d3.scale.log() : d3.scale.linear();
+  var scale = args.y_scale_type === 'log' ? d3.scaleLog() : d3.scaleLinear();
   if (args.y_scale_type === 'log') {
     if (args.chart_type === 'histogram') {
       // log histogram plots should start just below 1
@@ -874,7 +873,7 @@ function mg_define_y_scales (args) {
   args.scales.Y.clamp(args.y_scale_type === 'log');
 
   // used for ticks and such, and designed to be paired with log or linear
-  args.scales.Y_axis = mg_y_domain_range(args, d3.scale.linear());
+  args.scales.Y_axis = mg_y_domain_range(args, d3.scaleLinear());
 }
 
 function mg_add_y_label (g, args) {
@@ -927,7 +926,7 @@ function mg_add_y_axis_tick_lines (g, args) {
   g.selectAll('.mg-yax-ticks')
     .data(args.processed.y_ticks).enter()
     .append('line')
-    .classed('mg-extended-y-ticks', args.y_extended_ticks)
+    .classed('mg-extended-yax-ticks', args.y_extended_ticks)
     .attr('x1', args.left)
     .attr('x2', function () {
       return (args.y_extended_ticks)

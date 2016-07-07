@@ -119,7 +119,8 @@ function mg_remove_outdated_lines (svg, args) {
   // data_graphic() on the same target with 2 lines, remove the 3rd line
 
   var i = 0;
-  if (svg.selectAll('.mg-main-line')[0].length >= args.data.length) {
+
+  if (svg.selectAll('.mg-main-line').nodes().length >= args.data.length) {
     // now, the thing is we can't just remove, say, line3 if we have a custom
     // line-color map, instead, see which are the lines to be removed, and delete those
     if (args.custom_line_color_map.length > 0) {
@@ -140,9 +141,10 @@ function mg_remove_outdated_lines (svg, args) {
       }
     } else {
       // if we don't have a custom line-color map, just remove the lines from the end
-
       var num_of_new = args.data.length;
-      var num_of_existing = svg.selectAll('.mg-main-line')[0].length;
+      var num_of_existing = (svg.selectAll('.mg-main-line').nodes())
+        ? svg.selectAll('.mg-main-line').nodes().length
+        : 0;
 
       for (i = num_of_existing; i > num_of_new; i--) {
         svg.selectAll('.mg-main-line.mg-line' + i + '-color')
@@ -175,7 +177,7 @@ function mg_categorical_count_number_of_groups(args, ns){
   if (accessor) {
     var data = args.data[0];
     args.categorical_groups = d3.set(data.map(function(d){return d[accessor]})).values() ;
-  }  
+  }
 }
 
 function mg_categorical_count_number_of_lanes(args, ns){
@@ -212,7 +214,7 @@ function mg_categorical_calculate_bar_thickness(args, ns){
 }
 
 function mg_categorical_calculate_height(args, ns){
-  var groupContribution  = (args[ns+'group_height']) * 
+  var groupContribution  = (args[ns+'group_height']) *
          (args.categorical_groups.length || 1);
   var marginContribution = ns === 'y' ? args.top + args.bottom + args.buffer*2 : args.left + args.right + args.buffer*2;
 

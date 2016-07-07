@@ -23,28 +23,6 @@ function mg_add_processed_object (args) {
   }
 }
 
-// function mg_define_x_scale (args) {
-//   console.log('THIS IS OBSOLETE NOW')
-//   mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
-//   mg_find_min_max_x(args);
-
-//   var time_scale = (args.utc_time)
-//     ? d3.time.scale.utc()
-//     : d3.time.scale();
-
-//   args.scales.X = (args.time_series)
-//     ? time_scale
-//     : (args.x_scale_type === 'log')
-//         ? d3.scale.log()
-//         : d3.scale.linear();
-
-//   args.scales.X
-//     .domain([args.processed.min_x, args.processed.max_x])
-//     .range([mg_get_plot_left(args), mg_get_plot_right(args) - args.additional_buffer]);
-
-//   args.scales.X.clamp(args.x_scale_type === 'log');
-// }
-
 function x_axis (args) {
   'use strict';
 
@@ -120,15 +98,15 @@ function mg_point_add_color_scale (args) {
     color_range = mg_get_color_range(args);
 
     if (args.color_type === 'number') {
-      args.scales.color = d3.scale.linear()
+      args.scales.color = d3.scaleLinear()
         .domain(color_domain)
         .range(color_range)
         .clamp(true);
     } else {
       args.scales.color = args.color_range !== null
-        ? d3.scale.ordinal().range(color_range)
+        ? d3.scaleOrdinal().range(color_range)
         : (color_domain.length > 10
-          ? d3.scale.category20() : d3.scale.category10());
+          ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
 
       args.scales.color.domain(color_domain);
     }
@@ -175,7 +153,7 @@ function mg_point_add_size_scale (args) {
     size_domain = mg_get_size_domain(args);
     size_range = mg_get_size_range(args);
 
-    args.scales.size = d3.scale.linear()
+    args.scales.size = d3.scaleLinear()
       .domain(size_domain)
       .range(size_range)
       .clamp(true);
@@ -223,10 +201,10 @@ function mg_default_bar_xax_format (args) {
   return function (f) {
     if (f < 1.0) {
       // don't scale tiny values
-      return args.xax_units + d3.round(f, args.decimals);
+      return args.xax_units + f.toFixed(args.decimals);
     } else {
-      var pf = d3.formatPrefix(f);
-      return args.xax_units + pf.scale(f) + pf.symbol;
+      var pf = d3.format(',.0f');
+      return args.xax_units + pf(f);
     }
   };
 }
@@ -307,22 +285,25 @@ function mg_default_xax_format (args) {
     return args.xax_format;
   }
   var data = args.processed.original_data || args.data;
-  var test_point = mg_flatten_array(data)[0][args.processed.original_x_accessor || args.x_accessor];
+  var flattened = mg_flatten_array(data)[0];
+  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
+  var test_point_y = flattened[args.processed.original_y_accessor || args.y_accessor];
+
   return function (d) {
     mg_process_time_format(args);
-    var pf = d3.formatPrefix(d);
-    if (test_point instanceof Date) {
+
+    if (test_point_x instanceof Date) {
       return args.processed.main_x_time_format(new Date(d));
-    } else if (typeof test_point === 'number') {
-      if (d < 1.0) {
-        // don't scale tiny values
-        return args.xax_units + d3.round(d, args.decimals);
-      } else {
-        pf = d3.formatPrefix(d);
-        return args.xax_units + pf.scale(d) + pf.symbol;
-      }
+    } else if (test_point_y instanceof Number) {
+      if(d < 1000) {
+          var pf = d3.format(',.0f');
+          return args.xax_units + pf(d);
+        } else {
+          var pf = d3.format(',.0s');
+          return args.xax_units + pf(d);
+        }
     } else {
-      return d;
+      return args.xax_units + d;
     }
   };
 }
@@ -374,7 +355,7 @@ function mg_add_x_axis_tick_lines (args, g) {
     })
     .attr('class', function () {
       if (args.x_extended_ticks) {
-        return 'mg-extended-x-ticks';
+        return 'mg-extended-xax-ticks';
       }
     })
     .classed('mg-xax-ticks', true);
@@ -437,28 +418,28 @@ function mg_get_yformat_and_secondary_time_function (args) {
   switch (tf.timeframe) {
     case 'millis':
     case 'seconds':
-      tf.secondary = d3.time.days;
+      tf.secondary = d3.timeDays;
       if (args.european_clock) tf.yformat = MG.time_format(args.utc_time, '%b %d');
       else tf.yformat = MG.time_format(args.utc_time, '%I %p');
       break;
     case 'less-than-a-day':
-      tf.secondary = d3.time.days;
+      tf.secondary = d3.timeDays;
       tf.yformat = MG.time_format(args.utc_time, '%b %d');
       break;
     case 'four-days':
-      tf.secondary = d3.time.days;
+      tf.secondary = d3.timeDays;
       tf.yformat = MG.time_format(args.utc_time, '%b %d');
       break;
     case 'many-days':
-      tf.secondary = d3.time.years;
+      tf.secondary = d3.timeYears;
       tf.yformat = MG.time_format(args.utc_time, '%Y');
       break;
     case 'many-months':
-      tf.secondary = d3.time.years;
+      tf.secondary = d3.timeYears;
       tf.yformat = MG.time_format(args.utc_time, '%Y');
       break;
     default:
-      tf.secondary = d3.time.years;
+      tf.secondary = d3.timeYears;
       tf.yformat = MG.time_format(args.utc_time, '%Y');
   }
   return tf;

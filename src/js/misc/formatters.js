@@ -1,11 +1,11 @@
 function format_rollover_number(args) {
   var num;
   if (args.format === 'count') {
-    num = function(d_) {
-      var is_float = d_ % 1 !== 0;
-      var n = d3.format("0,000");
-      d_ = is_float ? d3.round(d_, args.decimals) : d_;
-      return n(d_);
+    num = function(d) {
+      var is_float = d % 1 !== 0;
+      var n = d3.format(',.0f');
+      d = is_float ? d.toFixed(args.decimals) : d;
+      return n(d);
     };
   } else {
     num = function(d_) {
@@ -33,7 +33,7 @@ var time_rollover_format = function (f, d, accessor, utc) {
 var number_rollover_format = function (f, d, accessor) {
   var fd;
   if (typeof f === 'string') {
-    fd = d3.format(f)(d[accessor]);
+    fd = d3.format('s')(d[accessor]);
   } else if (typeof f === 'function') {
     fd = f(d);
   } else {
@@ -106,7 +106,7 @@ function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_ti
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
     else                  formatted_data = number_rollover_format(mouseover_fcn, d, accessor);
-    
+
   } else {
     if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  ';
     else formatted_data = (args.time_series ? '' : accessor +': ') + num_fmt(d[accessor]) + '   ';

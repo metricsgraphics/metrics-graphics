@@ -62,13 +62,13 @@ function MGScale(args){
 
     mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator);
 
-    var time_scale = (args.utc_time) ? d3.time.scale.utc() : d3.time.scale();
+    var time_scale = (args.utc_time) ? d3.scaleUtc() : d3.scaleTime();
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
       ? time_scale
       : (args[scaleArgs.namespace +'_scale_type'] === 'log')
-          ? d3.scale.log()
-          : d3.scale.linear();
+          ? d3.scaleLog()
+          : d3.scaleLinear();
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_'+scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';
@@ -77,7 +77,7 @@ function MGScale(args){
   }
 
   this.categoricalDomain = function(domain) {
-    args.scales[scaleArgs.scale_name] = d3.scale.ordinal().domain(domain);
+    args.scales[scaleArgs.scale_name] = d3.scaleOrdinal().domain(domain);
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
@@ -89,7 +89,7 @@ function MGScale(args){
 
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d){return d[args[scaleArgs.namespace_accessor_name]]})).values();
-    args.scales[scaleArgs.scale_name] = d3.scale.ordinal()
+    args.scales[scaleArgs.scale_name] = d3.scaleOrdinal()
       .domain(scaleArgs.categoricalVariables);
     scaleArgs.scaleType = 'categorical';
     return this;
@@ -117,26 +117,32 @@ function MGScale(args){
     var outerPaddingPercentage = args[namespace +'_outer_padding_percentage'];
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
-      args.scales[scaleArgs.scale_name].rangeBands(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
+      args.scales[scaleArgs.scale_name] = d3.scaleBand()
+        .domain(args.scales[scaleArgs.scale_name].domain)
+        .range(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
     } else {
-      args.scales[scaleArgs.scale_name].rangeBands(range, paddingPercentage, outerPaddingPercentage);
+      args.scales[scaleArgs.scale_name] = d3.scaleBand()
+        .domain(args.scales[scaleArgs.scale_name].domain)
+        .range(range, paddingPercentage, outerPaddingPercentage);
     }
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand()/2 : 0);
     return this;
   }
 
   this.categoricalRange = function(range) {
-    // var colorRange = args.scales[scaleArgs.scale_name].domain().length > 10
-    //       ? d3.scale.category20() : d3.scale.category10())
     args.scales[scaleArgs.scale_name].range(range);
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
 
   this.categoricalColorRange = function() {
-    args.scales[scaleArgs.scale_name] =    args.scales[scaleArgs.scale_name].domain().length > 10
-              ? d3.scale.category20() : d3.scale.category10();
-    args.scales[scaleArgs.scale_name].domain(scaleArgs.categoricalVariables);
+    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
+      ? d3.scaleOrdinal(d3.schemeCategory20)
+      : d3.scaleOrdinal(d3.schemeCategory10);
+
+    args.scales[scaleArgs.scale_name]
+      .domain(scaleArgs.categoricalVariables);
+
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
   }
@@ -236,14 +242,14 @@ function mg_define_x_scale (args) {
   mg_find_min_max_x(args);
 
   var time_scale = (args.utc_time)
-    ? d3.time.scale.utc()
-    : d3.time.scale();
+    ? d3.scaleUtc()
+    : d3.scaleTime();
 
   args.scales.X = (args.time_series)
     ? time_scale
     : (args.x_scale_type === 'log')
-        ? d3.scale.log()
-        : d3.scale.linear();
+        ? d3.scaleLog()
+        : d3.scaleLinear();
 
   args.scales.X
     .domain([args.processed.min_x, args.processed.max_x])
@@ -277,7 +283,7 @@ function mg_categorical_group_color_scale(args) {
 }
 
 function mg_add_color_categorical_scale(args, domain, accessor) {
-  args.scales.color = d3.scale.category20().domain(domain);
+  args.scales.color = d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
   args.scalefns.color = function(d){return args.scales.color(d[accessor])};
 }
 

@@ -137,11 +137,11 @@ text.mg-barplot-group-label {
     padding-left: 30px;
 }
 
-.mg-y-axis line.mg-extended-y-ticks {
+.mg-y-axis line.mg-extended-yax-ticks {
     opacity: 0.4;
 }
 
-.mg-x-axis line.mg-extended-x-ticks {
+.mg-x-axis line.mg-extended-xax-ticks {
     opacity: 0.4;
 }
 
@@ -314,7 +314,7 @@ circle.mg-points-mono {
 
 tspan.mg-points-mono {
     fill: #0000ff;
-    stroke: #0000ff; 
+    stroke: #0000ff;
 }
 
 /* a selected point in a scatterplot */

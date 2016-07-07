@@ -4,9 +4,9 @@ MG.convert = {};
 
 MG.convert.date = function(data, accessor, time_format) {
   time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
+  var parse_time = d3.timeParse(time_format);
   data = data.map(function(d) {
-    var fff = d3.time.format(time_format);
-    d[accessor] = fff.parse(d[accessor]);
+    d[accessor] = parse_time(d[accessor].trim());
     return d;
   });
 
@@ -23,7 +23,7 @@ MG.convert.number = function(data, accessor) {
 };
 
 MG.time_format = function(utc, specifier) {
-  return utc ? d3.time.format.utc(specifier) : d3.time.format(specifier);
+  return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
 };
 
 function mg_get_rollover_time_format(args) {
@@ -200,8 +200,12 @@ function mg_rotate_labels (labels, rotation_degree) {
 
 
 function mg_elements_are_overlapping(labels) {
-  labels = labels[0];
-  for (var i =0; i < labels.length; i++) {
+  labels = labels.node();
+  if(!labels) {
+    return false;
+  }
+
+  for (var i = 0; i < labels.length; i++) {
     if ( mg_is_horizontally_overlapping(labels[i], labels)) return true;
   }
 

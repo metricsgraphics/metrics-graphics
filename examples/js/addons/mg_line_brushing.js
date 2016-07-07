@@ -50,7 +50,7 @@ function get_brush_interval(args) {
 
     if (!resolution) {
         if (args.time_series) {
-            resolution = d3.time.day;
+            resolution = d3.timeDay;
         } else {
             resolution = 1;
         }
@@ -145,11 +145,9 @@ function brushing() {
         .classed('mg-brush', true);
 
     extentRect = brushingGroup.append('rect')
-        .attr({
-            opacity: 0,
-            y: args.top,
-            height: args.height - args.bottom - args.top - args.buffer
-        })
+        .attr('opacity', 0)
+        .attr('y', args.top)
+        .attr('height', args.height - args.bottom - args.top - args.buffer)
         .classed('mg-extent', true);
 
     // mousedown, start area selection
@@ -176,11 +174,10 @@ function brushing() {
                 newX = Math.min(originX, mouseX),
                 width = Math.max(originX, mouseX) - newX;
 
-            extentRect.attr({
-                x: newX,
-                width: width,
-                opacity: 1
-            });
+            extentRect
+                .attr('x', newX)
+                .attr('width', width)
+                .attr('opacity', 1);
         }
     });
 
@@ -315,7 +312,7 @@ MG.add_hook('line.after_init', function(lineChart) {
 });
 
 function processXAxis(args, min_x, max_x) {
-    
+
   if (args.brushing) {
     args.processed.min_x = args.brushed_min_x ? Math.max(args.brushed_min_x, min_x) : min_x;
     args.processed.max_x = args.brushed_max_x ? Math.min(args.brushed_max_x, max_x) : max_x;

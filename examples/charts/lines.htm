@@ -58,7 +58,7 @@
         title: "Small Range of Integers",
         description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
         data: data,
-        interpolate: 'basic',
+        interpolate: d3.curveLinear,
         width: 600,
         height: 200,
         right: 40,
@@ -76,7 +76,7 @@
                 </div>
                 <div class='col-lg-5'>
                     <div class='data-column'>
-                        <a href='data/brief-1.json'>data 1</a>, 
+                        <a href='data/brief-1.json'>data 1</a>,
                         <a href='data/brief-2.json'>data 2</a>
                     </div>
 
@@ -214,7 +214,7 @@ d3.json('data/small-range.json', function(data) {
         title: "Small Range of Integers",
         description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
         data: data,
-        interpolate: 'basic',
+        interpolate: d3.curveLinear,
         width: 600,
         height: 200,
         right: 40,

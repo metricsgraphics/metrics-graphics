@@ -55,7 +55,7 @@ function mg_color_point_mouseover(args, elem, d) {
       // infer y_axis and x_axis type;
       args.x_axis_type = inferType(args, 'x');
       args.y_axis_type = inferType(args, 'y');
-      
+
       raw_data_transformation(args);
 
 
@@ -69,7 +69,7 @@ function mg_color_point_mouseover(args, elem, d) {
           .namespace('x')
           .categoricalDomainFromData()
           .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
-        
+
         if (args.xgroup_accessor) {
           new MG.scale_factory(args)
             .namespace('xgroup')
@@ -146,13 +146,13 @@ function mg_color_point_mouseover(args, elem, d) {
           } else {
             colorScale
             .categoricalDomainFromData()
-            .categoricalColorRange();  
+            .categoricalColorRange();
           }
           //console.log(args.scales.COLOR);
           // handle these things for categories.
         }
       }
-      
+
       if (args.size_accessor) {
         new MG.scale_factory(args).namespace('size')
           .numericalDomainFromData()
@@ -165,7 +165,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .type(args.x_axis_type)
         .zeroLine(args.y_axis_type === 'categorical')
         .position(args.x_axis_position)
-        .draw();  
+        .draw();
 
       new MG.axis_factory(args)
         .namespace('y')
@@ -238,24 +238,18 @@ function mg_color_point_mouseover(args, elem, d) {
       svg.selectAll('.mg-voronoi').remove();
 
       //add rollover paths
-      var voronoi = d3.geom.voronoi()
+      var voronoi = d3.voronoi()
         .x(args.scalefns.xoutf)
         .y(args.scalefns.youtf)
-        .clipExtent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
+        .extent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
 
       var paths = svg.append('g')
         .attr('class', 'mg-voronoi');
 
       paths.selectAll('path')
-        .data(voronoi(mg_filter_out_plot_bounds(args.data[0], args)))
+        .data(voronoi.polygons(mg_filter_out_plot_bounds(args.data[0], args)))
         .enter().append('path')
-          .attr('d', function(d) {
-            if (d === undefined) {
-              return;
-            }
-
-            return 'M' + d.join(',') + 'Z';
-          })
+          .attr('d', function (d) { return d == null ? null : 'M' + d.join(',') + 'Z'; })
           .attr('class', function(d,i) {
             return 'path-' + i;
           })
@@ -301,7 +295,7 @@ function mg_color_point_mouseover(args, elem, d) {
 
         if (args.show_rollover_text) {
 
-          point_mouseover(args, svg, d.point);
+          point_mouseover(args, svg, d.data);
 
 
           //mouseover.mouseover_row({}).text('another row, another dollar');

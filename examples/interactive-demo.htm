@@ -23,7 +23,7 @@
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js' charset='utf-8'></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="js/lib/ace.js" charset="utf-8"></script>
 
     <!-- dev start -->
@@ -231,7 +231,6 @@
             + '  target: ".result",\n'
             + '  x_accessor: "year",\n'
             + '  y_accessor: "sightings",\n'
-            + '  interpolate: "monotone"\n'
             + '});';
 
         var editor = ace.edit("editor");

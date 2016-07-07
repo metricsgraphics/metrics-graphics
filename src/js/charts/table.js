@@ -164,14 +164,14 @@ MG.data_table = function(args) {
             // supported: 'percentage', 'count', 'temperature'
 
             if (this_column.round) {
-              td_text = d3.round(td_text, this_column.round);
+              td_text = Math.round(td_text, this_column.round);
             }
 
             var this_format = this_column.format;
             var formatter;
 
-            if (this_format === 'percentage')  formatter = d3.format('%p');
-            if (this_format === 'count')     formatter = d3.format("0,000");
+            if (this_format === 'percentage')  formatter = d3.format('.0%');
+            if (this_format === 'count')     formatter = d3.format(',.0f');
             if (this_format === 'temperature') formatter = function(t) { return t +'°'; };
 
             td_text = formatter(td_text);

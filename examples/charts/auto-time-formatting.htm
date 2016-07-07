@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class='col-lg-5'>
-                
+
                 <pre><code class='javascript'>function fake_data(length, seconds) {
     var d = new Date();
     var v = 100000;
@@ -64,7 +64,7 @@ var many_days = fake_days(60);
 var many_many_many_days = fake_days(365*2);
 
 MG.data_graphic({
-    title: "European Clock", 
+    title: "European Clock",
     description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
     data: less_than_a_minute,
     target: '#european',
@@ -119,39 +119,6 @@ MG.data_graphic({
     right: 40
 });
 
-d3.csv('data/evictions-sf.csv', function(data) {
-    data = MG.convert.date(data, 'date');
-    data = data.map(function(d){
-        d.value = d.value * 10000;
-        return d;
-    })
-    MG.data_graphic({
-        title: "A Few Years",
-        data: data,
-        target: '#years',
-        width: 600,
-        height: 200,
-        right: 40
-    });    
-})
-
-
-d3.csv('data/crude-oil.csv', function(data) {
-    data = MG.convert.date(data, 'date');
-    data = MG.convert.number(data, 'price');
-    MG.data_graphic({
-        title: "Over Decades",
-        data: data,
-        target: '#decades',
-        y_accessor: 'price',
-        yax_units: '$',
-        width: 600,
-        height: 200,
-        right: 40
-    });    
-})
-
-
 MG.data_graphic({
     title: "Over Centuries",
     data: fake_years(300),
@@ -172,7 +139,7 @@ MG.data_graphic({
                     </div>
                 </div>
                 <div class='col-lg-5'>
-                
+
                 <pre><code class='javascript'>MG.data_graphic({
     title: "European Clock",
     description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
@@ -240,7 +207,7 @@ var many_days = fake_days(80);
 var many_many_many_days = fake_days(365*2);
 
 MG.data_graphic({
-    title: "European Clock", 
+    title: "European Clock",
     description: 'By setting european_clock to true, you can default to European-style time. This is at the moment experimental, and the formatting may change.',
     data: less_than_a_minute,
     target: '#european',
@@ -294,35 +261,6 @@ MG.data_graphic({
     height: 200,
     right: 40
 });
-
-d3.csv('data/evictions-sf.csv', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "A Few Years",
-        data: data,
-        target: '#years',
-        width: 600,
-        height: 200,
-        right: 40
-    });    
-})
-
-
-d3.csv('data/crude-oil.csv', function(data) {
-    data = MG.convert.date(data, 'date');
-    data = MG.convert.number(data, 'price');
-    MG.data_graphic({
-        title: "Over Decades",
-        data: data,
-        target: '#decades',
-        y_accessor: 'price',
-        yax_units: '$',
-        width: 600,
-        height: 200,
-        right: 40
-    });    
-})
-
 
 MG.data_graphic({
     title: "Over Centuries",

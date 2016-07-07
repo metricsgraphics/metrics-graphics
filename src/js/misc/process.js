@@ -170,7 +170,7 @@ function process_line(args) {
 
   // force linear interpolation when missing_is_hidden is enabled
   if (args.missing_is_hidden) {
-    args.interpolate = 'linear';
+    args.interpolate = d3.curveLinear;
   }
 
   // are we replacing missing y values with zeros?
@@ -293,15 +293,14 @@ function process_histogram(args) {
       return;
     }
 
-    var hist = d3.layout.histogram();
+    var hist = d3.histogram();
     if (args.bins) {
-      hist = hist.bins(args.bins);
+      hist.thresholds(args.bins);
     }
 
     args.processed_data = hist(extracted_data)
       .map(function(d) {
-        // extract only the data we need per data point.
-        return {'x': d.x, 'y': d.y, 'dx': d.dx};
+        return {'x': d.x0, 'y': d.x1};
       });
   } else {
     // here, we just need to reconstruct the array of objects
@@ -355,48 +354,6 @@ function process_categorical_variables(args) {
   var label_accessor = args.bar_orientation === 'vertical' ? args.x_accessor : args.y_accessor;
   var data_accessor =  args.bar_orientation === 'vertical' ? args.y_accessor : args.x_accessor;
 
-  // if (args.binned === false) {
-  //   args.categorical_variables = [];
-  //   if (typeof(our_data[0]) === 'object') {
-  //     // we are dealing with an array of objects, extract the data value of interest
-  //     extracted_data = our_data
-  //       .map(function(d) {
-  //         return d[label_accessor];
-  //       });
-  //   } else {
-  //     extracted_data = our_data;
-  //   }
-
-  //   var this_dp;
-
-  //   for (var i = 0; i < extracted_data.length; i++) {
-  //     this_dp=extracted_data[i];
-  //     if (args.categorical_variables.indexOf(this_dp) === -1) args.categorical_variables.push(this_dp);
-  //     if (!processed_data.hasOwnProperty(this_dp)) processed_data[this_dp] = 0;
-
-  //     processed_data[this_dp] += 1;
-  //   }
-
-  //   processed_data = Object.keys(processed_data).map(function(d) {
-  //     var obj = {};
-  //     obj[data_accessor] = processed_data[d];
-  //     obj[label_accessor] = d;
-  //     return obj;
-  //   });
-  // } else {
-
-  //   // make the categorical variables arg.
-  //   mg_extract_categorical_variables(args, label_accessor);
-  //   console.log
-  //   // processed_data = args.data[0];
-  //   // args.categorical_variables = d3.set(processed_data.map(function(d) {
-  //   //   return d[label_accessor];
-  //   // })).values();
-
-  //   // args.categorical_variables.reverse();
-  // }
-
-  //args.data = [args.data];
   return this;
 }
 

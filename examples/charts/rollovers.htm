@@ -7,7 +7,7 @@
                 </div>
                 <div class='col-lg-5'>
                     <div class='data-column'>
-                        <a href='data/float.json'>data 1</a>, 
+                        <a href='data/float.json'>data 1</a>,
                         <a href='data/some_percentage.json'>data 2</a>
                     </div>
 
@@ -36,9 +36,9 @@
         xax_count: 4,
         mouseover: function(d, i) {
             // custom format the rollover text, show days
-            var prefix = d3.formatPrefix(d.value);
+            var pf = d3.format('.0s');
             d3.select('#custom-rollover svg .mg-active-datapoint')
-                .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                .text('Day ' + (i + 1) + '   ' + pf(d.value));
         },
         target: '#custom-rollover'
     });
@@ -79,7 +79,7 @@ d3.json('data/some_percentage.json', function(data) {
 
                 </div>
             </div>
-            
+
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center' id='aggregate'></div>
                 <div class='col-lg-5'>
@@ -128,7 +128,7 @@ d3.json('data/some_percentage.json', function(data) {
 d3.json('data/float.json', function(data) {
 
     data = MG.convert.date(data, 'date');
-    // check out https://github.com/mbostock/d3/wiki/Formatting for number formatting 
+    // check out https://github.com/mbostock/d3/wiki/Formatting for number formatting
     //and https://github.com/mbostock/d3/wiki/Time-Formatting for time formatting options.
 
     MG.data_graphic({
@@ -236,9 +236,9 @@ d3.json('data/float.json', function(data) {
         xax_count: 4,
         mouseover: function(d, i) {
             // custom format the rollover text, show days
-            var prefix = d3.formatPrefix(d.value);
+            var pf = d3.format('.0s');
             d3.select('#custom-rollover svg .mg-active-datapoint')
-                .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                .text('Day ' + (i + 1) + '   ' + pf(d.value));
         },
         target: '#custom-rollover'
     });
