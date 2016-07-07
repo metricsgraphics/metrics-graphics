@@ -1,4 +1,3 @@
-
 function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
   args.scalefns[scalefcn_name] = function(di) {
     if (inflation === undefined) return args.scales[scale](di[accessor]);
@@ -7,16 +6,16 @@ function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) 
 }
 
 function mg_position(str, args) {
-  if (str === 'bottom' || str === 'top') return [mg_get_plot_left(args), mg_get_plot_right(args)]// - args.additional_buffer];
+  if (str === 'bottom' || str === 'top') return [mg_get_plot_left(args), mg_get_plot_right(args)] // - args.additional_buffer];
   if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
 }
 
 function mg_cat_position(str, args) {
-  if (str === 'bottom' || str === 'top') return [mg_get_left(args), mg_get_right(args)]// - args.additional_buffer];
+  if (str === 'bottom' || str === 'top') return [mg_get_left(args), mg_get_right(args)] // - args.additional_buffer];
   if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
 }
 
-function MGScale(args){
+function MGScale(args) {
   // big wrapper around d3 scale that automatically formats & calculates scale bounds
   // according to the data, and handles other niceties.
   var scaleArgs = {}
@@ -25,10 +24,10 @@ function MGScale(args){
   scaleArgs.scaleType = 'numerical';
 
   this.namespace = function(_namespace) {
-    scaleArgs.namespace               = _namespace;
+    scaleArgs.namespace = _namespace;
     scaleArgs.namespace_accessor_name = scaleArgs.namespace + '_accessor';
-    scaleArgs.scale_name              = scaleArgs.namespace.toUpperCase();
-    scaleArgs.scalefn_name            = scaleArgs.namespace + 'f';
+    scaleArgs.scale_name = scaleArgs.namespace.toUpperCase();
+    scaleArgs.scalefn_name = scaleArgs.namespace + 'f';
     return this;
   }
 
@@ -42,7 +41,6 @@ function MGScale(args){
     return this;
   }
 
-
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// all scale domains are either numerical (number, date, etc.) or categorical (factor, label, etc) /////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +48,7 @@ function MGScale(args){
 
   this.numericalDomainFromData = function() {
     var other_flat_data_arrays = [];
-    if (arguments.length>0) other_flat_data_arrays = arguments;
+    if (arguments.length > 0) other_flat_data_arrays = arguments;
     // pull out a non-empty array in args.data.
     var illustrative_data;
     for (var i = 0; i < args.data.length; i++) {
@@ -64,13 +62,9 @@ function MGScale(args){
 
     var time_scale = (args.utc_time) ? d3.scaleUtc() : d3.scaleTime();
 
-    args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
-      ? time_scale
-      : (args[scaleArgs.namespace +'_scale_type'] === 'log')
-          ? d3.scaleLog()
-          : d3.scaleLinear();
+    args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series) ? time_scale : (args[scaleArgs.namespace + '_scale_type'] === 'log') ? d3.scaleLog() : d3.scaleLinear();
 
-    args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_'+scaleArgs.namespace]]);
+    args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';
 
     return this;
@@ -85,10 +79,11 @@ function MGScale(args){
   this.categoricalDomainFromData = function() {
     // make args.categorical_variables.
     // lets make the categorical variables.
-    var all_data =mg_flatten_array(args.data)
+    var all_data = mg_flatten_array(args.data)
 
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
-    scaleArgs.categoricalVariables = d3.set(all_data.map(function(d){return d[args[scaleArgs.namespace_accessor_name]]})).values();
+    scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
+      return d[args[scaleArgs.namespace_accessor_name]] })).values();
     args.scales[scaleArgs.scale_name] = d3.scaleOrdinal()
       .domain(scaleArgs.categoricalVariables);
     scaleArgs.scaleType = 'categorical';
@@ -113,8 +108,8 @@ function MGScale(args){
     if (halfway === undefined) halfway = false;
 
     var namespace = scaleArgs.namespace;
-    var paddingPercentage = args[namespace +'_padding_percentage'];
-    var outerPaddingPercentage = args[namespace +'_outer_padding_percentage'];
+    var paddingPercentage = args[namespace + '_padding_percentage'];
+    var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
       args.scales[scaleArgs.scale_name] = d3.scaleBand()
@@ -125,7 +120,7 @@ function MGScale(args){
         .domain(args.scales[scaleArgs.scale_name].domain)
         .range(range, paddingPercentage, outerPaddingPercentage);
     }
-    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand()/2 : 0);
+    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand() / 2 : 0);
     return this;
   }
 
@@ -136,9 +131,7 @@ function MGScale(args){
   }
 
   this.categoricalColorRange = function() {
-    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
-      ? d3.scaleOrdinal(d3.schemeCategory20)
-      : d3.scaleOrdinal(d3.schemeCategory10);
+    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10);
 
     args.scales[scaleArgs.scale_name]
       .domain(scaleArgs.categoricalVariables);
@@ -156,8 +149,6 @@ function MGScale(args){
 }
 
 MG.scale_factory = MGScale;
-
-
 
 ///////////////////////////////             x,   x_accessor etc.   markers, baselines, etc.
 function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
@@ -180,12 +171,13 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   var accessor = args[namespace_accessor_name];
   // add together all relevant data arrays.
   var all_data = mg_flatten_array(args.data)
-      .map(function(dp){return dp[accessor]})
-      .concat(mg_flatten_array(additional_data_arrays));
+    .map(function(dp) {
+      return dp[accessor] })
+    .concat(mg_flatten_array(additional_data_arrays));
 
   // do processing for log ////////////////////////////////////////////////////////////
   if (args[namespace + '_scale_type'] === 'log') {
-    all_data = all_data.filter(function (d) {
+    all_data = all_data.filter(function(d) {
       return d > 0;
     });
   }
@@ -200,7 +192,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // not zero-bottomed
   // not a time series
   if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_time_series) {
-    min_val = args[namespace +'_scale_type'] === 'log' ? 1 : 0;
+    min_val = args[namespace + '_scale_type'] === 'log' ? 1 : 0;
   }
 
   if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_time_series) {
@@ -208,13 +200,11 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   }
 
   if (!scaleArgs.is_time_series) {
-    max_val = (max_val < 0)
-      ? max_val + (max_val - max_val * args.inflator) * use_inflator
-      : max_val * (use_inflator ? args.inflator : 1);
+    max_val = (max_val < 0) ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1);
   }
 
-  min_val = args['min_' + namespace]  || min_val;
-  max_val = args['max_' + namespace]  || max_val;
+  min_val = args['min_' + namespace] || min_val;
+  max_val = args['max_' + namespace] || max_val;
   // if there's a single data point, we should custom-set the min and max values.
 
   if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
@@ -233,23 +223,13 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   args.processed['max_' + namespace] = max_val;
 }
 
-
-
-
-
-function mg_define_x_scale (args) {
+function mg_define_x_scale(args) {
   mg_add_scale_function(args, 'xf', 'X', args.x_accessor);
   mg_find_min_max_x(args);
 
-  var time_scale = (args.utc_time)
-    ? d3.scaleUtc()
-    : d3.scaleTime();
+  var time_scale = (args.utc_time) ? d3.scaleUtc() : d3.scaleTime();
 
-  args.scales.X = (args.time_series)
-    ? time_scale
-    : (args.x_scale_type === 'log')
-        ? d3.scaleLog()
-        : d3.scaleLinear();
+  args.scales.X = (args.time_series) ? time_scale : (args.x_scale_type === 'log') ? d3.scaleLog() : d3.scaleLinear();
 
   args.scales.X
     .domain([args.processed.min_x, args.processed.max_x])
@@ -257,8 +237,6 @@ function mg_define_x_scale (args) {
 
   args.scales.X.clamp(args.x_scale_type === 'log');
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,36 +247,36 @@ function mg_categorical_group_color_scale(args) {
       // add a custom accessor element.
       if (args.color_accessor === null) {
         args.color_accessor = args.y_accessor;
-      }
-      else {
-      }
+      } else {}
     }
     if (args.color_accessor !== null) {
       new MG.scale_factory(args)
-            .namespace('color')
-            .categoricalDomainFromData()
-            .categoricalColorRange();
+        .namespace('color')
+        .categoricalDomainFromData()
+        .categoricalColorRange();
     }
   }
 }
 
 function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
-  args.scalefns.color = function(d){return args.scales.color(d[accessor])};
+  args.scalefns.color = function(d) {
+    return args.scales.color(d[accessor]) };
 }
 
-function mg_get_categorical_domain (data, accessor) {
-  return d3.set(data.map(function (d) { return d[accessor]; }))
-        .values();
+function mg_get_categorical_domain(data, accessor) {
+  return d3.set(data.map(function(d) {
+      return d[accessor]; }))
+    .values();
 }
 
-function mg_get_color_domain (args) {
+function mg_get_color_domain(args) {
   var color_domain;
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
-      color_domain = d3.extent(args.data[0],function(d){return d[args.color_accessor];});
-    }
-    else if (args.color_type === 'category') {
+      color_domain = d3.extent(args.data[0], function(d) {
+        return d[args.color_accessor]; });
+    } else if (args.color_type === 'category') {
       color_domain = mg_get_categorical_domain(args.data[0], args.color_accessor);
 
     }
@@ -310,7 +288,7 @@ function mg_get_color_domain (args) {
 
 
 
-function mg_get_color_range (args) {
+function mg_get_color_range(args) {
   var color_range;
   if (args.color_range === null) {
     if (args.color_type === 'number') {

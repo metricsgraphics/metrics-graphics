@@ -1,10 +1,9 @@
-function point_mouseover (args, svg, d) {
-  var mouseover = mg_mouseover_text(args, {svg: svg});
+function point_mouseover(args, svg, d) {
+  var mouseover = mg_mouseover_text(args, { svg: svg });
   var row = mouseover.mouseover_row();
 
   if (args.color_accessor !== null && args.color_type === 'category') {
-    var label = d[args.color_accessor]
-    //else label = mg_format_number_mouseover(args, d.point);
+    var label = d[args.color_accessor];
     row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
@@ -15,8 +14,8 @@ function point_mouseover (args, svg, d) {
 
 function mg_color_point_mouseover(args, elem, d) {
   if (args.color_accessor !== null) {
-      elem.attr('fill', args.scalefns.colorf(d));
-      elem.attr('stroke', args.scalefns.colorf(d));
+    elem.attr('fill', args.scalefns.colorf(d));
+    elem.attr('stroke', args.scalefns.colorf(d));
   } else {
     elem.classed('mg-points-mono', true);
   }
@@ -26,15 +25,15 @@ function mg_color_point_mouseover(args, elem, d) {
 (function() {
   'use strict';
 
-  function mg_filter_out_plot_bounds (data, args) {
+  function mg_filter_out_plot_bounds(data, args) {
     // max_x, min_x, max_y, min_y;
     var x = args.x_accessor;
     var y = args.y_accessor;
-    var new_data = data.filter(function(d){
+    var new_data = data.filter(function(d) {
       return (args.min_x === null || d[x] >= args.min_x) &&
-             (args.max_x === null || d[x] <= args.max_x) &&
-             (args.min_y === null || d[y] >= args.min_y) &&
-             (args.max_y === null || d[y] <= args.max_y);
+        (args.max_x === null || d[x] <= args.max_x) &&
+        (args.min_y === null || d[y] >= args.min_y) &&
+        (args.max_y === null || d[y] <= args.max_y);
     })
     return new_data;
   }
@@ -43,7 +42,7 @@ function mg_color_point_mouseover(args, elem, d) {
     // must return categorical or numerical.
     var testPoint = mg_flatten_array(args.data);
 
-    testPoint = testPoint[0][args[ns+'_accessor']];
+    testPoint = testPoint[0][args[ns + '_accessor']];
     return typeof testPoint === 'string' ? 'categorical' : 'numerical';
 
   }
@@ -77,11 +76,14 @@ function mg_color_point_mouseover(args, elem, d) {
             .categoricalRangeBands('bottom');
 
         } else {
-          args.scales.XGROUP = function(d){ return mg_get_plot_left(args)};
-          args.scalefns.xgroupf = function(d){ return mg_get_plot_left(args)};
+          args.scales.XGROUP = function(d) {
+            return mg_get_plot_left(args) };
+          args.scalefns.xgroupf = function(d) {
+            return mg_get_plot_left(args) };
 
         }
-        args.scalefns.xoutf = function(d) {return args.scalefns.xf(d) + args.scalefns.xgroupf(d)};
+        args.scalefns.xoutf = function(d) {
+          return args.scalefns.xf(d) + args.scalefns.xgroupf(d) };
 
       } else {
 
@@ -89,7 +91,8 @@ function mg_color_point_mouseover(args, elem, d) {
           .namespace('x')
           .inflateDomain(true)
           .zeroBottom(args.y_axis_type === 'categorical')
-          .numericalDomainFromData((args.baselines || []).map(function(d){return d[args.x_accessor]}))
+          .numericalDomainFromData((args.baselines || []).map(function(d) {
+            return d[args.x_accessor] }))
           .numericalRange('bottom');
         args.scalefns.xoutf = args.scalefns.xf;
       }
@@ -110,14 +113,18 @@ function mg_color_point_mouseover(args, elem, d) {
             .categoricalRangeBands('left');
 
         } else {
-          args.scales.YGROUP = function(){ return mg_get_plot_top(args)};
-          args.scalefns.ygroupf = function(d){ return mg_get_plot_top(args)};
+          args.scales.YGROUP = function() {
+            return mg_get_plot_top(args) };
+          args.scalefns.ygroupf = function(d) {
+            return mg_get_plot_top(args) };
 
         }
-        args.scalefns.youtf = function(d) {return args.scalefns.yf(d) + args.scalefns.ygroupf(d)};
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) + args.scalefns.ygroupf(d) };
 
       } else {
-        var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
+        var baselines = (args.baselines || []).map(function(d) {
+          return d[args.y_accessor] });
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .inflateDomain(true)
@@ -125,10 +132,11 @@ function mg_color_point_mouseover(args, elem, d) {
           .numericalDomainFromData(baselines)
           .numericalRange('left');
 
-        args.scalefns.youtf = function(d) {return args.scalefns.yf(d)};
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) };
       }
 
-      /////// COLOR accessor;
+      /////// COLOR accessor
       if (args.color_accessor !== null) {
         var colorScale = MG.scale_factory(args).namespace('color');
         if (args.color_type === 'number') {
@@ -145,11 +153,9 @@ function mg_color_point_mouseover(args, elem, d) {
               .categoricalRange(args.color_range);
           } else {
             colorScale
-            .categoricalDomainFromData()
-            .categoricalColorRange();
+              .categoricalDomainFromData()
+              .categoricalColorRange();
           }
-          //console.log(args.scales.COLOR);
-          // handle these things for categories.
         }
       }
 
@@ -206,16 +212,17 @@ function mg_color_point_mouseover(args, elem, d) {
       var pts = g.selectAll('circle')
         .data(data)
         .enter().append('svg:circle')
-          .attr('class', function(d, i) { return 'path-' + i; })
-          //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
-          .attr('cx', args.scalefns.xoutf)
-          .attr('cy', function(d){
-            return args.scalefns.youtf(d);
-          });
+        .attr('class', function(d, i) {
+          return 'path-' + i; })
+        //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
+        .attr('cx', args.scalefns.xoutf)
+        .attr('cy', function(d) {
+          return args.scalefns.youtf(d);
+        });
 
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
-        pts.attr('fill',   args.scalefns.colorf);
+        pts.attr('fill', args.scalefns.colorf);
         pts.attr('stroke', args.scalefns.colorf);
       } else {
         pts.classed('mg-points-mono', true);
@@ -241,7 +248,10 @@ function mg_color_point_mouseover(args, elem, d) {
       var voronoi = d3.voronoi()
         .x(args.scalefns.xoutf)
         .y(args.scalefns.youtf)
-        .extent([[args.buffer, args.buffer + args.title_y_position], [args.width - args.buffer, args.height - args.buffer]]);
+        .extent([
+          [args.buffer, args.buffer + args.title_y_position],
+          [args.width - args.buffer, args.height - args.buffer]
+        ]);
 
       var paths = svg.append('g')
         .attr('class', 'mg-voronoi');
@@ -249,14 +259,15 @@ function mg_color_point_mouseover(args, elem, d) {
       paths.selectAll('path')
         .data(voronoi.polygons(mg_filter_out_plot_bounds(args.data[0], args)))
         .enter().append('path')
-          .attr('d', function (d) { return d == null ? null : 'M' + d.join(',') + 'Z'; })
-          .attr('class', function(d,i) {
-            return 'path-' + i;
-          })
-          .style('fill-opacity', 0)
-          .on('mouseover', this.rolloverOn(args))
-          .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
+        .attr('d', function(d) {
+          return d == null ? null : 'M' + d.join(',') + 'Z'; })
+        .attr('class', function(d, i) {
+          return 'path-' + i;
+        })
+        .style('fill-opacity', 0)
+        .on('mouseover', this.rolloverOn(args))
+        .on('mouseout', this.rolloverOff(args))
+        .on('mousemove', this.rolloverMove(args));
       if (args.data[0].length === 1) {
         point_mouseover(args, svg, args.data[0][0]);
       }
@@ -289,18 +300,12 @@ function mg_color_point_mouseover(args, elem, d) {
           //trigger mouseover on matching point in .linked charts
           d3.selectAll('.mg-voronoi .path-' + i)
             .each(function() {
-              d3.select(this).on('mouseover')(d,i);
+              d3.select(this).on('mouseover')(d, i);
             });
         }
 
         if (args.show_rollover_text) {
-
           point_mouseover(args, svg, d.data);
-
-
-          //mouseover.mouseover_row({}).text('another row, another dollar');
-
-          //mg_update_rollover_text(args,svg,fmt, '\u2022', d.point, i);
         }
 
         if (args.mouseover) {
@@ -312,13 +317,13 @@ function mg_color_point_mouseover(args, elem, d) {
     this.rolloverOff = function(args) {
       var svg = mg_get_svg_child_of(args.target);
 
-      return function(d,i) {
+      return function(d, i) {
         if (args.linked && MG.globals.link) {
           MG.globals.link = false;
 
           d3.selectAll('.mg-voronoi .path-' + i)
             .each(function() {
-              d3.select(this).on('mouseout')(d,i);
+              d3.select(this).on('mouseout')(d, i);
             });
         }
 
@@ -363,14 +368,14 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
-    y_padding_percentage: 0.05,               // for categorical scales
-    y_outer_padding_percentage: .1,           // for categorical scales
-    ygroup_padding_percentage:.25,            // for categorical scales
-    ygroup_outer_padding_percentage: .1,       // for categorical scales
-    x_padding_percentage: 0.05,               // for categorical scales
-    x_outer_padding_percentage: .1,           // for categorical scales
-    xgroup_padding_percentage:.25,            // for categorical scales
-    xgroup_outer_padding_percentage: 0,       // for categorical scales
+    y_padding_percentage: 0.05, // for categorical scales
+    y_outer_padding_percentage: .1, // for categorical scales
+    ygroup_padding_percentage: .25, // for categorical scales
+    ygroup_outer_padding_percentage: .1, // for categorical scales
+    x_padding_percentage: 0.05, // for categorical scales
+    x_outer_padding_percentage: .1, // for categorical scales
+    xgroup_padding_percentage: .25, // for categorical scales
+    xgroup_outer_padding_percentage: 0, // for categorical scales
     y_categorical_show_guides: true,
     x_categorical_show_guides: true,
     buffer: 16,
@@ -380,12 +385,12 @@ function mg_color_point_mouseover(args, elem, d) {
     label_accessor: null,
     size_accessor: null,
     color_accessor: null,
-    size_range: null,        // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
-    color_range: null,       // e.g. ['blue', 'red'] to color different groups of points
+    size_range: null, // when we set a size_accessor option, this array determines the size range, e.g. [1,5]
+    color_range: null, // e.g. ['blue', 'red'] to color different groups of points
     size_domain: null,
     color_domain: null,
     active_point_size_increase: 1,
-    color_type: 'number'       // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
+    color_type: 'number' // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
   };
 
   MG.register('point', pointChart, defaults);

@@ -14,7 +14,8 @@
         .numericalDomainFromData()
         .numericalRange('bottom');
 
-      var baselines = (args.baselines || []).map(function(d){return d[args.y_accessor]});
+      var baselines = (args.baselines || []).map(function(d) {
+        return d[args.y_accessor] });
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
@@ -43,24 +44,20 @@
 
       var bar = g.selectAll('.mg-bar')
         .data(args.data[0])
-          .enter().append('g')
-            .attr('class', 'mg-bar')
-            .attr('transform', function(d) {
-              return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2)
-                + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
-            });
+        .enter().append('g')
+        .attr('class', 'mg-bar')
+        .attr('transform', function(d) {
+          return "translate(" + args.scales.X(d[args.x_accessor]).toFixed(2) + "," + args.scales.Y(d[args.y_accessor]).toFixed(2) + ")";
+        });
 
       //draw bars
       bar.append('rect')
         .attr('x', 1)
         .attr('width', function(d, i) {
           if (args.data[0].length === 1) {
-              return (args.scalefns.xf(args.data[0][0])
-                - args.bar_margin).toFixed(2);
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
           } else {
-            return (args.scalefns.xf(args.data[0][1])
-            - args.scalefns.xf(args.data[0][0])
-            - args.bar_margin).toFixed(2);
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
           }
         })
         .attr('height', function(d) {
@@ -68,8 +65,7 @@
             return 0;
           }
 
-          return (args.height - args.bottom - args.buffer
-            - args.scales.Y(d[args.y_accessor])).toFixed(2);
+          return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.y_accessor])).toFixed(2);
         });
 
       return this;
@@ -96,17 +92,17 @@
       //draw rollover bars
       var bar = g.selectAll('.mg-bar')
         .data(args.data[0])
-          .enter().append('g')
-            .attr('class', function(d, i) {
-              if (args.linked) {
-                return 'mg-rollover-rects roll_' + i;
-              } else {
-                return 'mg-rollover-rects';
-              }
-            })
-            .attr('transform', function(d) {
-              return "translate(" + (args.scales.X(d[args.x_accessor])) + "," + 0 + ")";
-            });
+        .enter().append('g')
+        .attr('class', function(d, i) {
+          if (args.linked) {
+            return 'mg-rollover-rects roll_' + i;
+          } else {
+            return 'mg-rollover-rects';
+          }
+        })
+        .attr('transform', function(d) {
+          return "translate(" + (args.scales.X(d[args.x_accessor])) + "," + 0 + ")";
+        });
 
       bar.append('rect')
         .attr('x', 1)
@@ -114,14 +110,11 @@
         .attr('width', function(d, i) {
           //if data set is of length 1
           if (args.data[0].length === 1) {
-            return (args.scalefns.xf(args.data[0][0])
-              - args.bar_margin).toFixed(2);
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
           } else if (i !== args.data[0].length - 1) {
-            return (args.scalefns.xf(args.data[0][i + 1])
-              - args.scalefns.xf(d)).toFixed(2);
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(2);
           } else {
-            return (args.scalefns.xf(args.data[0][1])
-              - args.scalefns.xf(args.data[0][0])).toFixed(2);
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(2);
           }
         })
         .attr('height', function(d) {
@@ -161,13 +154,13 @@
           //trigger mouseover on matching bars in .linked charts
           d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
             .each(function(d) { //use existing i
-              d3.select(this).on('mouseover')(d,i);
+              d3.select(this).on('mouseover')(d, i);
             });
         }
 
         //update rollover text
         if (args.show_rollover_text) {
-          var mo = mg_mouseover_text(args, {svg: svg});
+          var mo = mg_mouseover_text(args, { svg: svg });
           var row = mo.mouseover_row();
           row.text('\u259F  ').elem()
             .classed('hist-symbol', true);
@@ -193,7 +186,7 @@
           //trigger mouseout on matching bars in .linked charts
           d3.selectAll('.mg-rollover-rects.roll_' + i + ' rect')
             .each(function(d) { //use existing i
-              d3.select(this).on('mouseout')(d,i);
+              d3.select(this).on('mouseout')(d, i);
             });
         }
 
@@ -203,8 +196,6 @@
 
         //reset active data point text
         mg_clear_mouseover_container(svg);
-        // svg.select('.mg-active-datapoint')
-        //   .text('');
 
         if (args.mouseout) {
           args.mouseout(d, i);

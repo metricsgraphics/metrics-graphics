@@ -19,7 +19,12 @@ MG.data_table = function(args) {
   this.args = args;
   this.args.standard_col = { width: 150, font_size: 12, font_weight: 'normal' };
   this.args.columns = [];
-  this.formatting_options = [['color', 'color'], ['font-weight', 'font_weight'], ['font-style', 'font_style'], ['font-size', 'font_size']];
+  this.formatting_options = [
+    ['color', 'color'],
+    ['font-weight', 'font_weight'],
+    ['font-style', 'font_style'],
+    ['font-size', 'font_size']
+  ];
 
   this._strip_punctuation = function(s) {
     var punctuationless = s.replace(/[^a-zA-Z0-9 _]+/g, '');
@@ -34,7 +39,7 @@ MG.data_table = function(args) {
       if (args[key]) element.style(attr,
         typeof args[key] === 'string' ||
         typeof args[key] === 'number' ?
-          args[key] : args[key](value));
+        args[key] : args[key](value));
     });
   };
 
@@ -128,7 +133,7 @@ MG.data_table = function(args) {
           trigger: 'hover',
           placement: 'top',
           container: $(th[0])
-         });
+        });
       }
     }
 
@@ -139,19 +144,19 @@ MG.data_table = function(args) {
       }
     }
 
-    for (var i=0; i < args.data.length; i++) {
+    for (var i = 0; i < args.data.length; i++) {
       tr = tbody.append('tr');
       for (var j = 0; j < args.columns.length; j++) {
         this_column = args.columns[j];
         td_accessor = this_column.accessor;
         td_value = td_text = args.data[i][td_accessor];
-        td_type   = this_column.type;
+        td_type = this_column.type;
 
         if (td_type === 'number') {
           //td_text may need to be rounded
           if (this_column.hasOwnProperty('round') && !this_column.hasOwnProperty('format')) {
             // round according to the number value in this_column.round
-            td_text = d3.format('0,.'+this_column.round+'f')(td_text);
+            td_text = d3.format('0,.' + this_column.round + 'f')(td_text);
           }
 
           if (this_column.hasOwnProperty('value_formatter')) {
@@ -170,9 +175,10 @@ MG.data_table = function(args) {
             var this_format = this_column.format;
             var formatter;
 
-            if (this_format === 'percentage')  formatter = d3.format('.0%');
-            if (this_format === 'count')     formatter = d3.format(',.0f');
-            if (this_format === 'temperature') formatter = function(t) { return t +'°'; };
+            if (this_format === 'percentage') formatter = d3.format('.0%');
+            if (this_format === 'count') formatter = d3.format(',.0f');
+            if (this_format === 'temperature') formatter = function(t) {
+              return t + '°'; };
 
             td_text = formatter(td_text);
           }

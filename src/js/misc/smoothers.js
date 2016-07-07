@@ -1,16 +1,18 @@
 function add_ls(args) {
   var svg = mg_get_svg_child_of(args.target);
   var data = args.data[0];
-  var min_x = d3.min(data, function(d) { return d[args.x_accessor]; });
-  var max_x = d3.max(data, function(d) { return d[args.x_accessor]; });
+  var min_x = d3.min(data, function(d) {
+    return d[args.x_accessor]; });
+  var max_x = d3.max(data, function(d) {
+    return d[args.x_accessor]; });
 
   d3.select(args.target).selectAll('.mg-least-squares-line').remove();
 
   svg.append('svg:line')
     .attr('x1', args.scales.X(min_x))
     .attr('x2', args.scales.X(max_x))
-    .attr('y1', args.scales.Y(args.ls_line.fit(min_x)) )
-    .attr('y2', args.scales.Y(args.ls_line.fit(max_x)) )
+    .attr('y1', args.scales.Y(args.ls_line.fit(min_x)))
+    .attr('y2', args.scales.Y(args.ls_line.fit(max_x)))
     .attr('class', 'mg-least-squares-line');
 }
 
@@ -21,9 +23,11 @@ function add_lowess(args) {
   var lowess = args.lowess_line;
 
   var line = d3.svg.line()
-    .x(function(d) { return args.scales.X(d.x); })
-    .y(function(d) { return args.scales.Y(d.y); })
-      .interpolate(args.interpolate);
+    .x(function(d) {
+      return args.scales.X(d.x); })
+    .y(function(d) {
+      return args.scales.Y(d.y); })
+    .interpolate(args.interpolate);
 
   svg.append('path')
     .attr('d', line(lowess))
@@ -42,7 +46,7 @@ function lowess_robust(x, y, alpha, inc) {
   var yhat = d3.mean(y);
   var i;
   for (i = 0; i < x.length; i += 1) { r.push(1); }
-  _l = _calculate_lowess_fit(x,y,alpha, inc, r);
+  _l = _calculate_lowess_fit(x, y, alpha, inc, r);
   var x_proto = _l.x;
   var y_proto = _l.y;
 
@@ -59,7 +63,7 @@ function lowess_robust(x, y, alpha, inc) {
       return _bisquare_weight(ri / (6 * q));
     });
 
-    _l = _calculate_lowess_fit(x,y,alpha,inc, r);
+    _l = _calculate_lowess_fit(x, y, alpha, inc, r);
     x_proto = _l.x;
     y_proto = _l.y;
   }
@@ -84,8 +88,8 @@ MG.lowess = lowess;
 
 function least_squares(x_, y_) {
   var x, y, xi, yi,
-    _x  = 0,
-    _y  = 0,
+    _x = 0,
+    _y = 0,
     _xy = 0,
     _xx = 0;
 
@@ -108,7 +112,8 @@ function least_squares(x_, y_) {
 
   var xhat = d3.mean(x);
   var yhat = d3.mean(y);
-  var numerator = 0, denominator = 0;
+  var numerator = 0,
+    denominator = 0;
 
   for (var i = 0; i < x.length; i++) {
     xi = x[i];
@@ -133,7 +138,7 @@ MG.least_squares = least_squares;
 
 function _pow_weight(u, w) {
   if (u >= 0 && u <= 1) {
-    return Math.pow(1 - Math.pow(u,w), w);
+    return Math.pow(1 - Math.pow(u, w), w);
   } else {
     return 0;
   }
@@ -153,18 +158,19 @@ function _neighborhood_width(x0, xis) {
   }));
 }
 
-function _manhattan(x1,x2) {
+function _manhattan(x1, x2) {
   return Math.abs(x1 - x2);
 }
 
 function _weighted_means(wxy) {
-  var wsum = d3.sum(wxy.map(function(wxyi) { return wxyi.w; }));
+  var wsum = d3.sum(wxy.map(function(wxyi) {
+    return wxyi.w; }));
 
   return {
     xbar: d3.sum(wxy.map(function(wxyi) {
       return wxyi.w * wxyi.x;
     })) / wsum,
-    ybar:d3.sum(wxy.map(function(wxyi) {
+    ybar: d3.sum(wxy.map(function(wxyi) {
       return wxyi.w * wxyi.y;
     })) / wsum
   };
@@ -193,10 +199,10 @@ function _weighted_least_squares(wxy) {
   var beta = _weighted_beta(wxy, xbar, ybar);
 
   return {
-    beta : beta,
-    xbar : xbar,
-    ybar : ybar,
-    x0   : ybar - beta * xbar
+    beta: beta,
+    xbar: xbar,
+    ybar: ybar,
+    x0: ybar - beta * xbar
 
   };
 }
@@ -209,9 +215,10 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
 
   var sorted_x = x.slice();
 
-  sorted_x.sort(function(a,b) {
-    if (a < b) { return -1; }
-    else if (a > b) { return 1; }
+  sorted_x.sort(function(a, b) {
+    if (a < b) {
+      return -1; } else if (a > b) {
+      return 1; }
 
     return 0;
   });
@@ -242,7 +249,8 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
         Math.abs(xyi[0] - x_i),
         xyi[0],
         xyi[1],
-        xyi[2]];
+        xyi[2]
+      ];
     }).sort().slice(0, k);
 
     // Get the largest distance in the neighbor set.
@@ -252,9 +260,9 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
 
     xi_neighbors = xi_neighbors.map(function(wxy) {
       return {
-        w : _tricube_weight(wxy[0] / delta_i) * wxy[3],
-        x : wxy[1],
-        y  :wxy[2]
+        w: _tricube_weight(wxy[0] / delta_i) * wxy[3],
+        x: wxy[1],
+        y: wxy[2]
       };
     });
 
@@ -268,5 +276,5 @@ function _calculate_lowess_fit(x, y, alpha, inc, residuals) {
     y_proto.push(x0_i + beta_i * x_i);
   }
 
-  return {x: x_proto, y: y_proto};
+  return { x: x_proto, y: y_proto };
 }
