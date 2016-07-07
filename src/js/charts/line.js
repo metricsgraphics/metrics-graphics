@@ -415,13 +415,14 @@
       })
       .attr('class', function(d) {
         var line_classes = d.values.map(function(datum) {
-          var lc = mg_line_class(d.line_id);
+          var lc = mg_line_class(datum.line_id);
           if (args.colors === null) lc += ' ' + mg_line_color_class(datum.line_id);
           return lc;
         }).join(' ');
         if (args.linked && d.values.length > 0) {
           line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(d.values[0], 0, args));
         }
+
         return line_classes;
       })
       .attr('height', args.height - args.bottom - args.top - args.buffer)
@@ -458,13 +459,16 @@
   }
 
   function mg_line_class(line_id) {
-    return 'mg-line' + line_id; }
+    return 'mg-line' + line_id;
+  }
 
   function mg_line_color_class(line_id) {
-    return 'mg-line' + line_id + '-color'; }
+    return 'mg-line' + line_id + '-color';
+  }
 
   function mg_rollover_id_class(id) {
-    return 'roll_' + id; }
+    return 'roll_' + id;
+  }
 
   function mg_rollover_format_id(d, i, args) {
     var v = d[args.x_accessor];
