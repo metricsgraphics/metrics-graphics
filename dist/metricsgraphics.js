@@ -161,6 +161,7 @@ MG.data_graphic = function(args) {
     y_accessor: 'value',
     y_label: '',
     yax_units: '',
+    yax_units_append: false,
     x_rug: false,
     y_rug: false,
     mouseover_align: 'right',                   // implemented in point.js
@@ -2022,9 +2023,14 @@ function mg_compute_yax_format(args) {
       yax_format = function(f) {
         if (f < 1000) {
           var pf = d3.format(',.0f');
-          return args.yax_units + pf(f);
         } else {
           var pf = d3.format(',.0s');
+        }
+
+        // are we adding units after the value or before?
+        if(args.yax_units_append) {
+          return pf(f) + args.yax_units;
+        } else {
           return args.yax_units + pf(f);
         }
       };

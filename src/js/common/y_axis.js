@@ -788,9 +788,14 @@ function mg_compute_yax_format(args) {
       yax_format = function(f) {
         if (f < 1000) {
           var pf = d3.format(',.0f');
-          return args.yax_units + pf(f);
         } else {
           var pf = d3.format(',.0s');
+        }
+
+        // are we adding units after the value or before?
+        if(args.yax_units_append) {
+          return pf(f) + args.yax_units;
+        } else {
           return args.yax_units + pf(f);
         }
       };

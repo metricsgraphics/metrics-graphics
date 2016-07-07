@@ -77,6 +77,7 @@ MG.data_graphic = function(args) {
     y_accessor: 'value',
     y_label: '',
     yax_units: '',
+    yax_units_append: false,
     x_rug: false,
     y_rug: false,
     mouseover_align: 'right',                   // implemented in point.js
