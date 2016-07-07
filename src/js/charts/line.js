@@ -749,8 +749,9 @@
       }
 
       raw_data_transformation(args);
-
       process_line(args);
+
+      MG.call_hook('line.before_destroy', this);
 
       init(args);
 
