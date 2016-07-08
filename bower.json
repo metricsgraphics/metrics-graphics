@@ -5,8 +5,7 @@
     "dist/metricsgraphics.css"
   ],
   "dependencies": {
-    "jquery": ">=1.11.1",
-    "d3": ">=3.4.8"
+    "d3": ">=4"
   },
   "ignore": [
     ".DS_Store",

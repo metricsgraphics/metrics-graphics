@@ -74,7 +74,7 @@ test('When an error is set, we get an exclamation icon', function() {
     };
 
     MG.data_graphic(params);
-    ok(document.querySelector('.mg-chart-title .warning'), 'Error icon exists');
+    ok(document.querySelector('.mg-chart-title .mg-warning'), 'Error icon exists');
 });
 
 test('Chart title is not duplicated on redraw', function() {

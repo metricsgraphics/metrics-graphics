@@ -20,7 +20,7 @@ function chart_title(args) {
       .text(args.title);
 
     //show and activate the description icon if we have a description
-    if (args.show_tooltips && args.description) {
+    if (args.show_tooltips && args.description && typeof jQuery !== 'undefined') {
       chartTitle.append('tspan')
         .attr('class', 'mg-chart-description')
         .attr('dx', '0.3em')
@@ -54,6 +54,8 @@ function chart_title(args) {
           }
         }, 120);
       });
+    } else if (args.show_tooltips && args.description && typeof jQuery === 'undefined') {
+      args.error = 'In order to enable tooltips, please make sure you include jQuery.';
     }
   }
 

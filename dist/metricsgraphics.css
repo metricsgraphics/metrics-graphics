@@ -86,6 +86,12 @@ text.mg-barplot-group-label {
     font-size: 1.2rem;
 }
 
+.mg-header .mg-warning {
+    fill: #ccc;
+    font-family: FontAwesome;
+    font-size: 1.2rem;
+}
+
 .mg-points circle {
     opacity: 0.65;
 }
