@@ -129,5 +129,4 @@ function mg_format_x_aggregate_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)
 }
 
-
 MG.format_rollover_number = format_rollover_number;

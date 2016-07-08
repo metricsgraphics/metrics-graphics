@@ -375,7 +375,8 @@ function mg_add_primary_x_axis_label(args, g) {
     .data(args.processed.x_ticks).enter()
     .append('text')
     .attr('x', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
     .attr('dy', '.50em')
     .attr('text-anchor', 'middle');
@@ -405,8 +406,10 @@ function mg_add_primary_x_axis_label(args, g) {
     }).remove();
 
     var svg = mg_get_svg_child_of(args.target);
-    svg.selectAll('.mg-xax-ticks').filter(function(d, i) {
-        return (i + 1) % 2 === 0; })
+    svg.selectAll('.mg-xax-ticks')
+      .filter(function(d, i) {
+        return (i + 1) % 2 === 0;
+      })
       .remove();
   }
 }
@@ -470,9 +473,11 @@ function mg_add_year_marker_line(args, g, years, yformat) {
     .data(years).enter()
     .append('line')
     .attr('x1', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('x2', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('y1', mg_get_top(args))
     .attr('y2', mg_get_bottom(args));
 }
@@ -498,7 +503,8 @@ function mg_add_year_marker_text(args, g, years, yformat) {
 
 function mg_min_max_x_for_nonbars(mx, args, data) {
   var extent_x = d3.extent(data, function(d) {
-    return d[args.x_accessor]; });
+    return d[args.x_accessor];
+  });
   mx.min = extent_x[0];
   mx.max = extent_x[1];
 }

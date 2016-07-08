@@ -4,7 +4,10 @@ function mg_merge_args_with_defaults(args) {
     title: null,
     description: null
   };
-  if (!args) { args = {}; }
+
+  if (!args) {
+    args = {};
+  }
 
   if (!args.processed) {
     args.processed = {};
@@ -203,9 +206,11 @@ function mg_categorical_calculate_bar_thickness(args, ns) {
 }
 
 function mg_categorical_calculate_height(args, ns) {
-  var groupContribution = (args[ns + 'group_height']) *
-    (args.categorical_groups.length || 1);
-  var marginContribution = ns === 'y' ? args.top + args.bottom + args.buffer * 2 : args.left + args.right + args.buffer * 2;
+  var groupContribution = (args[ns + 'group_height']) * (args.categorical_groups.length || 1);
+
+  var marginContribution = ns === 'y'
+    ? args.top + args.bottom + args.buffer * 2
+    : args.left + args.right + args.buffer * 2;
 
   return groupContribution + marginContribution +
     (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']));

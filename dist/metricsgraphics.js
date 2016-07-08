@@ -949,13 +949,23 @@ function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) 
 }
 
 function mg_position(str, args) {
-  if (str === 'bottom' || str === 'top') return [mg_get_plot_left(args), mg_get_plot_right(args)] // - args.additional_buffer];
-  if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
+  if (str === 'bottom' || str === 'top') {
+    return [mg_get_plot_left(args), mg_get_plot_right(args)];
+  }
+
+  if (str === 'left' || str === 'right') {
+    return [mg_get_plot_bottom(args), args.top];
+  }
 }
 
 function mg_cat_position(str, args) {
-  if (str === 'bottom' || str === 'top') return [mg_get_left(args), mg_get_right(args)] // - args.additional_buffer];
-  if (str === 'left' || str === 'right') return [mg_get_plot_bottom(args), args.top];
+  if (str === 'bottom' || str === 'top') {
+    return [mg_get_left(args), mg_get_right(args)]
+  }
+
+  if (str === 'left' || str === 'right') {
+    return [mg_get_plot_bottom(args), args.top];
+  }
 }
 
 function MGScale(args) {
@@ -991,11 +1001,17 @@ function MGScale(args) {
 
   this.numericalDomainFromData = function() {
     var other_flat_data_arrays = [];
-    if (arguments.length > 0) other_flat_data_arrays = arguments;
+
+    if (arguments.length > 0) {
+      other_flat_data_arrays = arguments;
+    }
+
     // pull out a non-empty array in args.data.
     var illustrative_data;
     for (var i = 0; i < args.data.length; i++) {
-      if (args.data[i].length > 0) illustrative_data = args.data[i];
+      if (args.data[i].length > 0) {
+        illustrative_data = args.data[i];
+      }
     }
     scaleArgs.is_time_series = illustrative_data[0][args[scaleArgs.namespace_accessor_name]] instanceof Date ? true : false;
 
@@ -1003,9 +1019,15 @@ function MGScale(args) {
 
     mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator);
 
-    var time_scale = (args.utc_time) ? d3.scaleUtc() : d3.scaleTime();
+    var time_scale = (args.utc_time)
+      ? d3.scaleUtc()
+      : d3.scaleTime();
 
-    args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series) ? time_scale : (args[scaleArgs.namespace + '_scale_type'] === 'log') ? d3.scaleLog() : d3.scaleLinear();
+    args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
+      ? time_scale
+      : (args[scaleArgs.namespace + '_scale_type'] === 'log')
+        ? d3.scaleLog()
+        : d3.scaleLinear();
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';
@@ -1039,9 +1061,13 @@ function MGScale(args) {
 
   this.numericalRange = function(range) {
     if (typeof range === 'string') {
-      args.scales[scaleArgs.scale_name].range(mg_position(range, args));
+      args
+        .scales[scaleArgs.scale_name]
+        .range(mg_position(range, args));
     } else {
-      args.scales[scaleArgs.scale_name].range(range);
+      args
+        .scales[scaleArgs.scale_name]
+        .range(range);
     }
 
     return this;
@@ -1074,9 +1100,12 @@ function MGScale(args) {
   }
 
   this.categoricalColorRange = function() {
-    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10);
+    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
+      ? d3.scaleOrdinal(d3.schemeCategory20)
+      : d3.scaleOrdinal(d3.schemeCategory10);
 
-    args.scales[scaleArgs.scale_name]
+    args
+      .scales[scaleArgs.scale_name]
       .domain(scaleArgs.categoricalVariables);
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
@@ -1093,7 +1122,7 @@ function MGScale(args) {
 
 MG.scale_factory = MGScale;
 
-///////////////////////////////             x,   x_accessor etc.   markers, baselines, etc.
+/////////////////////////////// x, x_accessor, markers, baselines, etc.
 function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // A BIT OF EXPLANATION ABOUT THIS FUNCTION
   // This function pulls out all the accessor values in all the arrays in args.data.
@@ -1112,19 +1141,20 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   var zero_bottom = scaleArgs.zero_bottom;
 
   var accessor = args[namespace_accessor_name];
+
   // add together all relevant data arrays.
   var all_data = mg_flatten_array(args.data)
     .map(function(dp) {
       return dp[accessor] })
     .concat(mg_flatten_array(additional_data_arrays));
 
-  // do processing for log ////////////////////////////////////////////////////////////
+  // do processing for log
   if (args[namespace + '_scale_type'] === 'log') {
     all_data = all_data.filter(function(d) {
       return d > 0;
     });
   }
-  ////////////////////////////////////////////////////////////////////////////////
+
   // use inflator?
   var extents = d3.extent(all_data);
   var min_val = extents[0];
@@ -1168,9 +1198,6 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
   MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 function mg_categorical_group_color_scale(args) {
   if (args.color_accessor !== false) {
@@ -1216,8 +1243,6 @@ function mg_get_color_domain(args) {
   }
   return color_domain;
 }
-
-
 
 function mg_get_color_range(args) {
   var color_range;
@@ -1409,7 +1434,6 @@ function labelPlacement(args, axisArgs) {
   return coordinates;
 }
 
-
 function selectXaxFormat(args) {
   var c = args.chart_type;
   if (!args.processed.xax_format) {
@@ -1500,7 +1524,6 @@ function addNumericalLabels(g, args, axisArgs) {
   var coords = labelPlacement(args, axisArgs);
   var ticks = args.processed[ns + '_ticks'];
 
-  //var yax_format = mg_compute_yax_format(args);
   var labels = g.selectAll('.mg-yax-labels')
     .data(ticks).enter()
     .append('text')
@@ -1510,8 +1533,8 @@ function addNumericalLabels(g, args, axisArgs) {
     .attr('dy', coords.dy)
     .attr('text-anchor', coords.textAnchor)
     .text(coords.text);
-  // move the labels if they overlap.
 
+  // move the labels if they overlap
   if (ns == 'x') {
     selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
@@ -1543,7 +1566,6 @@ function addNumericalLabels(g, args, axisArgs) {
         return (i + 1) % 2 === 0; })
       .remove();
   }
-
 }
 
 function addTickLines(g, args, axisArgs) {
@@ -1618,7 +1640,6 @@ function initializeAxisRim(g, args, axisArgs) {
   }
 }
 
-
 function initializeRug(args, rug_class) {
   var svg = mg_get_svg_child_of(args.target);
   var all_data = mg_flatten_array(args.data);
@@ -1635,8 +1656,6 @@ function initializeRug(args, rug_class) {
   return rug;
 }
 
-
-
 function rug(args, axisArgs) {
   'use strict';
   args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3;
@@ -1650,7 +1669,6 @@ function rug(args, axisArgs) {
 
   mg_add_color_accessor_to_rug(rug, args, 'mg-' + axisArgs.namespace + '-rug-mono');
 }
-
 
 function categoricalLabelPlacement(args, axisArgs, group) {
   var ns = axisArgs.namespace;
@@ -1754,7 +1772,6 @@ function categoricalLabels(args, axisArgs) {
   });
 }
 
-
 function categoricalGuides(args, axisArgs) {
   // for each group
   // for each data point
@@ -1842,7 +1859,6 @@ function categoricalGuides(args, axisArgs) {
   })
 }
 
-//
 function rotateLabels(labels, rotation_degree) {
   if (rotation_degree) {
     labels.attr({
@@ -1888,11 +1904,6 @@ mgDrawAxis.categorical = function(args, axisArgs) {
   //mg_add_categorical_labels(args, axisArgs);
   categoricalLabels(args, axisArgs);
   categoricalGuides(args, axisArgs);
-
-  //if (args.show_bar_zero) mg_bar_add_zero_line(args, axisArgs);
-  // if (args[ns+'group_accessor']) groupLines(args, axisArgs);
-
-  //if (args[ns+'_categorical_show_guides']) mg_y_categorical_show_guides(args, axisArgs);
 }
 
 mgDrawAxis.numerical = function(args, axisArgs) {
@@ -2190,9 +2201,11 @@ function mg_add_y_axis_tick_lines(g, args) {
       return (args.y_extended_ticks) ? args.width - args.right : args.left - args.yax_tick_length;
     })
     .attr('y1', function(d) {
-      return args.scales.Y(d).toFixed(2); })
+      return args.scales.Y(d).toFixed(2);
+    })
     .attr('y2', function(d) {
-      return args.scales.Y(d).toFixed(2); });
+      return args.scales.Y(d).toFixed(2);
+    });
 }
 
 function mg_add_y_axis_tick_labels(g, args) {
@@ -2707,7 +2720,8 @@ function mg_add_primary_x_axis_label(args, g) {
     .data(args.processed.x_ticks).enter()
     .append('text')
     .attr('x', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
     .attr('dy', '.50em')
     .attr('text-anchor', 'middle');
@@ -2737,8 +2751,10 @@ function mg_add_primary_x_axis_label(args, g) {
     }).remove();
 
     var svg = mg_get_svg_child_of(args.target);
-    svg.selectAll('.mg-xax-ticks').filter(function(d, i) {
-        return (i + 1) % 2 === 0; })
+    svg.selectAll('.mg-xax-ticks')
+      .filter(function(d, i) {
+        return (i + 1) % 2 === 0;
+      })
       .remove();
   }
 }
@@ -2802,9 +2818,11 @@ function mg_add_year_marker_line(args, g, years, yformat) {
     .data(years).enter()
     .append('line')
     .attr('x1', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('x2', function(d) {
-      return args.scales.X(d).toFixed(2); })
+      return args.scales.X(d).toFixed(2);
+    })
     .attr('y1', mg_get_top(args))
     .attr('y2', mg_get_bottom(args));
 }
@@ -2830,7 +2848,8 @@ function mg_add_year_marker_text(args, g, years, yformat) {
 
 function mg_min_max_x_for_nonbars(mx, args, data) {
   var extent_x = d3.extent(data, function(d) {
-    return d[args.x_accessor]; });
+    return d[args.x_accessor];
+  });
   mx.min = extent_x[0];
   mx.max = extent_x[1];
 }
@@ -2924,7 +2943,10 @@ function mg_merge_args_with_defaults(args) {
     title: null,
     description: null
   };
-  if (!args) { args = {}; }
+
+  if (!args) {
+    args = {};
+  }
 
   if (!args.processed) {
     args.processed = {};
@@ -3123,9 +3145,11 @@ function mg_categorical_calculate_bar_thickness(args, ns) {
 }
 
 function mg_categorical_calculate_height(args, ns) {
-  var groupContribution = (args[ns + 'group_height']) *
-    (args.categorical_groups.length || 1);
-  var marginContribution = ns === 'y' ? args.top + args.bottom + args.buffer * 2 : args.left + args.right + args.buffer * 2;
+  var groupContribution = (args[ns + 'group_height']) * (args.categorical_groups.length || 1);
+
+  var marginContribution = ns === 'y'
+    ? args.top + args.bottom + args.buffer * 2
+    : args.left + args.right + args.buffer * 2;
 
   return groupContribution + marginContribution +
     (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']));
@@ -4463,7 +4487,8 @@ MG.button_layout = function(target) {
         // trigger mouseover on matching line in .linked charts
         d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
           .each(function(d) {
-            d3.select(this).on('mouseover')(d, i);
+            d3.select(this)
+              .on('mouseover')(d, i);
           });
       }
     }
@@ -4482,7 +4507,8 @@ MG.button_layout = function(target) {
         // trigger mouseout on matching line in .linked charts
         d3.selectAll('.roll_' + id)
           .each(function(d) {
-            d3.select(this).on('mouseout')(d);
+            d3.select(this)
+              .on('mouseout')(d);
           });
       });
     }
@@ -4507,7 +4533,6 @@ MG.button_layout = function(target) {
         }
 
         if (args.data[id].length === 1) {
-          // if (args.data.length === 1 && args.data[0].length === 1) {
           return 1;
         } else {
           return 0;
@@ -4657,8 +4682,10 @@ MG.button_layout = function(target) {
           mg_remove_active_data_points_for_generic_rollover(args, svg, d);
         }
 
-        //mg_remove_active_text(svg);
-        if (args.data[0].length > 1) mg_clear_mouseover_container(svg);
+        if (args.data[0].length > 1) {
+          mg_clear_mouseover_container(svg);
+        }
+
         if (args.mouseout) {
           args.mouseout(d, i);
         }
@@ -6295,8 +6322,6 @@ function mg_process_scale_ticks(args, axis) {
   }
 }
 
-
-
 function raw_data_transformation(args) {
   'use strict';
 
@@ -6388,9 +6413,13 @@ function mg_process_multiple_accessors(args, which_accessor) {
   }
 }
 
-function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
+function mg_process_multiple_x_accessors(args) {
+  mg_process_multiple_accessors(args, 'x_accessor');
+}
 
-function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
+function mg_process_multiple_y_accessors(args) {
+  mg_process_multiple_accessors(args, 'y_accessor');
+}
 
 MG.raw_data_transformation = raw_data_transformation;
 
@@ -6573,8 +6602,6 @@ function process_histogram(args) {
 MG.process_histogram = process_histogram;
 
 // for use with bar charts, etc.
-
-
 function process_categorical_variables(args) {
   'use strict';
 
@@ -7020,7 +7047,6 @@ function mg_format_y_mouseover(args, d) {
 function mg_format_x_aggregate_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)
 }
-
 
 MG.format_rollover_number = format_rollover_number;
 

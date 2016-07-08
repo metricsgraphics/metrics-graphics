@@ -174,7 +174,6 @@ function labelPlacement(args, axisArgs) {
   return coordinates;
 }
 
-
 function selectXaxFormat(args) {
   var c = args.chart_type;
   if (!args.processed.xax_format) {
@@ -265,7 +264,6 @@ function addNumericalLabels(g, args, axisArgs) {
   var coords = labelPlacement(args, axisArgs);
   var ticks = args.processed[ns + '_ticks'];
 
-  //var yax_format = mg_compute_yax_format(args);
   var labels = g.selectAll('.mg-yax-labels')
     .data(ticks).enter()
     .append('text')
@@ -275,8 +273,8 @@ function addNumericalLabels(g, args, axisArgs) {
     .attr('dy', coords.dy)
     .attr('text-anchor', coords.textAnchor)
     .text(coords.text);
-  // move the labels if they overlap.
 
+  // move the labels if they overlap
   if (ns == 'x') {
     selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
@@ -308,7 +306,6 @@ function addNumericalLabels(g, args, axisArgs) {
         return (i + 1) % 2 === 0; })
       .remove();
   }
-
 }
 
 function addTickLines(g, args, axisArgs) {
@@ -383,7 +380,6 @@ function initializeAxisRim(g, args, axisArgs) {
   }
 }
 
-
 function initializeRug(args, rug_class) {
   var svg = mg_get_svg_child_of(args.target);
   var all_data = mg_flatten_array(args.data);
@@ -400,8 +396,6 @@ function initializeRug(args, rug_class) {
   return rug;
 }
 
-
-
 function rug(args, axisArgs) {
   'use strict';
   args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3;
@@ -415,7 +409,6 @@ function rug(args, axisArgs) {
 
   mg_add_color_accessor_to_rug(rug, args, 'mg-' + axisArgs.namespace + '-rug-mono');
 }
-
 
 function categoricalLabelPlacement(args, axisArgs, group) {
   var ns = axisArgs.namespace;
@@ -519,7 +512,6 @@ function categoricalLabels(args, axisArgs) {
   });
 }
 
-
 function categoricalGuides(args, axisArgs) {
   // for each group
   // for each data point
@@ -607,7 +599,6 @@ function categoricalGuides(args, axisArgs) {
   })
 }
 
-//
 function rotateLabels(labels, rotation_degree) {
   if (rotation_degree) {
     labels.attr({
@@ -653,11 +644,6 @@ mgDrawAxis.categorical = function(args, axisArgs) {
   //mg_add_categorical_labels(args, axisArgs);
   categoricalLabels(args, axisArgs);
   categoricalGuides(args, axisArgs);
-
-  //if (args.show_bar_zero) mg_bar_add_zero_line(args, axisArgs);
-  // if (args[ns+'group_accessor']) groupLines(args, axisArgs);
-
-  //if (args[ns+'_categorical_show_guides']) mg_y_categorical_show_guides(args, axisArgs);
 }
 
 mgDrawAxis.numerical = function(args, axisArgs) {
@@ -955,9 +941,11 @@ function mg_add_y_axis_tick_lines(g, args) {
       return (args.y_extended_ticks) ? args.width - args.right : args.left - args.yax_tick_length;
     })
     .attr('y1', function(d) {
-      return args.scales.Y(d).toFixed(2); })
+      return args.scales.Y(d).toFixed(2);
+    })
     .attr('y2', function(d) {
-      return args.scales.Y(d).toFixed(2); });
+      return args.scales.Y(d).toFixed(2);
+    });
 }
 
 function mg_add_y_axis_tick_labels(g, args) {

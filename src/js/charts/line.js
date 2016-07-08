@@ -680,7 +680,8 @@
         // trigger mouseover on matching line in .linked charts
         d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
           .each(function(d) {
-            d3.select(this).on('mouseover')(d, i);
+            d3.select(this)
+              .on('mouseover')(d, i);
           });
       }
     }
@@ -699,7 +700,8 @@
         // trigger mouseout on matching line in .linked charts
         d3.selectAll('.roll_' + id)
           .each(function(d) {
-            d3.select(this).on('mouseout')(d);
+            d3.select(this)
+              .on('mouseout')(d);
           });
       });
     }
@@ -724,7 +726,6 @@
         }
 
         if (args.data[id].length === 1) {
-          // if (args.data.length === 1 && args.data[0].length === 1) {
           return 1;
         } else {
           return 0;
@@ -874,8 +875,10 @@
           mg_remove_active_data_points_for_generic_rollover(args, svg, d);
         }
 
-        //mg_remove_active_text(svg);
-        if (args.data[0].length > 1) mg_clear_mouseover_container(svg);
+        if (args.data[0].length > 1) {
+          mg_clear_mouseover_container(svg);
+        }
+
         if (args.mouseout) {
           args.mouseout(d, i);
         }

@@ -58,8 +58,6 @@ function mg_process_scale_ticks(args, axis) {
   }
 }
 
-
-
 function raw_data_transformation(args) {
   'use strict';
 
@@ -151,9 +149,13 @@ function mg_process_multiple_accessors(args, which_accessor) {
   }
 }
 
-function mg_process_multiple_x_accessors(args) { mg_process_multiple_accessors(args, 'x_accessor'); }
+function mg_process_multiple_x_accessors(args) {
+  mg_process_multiple_accessors(args, 'x_accessor');
+}
 
-function mg_process_multiple_y_accessors(args) { mg_process_multiple_accessors(args, 'y_accessor'); }
+function mg_process_multiple_y_accessors(args) {
+  mg_process_multiple_accessors(args, 'y_accessor');
+}
 
 MG.raw_data_transformation = raw_data_transformation;
 
@@ -336,8 +338,6 @@ function process_histogram(args) {
 MG.process_histogram = process_histogram;
 
 // for use with bar charts, etc.
-
-
 function process_categorical_variables(args) {
   'use strict';
 
