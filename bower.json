@@ -5,7 +5,24 @@
     "dist/metricsgraphics.css"
   ],
   "dependencies": {
-    "d3": ">=4"
+    "d3-collection": "https://github.com/d3/d3-collection.git#1.0.0",
+    "d3-color": "1.0.0",
+    "d3-dispatch": "1.0.0",
+    "d3-dsv": "1.0.0",
+    "d3-ease": "1.0.0",
+    "d3-format": "1.0.0",
+    "d3-interpolate": "1.1.0",
+    "d3-path": "https://github.com/d3/d3-path.git#1.0.0",
+    "d3-random": "1.0.0",
+    "d3-request": "https://github.com/d3/d3-request.git#1.0.1",
+    "d3-scale": "1.0.1",
+    "d3-selection": "1.0.0",
+    "d3-shape": "1.0.0",
+    "d3-time": "1.0.0",
+    "d3-time-format": "2.0.0",
+    "d3-timer": "1.0.1",
+    "d3-transition": "https://github.com/d3/d3-transition.git#1.0.0",
+    "d3-voronoi": "1.0.1"
   },
   "ignore": [
     ".DS_Store",
