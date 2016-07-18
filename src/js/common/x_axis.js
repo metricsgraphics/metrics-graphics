@@ -1,11 +1,21 @@
 function x_rug(args) {
   'use strict';
-  args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer;
+
+  if(!args.x_rug) {
+    return;
+  }
+
+  args.rug_buffer_size = args.chart_type === 'point'
+    ? args.buffer / 2
+    : args.buffer;
+
   var rug = mg_make_rug(args, 'mg-x-rug');
+
   rug.attr('x1', args.scalefns.xf)
     .attr('x2', args.scalefns.xf)
     .attr('y1', args.height - args.bottom - args.rug_buffer_size)
     .attr('y2', args.height - args.bottom);
+
   mg_add_color_accessor_to_rug(rug, args, 'mg-x-rug-mono');
 }
 
@@ -63,7 +73,7 @@ function x_axis_categorical(args) {
 function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function(d) {
-      return args.scales.X(d) + args.scales.X.rangeBand() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
+      return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
     })
     .attr('y', mg_get_plot_bottom(args))
     .attr('dy', '.35em')
@@ -73,7 +83,7 @@ function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
   if (args.truncate_x_labels) {
     labels.each(function(d, idx) {
       var elem = this,
-        width = args.scales.X.rangeBand();
+        width = args.scales.X.bandwidth();
       truncate_text(elem, d, width);
     });
   }

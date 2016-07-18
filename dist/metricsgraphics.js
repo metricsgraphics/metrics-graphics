@@ -1047,12 +1047,12 @@ function MGScale(args) {
     // make args.categorical_variables.
     // lets make the categorical variables.
     var all_data = mg_flatten_array(args.data)
-
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
       return d[args[scaleArgs.namespace_accessor_name]] })).values();
-    args.scales[scaleArgs.scale_name] = d3.scaleOrdinal()
+    args.scales[scaleArgs.scale_name] = d3.scaleBand()
       .domain(scaleArgs.categoricalVariables);
+
     scaleArgs.scaleType = 'categorical';
     return this;
   }
@@ -1081,17 +1081,26 @@ function MGScale(args) {
     var namespace = scaleArgs.namespace;
     var paddingPercentage = args[namespace + '_padding_percentage'];
     var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
+
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
-      args.scales[scaleArgs.scale_name] = d3.scaleBand()
-        .domain(args.scales[scaleArgs.scale_name].domain)
+      args.scales[scaleArgs.scale_name]
         .range(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
     } else {
-      args.scales[scaleArgs.scale_name] = d3.scaleBand()
-        .domain(args.scales[scaleArgs.scale_name].domain)
+      args.scales[scaleArgs.scale_name]
         .range(range, paddingPercentage, outerPaddingPercentage);
     }
-    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand() / 2 : 0);
+
+    mg_add_scale_function(
+      args,
+      scaleArgs.scalefn_name,
+      scaleArgs.scale_name,
+      args[scaleArgs.namespace_accessor_name],
+      halfway
+        ? args.scales[scaleArgs.scale_name].range() / 2
+        : 0
+    );
+
     return this;
   }
 
@@ -1685,11 +1694,12 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   if (position === 'left') {
     coords.cat.x = mg_get_plot_left(args) - args.buffer;
     coords.cat.y = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
     coords.group.x = mg_get_plot_left(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 + scale.rangeBand() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 + scale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
   }
@@ -1697,22 +1707,24 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   if (position === 'right') {
     coords.cat.x = mg_get_plot_right(args) - args.buffer;
     coords.cat.y = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
     coords.group.x = mg_get_plot_right(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
   }
 
   if (position === 'top') {
     coords.cat.x = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.y = mg_get_plot_top(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_top(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1720,11 +1732,12 @@ function categoricalLabelPlacement(args, axisArgs, group) {
 
   if (position === 'bottom') {
     coords.cat.x = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.y = mg_get_plot_bottom(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_bottom(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1744,14 +1757,17 @@ function categoricalLabels(args, axisArgs) {
   mg_selectAll_and_remove(svg, '.' + nsClass);
   var g = mg_add_g(svg, nsClass);
   var group_g;
-  var groups = groupScale.domain && groupScale.domain() ? groupScale.domain() : ['1'];
+  var groups = groupScale.domain && groupScale.domain()
+    ? groupScale.domain()
+    : ['1'];
+
   groups.forEach(function(group) {
     // grab group placement stuff.
     var coords = categoricalLabelPlacement(args, axisArgs, group);
 
     group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group));
     if (args[groupAccessor] !== null) {
-      var labels = group_g.append('svg:text')
+      var labels = group_g.append('text')
         .classed('mg-barplot-group-label', true)
         .attr('x', coords.group.x)
         .attr('y', coords.group.y)
@@ -1760,17 +1776,19 @@ function categoricalLabels(args, axisArgs) {
         .text(group);
 
     } else {
-      var labels = group_g.selectAll('text').data(scale.domain()).enter().append('svg:text')
-        .attr('x', coords.cat.x)
-        .attr('y', coords.cat.y)
-        .attr('dy', coords.cat.dy)
-        .attr('text-anchor', coords.cat.textAnchor)
-        .text(String);
+      var labels = group_g.selectAll('text')
+        .data(scale.domain())
+        .enter()
+        .append('text')
+          .attr('x', coords.cat.x)
+          .attr('y', coords.cat.y)
+          .attr('dy', coords.cat.dy)
+          .attr('text-anchor', coords.cat.textAnchor)
+          .text(String);
     }
     if (args['rotate_' + ns + '_labels']) {
       rotateLabels(labels, args['rotate_' + ns + '_labels']);
     }
-
   });
 }
 
@@ -1797,13 +1815,13 @@ function categoricalGuides(args, axisArgs) {
       if (position === 'left' || position === 'right') {
         x1 = mg_get_plot_left(args);
         x2 = mg_get_plot_right(args);
-        y1 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 //* ( group === null);
-        y2 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 //* ( group === null);
+        y1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
+        y2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
       }
 
       if (position === 'top' || position === 'bottom') {
-        x1 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 * (group === null);
-        x2 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 * (group === null);
+        x1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
+        x2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
         y1 = mg_get_plot_bottom(args);
         y2 = mg_get_plot_top(args);
       }
@@ -1817,8 +1835,8 @@ function categoricalGuides(args, axisArgs) {
         .attr('stroke', 'lightgray');
     });
 
-    var first = groupScale(group) + scale.range()[0] + scale.rangeBand() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
-    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.rangeBand() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var first = groupScale(group) + scale.range()[0] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
@@ -1987,7 +2005,14 @@ MG.axis_factory = axisFactory;
 
 function y_rug(args) {
   'use strict';
-  args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3;
+
+  if(!args.y_rug) {
+    return;
+  }
+
+  args.rug_buffer_size = args.chart_type === 'point'
+    ? args.buffer / 2
+    : args.buffer * 2 / 3;
 
   var rug = mg_make_rug(args, 'mg-y-rug');
 
@@ -2062,13 +2087,15 @@ function mg_bar_add_zero_line(args) {
   var extents = args.scales.X.domain();
   if (0 >= extents[0] && extents[1] >= 0) {
     var r = args.scales.Y.range();
-    var g = args.categorical_groups.length ?
-      args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1]) : args.scales.YGROUP();
+    var g = args.categorical_groups.length
+      ? args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1])
+      : args.scales.YGROUP();
+
     svg.append('svg:line')
       .attr('x1', args.scales.X(0))
       .attr('x2', args.scales.X(0))
       .attr('y1', r[0] + mg_get_plot_top(args))
-      .attr('y2', r[r.length - 1] + g) //+ args.scales.YGROUP.rangeBand())
+      .attr('y2', r[r.length - 1] + g)
       .attr('stroke', 'black')
       .attr('opacity', .2);
   }
@@ -2228,7 +2255,7 @@ function mg_add_y_axis_tick_labels(g, args) {
     });
 }
 
-// seems to be deprecated, only used by bar and histogram
+// TODO seems to be deprecated, only used by bar and histogram
 function y_axis(args) {
   if (!args.processed) {
     args.processed = {};
@@ -2277,7 +2304,7 @@ function mg_add_graphic_labels(g, group, args) {
   return g.selectAll('text').data(args.scales.Y.domain()).enter().append('svg:text')
     .attr('x', args.left - args.buffer)
     .attr('y', function(d) {
-      return args.scales.YGROUP(group) + args.scales.Y(d) + args.scales.Y.rangeBand() / 2;
+      return args.scales.YGROUP(group) + args.scales.Y(d) + args.scales.Y.bandwidth() / 2;
     })
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
@@ -2288,7 +2315,7 @@ function mg_add_group_label(g, group, args) {
   g.append('svg:text')
     .classed('mg-barplot-group-label', true)
     .attr('x', args.left - args.buffer)
-    .attr('y', args.scales.YGROUP(group) + args.scales.YGROUP.rangeBand() / 2)
+    .attr('y', args.scales.YGROUP(group) + args.scales.YGROUP.bandwidth() / 2)
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
     .text(group);
@@ -2347,12 +2374,22 @@ MG.y_axis_categorical = y_axis_categorical;
 
 function x_rug(args) {
   'use strict';
-  args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer;
+
+  if(!args.x_rug) {
+    return;
+  }
+
+  args.rug_buffer_size = args.chart_type === 'point'
+    ? args.buffer / 2
+    : args.buffer;
+
   var rug = mg_make_rug(args, 'mg-x-rug');
+
   rug.attr('x1', args.scalefns.xf)
     .attr('x2', args.scalefns.xf)
     .attr('y1', args.height - args.bottom - args.rug_buffer_size)
     .attr('y2', args.height - args.bottom);
+
   mg_add_color_accessor_to_rug(rug, args, 'mg-x-rug-mono');
 }
 
@@ -2410,7 +2447,7 @@ function x_axis_categorical(args) {
 function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
   var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
   labels.attr('x', function(d) {
-      return args.scales.X(d) + args.scales.X.rangeBand() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
+      return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
     })
     .attr('y', mg_get_plot_bottom(args))
     .attr('dy', '.35em')
@@ -2420,7 +2457,7 @@ function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
   if (args.truncate_x_labels) {
     labels.each(function(d, idx) {
       var elem = this,
-        width = args.scales.X.rangeBand();
+        width = args.scales.X.bandwidth();
       truncate_text(elem, d, width);
     });
   }
@@ -4422,7 +4459,10 @@ MG.button_layout = function(target) {
 
   function mg_line_rollover_setup(args, graph) {
     var svg = mg_get_svg_child_of(args.target);
-    mg_add_g(svg, 'mg-active-datapoint-container');
+
+    if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+      mg_add_g(svg, 'mg-active-datapoint-container');
+    }
 
     mg_remove_existing_line_rollover_elements(svg);
     mg_add_rollover_circle(args, svg);
@@ -4586,6 +4626,7 @@ MG.button_layout = function(target) {
           .namespace('x')
           .type('numerical')
           .position(args.x_axis_position)
+          .rug(x_rug(args))
           .draw();
 
         //TODO move to axis_factory
@@ -4599,6 +4640,7 @@ MG.button_layout = function(target) {
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
+          .rug(y_rug(args))
           .draw();
 
         //TODO move to axis_factory
@@ -4795,7 +4837,9 @@ MG.button_layout = function(target) {
       var svg = mg_get_svg_child_of(args.target);
       var $svg = $($(args.target).find('svg').get(0));
 
-      mg_add_g(svg, 'mg-active-datapoint-container');
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g(svg, 'mg-active-datapoint-container');
+      }
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-rollover-rect').remove();
@@ -5119,6 +5163,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .type(args.x_axis_type)
         .zeroLine(args.y_axis_type === 'categorical')
         .position(args.x_axis_position)
+        .rug(x_rug(args))
         .draw();
 
       new MG.axis_factory(args)
@@ -5126,6 +5171,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .type(args.y_axis_type)
         .zeroLine(args.x_axis_type === 'categorical')
         .position(args.y_axis_position)
+        .rug(y_rug(args))
         .draw();
 
       this.mainPlot();
@@ -5159,10 +5205,10 @@ function mg_color_point_mouseover(args, elem, d) {
 
       var pts = g.selectAll('circle')
         .data(data)
-        .enter().append('svg:circle')
+        .enter().append('circle')
         .attr('class', function(d, i) {
-          return 'path-' + i; })
-        //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
+          return 'path-' + i;
+        })
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', function(d) {
           return args.scalefns.youtf(d);
@@ -5187,7 +5233,10 @@ function mg_color_point_mouseover(args, elem, d) {
 
     this.rollover = function() {
       var svg = mg_get_svg_child_of(args.target);
-      mg_add_g(svg, 'mg-active-datapoint-container');
+
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g(svg, 'mg-active-datapoint-container');
+      }
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-voronoi').remove();
@@ -5709,7 +5758,9 @@ function mg_color_point_mouseover(args, elem, d) {
       var svg = mg_get_svg_child_of(args.target);
       var g;
 
-      mg_add_g(svg, 'mg-active-datapoint-container');
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g(svg, 'mg-active-datapoint-container');
+      }
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-rollover-rect').remove();
@@ -7248,8 +7299,10 @@ function mg_make_rug(args, rug_class) {
   var all_data = mg_flatten_array(args.data);
   var rug = svg.selectAll('line.' + rug_class).data(all_data);
 
-  //set the attributes that do not change after initialization, per
-  rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
+  rug.enter()
+    .append('line')
+      .attr('class', rug_class)
+      .attr('opacity', 0.3);
 
   //remove rug elements that are no longer in use
   mg_exit_and_remove(rug);
@@ -7261,15 +7314,13 @@ function mg_make_rug(args, rug_class) {
 
 function mg_add_color_accessor_to_rug(rug, args, rug_mono_class) {
   if (args.color_accessor) {
-    rug.attr('stroke', args.scalefns.color);
+    rug.attr('stroke', args.scalefns.colorf);
     rug.classed(rug_mono_class, false);
   } else {
     rug.attr('stroke', null);
     rug.classed(rug_mono_class, true);
   }
 }
-
-
 
 function mg_rotate_labels(labels, rotation_degree) {
   if (rotation_degree) {

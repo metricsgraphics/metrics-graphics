@@ -80,7 +80,9 @@
       var svg = mg_get_svg_child_of(args.target);
       var $svg = $($(args.target).find('svg').get(0));
 
-      mg_add_g(svg, 'mg-active-datapoint-container');
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g(svg, 'mg-active-datapoint-container');
+      }
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-rollover-rect').remove();

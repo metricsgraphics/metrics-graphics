@@ -163,8 +163,10 @@ function mg_make_rug(args, rug_class) {
   var all_data = mg_flatten_array(args.data);
   var rug = svg.selectAll('line.' + rug_class).data(all_data);
 
-  //set the attributes that do not change after initialization, per
-  rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
+  rug.enter()
+    .append('line')
+      .attr('class', rug_class)
+      .attr('opacity', 0.3);
 
   //remove rug elements that are no longer in use
   mg_exit_and_remove(rug);
@@ -176,15 +178,13 @@ function mg_make_rug(args, rug_class) {
 
 function mg_add_color_accessor_to_rug(rug, args, rug_mono_class) {
   if (args.color_accessor) {
-    rug.attr('stroke', args.scalefns.color);
+    rug.attr('stroke', args.scalefns.colorf);
     rug.classed(rug_mono_class, false);
   } else {
     rug.attr('stroke', null);
     rug.classed(rug_mono_class, true);
   }
 }
-
-
 
 function mg_rotate_labels(labels, rotation_degree) {
   if (rotation_degree) {

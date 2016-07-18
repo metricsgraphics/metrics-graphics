@@ -102,12 +102,12 @@ function MGScale(args) {
     // make args.categorical_variables.
     // lets make the categorical variables.
     var all_data = mg_flatten_array(args.data)
-
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
       return d[args[scaleArgs.namespace_accessor_name]] })).values();
-    args.scales[scaleArgs.scale_name] = d3.scaleOrdinal()
+    args.scales[scaleArgs.scale_name] = d3.scaleBand()
       .domain(scaleArgs.categoricalVariables);
+
     scaleArgs.scaleType = 'categorical';
     return this;
   }
@@ -136,17 +136,26 @@ function MGScale(args) {
     var namespace = scaleArgs.namespace;
     var paddingPercentage = args[namespace + '_padding_percentage'];
     var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
+
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
-      args.scales[scaleArgs.scale_name] = d3.scaleBand()
-        .domain(args.scales[scaleArgs.scale_name].domain)
+      args.scales[scaleArgs.scale_name]
         .range(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
     } else {
-      args.scales[scaleArgs.scale_name] = d3.scaleBand()
-        .domain(args.scales[scaleArgs.scale_name].domain)
+      args.scales[scaleArgs.scale_name]
         .range(range, paddingPercentage, outerPaddingPercentage);
     }
-    mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name], halfway ? args.scales[scaleArgs.scale_name].rangeBand() / 2 : 0);
+
+    mg_add_scale_function(
+      args,
+      scaleArgs.scalefn_name,
+      scaleArgs.scale_name,
+      args[scaleArgs.namespace_accessor_name],
+      halfway
+        ? args.scales[scaleArgs.scale_name].range() / 2
+        : 0
+    );
+
     return this;
   }
 

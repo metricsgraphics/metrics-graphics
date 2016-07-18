@@ -423,11 +423,12 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   if (position === 'left') {
     coords.cat.x = mg_get_plot_left(args) - args.buffer;
     coords.cat.y = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
     coords.group.x = mg_get_plot_left(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 + scale.rangeBand() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 + scale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
   }
@@ -435,22 +436,24 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   if (position === 'right') {
     coords.cat.x = mg_get_plot_right(args) - args.buffer;
     coords.cat.y = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
     coords.group.x = mg_get_plot_right(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
   }
 
   if (position === 'top') {
     coords.cat.x = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.y = mg_get_plot_top(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_top(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -458,11 +461,12 @@ function categoricalLabelPlacement(args, axisArgs, group) {
 
   if (position === 'bottom') {
     coords.cat.x = function(d) {
-      return groupScale(group) + scale(d) + scale.rangeBand() / 2; }
+      return groupScale(group) + scale(d) + scale.bandwidth() / 2;
+    }
     coords.cat.y = mg_get_plot_bottom(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.rangeBand() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_bottom(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -482,14 +486,17 @@ function categoricalLabels(args, axisArgs) {
   mg_selectAll_and_remove(svg, '.' + nsClass);
   var g = mg_add_g(svg, nsClass);
   var group_g;
-  var groups = groupScale.domain && groupScale.domain() ? groupScale.domain() : ['1'];
+  var groups = groupScale.domain && groupScale.domain()
+    ? groupScale.domain()
+    : ['1'];
+
   groups.forEach(function(group) {
     // grab group placement stuff.
     var coords = categoricalLabelPlacement(args, axisArgs, group);
 
     group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group));
     if (args[groupAccessor] !== null) {
-      var labels = group_g.append('svg:text')
+      var labels = group_g.append('text')
         .classed('mg-barplot-group-label', true)
         .attr('x', coords.group.x)
         .attr('y', coords.group.y)
@@ -498,17 +505,19 @@ function categoricalLabels(args, axisArgs) {
         .text(group);
 
     } else {
-      var labels = group_g.selectAll('text').data(scale.domain()).enter().append('svg:text')
-        .attr('x', coords.cat.x)
-        .attr('y', coords.cat.y)
-        .attr('dy', coords.cat.dy)
-        .attr('text-anchor', coords.cat.textAnchor)
-        .text(String);
+      var labels = group_g.selectAll('text')
+        .data(scale.domain())
+        .enter()
+        .append('text')
+          .attr('x', coords.cat.x)
+          .attr('y', coords.cat.y)
+          .attr('dy', coords.cat.dy)
+          .attr('text-anchor', coords.cat.textAnchor)
+          .text(String);
     }
     if (args['rotate_' + ns + '_labels']) {
       rotateLabels(labels, args['rotate_' + ns + '_labels']);
     }
-
   });
 }
 
@@ -535,13 +544,13 @@ function categoricalGuides(args, axisArgs) {
       if (position === 'left' || position === 'right') {
         x1 = mg_get_plot_left(args);
         x2 = mg_get_plot_right(args);
-        y1 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 //* ( group === null);
-        y2 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 //* ( group === null);
+        y1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
+        y2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
       }
 
       if (position === 'top' || position === 'bottom') {
-        x1 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 * (group === null);
-        x2 = scale(cat) + groupScale(group) + scale.rangeBand() / 2 * (group === null);
+        x1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
+        x2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
         y1 = mg_get_plot_bottom(args);
         y2 = mg_get_plot_top(args);
       }
@@ -555,8 +564,8 @@ function categoricalGuides(args, axisArgs) {
         .attr('stroke', 'lightgray');
     });
 
-    var first = groupScale(group) + scale.range()[0] + scale.rangeBand() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
-    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.rangeBand() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var first = groupScale(group) + scale.range()[0] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
@@ -725,7 +734,14 @@ MG.axis_factory = axisFactory;
 
 function y_rug(args) {
   'use strict';
-  args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3;
+
+  if(!args.y_rug) {
+    return;
+  }
+
+  args.rug_buffer_size = args.chart_type === 'point'
+    ? args.buffer / 2
+    : args.buffer * 2 / 3;
 
   var rug = mg_make_rug(args, 'mg-y-rug');
 
@@ -800,13 +816,15 @@ function mg_bar_add_zero_line(args) {
   var extents = args.scales.X.domain();
   if (0 >= extents[0] && extents[1] >= 0) {
     var r = args.scales.Y.range();
-    var g = args.categorical_groups.length ?
-      args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1]) : args.scales.YGROUP();
+    var g = args.categorical_groups.length
+      ? args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1])
+      : args.scales.YGROUP();
+
     svg.append('svg:line')
       .attr('x1', args.scales.X(0))
       .attr('x2', args.scales.X(0))
       .attr('y1', r[0] + mg_get_plot_top(args))
-      .attr('y2', r[r.length - 1] + g) //+ args.scales.YGROUP.rangeBand())
+      .attr('y2', r[r.length - 1] + g)
       .attr('stroke', 'black')
       .attr('opacity', .2);
   }
@@ -966,7 +984,7 @@ function mg_add_y_axis_tick_labels(g, args) {
     });
 }
 
-// seems to be deprecated, only used by bar and histogram
+// TODO seems to be deprecated, only used by bar and histogram
 function y_axis(args) {
   if (!args.processed) {
     args.processed = {};
@@ -1015,7 +1033,7 @@ function mg_add_graphic_labels(g, group, args) {
   return g.selectAll('text').data(args.scales.Y.domain()).enter().append('svg:text')
     .attr('x', args.left - args.buffer)
     .attr('y', function(d) {
-      return args.scales.YGROUP(group) + args.scales.Y(d) + args.scales.Y.rangeBand() / 2;
+      return args.scales.YGROUP(group) + args.scales.Y(d) + args.scales.Y.bandwidth() / 2;
     })
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
@@ -1026,7 +1044,7 @@ function mg_add_group_label(g, group, args) {
   g.append('svg:text')
     .classed('mg-barplot-group-label', true)
     .attr('x', args.left - args.buffer)
-    .attr('y', args.scales.YGROUP(group) + args.scales.YGROUP.rangeBand() / 2)
+    .attr('y', args.scales.YGROUP(group) + args.scales.YGROUP.bandwidth() / 2)
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
     .text(group);

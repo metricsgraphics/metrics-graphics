@@ -171,6 +171,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .type(args.x_axis_type)
         .zeroLine(args.y_axis_type === 'categorical')
         .position(args.x_axis_position)
+        .rug(x_rug(args))
         .draw();
 
       new MG.axis_factory(args)
@@ -178,6 +179,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .type(args.y_axis_type)
         .zeroLine(args.x_axis_type === 'categorical')
         .position(args.y_axis_position)
+        .rug(y_rug(args))
         .draw();
 
       this.mainPlot();
@@ -211,10 +213,10 @@ function mg_color_point_mouseover(args, elem, d) {
 
       var pts = g.selectAll('circle')
         .data(data)
-        .enter().append('svg:circle')
+        .enter().append('circle')
         .attr('class', function(d, i) {
-          return 'path-' + i; })
-        //.attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
+          return 'path-' + i;
+        })
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', function(d) {
           return args.scalefns.youtf(d);
@@ -239,7 +241,10 @@ function mg_color_point_mouseover(args, elem, d) {
 
     this.rollover = function() {
       var svg = mg_get_svg_child_of(args.target);
-      mg_add_g(svg, 'mg-active-datapoint-container');
+
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g(svg, 'mg-active-datapoint-container');
+      }
 
       //remove the old rollovers if they already exist
       svg.selectAll('.mg-voronoi').remove();

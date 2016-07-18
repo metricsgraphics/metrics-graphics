@@ -613,7 +613,10 @@
 
   function mg_line_rollover_setup(args, graph) {
     var svg = mg_get_svg_child_of(args.target);
-    mg_add_g(svg, 'mg-active-datapoint-container');
+
+    if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+      mg_add_g(svg, 'mg-active-datapoint-container');
+    }
 
     mg_remove_existing_line_rollover_elements(svg);
     mg_add_rollover_circle(args, svg);
@@ -777,6 +780,7 @@
           .namespace('x')
           .type('numerical')
           .position(args.x_axis_position)
+          .rug(x_rug(args))
           .draw();
 
         //TODO move to axis_factory
@@ -790,6 +794,7 @@
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
+          .rug(y_rug(args))
           .draw();
 
         //TODO move to axis_factory
