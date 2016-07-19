@@ -80,13 +80,12 @@ function mg_color_point_mouseover(args, elem, d) {
             return mg_get_plot_left(args) };
           args.scalefns.xgroupf = function(d) {
             return mg_get_plot_left(args) };
-
         }
+
         args.scalefns.xoutf = function(d) {
-          return args.scalefns.xf(d) + args.scalefns.xgroupf(d) };
-
+          return args.scalefns.xf(d) + args.scalefns.xgroupf(d)
+        };
       } else {
-
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .inflateDomain(true)
@@ -94,6 +93,7 @@ function mg_color_point_mouseover(args, elem, d) {
           .numericalDomainFromData((args.baselines || []).map(function(d) {
             return d[args.x_accessor] }))
           .numericalRange('bottom');
+
         args.scalefns.xoutf = args.scalefns.xf;
       }
 

@@ -152,7 +152,7 @@ function MGScale(args) {
       scaleArgs.scale_name,
       args[scaleArgs.namespace_accessor_name],
       halfway
-        ? args.scales[scaleArgs.scale_name].range() / 2
+        ? args.scales[scaleArgs.scale_name].bandwidth() / 2
         : 0
     );
 
