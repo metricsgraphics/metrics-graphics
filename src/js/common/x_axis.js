@@ -38,9 +38,10 @@ function x_axis(args) {
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   if (!args.x_axis) {
-    return this; }
-  var g = mg_add_g(svg, 'mg-x-axis');
+    return this;
+  }
 
+  var g = mg_add_g(svg, 'mg-x-axis');
 
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
@@ -71,8 +72,13 @@ function x_axis_categorical(args) {
 }
 
 function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
-  var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
-  labels.attr('x', function(d) {
+  var labels = g.selectAll('text')
+    .data(args.categorical_variables)
+    .enter()
+    .append('text');
+
+  labels
+    .attr('x', function(d) {
       return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
     })
     .attr('y', mg_get_plot_bottom(args))
@@ -105,7 +111,9 @@ function mg_point_add_color_scale(args) {
         .range(color_range)
         .clamp(true);
     } else {
-      args.scales.color = args.color_range !== null ? d3.scaleOrdinal().range(color_range) : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
+      args.scales.color = args.color_range !== null
+        ? d3.scaleOrdinal().range(color_range)
+        : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
 
       args.scales.color.domain(color_domain);
     }

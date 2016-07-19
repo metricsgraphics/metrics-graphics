@@ -540,7 +540,6 @@ function categoricalGuides(args, axisArgs) {
 
   grs.forEach(function(group) {
     scale.domain().forEach(function(cat) {
-
       if (position === 'left' || position === 'right') {
         x1 = mg_get_plot_left(args);
         x2 = mg_get_plot_right(args);
@@ -578,6 +577,7 @@ function categoricalGuides(args, axisArgs) {
       y12 = first;
       y22 = last;
     }
+
     if (position === 'bottom' || position === 'top') {
       x11 = first;
       x21 = last;
@@ -597,6 +597,7 @@ function categoricalGuides(args, axisArgs) {
       .attr('y2', y21)
       .attr('stroke-dasharray', '2,1')
       .attr('stroke', 'lightgray');
+
     svg.append('line')
       .attr('x1', x12)
       .attr('x2', x22)
@@ -604,7 +605,6 @@ function categoricalGuides(args, axisArgs) {
       .attr('y2', y22)
       .attr('stroke-dasharray', '2,1')
       .attr('stroke', 'lightgray');
-
   })
 }
 
@@ -650,7 +650,7 @@ var mgDrawAxis = {};
 
 mgDrawAxis.categorical = function(args, axisArgs) {
   var ns = axisArgs.namespace;
-  //mg_add_categorical_labels(args, axisArgs);
+
   categoricalLabels(args, axisArgs);
   categoricalGuides(args, axisArgs);
 }

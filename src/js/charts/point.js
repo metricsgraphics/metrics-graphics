@@ -44,7 +44,6 @@ function mg_color_point_mouseover(args, elem, d) {
 
     testPoint = testPoint[0][args[ns + '_accessor']];
     return typeof testPoint === 'string' ? 'categorical' : 'numerical';
-
   }
 
   function pointChart(args) {
@@ -56,7 +55,6 @@ function mg_color_point_mouseover(args, elem, d) {
       args.y_axis_type = inferType(args, 'y');
 
       raw_data_transformation(args);
-
 
       process_point(args);
       init(args);
