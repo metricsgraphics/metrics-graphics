@@ -33,7 +33,7 @@
   },
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
-    "d3": ">=4"
+    "d3": "^4"
   },
   "devDependencies": {
     "jquery": ">=1.11.1",
