@@ -563,8 +563,8 @@ function categoricalGuides(args, axisArgs) {
         .attr('stroke', 'lightgray');
     });
 
-    var first = groupScale(group) + scale.range()[0] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
-    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var last = groupScale(group) + scale(scale.domain()[scale.domain().length-1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
