@@ -64,7 +64,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
-    
+
     equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot (two ticks) on the x-axis');
 });
 
@@ -120,4 +120,18 @@ test('Only one least-squares line is added on multiple calls to the same target 
     MG.data_graphic(params);
     MG.data_graphic(MG.clone(params));
     equal(document.querySelectorAll('.mg-least-squares-line').length, 1, 'We only have one least-squares line');
+});
+
+test('Only one active data point container added on multiple calls to the same target element (points)', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        chart_type: 'point'
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one mg-active-datapoint-container with points');
 });

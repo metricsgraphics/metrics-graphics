@@ -261,6 +261,19 @@ test('Only one line legend is added on multiple calls to the same target element
     equal(document.querySelectorAll('.mg-line-legend').length, 1, 'We only have one mg-line-legend');
 });
 
+test('Only one active data point container added on multiple calls to the same target element (lines)', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}]
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one mg-active-datapoint-container with lines');
+});
+
 test('When 1 data series is empty (out of 2) and missing_is_zero is true, remaining line is rendered', function() {
     var data = [];
     data[0] = [];
