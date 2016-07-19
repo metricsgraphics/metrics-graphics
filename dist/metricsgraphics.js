@@ -1697,11 +1697,11 @@ function categoricalLabelPlacement(args, axisArgs, group) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
     }
     coords.cat.dy = '.35em';
-    coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
+    coords.cat.textAnchor = 'end';
     coords.group.x = mg_get_plot_left(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 + scale.bandwidth() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
-    coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'end';
+    coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'end' : 'end';
   }
 
   if (position === 'right') {
@@ -1710,11 +1710,11 @@ function categoricalLabelPlacement(args, axisArgs, group) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
     }
     coords.cat.dy = '.35em';
-    coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
+    coords.cat.textAnchor = 'start';
     coords.group.x = mg_get_plot_right(args) - args.buffer;
-    coords.group.y = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
+    coords.group.y = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
     coords.group.dy = '.35em';
-    coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'middle' : 'start';
+    coords.group.textAnchor = 'start';
   }
 
   if (position === 'top') {
@@ -1724,7 +1724,7 @@ function categoricalLabelPlacement(args, axisArgs, group) {
     coords.cat.y = mg_get_plot_top(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_top(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1737,7 +1737,7 @@ function categoricalLabelPlacement(args, axisArgs, group) {
     coords.cat.y = mg_get_plot_bottom(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.rangeBand ? groupScale.bandwidth() / 2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 - scale.bandwidth()/2 : 0);
     coords.group.y = mg_get_plot_bottom(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1834,8 +1834,8 @@ function categoricalGuides(args, axisArgs) {
         .attr('stroke', 'lightgray');
     });
 
-    var first = groupScale(group) + scale.range()[0] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
-    var last = groupScale(group) + scale.range()[scale.range().length - 1] + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var last = groupScale(group) + scale(scale.domain()[scale.domain().length-1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
@@ -1881,12 +1881,11 @@ function categoricalGuides(args, axisArgs) {
 
 function rotateLabels(labels, rotation_degree) {
   if (rotation_degree) {
-    labels.attr({
-      transform: function() {
-        var elem = d3.select(this);
+    labels.attr('transform', function(){
+      var elem = d3.select(this);
         return 'rotate(' + rotation_degree + ' ' + elem.attr('x') + ',' + elem.attr('y') + ')';
-      }
-    });
+    })
+
   }
 }
 
@@ -7078,7 +7077,7 @@ function mg_format_x_rollover(args, fmt, d) {
 
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data;
-  var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  var time_fmt = mg_get_rollover_time_format(args);
   var num_fmt = format_rollover_number(args);
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
