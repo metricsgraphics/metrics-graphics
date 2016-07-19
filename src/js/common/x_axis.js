@@ -402,7 +402,7 @@ function mg_add_primary_x_axis_label(args, g) {
   if (args.time_series && args.european_clock) {
     labels.append('tspan').classed('mg-european-hours', true).text(function(_d, i) {
       var d = new Date(_d);
-      if (i === 0) return d3.time.format('%H')(d);
+      if (i === 0) return d3.timeFormat('%H')(d);
       else return '';
     });
     labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d, i) {

@@ -1097,7 +1097,7 @@ function MGScale(args) {
       scaleArgs.scale_name,
       args[scaleArgs.namespace_accessor_name],
       halfway
-        ? args.scales[scaleArgs.scale_name].range() / 2
+        ? args.scales[scaleArgs.scale_name].bandwidth() / 2
         : 0
     );
 
@@ -1811,7 +1811,6 @@ function categoricalGuides(args, axisArgs) {
 
   grs.forEach(function(group) {
     scale.domain().forEach(function(cat) {
-
       if (position === 'left' || position === 'right') {
         x1 = mg_get_plot_left(args);
         x2 = mg_get_plot_right(args);
@@ -1849,6 +1848,7 @@ function categoricalGuides(args, axisArgs) {
       y12 = first;
       y22 = last;
     }
+
     if (position === 'bottom' || position === 'top') {
       x11 = first;
       x21 = last;
@@ -1868,6 +1868,7 @@ function categoricalGuides(args, axisArgs) {
       .attr('y2', y21)
       .attr('stroke-dasharray', '2,1')
       .attr('stroke', 'lightgray');
+
     svg.append('line')
       .attr('x1', x12)
       .attr('x2', x22)
@@ -1875,7 +1876,6 @@ function categoricalGuides(args, axisArgs) {
       .attr('y2', y22)
       .attr('stroke-dasharray', '2,1')
       .attr('stroke', 'lightgray');
-
   })
 }
 
@@ -1921,7 +1921,7 @@ var mgDrawAxis = {};
 
 mgDrawAxis.categorical = function(args, axisArgs) {
   var ns = axisArgs.namespace;
-  //mg_add_categorical_labels(args, axisArgs);
+
   categoricalLabels(args, axisArgs);
   categoricalGuides(args, axisArgs);
 }
@@ -2412,9 +2412,10 @@ function x_axis(args) {
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   if (!args.x_axis) {
-    return this; }
-  var g = mg_add_g(svg, 'mg-x-axis');
+    return this;
+  }
 
+  var g = mg_add_g(svg, 'mg-x-axis');
 
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
@@ -2445,8 +2446,13 @@ function x_axis_categorical(args) {
 }
 
 function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
-  var labels = g.selectAll('text').data(args.categorical_variables).enter().append('svg:text');
-  labels.attr('x', function(d) {
+  var labels = g.selectAll('text')
+    .data(args.categorical_variables)
+    .enter()
+    .append('text');
+
+  labels
+    .attr('x', function(d) {
       return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2);
     })
     .attr('y', mg_get_plot_bottom(args))
@@ -2479,7 +2485,9 @@ function mg_point_add_color_scale(args) {
         .range(color_range)
         .clamp(true);
     } else {
-      args.scales.color = args.color_range !== null ? d3.scaleOrdinal().range(color_range) : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
+      args.scales.color = args.color_range !== null
+        ? d3.scaleOrdinal().range(color_range)
+        : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
 
       args.scales.color.domain(color_domain);
     }
@@ -2768,7 +2776,7 @@ function mg_add_primary_x_axis_label(args, g) {
   if (args.time_series && args.european_clock) {
     labels.append('tspan').classed('mg-european-hours', true).text(function(_d, i) {
       var d = new Date(_d);
-      if (i === 0) return d3.time.format('%H')(d);
+      if (i === 0) return d3.timeFormat('%H')(d);
       else return '';
     });
     labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d, i) {
@@ -5036,7 +5044,6 @@ function mg_color_point_mouseover(args, elem, d) {
 
     testPoint = testPoint[0][args[ns + '_accessor']];
     return typeof testPoint === 'string' ? 'categorical' : 'numerical';
-
   }
 
   function pointChart(args) {
@@ -5048,7 +5055,6 @@ function mg_color_point_mouseover(args, elem, d) {
       args.y_axis_type = inferType(args, 'y');
 
       raw_data_transformation(args);
-
 
       process_point(args);
       init(args);
@@ -5072,13 +5078,12 @@ function mg_color_point_mouseover(args, elem, d) {
             return mg_get_plot_left(args) };
           args.scalefns.xgroupf = function(d) {
             return mg_get_plot_left(args) };
-
         }
+
         args.scalefns.xoutf = function(d) {
-          return args.scalefns.xf(d) + args.scalefns.xgroupf(d) };
-
+          return args.scalefns.xf(d) + args.scalefns.xgroupf(d)
+        };
       } else {
-
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .inflateDomain(true)
@@ -5086,6 +5091,7 @@ function mg_color_point_mouseover(args, elem, d) {
           .numericalDomainFromData((args.baselines || []).map(function(d) {
             return d[args.x_accessor] }))
           .numericalRange('bottom');
+
         args.scalefns.xoutf = args.scalefns.xf;
       }
 
