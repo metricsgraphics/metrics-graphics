@@ -99,16 +99,18 @@ function mg_format_x_rollover(args, fmt, d) {
 //  As of right now, only implemented for point.js.
 
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
-  var formatted_data;
+  var formatted_data, formatter;
   var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
-  var num_fmt = format_rollover_number(args);
+  if (typeof d[accessor] === 'string') formatter = function(d){return d}
+  else formatter = format_rollover_number(args); 
+
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
     else formatted_data = number_rollover_format(mouseover_fcn, d, accessor);
 
   } else {
     if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  ';
-    else formatted_data = (args.time_series ? '' : accessor + ': ') + num_fmt(d[accessor]) + '   ';
+    else formatted_data = (args.time_series ? '' : accessor + ': ') + formatter(d[accessor]) + '   ';
   }
   return formatted_data;
 }
