@@ -204,6 +204,7 @@ circle.mg-points-mono {
 
 tspan.mg-points-mono {
     fill: #a89641;
+    stroke: #a89641;
 }
 
 circle.mg-points-mono.selected {
