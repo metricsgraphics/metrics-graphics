@@ -202,6 +202,10 @@ circle.mg-points-mono {
     stroke-opacity: 1;
 }
 
+tspan.mg-points-mono {
+    fill: #a89641;
+}
+
 circle.mg-points-mono.selected {
     fill: #a89641;
     fill-opacity: 1;
@@ -218,7 +222,7 @@ text {
 
 .mg-x-rug-mono,
 .mg-y-rug-mono {
-    stroke: #cfcfcf;
+    stroke: #a89641;
 }
 
 .mg-x-axis line,

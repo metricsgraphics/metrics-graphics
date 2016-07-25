@@ -7,7 +7,7 @@ function point_mouseover(args, svg, d) {
     row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
-  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
+  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape
 
   row.text(mg_format_x_mouseover(args, d)); // x
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
@@ -272,9 +272,11 @@ function mg_color_point_mouseover(args, elem, d) {
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
         .on('mousemove', this.rolloverMove(args));
+
       if (args.data[0].length === 1) {
         point_mouseover(args, svg, args.data[0][0]);
       }
+
       return this;
     };
 

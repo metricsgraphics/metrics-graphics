@@ -3374,7 +3374,9 @@ function mg_setup_mouseover_container(svg, args) {
   // nudge up the rollover text a bit
   var active_datapoint_y_nudge = 0.75;
 
-  var y_position = (args.x_axis_position === 'bottom') ? mg_get_top(args) * active_datapoint_y_nudge : mg_get_bottom(args) + args.buffer * 3;
+  var y_position = (args.x_axis_position === 'bottom')
+    ? mg_get_top(args) * active_datapoint_y_nudge
+    : mg_get_bottom(args) + args.buffer * 3;
 
   if (args.markers) {
     var yPos;
@@ -5001,7 +5003,7 @@ function point_mouseover(args, svg, d) {
     row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
-  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
+  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape
 
   row.text(mg_format_x_mouseover(args, d)); // x
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
@@ -5266,9 +5268,11 @@ function mg_color_point_mouseover(args, elem, d) {
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
         .on('mousemove', this.rolloverMove(args));
+
       if (args.data[0].length === 1) {
         point_mouseover(args, svg, args.data[0][0]);
       }
+
       return this;
     };
 
