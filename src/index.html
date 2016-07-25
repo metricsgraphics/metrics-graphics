@@ -13,21 +13,20 @@
     <link href='../examples/css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js' charset='utf-8'></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="../examples/js/lib/ace.js" charset="utf-8"></script>
 
     <!-- dev start -->
     <script src='js/MG.js'></script>
-    <script src='js/common/register.js'></script>
-    <script src='js/common/hooks.js'></script>
     <script src='js/common/data_graphic.js'></script>
+    <script src='js/common/hooks.js'></script>
     <script src='js/common/register.js'></script>
     <script src='js/common/bootstrap_tooltip_popover.js'></script>
     <script src='js/common/chart_title.js'></script>
+    <script src='js/common/scales.js'></script>
     <script src='js/common/y_axis.js'></script>
     <script src='js/common/x_axis.js'></script>
     <script src='js/common/init.js'></script>
-    <script src='js/common/scales.js'></script>
     <script src='js/common/markers.js'></script>
     <script src='js/common/rollover.js'></script>
     <script src='js/common/window_listeners.js'></script>
@@ -188,14 +187,13 @@
                 + 'MG.data_graphic({\n'
                 + '  title: "UFO Sightings",\n'
                 + '  description: "Yearly UFO sightings from 1945 to 2010.",\n'
-                + '  data: JSON.parse($(\'.data textarea\').val()),\n'
+                + '  data: JSON.parse(document.querySelector(\'.data textarea\').value),\n'
                 + '  markers: [{\'year\': 1964, \'label\': \'"The Creeping Terror" released\'}],\n'
                 + '  width: 400,\n'
                 + '  height: 250,\n'
                 + '  target: ".result",\n'
                 + '  x_accessor: "year",\n'
                 + '  y_accessor: "sightings",\n'
-                + '  interpolate: "monotone"\n'
                 + '});';
 
         persisted = JSON.parse(localStorage.getItem(mgKey), null, 2) || {};
@@ -206,24 +204,24 @@
         editor.gotoLine(persisted.line || 1);
         editor.setHighlightActiveLine(false);
 
-        $('.update').on('click', function() {
+        d3.select('.update').on('click', function() {
             persisted.script = editor.getValue();
-            persisted.data = JSON.parse($('.data textarea').val());
+            persisted.data = JSON.parse(document.querySelector('.data textarea').value);
             saveState();
             run();
         });
 
-        $('.reset').on('click', function() {
+        d3.select('.reset').on('click', function() {
             clearState();
             document.location = document.location;
         });
 
         if (persisted.data) {
-            $('.data textarea').val(JSON.stringify(persisted.data, null, 2));
+            document.querySelector('.data textarea').value = JSON.stringify(persisted.data, null, 2);
             run();
         } else {
             d3.json('../examples/data/ufo-sightings.json', function(data) {
-                $('.data textarea').val(JSON.stringify(data, null, 2));
+                document.querySelector('.data textarea').value = JSON.stringify(data, null, 2);
                 run();
             })
         }

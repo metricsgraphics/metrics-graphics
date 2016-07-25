@@ -1,12 +1,12 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['d3', 'jquery'], factory);
+    define(['d3'], factory);
   } else if (typeof exports === 'object') {
-    module.exports = factory(require('d3'), require('jquery'));
+    module.exports = factory(require('d3'));
   } else {
-    root.MG = factory(root.d3, root.jQuery);
+    root.MG = factory(root.d3);
   }
-}(this, function(d3, $) {
+}(this, function(d3) {
 window.MG = {version: '2.10.0'};
 
 function register(chartType, descriptor, defaults) {
@@ -905,7 +905,7 @@ function chart_title(args) {
 
       //now that the title is an svg text element, we'll have to trigger
       //mouseenter, mouseleave events manually for the popover to work properly
-      var $chartTitle = $(chartTitle.node());
+      var $chartTitle = jQuery(chartTitle.node());
       $chartTitle.popover({
         html: true,
         animation: false,
@@ -919,14 +919,14 @@ function chart_title(args) {
           .selectAll('.mg-popover')
           .remove();
 
-        $(this).popover('show');
-        $(args.target).select('.popover')
+        jQuery(this).popover('show');
+        jQuery(args.target).select('.popover')
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });
       }).on('mouseleave', function () {
         setTimeout(function () {
-          if (!$('.popover:hover').length) {
+          if (!jQuery('.popover:hover').length) {
             $chartTitle.popover('hide');
           }
         }, 120);
@@ -6070,19 +6070,19 @@ MG.data_table = function(args) {
         .style('text-align', td_type === 'title' ? 'left' : 'right')
         .text(th_text);
 
-      if (args.show_tooltips && this_col.description) {
+      if (args.show_tooltips && this_col.description && typeof jQuery !== 'undefined') {
         th.append('i')
           .classed('fa', true)
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        $(th[0]).popover({
+        jquery(th[0]).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: $(th[0])
+          container: jquery(th[0])
         });
       }
     }
@@ -6715,7 +6715,7 @@ function add_ls(args) {
 MG.add_ls = add_ls;
 
 function add_lowess(args) {
-  var svg = d3.select($(args.target).find('svg').get(0));
+  var svg = mg_get_svg_child_of(args.target);
   var lowess = args.lowess_line;
 
   var line = d3.svg.line()
