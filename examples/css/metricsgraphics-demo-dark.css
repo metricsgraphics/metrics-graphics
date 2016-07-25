@@ -179,6 +179,10 @@ li {
     fill: #cfcfcf;
 }
 
+.mg-category-guides line {
+    stroke: #676767;
+}
+
 .mg-main-area-solid svg .mg-main-area {
     fill: #52491f;
 }

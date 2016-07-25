@@ -76,7 +76,7 @@ text.mg-barplot-group-label {
 }
 
 .mg-category-guides line {
-  stroke: lightgray;
+    stroke: #b3b2b2;
 }
 
 .mg-header {
