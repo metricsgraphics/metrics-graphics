@@ -36,6 +36,21 @@ test('Only one y-axis is added on multiple calls to the same target element', fu
     equal(document.querySelectorAll(params.target + ' .mg-y-axis').length, 1, 'We only have one y-axis');
 });
 
+test('Only one mg-category-guides group is added on multiple calls to the same target element', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{"year": "1945","sightings": 6},{"year": "1946","sightings": 8}],
+        chart_type: 'point',
+        y_accessor: "year",
+        x_accessor: "sightings",
+    };
+
+    MG.data_graphic(params);
+    MG.data_graphic(MG.clone(params));
+
+    equal(document.querySelectorAll(params.target + ' .mg-category-guides').length, 1, 'We only have one mg-category-guides');
+});
+
 test('args.y_label', function() {
     var params = {
         target: '#qunit-fixture',

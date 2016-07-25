@@ -537,6 +537,9 @@ function categoricalGuides (args, axisArgs) {
   var x1, x2, y1, y2;
   var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
 
+  mg_selectAll_and_remove(svg, '.mg-category-guides');
+  var g = mg_add_g(svg, 'mg-category-guides');
+
   grs.forEach(function (group) {
     scale.domain().forEach(function (cat) {
       if (position === 'left' || position === 'right') {
@@ -553,13 +556,12 @@ function categoricalGuides (args, axisArgs) {
         y2 = mg_get_plot_top(args);
       }
 
-      svg.append('line')
+      g.append('line')
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', y1)
         .attr('y2', y2)
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     });
 
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
@@ -589,21 +591,19 @@ function categoricalGuides (args, axisArgs) {
       y22 = mg_get_plot_top(args);
     }
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x11)
       .attr('x2', x21)
       .attr('y1', y11)
       .attr('y2', y21)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x12)
       .attr('x2', x22)
       .attr('y1', y12)
       .attr('y2', y22)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
   });
 }
 
@@ -1048,17 +1048,19 @@ function mg_draw_group_lines (args) {
   var groups = args.scales.YGROUP.domain();
   var first = groups[0];
   var last = groups[groups.length - 1];
-  svg.selectAll('mg-group-lines').data(groups).enter().append('line')
-    .attr('x1', mg_get_plot_left(args))
-    .attr('x2', mg_get_plot_left(args))
-    .attr('y1', function (d) {
-      return args.scales.YGROUP(d);
-    })
-    .attr('y2', function (d) {
-      return args.scales.YGROUP(d) + args.ygroup_height;
-    })
-    .attr('stroke-width', 1)
-    .attr('stroke', 'lightgray');
+
+  svg.select('.mg-category-guides').selectAll('mg-group-lines')
+    .data(groups)
+    .enter().append('line')
+      .attr('x1', mg_get_plot_left(args))
+      .attr('x2', mg_get_plot_left(args))
+      .attr('y1', function (d) {
+        return args.scales.YGROUP(d);
+      })
+      .attr('y2', function (d) {
+        return args.scales.YGROUP(d) + args.ygroup_height;
+      })
+      .attr('stroke-width', 1);
 }
 
 function mg_y_categorical_show_guides (args) {
@@ -1068,13 +1070,12 @@ function mg_y_categorical_show_guides (args) {
   var alreadyPlotted = [];
   args.data[0].forEach(function (d) {
     if (alreadyPlotted.indexOf(d[args.y_accessor]) === -1) {
-      svg.append('line')
+      svg.select('.mg-category-guides').append('line')
         .attr('x1', mg_get_plot_left(args))
         .attr('x2', mg_get_plot_right(args))
         .attr('y1', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
         .attr('y2', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     }
   });
 }
