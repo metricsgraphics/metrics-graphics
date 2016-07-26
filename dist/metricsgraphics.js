@@ -7077,9 +7077,9 @@ function mg_format_x_rollover(args, fmt, d) {
 
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data, formatter;
-  var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  var time_fmt = mg_get_rollover_time_format(args);
   if (typeof d[accessor] === 'string') formatter = function(d){return d}
-  else formatter = format_rollover_number(args); 
+  else formatter = format_rollover_number(args);
 
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
