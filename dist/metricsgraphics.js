@@ -4617,13 +4617,17 @@ MG.button_layout = function(target) {
         .numericalRange('bottom')
 
       var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor] });
+        return d[args.y_accessor];
+      });
+
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
         .numericalRange('left');
+
+      var svg = mg_get_svg_child_of(args.target);
 
       if (args.x_axis) {
         new MG.axis_factory(args)
@@ -4635,7 +4639,7 @@ MG.button_layout = function(target) {
 
         //TODO move to axis_factory
         if (args.x_label) {
-          var g = d3.select('.mg-x-axis');
+          var g = svg.select('.mg-x-axis');
           mg_add_x_label(g, args);
         }
       }
@@ -4649,7 +4653,7 @@ MG.button_layout = function(target) {
 
         //TODO move to axis_factory
         if (args.y_label) {
-          var g = d3.select('.mg-y-axis');
+          var g = svg.select('.mg-y-axis');
           mg_add_y_label(g, args);
         }
       }
