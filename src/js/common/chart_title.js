@@ -43,7 +43,7 @@ function chart_title(args) {
           .remove();
 
         jQuery(this).popover('show');
-        jQuery(d3.select(args.target).select('.popover'))
+        jQuery(d3.select(args.target).select('.popover').node())
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });

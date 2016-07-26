@@ -920,7 +920,7 @@ function chart_title(args) {
           .remove();
 
         jQuery(this).popover('show');
-        jQuery(args.target).select('.popover')
+        jQuery(d3.select(args.target).select('.popover').node())
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });
@@ -3798,15 +3798,15 @@ MG.button_layout = function(target) {
       }
     }
 
-    $(this.target).empty();
+    jQuery(this.target).empty();
 
-    $(this.target).append("<div class='col-lg-12 segments text-center'></div>");
+    jQuery(this.target).append("<div class='col-lg-12 segments text-center'></div>");
 
     var dropdownLiAClick = function() {
-      var k = $(this).data('key');
-      var feature = $(this).data('feature');
+      var k = jQuery(this).data('key');
+      var feature = jQuery(this).data('feature');
       var manual_feature;
-      $('.' + feature + '-btns button.btn span.title').html(k);
+      jQuery('.' + feature + '-btns button.btn span.title').html(k);
       if (!manual_map.hasOwnProperty(feature)) {
         callback(feature, k);
       } else {
@@ -3819,7 +3819,7 @@ MG.button_layout = function(target) {
 
     for (var feature in this.feature_set) {
       features = this.feature_set[feature];
-      $(this.target + ' div.segments').append(
+      jQuery(this.target + ' div.segments').append(
         '<div class="btn-group ' + this._strip_punctuation(feature) + '-btns text-left">' + // This never changes.
         '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
         "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) + "</span>" +
@@ -3833,13 +3833,13 @@ MG.button_layout = function(target) {
 
       for (i = 0; i < features.length; i++) {
         if (features[i] !== 'all' && features[i] !== undefined) { // strange bug with undefined being added to manual buttons.
-          $(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
+          jQuery(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
             '<li><a href="#" data-feature="' + this._strip_punctuation(feature) + '" data-key="' + features[i] + '">' + features[i] + '</a></li>'
           );
         }
       }
 
-      $('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
+      jQuery('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
     }
 
     return this;
@@ -6076,13 +6076,13 @@ MG.data_table = function(args) {
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        jquery(th[0]).popover({
+        jQuery(th.node()).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: jquery(th[0])
+          container: jQuery(th.node())
         });
       }
     }
