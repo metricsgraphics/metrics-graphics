@@ -990,7 +990,8 @@ function y_axis (args) {
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, 'mg-y-axis');
   mg_add_y_label(g, args);
@@ -999,7 +1000,9 @@ function y_axis (args) {
   mg_add_y_axis_tick_lines(g, args);
   mg_add_y_axis_tick_labels(g, args);
 
-  if (args.y_rug) { y_rug(args); }
+  if (args.y_rug) {
+    y_rug(args);
+  }
 
   return this;
 }
