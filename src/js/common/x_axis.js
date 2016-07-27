@@ -188,22 +188,24 @@ function mg_get_size_range(args) {
 }
 
 function mg_add_x_label(g, args) {
-  g.append('text')
-    .attr('class', 'label')
-    .attr('x', function() {
-      return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
-    })
-    .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
-    .attr('y', function() {
-      var xAxisTextElement = d3.select(args.target)
-        .select('.mg-x-axis text').node().getBoundingClientRect();
-      return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
-    })
-    .attr('dy', '.5em')
-    .attr('text-anchor', 'middle')
-    .text(function(d) {
-      return args.x_label;
-    });
+  if (args.x_label) {
+    g.append('text')
+      .attr('class', 'label')
+      .attr('x', function() {
+        return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
+      })
+      .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+      .attr('y', function() {
+        var xAxisTextElement = d3.select(args.target)
+          .select('.mg-x-axis text').node().getBoundingClientRect();
+        return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
+      })
+      .attr('dy', '.5em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        return args.x_label;
+      });
+  }
 }
 
 function mg_default_bar_xax_format(args) {

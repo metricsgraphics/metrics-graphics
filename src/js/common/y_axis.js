@@ -659,26 +659,32 @@ mgDrawAxis.numerical = function (args, axisArgs) {
   var axisClass = 'mg-' + namespace + '-axis';
   var svg = mg_get_svg_child_of(args.target);
 
-  // MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
-
   mg_selectAll_and_remove(svg, '.' + axisClass);
 
   if (!args[axisName]) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, axisClass);
-  // mg_add_label(g, args);
+
   processScaleTicks(args, namespace);
   initializeAxisRim(g, args, axisArgs);
   addTickLines(g, args, axisArgs);
   addNumericalLabels(g, args, axisArgs);
 
+  // add label
+  if (args[namespace + '_label']) {
+    axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args);
+  }
+
+  // add rugs
   if (args[namespace + '_rug']) {
     rug(args, axisArgs);
   }
 
-  if (args.show_bar_zero) mg_bar_add_zero_line(args);
-  // if (axisArgs.zeroLine) zeroLine(args, axisArgs);
+  if (args.show_bar_zero) {
+    mg_bar_add_zero_line(args);
+  }
 
   return this;
 };
@@ -695,6 +701,11 @@ function axisFactory (args) {
 
   this.rug = function (tf) {
     axisArgs.rug = tf;
+    return this;
+  };
+
+  this.label = function (tf) {
+    axisArgs.label = tf;
     return this;
   };
 
@@ -979,7 +990,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO seems to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by bar and histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};

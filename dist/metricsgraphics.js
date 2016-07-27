@@ -1930,26 +1930,32 @@ mgDrawAxis.numerical = function (args, axisArgs) {
   var axisClass = 'mg-' + namespace + '-axis';
   var svg = mg_get_svg_child_of(args.target);
 
-  // MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
-
   mg_selectAll_and_remove(svg, '.' + axisClass);
 
   if (!args[axisName]) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, axisClass);
-  // mg_add_label(g, args);
+
   processScaleTicks(args, namespace);
   initializeAxisRim(g, args, axisArgs);
   addTickLines(g, args, axisArgs);
   addNumericalLabels(g, args, axisArgs);
 
+  // add label
+  if (args[namespace + '_label']) {
+    axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args);
+  }
+
+  // add rugs
   if (args[namespace + '_rug']) {
     rug(args, axisArgs);
   }
 
-  if (args.show_bar_zero) mg_bar_add_zero_line(args);
-  // if (axisArgs.zeroLine) zeroLine(args, axisArgs);
+  if (args.show_bar_zero) {
+    mg_bar_add_zero_line(args);
+  }
 
   return this;
 };
@@ -1966,6 +1972,11 @@ function axisFactory (args) {
 
   this.rug = function (tf) {
     axisArgs.rug = tf;
+    return this;
+  };
+
+  this.label = function (tf) {
+    axisArgs.label = tf;
     return this;
   };
 
@@ -2250,7 +2261,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO seems to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by bar and histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
@@ -2261,7 +2272,8 @@ function y_axis (args) {
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, 'mg-y-axis');
   mg_add_y_label(g, args);
@@ -2270,7 +2282,9 @@ function y_axis (args) {
   mg_add_y_axis_tick_lines(g, args);
   mg_add_y_axis_tick_labels(g, args);
 
-  if (args.y_rug) { y_rug(args); }
+  if (args.y_rug) {
+    y_rug(args);
+  }
 
   return this;
 }
@@ -2556,22 +2570,24 @@ function mg_get_size_range(args) {
 }
 
 function mg_add_x_label(g, args) {
-  g.append('text')
-    .attr('class', 'label')
-    .attr('x', function() {
-      return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
-    })
-    .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
-    .attr('y', function() {
-      var xAxisTextElement = d3.select(args.target)
-        .select('.mg-x-axis text').node().getBoundingClientRect();
-      return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
-    })
-    .attr('dy', '.5em')
-    .attr('text-anchor', 'middle')
-    .text(function(d) {
-      return args.x_label;
-    });
+  if (args.x_label) {
+    g.append('text')
+      .attr('class', 'label')
+      .attr('x', function() {
+        return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
+      })
+      .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+      .attr('y', function() {
+        var xAxisTextElement = d3.select(args.target)
+          .select('.mg-x-axis text').node().getBoundingClientRect();
+        return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
+      })
+      .attr('dy', '.5em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        return args.x_label;
+      });
+  }
 }
 
 function mg_default_bar_xax_format(args) {
@@ -4635,27 +4651,18 @@ MG.button_layout = function(target) {
           .type('numerical')
           .position(args.x_axis_position)
           .rug(x_rug(args))
+          .label(mg_add_x_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.x_label) {
-          var g = svg.select('.mg-x-axis');
-          mg_add_x_label(g, args);
-        }
       }
+
       if (args.y_axis) {
         new MG.axis_factory(args)
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
           .rug(y_rug(args))
+          .label(mg_add_y_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.y_label) {
-          var g = svg.select('.mg-y-axis');
-          mg_add_y_label(g, args);
-        }
       }
 
       this.markers();

@@ -785,27 +785,18 @@
           .type('numerical')
           .position(args.x_axis_position)
           .rug(x_rug(args))
+          .label(mg_add_x_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.x_label) {
-          var g = svg.select('.mg-x-axis');
-          mg_add_x_label(g, args);
-        }
       }
+
       if (args.y_axis) {
         new MG.axis_factory(args)
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
           .rug(y_rug(args))
+          .label(mg_add_y_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.y_label) {
-          var g = svg.select('.mg-y-axis');
-          mg_add_y_label(g, args);
-        }
       }
 
       this.markers();
