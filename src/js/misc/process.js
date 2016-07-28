@@ -292,10 +292,11 @@ function process_histogram(args) {
       hist.thresholds(args.bins);
     }
 
-    args.processed_data = hist(extracted_data)
-      .map(function(d) {
-        return { 'x': d.x0, 'y': d.x1 };
-      });
+    var bins = hist(extracted_data);
+
+    args.processed_data = bins.map(function(d) {
+      return { 'x': d.x0, 'y': d.length };
+    });
   } else {
     // here, we just need to reconstruct the array of objects
     // take the x accessor and y accessor.
