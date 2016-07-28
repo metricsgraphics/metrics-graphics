@@ -28,7 +28,7 @@ function mg_init_compute_width(args) {
     svg_width = get_width(args.target);
   }
   if (args.x_axis_type === 'categorical' && svg_width === null) {
-    svg_width = mg_categorical_calculate_height(args);
+    svg_width = mg_categorical_calculate_height(args, 'x');
   }
 
   args.width = svg_width;
@@ -40,7 +40,7 @@ function mg_init_compute_height(args) {
     svg_height = get_height(args.target);
   }
   if (args.y_axis_type === 'categorical' && svg_height === null) {
-    svg_height = mg_categorical_calculate_height(args);
+    svg_height = mg_categorical_calculate_height(args, 'y');
   }
 
   args.height = svg_height;
@@ -190,9 +190,14 @@ function mg_categorical_count_number_of_lanes(args, ns) {
 function mg_categorical_calculate_group_length(args, ns, which) {
   var groupHeight = ns + 'group_height';
   if (which) {
-    args[groupHeight] = ns === 'y' ?
+    var gh = ns === 'y' ?
       (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
-      (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1)
+      (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
+    // if (args.categorical_groups.length >= 1) {
+    //   gh = gh * (1-args[ns +'_outer_padding_percentage']) *( 1- 2*args[ns+'group_outer_padding_percentage']/(args.categorical_groups.length || 1) );
+    // }
+    
+    args[groupHeight] = gh;
   } else {
     var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;
     args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step; //args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));

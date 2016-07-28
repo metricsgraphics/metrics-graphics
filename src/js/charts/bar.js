@@ -1,6 +1,65 @@
 (function() {
   'use strict';
 
+  function scaffold(args) {
+    var svg = mg_get_svg_child_of(args.target);
+    // main margins
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.top)
+      .attr('y2', args.top)
+      .attr('stroke', 'black');
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.height-args.bottom)
+      .attr('y2', args.height-args.bottom)
+      .attr('stroke', 'black'); 
+
+    svg.append('line')
+      .attr('x1', args.left)
+      .attr('x2', args.left)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'black'); 
+
+    svg.append('line')
+      .attr('x1', args.width-args.right)
+      .attr('x2', args.width-args.right)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'black'); 
+
+    // plot area margins
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.height-args.bottom-args.buffer)
+      .attr('y2', args.height-args.bottom-args.buffer)
+      .attr('stroke', 'gray'); 
+
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.top+args.buffer)
+      .attr('y2', args.top+args.buffer)
+      .attr('stroke', 'gray'); 
+
+    svg.append('line')
+      .attr('x1', args.left + args.buffer)
+      .attr('x2', args.left + args.buffer)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'gray'); 
+    svg.append('line')
+      .attr('x1', args.width -args.right - args.buffer)
+      .attr('x2', args.width -args.right - args.buffer)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'gray'); 
+  }
+
   // barchart re-write.
   function mg_targeted_legend(args) {
     var plot = '';
@@ -78,7 +137,6 @@
     this.args = args;
 
     this.init = function(args) {
-
       this.args = args;
       args.x_axis_type = inferType(args, 'x');
       args.y_axis_type = inferType(args, 'y');
@@ -108,6 +166,7 @@
           .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
 
         if (args.xgroup_accessor) {
+          console.log(args.xgroup_height, args.target, args.xgroup_height * args.categorical_groups.length)
           new MG.scale_factory(args)
             .namespace('xgroup')
             .categoricalDomainFromData()
@@ -220,7 +279,8 @@
       this.markers();
       this.rollover();
       this.windowListeners();
-      //if (args.scaffold) scaffold(args);
+      //scaffold(args)
+
       return this;
     };
 
@@ -325,10 +385,7 @@
           length_map = function(d) {
             return Math.abs(length_scalefn(d) - length_scale(0));
           }
-
-
         }
-
         if (args.orientation == 'horizontal') {
           length = 'width';
           width = 'height';
@@ -485,6 +542,10 @@
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
 
+      // get orientation
+
+
+
       //rollover text
       var rollover_x, rollover_anchor;
       if (args.rollover_align === 'right') {
@@ -515,29 +576,16 @@
         .append("rect")
         .attr('class', 'mg-bar-rollover');
 
-      if (this.is_vertical) {
-        // bar.attr("x", args.scalefns.xf)
-        //   .attr("y", function() {
-        //     return args.scales.Y(0) - args.height;
-        //   })
-        //   .attr('width', args.scales.X.rangeBand())
-        //   .attr('height', args.height)
-        //   .attr('opacity', 0)
-        //   .on('mouseover', this.rolloverOn(args))
-        //   .on('mouseout', this.rolloverOff(args))
-        //   .on('mousemove', this.rolloverMove(args));
-      } else {
-        bar.attr("x", mg_get_plot_left(args))
-          /*.attr("y", function(d){
-            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
-          })
-          .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
-          .attr('height', args.scales.Y.rangeBand())*/
-          .attr('opacity', 0)
-          .on('mouseover', this.rolloverOn(args))
-          .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
-      }
+      bar.attr("x", mg_get_plot_left(args))
+        /*.attr("y", function(d){
+          return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
+        })
+        .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
+        .attr('height', args.scales.Y.rangeBand())*/
+        .attr('opacity', .2)
+        .on('mouseover', this.rolloverOn(args))
+        .on('mouseout', this.rolloverOff(args))
+        .on('mousemove', this.rolloverMove(args));
       return this;
     };
 
@@ -634,12 +682,12 @@
   var defaults = {
 
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .1, // for categorical scales
-    ygroup_padding_percentage: .25, // for categorical scales
-    ygroup_outer_padding_percentage: .1, // for categorical scales
+    y_outer_padding_percentage: .2, // for categorical scales
+    ygroup_padding_percentage: 0, // for categorical scales
+    ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .1, // for categorical scales
-    xgroup_padding_percentage: .25, // for categorical scales
+    x_outer_padding_percentage: .2, // for categorical scales
+    xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     buffer: 16,
     y_accessor: 'factor',

@@ -17,11 +17,11 @@ function mg_position(str, args) {
 
 function mg_cat_position(str, args) {
   if (str === 'bottom' || str === 'top') {
-    return [mg_get_left(args), mg_get_right(args)]
+    return [mg_get_plot_left(args), mg_get_plot_right(args)]
   }
 
   if (str === 'left' || str === 'right') {
-    return [mg_get_plot_bottom(args), args.top];
+    return [mg_get_plot_bottom(args), mg_get_plot_top(args)];
   }
 }
 
@@ -142,14 +142,17 @@ function MGScale(args) {
     var namespace = scaleArgs.namespace;
     var paddingPercentage = args[namespace + '_padding_percentage'];
     var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
-
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
       args.scales[scaleArgs.scale_name]
-        .range(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
+        .range(mg_position(range, args))
+        .paddingInner(paddingPercentage)
+        .paddingOuter(outerPaddingPercentage);
     } else {
       args.scales[scaleArgs.scale_name]
-        .range(range, paddingPercentage, outerPaddingPercentage);
+        .range(range)
+        .paddingInner(paddingPercentage)
+        .paddingOuter(outerPaddingPercentage);
     }
 
     mg_add_scale_function(

@@ -332,7 +332,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         chart_type: 'point',
         x_accessor: 'number',
         y_accessor: 'candidate',
-        height:400,
+        height:300,
         width:300,
         target: 'div#point-categorical2',
     })
@@ -343,7 +343,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         chart_type: 'bar',
         x_accessor: 'number',
         y_accessor: 'candidate',
-        height:400,
+        height:300,
         width:300,
         target: 'div#bar-categorical2',
     })
@@ -389,8 +389,8 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_accessor: 'size',
         size_domain: [0,1],
         size_range: [3,6],
-        height:350,
-        width:700,
+        height:300,
+        width:650,
         target: 'div#point-categorical-group-horizontal'
     })
     MG.data_graphic({
@@ -403,8 +403,8 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_accessor: 'size',
         size_domain: [0,1],
         size_range: [3,6],
-        height:350,
-        width:700,
+        height:300,
+        width:650,
         target: 'div#bar-categorical-group-horizontal'
     })
 })
