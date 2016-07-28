@@ -39,14 +39,6 @@ function mg_color_point_mouseover(args, elem, d) {
     return new_data;
   }
 
-  function inferType(args, ns) {
-    // must return categorical or numerical.
-    var testPoint = mg_flatten_array(args.data);
-
-    testPoint = testPoint[0][args[ns + '_accessor']];
-    return typeof testPoint === 'string' ? 'categorical' : 'numerical';
-  }
-
   function pointChart(args) {
     this.init = function(args) {
       this.args = args;

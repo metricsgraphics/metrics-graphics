@@ -80,52 +80,141 @@
     this.init = function(args) {
 
       this.args = args;
+      args.x_axis_type = inferType(args, 'x');
+      args.y_axis_type = inferType(args, 'y');
+
+      // this is specific to how rects work in svg, let's keep track of the bar orientation to
+      // plot appropriately.
+      if (args.x_axis_type == 'categorical') {
+        args.orientation = 'vertical';
+      } else if (args.y_axis_type == 'categorical') {
+        args.orientation = 'horizontal';
+      } else if (args.x_axis_type != 'categorical' && args.y_axis_type != 'categorical') {
+        // histogram.
+        args.orientation = 'vertical';
+      }
 
       raw_data_transformation(args);
-      process_categorical_variables(args);
+
+      process_point(args);
       init(args);
 
-      this.is_vertical = (args.bar_orientation === 'vertical');
+      var xMaker, yMaker;
 
-      if (this.is_vertical) {
-        x_axis_categorical(args);
-        y_axis(args);
-      } else {
-        new MG.scale_factory(args)
+      if (args.x_axis_type === 'categorical') {
+        xMaker = MG.scale_factory(args)
           .namespace('x')
-          .zeroBottom(true)
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
+
+        if (args.xgroup_accessor) {
+          new MG.scale_factory(args)
+            .namespace('xgroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('bottom');
+
+        } else {
+          args.scales.XGROUP = function(d) {
+            return mg_get_plot_left(args) };
+          args.scalefns.xgroupf = function(d) {
+            return mg_get_plot_left(args) };
+        }
+
+        args.scalefns.xoutf = function(d) {
+          return args.scalefns.xf(d) + args.scalefns.xgroupf(d)
+        };
+      } else {
+        xMaker = MG.scale_factory(args)
+          .namespace('x')
           .inflateDomain(true)
-          .numericalDomainFromData()
+          .zeroBottom(args.y_axis_type === 'categorical')
+          .numericalDomainFromData((args.baselines || []).map(function(d) {
+            return d[args.x_accessor] }))
           .numericalRange('bottom');
 
-        new MG.scale_factory(args)
+        args.scalefns.xoutf = args.scalefns.xf;
+      }
+
+      // y-scale generation. This needs to get simplified.
+      if (args.y_axis_type === 'categorical') {
+        yMaker = MG.scale_factory(args)
           .namespace('y')
+          .zeroBottom(true)
           .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.ygroup_height]);
+          .categoricalRangeBands([0, args.ygroup_height], true);
 
         if (args.ygroup_accessor) {
+
           new MG.scale_factory(args)
             .namespace('ygroup')
             .categoricalDomainFromData()
             .categoricalRangeBands('left');
+
         } else {
           args.scales.YGROUP = function() {
             return mg_get_plot_top(args) };
-          args.scalefns.ygroupf = function() {
+          args.scalefns.ygroupf = function(d) {
             return mg_get_plot_top(args) };
+
         }
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) + args.scalefns.ygroupf(d) };
 
-        x_axis(args);
+      } else {
+        var baselines = (args.baselines || []).map(function(d) {
+          return d[args.y_accessor] });
 
-        //y_axis_categorical(args);
-        // new MG.axis_factory(args)
-        //   .namespace('y')
-        //   .type('categorical')
-        //   .position(args.y_axis_position)
-        //   .draw();
+        yMaker = MG.scale_factory(args)
+          .namespace('y')
+          .inflateDomain(true)
+          .zeroBottom(args.x_axis_type === 'categorical')
+          .numericalDomainFromData(baselines)
+          .numericalRange('left');
+
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) };
       }
-      // work in progress. If grouped bars, add color scale.
-      mg_categorical_group_color_scale(args);
+
+      if (args.ygroup_accessor !== null) {
+        args.ycolor_accessor = args.y_accessor;
+        MG.scale_factory(args)
+          .namespace('ycolor')
+          .scaleName('color')
+          .categoricalDomainFromData()
+          .categoricalColorRange();
+      }
+
+      if (args.xgroup_accessor !== null) {
+        args.xcolor_accessor = args.x_accessor;
+        MG.scale_factory(args)
+          .namespace('xcolor')
+          .scaleName('color')
+          .categoricalDomainFromData()
+          .categoricalColorRange();
+      }
+
+      // if (args.ygroup_accessor !== null) {
+      //   MG.scale_factory(args)
+      //     .namespace('ygroup')
+      //     .categoricalDomainFromData()
+      //     .categoricalColorRange();
+      // }
+
+      new MG.axis_factory(args)
+        .namespace('x')
+        .type(args.x_axis_type)
+        .zeroLine(args.y_axis_type === 'categorical')
+        .position(args.x_axis_position)
+        .draw();
+
+      new MG.axis_factory(args)
+        .namespace('y')
+        .type(args.y_axis_type)
+        .zeroLine(args.x_axis_type === 'categorical')
+        .position(args.y_axis_position)
+        .draw();
+
+      //mg_categorical_group_color_scale(args);
 
       this.mainPlot();
       this.markers();
@@ -156,197 +245,222 @@
           .classed('mg-barplot', true);
       }
 
-      bars = barplot.selectAll('.mg-bar')
-        .data(data);
-
-      bars.exit().remove();
-
-      bars.enter().append('rect')
+      bars = barplot.selectAll('.mg-bar').data(data).enter().append('rect')
         .classed('mg-bar', true)
         .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
-      // add new white lines.
-      // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
-      //   .attr('x1', args.scales.X)
-      //   .attr('x2', args.scales.X)
-      //   .attr('y1', mg_get_plot_top(args))
-      //   .attr('y2', mg_get_plot_bottom(args))
-      //   .attr('stroke', 'white');
 
-      if (args.predictor_accessor) {
-        predictor_bars = barplot.selectAll('.mg-bar-prediction')
-          .data(data.filter(function(d) {
-            return d.hasOwnProperty(args.predictor_accessor) }));
 
-        predictor_bars.exit().remove();
+      // TODO - reimplement
+      // if (args.predictor_accessor) {
+      //   predictor_bars = barplot.selectAll('.mg-bar-prediction')
+      //     .data(data.filter(function(d) {
+      //       return d.hasOwnProperty(args.predictor_accessor) }));
 
-        predictor_bars.enter().append('rect')
-          .classed('mg-bar-prediction', true);
-      }
+      //   predictor_bars.exit().remove();
 
-      if (args.baseline_accessor) {
-        baseline_marks = barplot.selectAll('.mg-bar-baseline')
-          .data(data.filter(function(d) {
-            return d.hasOwnProperty(args.baseline_accessor) }));
+      //   predictor_bars.enter().append('rect')
+      //     .classed('mg-bar-prediction', true);
+      // }
 
-        baseline_marks.exit().remove();
+      // if (args.baseline_accessor) {
+      //   baseline_marks = barplot.selectAll('.mg-bar-baseline')
+      //     .data(data.filter(function(d) {
+      //       return d.hasOwnProperty(args.baseline_accessor) }));
 
-        baseline_marks.enter().append('line')
-          .classed('mg-bar-baseline', true);
-      }
+      //   baseline_marks.exit().remove();
+
+      //   baseline_marks.enter().append('line')
+      //     .classed('mg-bar-baseline', true);
+      // }
 
       var appropriate_size;
 
       // setup transitions
-      if (should_transition) {
-        bars = bars.transition()
-          .duration(transition_duration);
+      // if (should_transition) {
+      //   bars = bars.transition()
+      //     .duration(transition_duration);
 
-        if (predictor_bars) {
-          predictor_bars = predictor_bars.transition()
-            .duration(transition_duration);
+      //   if (predictor_bars) {
+      //     predictor_bars = predictor_bars.transition()
+      //       .duration(transition_duration);
+      //   }
+
+      //   if (baseline_marks) {
+      //     baseline_marks = baseline_marks.transition()
+      //       .duration(transition_duration);
+      //   }
+      // }
+
+        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
+        var length, width, length_type, width_type, length_coord, width_coord, 
+          length_scalefn, width_scalefn, length_scale, width_scale, 
+          length_accessor, width_accessor;
+
+        var length_coord_map, width_coord_map, length_map, width_map;
+
+
+        if (args.orientation == 'vertical') {
+          length = 'height';
+          width = 'width';
+          length_type = args.y_axis_type;
+          width_type = args.x_axis_type;
+          length_coord = 'y';
+          width_coord = 'x';
+          length_scalefn = length_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+          width_scalefn  = width_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+          length_scale   = args.scales.Y;
+          width_scale     = args.scales.X;
+          length_accessor = args.y_accessor;
+          width_accessor = args.x_accessor;
+
+          length_coord_map = function(d){
+            var l;
+            l = length_scalefn(d);
+            if (d[length_accessor] < 0) {
+              l = length_scale(0);
+            }
+            return l;
+          }
+
+          length_map = function(d) {
+            return Math.abs(length_scalefn(d) - length_scale(0));
+          }
+
+
         }
 
-        if (baseline_marks) {
-          baseline_marks = baseline_marks.transition()
-            .duration(transition_duration);
+        if (args.orientation == 'horizontal') {
+          length = 'width';
+          width = 'height';
+          length_type = args.x_axis_type;
+          width_type = args.y_axis_type;
+          length_coord = 'x';
+          width_coord = 'y';
+          length_scalefn = length_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+          width_scalefn = width_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+          length_scale = args.scales.X;
+          width_scale = args.scales.Y;
+          length_accessor = args.x_accessor;
+          width_accessor = args.y_accessor;
+
+        length_coord_map = function(d){
+          var l;
+          l = length_scale(0);
+          return l;
         }
-      }
 
-      // move the barplot after the axes so it doesn't overlap
-      if (this.is_vertical) {
-        svg.select('.mg-y-axis')
-          .node()
-          .parentNode
-          .appendChild(barplot.node());
+        length_map = function(d) {
+          return Math.abs(length_scalefn(d) - length_scale(0));
+        }
 
-        // appropriate_size = args.scales.X.rangeBand()/1.5;
+
+        }
 
         // if (perform_load_animation) {
-        //   bars.attr({
-        //     height: 0,
-        //     y: args.scales.Y(0)
-        //   });
+        //   bars.attr(length, 0);
 
         //   if (predictor_bars) {
-        //     predictor_bars.attr({
-        //       height: 0,
-        //       y: args.scales.Y(0)
-        //     });
+        //     predictor_bars.attr(length, 0);
         //   }
 
-        //   if (baseline_marks) {
-        //     baseline_marks.attr({
-        //       y1: args.scales.Y(0),
-        //       y2: args.scales.Y(0)
-        //     });
-        //   }
+        //   // if (baseline_marks) {
+        //   //   baseline_marks.attr({
+        //   //     x1: args.scales.X(0),
+        //   //     x2: args.scales.X(0)
+        //   //   });
+        //   // }
         // }
 
-        // bars.attr('y', args.scalefns.yf)
-        //   .attr('x', function(d) {
-        //     return args.scalefns.xf(d)// + appropriate_size/2;
-        //   })
-        //   .attr('width', appropriate_size)
-        //   .attr('height', function(d) {
-        //     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
-        //   });
+        //
 
+        bars.attr(length_coord, length_coord_map);
+  
+        // bars.attr(length_coord, 40)
 
-        // if (args.predictor_accessor) {
-        //   pp = args.predictor_proportion;
-        //   pp0 = pp-1;
+        //bars.attr(width_coord, 70)
 
-        //   // thick line through bar;
-        //   predictor_bars
-        //     .attr('y', function(d) {
-        //       return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
-        //     })
-        //     .attr('x', function(d) {
-        //       return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
-        //     })
-        //     .attr('width', appropriate_size/pp)
-        //     .attr('height', function(d) {
-        //       return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
-        //     });
-        // }
-
-        // if (args.baseline_accessor) {
-        //   pp = args.predictor_proportion;
-
-        //   baseline_marks
-        //     .attr('x1', function(d) {
-        //       return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
-        //     })
-        //     .attr('x2', function(d) {
-        //       return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
-        //     })
-        //     .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
-        //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
-        // }
-      } else {
-        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-        if (perform_load_animation) {
-          bars.attr('width', 0);
-
-          if (predictor_bars) {
-            predictor_bars.attr('width', 0);
-          }
-
-          if (baseline_marks) {
-            baseline_marks.attr({
-              x1: args.scales.X(0),
-              x2: args.scales.X(0)
-            });
-          }
-        }
-
-        bars.attr('x', function(d) {
-            var x = args.scales.X(0);
-            if (d[args.x_accessor] < 0) {
-              x = args.scalefns.xf(d);
+        bars.attr(width_coord, function(d) {
+          var w;
+          if (width_type == 'categorical') {
+            w = width_scalefn(d);
+          } else {
+            w = width_scale(0);
+            if (d[width_accessor] < 0) {
+              w = width_scalefn(d);
             }
-            return x;
-          })
-          /*.attr('y', function(d) {
-            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
-          })
-          .attr('fill', args.scalefns.colorf)
-          .attr('height', args.scales.Y.rangeBand())
-          .attr('width', function(d) {
-            return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
-          });*/
-
-        if (args.predictor_accessor) {
-          // pp = args.predictor_proportion;
-          // pp0 = pp-1;
-
-          // thick line  through bar;
-          predictor_bars
-            .attr('x', args.scales.X(0))
-            .attr('y', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
-            })
-            .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
-            .attr('width', function(d) {
-              return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
-            });
+          }
+          w = w - args.bar_thickness/2;
+          return w;
+        })
+        if (args.scales.COLOR) {
+          bars.attr('fill', args.scalefns.colorf)
         }
 
-        if (args.baseline_accessor) {
+        bars.attr(length, length_map)
 
-          baseline_marks
-            .attr('x1', function(d) {
-              return args.scales.X(d[args.baseline_accessor]); })
-            .attr('x2', function(d) {
-              return args.scales.X(d[args.baseline_accessor]); })
-            .attr('y1', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() / 4
-            })
-            .attr('y2', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
-            });
-        }
-      }
+        bars.attr(width, function(d) {
+          return args.bar_thickness;
+        })
+
+
+
+        //bars.attr(width_coord, );
+        // bars.attr('width', 50);
+        // bars.attr('height', 50);
+        // bars.attr('y', function(d){
+        //   var y = args.scales.Y(0);
+        //   if (d[args.y_accessor] < 0) {
+        //     y = args.scalefns.yf(d);
+        //   }
+        //   return y;
+        // });
+
+        // bars.attr('x', function(d){
+        //   return 40;
+        // })
+
+        // bars.attr('width', function(d){
+        //   return 100;
+        // });
+
+        // bars.attr('height', 100);
+
+        // bars.attr('fill', 'black');
+        // bars.attr('x', function(d) {
+        //   var x = args.scales.X(0);
+        //   if (d[args.x_accessor] < 0) {
+        //     x = args.scalefns.xf(d);
+        //   }
+        //   return x;
+        // })
+        // TODO - reimplement.
+        // if (args.predictor_accessor) {
+        //   predictor_bars
+        //     .attr('x', args.scales.X(0))
+        //     .attr('y', function(d) {
+        //       return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+        //     })
+        //     .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
+        //     .attr('width', function(d) {
+        //       return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
+        //     });
+        // }
+
+      // TODO - reimplement.
+      //   if (args.baseline_accessor) {
+
+      //     baseline_marks
+      //       .attr('x1', function(d) {
+      //         return args.scales.X(d[args.baseline_accessor]); })
+      //       .attr('x2', function(d) {
+      //         return args.scales.X(d[args.baseline_accessor]); })
+      //       .attr('y1', function(d) {
+      //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() / 4
+      //       })
+      //       .attr('y2', function(d) {
+      //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
+      //       });
+      //   }
       if (args.legend && args.ygroup_accessor && args.color_accessor !== false && args.ygroup_accessor !== args.color_accessor) {
         if (!args.legend_target) legend_on_graph(svg, args);
         else mg_targeted_legend(args);
@@ -380,7 +494,6 @@
         rollover_x = args.left;
         rollover_anchor = 'start';
       } else {
-        // middle
         rollover_x = (args.width - args.left - args.right) / 2 + args.left;
         rollover_anchor = 'middle';
       }
@@ -519,10 +632,19 @@
   }
 
   var defaults = {
+
+    y_padding_percentage: 0.05, // for categorical scales
+    y_outer_padding_percentage: .1, // for categorical scales
+    ygroup_padding_percentage: .25, // for categorical scales
+    ygroup_outer_padding_percentage: .1, // for categorical scales
+    x_padding_percentage: 0.05, // for categorical scales
+    x_outer_padding_percentage: .1, // for categorical scales
+    xgroup_padding_percentage: .25, // for categorical scales
+    xgroup_outer_padding_percentage: 0, // for categorical scales
+    buffer: 16,
     y_accessor: 'factor',
     x_accessor: 'value',
     secondary_label_accessor: null,
-    x_extended_ticks: true,
     color_accessor: null,
     color_type: 'category',
     color_domain: null,
@@ -534,12 +656,6 @@
     predictor_proportion: 5,
     show_bar_zero: true,
     binned: true,
-    width: 480,
-    height: null,
-    bar_thickness: 12,
-    top: 45,
-    left: 105,
-    right: 65,
     truncate_x_labels: true,
     truncate_y_labels: true
   };

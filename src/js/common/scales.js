@@ -41,6 +41,12 @@ function MGScale(args) {
     return this;
   }
 
+  this.scaleName = function(scaleName) {
+    scaleArgs.scale_name = scaleName.toUpperCase();
+    scaleArgs.scalefn_name = scaleName +'f';
+    return this;
+  }
+
   this.inflateDomain = function(tf) {
     scaleArgs.use_inflator = tf;
     return this;

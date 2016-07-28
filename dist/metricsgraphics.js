@@ -986,6 +986,12 @@ function MGScale(args) {
     return this;
   }
 
+  this.scaleName = function(scaleName) {
+    scaleArgs.scale_name = scaleName.toUpperCase();
+    scaleArgs.scalefn_name = scaleName +'f';
+    return this;
+  }
+
   this.inflateDomain = function(tf) {
     scaleArgs.use_inflator = tf;
     return this;
@@ -1269,12 +1275,12 @@ function mg_get_color_range(args) {
   return color_range;
 }
 
-function processScaleTicks(args, axis) {
+function processScaleTicks (args, axis) {
   var accessor = args[axis + '_accessor'];
   var scale_ticks = args.scales[axis.toUpperCase()].ticks(args[axis + 'ax_count']);
   var max = args.processed['max_' + axis];
 
-  function log10(val) {
+  function log10 (val) {
     if (val === 1000) {
       return 3;
     }
@@ -1286,7 +1292,7 @@ function processScaleTicks(args, axis) {
 
   if (args[axis + '_scale_type'] === 'log') {
     // get out only whole logs
-    scale_ticks = scale_ticks.filter(function(d) {
+    scale_ticks = scale_ticks.filter(function (d) {
       return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6;
     });
   }
@@ -1296,8 +1302,8 @@ function processScaleTicks(args, axis) {
 
   // is our data object all ints?
   var data_is_int = true;
-  args.data.forEach(function(d, i) {
-    d.forEach(function(d, i) {
+  args.data.forEach(function (d, i) {
+    d.forEach(function (d, i) {
       if (d[accessor] % 1 !== 0) {
         data_is_int = false;
         return false;
@@ -1307,14 +1313,14 @@ function processScaleTicks(args, axis) {
 
   if (data_is_int && number_of_ticks > max && args.format === 'count') {
     // remove non-integer ticks
-    scale_ticks = scale_ticks.filter(function(d) {
+    scale_ticks = scale_ticks.filter(function (d) {
       return d % 1 === 0;
     });
   }
   args.processed[axis + '_ticks'] = scale_ticks;
 }
 
-function rugPlacement(args, axisArgs) {
+function rugPlacement (args, axisArgs) {
   var position = axisArgs.position;
   var ns = axisArgs.namespace;
   var coordinates = {};
@@ -1326,8 +1332,8 @@ function rugPlacement(args, axisArgs) {
   }
   if (position === 'right') {
     coordinates.x1 = mg_get_right(args) - 1,
-      coordinates.x2 = mg_get_right(args) - args.rug_buffer_size,
-      coordinates.y1 = args.scalefns[ns + 'f'];
+    coordinates.x2 = mg_get_right(args) - args.rug_buffer_size,
+    coordinates.y1 = args.scalefns[ns + 'f'];
     coordinates.y2 = args.scalefns[ns + 'f'];
   }
   if (position === 'top') {
@@ -1345,7 +1351,7 @@ function rugPlacement(args, axisArgs) {
   return coordinates;
 }
 
-function rimPlacement(args, axisArgs) {
+function rimPlacement (args, axisArgs) {
   var ns = axisArgs.namespace;
   var position = axisArgs.position;
   var tick_length = args.processed[ns + '_ticks'].length;
@@ -1379,22 +1385,23 @@ function rimPlacement(args, axisArgs) {
   }
 
   if (position === 'left' || position === 'right') {
-    if (args.axes_not_compact && args.chart_type !== 'bar') {
+    if (args.axes_not_compact) {
       coordinates.y1 = mg_get_bottom(args);
       coordinates.y2 = mg_get_top(args);
     } else if (tick_length) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
-    } else {
-      coordinates.y1 = 0;
-      coordinates.y2 = 0;
-    }
+    } 
+    //else {
+    //   coordinates.y1 = 0;
+    //   coordinates.y2 = 0;
+    // }
   }
 
   return coordinates;
 }
 
-function labelPlacement(args, axisArgs) {
+function labelPlacement (args, axisArgs) {
   var position = axisArgs.position;
   var ns = axisArgs.namespace;
   var tickLength = args[ns + 'ax_tick_length'];
@@ -1403,49 +1410,49 @@ function labelPlacement(args, axisArgs) {
 
   if (position === 'left') {
     coordinates.x = mg_get_left(args) - tickLength * 3 / 2;
-    coordinates.y = function(d) {
-      return scale(d).toFixed(2) };
+    coordinates.y = function (d) {
+      return scale(d).toFixed(2); };
     coordinates.dx = -3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
-    coordinates.text = function(d) {
-      return mg_compute_yax_format(args)(d) };
+    coordinates.text = function (d) {
+      return mg_compute_yax_format(args)(d); };
   }
   if (position === 'right') {
     coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
-    coordinates.y = function(d) {
-      return scale(d).toFixed(2) };
+    coordinates.y = function (d) {
+      return scale(d).toFixed(2); };
     coordinates.dx = 3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'start';
-    coordinates.text = function(d) {
-      return mg_compute_yax_format(args)(d) };
+    coordinates.text = function (d) {
+      return mg_compute_yax_format(args)(d); };
   }
   if (position === 'top') {
-    coordinates.x = function(d) {
-      return scale(d).toFixed(2) };
+    coordinates.x = function (d) {
+      return scale(d).toFixed(2); };
     coordinates.y = (mg_get_top(args) - tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '0em';
     coordinates.textAnchor = 'middle';
-    coordinates.text = function(d) {
-      return mg_default_xax_format(args)(d) };
+    coordinates.text = function (d) {
+      return mg_default_xax_format(args)(d); };
   }
   if (position === 'bottom') {
-    coordinates.x = function(d) {
-      return scale(d).toFixed(2) };
+    coordinates.x = function (d) {
+      return scale(d).toFixed(2); };
     coordinates.y = (mg_get_bottom(args) + tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '.50em';
     coordinates.textAnchor = 'middle';
-    coordinates.text = function(d) {
-      return mg_default_xax_format(args)(d) };
+    coordinates.text = function (d) {
+      return mg_default_xax_format(args)(d); };
   }
 
   return coordinates;
 }
 
-function selectXaxFormat(args) {
+function selectXaxFormat (args) {
   var c = args.chart_type;
   if (!args.processed.xax_format) {
     if (args.xax_format) {
@@ -1460,14 +1467,14 @@ function selectXaxFormat(args) {
   }
 }
 
-function secondaryLabels(g, args, axisArgs) {
+function secondaryLabels (g, args, axisArgs) {
   if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
     var tf = mg_get_yformat_and_secondary_time_function(args);
     addSecondaryLabelElements(args, axisArgs, g, tf.timeframe, tf.yformat, tf.secondary);
   }
 }
 
-function addSecondaryLabelElements(args, axisArgs, g, time_frame, yformat, secondary_function) {
+function addSecondaryLabelElements (args, axisArgs, g, time_frame, yformat, secondary_function) {
   var years = secondary_function(args.processed.min_x, args.processed.max_x);
   if (years.length === 0) {
     var first_tick = args.scales.X.ticks(args.xax_count)[0];
@@ -1481,19 +1488,19 @@ function addSecondaryLabelElements(args, axisArgs, g, time_frame, yformat, secon
   if (time_frame != 'years') yearMarkerText(args, axisArgs, yg, years, yformat);
 }
 
-function yearMarkerLine(args, axisArgs, g, years, yformat) {
+function yearMarkerLine (args, axisArgs, g, years, yformat) {
   g.selectAll('.mg-year-marker')
     .data(years).enter()
     .append('line')
-    .attr('x1', function(d) {
+    .attr('x1', function (d) {
       return args.scales.X(d).toFixed(2); })
-    .attr('x2', function(d) {
+    .attr('x2', function (d) {
       return args.scales.X(d).toFixed(2); })
     .attr('y1', mg_get_top(args))
     .attr('y2', mg_get_bottom(args));
 }
 
-function yearMarkerText(args, axisArgs, g, years, yformat) {
+function yearMarkerText (args, axisArgs, g, years, yformat) {
   var position = axisArgs.position;
   var ns = axisArgs.namespace;
   var scale = args.scales[ns.toUpperCase()];
@@ -1502,22 +1509,22 @@ function yearMarkerText(args, axisArgs, g, years, yformat) {
     .select('.mg-x-axis text').node().getBoundingClientRect();
 
   if (position === 'top') {
-    x = function(d, i) {
-      return scale(d).toFixed(2) };
+    x = function (d, i) {
+      return scale(d).toFixed(2); };
     y = (mg_get_top(args) - args.xax_tick_length * 7 / 3) - (xAxisTextElement.height);
     dy = '.50em';
-    textAnchor = 'middle'
-    textFcn = function(d) {
-      return yformat(new Date(d)) };
+    textAnchor = 'middle';
+    textFcn = function (d) {
+      return yformat(new Date(d)); };
   }
   if (position === 'bottom') {
-    x = function(d, i) {
-      return scale(d).toFixed(2) };
+    x = function (d, i) {
+      return scale(d).toFixed(2); };
     y = (mg_get_bottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
-    dy = '.50em'
+    dy = '.50em';
     textAnchor = 'middle';
-    textFcn = function(d) {
-      return yformat(new Date(d)) };
+    textFcn = function (d) {
+      return yformat(new Date(d)); };
   }
 
   g.selectAll('.mg-year-marker')
@@ -1530,7 +1537,7 @@ function yearMarkerText(args, axisArgs, g, years, yformat) {
     .text(textFcn);
 }
 
-function addNumericalLabels(g, args, axisArgs) {
+function addNumericalLabels (g, args, axisArgs) {
   var ns = axisArgs.namespace;
   var coords = labelPlacement(args, axisArgs);
   var ticks = args.processed[ns + '_ticks'];
@@ -1549,18 +1556,17 @@ function addNumericalLabels(g, args, axisArgs) {
   if (ns == 'x') {
     selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
-
-      labels.append('tspan').classed('mg-european-hours', true).text(function(_d, i) {
+      labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
         var d = new Date(_d);
         if (i === 0) return d3.timeFormat('%H')(d);
         else return '';
       });
-      labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d, i) {
+      labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function (_d, i) {
         var d = new Date(_d);
         return ':' + args.processed.xax_format(d);
       });
     } else {
-      labels.text(function(d) {
+      labels.text(function (d) {
         return args.xax_units + args.processed.xax_format(d);
       });
     }
@@ -1568,22 +1574,22 @@ function addNumericalLabels(g, args, axisArgs) {
   }
 
   if (mg_elements_are_overlapping(labels)) {
-    labels.filter(function(d, i) {
+    labels.filter(function (d, i) {
       return (i + 1) % 2 === 0;
     }).remove();
 
     var svg = mg_get_svg_child_of(args.target);
-    svg.selectAll('.mg-' + ns + 'ax-ticks').filter(function(d, i) {
-        return (i + 1) % 2 === 0; })
+    svg.selectAll('.mg-' + ns + 'ax-ticks').filter(function (d, i) {
+      return (i + 1) % 2 === 0; })
       .remove();
   }
 }
 
-function addTickLines(g, args, axisArgs) {
+function addTickLines (g, args, axisArgs) {
   // name
   var ns = axisArgs.namespace;
   var position = axisArgs.position;
-  var scale = args.scales[ns.toUpperCase()]
+  var scale = args.scales[ns.toUpperCase()];
 
   var ticks = args.processed[ns + '_ticks'];
   var ticksClass = 'mg-' + ns + 'ax-ticks';
@@ -1596,32 +1602,32 @@ function addTickLines(g, args, axisArgs) {
   if (position === 'left') {
     x1 = mg_get_left(args);
     x2 = extendedTicks ? mg_get_right(args) : mg_get_left(args) - tickLength;
-    y1 = function(d) {
-      return scale(d).toFixed(2); }
-    y2 = function(d) {
-      return scale(d).toFixed(2); }
+    y1 = function (d) {
+      return scale(d).toFixed(2); };
+    y2 = function (d) {
+      return scale(d).toFixed(2); };
   }
   if (position === 'right') {
     x1 = mg_get_right(args);
     x2 = extendedTicks ? mg_get_left(args) : mg_get_right(args) + tickLength;
-    y1 = function(d) {
-      return scale(d).toFixed(2); }
-    y2 = function(d) {
-      return scale(d).toFixed(2); }
+    y1 = function (d) {
+      return scale(d).toFixed(2); };
+    y2 = function (d) {
+      return scale(d).toFixed(2); };
   }
   if (position === 'top') {
-    x1 = function(d) {
-      return scale(d).toFixed(2); }
-    x2 = function(d) {
-      return scale(d).toFixed(2); }
+    x1 = function (d) {
+      return scale(d).toFixed(2); };
+    x2 = function (d) {
+      return scale(d).toFixed(2); };
     y1 = mg_get_top(args);
     y2 = extendedTicks ? mg_get_bottom(args) : mg_get_top(args) - tickLength;
   }
   if (position === 'bottom') {
-    x1 = function(d) {
-      return scale(d).toFixed(2); }
-    x2 = function(d) {
-      return scale(d).toFixed(2); }
+    x1 = function (d) {
+      return scale(d).toFixed(2); };
+    x2 = function (d) {
+      return scale(d).toFixed(2); };
     y1 = mg_get_bottom(args);
     y2 = extendedTicks ? mg_get_top(args) : mg_get_bottom(args) + tickLength;
   }
@@ -1636,7 +1642,7 @@ function addTickLines(g, args, axisArgs) {
     .attr('y2', y2);
 }
 
-function initializeAxisRim(g, args, axisArgs) {
+function initializeAxisRim (g, args, axisArgs) {
   var namespace = axisArgs.namespace;
   var tick_length = args.processed[namespace + '_ticks'].length;
 
@@ -1651,23 +1657,23 @@ function initializeAxisRim(g, args, axisArgs) {
   }
 }
 
-function initializeRug(args, rug_class) {
+function initializeRug (args, rug_class) {
   var svg = mg_get_svg_child_of(args.target);
   var all_data = mg_flatten_array(args.data);
   var rug = svg.selectAll('line.' + rug_class).data(all_data);
 
-  //set the attributes that do not change after initialization, per
+  // set the attributes that do not change after initialization, per
   rug.enter().append('svg:line').attr('class', rug_class).attr('opacity', 0.3);
 
-  //remove rug elements that are no longer in use
+  // remove rug elements that are no longer in use
   mg_exit_and_remove(rug);
 
-  //set coordinates of new rug elements
+  // set coordinates of new rug elements
   mg_exit_and_remove(rug);
   return rug;
 }
 
-function rug(args, axisArgs) {
+function rug (args, axisArgs) {
   'use strict';
   args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3;
 
@@ -1681,11 +1687,11 @@ function rug(args, axisArgs) {
   mg_add_color_accessor_to_rug(rug, args, 'mg-' + axisArgs.namespace + '-rug-mono');
 }
 
-function categoricalLabelPlacement(args, axisArgs, group) {
+function categoricalLabelPlacement (args, axisArgs, group) {
   var ns = axisArgs.namespace;
   var position = axisArgs.position;
   var scale = args.scales[ns.toUpperCase()];
-  var groupScale = args.scales[(ns + 'group').toUpperCase()]
+  var groupScale = args.scales[(ns + 'group').toUpperCase()];
   var coords = {};
   coords.cat = {};
   coords.group = {};
@@ -1693,9 +1699,9 @@ function categoricalLabelPlacement(args, axisArgs, group) {
 
   if (position === 'left') {
     coords.cat.x = mg_get_plot_left(args) - args.buffer;
-    coords.cat.y = function(d) {
+    coords.cat.y = function (d) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
-    }
+    };
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = 'end';
     coords.group.x = mg_get_plot_left(args) - args.buffer;
@@ -1706,9 +1712,9 @@ function categoricalLabelPlacement(args, axisArgs, group) {
 
   if (position === 'right') {
     coords.cat.x = mg_get_plot_right(args) - args.buffer;
-    coords.cat.y = function(d) {
+    coords.cat.y = function (d) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
-    }
+    };
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = 'start';
     coords.group.x = mg_get_plot_right(args) - args.buffer;
@@ -1718,9 +1724,9 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   }
 
   if (position === 'top') {
-    coords.cat.x = function(d) {
+    coords.cat.x = function (d) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
-    }
+    };
     coords.cat.y = mg_get_plot_top(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1731,13 +1737,13 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   }
 
   if (position === 'bottom') {
-    coords.cat.x = function(d) {
+    coords.cat.x = function (d) {
       return groupScale(group) + scale(d) + scale.bandwidth() / 2;
-    }
+    };
     coords.cat.y = mg_get_plot_bottom(args) + args.buffer;
     coords.cat.dy = '.35em';
     coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
-    coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 - scale.bandwidth()/2 : 0);
+    coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 - scale.bandwidth() / 2 : 0);
     coords.group.y = mg_get_plot_bottom(args) + args.buffer;
     coords.group.dy = '.35em';
     coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
@@ -1746,11 +1752,11 @@ function categoricalLabelPlacement(args, axisArgs, group) {
   return coords;
 }
 
-function categoricalLabels(args, axisArgs) {
+function categoricalLabels (args, axisArgs) {
   var ns = axisArgs.namespace;
   var nsClass = 'mg-' + ns + '-axis';
   var scale = args.scales[ns.toUpperCase()];
-  var groupScale = args.scales[(ns + 'group').toUpperCase()]
+  var groupScale = args.scales[(ns + 'group').toUpperCase()];
   var groupAccessor = ns + 'group_accessor';
 
   var svg = mg_get_svg_child_of(args.target);
@@ -1761,7 +1767,7 @@ function categoricalLabels(args, axisArgs) {
     ? groupScale.domain()
     : ['1'];
 
-  groups.forEach(function(group) {
+  groups.forEach(function (group) {
     // grab group placement stuff.
     var coords = categoricalLabelPlacement(args, axisArgs, group);
 
@@ -1780,11 +1786,11 @@ function categoricalLabels(args, axisArgs) {
         .data(scale.domain())
         .enter()
         .append('text')
-          .attr('x', coords.cat.x)
-          .attr('y', coords.cat.y)
-          .attr('dy', coords.cat.dy)
-          .attr('text-anchor', coords.cat.textAnchor)
-          .text(String);
+        .attr('x', coords.cat.x)
+        .attr('y', coords.cat.y)
+        .attr('dy', coords.cat.dy)
+        .attr('text-anchor', coords.cat.textAnchor)
+        .text(String);
     }
     if (args['rotate_' + ns + '_labels']) {
       rotateLabels(labels, args['rotate_' + ns + '_labels']);
@@ -1792,7 +1798,7 @@ function categoricalLabels(args, axisArgs) {
   });
 }
 
-function categoricalGuides(args, axisArgs) {
+function categoricalGuides (args, axisArgs) {
   // for each group
   // for each data point
 
@@ -1809,8 +1815,8 @@ function categoricalGuides(args, axisArgs) {
   var x1, x2, y1, y2;
   var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
 
-  grs.forEach(function(group) {
-    scale.domain().forEach(function(cat) {
+  grs.forEach(function (group) {
+    scale.domain().forEach(function (cat) {
       if (position === 'left' || position === 'right') {
         x1 = mg_get_plot_left(args);
         x2 = mg_get_plot_right(args);
@@ -1835,7 +1841,7 @@ function categoricalGuides(args, axisArgs) {
     });
 
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
-    var last = groupScale(group) + scale(scale.domain()[scale.domain().length-1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
+    var last = groupScale(group) + scale(scale.domain()[scale.domain().length - 1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
@@ -1876,20 +1882,20 @@ function categoricalGuides(args, axisArgs) {
       .attr('y2', y22)
       .attr('stroke-dasharray', '2,1')
       .attr('stroke', 'lightgray');
-  })
+  });
 }
 
-function rotateLabels(labels, rotation_degree) {
+function rotateLabels (labels, rotation_degree) {
   if (rotation_degree) {
-    labels.attr('transform', function(){
+    labels.attr('transform', function () {
       var elem = d3.select(this);
-        return 'rotate(' + rotation_degree + ' ' + elem.attr('x') + ',' + elem.attr('y') + ')';
-    })
+      return 'rotate(' + rotation_degree + ' ' + elem.attr('x') + ',' + elem.attr('y') + ')';
+    });
 
   }
 }
 
-function zeroLine(args, axisArgs) {
+function zeroLine (args, axisArgs) {
   var svg = mg_get_svg_child_of(args.target);
   var ns = axisArgs.namespace;
   var position = axisArgs.position;
@@ -1913,25 +1919,25 @@ function zeroLine(args, axisArgs) {
     .attr('x2', x2)
     .attr('y1', y1)
     .attr('y2', y2)
-    .attr('stroke', 'black')
+    .attr('stroke', 'black');
 }
 
 var mgDrawAxis = {};
 
-mgDrawAxis.categorical = function(args, axisArgs) {
+mgDrawAxis.categorical = function (args, axisArgs) {
   var ns = axisArgs.namespace;
 
   categoricalLabels(args, axisArgs);
   categoricalGuides(args, axisArgs);
-}
+};
 
-mgDrawAxis.numerical = function(args, axisArgs) {
+mgDrawAxis.numerical = function (args, axisArgs) {
   var namespace = axisArgs.namespace;
   var axisName = namespace + '_axis';
   var axisClass = 'mg-' + namespace + '-axis';
   var svg = mg_get_svg_child_of(args.target);
 
-  //MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
+  // MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
 
   mg_selectAll_and_remove(svg, '.' + axisClass);
 
@@ -1943,53 +1949,52 @@ mgDrawAxis.numerical = function(args, axisArgs) {
   processScaleTicks(args, namespace);
   initializeAxisRim(g, args, axisArgs);
   addTickLines(g, args, axisArgs);
-  addNumericalLabels(g, args, axisArgs)
+  addNumericalLabels(g, args, axisArgs);
 
   if (args[namespace + '_rug']) {
     rug(args, axisArgs);
   }
 
   if (args.show_bar_zero) mg_bar_add_zero_line(args);
-  //if (axisArgs.zeroLine) zeroLine(args, axisArgs);
+  // if (axisArgs.zeroLine) zeroLine(args, axisArgs);
 
   return this;
-}
+};
 
-
-function axisFactory(args) {
+function axisFactory (args) {
   var axisArgs = {};
   axisArgs.type = 'numerical';
 
-  this.namespace = function(ns) {
+  this.namespace = function (ns) {
     // take the ns in the scale, and use it to
     axisArgs.namespace = ns;
     return this;
-  }
+  };
 
-  this.rug = function(tf) {
+  this.rug = function (tf) {
     axisArgs.rug = tf;
     return this;
-  }
+  };
 
-  this.type = function(t) {
+  this.type = function (t) {
     axisArgs.type = t;
     return this;
-  }
+  };
 
-  this.position = function(pos) {
+  this.position = function (pos) {
     axisArgs.position = pos;
     return this;
-  }
+  };
 
-  this.zeroLine = function(tf) {
+  this.zeroLine = function (tf) {
     axisArgs.zeroLine = tf;
     return this;
-  }
+  };
 
-  this.draw = function() {
+  this.draw = function () {
     mgDrawAxis[axisArgs.type](args, axisArgs);
     return this;
-  }
+  };
 
   return this;
 
@@ -2001,11 +2006,10 @@ MG.axis_factory = axisFactory;
 /* ================================================================================ */
 /* ================================================================================ */
 
-
-function y_rug(args) {
+function y_rug (args) {
   'use strict';
 
-  if(!args.y_rug) {
+  if (!args.y_rug) {
     return;
   }
 
@@ -2025,10 +2029,10 @@ function y_rug(args) {
 
 MG.y_rug = y_rug;
 
-function mg_change_y_extents_for_bars(args, my) {
+function mg_change_y_extents_for_bars (args, my) {
   if (args.chart_type === 'bar') {
     my.min = 0;
-    my.max = d3.max(args.data[0], function(d) {
+    my.max = d3.max(args.data[0], function (d) {
       var trio = [];
       trio.push(d[args.y_accessor]);
 
@@ -2046,7 +2050,7 @@ function mg_change_y_extents_for_bars(args, my) {
   return my;
 }
 
-function mg_compute_yax_format(args) {
+function mg_compute_yax_format (args) {
   var yax_format = args.yax_format;
   if (!yax_format) {
     if (args.format === 'count') {
@@ -2057,7 +2061,7 @@ function mg_compute_yax_format(args) {
         args.decimals = 4;
       }
 
-      yax_format = function(f) {
+      yax_format = function (f) {
         if (f < 1000) {
           var pf = d3.format(',.0f');
         } else {
@@ -2065,14 +2069,14 @@ function mg_compute_yax_format(args) {
         }
 
         // are we adding units after the value or before?
-        if(args.yax_units_append) {
+        if (args.yax_units_append) {
           return pf(f) + args.yax_units;
         } else {
           return args.yax_units + pf(f);
         }
       };
     } else { // percentage
-      yax_format = function(d_) {
+      yax_format = function (d_) {
         var n = d3.format('.0%');
         return n(d_);
       };
@@ -2081,7 +2085,7 @@ function mg_compute_yax_format(args) {
   return yax_format;
 }
 
-function mg_bar_add_zero_line(args) {
+function mg_bar_add_zero_line (args) {
   var svg = mg_get_svg_child_of(args.target);
   var extents = args.scales.X.domain();
   if (0 >= extents[0] && extents[1] >= 0) {
@@ -2100,13 +2104,13 @@ function mg_bar_add_zero_line(args) {
   }
 }
 
-function set_min_max_y(args) {
+function set_min_max_y (args) {
   // flatten data
   // remove weird data, if log.
   var data = mg_flatten_array(args.data);
 
   if (args.y_scale_type === 'log') {
-    data = data.filter(function(d) {
+    data = data.filter(function (d) {
       return d[args.y_accessor] > 0;
     });
   }
@@ -2115,7 +2119,7 @@ function set_min_max_y(args) {
     data = data.concat(args.baselines);
   }
 
-  var extents = d3.extent(data, function(d) {
+  var extents = d3.extent(data, function (d) {
     return d[args.y_accessor];
   });
 
@@ -2138,7 +2142,6 @@ function set_min_max_y(args) {
   }
 
   if (!args.min_y && args.min_y_from_data) {
-
     var buff = (my.max - my.min) * .01;
     my.min = extents[0] - buff;
     my.max = extents[1] + buff;
@@ -2147,13 +2150,13 @@ function set_min_max_y(args) {
   args.processed.max_y = my.max;
 }
 
-function mg_y_domain_range(args, scale) {
+function mg_y_domain_range (args, scale) {
   scale.domain([args.processed.min_y, args.processed.max_y])
     .range([mg_get_plot_bottom(args), args.top]);
   return scale;
 }
 
-function mg_define_y_scales(args) {
+function mg_define_y_scales (args) {
   var scale = args.y_scale_type === 'log' ? d3.scaleLog() : d3.scaleLinear();
   if (args.y_scale_type === 'log') {
     if (args.chart_type === 'histogram') {
@@ -2173,29 +2176,29 @@ function mg_define_y_scales(args) {
   args.scales.Y_axis = mg_y_domain_range(args, d3.scaleLinear());
 }
 
-function mg_add_y_label(g, args) {
+function mg_add_y_label (g, args) {
   if (args.y_label) {
     g.append('text')
       .attr('class', 'label')
-      .attr('x', function() {
+      .attr('x', function () {
         return -1 * (mg_get_plot_top(args) +
-          ((mg_get_plot_bottom(args)) - (mg_get_plot_top(args))) / 2);
+        ((mg_get_plot_bottom(args)) - (mg_get_plot_top(args))) / 2);
       })
-      .attr('y', function() {
+      .attr('y', function () {
         return args.left / 2;
       })
       .attr('dy', '0.4em')
       .attr('text-anchor', 'middle')
-      .text(function(d) {
+      .text(function (d) {
         return args.y_label;
       })
-      .attr('transform', function(d) {
+      .attr('transform', function (d) {
         return 'rotate(-90)';
       });
   }
 }
 
-function mg_add_y_axis_rim(g, args) {
+function mg_add_y_axis_rim (g, args) {
   var tick_length = args.processed.y_ticks.length;
   if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
     var y1scale, y2scale;
@@ -2219,43 +2222,43 @@ function mg_add_y_axis_rim(g, args) {
   }
 }
 
-function mg_add_y_axis_tick_lines(g, args) {
+function mg_add_y_axis_tick_lines (g, args) {
   g.selectAll('.mg-yax-ticks')
     .data(args.processed.y_ticks).enter()
     .append('line')
     .classed('mg-extended-yax-ticks', args.y_extended_ticks)
     .attr('x1', args.left)
-    .attr('x2', function() {
+    .attr('x2', function () {
       return (args.y_extended_ticks) ? args.width - args.right : args.left - args.yax_tick_length;
     })
-    .attr('y1', function(d) {
+    .attr('y1', function (d) {
       return args.scales.Y(d).toFixed(2);
     })
-    .attr('y2', function(d) {
+    .attr('y2', function (d) {
       return args.scales.Y(d).toFixed(2);
     });
 }
 
-function mg_add_y_axis_tick_labels(g, args) {
+function mg_add_y_axis_tick_labels (g, args) {
   var yax_format = mg_compute_yax_format(args);
   g.selectAll('.mg-yax-labels')
     .data(args.processed.y_ticks).enter()
     .append('text')
     .attr('x', args.left - args.yax_tick_length * 3 / 2)
     .attr('dx', -3)
-    .attr('y', function(d) {
+    .attr('y', function (d) {
       return args.scales.Y(d).toFixed(2);
     })
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
-    .text(function(d) {
+    .text(function (d) {
       var o = yax_format(d);
       return o;
     });
 }
 
 // TODO seems to be deprecated, only used by bar and histogram
-function y_axis(args) {
+function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
   }
@@ -2281,14 +2284,12 @@ function y_axis(args) {
 
 MG.y_axis = y_axis;
 
-function mg_add_categorical_labels(args) {
+function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
   var g = mg_add_g(svg, 'mg-y-axis');
-  var group_g;
-  (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function(group) {
-
-    group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group))
+  var group_g;(args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function (group) {
+    group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group));
 
     if (args.ygroup_accessor !== null) {
       mg_add_group_label(group_g, group, args);
@@ -2299,10 +2300,10 @@ function mg_add_categorical_labels(args) {
   });
 }
 
-function mg_add_graphic_labels(g, group, args) {
+function mg_add_graphic_labels (g, group, args) {
   return g.selectAll('text').data(args.scales.Y.domain()).enter().append('svg:text')
     .attr('x', args.left - args.buffer)
-    .attr('y', function(d) {
+    .attr('y', function (d) {
       return args.scales.YGROUP(group) + args.scales.Y(d) + args.scales.Y.bandwidth() / 2;
     })
     .attr('dy', '.35em')
@@ -2310,7 +2311,7 @@ function mg_add_graphic_labels(g, group, args) {
     .text(String);
 }
 
-function mg_add_group_label(g, group, args) {
+function mg_add_group_label (g, group, args) {
   g.append('svg:text')
     .classed('mg-barplot-group-label', true)
     .attr('x', args.left - args.buffer)
@@ -2320,7 +2321,7 @@ function mg_add_group_label(g, group, args) {
     .text(group);
 }
 
-function mg_draw_group_lines(args) {
+function mg_draw_group_lines (args) {
   var svg = mg_get_svg_child_of(args.target);
   var groups = args.scales.YGROUP.domain();
   var first = groups[0];
@@ -2328,22 +2329,22 @@ function mg_draw_group_lines(args) {
   svg.selectAll('mg-group-lines').data(groups).enter().append('line')
     .attr('x1', mg_get_plot_left(args))
     .attr('x2', mg_get_plot_left(args))
-    .attr('y1', function(d) {
+    .attr('y1', function (d) {
       return args.scales.YGROUP(d);
     })
-    .attr('y2', function(d) {
+    .attr('y2', function (d) {
       return args.scales.YGROUP(d) + args.ygroup_height;
     })
     .attr('stroke-width', 1)
-    .attr('stroke', 'lightgray')
+    .attr('stroke', 'lightgray');
 }
 
-function mg_y_categorical_show_guides(args) {
+function mg_y_categorical_show_guides (args) {
   // for each group
   // for each data point
   var svg = mg_get_svg_child_of(args.target);
   var alreadyPlotted = [];
-  args.data[0].forEach(function(d) {
+  args.data[0].forEach(function (d) {
     if (alreadyPlotted.indexOf(d[args.y_accessor]) === -1) {
       svg.append('line')
         .attr('x1', mg_get_plot_left(args))
@@ -2353,16 +2354,16 @@ function mg_y_categorical_show_guides(args) {
         .attr('stroke-dasharray', '2,1')
         .attr('stroke', 'lightgray');
     }
-  })
+  });
 }
 
-function y_axis_categorical(args) {
+function y_axis_categorical (args) {
   if (!args.y_axis) {
     return this;
   }
 
   mg_add_categorical_labels(args);
-  //mg_draw_group_scaffold(args);
+  // mg_draw_group_scaffold(args);
   if (args.show_bar_zero) mg_bar_add_zero_line(args);
   if (args.ygroup_accessor) mg_draw_group_lines(args);
   if (args.y_categorical_show_guides) mg_y_categorical_show_guides(args);
@@ -5007,6 +5008,7 @@ function point_mouseover(args, svg, d) {
   }
 
   mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
+
   row.text(mg_format_x_mouseover(args, d)); // x
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
 }
@@ -5035,14 +5037,6 @@ function mg_color_point_mouseover(args, elem, d) {
         (args.max_y === null || d[y] <= args.max_y);
     })
     return new_data;
-  }
-
-  function inferType(args, ns) {
-    // must return categorical or numerical.
-    var testPoint = mg_flatten_array(args.data);
-
-    testPoint = testPoint[0][args[ns + '_accessor']];
-    return typeof testPoint === 'string' ? 'categorical' : 'numerical';
   }
 
   function pointChart(args) {
@@ -5480,52 +5474,141 @@ function mg_color_point_mouseover(args, elem, d) {
     this.init = function(args) {
 
       this.args = args;
+      args.x_axis_type = inferType(args, 'x');
+      args.y_axis_type = inferType(args, 'y');
+
+      // this is specific to how rects work in svg, let's keep track of the bar orientation to
+      // plot appropriately.
+      if (args.x_axis_type == 'categorical') {
+        args.orientation = 'vertical';
+      } else if (args.y_axis_type == 'categorical') {
+        args.orientation = 'horizontal';
+      } else if (args.x_axis_type != 'categorical' && args.y_axis_type != 'categorical') {
+        // histogram.
+        args.orientation = 'vertical';
+      }
 
       raw_data_transformation(args);
-      process_categorical_variables(args);
+
+      process_point(args);
       init(args);
 
-      this.is_vertical = (args.bar_orientation === 'vertical');
+      var xMaker, yMaker;
 
-      if (this.is_vertical) {
-        x_axis_categorical(args);
-        y_axis(args);
-      } else {
-        new MG.scale_factory(args)
+      if (args.x_axis_type === 'categorical') {
+        xMaker = MG.scale_factory(args)
           .namespace('x')
-          .zeroBottom(true)
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
+
+        if (args.xgroup_accessor) {
+          new MG.scale_factory(args)
+            .namespace('xgroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('bottom');
+
+        } else {
+          args.scales.XGROUP = function(d) {
+            return mg_get_plot_left(args) };
+          args.scalefns.xgroupf = function(d) {
+            return mg_get_plot_left(args) };
+        }
+
+        args.scalefns.xoutf = function(d) {
+          return args.scalefns.xf(d) + args.scalefns.xgroupf(d)
+        };
+      } else {
+        xMaker = MG.scale_factory(args)
+          .namespace('x')
           .inflateDomain(true)
-          .numericalDomainFromData()
+          .zeroBottom(args.y_axis_type === 'categorical')
+          .numericalDomainFromData((args.baselines || []).map(function(d) {
+            return d[args.x_accessor] }))
           .numericalRange('bottom');
 
-        new MG.scale_factory(args)
+        args.scalefns.xoutf = args.scalefns.xf;
+      }
+
+      // y-scale generation. This needs to get simplified.
+      if (args.y_axis_type === 'categorical') {
+        yMaker = MG.scale_factory(args)
           .namespace('y')
+          .zeroBottom(true)
           .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.ygroup_height]);
+          .categoricalRangeBands([0, args.ygroup_height], true);
 
         if (args.ygroup_accessor) {
+
           new MG.scale_factory(args)
             .namespace('ygroup')
             .categoricalDomainFromData()
             .categoricalRangeBands('left');
+
         } else {
           args.scales.YGROUP = function() {
             return mg_get_plot_top(args) };
-          args.scalefns.ygroupf = function() {
+          args.scalefns.ygroupf = function(d) {
             return mg_get_plot_top(args) };
+
         }
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) + args.scalefns.ygroupf(d) };
 
-        x_axis(args);
+      } else {
+        var baselines = (args.baselines || []).map(function(d) {
+          return d[args.y_accessor] });
 
-        //y_axis_categorical(args);
-        // new MG.axis_factory(args)
-        //   .namespace('y')
-        //   .type('categorical')
-        //   .position(args.y_axis_position)
-        //   .draw();
+        yMaker = MG.scale_factory(args)
+          .namespace('y')
+          .inflateDomain(true)
+          .zeroBottom(args.x_axis_type === 'categorical')
+          .numericalDomainFromData(baselines)
+          .numericalRange('left');
+
+        args.scalefns.youtf = function(d) {
+          return args.scalefns.yf(d) };
       }
-      // work in progress. If grouped bars, add color scale.
-      mg_categorical_group_color_scale(args);
+
+      if (args.ygroup_accessor !== null) {
+        args.ycolor_accessor = args.y_accessor;
+        MG.scale_factory(args)
+          .namespace('ycolor')
+          .scaleName('color')
+          .categoricalDomainFromData()
+          .categoricalColorRange();
+      }
+
+      if (args.xgroup_accessor !== null) {
+        args.xcolor_accessor = args.x_accessor;
+        MG.scale_factory(args)
+          .namespace('xcolor')
+          .scaleName('color')
+          .categoricalDomainFromData()
+          .categoricalColorRange();
+      }
+
+      // if (args.ygroup_accessor !== null) {
+      //   MG.scale_factory(args)
+      //     .namespace('ygroup')
+      //     .categoricalDomainFromData()
+      //     .categoricalColorRange();
+      // }
+
+      new MG.axis_factory(args)
+        .namespace('x')
+        .type(args.x_axis_type)
+        .zeroLine(args.y_axis_type === 'categorical')
+        .position(args.x_axis_position)
+        .draw();
+
+      new MG.axis_factory(args)
+        .namespace('y')
+        .type(args.y_axis_type)
+        .zeroLine(args.x_axis_type === 'categorical')
+        .position(args.y_axis_position)
+        .draw();
+
+      //mg_categorical_group_color_scale(args);
 
       this.mainPlot();
       this.markers();
@@ -5556,197 +5639,222 @@ function mg_color_point_mouseover(args, elem, d) {
           .classed('mg-barplot', true);
       }
 
-      bars = barplot.selectAll('.mg-bar')
-        .data(data);
-
-      bars.exit().remove();
-
-      bars.enter().append('rect')
+      bars = barplot.selectAll('.mg-bar').data(data).enter().append('rect')
         .classed('mg-bar', true)
         .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
-      // add new white lines.
-      // barplot.selectAll('invisible').data(args.scales.X.ticks()).enter().append('svg:line')
-      //   .attr('x1', args.scales.X)
-      //   .attr('x2', args.scales.X)
-      //   .attr('y1', mg_get_plot_top(args))
-      //   .attr('y2', mg_get_plot_bottom(args))
-      //   .attr('stroke', 'white');
 
-      if (args.predictor_accessor) {
-        predictor_bars = barplot.selectAll('.mg-bar-prediction')
-          .data(data.filter(function(d) {
-            return d.hasOwnProperty(args.predictor_accessor) }));
 
-        predictor_bars.exit().remove();
+      // TODO - reimplement
+      // if (args.predictor_accessor) {
+      //   predictor_bars = barplot.selectAll('.mg-bar-prediction')
+      //     .data(data.filter(function(d) {
+      //       return d.hasOwnProperty(args.predictor_accessor) }));
 
-        predictor_bars.enter().append('rect')
-          .classed('mg-bar-prediction', true);
-      }
+      //   predictor_bars.exit().remove();
 
-      if (args.baseline_accessor) {
-        baseline_marks = barplot.selectAll('.mg-bar-baseline')
-          .data(data.filter(function(d) {
-            return d.hasOwnProperty(args.baseline_accessor) }));
+      //   predictor_bars.enter().append('rect')
+      //     .classed('mg-bar-prediction', true);
+      // }
 
-        baseline_marks.exit().remove();
+      // if (args.baseline_accessor) {
+      //   baseline_marks = barplot.selectAll('.mg-bar-baseline')
+      //     .data(data.filter(function(d) {
+      //       return d.hasOwnProperty(args.baseline_accessor) }));
 
-        baseline_marks.enter().append('line')
-          .classed('mg-bar-baseline', true);
-      }
+      //   baseline_marks.exit().remove();
+
+      //   baseline_marks.enter().append('line')
+      //     .classed('mg-bar-baseline', true);
+      // }
 
       var appropriate_size;
 
       // setup transitions
-      if (should_transition) {
-        bars = bars.transition()
-          .duration(transition_duration);
+      // if (should_transition) {
+      //   bars = bars.transition()
+      //     .duration(transition_duration);
 
-        if (predictor_bars) {
-          predictor_bars = predictor_bars.transition()
-            .duration(transition_duration);
+      //   if (predictor_bars) {
+      //     predictor_bars = predictor_bars.transition()
+      //       .duration(transition_duration);
+      //   }
+
+      //   if (baseline_marks) {
+      //     baseline_marks = baseline_marks.transition()
+      //       .duration(transition_duration);
+      //   }
+      // }
+
+        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
+        var length, width, length_type, width_type, length_coord, width_coord, 
+          length_scalefn, width_scalefn, length_scale, width_scale, 
+          length_accessor, width_accessor;
+
+        var length_coord_map, width_coord_map, length_map, width_map;
+
+
+        if (args.orientation == 'vertical') {
+          length = 'height';
+          width = 'width';
+          length_type = args.y_axis_type;
+          width_type = args.x_axis_type;
+          length_coord = 'y';
+          width_coord = 'x';
+          length_scalefn = length_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+          width_scalefn  = width_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+          length_scale   = args.scales.Y;
+          width_scale     = args.scales.X;
+          length_accessor = args.y_accessor;
+          width_accessor = args.x_accessor;
+
+          length_coord_map = function(d){
+            var l;
+            l = length_scalefn(d);
+            if (d[length_accessor] < 0) {
+              l = length_scale(0);
+            }
+            return l;
+          }
+
+          length_map = function(d) {
+            return Math.abs(length_scalefn(d) - length_scale(0));
+          }
+
+
         }
 
-        if (baseline_marks) {
-          baseline_marks = baseline_marks.transition()
-            .duration(transition_duration);
+        if (args.orientation == 'horizontal') {
+          length = 'width';
+          width = 'height';
+          length_type = args.x_axis_type;
+          width_type = args.y_axis_type;
+          length_coord = 'x';
+          width_coord = 'y';
+          length_scalefn = length_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+          width_scalefn = width_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+          length_scale = args.scales.X;
+          width_scale = args.scales.Y;
+          length_accessor = args.x_accessor;
+          width_accessor = args.y_accessor;
+
+        length_coord_map = function(d){
+          var l;
+          l = length_scale(0);
+          return l;
         }
-      }
 
-      // move the barplot after the axes so it doesn't overlap
-      if (this.is_vertical) {
-        svg.select('.mg-y-axis')
-          .node()
-          .parentNode
-          .appendChild(barplot.node());
+        length_map = function(d) {
+          return Math.abs(length_scalefn(d) - length_scale(0));
+        }
 
-        // appropriate_size = args.scales.X.rangeBand()/1.5;
+
+        }
 
         // if (perform_load_animation) {
-        //   bars.attr({
-        //     height: 0,
-        //     y: args.scales.Y(0)
-        //   });
+        //   bars.attr(length, 0);
 
         //   if (predictor_bars) {
-        //     predictor_bars.attr({
-        //       height: 0,
-        //       y: args.scales.Y(0)
-        //     });
+        //     predictor_bars.attr(length, 0);
         //   }
 
-        //   if (baseline_marks) {
-        //     baseline_marks.attr({
-        //       y1: args.scales.Y(0),
-        //       y2: args.scales.Y(0)
-        //     });
-        //   }
+        //   // if (baseline_marks) {
+        //   //   baseline_marks.attr({
+        //   //     x1: args.scales.X(0),
+        //   //     x2: args.scales.X(0)
+        //   //   });
+        //   // }
         // }
 
-        // bars.attr('y', args.scalefns.yf)
-        //   .attr('x', function(d) {
-        //     return args.scalefns.xf(d)// + appropriate_size/2;
-        //   })
-        //   .attr('width', appropriate_size)
-        //   .attr('height', function(d) {
-        //     return 0 - (args.scalefns.yf(d) - args.scales.Y(0));
-        //   });
+        //
 
+        bars.attr(length_coord, length_coord_map);
+  
+        // bars.attr(length_coord, 40)
 
-        // if (args.predictor_accessor) {
-        //   pp = args.predictor_proportion;
-        //   pp0 = pp-1;
+        //bars.attr(width_coord, 70)
 
-        //   // thick line through bar;
-        //   predictor_bars
-        //     .attr('y', function(d) {
-        //       return args.scales.Y(0) - (args.scales.Y(0) - args.scales.Y(d[args.predictor_accessor]));
-        //     })
-        //     .attr('x', function(d) {
-        //       return args.scalefns.xf(d) + pp0*appropriate_size/(pp*2) + appropriate_size/2;
-        //     })
-        //     .attr('width', appropriate_size/pp)
-        //     .attr('height', function(d) {
-        //       return 0 - (args.scales.Y(d[args.predictor_accessor]) - args.scales.Y(0));
-        //     });
-        // }
-
-        // if (args.baseline_accessor) {
-        //   pp = args.predictor_proportion;
-
-        //   baseline_marks
-        //     .attr('x1', function(d) {
-        //       return args.scalefns.xf(d)+appropriate_size/2-appropriate_size/pp + appropriate_size/2;
-        //     })
-        //     .attr('x2', function(d) {
-        //       return args.scalefns.xf(d)+appropriate_size/2+appropriate_size/pp + appropriate_size/2;
-        //     })
-        //     .attr('y1', function(d) { return args.scales.Y(d[args.baseline_accessor]); })
-        //     .attr('y2', function(d) { return args.scales.Y(d[args.baseline_accessor]); });
-        // }
-      } else {
-        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-        if (perform_load_animation) {
-          bars.attr('width', 0);
-
-          if (predictor_bars) {
-            predictor_bars.attr('width', 0);
-          }
-
-          if (baseline_marks) {
-            baseline_marks.attr({
-              x1: args.scales.X(0),
-              x2: args.scales.X(0)
-            });
-          }
-        }
-
-        bars.attr('x', function(d) {
-            var x = args.scales.X(0);
-            if (d[args.x_accessor] < 0) {
-              x = args.scalefns.xf(d);
+        bars.attr(width_coord, function(d) {
+          var w;
+          if (width_type == 'categorical') {
+            w = width_scalefn(d);
+          } else {
+            w = width_scale(0);
+            if (d[width_accessor] < 0) {
+              w = width_scalefn(d);
             }
-            return x;
-          })
-          /*.attr('y', function(d) {
-            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
-          })
-          .attr('fill', args.scalefns.colorf)
-          .attr('height', args.scales.Y.rangeBand())
-          .attr('width', function(d) {
-            return Math.abs(args.scalefns.xf(d) - args.scales.X(0));
-          });*/
-
-        if (args.predictor_accessor) {
-          // pp = args.predictor_proportion;
-          // pp0 = pp-1;
-
-          // thick line  through bar;
-          predictor_bars
-            .attr('x', args.scales.X(0))
-            .attr('y', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
-            })
-            .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
-            .attr('width', function(d) {
-              return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
-            });
+          }
+          w = w - args.bar_thickness/2;
+          return w;
+        })
+        if (args.scales.COLOR) {
+          bars.attr('fill', args.scalefns.colorf)
         }
 
-        if (args.baseline_accessor) {
+        bars.attr(length, length_map)
 
-          baseline_marks
-            .attr('x1', function(d) {
-              return args.scales.X(d[args.baseline_accessor]); })
-            .attr('x2', function(d) {
-              return args.scales.X(d[args.baseline_accessor]); })
-            .attr('y1', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() / 4
-            })
-            .attr('y2', function(d) {
-              return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
-            });
-        }
-      }
+        bars.attr(width, function(d) {
+          return args.bar_thickness;
+        })
+
+
+
+        //bars.attr(width_coord, );
+        // bars.attr('width', 50);
+        // bars.attr('height', 50);
+        // bars.attr('y', function(d){
+        //   var y = args.scales.Y(0);
+        //   if (d[args.y_accessor] < 0) {
+        //     y = args.scalefns.yf(d);
+        //   }
+        //   return y;
+        // });
+
+        // bars.attr('x', function(d){
+        //   return 40;
+        // })
+
+        // bars.attr('width', function(d){
+        //   return 100;
+        // });
+
+        // bars.attr('height', 100);
+
+        // bars.attr('fill', 'black');
+        // bars.attr('x', function(d) {
+        //   var x = args.scales.X(0);
+        //   if (d[args.x_accessor] < 0) {
+        //     x = args.scalefns.xf(d);
+        //   }
+        //   return x;
+        // })
+        // TODO - reimplement.
+        // if (args.predictor_accessor) {
+        //   predictor_bars
+        //     .attr('x', args.scales.X(0))
+        //     .attr('y', function(d) {
+        //       return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+        //     })
+        //     .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
+        //     .attr('width', function(d) {
+        //       return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
+        //     });
+        // }
+
+      // TODO - reimplement.
+      //   if (args.baseline_accessor) {
+
+      //     baseline_marks
+      //       .attr('x1', function(d) {
+      //         return args.scales.X(d[args.baseline_accessor]); })
+      //       .attr('x2', function(d) {
+      //         return args.scales.X(d[args.baseline_accessor]); })
+      //       .attr('y1', function(d) {
+      //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() / 4
+      //       })
+      //       .attr('y2', function(d) {
+      //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
+      //       });
+      //   }
       if (args.legend && args.ygroup_accessor && args.color_accessor !== false && args.ygroup_accessor !== args.color_accessor) {
         if (!args.legend_target) legend_on_graph(svg, args);
         else mg_targeted_legend(args);
@@ -5780,7 +5888,6 @@ function mg_color_point_mouseover(args, elem, d) {
         rollover_x = args.left;
         rollover_anchor = 'start';
       } else {
-        // middle
         rollover_x = (args.width - args.left - args.right) / 2 + args.left;
         rollover_anchor = 'middle';
       }
@@ -5919,10 +6026,19 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
+
+    y_padding_percentage: 0.05, // for categorical scales
+    y_outer_padding_percentage: .1, // for categorical scales
+    ygroup_padding_percentage: .25, // for categorical scales
+    ygroup_outer_padding_percentage: .1, // for categorical scales
+    x_padding_percentage: 0.05, // for categorical scales
+    x_outer_padding_percentage: .1, // for categorical scales
+    xgroup_padding_percentage: .25, // for categorical scales
+    xgroup_outer_padding_percentage: 0, // for categorical scales
+    buffer: 16,
     y_accessor: 'factor',
     x_accessor: 'value',
     secondary_label_accessor: null,
-    x_extended_ticks: true,
     color_accessor: null,
     color_type: 'category',
     color_domain: null,
@@ -5934,12 +6050,6 @@ function mg_color_point_mouseover(args, elem, d) {
     predictor_proportion: 5,
     show_bar_zero: true,
     binned: true,
-    width: 480,
-    height: null,
-    bar_thickness: 12,
-    top: 45,
-    left: 105,
-    right: 65,
     truncate_x_labels: true,
     truncate_y_labels: true
   };
@@ -7076,16 +7186,18 @@ function mg_format_x_rollover(args, fmt, d) {
 //  As of right now, only implemented for point.js.
 
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
-  var formatted_data;
-  var time_fmt = mg_get_rollover_time_format(args);
-  var num_fmt = format_rollover_number(args);
+  var formatted_data, formatter;
+  var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  if (typeof d[accessor] === 'string') formatter = function(d){return d}
+  else formatter = format_rollover_number(args); 
+
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
     else formatted_data = number_rollover_format(mouseover_fcn, d, accessor);
 
   } else {
     if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  ';
-    else formatted_data = (args.time_series ? '' : accessor + ': ') + num_fmt(d[accessor]) + '   ';
+    else formatted_data = (args.time_series ? '' : accessor + ': ') + formatter(d[accessor]) + '   ';
   }
   return formatted_data;
 }
@@ -7297,6 +7409,7 @@ function mg_remove_element(svg, elem) {
 }
 
 
+
 //////// axis helper functions ////////////
 
 function mg_make_rug(args, rug_class) {
@@ -7446,6 +7559,14 @@ function mg_is_horizontally_overlapping(element, labels) {
 
   return false;
 }
+
+function inferType(args, ns) {
+    // must return categorical or numerical.
+    var testPoint = mg_flatten_array(args.data);
+
+    testPoint = testPoint[0][args[ns + '_accessor']];
+    return typeof testPoint === 'string' ? 'categorical' : 'numerical';
+  }
 
 function mg_get_svg_child_of(selector_or_node) {
   return d3.select(selector_or_node).select('svg');

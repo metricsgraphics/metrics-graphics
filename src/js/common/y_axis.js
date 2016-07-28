@@ -108,16 +108,17 @@ function rimPlacement (args, axisArgs) {
   }
 
   if (position === 'left' || position === 'right') {
-    if (args.axes_not_compact && args.chart_type !== 'bar') {
+    if (args.axes_not_compact) {
       coordinates.y1 = mg_get_bottom(args);
       coordinates.y2 = mg_get_top(args);
     } else if (tick_length) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
-    } else {
-      coordinates.y1 = 0;
-      coordinates.y2 = 0;
-    }
+    } 
+    //else {
+    //   coordinates.y1 = 0;
+    //   coordinates.y2 = 0;
+    // }
   }
 
   return coordinates;

@@ -156,6 +156,7 @@ function mg_remove_element(svg, elem) {
 }
 
 
+
 //////// axis helper functions ////////////
 
 function mg_make_rug(args, rug_class) {
@@ -305,6 +306,14 @@ function mg_is_horizontally_overlapping(element, labels) {
 
   return false;
 }
+
+function inferType(args, ns) {
+    // must return categorical or numerical.
+    var testPoint = mg_flatten_array(args.data);
+
+    testPoint = testPoint[0][args[ns + '_accessor']];
+    return typeof testPoint === 'string' ? 'categorical' : 'numerical';
+  }
 
 function mg_get_svg_child_of(selector_or_node) {
   return d3.select(selector_or_node).select('svg');
