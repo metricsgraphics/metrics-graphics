@@ -441,8 +441,9 @@ MG.data_graphic({
     target: '#histogram1',
     y_extended_ticks: true,
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -464,9 +465,9 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         target: '#ufos',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            var string = Math.round(d.x,2) + ' months';
+            var pf = d3.format(',.2f');
             d3.select('#ufos svg .mg-active-datapoint')
-                .text(string + '       Volume: ' + d.y);
+                .text(pf(d.x) + ' months      Volume: ' + pf(d.y));
         }
     });
 });
@@ -491,8 +492,9 @@ MG.data_graphic({
     x_accessor: 'value',
     y_accessor: 'count',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -512,8 +514,9 @@ MG.data_graphic({
     y_extended_ticks: true,
     x_accessor: 'val1',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -533,8 +536,9 @@ MG.data_graphic({
     y_extended_ticks: true,
     x_accessor: 'val1',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -746,8 +750,9 @@ MG.data_graphic({
     target: '#histogram1',
     y_extended_ticks: true,
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -769,9 +774,9 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         target: '#ufos',
         y_extended_ticks: true,
         mouseover: function(d, i) {
-            var string = Math.round(d.x,2) + ' months';
+            var pf = d3.format(',.2f');
             d3.select('#ufos svg .mg-active-datapoint')
-                .text(string + '       Volume: ' + d.y);
+                .text(pf(d.x) + ' months       Volume: ' + d.y);
         }
     });
 });
@@ -796,8 +801,9 @@ MG.data_graphic({
     x_accessor: 'value',
     y_accessor: 'count',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -817,8 +823,9 @@ MG.data_graphic({
     y_extended_ticks: true,
     x_accessor: 'val1',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
@@ -838,8 +845,9 @@ MG.data_graphic({
     y_extended_ticks: true,
     x_accessor: 'val1',
     mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + Math.round(d.x,2) +  '   Count: ' + d.y);
+            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
     }
 });
 
