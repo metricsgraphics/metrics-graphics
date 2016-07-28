@@ -258,6 +258,10 @@ MG.process_line = process_line;
 function process_histogram(args) {
   'use strict';
 
+  if (!args.processed) {
+    args.processed = {};
+  }
+
   // if args.binned == false, then we need to bin the data appropriately.
   // if args.binned == true, then we need to make sure to compute the relevant computed data.
   // the outcome of either of these should be something in args.computed_data.
@@ -293,10 +297,12 @@ function process_histogram(args) {
     }
 
     var bins = hist(extracted_data);
-
     args.processed_data = bins.map(function(d) {
       return { 'x': d.x0, 'y': d.length };
     });
+
+    // we'll use this in histogram to set the bar widths
+    args.processed.bins = bins;
   } else {
     // here, we just need to reconstruct the array of objects
     // take the x accessor and y accessor.
@@ -322,9 +328,6 @@ function process_histogram(args) {
   }
 
   // capture the original data and accessors before replacing args.data
-  if (!args.processed) {
-    args.processed = {};
-  }
   args.processed.original_data = args.data;
   args.processed.original_x_accessor = args.x_accessor;
   args.processed.original_y_accessor = args.y_accessor;

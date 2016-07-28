@@ -60,7 +60,12 @@
           if (args.data[0].length === 1) {
             return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
           } else {
-            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+            //var width = (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin);
+            var width = (args.binned)
+              ? args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin
+              : args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin;
+
+            return width;
           }
         })
         .attr('height', function(d) {

@@ -426,7 +426,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/ufo_dates.csv'>data</a></div>
 
-<pre><code class='javascript'>var values = d3.range(10000).map(d3.randomBates(10));
+<pre><code class='javascript'>var values = d3.range(1000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -437,6 +437,7 @@ MG.data_graphic({
     height: 180,
     right: 10,
     bins: 50,
+    bar_margin: 0,
     target: '#histogram1',
     y_extended_ticks: true,
     mouseover: function(d, i) {
@@ -459,6 +460,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         width: 600,
         height: 300,
         right: 40,
+        bar_margin: 0,
         bins: 150,
         target: '#ufos',
         y_extended_ticks: true,
@@ -733,7 +735,7 @@ d3.json('data/points1.json', function(data) {
     });
 });
 
-var values = d3.range(10000).map(d3.randomBates(10));
+var values = d3.range(1000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -743,6 +745,7 @@ MG.data_graphic({
     width: 295,
     height: 180,
     bins: 50,
+    bar_margin: 0,
     target: '#histogram1',
     y_extended_ticks: true,
     mouseover: function(d, i) {
@@ -765,6 +768,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         width: 600,
         height: 300,
         right: 40,
+        bar_margin: 0,
         bins: 150,
         target: '#ufos',
         y_extended_ticks: true,
