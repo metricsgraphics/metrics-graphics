@@ -783,7 +783,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
 var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
 second = d3.histogram()(second)
     .map(function(d) {
-        return {'count': d.x0, 'value': d.x1};
+        return {'value': d.x0, 'count': d.length};
 });
 
 MG.data_graphic({
