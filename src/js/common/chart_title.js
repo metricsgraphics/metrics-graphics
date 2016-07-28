@@ -28,7 +28,7 @@ function chart_title(args) {
 
       //now that the title is an svg text element, we'll have to trigger
       //mouseenter, mouseleave events manually for the popover to work properly
-      var $chartTitle = $(chartTitle.node());
+      var $chartTitle = jQuery(chartTitle.node());
       $chartTitle.popover({
         html: true,
         animation: false,
@@ -42,14 +42,14 @@ function chart_title(args) {
           .selectAll('.mg-popover')
           .remove();
 
-        $(this).popover('show');
-        $(args.target).select('.popover')
+        jQuery(this).popover('show');
+        jQuery(d3.select(args.target).select('.popover').node())
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });
       }).on('mouseleave', function () {
         setTimeout(function () {
-          if (!$('.popover:hover').length) {
+          if (!jQuery('.popover:hover').length) {
             $chartTitle.popover('hide');
           }
         }, 120);

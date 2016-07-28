@@ -75,6 +75,10 @@ text.mg-barplot-group-label {
     font-size: 0.6rem;
 }
 
+.mg-category-guides line {
+    stroke: #b3b2b2;
+}
+
 .mg-header {
     cursor: default;
     font-size: 1.2rem;

@@ -538,6 +538,9 @@ function categoricalGuides (args, axisArgs) {
   var x1, x2, y1, y2;
   var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
 
+  mg_selectAll_and_remove(svg, '.mg-category-guides');
+  var g = mg_add_g(svg, 'mg-category-guides');
+
   grs.forEach(function (group) {
     scale.domain().forEach(function (cat) {
       if (position === 'left' || position === 'right') {
@@ -554,13 +557,12 @@ function categoricalGuides (args, axisArgs) {
         y2 = mg_get_plot_top(args);
       }
 
-      svg.append('line')
+      g.append('line')
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', y1)
         .attr('y2', y2)
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     });
 
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
@@ -590,21 +592,19 @@ function categoricalGuides (args, axisArgs) {
       y22 = mg_get_plot_top(args);
     }
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x11)
       .attr('x2', x21)
       .attr('y1', y11)
       .attr('y2', y21)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x12)
       .attr('x2', x22)
       .attr('y1', y12)
       .attr('y2', y22)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
   });
 }
 
@@ -660,26 +660,32 @@ mgDrawAxis.numerical = function (args, axisArgs) {
   var axisClass = 'mg-' + namespace + '-axis';
   var svg = mg_get_svg_child_of(args.target);
 
-  // MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
-
   mg_selectAll_and_remove(svg, '.' + axisClass);
 
   if (!args[axisName]) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, axisClass);
-  // mg_add_label(g, args);
+
   processScaleTicks(args, namespace);
   initializeAxisRim(g, args, axisArgs);
   addTickLines(g, args, axisArgs);
   addNumericalLabels(g, args, axisArgs);
 
+  // add label
+  if (args[namespace + '_label']) {
+    axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args);
+  }
+
+  // add rugs
   if (args[namespace + '_rug']) {
     rug(args, axisArgs);
   }
 
-  if (args.show_bar_zero) mg_bar_add_zero_line(args);
-  // if (axisArgs.zeroLine) zeroLine(args, axisArgs);
+  if (args.show_bar_zero) {
+    mg_bar_add_zero_line(args);
+  }
 
   return this;
 };
@@ -696,6 +702,11 @@ function axisFactory (args) {
 
   this.rug = function (tf) {
     axisArgs.rug = tf;
+    return this;
+  };
+
+  this.label = function (tf) {
+    axisArgs.label = tf;
     return this;
   };
 
@@ -980,7 +991,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO seems to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by bar and histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
@@ -991,7 +1002,8 @@ function y_axis (args) {
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, 'mg-y-axis');
   mg_add_y_label(g, args);
@@ -1000,7 +1012,9 @@ function y_axis (args) {
   mg_add_y_axis_tick_lines(g, args);
   mg_add_y_axis_tick_labels(g, args);
 
-  if (args.y_rug) { y_rug(args); }
+  if (args.y_rug) {
+    y_rug(args);
+  }
 
   return this;
 }
@@ -1049,17 +1063,19 @@ function mg_draw_group_lines (args) {
   var groups = args.scales.YGROUP.domain();
   var first = groups[0];
   var last = groups[groups.length - 1];
-  svg.selectAll('mg-group-lines').data(groups).enter().append('line')
-    .attr('x1', mg_get_plot_left(args))
-    .attr('x2', mg_get_plot_left(args))
-    .attr('y1', function (d) {
-      return args.scales.YGROUP(d);
-    })
-    .attr('y2', function (d) {
-      return args.scales.YGROUP(d) + args.ygroup_height;
-    })
-    .attr('stroke-width', 1)
-    .attr('stroke', 'lightgray');
+
+  svg.select('.mg-category-guides').selectAll('mg-group-lines')
+    .data(groups)
+    .enter().append('line')
+      .attr('x1', mg_get_plot_left(args))
+      .attr('x2', mg_get_plot_left(args))
+      .attr('y1', function (d) {
+        return args.scales.YGROUP(d);
+      })
+      .attr('y2', function (d) {
+        return args.scales.YGROUP(d) + args.ygroup_height;
+      })
+      .attr('stroke-width', 1);
 }
 
 function mg_y_categorical_show_guides (args) {
@@ -1069,13 +1085,12 @@ function mg_y_categorical_show_guides (args) {
   var alreadyPlotted = [];
   args.data[0].forEach(function (d) {
     if (alreadyPlotted.indexOf(d[args.y_accessor]) === -1) {
-      svg.append('line')
+      svg.select('.mg-category-guides').append('line')
         .attr('x1', mg_get_plot_left(args))
         .attr('x2', mg_get_plot_right(args))
         .attr('y1', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
         .attr('y2', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     }
   });
 }

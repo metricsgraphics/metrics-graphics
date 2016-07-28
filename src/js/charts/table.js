@@ -120,19 +120,19 @@ MG.data_table = function(args) {
         .style('text-align', td_type === 'title' ? 'left' : 'right')
         .text(th_text);
 
-      if (args.show_tooltips && this_col.description) {
+      if (args.show_tooltips && this_col.description && typeof jQuery !== 'undefined') {
         th.append('i')
           .classed('fa', true)
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        $(th[0]).popover({
+        jQuery(th.node()).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: $(th[0])
+          container: jQuery(th.node())
         });
       }
     }

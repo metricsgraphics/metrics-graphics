@@ -767,7 +767,9 @@
         .numericalRange('bottom')
 
       var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor] });
+        return d[args.y_accessor];
+      });
+
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
@@ -775,33 +777,26 @@
         .numericalDomainFromData(baselines)
         .numericalRange('left');
 
+      var svg = mg_get_svg_child_of(args.target);
+
       if (args.x_axis) {
         new MG.axis_factory(args)
           .namespace('x')
           .type('numerical')
           .position(args.x_axis_position)
           .rug(x_rug(args))
+          .label(mg_add_x_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.x_label) {
-          var g = d3.select('.mg-x-axis');
-          mg_add_x_label(g, args);
-        }
       }
+
       if (args.y_axis) {
         new MG.axis_factory(args)
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
           .rug(y_rug(args))
+          .label(mg_add_y_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.y_label) {
-          var g = d3.select('.mg-y-axis');
-          mg_add_y_label(g, args);
-        }
       }
 
       this.markers();

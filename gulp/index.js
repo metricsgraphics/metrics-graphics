@@ -80,13 +80,6 @@ gulp.task('build:js', ['clean'], function () {
               cjs: 'd3',
               global: 'd3',
               param: 'd3'
-            },
-            {
-              name: 'jquery',
-              amd: 'jquery',
-              cjs: 'jquery',
-              global: 'jQuery',
-              param: '$'
             }];
           },
           exports: function() {

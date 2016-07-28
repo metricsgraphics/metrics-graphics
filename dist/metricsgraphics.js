@@ -1,12 +1,12 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['d3', 'jquery'], factory);
+    define(['d3'], factory);
   } else if (typeof exports === 'object') {
-    module.exports = factory(require('d3'), require('jquery'));
+    module.exports = factory(require('d3'));
   } else {
-    root.MG = factory(root.d3, root.jQuery);
+    root.MG = factory(root.d3);
   }
-}(this, function(d3, $) {
+}(this, function(d3) {
 window.MG = {version: '2.10.0'};
 
 function register(chartType, descriptor, defaults) {
@@ -905,7 +905,7 @@ function chart_title(args) {
 
       //now that the title is an svg text element, we'll have to trigger
       //mouseenter, mouseleave events manually for the popover to work properly
-      var $chartTitle = $(chartTitle.node());
+      var $chartTitle = jQuery(chartTitle.node());
       $chartTitle.popover({
         html: true,
         animation: false,
@@ -919,14 +919,14 @@ function chart_title(args) {
           .selectAll('.mg-popover')
           .remove();
 
-        $(this).popover('show');
-        $(args.target).select('.popover')
+        jQuery(this).popover('show');
+        jQuery(d3.select(args.target).select('.popover').node())
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });
       }).on('mouseleave', function () {
         setTimeout(function () {
-          if (!$('.popover:hover').length) {
+          if (!jQuery('.popover:hover').length) {
             $chartTitle.popover('hide');
           }
         }, 120);
@@ -1815,6 +1815,9 @@ function categoricalGuides (args, axisArgs) {
   var x1, x2, y1, y2;
   var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
 
+  mg_selectAll_and_remove(svg, '.mg-category-guides');
+  var g = mg_add_g(svg, 'mg-category-guides');
+
   grs.forEach(function (group) {
     scale.domain().forEach(function (cat) {
       if (position === 'left' || position === 'right') {
@@ -1831,13 +1834,12 @@ function categoricalGuides (args, axisArgs) {
         y2 = mg_get_plot_top(args);
       }
 
-      svg.append('line')
+      g.append('line')
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', y1)
         .attr('y2', y2)
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     });
 
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
@@ -1867,21 +1869,19 @@ function categoricalGuides (args, axisArgs) {
       y22 = mg_get_plot_top(args);
     }
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x11)
       .attr('x2', x21)
       .attr('y1', y11)
       .attr('y2', y21)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
 
-    svg.append('line')
+    g.append('line')
       .attr('x1', x12)
       .attr('x2', x22)
       .attr('y1', y12)
       .attr('y2', y22)
-      .attr('stroke-dasharray', '2,1')
-      .attr('stroke', 'lightgray');
+      .attr('stroke-dasharray', '2,1');
   });
 }
 
@@ -1937,26 +1937,32 @@ mgDrawAxis.numerical = function (args, axisArgs) {
   var axisClass = 'mg-' + namespace + '-axis';
   var svg = mg_get_svg_child_of(args.target);
 
-  // MG.call_hook(axisName + '.process_min_max', args, args.processed['min_'+namespace], args.processed['max_'+namespace]);
-
   mg_selectAll_and_remove(svg, '.' + axisClass);
 
   if (!args[axisName]) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, axisClass);
-  // mg_add_label(g, args);
+
   processScaleTicks(args, namespace);
   initializeAxisRim(g, args, axisArgs);
   addTickLines(g, args, axisArgs);
   addNumericalLabels(g, args, axisArgs);
 
+  // add label
+  if (args[namespace + '_label']) {
+    axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args);
+  }
+
+  // add rugs
   if (args[namespace + '_rug']) {
     rug(args, axisArgs);
   }
 
-  if (args.show_bar_zero) mg_bar_add_zero_line(args);
-  // if (axisArgs.zeroLine) zeroLine(args, axisArgs);
+  if (args.show_bar_zero) {
+    mg_bar_add_zero_line(args);
+  }
 
   return this;
 };
@@ -1973,6 +1979,11 @@ function axisFactory (args) {
 
   this.rug = function (tf) {
     axisArgs.rug = tf;
+    return this;
+  };
+
+  this.label = function (tf) {
+    axisArgs.label = tf;
     return this;
   };
 
@@ -2257,7 +2268,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO seems to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by bar and histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
@@ -2268,7 +2279,8 @@ function y_axis (args) {
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {
-    return this; }
+    return this;
+  }
 
   var g = mg_add_g(svg, 'mg-y-axis');
   mg_add_y_label(g, args);
@@ -2277,7 +2289,9 @@ function y_axis (args) {
   mg_add_y_axis_tick_lines(g, args);
   mg_add_y_axis_tick_labels(g, args);
 
-  if (args.y_rug) { y_rug(args); }
+  if (args.y_rug) {
+    y_rug(args);
+  }
 
   return this;
 }
@@ -2326,17 +2340,19 @@ function mg_draw_group_lines (args) {
   var groups = args.scales.YGROUP.domain();
   var first = groups[0];
   var last = groups[groups.length - 1];
-  svg.selectAll('mg-group-lines').data(groups).enter().append('line')
-    .attr('x1', mg_get_plot_left(args))
-    .attr('x2', mg_get_plot_left(args))
-    .attr('y1', function (d) {
-      return args.scales.YGROUP(d);
-    })
-    .attr('y2', function (d) {
-      return args.scales.YGROUP(d) + args.ygroup_height;
-    })
-    .attr('stroke-width', 1)
-    .attr('stroke', 'lightgray');
+
+  svg.select('.mg-category-guides').selectAll('mg-group-lines')
+    .data(groups)
+    .enter().append('line')
+      .attr('x1', mg_get_plot_left(args))
+      .attr('x2', mg_get_plot_left(args))
+      .attr('y1', function (d) {
+        return args.scales.YGROUP(d);
+      })
+      .attr('y2', function (d) {
+        return args.scales.YGROUP(d) + args.ygroup_height;
+      })
+      .attr('stroke-width', 1);
 }
 
 function mg_y_categorical_show_guides (args) {
@@ -2346,13 +2362,12 @@ function mg_y_categorical_show_guides (args) {
   var alreadyPlotted = [];
   args.data[0].forEach(function (d) {
     if (alreadyPlotted.indexOf(d[args.y_accessor]) === -1) {
-      svg.append('line')
+      svg.select('.mg-category-guides').append('line')
         .attr('x1', mg_get_plot_left(args))
         .attr('x2', mg_get_plot_right(args))
         .attr('y1', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
         .attr('y2', args.scalefns.yf(d) + args.scalefns.ygroupf(d))
-        .attr('stroke-dasharray', '2,1')
-        .attr('stroke', 'lightgray');
+        .attr('stroke-dasharray', '2,1');
     }
   });
 }
@@ -2562,22 +2577,24 @@ function mg_get_size_range(args) {
 }
 
 function mg_add_x_label(g, args) {
-  g.append('text')
-    .attr('class', 'label')
-    .attr('x', function() {
-      return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
-    })
-    .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
-    .attr('y', function() {
-      var xAxisTextElement = d3.select(args.target)
-        .select('.mg-x-axis text').node().getBoundingClientRect();
-      return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
-    })
-    .attr('dy', '.5em')
-    .attr('text-anchor', 'middle')
-    .text(function(d) {
-      return args.x_label;
-    });
+  if (args.x_label) {
+    g.append('text')
+      .attr('class', 'label')
+      .attr('x', function() {
+        return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
+      })
+      .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+      .attr('y', function() {
+        var xAxisTextElement = d3.select(args.target)
+          .select('.mg-x-axis text').node().getBoundingClientRect();
+        return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
+      })
+      .attr('dy', '.5em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        return args.x_label;
+      });
+  }
 }
 
 function mg_default_bar_xax_format(args) {
@@ -3380,7 +3397,9 @@ function mg_setup_mouseover_container(svg, args) {
   // nudge up the rollover text a bit
   var active_datapoint_y_nudge = 0.75;
 
-  var y_position = (args.x_axis_position === 'bottom') ? mg_get_top(args) * active_datapoint_y_nudge : mg_get_bottom(args) + args.buffer * 3;
+  var y_position = (args.x_axis_position === 'bottom')
+    ? mg_get_top(args) * active_datapoint_y_nudge
+    : mg_get_bottom(args) + args.buffer * 3;
 
   if (args.markers) {
     var yPos;
@@ -3802,15 +3821,15 @@ MG.button_layout = function(target) {
       }
     }
 
-    $(this.target).empty();
+    jQuery(this.target).empty();
 
-    $(this.target).append("<div class='col-lg-12 segments text-center'></div>");
+    jQuery(this.target).append("<div class='col-lg-12 segments text-center'></div>");
 
     var dropdownLiAClick = function() {
-      var k = $(this).data('key');
-      var feature = $(this).data('feature');
+      var k = jQuery(this).data('key');
+      var feature = jQuery(this).data('feature');
       var manual_feature;
-      $('.' + feature + '-btns button.btn span.title').html(k);
+      jQuery('.' + feature + '-btns button.btn span.title').html(k);
       if (!manual_map.hasOwnProperty(feature)) {
         callback(feature, k);
       } else {
@@ -3823,7 +3842,7 @@ MG.button_layout = function(target) {
 
     for (var feature in this.feature_set) {
       features = this.feature_set[feature];
-      $(this.target + ' div.segments').append(
+      jQuery(this.target + ' div.segments').append(
         '<div class="btn-group ' + this._strip_punctuation(feature) + '-btns text-left">' + // This never changes.
         '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
         "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) + "</span>" +
@@ -3837,13 +3856,13 @@ MG.button_layout = function(target) {
 
       for (i = 0; i < features.length; i++) {
         if (features[i] !== 'all' && features[i] !== undefined) { // strange bug with undefined being added to manual buttons.
-          $(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
+          jQuery(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
             '<li><a href="#" data-feature="' + this._strip_punctuation(feature) + '" data-key="' + features[i] + '">' + features[i] + '</a></li>'
           );
         }
       }
 
-      $('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
+      jQuery('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
     }
 
     return this;
@@ -4621,7 +4640,9 @@ MG.button_layout = function(target) {
         .numericalRange('bottom')
 
       var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor] });
+        return d[args.y_accessor];
+      });
+
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
@@ -4629,33 +4650,26 @@ MG.button_layout = function(target) {
         .numericalDomainFromData(baselines)
         .numericalRange('left');
 
+      var svg = mg_get_svg_child_of(args.target);
+
       if (args.x_axis) {
         new MG.axis_factory(args)
           .namespace('x')
           .type('numerical')
           .position(args.x_axis_position)
           .rug(x_rug(args))
+          .label(mg_add_x_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.x_label) {
-          var g = d3.select('.mg-x-axis');
-          mg_add_x_label(g, args);
-        }
       }
+
       if (args.y_axis) {
         new MG.axis_factory(args)
           .namespace('y')
           .type('numerical')
           .position(args.y_axis_position)
           .rug(y_rug(args))
+          .label(mg_add_y_label)
           .draw();
-
-        //TODO move to axis_factory
-        if (args.y_label) {
-          var g = d3.select('.mg-y-axis');
-          mg_add_y_label(g, args);
-        }
       }
 
       this.markers();
@@ -5007,7 +5021,7 @@ function point_mouseover(args, svg, d) {
     row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
-  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape.
+  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape
 
   row.text(mg_format_x_mouseover(args, d)); // x
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
@@ -5264,9 +5278,11 @@ function mg_color_point_mouseover(args, elem, d) {
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
         .on('mousemove', this.rolloverMove(args));
+
       if (args.data[0].length === 1) {
         point_mouseover(args, svg, args.data[0][0]);
       }
+
       return this;
     };
 
@@ -6180,19 +6196,19 @@ MG.data_table = function(args) {
         .style('text-align', td_type === 'title' ? 'left' : 'right')
         .text(th_text);
 
-      if (args.show_tooltips && this_col.description) {
+      if (args.show_tooltips && this_col.description && typeof jQuery !== 'undefined') {
         th.append('i')
           .classed('fa', true)
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        $(th[0]).popover({
+        jQuery(th.node()).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: $(th[0])
+          container: jQuery(th.node())
         });
       }
     }
@@ -6825,7 +6841,7 @@ function add_ls(args) {
 MG.add_ls = add_ls;
 
 function add_lowess(args) {
-  var svg = d3.select($(args.target).find('svg').get(0));
+  var svg = mg_get_svg_child_of(args.target);
   var lowess = args.lowess_line;
 
   var line = d3.svg.line()
@@ -7187,9 +7203,9 @@ function mg_format_x_rollover(args, fmt, d) {
 
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data, formatter;
-  var time_fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+  var time_fmt = mg_get_rollover_time_format(args);
   if (typeof d[accessor] === 'string') formatter = function(d){return d}
-  else formatter = format_rollover_number(args); 
+  else formatter = format_rollover_number(args);
 
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
