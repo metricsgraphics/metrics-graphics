@@ -62,8 +62,12 @@
           } else {
             //var width = (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin);
             var width = (args.binned)
-              ? args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin
-              : args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin;
+              ? Math.abs(args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin)
+              : Math.abs(args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin);
+
+            if (width <= 0) {
+              width = 0.1;
+            }
 
             return width;
           }

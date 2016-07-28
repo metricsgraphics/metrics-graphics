@@ -962,11 +962,11 @@ function mg_position(str, args) {
 
 function mg_cat_position(str, args) {
   if (str === 'bottom' || str === 'top') {
-    return [mg_get_left(args), mg_get_right(args)]
+    return [mg_get_plot_left(args), mg_get_plot_right(args)]
   }
 
   if (str === 'left' || str === 'right') {
-    return [mg_get_plot_bottom(args), args.top];
+    return [mg_get_plot_bottom(args), mg_get_plot_top(args)];
   }
 }
 
@@ -1087,14 +1087,17 @@ function MGScale(args) {
     var namespace = scaleArgs.namespace;
     var paddingPercentage = args[namespace + '_padding_percentage'];
     var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
-
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
       args.scales[scaleArgs.scale_name]
-        .range(mg_position(range, args), paddingPercentage, outerPaddingPercentage);
+        .range(mg_position(range, args))
+        .paddingInner(paddingPercentage)
+        .paddingOuter(outerPaddingPercentage);
     } else {
       args.scales[scaleArgs.scale_name]
-        .range(range, paddingPercentage, outerPaddingPercentage);
+        .range(range)
+        .paddingInner(paddingPercentage)
+        .paddingOuter(outerPaddingPercentage);
     }
 
     mg_add_scale_function(
@@ -1391,7 +1394,7 @@ function rimPlacement (args, axisArgs) {
     } else if (tick_length) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
-    } 
+    }
     //else {
     //   coordinates.y1 = 0;
     //   coordinates.y2 = 0;
@@ -1416,12 +1419,14 @@ function labelPlacement (args, axisArgs) {
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
     coordinates.text = function (d) {
-      return mg_compute_yax_format(args)(d); };
+      return mg_compute_yax_format(args)(d);
+    };
   }
   if (position === 'right') {
     coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
     coordinates.y = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.dx = 3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'start';
@@ -1430,13 +1435,15 @@ function labelPlacement (args, axisArgs) {
   }
   if (position === 'top') {
     coordinates.x = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.y = (mg_get_top(args) - tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '0em';
     coordinates.textAnchor = 'middle';
     coordinates.text = function (d) {
-      return mg_default_xax_format(args)(d); };
+      return mg_default_xax_format(args)(d);
+    };
   }
   if (position === 'bottom') {
     coordinates.x = function (d) {
@@ -1446,7 +1453,8 @@ function labelPlacement (args, axisArgs) {
     coordinates.dy = '.50em';
     coordinates.textAnchor = 'middle';
     coordinates.text = function (d) {
-      return mg_default_xax_format(args)(d); };
+      return mg_default_xax_format(args)(d);
+    };
   }
 
   return coordinates;
@@ -2073,10 +2081,15 @@ function mg_compute_yax_format (args) {
       }
 
       yax_format = function (f) {
-        if (f < 1000) {
-          var pf = d3.format(',.0f');
+        var pf;
+
+        if (f < 1.0 && f !== 0) {
+          // don't scale tiny values
+          pf = d3.format(',.' + args.decimals + 'f');
+        } else if (f < 1000) {
+          pf = d3.format(',.0f');
         } else {
-          var pf = d3.format(',.0s');
+          pf = d3.format(',.0s');
         }
 
         // are we adding units after the value or before?
@@ -2416,7 +2429,7 @@ function mg_add_processed_object(args) {
   }
 }
 
-// seems to be deprecated, only used by bar and histogram
+// ought to be deprecated, only used by bar and histogram
 function x_axis(args) {
   'use strict';
 
@@ -2697,24 +2710,27 @@ function mg_default_xax_format(args) {
   if (args.xax_format) {
     return args.xax_format;
   }
+
   var data = args.processed.original_data || args.data;
   var flattened = mg_flatten_array(data)[0];
-  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
-  var test_point_y = flattened[args.processed.original_y_accessor || args.y_accessor];
+  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor] || flattened;
 
   return function(d) {
     mg_process_time_format(args);
 
     if (test_point_x instanceof Date) {
       return args.processed.main_x_time_format(new Date(d));
-    } else if (test_point_y instanceof Number) {
-      if (d < 1000) {
-        var pf = d3.format(',.0f');
-        return args.xax_units + pf(d);
+    } else if (typeof test_point_x === 'number') {
+      var pf;
+      if (d < 1.0 && d !== 0) {
+        // don't scale tiny values
+        pf = d3.format(',.' + args.decimals + 'f');
+      } else if (d < 1000) {
+        pf = d3.format(',.0f');
       } else {
-        var pf = d3.format(',.0s');
-        return args.xax_units + pf(d);
+        pf = d3.format(',.0s');
       }
+      return args.xax_units + pf(d);
     } else {
       return args.xax_units + d;
     }
@@ -2744,7 +2760,7 @@ function mg_add_x_axis_rim(args, g) {
       })
       .attr('x2', function() {
         if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
-          return mg_get_plot_right(args);
+          return mg_get_right(args);
         } else {
           return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
         }
@@ -3031,7 +3047,7 @@ function mg_init_compute_width(args) {
     svg_width = get_width(args.target);
   }
   if (args.x_axis_type === 'categorical' && svg_width === null) {
-    svg_width = mg_categorical_calculate_height(args);
+    svg_width = mg_categorical_calculate_height(args, 'x');
   }
 
   args.width = svg_width;
@@ -3043,7 +3059,7 @@ function mg_init_compute_height(args) {
     svg_height = get_height(args.target);
   }
   if (args.y_axis_type === 'categorical' && svg_height === null) {
-    svg_height = mg_categorical_calculate_height(args);
+    svg_height = mg_categorical_calculate_height(args, 'y');
   }
 
   args.height = svg_height;
@@ -3193,9 +3209,11 @@ function mg_categorical_count_number_of_lanes(args, ns) {
 function mg_categorical_calculate_group_length(args, ns, which) {
   var groupHeight = ns + 'group_height';
   if (which) {
-    args[groupHeight] = ns === 'y' ?
+    var gh = ns === 'y' ?
       (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
-      (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1)
+      (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
+    
+    args[groupHeight] = gh;
   } else {
     var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;
     args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step; //args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
@@ -4794,13 +4812,16 @@ MG.button_layout = function(target) {
         .numericalRange('bottom');
 
       var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor] });
+        return d[args.y_accessor]
+      });
+
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
         .numericalRange('left');
+
       x_axis(args);
       y_axis(args);
 
@@ -4836,7 +4857,16 @@ MG.button_layout = function(target) {
           if (args.data[0].length === 1) {
             return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
           } else {
-            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+            //var width = (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin);
+            var width = (args.binned)
+              ? Math.abs(args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin)
+              : Math.abs(args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin);
+
+            if (width <= 0) {
+              width = 0.1;
+            }
+
+            return width;
           }
         })
         .attr('height', function(d) {
@@ -5380,13 +5410,14 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
+
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .1, // for categorical scales
-    ygroup_padding_percentage: .25, // for categorical scales
-    ygroup_outer_padding_percentage: .1, // for categorical scales
+    y_outer_padding_percentage: .2, // for categorical scales
+    ygroup_padding_percentage: 0, // for categorical scales
+    ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .1, // for categorical scales
-    xgroup_padding_percentage: .25, // for categorical scales
+    x_outer_padding_percentage: .2, // for categorical scales
+    xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     y_categorical_show_guides: true,
     x_categorical_show_guides: true,
@@ -5410,6 +5441,65 @@ function mg_color_point_mouseover(args, elem, d) {
 
 (function() {
   'use strict';
+
+  function scaffold(args) {
+    var svg = mg_get_svg_child_of(args.target);
+    // main margins
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.top)
+      .attr('y2', args.top)
+      .attr('stroke', 'black');
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.height-args.bottom)
+      .attr('y2', args.height-args.bottom)
+      .attr('stroke', 'black'); 
+
+    svg.append('line')
+      .attr('x1', args.left)
+      .attr('x2', args.left)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'black'); 
+
+    svg.append('line')
+      .attr('x1', args.width-args.right)
+      .attr('x2', args.width-args.right)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'black'); 
+
+    // plot area margins
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.height-args.bottom-args.buffer)
+      .attr('y2', args.height-args.bottom-args.buffer)
+      .attr('stroke', 'gray'); 
+
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', args.width)
+      .attr('y1', args.top+args.buffer)
+      .attr('y2', args.top+args.buffer)
+      .attr('stroke', 'gray'); 
+
+    svg.append('line')
+      .attr('x1', args.left + args.buffer)
+      .attr('x2', args.left + args.buffer)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'gray'); 
+    svg.append('line')
+      .attr('x1', args.width -args.right - args.buffer)
+      .attr('x2', args.width -args.right - args.buffer)
+      .attr('y1', 0)
+      .attr('y2', args.height)
+      .attr('stroke', 'gray'); 
+  }
 
   // barchart re-write.
   function mg_targeted_legend(args) {
@@ -5488,7 +5578,6 @@ function mg_color_point_mouseover(args, elem, d) {
     this.args = args;
 
     this.init = function(args) {
-
       this.args = args;
       args.x_axis_type = inferType(args, 'x');
       args.y_axis_type = inferType(args, 'y');
@@ -5630,7 +5719,8 @@ function mg_color_point_mouseover(args, elem, d) {
       this.markers();
       this.rollover();
       this.windowListeners();
-      //if (args.scaffold) scaffold(args);
+      //scaffold(args)
+
       return this;
     };
 
@@ -5735,10 +5825,7 @@ function mg_color_point_mouseover(args, elem, d) {
           length_map = function(d) {
             return Math.abs(length_scalefn(d) - length_scale(0));
           }
-
-
         }
-
         if (args.orientation == 'horizontal') {
           length = 'width';
           width = 'height';
@@ -5753,17 +5840,15 @@ function mg_color_point_mouseover(args, elem, d) {
           length_accessor = args.x_accessor;
           width_accessor = args.y_accessor;
 
-        length_coord_map = function(d){
-          var l;
-          l = length_scale(0);
-          return l;
-        }
+          length_coord_map = function(d){
+            var l;
+            l = length_scale(0);
+            return l;
+          }
 
-        length_map = function(d) {
-          return Math.abs(length_scalefn(d) - length_scale(0));
-        }
-
-
+          length_map = function(d) {
+            return Math.abs(length_scalefn(d) - length_scale(0));
+          }
         }
 
         // if (perform_load_animation) {
@@ -5895,6 +5980,63 @@ function mg_color_point_mouseover(args, elem, d) {
       svg.selectAll('.mg-rollover-rect').remove();
       svg.selectAll('.mg-active-datapoint').remove();
 
+      // get orientation
+      var length, width, length_type, width_type, length_coord, width_coord, 
+        length_scalefn, width_scalefn, length_scale, width_scale, 
+        length_accessor, width_accessor;
+
+      var length_coord_map, width_coord_map, length_map, width_map;
+
+
+      if (args.orientation == 'vertical') {
+        length = 'height';
+        width = 'width';
+        length_type = args.y_axis_type;
+        width_type = args.x_axis_type;
+        length_coord = 'y';
+        width_coord = 'x';
+        length_scalefn = length_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+        width_scalefn  = width_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+        length_scale   = args.scales.Y;
+        width_scale     = args.scales.X;
+        length_accessor = args.y_accessor;
+        width_accessor = args.x_accessor;
+
+        length_coord_map = function(d){
+          return mg_get_plot_top(args);
+        }
+
+        length_map = function(d) {
+          return args.height -args.top-args.bottom-args.buffer*2
+        }
+      }
+      if (args.orientation == 'horizontal') {
+        length = 'width';
+        width = 'height';
+        length_type = args.x_axis_type;
+        width_type = args.y_axis_type;
+        length_coord = 'x';
+        width_coord = 'y';
+        length_scalefn = length_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+        width_scalefn = width_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+        length_scale = args.scales.X;
+        width_scale = args.scales.Y;
+        length_accessor = args.x_accessor;
+        width_accessor = args.y_accessor;
+
+        length_coord_map = function(d){
+          var l;
+          l = length_scale(0);
+          return l;
+        }
+        length_map = function(d) {
+          return args.width -args.left-args.right-args.buffer*2
+        }
+        // length_map = function(d) {
+        //   return Math.abs(length_scalefn(d) - length_scale(0));
+        // }
+      }
+
       //rollover text
       var rollover_x, rollover_anchor;
       if (args.rollover_align === 'right') {
@@ -5920,34 +6062,41 @@ function mg_color_point_mouseover(args, elem, d) {
         .attr('class', 'mg-rollover-rect');
 
       //draw rollover bars
-      var bar = g.selectAll(".mg-bar-rollover")
+      var bars = g.selectAll(".mg-bar-rollover")
         .data(args.data[0]).enter()
         .append("rect")
         .attr('class', 'mg-bar-rollover');
+      bars.attr('opacity', 0)
+          .attr(length_coord, length_coord_map)
+          .attr(width_coord, function(d) {
+        var w;
+        if (width_type == 'categorical') {
+          w = width_scalefn(d);
+        } else {
+          w = width_scale(0);
+          if (d[width_accessor] < 0) {
+            w = width_scalefn(d);
+          }
+        }
+        w = w - args.bar_thickness/2;
+        return w;
+      })
 
-      if (this.is_vertical) {
-        // bar.attr("x", args.scalefns.xf)
-        //   .attr("y", function() {
-        //     return args.scales.Y(0) - args.height;
-        //   })
-        //   .attr('width', args.scales.X.rangeBand())
-        //   .attr('height', args.height)
-        //   .attr('opacity', 0)
-        //   .on('mouseover', this.rolloverOn(args))
-        //   .on('mouseout', this.rolloverOff(args))
-        //   .on('mousemove', this.rolloverMove(args));
-      } else {
-        bar.attr("x", mg_get_plot_left(args))
-          /*.attr("y", function(d){
-            return args.scalefns.yf(d) + args.scalefns.ygroupf(d);
-          })
-          .attr('width', mg_get_plot_right(args) - mg_get_plot_left(args))
-          .attr('height', args.scales.Y.rangeBand())*/
-          .attr('opacity', 0)
-          .on('mouseover', this.rolloverOn(args))
-          .on('mouseout', this.rolloverOff(args))
-          .on('mousemove', this.rolloverMove(args));
-      }
+
+        // if (args.scales.COLOR) {
+        //   bars.attr('fill', 'blue')
+        // }
+
+        bars.attr(length, length_map)
+
+        bars.attr(width, function(d) {
+          return args.bar_thickness;
+        })
+
+      bars
+        .on('mouseover', this.rolloverOn(args))
+        .on('mouseout', this.rolloverOff(args))
+        .on('mousemove', this.rolloverMove(args));
       return this;
     };
 
@@ -6007,7 +6156,7 @@ function mg_color_point_mouseover(args, elem, d) {
         //reset active bar
         var bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false);
 
-        if (args.scales.hasOwnProperty('color')) {
+        if (args.scales.hasOwnProperty('COLOR')) {
           bar.attr('fill', args.scalefns.colorf(d));
         } else {
           bar.classed('default-active', false);
@@ -6044,12 +6193,12 @@ function mg_color_point_mouseover(args, elem, d) {
   var defaults = {
 
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .1, // for categorical scales
-    ygroup_padding_percentage: .25, // for categorical scales
-    ygroup_outer_padding_percentage: .1, // for categorical scales
+    y_outer_padding_percentage: .2, // for categorical scales
+    ygroup_padding_percentage: 0, // for categorical scales
+    ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .1, // for categorical scales
-    xgroup_padding_percentage: .25, // for categorical scales
+    x_outer_padding_percentage: .2, // for categorical scales
+    xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     buffer: 16,
     y_accessor: 'factor',
@@ -6060,7 +6209,7 @@ function mg_color_point_mouseover(args, elem, d) {
     color_domain: null,
     legend: true,
     legend_target: null,
-    mouseover_align: 'middle',
+    mouseover_align: 'right',
     baseline_accessor: null,
     predictor_accessor: null,
     predictor_proportion: 5,
@@ -6706,6 +6855,10 @@ MG.process_line = process_line;
 function process_histogram(args) {
   'use strict';
 
+  if (!args.processed) {
+    args.processed = {};
+  }
+
   // if args.binned == false, then we need to bin the data appropriately.
   // if args.binned == true, then we need to make sure to compute the relevant computed data.
   // the outcome of either of these should be something in args.computed_data.
@@ -6740,10 +6893,13 @@ function process_histogram(args) {
       hist.thresholds(args.bins);
     }
 
-    args.processed_data = hist(extracted_data)
-      .map(function(d) {
-        return { 'x': d.x0, 'y': d.x1 };
-      });
+    var bins = hist(extracted_data);
+    args.processed_data = bins.map(function(d) {
+      return { 'x': d.x0, 'y': d.length };
+    });
+
+    // we'll use this in histogram to set the bar widths
+    args.processed.bins = bins;
   } else {
     // here, we just need to reconstruct the array of objects
     // take the x accessor and y accessor.
@@ -6769,9 +6925,6 @@ function process_histogram(args) {
   }
 
   // capture the original data and accessors before replacing args.data
-  if (!args.processed) {
-    args.processed = {};
-  }
   args.processed.original_data = args.data;
   args.processed.original_x_accessor = args.x_accessor;
   args.processed.original_y_accessor = args.y_accessor;
