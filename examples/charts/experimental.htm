@@ -426,7 +426,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/ufo_dates.csv'>data</a></div>
 
-<pre><code class='javascript'>var values = d3.range(1000).map(d3.randomBates(10));
+<pre><code class='javascript'>var values = d3.range(10000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -498,7 +498,7 @@ MG.data_graphic({
     }
 });
 
-var third = d3.range(1000).map(d3.randomBates(10));
+var third = d3.range(10000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
 MG.data_graphic({
@@ -521,7 +521,7 @@ MG.data_graphic({
 });
 
 // check for negative values, for sanity.
-var fourth = d3.range(1000).map(d3.randomBates(10));
+var fourth = d3.range(10000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
 MG.data_graphic({
@@ -735,7 +735,7 @@ d3.json('data/points1.json', function(data) {
     });
 });
 
-var values = d3.range(1000).map(d3.randomBates(10));
+var values = d3.range(10000).map(d3.randomBates(10));
 
 MG.data_graphic({
     title: "Histogram 1",
@@ -805,7 +805,7 @@ MG.data_graphic({
     }
 });
 
-var third = d3.range(1000).map(d3.randomBates(10));
+var third = d3.range(10000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
 MG.data_graphic({
@@ -827,7 +827,7 @@ MG.data_graphic({
 });
 
 // check for negative values, for sanity.
-var fourth = d3.range(1000).map(d3.randomBates(10));
+var fourth = d3.range(10000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
 MG.data_graphic({

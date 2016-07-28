@@ -59,17 +59,10 @@
         .attr('width', function(d, i) {
           if (args.data[0].length === 1) {
             return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+          } else if (i !== args.data[0].length - 1) {
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(2);
           } else {
-            //var width = (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin);
-            var width = (args.binned)
-              ? Math.abs(args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin)
-              : Math.abs(args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin);
-
-            if (width <= 0) {
-              width = 0.1;
-            }
-
-            return width;
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(2);
           }
         })
         .attr('height', function(d) {
@@ -90,7 +83,6 @@
 
     this.rollover = function() {
       var svg = mg_get_svg_child_of(args.target);
-      var $svg = $($(args.target).find('svg').get(0));
 
       if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
         mg_add_g(svg, 'mg-active-datapoint-container');

@@ -4856,17 +4856,10 @@ MG.button_layout = function(target) {
         .attr('width', function(d, i) {
           if (args.data[0].length === 1) {
             return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+          } else if (i !== args.data[0].length - 1) {
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(2);
           } else {
-            //var width = (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin);
-            var width = (args.binned)
-              ? Math.abs(args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0]) - args.bar_margin)
-              : Math.abs(args.scales.X(args.processed.bins[0].x1) - args.scales.X(args.processed.bins[0].x0) - args.bar_margin);
-
-            if (width <= 0) {
-              width = 0.1;
-            }
-
-            return width;
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(2);
           }
         })
         .attr('height', function(d) {
@@ -4887,7 +4880,6 @@ MG.button_layout = function(target) {
 
     this.rollover = function() {
       var svg = mg_get_svg_child_of(args.target);
-      var $svg = $($(args.target).find('svg').get(0));
 
       if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
         mg_add_g(svg, 'mg-active-datapoint-container');
@@ -6855,10 +6847,6 @@ MG.process_line = process_line;
 function process_histogram(args) {
   'use strict';
 
-  if (!args.processed) {
-    args.processed = {};
-  }
-
   // if args.binned == false, then we need to bin the data appropriately.
   // if args.binned == true, then we need to make sure to compute the relevant computed data.
   // the outcome of either of these should be something in args.computed_data.
@@ -6897,9 +6885,6 @@ function process_histogram(args) {
     args.processed_data = bins.map(function(d) {
       return { 'x': d.x0, 'y': d.length };
     });
-
-    // we'll use this in histogram to set the bar widths
-    args.processed.bins = bins;
   } else {
     // here, we just need to reconstruct the array of objects
     // take the x accessor and y accessor.
@@ -6925,6 +6910,9 @@ function process_histogram(args) {
   }
 
   // capture the original data and accessors before replacing args.data
+  if (!args.processed) {
+    args.processed = {};
+  }
   args.processed.original_data = args.data;
   args.processed.original_x_accessor = args.x_accessor;
   args.processed.original_y_accessor = args.y_accessor;
