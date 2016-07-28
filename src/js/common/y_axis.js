@@ -114,7 +114,7 @@ function rimPlacement (args, axisArgs) {
     } else if (tick_length) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
-    } 
+    }
     //else {
     //   coordinates.y1 = 0;
     //   coordinates.y2 = 0;
@@ -139,12 +139,14 @@ function labelPlacement (args, axisArgs) {
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
     coordinates.text = function (d) {
-      return mg_compute_yax_format(args)(d); };
+      return mg_compute_yax_format(args)(d);
+    };
   }
   if (position === 'right') {
     coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
     coordinates.y = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.dx = 3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'start';
@@ -153,13 +155,15 @@ function labelPlacement (args, axisArgs) {
   }
   if (position === 'top') {
     coordinates.x = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.y = (mg_get_top(args) - tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '0em';
     coordinates.textAnchor = 'middle';
     coordinates.text = function (d) {
-      return mg_default_xax_format(args)(d); };
+      return mg_default_xax_format(args)(d);
+    };
   }
   if (position === 'bottom') {
     coordinates.x = function (d) {
@@ -169,7 +173,8 @@ function labelPlacement (args, axisArgs) {
     coordinates.dy = '.50em';
     coordinates.textAnchor = 'middle';
     coordinates.text = function (d) {
-      return mg_default_xax_format(args)(d); };
+      return mg_default_xax_format(args)(d);
+    };
   }
 
   return coordinates;
@@ -796,10 +801,15 @@ function mg_compute_yax_format (args) {
       }
 
       yax_format = function (f) {
-        if (f < 1000) {
-          var pf = d3.format(',.0f');
+        var pf;
+
+        if (f < 1.0 && f > 0) {
+          // don't scale tiny values
+          pf = d3.format(',.' + args.decimals + 'f');
+        } else if (f < 1000) {
+          pf = d3.format(',.0f');
         } else {
-          var pf = d3.format(',.0s');
+          pf = d3.format(',.0s');
         }
 
         // are we adding units after the value or before?

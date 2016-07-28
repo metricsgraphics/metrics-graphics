@@ -27,7 +27,7 @@ function mg_add_processed_object(args) {
   }
 }
 
-// seems to be deprecated, only used by bar and histogram
+// ought to be deprecated, only used by bar and histogram
 function x_axis(args) {
   'use strict';
 
@@ -308,24 +308,27 @@ function mg_default_xax_format(args) {
   if (args.xax_format) {
     return args.xax_format;
   }
+
   var data = args.processed.original_data || args.data;
   var flattened = mg_flatten_array(data)[0];
-  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
-  var test_point_y = flattened[args.processed.original_y_accessor || args.y_accessor];
+  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor] || flattened;
 
   return function(d) {
     mg_process_time_format(args);
 
     if (test_point_x instanceof Date) {
       return args.processed.main_x_time_format(new Date(d));
-    } else if (test_point_y instanceof Number) {
-      if (d < 1000) {
-        var pf = d3.format(',.0f');
-        return args.xax_units + pf(d);
+    } else if (typeof test_point_x === 'number') {
+      var pf;
+      if (d < 1.0 && d > 0) {
+        // don't scale tiny values
+        pf = d3.format(',.' + args.decimals + 'f');
+      } else if (d < 1000) {
+        pf = d3.format(',.0f');
       } else {
-        var pf = d3.format(',.0s');
-        return args.xax_units + pf(d);
+        pf = d3.format(',.0s');
       }
+      return args.xax_units + pf(d);
     } else {
       return args.xax_units + d;
     }
@@ -355,7 +358,7 @@ function mg_add_x_axis_rim(args, g) {
       })
       .attr('x2', function() {
         if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
-          return mg_get_plot_right(args);
+          return mg_get_right(args);
         } else {
           return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
         }

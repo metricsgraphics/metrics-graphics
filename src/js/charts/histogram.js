@@ -15,13 +15,16 @@
         .numericalRange('bottom');
 
       var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor] });
+        return d[args.y_accessor]
+      });
+
       new MG.scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
         .numericalRange('left');
+
       x_axis(args);
       y_axis(args);
 
