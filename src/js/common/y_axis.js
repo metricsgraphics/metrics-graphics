@@ -803,7 +803,7 @@ function mg_compute_yax_format (args) {
       yax_format = function (f) {
         var pf;
 
-        if (f < 1.0 && f > 0) {
+        if (f < 1.0 && f !== 0) {
           // don't scale tiny values
           pf = d3.format(',.' + args.decimals + 'f');
         } else if (f < 1000) {

@@ -443,7 +443,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -494,7 +494,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -516,7 +516,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -538,7 +538,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -744,7 +744,6 @@ MG.data_graphic({
     chart_type: 'histogram',
     width: 295,
     height: 180,
-    right: 10,
     bins: 50,
     bar_margin: 0,
     target: '#histogram1',
@@ -752,7 +751,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -795,7 +794,6 @@ MG.data_graphic({
     chart_type: 'histogram',
     width: 295,
     height: 180,
-    right: 10,
     target: '#histogram2',
     y_extended_ticks: true,
     x_accessor: 'value',
@@ -803,7 +801,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram2 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -817,7 +815,6 @@ MG.data_graphic({
     chart_type: 'histogram',
     width: 295,
     height: 180,
-    right: 10,
     target: '#histogram3',
     linked: true,
     y_extended_ticks: true,
@@ -825,7 +822,7 @@ MG.data_graphic({
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 
@@ -840,14 +837,13 @@ MG.data_graphic({
     chart_type: 'histogram',
     width: 295,
     height: 180,
-    right: 10,
     target: '#histogram4',
     y_extended_ticks: true,
     x_accessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
-            .text('Value: ' + pf(d.x) +  '   Count: ' + pf(d.y));
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
     }
 });
 

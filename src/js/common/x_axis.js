@@ -320,7 +320,7 @@ function mg_default_xax_format(args) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
       var pf;
-      if (d < 1.0 && d > 0) {
+      if (d < 1.0 && d !== 0) {
         // don't scale tiny values
         pf = d3.format(',.' + args.decimals + 'f');
       } else if (d < 1000) {
