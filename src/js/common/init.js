@@ -193,9 +193,6 @@ function mg_categorical_calculate_group_length(args, ns, which) {
     var gh = ns === 'y' ?
       (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
       (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
-    // if (args.categorical_groups.length >= 1) {
-    //   gh = gh * (1-args[ns +'_outer_padding_percentage']) *( 1- 2*args[ns+'group_outer_padding_percentage']/(args.categorical_groups.length || 1) );
-    // }
     
     args[groupHeight] = gh;
   } else {
