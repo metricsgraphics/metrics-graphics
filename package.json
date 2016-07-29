@@ -35,6 +35,9 @@
   "dependencies": {
     "d3": "^4"
   },
+  "peerDependencies": {
+    "jquery": ">=1.11.1"
+  },
   "devDependencies": {
     "jquery": ">=1.11.1",
     "gulp": "^3.8.10",
