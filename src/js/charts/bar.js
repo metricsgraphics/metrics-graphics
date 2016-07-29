@@ -15,21 +15,21 @@
       .attr('x2', args.width)
       .attr('y1', args.height-args.bottom)
       .attr('y2', args.height-args.bottom)
-      .attr('stroke', 'black'); 
+      .attr('stroke', 'black');
 
     svg.append('line')
       .attr('x1', args.left)
       .attr('x2', args.left)
       .attr('y1', 0)
       .attr('y2', args.height)
-      .attr('stroke', 'black'); 
+      .attr('stroke', 'black');
 
     svg.append('line')
       .attr('x1', args.width-args.right)
       .attr('x2', args.width-args.right)
       .attr('y1', 0)
       .attr('y2', args.height)
-      .attr('stroke', 'black'); 
+      .attr('stroke', 'black');
 
     // plot area margins
     svg.append('line')
@@ -37,27 +37,27 @@
       .attr('x2', args.width)
       .attr('y1', args.height-args.bottom-args.buffer)
       .attr('y2', args.height-args.bottom-args.buffer)
-      .attr('stroke', 'gray'); 
+      .attr('stroke', 'gray');
 
     svg.append('line')
       .attr('x1', 0)
       .attr('x2', args.width)
       .attr('y1', args.top+args.buffer)
       .attr('y2', args.top+args.buffer)
-      .attr('stroke', 'gray'); 
+      .attr('stroke', 'gray');
 
     svg.append('line')
       .attr('x1', args.left + args.buffer)
       .attr('x2', args.left + args.buffer)
       .attr('y1', 0)
       .attr('y2', args.height)
-      .attr('stroke', 'gray'); 
+      .attr('stroke', 'gray');
     svg.append('line')
       .attr('x1', args.width -args.right - args.buffer)
       .attr('x2', args.width -args.right - args.buffer)
       .attr('y1', 0)
       .attr('y2', args.height)
-      .attr('stroke', 'gray'); 
+      .attr('stroke', 'gray');
   }
 
   // barchart re-write.
@@ -304,10 +304,12 @@
           .classed('mg-barplot', true);
       }
 
-      bars = barplot.selectAll('.mg-bar').data(data).enter().append('rect')
-        .classed('mg-bar', true)
-        .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
-
+      bars = barplot.selectAll('.mg-bar')
+        .data(data)
+        .enter()
+        .append('rect')
+          .classed('mg-bar', true)
+          .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
 
       // TODO - reimplement
       // if (args.predictor_accessor) {
@@ -350,113 +352,108 @@
       //   }
       // }
 
-        //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-        var length, width, length_type, width_type, length_coord, width_coord, 
-          length_scalefn, width_scalefn, length_scale, width_scale, 
-          length_accessor, width_accessor;
+      //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
+      var length, width, length_type, width_type, length_coord, width_coord,
+          length_scalefn, width_scalefn, length_scale, width_scale,
+          length_accessor, width_accessor, length_coord_map, width_coord_map,
+          length_map, width_map;
 
-        var length_coord_map, width_coord_map, length_map, width_map;
+      if (args.orientation == 'vertical') {
+        length = 'height';
+        width = 'width';
+        length_type = args.y_axis_type;
+        width_type = args.x_axis_type;
+        length_coord = 'y';
+        width_coord = 'x';
+        length_scalefn = length_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+        width_scalefn  = width_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+        length_scale   = args.scales.Y;
+        width_scale     = args.scales.X;
+        length_accessor = args.y_accessor;
+        width_accessor = args.x_accessor;
 
-
-        if (args.orientation == 'vertical') {
-          length = 'height';
-          width = 'width';
-          length_type = args.y_axis_type;
-          width_type = args.x_axis_type;
-          length_coord = 'y';
-          width_coord = 'x';
-          length_scalefn = length_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
-          width_scalefn  = width_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
-          length_scale   = args.scales.Y;
-          width_scale     = args.scales.X;
-          length_accessor = args.y_accessor;
-          width_accessor = args.x_accessor;
-
-          length_coord_map = function(d){
-            var l;
-            l = length_scalefn(d);
-            if (d[length_accessor] < 0) {
-              l = length_scale(0);
-            }
-            return l;
-          }
-
-          length_map = function(d) {
-            return Math.abs(length_scalefn(d) - length_scale(0));
-          }
-        }
-        if (args.orientation == 'horizontal') {
-          length = 'width';
-          width = 'height';
-          length_type = args.x_axis_type;
-          width_type = args.y_axis_type;
-          length_coord = 'x';
-          width_coord = 'y';
-          length_scalefn = length_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
-          width_scalefn = width_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
-          length_scale = args.scales.X;
-          width_scale = args.scales.Y;
-          length_accessor = args.x_accessor;
-          width_accessor = args.y_accessor;
-
-          length_coord_map = function(d){
-            var l;
+        length_coord_map = function(d) {
+          var l;
+          l = length_scalefn(d);
+          if (d[length_accessor] < 0) {
             l = length_scale(0);
-            return l;
           }
-
-          length_map = function(d) {
-            return Math.abs(length_scalefn(d) - length_scale(0));
-          }
+          return l;
         }
 
-        // if (perform_load_animation) {
-        //   bars.attr(length, 0);
+        length_map = function(d) {
+          return Math.abs(length_scalefn(d) - length_scale(0));
+        }
+      }
 
-        //   if (predictor_bars) {
-        //     predictor_bars.attr(length, 0);
-        //   }
+      if (args.orientation == 'horizontal') {
+        length = 'width';
+        width = 'height';
+        length_type = args.x_axis_type;
+        width_type = args.y_axis_type;
+        length_coord = 'x';
+        width_coord = 'y';
+        length_scalefn = length_type == 'categorical' ? args.scalefns.xoutf : args.scalefns.xf;
+        width_scalefn = width_type == 'categorical' ? args.scalefns.youtf : args.scalefns.yf;
+        length_scale = args.scales.X;
+        width_scale = args.scales.Y;
+        length_accessor = args.x_accessor;
+        width_accessor = args.y_accessor;
 
-        //   // if (baseline_marks) {
-        //   //   baseline_marks.attr({
-        //   //     x1: args.scales.X(0),
-        //   //     x2: args.scales.X(0)
-        //   //   });
-        //   // }
-        // }
+        length_coord_map = function(d) {
+          var l;
+          l = length_scale(0);
+          return l;
+        }
 
-        //
+        length_map = function(d) {
+          return Math.abs(length_scalefn(d) - length_scale(0));
+        }
+      }
 
-        bars.attr(length_coord, length_coord_map);
-  
-        // bars.attr(length_coord, 40)
+      // if (perform_load_animation) {
+      //   bars.attr(length, 0);
 
-        //bars.attr(width_coord, 70)
+      //   if (predictor_bars) {
+      //     predictor_bars.attr(length, 0);
+      //   }
 
-        bars.attr(width_coord, function(d) {
-          var w;
-          if (width_type == 'categorical') {
+      //   // if (baseline_marks) {
+      //   //   baseline_marks.attr({
+      //   //     x1: args.scales.X(0),
+      //   //     x2: args.scales.X(0)
+      //   //   });
+      //   // }
+      // }
+
+      bars.attr(length_coord, length_coord_map);
+
+      // bars.attr(length_coord, 40)
+      //bars.attr(width_coord, 70)
+
+      bars.attr(width_coord, function(d) {
+        var w;
+        if (width_type == 'categorical') {
+          w = width_scalefn(d);
+        } else {
+          w = width_scale(0);
+          if (d[width_accessor] < 0) {
             w = width_scalefn(d);
-          } else {
-            w = width_scale(0);
-            if (d[width_accessor] < 0) {
-              w = width_scalefn(d);
-            }
           }
-          w = w - args.bar_thickness/2;
-          return w;
-        })
-        if (args.scales.COLOR) {
-          bars.attr('fill', args.scalefns.colorf)
         }
+        w = w - args.bar_thickness/2;
+        return w;
+      });
 
-        bars.attr(length, length_map)
+      if (args.scales.COLOR) {
+        bars.attr('fill', args.scalefns.colorf)
+      }
 
-        bars.attr(width, function(d) {
+      bars
+        .attr(length, length_map)
+        .attr(width, function(d) {
           return args.bar_thickness;
-        })
-
-
+        });
 
         //bars.attr(width_coord, );
         // bars.attr('width', 50);
@@ -515,6 +512,7 @@
       //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
       //       });
       //   }
+
       if (args.legend && args.ygroup_accessor && args.color_accessor !== false && args.ygroup_accessor !== args.color_accessor) {
         if (!args.legend_target) legend_on_graph(svg, args);
         else mg_targeted_legend(args);
@@ -540,12 +538,11 @@
       svg.selectAll('.mg-active-datapoint').remove();
 
       // get orientation
-      var length, width, length_type, width_type, length_coord, width_coord, 
-        length_scalefn, width_scalefn, length_scale, width_scale, 
+      var length, width, length_type, width_type, length_coord, width_coord,
+        length_scalefn, width_scalefn, length_scale, width_scale,
         length_accessor, width_accessor;
 
       var length_coord_map, width_coord_map, length_map, width_map;
-
 
       if (args.orientation == 'vertical') {
         length = 'height';
@@ -569,6 +566,7 @@
           return args.height -args.top-args.bottom-args.buffer*2
         }
       }
+
       if (args.orientation == 'horizontal') {
         length = 'width';
         width = 'height';
@@ -588,12 +586,10 @@
           l = length_scale(0);
           return l;
         }
+
         length_map = function(d) {
           return args.width -args.left-args.right-args.buffer*2
         }
-        // length_map = function(d) {
-        //   return Math.abs(length_scalefn(d) - length_scale(0));
-        // }
       }
 
       //rollover text
@@ -625,37 +621,33 @@
         .data(args.data[0]).enter()
         .append("rect")
         .attr('class', 'mg-bar-rollover');
+
       bars.attr('opacity', 0)
-          .attr(length_coord, length_coord_map)
-          .attr(width_coord, function(d) {
-        var w;
-        if (width_type == 'categorical') {
-          w = width_scalefn(d);
-        } else {
-          w = width_scale(0);
-          if (d[width_accessor] < 0) {
+        .attr(length_coord, length_coord_map)
+        .attr(width_coord, function(d) {
+          var w;
+          if (width_type == 'categorical') {
             w = width_scalefn(d);
+          } else {
+            w = width_scale(0);
+            if (d[width_accessor] < 0) {
+              w = width_scalefn(d);
+            }
           }
-        }
-        w = w - args.bar_thickness/2;
-        return w;
-      })
+          w = w - args.bar_thickness/2;
+          return w;
+        });
 
-
-        // if (args.scales.COLOR) {
-        //   bars.attr('fill', 'blue')
-        // }
-
-        bars.attr(length, length_map)
-
-        bars.attr(width, function(d) {
-          return args.bar_thickness;
-        })
+      bars.attr(length, length_map)
+      bars.attr(width, function(d) {
+        return args.bar_thickness;
+      });
 
       bars
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
         .on('mousemove', this.rolloverMove(args));
+
       return this;
     };
 
@@ -680,6 +672,7 @@
           .filter(function(d, j) {
             return j === i;
           }).classed('active', true);
+
         if (args.scales.hasOwnProperty('COLOR')) {
           bar.attr('fill', d3.rgb(args.scalefns.colorf(d)).darker());
         } else {
@@ -750,7 +743,6 @@
   }
 
   var defaults = {
-
     y_padding_percentage: 0.05, // for categorical scales
     y_outer_padding_percentage: .2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales

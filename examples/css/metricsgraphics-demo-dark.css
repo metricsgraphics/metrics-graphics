@@ -80,13 +80,20 @@ h2.chart_title span {
     stroke: #ccc;
 }
 
-.mg-histogram .mg-bar rect,
-.mg-barplot rect.mg-bar {
+.mg-histogram .mg-bar rect {
+    fill: #d8b307;
+}
+
+tspan.hist-symbol {
+    fill: #d8b307;
+}
+
+.mg-barplot rect.mg-bar.default-bar {
     fill: #d8b307;
 }
 
 .mg-histogram .mg-bar rect.active,
-.mg-barplot rect.mg-bar.active {
+.mg-barplot rect.mg-bar.default-active {
     fill: #b3960f;
 }
 

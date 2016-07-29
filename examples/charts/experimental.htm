@@ -156,20 +156,16 @@ d3.tsv('data/nh-gop.csv', function(data) {
             out.candidate = d;
             out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
             out.poll = p.Poll;
-            // if (out.poll == 'PPP (D)' && out.candidate == 'Trump') {
-            //     out.number = -10
-            //     console.log(out.number)
-            // }
-            //if (Math.random() > .8) out.number = -out.number;
             out.size = Math.random();
             out.when = p.Date;
             polls.push(out);
-
         })
     });
+
     var trump = polls.filter(function(d){
         return d.poll == 'PPP (D)';
     })
+
     MG.data_graphic({
         title: 'Categorical Scale: X, points',
         data: trump,
@@ -178,7 +174,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#point-categorical',
+        target: '#point-categorical',
     })
 
     MG.data_graphic({
@@ -189,7 +185,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#bar-categorical',
+        target: '#bar-categorical',
     })
 
     MG.data_graphic({
@@ -200,7 +196,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         y_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#point-categorical2',
+        target: '#point-categorical2',
     })
 
     MG.data_graphic({
@@ -211,7 +207,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         y_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#bar-categorical2',
+        target: '#bar-categorical2',
     })
 
     MG.data_graphic({
@@ -228,7 +224,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         height:550,
         width:300,
         left:100,
-        target: 'div#point-categorical-group'
+        target: '#point-categorical-group'
     })
 
     MG.data_graphic({
@@ -242,7 +238,8 @@ d3.tsv('data/nh-gop.csv', function(data) {
         height:550,
         width:300,
         left:100,
-        target: 'div#bar-categorical-group'
+        right:40,
+        target: '#bar-categorical-group'
     })
 
     MG.data_graphic({
@@ -257,8 +254,9 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_range: [3,6],
         height:350,
         width:700,
-        target: 'div#point-categorical-group-horizontal'
+        target: '#point-categorical-group-horizontal'
     })
+
     MG.data_graphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
@@ -271,7 +269,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_range: [3,6],
         height:350,
         width:700,
-        target: 'div#bar-categorical-group-horizontal'
+        target: '#bar-categorical-group-horizontal'
     })
 })
 </code></pre>
@@ -290,20 +288,16 @@ d3.tsv('data/nh-gop.csv', function(data) {
             out.candidate = d;
             out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
             out.poll = p.Poll;
-            // if (out.poll == 'PPP (D)' && out.candidate == 'Trump') {
-            //     out.number = -10
-            //     console.log(out.number)
-            // }
-            //if (Math.random() > .8) out.number = -out.number;
             out.size = Math.random();
             out.when = p.Date;
             polls.push(out);
-
         })
     });
+
     var trump = polls.filter(function(d){
         return d.poll == 'PPP (D)';
     })
+
     MG.data_graphic({
         title: 'Categorical Scale: X, points',
         data: trump,
@@ -312,7 +306,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#point-categorical',
+        target: '#point-categorical',
     })
 
     MG.data_graphic({
@@ -323,7 +317,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'candidate',
         height:400,
         width:300,
-        target: 'div#bar-categorical',
+        target: '#bar-categorical',
     })
 
     MG.data_graphic({
@@ -334,7 +328,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         y_accessor: 'candidate',
         height:300,
         width:300,
-        target: 'div#point-categorical2',
+        target: '#point-categorical2',
     })
 
     MG.data_graphic({
@@ -345,7 +339,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         y_accessor: 'candidate',
         height:300,
         width:300,
-        target: 'div#bar-categorical2',
+        target: '#bar-categorical2',
     })
 
     MG.data_graphic({
@@ -362,7 +356,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         height:550,
         width:300,
         left:100,
-        target: 'div#point-categorical-group'
+        target: '#point-categorical-group'
     })
 
     MG.data_graphic({
@@ -376,7 +370,8 @@ d3.tsv('data/nh-gop.csv', function(data) {
         height:550,
         width:300,
         left:100,
-        target: 'div#bar-categorical-group'
+        right:40,
+        target: '#bar-categorical-group'
     })
 
     MG.data_graphic({
@@ -391,8 +386,9 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_range: [3,6],
         height:300,
         width:650,
-        target: 'div#point-categorical-group-horizontal'
+        target: '#point-categorical-group-horizontal'
     })
+
     MG.data_graphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
@@ -405,10 +401,9 @@ d3.tsv('data/nh-gop.csv', function(data) {
         size_range: [3,6],
         height:300,
         width:650,
-        target: 'div#bar-categorical-group-horizontal'
+        target: '#bar-categorical-group-horizontal'
     })
 })
-
 </script>
 
 

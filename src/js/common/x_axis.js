@@ -210,7 +210,7 @@ function mg_add_x_label(g, args) {
 
 function mg_default_bar_xax_format(args) {
   return function(f) {
-    if (f < 1.0) {
+    if (f < 1.0 && f !== 0) {
       // don't scale tiny values
       return args.xax_units + f.toFixed(args.decimals);
     } else {
