@@ -40,7 +40,7 @@ The library now depends on D3 4.x. The impact on MG users is minimal, though if 
 2. Follow the examples [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/index.htm) and [here](https://github.com/mozilla/metrics-graphics/blob/master/examples/js/main.js) to see how graphics are laid out and built. The examples use JSON data from [examples/data](https://github.com/mozilla/metrics-graphics/blob/master/examples/data), though you may easily pull data from elsewhere.
 
 ## Dependencies
-The library depends on [D3](http://d3js.org) and [jQuery](http://jquery.com/). As of v2.2, if you do not wish to use jQuery, set [show_tooltips](https://github.com/mozilla/metrics-graphics/wiki/Graphic#show_tooltips) to false, either globally in ``metricsgraphics.js``, or within every ``MG.data_graphic`` call. Only tooltips and [buttons](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout) depend on jQuery.
+The library depends on [D3](http://d3js.org). If you wish to enable tooltips or use [buttons](https://github.com/mozilla/metrics-graphics/wiki/Button-Layout), please include [jQuery](http://jquery.com/) as well. Versions of MG older than v2.10 depend on D3 3, whereas MG v2.10 onwards depend on D3 4.
 
 ## Contributing
 If you would like to help extend MetricsGraphics.js or fix bugs, please [fork the library](https://github.com/mozilla/metrics-graphics) and install [Node.js](http://nodejs.org). Then, from the project's root directory install [gulp](http://gulpjs.com):
