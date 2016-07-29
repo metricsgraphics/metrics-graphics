@@ -1,4 +1,4 @@
-if (typeof jQuery !== 'undefined') {
+if (jquery_exists()) {
     /* ========================================================================
      * Bootstrap: tooltip.js v3.3.5
      * http://getbootstrap.com/javascript/#tooltip

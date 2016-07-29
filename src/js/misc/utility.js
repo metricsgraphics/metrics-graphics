@@ -26,6 +26,14 @@ MG.time_format = function(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
 };
 
+function jquery_exists() {
+  if (typeof jQuery !== 'undefined' || typeof $ !== 'undefined') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function mg_get_rollover_time_format(args) {
   var fmt;
   switch (args.processed.x_time_frame) {

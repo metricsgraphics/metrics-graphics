@@ -20,7 +20,7 @@ function chart_title(args) {
       .text(args.title);
 
     //show and activate the description icon if we have a description
-    if (args.show_tooltips && args.description && typeof jQuery !== 'undefined') {
+    if (args.show_tooltips && args.description && jquery_exists()) {
       chartTitle.append('tspan')
         .attr('class', 'mg-chart-description')
         .attr('dx', '0.3em')

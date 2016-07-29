@@ -22,6 +22,7 @@ var
   dist = './dist/',
   jsFiles = [
     src + 'MG.js',
+    src + 'misc/utility.js',
     src + 'common/register.js',
     src + 'common/hooks.js',
     src + 'common/data_graphic.js',
@@ -47,7 +48,6 @@ var
     src + 'misc/smoothers.js',
     src + 'misc/formatters.js',
     src + 'misc/transitions.js',
-    src + 'misc/utility.js',
     src + 'misc/error.js'
   ];
 

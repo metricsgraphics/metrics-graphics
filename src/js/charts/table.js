@@ -120,7 +120,7 @@ MG.data_table = function(args) {
         .style('text-align', td_type === 'title' ? 'left' : 'right')
         .text(th_text);
 
-      if (args.show_tooltips && this_col.description && typeof jQuery !== 'undefined') {
+      if (args.show_tooltips && this_col.description && jquery_exists()) {
         th.append('i')
           .classed('fa', true)
           .classed('fa-question-circle', true)

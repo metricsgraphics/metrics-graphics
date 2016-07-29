@@ -5,6 +5,7 @@
     "node_modules/d3/build/d3.js",
 
     "src/js/MG.js",
+    "src/js/misc/utility.js",
     "src/js/common/register.js",
     "src/js/common/hooks.js",
     "src/js/common/data_graphic.js",
@@ -29,7 +30,6 @@
     "src/js/misc/smoothers.js",
     "src/js/misc/formatters.js",
     "src/js/misc/transitions.js",
-    "src/js/misc/utility.js",
     "src/js/misc/error.js",
 
     "tests/helpers.js",

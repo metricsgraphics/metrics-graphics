@@ -1,4 +1,4 @@
-if (typeof jQuery !== 'undefined') {
+if (jquery_exists()) {
     /*!
      * Bootstrap v3.3.1 (http://getbootstrap.com)
      * Copyright 2011-2014 Twitter, Inc.
