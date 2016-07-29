@@ -58,11 +58,11 @@
         .attr('x', 1)
         .attr('width', function(d, i) {
           if (args.data[0].length === 1) {
-            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(0);
           } else if (i !== args.data[0].length - 1) {
-            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(2);
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(0);
           } else {
-            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(2);
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(0);
           }
         })
         .attr('height', function(d) {
@@ -116,11 +116,11 @@
         .attr('width', function(d, i) {
           //if data set is of length 1
           if (args.data[0].length === 1) {
-            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(2);
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(0);
           } else if (i !== args.data[0].length - 1) {
-            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(2);
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(0);
           } else {
-            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(2);
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(0);
           }
         })
         .attr('height', function(d) {
