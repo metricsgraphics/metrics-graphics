@@ -28,7 +28,7 @@ Though originally envisioned for Mozilla Metrics dashboard projects, we are maki
 <a href="http://metricsgraphicsjs.org">http://metricsgraphicsjs.org</a>
 
 ## Important changes in v2.10
-The library now depends on D3 4.x. The impact on MG users is minimal, though if you do use D3 for other work, here is the [list of changes](https://github.com/d3/d3/blob/master/CHANGES.md) from 3.x to 4.x. The release notes for MG v2.10, planned for release in mid-July 2016, will include further details.
+The library now depends on D3 4.x. The impact on MG users is minimal, though if you do use D3 for other work, here is the [list of changes](https://github.com/d3/d3/blob/master/CHANGES.md) from 3.x to 4.x. Please refer to the [release notes](https://github.com/mozilla/metrics-graphics/releases) for further details.
 
 ## Important changes in v2.0
 1. The library is now namespaced. ``data_graphic`` is now ``MG.data_graphic``, ``convert_dates`` is now ``MG.convert.date``, ``clone`` is now ``MG.clone``, ``button_layout`` is now ``MG.button_layout`` and ``data_table`` is now ``MG.data_table``. We added a new convenience function called ``MG.convert.number``.
