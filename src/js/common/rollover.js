@@ -89,7 +89,11 @@ function mg_reset_text_container(svg) {
 function mg_mouseover_row(row_number, container, rargs) {
   var lineHeight = 1.1;
   this.rargs = rargs;
-  var rrr = container.append('tspan').attr('x', 0).attr('y', (row_number * lineHeight) + 'em');
+
+  var rrr = container.append('tspan')
+    .attr('x', 0)
+    .attr('y', (row_number * lineHeight) + 'em');
+
   this.text = function(text) {
     return mg_mouseover_tspan(rrr, text);
   }

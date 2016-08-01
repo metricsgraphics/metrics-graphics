@@ -5,7 +5,13 @@ function format_rollover_number(args) {
       var is_float = d % 1 !== 0;
       var n = d3.format(',.0f');
       d = is_float ? d.toFixed(args.decimals) : d;
-      return n(d);
+
+      // are we adding units after the value or before?
+      if (args.yax_units_append) {
+        return n(d) + args.yax_units;
+      } else {
+        return args.yax_units + n(d);
+      }
     };
   } else {
     num = function(d_) {

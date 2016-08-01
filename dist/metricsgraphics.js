@@ -4080,7 +4080,11 @@ function mg_reset_text_container(svg) {
 function mg_mouseover_row(row_number, container, rargs) {
   var lineHeight = 1.1;
   this.rargs = rargs;
-  var rrr = container.append('tspan').attr('x', 0).attr('y', (row_number * lineHeight) + 'em');
+
+  var rrr = container.append('tspan')
+    .attr('x', 0)
+    .attr('y', (row_number * lineHeight) + 'em');
+
   this.text = function(text) {
     return mg_mouseover_tspan(rrr, text);
   }
@@ -5336,16 +5340,33 @@ MG.button_layout = function(target) {
 
         // update rollover text except for missing data points
         if (args.show_rollover_text &&
-          !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)) {
+            !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)
+          ) {
           var mouseover = mg_mouseover_text(args, { svg: svg });
           var row = mouseover.mouseover_row();
-          if (args.aggregate_rollover) row.text((args.aggregate_rollover && args.data.length > 1 ? mg_format_x_aggregate_mouseover : mg_format_x_mouseover)(args, d));
-          var pts = args.aggregate_rollover && args.data.length > 1 ? d.values : [d];
+          if (args.aggregate_rollover) {
+            row.text((args.aggregate_rollover && args.data.length > 1
+              ? mg_format_x_aggregate_mouseover
+              : mg_format_x_mouseover)(args, d));
+          }
+
+          var pts = args.aggregate_rollover && args.data.length > 1
+            ? d.values
+            : [d];
+
           pts.forEach(function(di) {
-            if (args.aggregate_rollover) row = mouseover.mouseover_row();
-            if (args.legend) mg_line_color_text(row.text(args.legend[di.line_id - 1] + '  ').bold().elem(), di, args);
+            if (args.aggregate_rollover) {
+              row = mouseover.mouseover_row();
+            }
+
+            if (args.legend) {
+              mg_line_color_text(row.text(args.legend[di.line_id - 1] + '  ').bold().elem(), di, args);
+            }
+
             mg_line_color_text(row.text('\u2014  ').elem(), di, args);
-            if (!args.aggregate_rollover) row.text(mg_format_x_mouseover(args, di));
+            if (!args.aggregate_rollover) {
+              row.text(mg_format_x_mouseover(args, di));
+            }
 
             row.text(mg_format_y_mouseover(args, di, args.time_series === false));
           })
@@ -7843,7 +7864,13 @@ function format_rollover_number(args) {
       var is_float = d % 1 !== 0;
       var n = d3.format(',.0f');
       d = is_float ? d.toFixed(args.decimals) : d;
-      return n(d);
+
+      // are we adding units after the value or before?
+      if (args.yax_units_append) {
+        return n(d) + args.yax_units;
+      } else {
+        return args.yax_units + n(d);
+      }
     };
   } else {
     num = function(d_) {
