@@ -22,7 +22,7 @@ MG.convert.date = function(data, accessor, time_format) {
   });
 
   return data;
-};
+}
 
 MG.convert.number = function(data, accessor) {
   data = data.map(function(d) {
@@ -31,11 +31,11 @@ MG.convert.number = function(data, accessor) {
   });
 
   return data;
-};
+}
 
 MG.time_format = function(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
-};
+}
 
 function mg_jquery_exists() {
   if (typeof jQuery !== 'undefined' || typeof $ !== 'undefined') {
@@ -1810,7 +1810,8 @@ function mg_categorical_group_color_scale(args) {
 function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
   args.scalefns.color = function(d) {
-    return args.scales.color(d[accessor]) };
+    return args.scales.color(d[accessor]);
+  };
 }
 
 function mg_get_categorical_domain(data, accessor) {
@@ -7864,7 +7865,7 @@ var time_rollover_format = function(f, d, accessor, utc) {
     fd = d[accessor];
   }
   return fd;
-};
+}
 
 // define our rollover format for numbers
 var number_rollover_format = function(f, d, accessor) {
@@ -7877,7 +7878,7 @@ var number_rollover_format = function(f, d, accessor) {
     fd = d[accessor];
   }
   return fd;
-};
+}
 
 function mg_format_y_rollover(args, num, d) {
   var formatted_y;

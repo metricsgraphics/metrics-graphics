@@ -27,7 +27,7 @@ var time_rollover_format = function(f, d, accessor, utc) {
     fd = d[accessor];
   }
   return fd;
-};
+}
 
 // define our rollover format for numbers
 var number_rollover_format = function(f, d, accessor) {
@@ -40,7 +40,7 @@ var number_rollover_format = function(f, d, accessor) {
     fd = d[accessor];
   }
   return fd;
-};
+}
 
 function mg_format_y_rollover(args, num, d) {
   var formatted_y;

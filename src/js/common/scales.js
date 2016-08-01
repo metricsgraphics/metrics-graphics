@@ -294,7 +294,8 @@ function mg_categorical_group_color_scale(args) {
 function mg_add_color_categorical_scale(args, domain, accessor) {
   args.scales.color = d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
   args.scalefns.color = function(d) {
-    return args.scales.color(d[accessor]) };
+    return args.scales.color(d[accessor]);
+  };
 }
 
 function mg_get_categorical_domain(data, accessor) {
