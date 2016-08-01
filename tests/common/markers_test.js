@@ -138,18 +138,3 @@ test('When an existing chart is updated with no baselines, existing baselines ar
 
     equal(document.querySelectorAll('.mg-baselines').length, 0, 'Old baselines were cleared');
 });
-
-// test('args.small_text', function() {
-//     var baselines = [{value:50, label:'a baseline'}];
-
-//     var params = {
-//         target: '#qunit-fixture',
-//         data: [{'date': new Date('2014-01-01'), 'value': 100},
-//                {'date': new Date('2014-03-01'), 'value': 10}],
-//         baselines: baselines,
-//         small_text: true
-//     };
-
-//     MG.data_graphic(params);
-//     ok(document.querySelector('.mg-baselines-small'), 'Small baselines is set');
-// });

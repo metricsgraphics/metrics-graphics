@@ -27,7 +27,7 @@ function mg_add_processed_object(args) {
   }
 }
 
-// ought to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by histogram
 function x_axis(args) {
   'use strict';
 
@@ -56,16 +56,19 @@ MG.x_axis = x_axis;
 function x_axis_categorical(args) {
   var svg = mg_get_svg_child_of(args.target);
   var additional_buffer = 0;
-  if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
+  if (args.chart_type === 'bar') {
+    additional_buffer = args.buffer + 5;
+  }
 
   mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
-  mg_add_scale_function(args, 'xf', 'X', 'value') //args.x_accessor);
+  mg_add_scale_function(args, 'xf', 'X', 'value');
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   var g = mg_add_g(svg, 'mg-x-axis');
 
   if (!args.x_axis) {
-    return this; }
+    return this;
+  }
 
   mg_add_x_axis_categorical_labels(g, args, additional_buffer);
   return this;
@@ -88,8 +91,7 @@ function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
 
   if (args.truncate_x_labels) {
     labels.each(function(d, idx) {
-      var elem = this,
-        width = args.scales.X.bandwidth();
+      var elem = this, width = args.scales.X.bandwidth();
       truncate_text(elem, d, width);
     });
   }
@@ -113,7 +115,9 @@ function mg_point_add_color_scale(args) {
     } else {
       args.scales.color = args.color_range !== null
         ? d3.scaleOrdinal().range(color_range)
-        : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
+        : (color_domain.length > 10
+          ? d3.scaleOrdinal(d3.schemeCategory20)
+          : d3.scaleOrdinal(d3.schemeCategory10));
 
       args.scales.color.domain(color_domain);
     }
@@ -126,11 +130,13 @@ function mg_get_color_domain(args) {
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
       color_domain = d3.extent(args.data[0], function(d) {
-        return d[args.color_accessor]; });
+        return d[args.color_accessor];
+      });
     } else if (args.color_type === 'category') {
       color_domain = d3.set(args.data[0]
           .map(function(d) {
-            return d[args.color_accessor]; }))
+            return d[args.color_accessor];
+        }))
         .values();
 
       color_domain.sort();
@@ -171,16 +177,15 @@ function mg_point_add_size_scale(args) {
 }
 
 function mg_get_size_domain(args) {
-  return args.size_domain === null ?
-    d3.extent(args.data[0], function(d) {
-      return d[args.size_accessor]; }) :
-    args.size_domain;
+  return (args.size_domain === null)
+    ? d3.extent(args.data[0], function(d) { return d[args.size_accessor]; })
+    : args.size_domain;
 }
 
 function mg_get_size_range(args) {
   var size_range;
   if (args.size_range === null) {
-    size_range = [1, 5]; // args.size_domain;
+    size_range = [1, 5];
   } else {
     size_range = args.size_range;
   }
@@ -231,7 +236,7 @@ function mg_get_time_frame(diff) {
     time_frame = 'less-than-a-day';
   } else if (mg_four_days(diff)) {
     time_frame = 'four-days';
-  } else if (mg_many_days(diff)) { /// a handful of months?
+  } else if (mg_many_days(diff)) { // a handful of months?
     time_frame = 'many-days';
   } else if (mg_many_months(diff)) {
     time_frame = 'many-months';
@@ -244,25 +249,32 @@ function mg_get_time_frame(diff) {
 }
 
 function mg_milisec_diff(diff) {
-  return diff < 10; }
+  return diff < 10;
+}
 
 function mg_sec_diff(diff) {
-  return diff < 60; }
+  return diff < 60;
+}
 
 function mg_day_diff(diff) {
-  return diff / (60 * 60) <= 24; }
+  return diff / (60 * 60) <= 24;
+}
 
 function mg_four_days(diff) {
-  return diff / (60 * 60) <= 24 * 4; }
+  return diff / (60 * 60) <= 24 * 4;
+}
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 93; }
+  return diff / (60 * 60 * 24) <= 93;
+}
 
 function mg_many_months(diff) {
-  return diff / (60 * 60 * 24) < 365 * 2; }
+  return diff / (60 * 60 * 24) < 365 * 2;
+}
 
 function mg_years(diff) {
-  return diff / (60 * 60 * 24) >= 365 * 2; }
+  return diff / (60 * 60 * 24) >= 365 * 2;
+}
 
 function mg_get_time_format(utc, diff) {
   var main_time_format;
@@ -563,14 +575,13 @@ function mg_min_max_x_for_dates(mx) {
 }
 
 function mg_min_max_x_for_numbers(mx) {
-  // this seems silly. I envision a problem with something this simplistic.
+  // TODO do we want to rewrite this?
   mx.min = mx.min - 1;
   mx.max = mx.max + 1;
 }
 
 function mg_min_max_x_for_strings(mx) {
-  // ok. Not sure who wrote this, but this seems also pretty silly. We
-  // should not be allowing strings here to be coerced into numbers. Veto.
+  // TODO shouldn't be allowing strings here to be coerced into numbers
   mx.min = Number(mx.min) - 1;
   mx.max = Number(mx.max) + 1;
 }

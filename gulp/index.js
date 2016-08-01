@@ -6,8 +6,8 @@ var
   uglify = require('gulp-uglify'),
   concat = require('gulp-concat'),
   rename = require('gulp-rename'),
-//sass = require('gulp-sass'), // for building css from scss
-//minifycss = require('gulp-minify-css'), // for minifiing css
+  //sass = require('gulp-sass'), // for building css from scss
+  //minifycss = require('gulp-minify-css'), // for minifiing css
   jshint = require('gulp-jshint'),
   testem = require('gulp-testem'),
   connect = require('gulp-connect'),

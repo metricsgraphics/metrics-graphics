@@ -759,8 +759,7 @@
 
       init(args);
 
-      // At the moment, we are not incorporating markers into the calculation of x scales.
-      // Shouldn't we, though?
+      // TODO incorporate markers into calculation of x scales
       new MG.scale_factory(args)
         .namespace('x')
         .numericalDomainFromData()

@@ -1,4 +1,4 @@
-if (jquery_exists()) {
+if (mg_jquery_exists()) {
     /*!
      * Bootstrap v3.3.1 (http://getbootstrap.com)
      * Copyright 2011-2014 Twitter, Inc.

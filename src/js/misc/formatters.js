@@ -53,7 +53,7 @@ function mg_format_y_rollover(args, num, d) {
   } else {
     if (args.time_series) {
       if (args.aggregate_rollover) {
-        formatted_y = num(d[args.y_accessor]); //number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+        formatted_y = num(d[args.y_accessor]);
       } else {
         formatted_y = args.yax_units + num(d[args.y_accessor]);
       }
@@ -95,14 +95,16 @@ function mg_format_x_rollover(args, fmt, d) {
   return formatted_x;
 }
 
-/// Updated functions. Cleaner design.
-//  As of right now, only implemented for point.js.
-
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data, formatter;
   var time_fmt = mg_get_rollover_time_format(args);
-  if (typeof d[accessor] === 'string') formatter = function(d){return d}
-  else formatter = format_rollover_number(args);
+  if (typeof d[accessor] === 'string') {
+    formatter = function(d) {
+      return d;
+    }
+  } else {
+    formatter = format_rollover_number(args);
+  }
 
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);

@@ -26,7 +26,7 @@ MG.time_format = function(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
 };
 
-function jquery_exists() {
+function mg_jquery_exists() {
   if (typeof jQuery !== 'undefined' || typeof $ !== 'undefined') {
     return true;
   } else {
@@ -163,8 +163,6 @@ function mg_remove_element(svg, elem) {
   svg.select(elem).remove();
 }
 
-
-
 //////// axis helper functions ////////////
 
 function mg_make_rug(args, rug_class) {
@@ -208,7 +206,6 @@ function mg_rotate_labels(labels, rotation_degree) {
 }
 
 //////////////////////////////////////////////////
-
 
 function mg_elements_are_overlapping(labels) {
   labels = labels.node();
@@ -315,7 +312,7 @@ function mg_is_horizontally_overlapping(element, labels) {
   return false;
 }
 
-function inferType(args, ns) {
+function mg_infer_type(args, ns) {
     // must return categorical or numerical.
     var testPoint = mg_flatten_array(args.data);
 
@@ -570,35 +567,3 @@ function wrap_text(text, width, token, tspanAttrs) {
 }
 
 MG.wrap_text = wrap_text;
-
-function scaffold(args) {
-  var svg = mg_get_svg_child_of(args.target);
-
-  svg.append('svg:line')
-    .attr('x1', mg_get_left(args))
-    .attr('x2', mg_get_left(args))
-    .attr('y1', 0)
-    .attr('y2', args.height)
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', mg_get_right(args))
-    .attr('x2', mg_get_right(args))
-    .attr('y1', 0)
-    .attr('y2', args.height)
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', 0)
-    .attr('x2', args.width)
-    .attr('y1', mg_get_top(args))
-    .attr('y2', mg_get_top(args))
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', 0)
-    .attr('x2', args.width)
-    .attr('y1', mg_get_bottom(args))
-    .attr('y2', mg_get_bottom(args))
-    .attr('stroke', 'black');
-}

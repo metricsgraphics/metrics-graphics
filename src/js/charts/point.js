@@ -44,8 +44,8 @@ function mg_color_point_mouseover(args, elem, d) {
       this.args = args;
 
       // infer y_axis and x_axis type;
-      args.x_axis_type = inferType(args, 'x');
-      args.y_axis_type = inferType(args, 'y');
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
 
       raw_data_transformation(args);
 
@@ -366,7 +366,6 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
-
     y_padding_percentage: 0.05, // for categorical scales
     y_outer_padding_percentage: .2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales

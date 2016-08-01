@@ -37,7 +37,7 @@ MG.time_format = function(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
 };
 
-function jquery_exists() {
+function mg_jquery_exists() {
   if (typeof jQuery !== 'undefined' || typeof $ !== 'undefined') {
     return true;
   } else {
@@ -174,8 +174,6 @@ function mg_remove_element(svg, elem) {
   svg.select(elem).remove();
 }
 
-
-
 //////// axis helper functions ////////////
 
 function mg_make_rug(args, rug_class) {
@@ -219,7 +217,6 @@ function mg_rotate_labels(labels, rotation_degree) {
 }
 
 //////////////////////////////////////////////////
-
 
 function mg_elements_are_overlapping(labels) {
   labels = labels.node();
@@ -326,7 +323,7 @@ function mg_is_horizontally_overlapping(element, labels) {
   return false;
 }
 
-function inferType(args, ns) {
+function mg_infer_type(args, ns) {
     // must return categorical or numerical.
     var testPoint = mg_flatten_array(args.data);
 
@@ -582,38 +579,6 @@ function wrap_text(text, width, token, tspanAttrs) {
 
 MG.wrap_text = wrap_text;
 
-function scaffold(args) {
-  var svg = mg_get_svg_child_of(args.target);
-
-  svg.append('svg:line')
-    .attr('x1', mg_get_left(args))
-    .attr('x2', mg_get_left(args))
-    .attr('y1', 0)
-    .attr('y2', args.height)
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', mg_get_right(args))
-    .attr('x2', mg_get_right(args))
-    .attr('y1', 0)
-    .attr('y2', args.height)
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', 0)
-    .attr('x2', args.width)
-    .attr('y1', mg_get_top(args))
-    .attr('y2', mg_get_top(args))
-    .attr('stroke', 'black');
-
-  svg.append('svg:line')
-    .attr('x1', 0)
-    .attr('x2', args.width)
-    .attr('y1', mg_get_bottom(args))
-    .attr('y2', mg_get_bottom(args))
-    .attr('stroke', 'black');
-}
-
 function register(chartType, descriptor, defaults) {
   MG.charts[chartType] = {
     descriptor: descriptor,
@@ -854,7 +819,7 @@ MG.data_graphic = function(args) {
   return args.data;
 };
 
-if (jquery_exists()) {
+if (mg_jquery_exists()) {
     /* ========================================================================
      * Bootstrap: tooltip.js v3.3.5
      * http://getbootstrap.com/javascript/#tooltip
@@ -1503,7 +1468,7 @@ function chart_title(args) {
       .text(args.title);
 
     //show and activate the description icon if we have a description
-    if (args.show_tooltips && args.description && jquery_exists()) {
+    if (args.show_tooltips && args.description && mg_jquery_exists()) {
       chartTitle.append('tspan')
         .attr('class', 'mg-chart-description')
         .attr('dx', '0.3em')
@@ -2001,10 +1966,6 @@ function rimPlacement (args, axisArgs) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
-    //else {
-    //   coordinates.y1 = 0;
-    //   coordinates.y2 = 0;
-    // }
   }
 
   return coordinates;
@@ -2020,7 +1981,8 @@ function labelPlacement (args, axisArgs) {
   if (position === 'left') {
     coordinates.x = mg_get_left(args) - tickLength * 3 / 2;
     coordinates.y = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.dx = -3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
@@ -2053,7 +2015,8 @@ function labelPlacement (args, axisArgs) {
   }
   if (position === 'bottom') {
     coordinates.x = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.y = (mg_get_bottom(args) + tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '.50em';
@@ -2217,31 +2180,39 @@ function addTickLines (g, args, axisArgs) {
     x1 = mg_get_left(args);
     x2 = extendedTicks ? mg_get_right(args) : mg_get_left(args) - tickLength;
     y1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
   }
   if (position === 'right') {
     x1 = mg_get_right(args);
     x2 = extendedTicks ? mg_get_left(args) : mg_get_right(args) + tickLength;
     y1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
   }
   if (position === 'top') {
     x1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     x2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y1 = mg_get_top(args);
     y2 = extendedTicks ? mg_get_bottom(args) : mg_get_top(args) - tickLength;
   }
   if (position === 'bottom') {
     x1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     x2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y1 = mg_get_bottom(args);
     y2 = extendedTicks ? mg_get_top(args) : mg_get_bottom(args) + tickLength;
   }
@@ -2887,7 +2858,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO ought to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
@@ -3035,7 +3006,7 @@ function mg_add_processed_object(args) {
   }
 }
 
-// ought to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by histogram
 function x_axis(args) {
   'use strict';
 
@@ -3064,16 +3035,19 @@ MG.x_axis = x_axis;
 function x_axis_categorical(args) {
   var svg = mg_get_svg_child_of(args.target);
   var additional_buffer = 0;
-  if (args.chart_type === 'bar') { additional_buffer = args.buffer + 5; }
+  if (args.chart_type === 'bar') {
+    additional_buffer = args.buffer + 5;
+  }
 
   mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, mg_get_plot_right(args) - additional_buffer);
-  mg_add_scale_function(args, 'xf', 'X', 'value') //args.x_accessor);
+  mg_add_scale_function(args, 'xf', 'X', 'value');
   mg_selectAll_and_remove(svg, '.mg-x-axis');
 
   var g = mg_add_g(svg, 'mg-x-axis');
 
   if (!args.x_axis) {
-    return this; }
+    return this;
+  }
 
   mg_add_x_axis_categorical_labels(g, args, additional_buffer);
   return this;
@@ -3096,8 +3070,7 @@ function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
 
   if (args.truncate_x_labels) {
     labels.each(function(d, idx) {
-      var elem = this,
-        width = args.scales.X.bandwidth();
+      var elem = this, width = args.scales.X.bandwidth();
       truncate_text(elem, d, width);
     });
   }
@@ -3121,7 +3094,9 @@ function mg_point_add_color_scale(args) {
     } else {
       args.scales.color = args.color_range !== null
         ? d3.scaleOrdinal().range(color_range)
-        : (color_domain.length > 10 ? d3.scaleOrdinal(d3.schemeCategory20) : d3.scaleOrdinal(d3.schemeCategory10));
+        : (color_domain.length > 10
+          ? d3.scaleOrdinal(d3.schemeCategory20)
+          : d3.scaleOrdinal(d3.schemeCategory10));
 
       args.scales.color.domain(color_domain);
     }
@@ -3134,11 +3109,13 @@ function mg_get_color_domain(args) {
   if (args.color_domain === null) {
     if (args.color_type === 'number') {
       color_domain = d3.extent(args.data[0], function(d) {
-        return d[args.color_accessor]; });
+        return d[args.color_accessor];
+      });
     } else if (args.color_type === 'category') {
       color_domain = d3.set(args.data[0]
           .map(function(d) {
-            return d[args.color_accessor]; }))
+            return d[args.color_accessor];
+        }))
         .values();
 
       color_domain.sort();
@@ -3179,16 +3156,15 @@ function mg_point_add_size_scale(args) {
 }
 
 function mg_get_size_domain(args) {
-  return args.size_domain === null ?
-    d3.extent(args.data[0], function(d) {
-      return d[args.size_accessor]; }) :
-    args.size_domain;
+  return (args.size_domain === null)
+    ? d3.extent(args.data[0], function(d) { return d[args.size_accessor]; })
+    : args.size_domain;
 }
 
 function mg_get_size_range(args) {
   var size_range;
   if (args.size_range === null) {
-    size_range = [1, 5]; // args.size_domain;
+    size_range = [1, 5];
   } else {
     size_range = args.size_range;
   }
@@ -3239,7 +3215,7 @@ function mg_get_time_frame(diff) {
     time_frame = 'less-than-a-day';
   } else if (mg_four_days(diff)) {
     time_frame = 'four-days';
-  } else if (mg_many_days(diff)) { /// a handful of months?
+  } else if (mg_many_days(diff)) { // a handful of months?
     time_frame = 'many-days';
   } else if (mg_many_months(diff)) {
     time_frame = 'many-months';
@@ -3252,25 +3228,32 @@ function mg_get_time_frame(diff) {
 }
 
 function mg_milisec_diff(diff) {
-  return diff < 10; }
+  return diff < 10;
+}
 
 function mg_sec_diff(diff) {
-  return diff < 60; }
+  return diff < 60;
+}
 
 function mg_day_diff(diff) {
-  return diff / (60 * 60) <= 24; }
+  return diff / (60 * 60) <= 24;
+}
 
 function mg_four_days(diff) {
-  return diff / (60 * 60) <= 24 * 4; }
+  return diff / (60 * 60) <= 24 * 4;
+}
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 93; }
+  return diff / (60 * 60 * 24) <= 93;
+}
 
 function mg_many_months(diff) {
-  return diff / (60 * 60 * 24) < 365 * 2; }
+  return diff / (60 * 60 * 24) < 365 * 2;
+}
 
 function mg_years(diff) {
-  return diff / (60 * 60 * 24) >= 365 * 2; }
+  return diff / (60 * 60 * 24) >= 365 * 2;
+}
 
 function mg_get_time_format(utc, diff) {
   var main_time_format;
@@ -3571,14 +3554,13 @@ function mg_min_max_x_for_dates(mx) {
 }
 
 function mg_min_max_x_for_numbers(mx) {
-  // this seems silly. I envision a problem with something this simplistic.
+  // TODO do we want to rewrite this?
   mx.min = mx.min - 1;
   mx.max = mx.max + 1;
 }
 
 function mg_min_max_x_for_strings(mx) {
-  // ok. Not sure who wrote this, but this seems also pretty silly. We
-  // should not be allowing strings here to be coerced into numbers. Veto.
+  // TODO shouldn't be allowing strings here to be coerced into numbers
   mx.min = Number(mx.min) - 1;
   mx.max = Number(mx.max) + 1;
 }
@@ -4012,9 +3994,17 @@ function mg_clear_mouseover_container(svg) {
 
 function mg_setup_mouseover_container(svg, args) {
   svg.select('.mg-active-datapoint').remove();
-  var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
-  var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width - args.left - args.right) / 2 + args.left);
+  var text_anchor = args.mouseover_align === 'right'
+    ? 'end'
+    : (args.mouseover_align === 'left'
+      ? 'start'
+      : 'middle');
 
+  var mouseover_x = (args.mouseover_align === 'right')
+    ? mg_get_plot_right(args)
+    : (args.mouseover_align === 'left'
+      ? mg_get_plot_left(args)
+      : (args.width - args.left - args.right) / 2 + args.left);
 
   var active_datapoint = svg.select('.mg-active-datapoint-container')
     .append('text')
@@ -4196,7 +4186,7 @@ function mg_if_aspect_ratio_resize_svg(args) {
   }
 }
 
-if (jquery_exists()) {
+if (mg_jquery_exists()) {
     /*!
      * Bootstrap v3.3.1 (http://getbootstrap.com)
      * Copyright 2011-2014 Twitter, Inc.
@@ -5262,8 +5252,7 @@ MG.button_layout = function(target) {
 
       init(args);
 
-      // At the moment, we are not incorporating markers into the calculation of x scales.
-      // Shouldn't we, though?
+      // TODO incorporate markers into calculation of x scales
       new MG.scale_factory(args)
         .namespace('x')
         .numericalDomainFromData()
@@ -5692,8 +5681,8 @@ function mg_color_point_mouseover(args, elem, d) {
       this.args = args;
 
       // infer y_axis and x_axis type;
-      args.x_axis_type = inferType(args, 'x');
-      args.y_axis_type = inferType(args, 'y');
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
 
       raw_data_transformation(args);
 
@@ -6014,7 +6003,6 @@ function mg_color_point_mouseover(args, elem, d) {
   }
 
   var defaults = {
-
     y_padding_percentage: 0.05, // for categorical scales
     y_outer_padding_percentage: .2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
@@ -6046,6 +6034,7 @@ function mg_color_point_mouseover(args, elem, d) {
 (function() {
   'use strict';
 
+  // TODO add styles to stylesheet instead
   function scaffold(args) {
     var svg = mg_get_svg_child_of(args.target);
     // main margins
@@ -6183,8 +6172,8 @@ function mg_color_point_mouseover(args, elem, d) {
 
     this.init = function(args) {
       this.args = args;
-      args.x_axis_type = inferType(args, 'x');
-      args.y_axis_type = inferType(args, 'y');
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
 
       // this is specific to how rects work in svg, let's keep track of the bar orientation to
       // plot appropriately.
@@ -6941,7 +6930,7 @@ MG.data_table = function(args) {
         .style('text-align', td_type === 'title' ? 'left' : 'right')
         .text(th_text);
 
-      if (args.show_tooltips && this_col.description && jquery_exists()) {
+      if (args.show_tooltips && this_col.description && mg_jquery_exists()) {
         th.append('i')
           .classed('fa', true)
           .classed('fa-question-circle', true)
@@ -7901,7 +7890,7 @@ function mg_format_y_rollover(args, num, d) {
   } else {
     if (args.time_series) {
       if (args.aggregate_rollover) {
-        formatted_y = num(d[args.y_accessor]); //number_rollover_format(args.y_rollover_format, d, args.y_accessor);
+        formatted_y = num(d[args.y_accessor]);
       } else {
         formatted_y = args.yax_units + num(d[args.y_accessor]);
       }
@@ -7943,14 +7932,16 @@ function mg_format_x_rollover(args, fmt, d) {
   return formatted_x;
 }
 
-/// Updated functions. Cleaner design.
-//  As of right now, only implemented for point.js.
-
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data, formatter;
   var time_fmt = mg_get_rollover_time_format(args);
-  if (typeof d[accessor] === 'string') formatter = function(d){return d}
-  else formatter = format_rollover_number(args);
+  if (typeof d[accessor] === 'string') {
+    formatter = function(d) {
+      return d;
+    }
+  } else {
+    formatter = format_rollover_number(args);
+  }
 
   if (mouseover_fcn !== null) {
     if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);

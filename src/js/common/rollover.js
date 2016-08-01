@@ -4,9 +4,17 @@ function mg_clear_mouseover_container(svg) {
 
 function mg_setup_mouseover_container(svg, args) {
   svg.select('.mg-active-datapoint').remove();
-  var text_anchor = args.mouseover_align === 'right' ? 'end' : (args.mouseover_align === 'left' ? 'start' : 'middle');
-  var mouseover_x = args.mouseover_align === 'right' ? mg_get_plot_right(args) : (args.mouseover_align === 'left' ? mg_get_plot_left(args) : (args.width - args.left - args.right) / 2 + args.left);
+  var text_anchor = args.mouseover_align === 'right'
+    ? 'end'
+    : (args.mouseover_align === 'left'
+      ? 'start'
+      : 'middle');
 
+  var mouseover_x = (args.mouseover_align === 'right')
+    ? mg_get_plot_right(args)
+    : (args.mouseover_align === 'left'
+      ? mg_get_plot_left(args)
+      : (args.width - args.left - args.right) / 2 + args.left);
 
   var active_datapoint = svg.select('.mg-active-datapoint-container')
     .append('text')

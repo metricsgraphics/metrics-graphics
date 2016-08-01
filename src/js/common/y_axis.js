@@ -115,10 +115,6 @@ function rimPlacement (args, axisArgs) {
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
-    //else {
-    //   coordinates.y1 = 0;
-    //   coordinates.y2 = 0;
-    // }
   }
 
   return coordinates;
@@ -134,7 +130,8 @@ function labelPlacement (args, axisArgs) {
   if (position === 'left') {
     coordinates.x = mg_get_left(args) - tickLength * 3 / 2;
     coordinates.y = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.dx = -3;
     coordinates.dy = '.35em';
     coordinates.textAnchor = 'end';
@@ -167,7 +164,8 @@ function labelPlacement (args, axisArgs) {
   }
   if (position === 'bottom') {
     coordinates.x = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     coordinates.y = (mg_get_bottom(args) + tickLength * 7 / 3).toFixed(2);
     coordinates.dx = 0;
     coordinates.dy = '.50em';
@@ -331,31 +329,39 @@ function addTickLines (g, args, axisArgs) {
     x1 = mg_get_left(args);
     x2 = extendedTicks ? mg_get_right(args) : mg_get_left(args) - tickLength;
     y1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
   }
   if (position === 'right') {
     x1 = mg_get_right(args);
     x2 = extendedTicks ? mg_get_left(args) : mg_get_right(args) + tickLength;
     y1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
   }
   if (position === 'top') {
     x1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     x2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y1 = mg_get_top(args);
     y2 = extendedTicks ? mg_get_bottom(args) : mg_get_top(args) - tickLength;
   }
   if (position === 'bottom') {
     x1 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     x2 = function (d) {
-      return scale(d).toFixed(2); };
+      return scale(d).toFixed(2);
+    };
     y1 = mg_get_bottom(args);
     y2 = extendedTicks ? mg_get_top(args) : mg_get_bottom(args) + tickLength;
   }
@@ -1001,7 +1007,7 @@ function mg_add_y_axis_tick_labels (g, args) {
     });
 }
 
-// TODO ought to be deprecated, only used by bar and histogram
+// TODO ought to be deprecated, only used by histogram
 function y_axis (args) {
   if (!args.processed) {
     args.processed = {};

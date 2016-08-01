@@ -1,6 +1,7 @@
 (function() {
   'use strict';
 
+  // TODO add styles to stylesheet instead
   function scaffold(args) {
     var svg = mg_get_svg_child_of(args.target);
     // main margins
@@ -138,8 +139,8 @@
 
     this.init = function(args) {
       this.args = args;
-      args.x_axis_type = inferType(args, 'x');
-      args.y_axis_type = inferType(args, 'y');
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
 
       // this is specific to how rects work in svg, let's keep track of the bar orientation to
       // plot appropriately.
