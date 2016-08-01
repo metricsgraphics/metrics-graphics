@@ -214,13 +214,13 @@ function mg_add_x_label(g, args) {
 }
 
 function mg_default_bar_xax_format(args) {
-  return function(f) {
-    if (f < 1.0 && f !== 0) {
+  return function(d) {
+    if (d < 1.0 && d > -1.0 && d !== 0) {
       // don't scale tiny values
-      return args.xax_units + f.toFixed(args.decimals);
+      return args.xax_units + d.toFixed(args.decimals);
     } else {
       var pf = d3.format(',.0f');
-      return args.xax_units + pf(f);
+      return args.xax_units + pf(d);
     }
   };
 }
@@ -332,7 +332,7 @@ function mg_default_xax_format(args) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
       var pf;
-      if (d < 1.0 && d !== 0) {
+      if (d < 1.0 && d > -1.0 && d !== 0) {
         // don't scale tiny values
         pf = d3.format(',.' + args.decimals + 'f');
       } else if (d < 1000) {
