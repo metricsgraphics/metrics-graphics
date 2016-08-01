@@ -234,7 +234,7 @@
           legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
         }
 
-        mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text')[0], args);
+        mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text').nodes(), args);
       }
     }
   }

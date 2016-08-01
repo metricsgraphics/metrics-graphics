@@ -3954,17 +3954,21 @@ function mg_place_marker_text(gm, args) {
     .data(args.markers.filter(mg_in_range(args)))
     .enter()
     .append('text')
-    .attr('class', function(d) {
-      return d.textclass || ''; })
-    .classed('mg-marker-text', true)
-    .attr('x', mg_x_position(args))
-    .attr('y', args.x_axis_position === 'bottom' ? mg_get_top(args) * 0.95 : mg_get_bottom(args) + args.buffer)
-    .attr('text-anchor', 'middle')
-    .text(mg_return_label)
-    .each(function(d) {
-      if (d.click) d3.select(this).style('cursor', 'pointer').on('click', d.click);
-    });
-  mg_prevent_horizontal_overlap(gm.selectAll('.mg-marker-text')[0], args);
+      .attr('class', function(d) {
+        return d.textclass || ''; })
+      .classed('mg-marker-text', true)
+      .attr('x', mg_x_position(args))
+      .attr('y', args.x_axis_position === 'bottom' ? mg_get_top(args) * 0.95 : mg_get_bottom(args) + args.buffer)
+      .attr('text-anchor', 'middle')
+      .text(mg_return_label)
+      .each(function(d) {
+        if (d.click) {
+          d3.select(this).style('cursor', 'pointer')
+            .on('click', d.click);
+        }
+      });
+
+  mg_prevent_horizontal_overlap(gm.selectAll('.mg-marker-text').nodes(), args);
 }
 
 function mg_place_baseline_lines(gb, args) {
@@ -3992,6 +3996,7 @@ function mg_place_baseline_text(gb, args) {
 
 function markers(args) {
   'use strict';
+
   var svg = mg_get_svg_child_of(args.target);
   mg_remove_existing_markers(svg);
   mg_place_markers(args, svg);
@@ -4732,7 +4737,7 @@ MG.button_layout = function(target) {
           legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
         }
 
-        mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text')[0], args);
+        mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text').nodes(), args);
       }
     }
   }
