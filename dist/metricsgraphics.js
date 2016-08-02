@@ -1476,7 +1476,7 @@ function chart_title(args) {
 
       //now that the title is an svg text element, we'll have to trigger
       //mouseenter, mouseleave events manually for the popover to work properly
-      var $chartTitle = jQuery(chartTitle.node());
+      var $chartTitle = $(chartTitle.node());
       $chartTitle.popover({
         html: true,
         animation: false,
@@ -1490,19 +1490,19 @@ function chart_title(args) {
           .selectAll('.mg-popover')
           .remove();
 
-        jQuery(this).popover('show');
-        jQuery(d3.select(args.target).select('.popover').node())
+        $(this).popover('show');
+        $(d3.select(args.target).select('.popover').node())
           .on('mouseleave', function () {
             $chartTitle.popover('hide');
           });
       }).on('mouseleave', function () {
         setTimeout(function () {
-          if (!jQuery('.popover:hover').length) {
+          if (!$('.popover:hover').length) {
             $chartTitle.popover('hide');
           }
         }, 120);
       });
-    } else if (args.show_tooltips && args.description && typeof jQuery === 'undefined') {
+    } else if (args.show_tooltips && args.description && typeof $ === 'undefined') {
       args.error = 'In order to enable tooltips, please make sure you include jQuery.';
     }
   }
@@ -4446,15 +4446,15 @@ MG.button_layout = function(target) {
       }
     }
 
-    jQuery(this.target).empty();
+    $(this.target).empty();
 
-    jQuery(this.target).append("<div class='col-lg-12 segments text-center'></div>");
+    $(this.target).append("<div class='col-lg-12 segments text-center'></div>");
 
     var dropdownLiAClick = function() {
-      var k = jQuery(this).data('key');
-      var feature = jQuery(this).data('feature');
+      var k = $(this).data('key');
+      var feature = $(this).data('feature');
       var manual_feature;
-      jQuery('.' + feature + '-btns button.btn span.title').html(k);
+      $('.' + feature + '-btns button.btn span.title').html(k);
       if (!manual_map.hasOwnProperty(feature)) {
         callback(feature, k);
       } else {
@@ -4467,7 +4467,7 @@ MG.button_layout = function(target) {
 
     for (var feature in this.feature_set) {
       features = this.feature_set[feature];
-      jQuery(this.target + ' div.segments').append(
+      $(this.target + ' div.segments').append(
         '<div class="btn-group ' + this._strip_punctuation(feature) + '-btns text-left">' + // This never changes.
         '<button type="button" class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown">' +
         "<span class='which-button'>" + (this.public_name.hasOwnProperty(feature) ? this.public_name[feature] : feature) + "</span>" +
@@ -4481,13 +4481,13 @@ MG.button_layout = function(target) {
 
       for (i = 0; i < features.length; i++) {
         if (features[i] !== 'all' && features[i] !== undefined) { // strange bug with undefined being added to manual buttons.
-          jQuery(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
+          $(this.target + ' div.' + this._strip_punctuation(feature) + '-btns ul.dropdown-menu').append(
             '<li><a href="#" data-feature="' + this._strip_punctuation(feature) + '" data-key="' + features[i] + '">' + features[i] + '</a></li>'
           );
         }
       }
 
-      jQuery('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
+      $('.' + this._strip_punctuation(feature) + '-btns .dropdown-menu li a').on('click', dropdownLiAClick);
     }
 
     return this;
@@ -6958,13 +6958,13 @@ MG.data_table = function(args) {
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        jQuery(th.node()).popover({
+        $(th.node()).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: jQuery(th.node())
+          container: $(th.node())
         });
       }
     }

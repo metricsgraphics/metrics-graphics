@@ -126,13 +126,13 @@ MG.data_table = function(args) {
           .classed('fa-question-circle', true)
           .classed('fa-inverse', true);
 
-        jQuery(th.node()).popover({
+        $(th.node()).popover({
           html: true,
           animation: false,
           content: this_col.description,
           trigger: 'hover',
           placement: 'top',
-          container: jQuery(th.node())
+          container: $(th.node())
         });
       }
     }
