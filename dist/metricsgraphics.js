@@ -3303,7 +3303,10 @@ function mg_default_xax_format(args) {
 
   var data = args.processed.original_data || args.data;
   var flattened = mg_flatten_array(data)[0];
-  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor] || flattened;
+  var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
+  if (test_point_x === undefined) {
+    test_point_x = flattened;
+  }
 
   return function(d) {
     mg_process_time_format(args);
@@ -3311,9 +3314,10 @@ function mg_default_xax_format(args) {
     if (test_point_x instanceof Date) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
+      var is_float = d % 1 !== 0;
       var pf;
-      if (d < 1.0 && d > -1.0 && d !== 0) {
-        // don't scale tiny values
+
+      if (is_float) {
         pf = d3.format(',.' + args.decimals + 'f');
       } else if (d < 1000) {
         pf = d3.format(',.0f');
@@ -7862,21 +7866,26 @@ function format_rollover_number(args) {
   if (args.format === 'count') {
     num = function(d) {
       var is_float = d % 1 !== 0;
-      var n = d3.format(',.0f');
-      d = is_float ? d.toFixed(args.decimals) : d;
+      var pf;
+
+      if (is_float) {
+        pf = d3.format(',.' + args.decimals + 'f');
+      } else {
+        pf = d3.format(',.0f');
+      }
 
       // are we adding units after the value or before?
       if (args.yax_units_append) {
-        return n(d) + args.yax_units;
+        return pf(d) + args.yax_units;
       } else {
-        return args.yax_units + n(d);
+        return args.yax_units + pf(d);
       }
     };
   } else {
     num = function(d_) {
       var fmt_string = (args.decimals ? '.' + args.decimals : '') + '%';
-      var n = d3.format(fmt_string);
-      return n(d_);
+      var pf = d3.format(fmt_string);
+      return pf(d_);
     };
   }
   return num;

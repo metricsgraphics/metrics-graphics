@@ -3,21 +3,26 @@ function format_rollover_number(args) {
   if (args.format === 'count') {
     num = function(d) {
       var is_float = d % 1 !== 0;
-      var n = d3.format(',.0f');
-      d = is_float ? d.toFixed(args.decimals) : d;
+      var pf;
+
+      if (is_float) {
+        pf = d3.format(',.' + args.decimals + 'f');
+      } else {
+        pf = d3.format(',.0f');
+      }
 
       // are we adding units after the value or before?
       if (args.yax_units_append) {
-        return n(d) + args.yax_units;
+        return pf(d) + args.yax_units;
       } else {
-        return args.yax_units + n(d);
+        return args.yax_units + pf(d);
       }
     };
   } else {
     num = function(d_) {
       var fmt_string = (args.decimals ? '.' + args.decimals : '') + '%';
-      var n = d3.format(fmt_string);
-      return n(d_);
+      var pf = d3.format(fmt_string);
+      return pf(d_);
     };
   }
   return num;
