@@ -3262,21 +3262,16 @@ function mg_get_time_format(utc, diff) {
     main_time_format = MG.time_format(utc, '%M:%S.%L');
   } else if (mg_sec_diff(diff)) {
     main_time_format = MG.time_format(utc, '%M:%S');
-
   } else if (mg_day_diff(diff)) {
     main_time_format = MG.time_format(utc, '%H:%M');
-
   } else if (mg_four_days(diff)) {
     main_time_format = MG.time_format(utc, '%H:%M');
-
   } else if (mg_many_days(diff)) {
     main_time_format = MG.time_format(utc, '%b %d');
-
   } else if (mg_many_months(diff)) {
     main_time_format = MG.time_format(utc, '%b');
   } else {
     main_time_format = MG.time_format(utc, '%Y');
-
   }
   return main_time_format;
 }
