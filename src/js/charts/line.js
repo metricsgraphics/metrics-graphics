@@ -171,7 +171,7 @@
       var lineTransition = existing_line.transition()
         .duration(plot.update_transition_duration);
 
-      if (!plot.display_area && args.transition_on_update) {
+      if (!plot.display_area && args.transition_on_update && !args.missing_is_hidden) {
         lineTransition.attrTween('d', path_tween(plot.line(args.data[which_line]), 4));
       } else {
         lineTransition.attr('d', plot.line(args.data[which_line]));

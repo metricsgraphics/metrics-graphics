@@ -4668,7 +4668,7 @@ MG.button_layout = function(target) {
       var lineTransition = existing_line.transition()
         .duration(plot.update_transition_duration);
 
-      if (!plot.display_area && args.transition_on_update) {
+      if (!plot.display_area && args.transition_on_update && !args.missing_is_hidden) {
         lineTransition.attrTween('d', path_tween(plot.line(args.data[which_line]), 4));
       } else {
         lineTransition.attr('d', plot.line(args.data[which_line]));
@@ -8028,7 +8028,8 @@ function path_tween(d1, precision) {
 
     return function(t) {
       return t < 1 ? "M" + points.map(function(p) {
-        return p(t); }).join("L") : d1;
+        return p(t);
+      }).join("L") : d1;
     };
   };
 }

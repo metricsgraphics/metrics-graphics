@@ -22,7 +22,8 @@ function path_tween(d1, precision) {
 
     return function(t) {
       return t < 1 ? "M" + points.map(function(p) {
-        return p(t); }).join("L") : d1;
+        return p(t);
+      }).join("L") : d1;
     };
   };
 }
