@@ -7372,11 +7372,6 @@ function process_line(args) {
     return series.length > 0 && series[0][args.x_accessor] instanceof Date;
   })) > 0;
 
-  // force linear interpolation when missing_is_hidden is enabled
-  if (args.missing_is_hidden) {
-    args.interpolate = d3.curveLinear;
-  }
-
   // are we replacing missing y values with zeros?
   if ((args.missing_is_zero || args.missing_is_hidden) && args.chart_type === 'line' && is_time_series) {
     for (var i = 0; i < args.data.length; i++) {
