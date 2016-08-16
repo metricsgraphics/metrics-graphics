@@ -7,7 +7,7 @@
     root.MG = factory(root.d3);
   }
 }(this, function(d3) {
-window.MG = {version: '2.10.0'};
+window.MG = {version: '2.10.1'};
 
 //a set of helper functions, some that we've written, others that we've borrowed
 
