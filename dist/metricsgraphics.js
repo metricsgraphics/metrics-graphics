@@ -5028,9 +5028,9 @@ MG.button_layout = function(target) {
 
   function mg_configure_aggregate_rollover(args, svg) {
     var rect = svg.selectAll('.mg-rollover-rect rect');
-    if (args.data.filter(function(d) {
-        return d.length === 1; }).length > 0) {
-      rect.on('mouseover')(rect[0][0].__data__, 0);
+    var rect_first = rect.nodes()[0][0] || rect.nodes()[0];
+    if (args.data.filter(function(d) { return d.length === 1; }).length > 0) {
+      rect.on('mouseover')(rect_first.__data__, 0);
     }
   }
 
@@ -6117,20 +6117,24 @@ function mg_color_point_mouseover(args, elem, d) {
 
   // barchart re-write.
   function mg_targeted_legend(args) {
+    var labels;
     var plot = '';
     if (args.legend_target) {
 
       var div = d3.select(args.legend_target).append('div').classed('mg-bar-target-legend', true);
-      var labels = args.categorical_variables;
+      
+      if (args.orientation == 'horizontal') labels = args.scales.Y.domain()
+      else labels = args.scales.X.domain();
+
       labels.forEach(function(label) {
         var outer_span = div.append('span').classed('mg-bar-target-element', true);
         outer_span.append('span')
           .classed('mg-bar-target-legend-shape', true)
-          .style('color', args.scales.colorf(label))
+          .style('color', args.scales.COLOR(label))
           .text('\u25FC ');
         outer_span.append('span')
           .classed('mg-bar-target-legend-text', true)
-          .text(label)
+          .text(label);
 
       });
     }
@@ -6139,11 +6143,18 @@ function mg_color_point_mouseover(args, elem, d) {
   function legend_on_graph(svg, args) {
     // draw each element at the top right
     // get labels
-    var labels = args.scales.Y.domain();
+
+    var labels;
+    if (args.orientation=='horizontal') labels = args.scales.Y.domain()
+    else labels = args.scales.X.domain();
+
     var lineCount = 0;
     var lineHeight = 1.1;
     var g = svg.append('g').classed("mg-bar-legend", true);
     var textContainer = g.append('text');
+
+    //
+
     textContainer
       .selectAll('*')
       .remove();
@@ -6567,8 +6578,7 @@ function mg_color_point_mouseover(args, elem, d) {
       //         return args.scalefns.ygroupf(d) + args.scalefns.yf(d) + args.scales.Y.rangeBand() * 3 / 4
       //       });
       //   }
-
-      if (args.legend && args.ygroup_accessor && args.color_accessor !== false && args.ygroup_accessor !== args.color_accessor) {
+        if (args.legend || (args.color_accessor !== null && args.ygroup_accessor !== args.color_accessor)) {
         if (!args.legend_target) legend_on_graph(svg, args);
         else mg_targeted_legend(args);
       }
@@ -6813,7 +6823,7 @@ function mg_color_point_mouseover(args, elem, d) {
     color_accessor: null,
     color_type: 'category',
     color_domain: null,
-    legend: true,
+    legend: false,
     legend_target: null,
     mouseover_align: 'right',
     baseline_accessor: null,

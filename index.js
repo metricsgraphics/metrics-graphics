@@ -1,1 +1,1 @@
-module.exports = require('./dist/metricsgraphics');
+module.exports = require('./dist/metricsgraphics')

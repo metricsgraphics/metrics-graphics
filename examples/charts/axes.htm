@@ -169,8 +169,95 @@ d3.json('data/brief-1.json', function(data) {
     });
 });</code></pre>
 
-                </div>
-            </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center'>
+        <div class='row'>
+            <div class='col-lg-6 text-center' id='axis-pos-1'></div>
+            <div class='col-lg-6 text-center' id='axis-pos-2'></div>
+        </div>
+        <div class='row'>
+            <div class='col-lg-6 text-center' id='axis-pos-3'></div>
+            <div class='col-lg-6 text-center' id='axis-pos-4'></div>
+        </div>
+    </div>
+    <div class='col-lg-5'>
+        <div class='data-column'>
+            <a href='data/fake_users1.json'>data 1</a>,
+            <a href='data/brief-1.json'>data 2</a>
+        </div>
+
+<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    var position = [['left', 'top'],['right', 'top'], ['left', 'bottom'], ['right', 'bottom']];
+    position.forEach(function(pos,i) {
+        console.log(pos,i)
+        var i = i+1;
+        
+        MG.data_graphic({
+            title: "Axis Positions: " + pos[0] +', ' + pos[1],
+            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
+            x_axis_position: pos[1],
+            y_axis_position: pos[0],
+            data: data,
+            decimals: 0,
+            left: pos[0] === 'right' ? 20 : 50,
+            right: pos[0] === 'left' ? 20 : 50,
+            top: pos[1] === 'bottom' ? 50 : 50,
+            bottom: pos[1] === 'top' ? 25 : 50,
+            target: '#axis-pos-'+i,
+            area: false
+        });      
+    })
+});</code></pre>
+
+    </div>
+</div>
+
+
+<script>
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    var position = [['left', 'top'],['right', 'top'], ['left', 'bottom'], ['right', 'bottom']];
+    position.forEach(function(pos,i) {
+        var i = i+1;
+        
+        MG.data_graphic({
+            title: "Axis Positions: " + pos[0] +', ' + pos[1],
+            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
+            x_axis_position: pos[1],
+            y_axis_position: pos[0],
+            data: data,
+            decimals: 0,
+            left: pos[0] === 'right' ? 20 : 50,
+            right: pos[0] === 'left' ? 20 : 50,
+            top: pos[1] === 'bottom' ? 50 : 50,
+            bottom: pos[1] === 'top' ? 25 : 50,
+            target: '#axis-pos-'+i,
+            area: false
+        });      
+    })
+});
+</script>
+
+
+
+
+
+
+
+
 
             <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
