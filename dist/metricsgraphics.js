@@ -5028,9 +5028,9 @@ MG.button_layout = function(target) {
 
   function mg_configure_aggregate_rollover(args, svg) {
     var rect = svg.selectAll('.mg-rollover-rect rect');
-    if (args.data.filter(function(d) {
-        return d.length === 1; }).length > 0) {
-      rect.on('mouseover')(rect[0][0].__data__, 0);
+    var rect_first = rect.nodes()[0][0] || rect.nodes()[0];
+    if (args.data.filter(function(d) { return d.length === 1; }).length > 0) {
+      rect.on('mouseover')(rect_first.__data__, 0);
     }
   }
 
