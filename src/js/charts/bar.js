@@ -123,7 +123,6 @@
         .attr('font-weight', 300)
         .attr('font-size', 10);
       lineCount++;
-
     })
 
     // d.values.forEach(function (datum) {
@@ -324,6 +323,9 @@
           .classed('default-bar', args.scales.hasOwnProperty('COLOR') ? false : true);
 
       // TODO - reimplement
+
+      // reference_accessor {}
+
       // if (args.predictor_accessor) {
       //   predictor_bars = barplot.selectAll('.mg-bar-prediction')
       //     .data(data.filter(function(d) {
@@ -370,6 +372,8 @@
           length_accessor, width_accessor, length_coord_map, width_coord_map,
           length_map, width_map;
 
+      var reference_length_map, reference_length_coord_fn;
+
       if (args.orientation == 'vertical') {
         length = 'height';
         width = 'width';
@@ -396,6 +400,14 @@
         length_map = function(d) {
           return Math.abs(length_scalefn(d) - length_scale(0));
         }
+
+        reference_length_map = function(d) {
+          return Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0));
+        }
+
+        reference_length_coord_fn = function(d){
+          return length_scale(d[args.reference_accessor]);
+        }
       }
 
       if (args.orientation == 'horizontal') {
@@ -421,6 +433,14 @@
         length_map = function(d) {
           return Math.abs(length_scalefn(d) - length_scale(0));
         }
+
+        reference_length_map = function(d) {
+          return Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0));
+        }
+
+        reference_length_coord_fn = function(d){
+          return length_scale(0);
+        }
       }
 
       // if (perform_load_animation) {
@@ -442,6 +462,8 @@
 
       // bars.attr(length_coord, 40)
       //bars.attr(width_coord, 70)
+
+
 
       bars.attr(width_coord, function(d) {
         var w;
@@ -465,7 +487,28 @@
         .attr(length, length_map)
         .attr(width, function(d) {
           return args.bar_thickness;
-        });
+      });
+
+
+
+
+      if (args.reference_accessor !== null) {
+        // ok, plot here.
+        var reference_data = data.filter(function(d){
+          return d.hasOwnProperty(args.reference_accessor);
+        })
+        var reference_bars = barplot.selectAll('.mg-categorical-reference')
+          .data(reference_data)
+          .enter()
+          .append('rect');
+
+        reference_bars.attr(length_coord, reference_length_coord_fn)
+                      .attr(width_coord, function(d) {
+                        return width_scalefn(d) - args.reference_thickness/2
+                      })
+                      .attr(length, reference_length_map)
+                      .attr(width, args.reference_thickness);
+      }
 
         //bars.attr(width_coord, );
         // bars.attr('width', 50);
@@ -669,11 +712,6 @@
       var label_units = this.is_vertical ? args.yax_units : args.xax_units;
 
       return function(d, i) {
-        // svg.selectAll('text')
-        //   .filter(function(g, j) {
-        //     return d === g;
-        //   })
-        //   .attr('opacity', 0.3);
 
         var fmt = MG.time_format(args.utc_time, '%b %e, %Y');
         var num = format_rollover_number(args);
@@ -765,10 +803,13 @@
     buffer: 16,
     y_accessor: 'factor',
     x_accessor: 'value',
+    reference_accessor: null,
+    comparison_accessor: null,
     secondary_label_accessor: null,
     color_accessor: null,
     color_type: 'category',
     color_domain: null,
+    reference_thickness: 1,
     legend: false,
     legend_target: null,
     mouseover_align: 'right',
