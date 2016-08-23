@@ -292,6 +292,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
             out.size = Math.random();
             out.when = p.Date;
             out.reference = Math.floor(Math.random() * 20 + 1);
+            out.comparison = j+i + 1;
             polls.push(out);
         })
     });
@@ -318,6 +319,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
         y_accessor: 'number',
         x_accessor: 'candidate',
         reference_accessor: 'reference',
+        comparison_accessor: 'comparison',
         height:400,
         width:300,
         target: '#bar-categorical',
@@ -341,6 +343,8 @@ d3.tsv('data/nh-gop.csv', function(data) {
         x_accessor: 'number',
         y_accessor: 'candidate',
         reference_accessor: 'reference',
+                comparison_accessor: 'comparison',
+
         height:300,
         width:300,
         target: '#bar-categorical2',

@@ -493,7 +493,6 @@
 
 
       if (args.reference_accessor !== null) {
-        // ok, plot here.
         var reference_data = data.filter(function(d){
           return d.hasOwnProperty(args.reference_accessor);
         })
@@ -502,12 +501,43 @@
           .enter()
           .append('rect');
 
-        reference_bars.attr(length_coord, reference_length_coord_fn)
-                      .attr(width_coord, function(d) {
-                        return width_scalefn(d) - args.reference_thickness/2
-                      })
-                      .attr(length, reference_length_map)
-                      .attr(width, args.reference_thickness);
+        reference_bars
+          .attr(length_coord, reference_length_coord_fn)
+          .attr(width_coord, function(d) {
+            return width_scalefn(d) - args.reference_thickness/2
+          })
+          .attr(length, reference_length_map)
+          .attr(width, args.reference_thickness);
+      }
+
+      if (args.comparison_accessor !== null) {
+        var comparison_thickness = null;
+        if (args.comparison_thickness === null) {
+          comparison_thickness = args.bar_thickness/2;
+        } else {
+          comparison_thickness = args.comparison_thickness;
+        }
+
+
+        var comparison_data = data.filter(function(d) {
+          return d.hasOwnProperty(args.comparison_accessor);
+        })
+        var comparison_marks = barplot.selectAll('.mg-categorical-comparison')
+          .data(comparison_data)
+          .enter()
+          .append('line');
+
+        comparison_marks
+          .attr(length_coord + '1', function(d){return length_scale(d[args.comparison_accessor])})
+          .attr(length_coord + '2', function(d){return length_scale(d[args.comparison_accessor])})
+          .attr(width_coord + '1',  function(d){
+            return width_scalefn(d) - comparison_thickness/2;
+          })
+          .attr(width_coord + '2', function(d) {
+            return width_scalefn(d) + comparison_thickness/2;
+          })
+          .attr('stroke', 'black')
+          .attr('stroke-width', args.comparison_width);
       }
 
         //bars.attr(width_coord, );
@@ -810,6 +840,8 @@
     color_type: 'category',
     color_domain: null,
     reference_thickness: 1,
+    comparison_width: 3,
+    comparison_thickness: null,
     legend: false,
     legend_target: null,
     mouseover_align: 'right',
