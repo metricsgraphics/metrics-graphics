@@ -7176,9 +7176,9 @@ MG.data_table = function(args) {
     g.append('svg:rect')
       .classed('mg-missing-background', true)
       .attr('x', args.buffer)
-      .attr('y', args.buffer)
+      .attr('y', args.buffer + args.title_y_position * 2)
       .attr('width', args.width - args.buffer * 2)
-      .attr('height', args.height - args.buffer * 2)
+      .attr('height', args.height - args.buffer * 2 - args.title_y_position * 2)
       .attr('rx', 15)
       .attr('ry', 15);
   }
@@ -7223,8 +7223,6 @@ MG.data_table = function(args) {
       mg_init_compute_width(args);
       mg_init_compute_height(args);
 
-      chart_title(args);
-
       // create svg if one doesn't exist
 
       var container = d3.select(args.target);
@@ -7238,6 +7236,8 @@ MG.data_table = function(args) {
 
       svg.classed('mg-missing', true);
       mg_missing_remove_legend(args);
+
+      chart_title(args);
 
       // are we adding a background placeholder
       if (args.show_missing_background) {
