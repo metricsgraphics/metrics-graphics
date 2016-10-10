@@ -9,7 +9,7 @@ function mg_remove_existing_markers(svg) {
 
 function mg_in_range(args) {
   return function(d) {
-    return (args.scales.X(d[args.x_accessor]) > mg_get_plot_left(args)) && (args.scales.X(d[args.x_accessor]) < mg_get_plot_right(args));
+    return (args.scales.X(d[args.x_accessor]) >= mg_get_plot_left(args)) && (args.scales.X(d[args.x_accessor]) <= mg_get_plot_right(args));
   };
 }
 
