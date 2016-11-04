@@ -19,13 +19,13 @@ function find_virtual_window(MG, jsdom, callback) {
 }
 
 function use_virtual_element(fn, jsdom_instance) {
-  var jsdom = jsdom_instance || jsdom;
+  var global_scope = typeof window === 'undefined' ? global : window;
+
+  var jsdom = jsdom_instance || global_scope.jsdom;
   if (typeof jsdom === 'undefined') {
     (console.error || console.log)('jsdom could not be found.');
     return;
   }
-
-  var global_scope = typeof window === 'undefined' ? global : window;
 
   find_virtual_window(MG, jsdom, function(virtual_window) {
     var virtual_d3 = d3.select(virtual_window.document);
