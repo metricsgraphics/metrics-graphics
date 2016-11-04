@@ -46,7 +46,11 @@ function use_virtual_element(fn, jsdom_instance) {
     function done() {
       virtual_d3.select(target).remove();
     }
-    fn(target, get_markup, done);
+    try {
+      fn(target, get_markup, done);
+    } catch(e) {
+      (console.error || console.log)(e);
+    }
 
     global_scope.d3 = original_d3;
     global_scope.window = original_window;
