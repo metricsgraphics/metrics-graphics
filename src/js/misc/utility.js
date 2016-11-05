@@ -341,7 +341,7 @@ function mg_target_ref(target) {
   if (typeof target === 'string') {
     return mg_normalize(target);
 
-  } else if (target instanceof HTMLElement) {
+  } else if (target instanceof window.HTMLElement) {
     target_ref = target.getAttribute('data-mg-uid');
     if (!target_ref) {
       target_ref = mg_next_id();
