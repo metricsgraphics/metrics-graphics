@@ -48,6 +48,7 @@ var
     src + 'misc/smoothers.js',
     src + 'misc/formatters.js',
     src + 'misc/transitions.js',
+    src + 'misc/markup.js',
     src + 'misc/error.js'
   ];
 
