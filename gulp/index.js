@@ -10,8 +10,7 @@ var
   //minifycss = require('gulp-minify-css'), // for minifiing css
   jshint = require('gulp-jshint'),
   testem = require('gulp-testem'),
-  connect = require('gulp-connect'),
-  es6ModuleTranspiler = require("gulp-es6-module-transpiler");
+  connect = require('gulp-connect');
 
 // paths
 var
