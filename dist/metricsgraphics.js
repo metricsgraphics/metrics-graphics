@@ -3874,7 +3874,7 @@ function mg_remove_existing_markers(svg) {
 
 function mg_in_range(args) {
   return function(d) {
-    return (args.scales.X(d[args.x_accessor]) > mg_get_plot_left(args)) && (args.scales.X(d[args.x_accessor]) < mg_get_plot_right(args));
+    return (args.scales.X(d[args.x_accessor]) >= mg_get_plot_left(args)) && (args.scales.X(d[args.x_accessor]) <= mg_get_plot_right(args));
   };
 }
 
@@ -5822,6 +5822,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .zeroLine(args.y_axis_type === 'categorical')
         .position(args.x_axis_position)
         .rug(x_rug(args))
+        .label(mg_add_x_label)
         .draw();
 
       new MG.axis_factory(args)
@@ -5830,6 +5831,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .zeroLine(args.x_axis_type === 'categorical')
         .position(args.y_axis_position)
         .rug(y_rug(args))
+        .label(mg_add_y_label)
         .draw();
 
       this.mainPlot();
