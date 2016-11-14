@@ -163,6 +163,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .zeroLine(args.y_axis_type === 'categorical')
         .position(args.x_axis_position)
         .rug(x_rug(args))
+        .label(mg_add_x_label)
         .draw();
 
       new MG.axis_factory(args)
@@ -171,6 +172,7 @@ function mg_color_point_mouseover(args, elem, d) {
         .zeroLine(args.x_axis_type === 'categorical')
         .position(args.y_axis_position)
         .rug(y_rug(args))
+        .label(mg_add_y_label)
         .draw();
 
       this.mainPlot();

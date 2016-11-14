@@ -71,6 +71,21 @@ test('args.x_label', function() {
     ok(document.querySelector('.mg-x-axis .label'), 'X-axis label exists');
 });
 
+test('args.labels (scatter plot)', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        x_label: 'foo bar',
+        y_label: 'bar foo',
+        chart_type: 'point'
+    };
+
+    MG.data_graphic(params);
+    ok(document.querySelector('.mg-x-axis .label'), 'X-axis label exists');
+    ok(document.querySelector('.mg-y-axis .label'), 'Y-axis label exists');
+});
+
 test('X-axis doesn\'t break when data object is of length 1', function() {
     var params = {
         target: '#qunit-fixture',
