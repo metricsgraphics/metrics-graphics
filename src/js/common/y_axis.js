@@ -815,7 +815,7 @@ function mg_compute_yax_format (args) {
         } else if (d < 1000) {
           pf = d3.format(',.0f');
         } else {
-          pf = d3.format(',.0s');
+          pf = d3.format(',.2s');
         }
 
         // are we adding units after the value or before?
