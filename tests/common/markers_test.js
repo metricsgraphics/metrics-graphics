@@ -25,7 +25,27 @@ test('Markers that lie outside the visible range are excluded', function() {
             'date': new Date('2014-02-01'),
             'label': '1st Milestone'
         }, {
-            'date': new Date('2014-02-02'),
+            'date': new Date('2014-02-03'),
+            'label': '2nd Milestone'
+        }];
+
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-02-02'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        markers: markers
+    };
+
+    MG.data_graphic(params);
+    equal(document.querySelectorAll(params.target + ' .mg-markers line').length, 1, 'One marker added');
+});
+
+test('Markers that lie at the edge of the visible range are included', function() {
+    var markers = [{
+            'date': new Date('2014-02-01'),
+            'label': '1st Milestone'
+        }, {
+            'date': new Date('2014-03-01'),
             'label': '2nd Milestone'
         }];
 
@@ -37,7 +57,7 @@ test('Markers that lie outside the visible range are excluded', function() {
     };
 
     MG.data_graphic(params);
-    equal(document.querySelectorAll(params.target + ' .mg-markers line').length, 1, 'One marker added');
+    equal(document.querySelectorAll(params.target + ' .mg-markers line').length, markers.length, 'Two markers added');
 });
 
 test('All baselines are added', function() {
