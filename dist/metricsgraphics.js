@@ -443,8 +443,24 @@ function has_too_many_zeros(data, accessor, zero_count) {
   return number_of_values(data, accessor, 0) >= zero_count;
 }
 
-//deep copy
-//http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+function mg_is_date(obj) {
+  return Object.prototype.toString.call(obj) === '[object Date]';
+}
+
+function mg_is_object(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+function mg_is_array(obj) {
+  if (Array.isArray) {
+    return Array.isArray(obj);
+  }
+
+  return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+// deep copy
+// http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
   var copy;
 
@@ -452,14 +468,14 @@ MG.clone = function(obj) {
   if (null === obj || "object" !== typeof obj) return obj;
 
   // Handle Date
-  if (obj instanceof Date) {
+  if (mg_is_date(obj)) {
     copy = new Date();
     copy.setTime(obj.getTime());
     return copy;
   }
 
   // Handle Array
-  if (obj instanceof Array) {
+  if (mg_is_array(obj)) {
     copy = [];
     for (var i = 0, len = obj.length; i < len; i++) {
       copy[i] = MG.clone(obj[i]);
@@ -468,7 +484,7 @@ MG.clone = function(obj) {
   }
 
   // Handle Object
-  if (obj instanceof Object) {
+  if (mg_is_object(obj)) {
     copy = {};
     for (var attr in obj) {
       if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
@@ -479,8 +495,8 @@ MG.clone = function(obj) {
   throw new Error("Unable to copy obj! Its type isn't supported.");
 };
 
-//give us the difference of two int arrays
-//http://radu.cotescu.com/javascript-diff-function/
+// give us the difference of two int arrays
+// http://radu.cotescu.com/javascript-diff-function/
 function arr_diff(a, b) {
   var seen = [],
     diff = [],
@@ -1592,7 +1608,9 @@ function MGScale(args) {
         illustrative_data = args.data[i];
       }
     }
-    scaleArgs.is_time_series = illustrative_data[0][args[scaleArgs.namespace_accessor_name]] instanceof Date ? true : false;
+    scaleArgs.is_time_series = mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+      ? true
+      : false;
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
 
@@ -1773,7 +1791,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
 
-    if (min_val instanceof Date) {
+    if (mg_is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
       min_val = new Date(MG.clone(min_val).setDate(min_val.getDate() - 1));
     } else if (typeof min_val === 'number') {
@@ -3306,7 +3324,7 @@ function mg_default_xax_format(args) {
   return function(d) {
     mg_process_time_format(args);
 
-    if (test_point_x instanceof Date) {
+    if (mg_is_date(test_point_x)) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
       var is_float = d % 1 !== 0;
@@ -3578,7 +3596,7 @@ function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data)
   }
   // if data set is of length 1, expand the range so that we can build the x-axis
   if (mx.min === mx.max && !(args.min_x && args.max_x)) {
-    if (mx.min instanceof Date) {
+    if (mg_is_date(mx.min)) {
       mg_min_max_x_for_dates(mx);
     } else if (typeof min_x === 'number') {
       mg_min_max_x_for_numbers(mx);
@@ -3626,7 +3644,7 @@ function mg_merge_args_with_defaults(args) {
 
 function mg_is_time_series(args) {
   var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
-  args.time_series = first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
+  args.time_series = mg_is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
 }
 
 function mg_init_compute_width(args) {
@@ -3800,7 +3818,7 @@ function mg_categorical_calculate_group_length(args, ns, which) {
     var gh = ns === 'y' ?
       (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
       (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
-    
+
     args[groupHeight] = gh;
   } else {
     var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;
@@ -7384,7 +7402,7 @@ function raw_data_transformation(args) {
       args.data = [args.data];
     }
   } else {
-    if (!(args.data[0] instanceof Array)) {
+    if (!(mg_is_array(args.data[0]))) {
       args.data = [args.data];
     }
   }
@@ -7417,7 +7435,7 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_accessors(args, which_accessor) {
   // turns an array of accessors into ...
-  if (args[which_accessor] instanceof Array) {
+  if (mg_is_array(args[which_accessor])) {
     args.data = args.data.map(function(_d) {
       return args[which_accessor].map(function(ya) {
         return _d.map(function(di) {
@@ -7455,7 +7473,7 @@ function process_line(args) {
 
   // do we have a time-series?
   var is_time_series = d3.sum(args.data.map(function(series) {
-    return series.length > 0 && series[0][args.x_accessor] instanceof Date;
+    return series.length > 0 && mg_is_date(series[0][args.x_accessor]);
   })) > 0;
 
   // are we replacing missing y values with zeros?
@@ -7752,7 +7770,7 @@ function least_squares(x_, y_) {
     _xx = 0;
 
   var n = x_.length;
-  if (x_[0] instanceof Date) {
+  if (mg_is_date(x_[0])) {
     x = x_.map(function(d) {
       return d.getTime();
     });
@@ -7760,7 +7778,7 @@ function least_squares(x_, y_) {
     x = x_;
   }
 
-  if (y_[0] instanceof Date) {
+  if (mg_is_date(y_[0])) {
     y = y_.map(function(d) {
       return d.getTime();
     });

@@ -19,7 +19,7 @@ function mg_merge_args_with_defaults(args) {
 
 function mg_is_time_series(args) {
   var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
-  args.time_series = first_elem[args.processed.original_x_accessor || args.x_accessor] instanceof Date;
+  args.time_series = mg_is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
 }
 
 function mg_init_compute_width(args) {
@@ -193,7 +193,7 @@ function mg_categorical_calculate_group_length(args, ns, which) {
     var gh = ns === 'y' ?
       (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
       (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
-    
+
     args[groupHeight] = gh;
   } else {
     var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;

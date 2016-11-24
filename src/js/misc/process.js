@@ -95,7 +95,7 @@ function raw_data_transformation(args) {
       args.data = [args.data];
     }
   } else {
-    if (!(args.data[0] instanceof Array)) {
+    if (!(mg_is_array(args.data[0]))) {
       args.data = [args.data];
     }
   }
@@ -128,7 +128,7 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_accessors(args, which_accessor) {
   // turns an array of accessors into ...
-  if (args[which_accessor] instanceof Array) {
+  if (mg_is_array(args[which_accessor])) {
     args.data = args.data.map(function(_d) {
       return args[which_accessor].map(function(ya) {
         return _d.map(function(di) {
@@ -166,7 +166,7 @@ function process_line(args) {
 
   // do we have a time-series?
   var is_time_series = d3.sum(args.data.map(function(series) {
-    return series.length > 0 && series[0][args.x_accessor] instanceof Date;
+    return series.length > 0 && mg_is_date(series[0][args.x_accessor]);
   })) > 0;
 
   // are we replacing missing y values with zeros?

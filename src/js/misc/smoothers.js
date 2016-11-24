@@ -94,7 +94,7 @@ function least_squares(x_, y_) {
     _xx = 0;
 
   var n = x_.length;
-  if (x_[0] instanceof Date) {
+  if (mg_is_date(x_[0])) {
     x = x_.map(function(d) {
       return d.getTime();
     });
@@ -102,7 +102,7 @@ function least_squares(x_, y_) {
     x = x_;
   }
 
-  if (y_[0] instanceof Date) {
+  if (mg_is_date(y_[0])) {
     y = y_.map(function(d) {
       return d.getTime();
     });

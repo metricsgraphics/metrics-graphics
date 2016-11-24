@@ -432,8 +432,24 @@ function has_too_many_zeros(data, accessor, zero_count) {
   return number_of_values(data, accessor, 0) >= zero_count;
 }
 
-//deep copy
-//http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+function mg_is_date(obj) {
+  return Object.prototype.toString.call(obj) === '[object Date]';
+}
+
+function mg_is_object(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+function mg_is_array(obj) {
+  if (Array.isArray) {
+    return Array.isArray(obj);
+  }
+
+  return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+// deep copy
+// http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
   var copy;
 
@@ -441,14 +457,14 @@ MG.clone = function(obj) {
   if (null === obj || "object" !== typeof obj) return obj;
 
   // Handle Date
-  if (obj instanceof Date) {
+  if (mg_is_date(obj)) {
     copy = new Date();
     copy.setTime(obj.getTime());
     return copy;
   }
 
   // Handle Array
-  if (obj instanceof Array) {
+  if (mg_is_array(obj)) {
     copy = [];
     for (var i = 0, len = obj.length; i < len; i++) {
       copy[i] = MG.clone(obj[i]);
@@ -457,7 +473,7 @@ MG.clone = function(obj) {
   }
 
   // Handle Object
-  if (obj instanceof Object) {
+  if (mg_is_object(obj)) {
     copy = {};
     for (var attr in obj) {
       if (obj.hasOwnProperty(attr)) copy[attr] = MG.clone(obj[attr]);
@@ -468,8 +484,8 @@ MG.clone = function(obj) {
   throw new Error("Unable to copy obj! Its type isn't supported.");
 };
 
-//give us the difference of two int arrays
-//http://radu.cotescu.com/javascript-diff-function/
+// give us the difference of two int arrays
+// http://radu.cotescu.com/javascript-diff-function/
 function arr_diff(a, b) {
   var seen = [],
     diff = [],

@@ -326,7 +326,7 @@ function mg_default_xax_format(args) {
   return function(d) {
     mg_process_time_format(args);
 
-    if (test_point_x instanceof Date) {
+    if (mg_is_date(test_point_x)) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
       var is_float = d % 1 !== 0;
@@ -598,7 +598,7 @@ function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data)
   }
   // if data set is of length 1, expand the range so that we can build the x-axis
   if (mx.min === mx.max && !(args.min_x && args.max_x)) {
-    if (mx.min instanceof Date) {
+    if (mg_is_date(mx.min)) {
       mg_min_max_x_for_dates(mx);
     } else if (typeof min_x === 'number') {
       mg_min_max_x_for_numbers(mx);

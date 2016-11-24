@@ -76,7 +76,9 @@ function MGScale(args) {
         illustrative_data = args.data[i];
       }
     }
-    scaleArgs.is_time_series = illustrative_data[0][args[scaleArgs.namespace_accessor_name]] instanceof Date ? true : false;
+    scaleArgs.is_time_series = mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+      ? true
+      : false;
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
 
@@ -257,7 +259,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
 
-    if (min_val instanceof Date) {
+    if (mg_is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
       min_val = new Date(MG.clone(min_val).setDate(min_val.getDate() - 1));
     } else if (typeof min_val === 'number') {
