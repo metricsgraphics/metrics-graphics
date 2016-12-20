@@ -907,7 +907,12 @@ function mg_y_domain_range (args, scale) {
 }
 
 function mg_define_y_scales (args) {
-  var scale = args.y_scale_type === 'log' ? d3.scaleLog() : d3.scaleLinear();
+  var scale = (mg_is_function(args.y_scale_type))
+    ? args.y_scale_type()
+    : (args.y_scale_type === 'log')
+      ? d3.scaleLog()
+      : d3.scaleLinear();
+
   if (args.y_scale_type === 'log') {
     if (args.chart_type === 'histogram') {
       // log histogram plots should start just below 1

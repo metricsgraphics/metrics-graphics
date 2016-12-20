@@ -90,9 +90,11 @@ function MGScale(args) {
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
       ? time_scale
-      : (args[scaleArgs.namespace + '_scale_type'] === 'log')
-        ? d3.scaleLog()
-        : d3.scaleLinear();
+      : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
+        ? args.y_scale_type()
+        : (args[scaleArgs.namespace + '_scale_type'] === 'log')
+          ? d3.scaleLog()
+          : d3.scaleLinear();
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';

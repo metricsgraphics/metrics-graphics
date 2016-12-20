@@ -459,6 +459,10 @@ function mg_is_array(obj) {
   return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
+function mg_is_function(obj) {
+  return Object.prototype.toString.call(obj) === '[object Function]';
+}
+
 // deep copy
 // http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
@@ -1622,9 +1626,11 @@ function MGScale(args) {
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
       ? time_scale
-      : (args[scaleArgs.namespace + '_scale_type'] === 'log')
-        ? d3.scaleLog()
-        : d3.scaleLinear();
+      : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
+        ? args.y_scale_type()
+        : (args[scaleArgs.namespace + '_scale_type'] === 'log')
+          ? d3.scaleLog()
+          : d3.scaleLinear();
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
     scaleArgs.scaleType = 'numerical';
@@ -2777,7 +2783,12 @@ function mg_y_domain_range (args, scale) {
 }
 
 function mg_define_y_scales (args) {
-  var scale = args.y_scale_type === 'log' ? d3.scaleLog() : d3.scaleLinear();
+  var scale = (mg_is_function(args.y_scale_type))
+    ? args.y_scale_type()
+    : (args.y_scale_type === 'log')
+      ? d3.scaleLog()
+      : d3.scaleLinear();
+
   if (args.y_scale_type === 'log') {
     if (args.chart_type === 'histogram') {
       // log histogram plots should start just below 1

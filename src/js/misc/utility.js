@@ -448,6 +448,10 @@ function mg_is_array(obj) {
   return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
+function mg_is_function(obj) {
+  return Object.prototype.toString.call(obj) === '[object Function]';
+}
+
 // deep copy
 // http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 MG.clone = function(obj) {
