@@ -63,6 +63,8 @@ To run the development server (accessible at http://localhost:4300):
 
     gulp serve
 
+In order to request or faciliate deployments to metricsgraphicsjs.org, please contact Natalie Haywood (nhaywood@mozilla.com).
+
 You might also be interested in writing addons for the library, in which case, [have a read through this page](https://github.com/mozilla/metrics-graphics/wiki/Developing-Addons).
 
 ## Resources
