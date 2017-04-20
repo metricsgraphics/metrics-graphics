@@ -298,7 +298,9 @@
     var line_id = 1;
     for (var i = 0; i < args.data.length; i++) {
       for (var j = 0; j < args.data[i].length; j++) {
-        // if custom line-color map is set, use that instead of line_id
+        // Index is saved as original line id for the legend values
+        args.data[i][j].index = line_id;
+        // if custom line-color map is set, use that instead of line_id (For colors)
         if (args.custom_line_color_map.length > 0) {
           args.data[i][j].line_id = args.custom_line_color_map[i];
         } else {
@@ -862,7 +864,7 @@
             }
 
             if (args.legend) {
-              mg_line_color_text(row.text(args.legend[di.line_id - 1] + '  ').bold().elem(), di, args);
+              mg_line_color_text(row.text(args.legend[di.index - 1] + '  ').bold().elem(), di, args);
             }
 
             mg_line_color_text(row.text('\u2014  ').elem(), di, args);
