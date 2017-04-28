@@ -12,6 +12,9 @@ if (mg_jquery_exists()) {
     +function ($) {
       'use strict';
 
+      if(typeof $().tooltip == 'function')
+        return true;
+
       // TOOLTIP PUBLIC CLASS DEFINITION
       // ===============================
 
@@ -526,6 +529,9 @@ if (mg_jquery_exists()) {
 
     +function ($) {
       'use strict';
+
+      if(typeof $().popover == 'function')
+        return true;
 
       // POPOVER PUBLIC CLASS DEFINITION
       // ===============================
