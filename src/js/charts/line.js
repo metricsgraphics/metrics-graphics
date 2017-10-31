@@ -679,7 +679,7 @@
   function mg_trigger_linked_mouseovers(args, d, i) {
     if (args.linked && !MG.globals.link) {
       MG.globals.link = true;
-      if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
+      if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
         var datum = d.values ? d.values[0] : d;
         var id = mg_rollover_format_id(datum, i, args);
         // trigger mouseover on matching line in .linked charts
