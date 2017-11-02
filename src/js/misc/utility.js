@@ -35,24 +35,19 @@ function mg_jquery_exists() {
 }
 
 function mg_get_rollover_time_format(args) {
-  var fmt;
   switch (args.processed.x_time_frame) {
     case 'millis':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
     case 'seconds':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
     case 'less-than-a-day':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
     case 'four-days':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
-    default:
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
   }
-  return fmt;
+
+  // default
+  return MG.time_format(args.utc_time, '%b %e, %Y');
 }
 
 function mg_data_in_plot_bounds(datum, args) {
