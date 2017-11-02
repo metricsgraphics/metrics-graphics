@@ -35,6 +35,11 @@ function mg_jquery_exists() {
 }
 
 function mg_get_rollover_time_format(args) {
+  // if a rollover time format is defined, use that
+  if (args.rollover_time_format) {
+    return MG.time_format(args.utc_time, args.rollover_time_format);
+  }
+
   switch (args.processed.x_time_frame) {
     case 'millis':
       return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
