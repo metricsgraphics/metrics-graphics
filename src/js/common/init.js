@@ -23,7 +23,7 @@ function mg_is_time_series(args) {
 }
 
 function mg_init_compute_width(args) {
-  var svg_width = args.width;
+  var svg_width = parseInt(args.width);
   if (args.full_width) {
     svg_width = get_width(args.target);
   }
@@ -35,7 +35,7 @@ function mg_init_compute_width(args) {
 }
 
 function mg_init_compute_height(args) {
-  var svg_height = args.height;
+  var svg_height = parseInt(args.height);
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
