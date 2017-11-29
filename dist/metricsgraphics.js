@@ -46,24 +46,24 @@ function mg_jquery_exists() {
 }
 
 function mg_get_rollover_time_format(args) {
-  var fmt;
+  // if a rollover time format is defined, use that
+  if (args.rollover_time_format) {
+    return MG.time_format(args.utc_time, args.rollover_time_format);
+  }
+
   switch (args.processed.x_time_frame) {
     case 'millis':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
     case 'seconds':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
     case 'less-than-a-day':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
+      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
     case 'four-days':
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-      break;
-    default:
-      fmt = MG.time_format(args.utc_time, '%b %e, %Y');
+      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
   }
-  return fmt;
+
+  // default
+  return MG.time_format(args.utc_time, '%b %e, %Y');
 }
 
 function mg_data_in_plot_bounds(datum, args) {
@@ -3659,7 +3659,7 @@ function mg_is_time_series(args) {
 }
 
 function mg_init_compute_width(args) {
-  var svg_width = args.width;
+  var svg_width = parseInt(args.width);
   if (args.full_width) {
     svg_width = get_width(args.target);
   }
@@ -3671,7 +3671,7 @@ function mg_init_compute_width(args) {
 }
 
 function mg_init_compute_height(args) {
-  var svg_height = args.height;
+  var svg_height = parseInt(args.height);
   if (args.full_height) {
     svg_height = get_height(args.target);
   }
@@ -4867,7 +4867,7 @@ MG.button_layout = function(target) {
     };
   }
 
-  function mg_add_voronoi_rollover(args, svg, rollover_on, rollover_off, rollover_move) {
+  function mg_add_voronoi_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     var voronoi = d3.voronoi()
       .x(function(d) {
         return args.scales.X(d[args.x_accessor]).toFixed(2); })
@@ -4890,6 +4890,7 @@ MG.button_layout = function(target) {
       .datum(function(d) {
         return d == null ? null : d.data; }) // because of d3.voronoi, reassign d
       .attr('class', mg_line_class_string(args))
+      .on('click', rollover_click)
       .on('mouseover', rollover_on)
       .on('mouseout', rollover_off)
       .on('mousemove', rollover_move);
@@ -4915,7 +4916,7 @@ MG.button_layout = function(target) {
     }
   }
 
-  function mg_add_aggregate_rollover(args, svg, rollover_on, rollover_off, rollover_move) {
+  function mg_add_aggregate_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     // Undo the keys getting coerced to strings, by setting the keys from the values
     // This is necessary for when we have X axis keys that are things like
     var data_nested = nest_data_for_aggregate_rollover(args);
@@ -4956,6 +4957,7 @@ MG.button_layout = function(target) {
       })
       .attr('height', args.height - args.bottom - args.top - args.buffer)
       .attr('opacity', 0)
+      .on('click', rollover_click)
       .on('mouseover', rollover_on)
       .on('mouseout', rollover_off)
       .on('mousemove', rollover_move);
@@ -5007,7 +5009,7 @@ MG.button_layout = function(target) {
     return id;
   }
 
-  function mg_add_single_line_rollover(args, svg, rollover_on, rollover_off, rollover_move) {
+  function mg_add_single_line_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     // set to 1 unless we have a custom increment series
     var line_id = 1;
     if (args.custom_line_color_map.length > 0) {
@@ -5049,6 +5051,7 @@ MG.button_layout = function(target) {
           : args.height - args.bottom - args.top - args.buffer;
       })
       .attr('opacity', 0)
+      .on('click', rollover_click)
       .on('mouseover', rollover_on)
       .on('mouseout', rollover_off)
       .on('mousemove', rollover_move);
@@ -5152,11 +5155,11 @@ MG.button_layout = function(target) {
     mg_set_unique_line_id_for_each_series(args);
 
     if (mg_is_standard_multiline(args)) {
-      mg_add_voronoi_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
+      mg_add_voronoi_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args));
     } else if (mg_is_aggregated_rollover(args)) {
-      mg_add_aggregate_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
+      mg_add_aggregate_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args));
     } else {
-      mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args));
+      mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args));
     }
   }
 
@@ -5206,7 +5209,7 @@ MG.button_layout = function(target) {
   function mg_trigger_linked_mouseovers(args, d, i) {
     if (args.linked && !MG.globals.link) {
       MG.globals.link = true;
-      if (!args.aggregate_rollover || d.value !== undefined || d.values.length > 0) {
+      if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
         var datum = d.values ? d.values[0] : d;
         var id = mg_rollover_format_id(datum, i, args);
         // trigger mouseover on matching line in .linked charts
@@ -5355,7 +5358,16 @@ MG.button_layout = function(target) {
       return this;
     };
 
+    this.rolloverClick =  function(args) {
+        return function(d, i) {
+            if (args.click) {
+                args.click(d, i);
+            }
+        };
+    };
+
     this.rolloverOn = function(args) {
+
       var svg = mg_get_svg_child_of(args.target);
       var fmt = mg_get_rollover_time_format(args);
 
