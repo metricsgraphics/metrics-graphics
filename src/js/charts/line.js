@@ -619,7 +619,7 @@
   function mg_line_rollover_setup(args, graph) {
     var svg = mg_get_svg_child_of(args.target);
 
-    if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+    if (args.showActivePoint && svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       mg_add_g(svg, 'mg-active-datapoint-container');
     }
 
