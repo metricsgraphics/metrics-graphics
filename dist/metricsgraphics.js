@@ -787,7 +787,8 @@ MG.data_graphic = function(args) {
     max_data_size: null,                        // explicitly specify the the max number of line series, for use with custom_line_color_map
     aggregate_rollover: false,                  // links the lines in a multi-line chart
     show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    showActivePoint: true                   // If enabled show active data point information in chart
+    showActivePoint: true,                      // If enabled show active data point information in chart
+    clickableMarkerLines: false                 // If enabled, the marker lines are also clickable and also trigger marker.click function if exists.
   };
 
   MG.call_hook('global.defaults', defaults);
@@ -5373,8 +5374,24 @@ MG.button_layout = function(target) {
       var fmt = mg_get_rollover_time_format(args);
 
       return function(d, i) {
+
         mg_update_rollover_circle(args, svg, d);
         mg_trigger_linked_mouseovers(args, d, i);
+
+        if (args.clickableMarkerLines && args.markers && args.markers.length > 0) {
+
+           var targetMarker = null;
+           var rollingOnMarker = args.markers.find(function (marker) {
+               targetMarker = marker;
+               return (marker.date.toDateString() == (d.key || d.date).toDateString());
+           });
+
+           if(rollingOnMarker && targetMarker) {
+               if (targetMarker.click) {
+                   d3.select(this).style('cursor', 'pointer').on('click', targetMarker.click);
+               }
+           }
+        }
 
         svg.selectAll('text')
           .filter(function(g, j) {

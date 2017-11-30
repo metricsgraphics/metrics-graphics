@@ -845,8 +845,24 @@
       var fmt = mg_get_rollover_time_format(args);
 
       return function(d, i) {
+
         mg_update_rollover_circle(args, svg, d);
         mg_trigger_linked_mouseovers(args, d, i);
+
+        if (args.clickableMarkerLines && args.markers && args.markers.length > 0) {
+
+           var targetMarker = null;
+           var rollingOnMarker = args.markers.find(function (marker) {
+               targetMarker = marker;
+               return (marker.date.toDateString() == (d.key || d.date).toDateString());
+           });
+
+           if(rollingOnMarker && targetMarker) {
+               if (targetMarker.click) {
+                   d3.select(this).style('cursor', 'pointer').on('click', targetMarker.click);
+               }
+           }
+        }
 
         svg.selectAll('text')
           .filter(function(g, j) {
