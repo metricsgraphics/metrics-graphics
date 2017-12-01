@@ -9,12 +9,12 @@
     <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 
-    <link href='../dist/metricsgraphics.css' rel='stylesheet' type='text/css'>
-    <link href='../examples/css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
+    <link href='./metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <link href='./css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="../examples/js/lib/ace.js" charset="utf-8"></script>
+    <script src="./js/lib/ace.js" charset="utf-8"></script>
 
     <!-- dev start -->
     <script src='js/MG.js'></script>
@@ -64,7 +64,7 @@
         }
 
         .footer {
-            background-image: url(../examples/images/divider.png);
+            background-image: url(./images/divider.png);
             background-repeat: no-repeat;
             background-position: center 115px;
             padding-top: 70px;
@@ -147,10 +147,10 @@
                 <li><a href='https://github.com/mozilla/metrics-graphics/releases'>Download</a></li>
                 <li><a href='https://github.com/mozilla/metrics-graphics'>Code</a></li>
                 <li><a href='https://github.com/mozilla/metrics-graphics/issues'>Issues</a></li>
-                <li><a href='../examples/examples.htm'>Examples</a></li>
+                <li><a href='./examples.htm'>Examples</a></li>
             </ul>
 
-            <img src='../examples/images/logo.svg' id='logo' class='svg' />
+            <img src='./images/logo.svg' id='logo' class='svg' />
         </div>
     </div>
 
@@ -220,7 +220,7 @@
             document.querySelector('.data textarea').value = JSON.stringify(persisted.data, null, 2);
             run();
         } else {
-            d3.json('../examples/data/ufo-sightings.json', function(data) {
+            d3.json('./data/ufo-sightings.json', function(data) {
                 document.querySelector('.data textarea').value = JSON.stringify(data, null, 2);
                 run();
             })
