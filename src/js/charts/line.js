@@ -840,7 +840,6 @@
     };
 
     this.rolloverOn = function(args) {
-
       var svg = mg_get_svg_child_of(args.target);
       var fmt = mg_get_rollover_time_format(args);
 
