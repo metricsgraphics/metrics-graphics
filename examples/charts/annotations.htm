@@ -111,28 +111,6 @@
             </div>
 
             <div class='row trunk-section'>
-                <div class='col-lg-7 text-center' id='baselines'></div>
-                <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
-
-<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
-    data = MG.convert.date(data, 'date');
-    MG.data_graphic({
-        title: "Baselines",
-        description: "Baselines are horizontal lines that can added at arbitrary points.",
-        data: data,
-        baselines: [{value: 160000000, label: 'a baseline'}],
-        width: 600,
-        height: 200,
-        right: 40,
-        target: '#baselines'
-    });
-});</code></pre>
-
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
                 <div class='col-lg-7 text-center' id='markers-mouseout'></div>
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
@@ -142,7 +120,7 @@
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-      var mouseout = function() {
+    var mouseout = function() {
         alert("You just left me!");
     };
 
@@ -166,6 +144,28 @@
         format: 'percentage',
         target: '#markers-mouseout'
     });</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='baselines'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Baselines",
+        description: "Baselines are horizontal lines that can added at arbitrary points.",
+        data: data,
+        baselines: [{value: 160000000, label: 'a baseline'}],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#baselines'
+    });
+});</code></pre>
 
                 </div>
             </div>
