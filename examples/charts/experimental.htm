@@ -145,10 +145,10 @@ d3.json('data/points1.json', function(data) {
                     </div>
                 </div>
                 <div class='col-lg-5'>
-                    <div class='data-column'><a href='data/points1.json'>data</a></div>
+                    <div class='data-column'><a href='data/nh-gop.tsv'>data</a></div>
 
 <pre><code class='javascript'>
-d3.tsv('data/nh-gop.csv', function(data) {
+d3.tsv('data/nh-gop.tsv', function(data) {
     var polls = [];
     var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
     data.forEach(function(p){
@@ -280,7 +280,7 @@ d3.tsv('data/nh-gop.csv', function(data) {
 
 
 <script>
-d3.tsv('data/nh-gop.csv', function(data) {
+d3.tsv('data/nh-gop.tsv', function(data) {
     var polls = [];
     var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
     data.forEach(function(p,j){
