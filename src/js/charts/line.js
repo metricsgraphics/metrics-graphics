@@ -423,7 +423,7 @@
           return lc;
         }).join(' ');
         if (args.linked && d.values.length > 0) {
-          line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(d.values[0], 0, args));
+          line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(d.values[0], args));
         }
 
         return line_classes;
@@ -474,12 +474,11 @@
     return 'roll_' + id;
   }
 
-  function mg_rollover_format_id(d, i, args) {
+  function mg_rollover_format_id(d, args) {
     var v = d[args.x_accessor];
     var formatter = MG.time_format(args.utc_time, args.linked_format);
     // only format when x-axis is date
-    var id = (typeof v === 'number') ? i : formatter(v);
-    return id;
+    return (typeof v === 'number') ? v.toString().replace('.', '_') : formatter(v);
   }
 
   function mg_add_single_line_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
@@ -499,7 +498,7 @@
       .append('rect')
       .attr('class', function(d, i) {
         var cl = mg_line_color_class(line_id) + ' ' + mg_line_class(d.line_id);
-        if (args.linked) cl += cl + ' ' + mg_rollover_id_class(mg_rollover_format_id(d, i, args));
+        if (args.linked) cl += cl + ' ' + mg_rollover_id_class(mg_rollover_format_id(d, args));
         return cl;
       })
       .attr('x', function(d, i) {
@@ -684,7 +683,7 @@
       MG.globals.link = true;
       if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
         var datum = d.values ? d.values[0] : d;
-        var id = mg_rollover_format_id(datum, i, args);
+        var id = mg_rollover_format_id(datum, args);
         // trigger mouseover on matching line in .linked charts
         d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
           .each(function(d) {
