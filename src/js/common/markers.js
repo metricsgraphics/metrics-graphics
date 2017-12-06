@@ -87,6 +87,10 @@ function mg_place_marker_text(gm, args) {
           d3.select(this).style('cursor', 'pointer')
             .on('mouseover', d.mouseover);
         }
+        if (d.mouseout) {
+            d3.select(this).style('cursor', 'pointer')
+                .on('mouseout', d.mouseout);
+        }
       });
 
   mg_prevent_horizontal_overlap(gm.selectAll('.mg-marker-text').nodes(), args);
