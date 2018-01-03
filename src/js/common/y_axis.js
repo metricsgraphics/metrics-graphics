@@ -854,52 +854,6 @@ function mg_bar_add_zero_line (args) {
   }
 }
 
-function set_min_max_y (args) {
-  // flatten data
-  // remove weird data, if log.
-  var data = mg_flatten_array(args.data);
-
-  if (args.y_scale_type === 'log') {
-    data = data.filter(function (d) {
-      return d[args.y_accessor] > 0;
-    });
-  }
-
-  if (args.baselines) {
-    data = data.concat(args.baselines);
-  }
-
-  var extents = d3.extent(data, function (d) {
-    return d[args.y_accessor];
-  });
-
-  var my = {};
-  my.min = extents[0];
-  my.max = extents[1];
-  // the default case is for the y-axis to start at 0, unless we explicitly want it
-  // to start at an arbitrary number or from the data's minimum value
-  if (my.min >= 0 && !args.min_y && !args.min_y_from_data) {
-    my.min = 0;
-  }
-
-  mg_change_y_extents_for_bars(args, my);
-  my.min = (args.min_y !== null) ? args.min_y : my.min;
-
-  my.max = (args.max_y !== null) ? args.max_y : (my.max < 0) ? my.max + (my.max - my.max * args.inflator) : my.max * args.inflator;
-
-  if (args.y_scale_type !== 'log' && my.min < 0) {
-    my.min = my.min - (my.min - my.min * args.inflator);
-  }
-
-  if (!args.min_y && args.min_y_from_data) {
-    var buff = (my.max - my.min) * .01;
-    my.min = extents[0] - buff;
-    my.max = extents[1] + buff;
-  }
-  args.processed.min_y = my.min;
-  args.processed.max_y = my.max;
-}
-
 function mg_y_domain_range (args, scale) {
   scale.domain([args.processed.min_y, args.processed.max_y])
     .range([mg_get_plot_bottom(args), args.top]);
