@@ -642,8 +642,7 @@
         .style('opacity', 0);
 
       d.values.forEach(function(datum, index, list) {
-
-        if(args.missing_is_hidden && list[index]['_missing']) {
+        if (args.missing_is_hidden && list[index]['_missing']) {
           return;
         }
 
