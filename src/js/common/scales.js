@@ -258,9 +258,8 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   min_val = args['min_' + namespace] || min_val;
   max_val = args['max_' + namespace] || max_val;
   // if there's a single data point, we should custom-set the min and max values.
-
-  if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
-
+  if (min_val === max_val && args['min_' + namespace] === undefined &&
+      args['max_' + namespace] === undefined) {
     if (mg_is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
       min_val = new Date(MG.clone(min_val).setDate(min_val.getDate() - 1));
