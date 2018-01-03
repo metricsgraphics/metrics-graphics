@@ -641,7 +641,11 @@
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0);
 
-      d.values.forEach(function(datum) {
+      d.values.forEach(function(datum, index, list) {
+        if (args.missing_is_hidden && list[index]['_missing']) {
+          return;
+        }
+
         if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
       });
     } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null) {
