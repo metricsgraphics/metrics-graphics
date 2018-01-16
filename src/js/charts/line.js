@@ -2,7 +2,8 @@
   'use strict';
 
   function mg_line_color_text(elem, d, args) {
-    elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+    elem.classed('mg-hover-line-color', args.color === null)
+      .classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
       .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
   }
 
@@ -113,6 +114,7 @@
         svg.append('path')
           .classed('mg-main-area', true)
           .classed('mg-area' + line_id, true)
+          .classed('mg-area-color', args.colors === null)
           .classed('mg-area' + line_id + '-color', args.colors === null)
           .attr('d', plot.area(args.data[which_line]))
           .attr('fill', args.colors === null ? '' : args.colors[line_id - 1])
@@ -124,7 +126,8 @@
   }
 
   function mg_default_color_for_path(this_path, line_id) {
-    this_path.classed('mg-line' + (line_id) + '-color', true);
+    this_path.classed('mg-line-color', true)
+             .classed('mg-line' + (line_id) + '-color', true);
   }
 
   function mg_color_line(args, this_path, which_line, line_id) {
@@ -231,7 +234,8 @@
             legend_text.attr('fill', args.colors[which_line]);
           }
         } else {
-          legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
+          legend_text.classed('mg-line-legend-color', true)
+            .classed('mg-line' + (line_id) + '-legend-color', true);
         }
 
         mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text').nodes(), args);
