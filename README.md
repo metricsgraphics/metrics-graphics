@@ -59,9 +59,14 @@ To run tests, type:
 
     gulp test
 
-To run the development server (accessible at http://localhost:4300):
+We have a basic development environment which uses the project source to
+serve up an interactive example. To run it, type:
 
     gulp serve
+
+A development server will be available at http://localhost:4300. Just reload
+it as you make modifications to the files in `src/` -- any changes made to
+the example source and data should be preserved.
 
 In order to request or faciliate deployments to metricsgraphicsjs.org, please contact Natalie Haywood (nhaywood@mozilla.com).
 
