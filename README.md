@@ -97,19 +97,19 @@ The colors for the first ten lines, areas and legends are defined in the stylesh
 
 ```css
 .mg-line11-color {
-    stroke: steelblue;
+    stroke: #A8D875;
 }
 
 .mg-area11-color {
-    fill: steelblue;
+    fill: #A8D875;
 }
 
 .mg-hover-line11-color {
-    fill: steelblue;
+    fill: #A8D875;
 }
 
 .mg-line11-legend-color {
-    color: steelblue;
+    color: #A8D875;
 }
 ```
 
