@@ -1794,15 +1794,13 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   min_val = args['min_' + namespace] || min_val;
   max_val = args['max_' + namespace] || max_val;
-  // if there's a single data point, we should custom-set the min and max values.
-
-  if (min_val === max_val && !(args['min_' + namespace] && args['max_' + namespace])) {
-
+  // if there's a single data point, we should custom-set the max values
+  // so we're displaying some kind of range
+  if (min_val === max_val && args['min_' + namespace] === undefined &&
+      args['max_' + namespace] === undefined) {
     if (mg_is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
-      min_val = new Date(MG.clone(min_val).setDate(min_val.getDate() - 1));
     } else if (typeof min_val === 'number') {
-      min_val = min_val - 1;
       max_val = min_val + 1;
       mg_force_xax_count_to_be_two(args);
     }
@@ -2729,52 +2727,6 @@ function mg_bar_add_zero_line (args) {
       .attr('stroke', 'black')
       .attr('opacity', .2);
   }
-}
-
-function set_min_max_y (args) {
-  // flatten data
-  // remove weird data, if log.
-  var data = mg_flatten_array(args.data);
-
-  if (args.y_scale_type === 'log') {
-    data = data.filter(function (d) {
-      return d[args.y_accessor] > 0;
-    });
-  }
-
-  if (args.baselines) {
-    data = data.concat(args.baselines);
-  }
-
-  var extents = d3.extent(data, function (d) {
-    return d[args.y_accessor];
-  });
-
-  var my = {};
-  my.min = extents[0];
-  my.max = extents[1];
-  // the default case is for the y-axis to start at 0, unless we explicitly want it
-  // to start at an arbitrary number or from the data's minimum value
-  if (my.min >= 0 && !args.min_y && !args.min_y_from_data) {
-    my.min = 0;
-  }
-
-  mg_change_y_extents_for_bars(args, my);
-  my.min = (args.min_y !== null) ? args.min_y : my.min;
-
-  my.max = (args.max_y !== null) ? args.max_y : (my.max < 0) ? my.max + (my.max - my.max * args.inflator) : my.max * args.inflator;
-
-  if (args.y_scale_type !== 'log' && my.min < 0) {
-    my.min = my.min - (my.min - my.min * args.inflator);
-  }
-
-  if (!args.min_y && args.min_y_from_data) {
-    var buff = (my.max - my.min) * .01;
-    my.min = extents[0] - buff;
-    my.max = extents[1] + buff;
-  }
-  args.processed.min_y = my.min;
-  args.processed.max_y = my.max;
 }
 
 function mg_y_domain_range (args, scale) {
@@ -4538,7 +4490,8 @@ MG.button_layout = function(target) {
   'use strict';
 
   function mg_line_color_text(elem, d, args) {
-    elem.classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
+    elem.classed('mg-hover-line-color', args.color === null)
+      .classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
       .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
   }
 
@@ -4649,6 +4602,7 @@ MG.button_layout = function(target) {
         svg.append('path')
           .classed('mg-main-area', true)
           .classed('mg-area' + line_id, true)
+          .classed('mg-area-color', args.colors === null)
           .classed('mg-area' + line_id + '-color', args.colors === null)
           .attr('d', plot.area(args.data[which_line]))
           .attr('fill', args.colors === null ? '' : args.colors[line_id - 1])
@@ -4660,7 +4614,8 @@ MG.button_layout = function(target) {
   }
 
   function mg_default_color_for_path(this_path, line_id) {
-    this_path.classed('mg-line' + (line_id) + '-color', true);
+    this_path.classed('mg-line-color', true)
+             .classed('mg-line' + (line_id) + '-color', true);
   }
 
   function mg_color_line(args, this_path, which_line, line_id) {
@@ -4767,7 +4722,8 @@ MG.button_layout = function(target) {
             legend_text.attr('fill', args.colors[which_line]);
           }
         } else {
-          legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
+          legend_text.classed('mg-line-legend-color', true)
+            .classed('mg-line' + (line_id) + '-legend-color', true);
         }
 
         mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text').nodes(), args);
@@ -5177,7 +5133,11 @@ MG.button_layout = function(target) {
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0);
 
-      d.values.forEach(function(datum) {
+      d.values.forEach(function(datum, index, list) {
+        if (args.missing_is_hidden && list[index]['_missing']) {
+          return;
+        }
+
         if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
       });
     } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null) {
