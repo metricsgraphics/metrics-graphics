@@ -13,8 +13,6 @@
     <link href='metricsgraphics.css' rel='stylesheet' type='text/css'>
     <!-- loaded from examples/ -->
     <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
-    <!--To facilitate brushing-->
-    <link rel="stylesheet" href="css/mg_line_brushing.css">
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -48,7 +46,8 @@
     <script src='js/misc/formatters.js'></script>
     <script src='js/misc/transitions.js'></script>
     <script src='js/misc/error.js'></script>
-    <script src='js/brushing/mg_line_brushing.js'></script>
+    <!--<script src="js/brushing/mg_line_brushing.js"></script>-->
+    
     <!-- dev end -->
 
     <style>
@@ -142,6 +141,7 @@
             outline: none;
         }
     </style>
+    
 </head>
 
 <body>
@@ -165,7 +165,14 @@
                 <textarea></textarea>
             </div>
             <div class='js col-xs-5' id='editor'></div>
-            <div class='result text-center col-xs-5'></div>
+            <div class='result text-center col-xs-5'>
+                Enable Brushing
+                <label class="switch">
+                    <input type="checkbox" class="enable-brushing" id="enable-brushing">
+                    <span class="slider round brushing" id="brushing"></span>
+                </label>
+            </div>
+            
         </div>
     </div>
 
@@ -175,7 +182,7 @@
         <br />2014-2015 &middot; Shared under a <a href='http://www.mozilla.org/MPL/2.0/'>
         Mozilla Public License</a>
     </div>
-
+    
     <script>
         var mgKey = 'mg-dev',
             editor,
@@ -234,6 +241,27 @@
         function clearState() {
             localStorage.clear(mgKey);
         }
+        
     </script>
+    <script type="text/javascript">
+    
+        var myLink = document.getElementById('enable-brushing');
+    
+        myLink.onchange = function(event){
+    
+            if(event.target.checked) {
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src = "js/brushing/mg_line_brushing.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+                return false;
+            } else {
+                location.reload()
+            }
+        }
+
+
+    </script>
+
 </body>
 </html>
