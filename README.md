@@ -92,7 +92,7 @@ If library x works for you, you should keep using it. We're not aiming to be com
 
 __I only see colours for the first 10 lines in my chart, what gives?__
 
-The colors for the first ten lines, areas and legends are defined in the stylesheet for the light and dark themes. For an eleventh line, you would add the follow CSS rules:
+The colors for the first ten lines, areas and legends are defined in the stylesheet for the light and dark themes. For an eleventh line, you would add the following CSS rules:
 
 
 ```css
