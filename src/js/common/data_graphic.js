@@ -134,12 +134,6 @@ MG.data_graphic = function(args) {
       script.type = "text/javascript";
       script.src = "js/brushing/mg_line_brushing.js";
       document.getElementsByTagName("head")[0].appendChild(script);
-
-    var stylesheet = document.createElement("link")
-      stylesheet.type = "text/css";
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = "css/mg_line_brushing.css";
-      document.getElementsByTagName("head")[0].appendChild(stylesheet);
   }
   // check for deprecated parameters
   for (var key in MG.deprecations) {
