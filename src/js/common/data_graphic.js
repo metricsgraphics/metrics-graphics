@@ -113,7 +113,8 @@ MG.data_graphic = function(args) {
     max_data_size: null,                        // explicitly specify the the max number of line series, for use with custom_line_color_map
     aggregate_rollover: false,                  // links the lines in a multi-line chart
     show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    showActivePoint: true                       // If enabled show active data point information in chart
+    showActivePoint: true,                       // If enabled show active data point information in chart
+    brushing: false
   };
 
   MG.call_hook('global.defaults', defaults);
@@ -128,6 +129,18 @@ MG.data_graphic = function(args) {
     args.y_accessor = 1;
   }
 
+  if (args.brushing) {
+    var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "js/brushing/mg_line_brushing.js";
+      document.getElementsByTagName("head")[0].appendChild(script);
+
+    var stylesheet = document.createElement("link")
+      stylesheet.type = "text/css";
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "css/mg_line_brushing.css";
+      document.getElementsByTagName("head")[0].appendChild(stylesheet);
+  }
   // check for deprecated parameters
   for (var key in MG.deprecations) {
     if (args.hasOwnProperty(key)) {
