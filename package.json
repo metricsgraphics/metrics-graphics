@@ -21,8 +21,9 @@
   ],
   "author": "Mozilla",
   "contributors": [
-    "Ali Almossawi (http://twitter.com/alialmossawi)",
-    "Hamilton Ulmer (http://twitter.com/hamiltonulmer)"
+    "Ali Almossawi",
+    "Hamilton Ulmer",
+    "William Lachance"
   ],
   "license": "MPL-2.0",
   "bugs": {
