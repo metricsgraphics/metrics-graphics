@@ -37,7 +37,7 @@
     };
 
     this.mainPlot = function() {
-      var svg = mg_get_svg_child_of(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       //remove the old histogram, add new one
       svg.selectAll('.mg-histogram').remove();
