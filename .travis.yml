@@ -1,5 +1,4 @@
 language: node_js
 node_js:
-  - "lts/*"
   - "8"
 script: npm run test-ci
