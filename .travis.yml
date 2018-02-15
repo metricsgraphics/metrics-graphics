@@ -1,4 +1,4 @@
 language: node_js
 node_js:
-  - "8"
+  - "0.10"
 script: npm run test-ci
