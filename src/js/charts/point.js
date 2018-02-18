@@ -1,10 +1,10 @@
 function point_mouseover(args, svg, d) {
-  var mouseover = mg_mouseover_text(args, { svg: svg });
-  var row = mouseover.mouseover_row();
+  const mouseover = mg_mouseover_text(args, { svg });
+  const row = mouseover.mouseover_row();
 
   if (args.color_accessor !== null && args.color_type === 'category') {
-    var label = d[args.color_accessor];
-    row.text(label + '  ').bold().elem().attr('fill', args.scalefns.colorf(d));
+    const label = d[args.color_accessor];
+    row.text(`${label}  `).bold().elem().attr('fill', args.scalefns.colorf(d));
   }
 
   mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape
@@ -13,29 +13,25 @@ function point_mouseover(args, svg, d) {
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
 }
 
-function mg_color_point_mouseover(args, elem, d) {
-  if (args.color_accessor !== null) {
-    elem.attr('fill', args.scalefns.colorf(d));
-    elem.attr('stroke', args.scalefns.colorf(d));
+function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
+  if (color_accessor !== null) {
+    elem.attr('fill', scalefns.colorf(d));
+    elem.attr('stroke', scalefns.colorf(d));
   } else {
     elem.classed('mg-points-mono', true);
   }
 }
 
 
-(function() {
-  'use strict';
-
+{
   function mg_filter_out_plot_bounds(data, args) {
     // max_x, min_x, max_y, min_y;
-    var x = args.x_accessor;
-    var y = args.y_accessor;
-    var new_data = data.filter(function(d) {
-      return (args.min_x === null || d[x] >= args.min_x) &&
-        (args.max_x === null || d[x] <= args.max_x) &&
-        (args.min_y === null || d[y] >= args.min_y) &&
-        (args.max_y === null || d[y] <= args.max_y);
-    })
+    const x = args.x_accessor;
+    const y = args.y_accessor;
+    const new_data = data.filter(d => (args.min_x === null || d[x] >= args.min_x) &&
+      (args.max_x === null || d[x] <= args.max_x) &&
+      (args.min_y === null || d[y] >= args.min_y) &&
+      (args.max_y === null || d[y] <= args.max_y));
     return new_data;
   }
 
@@ -52,7 +48,7 @@ function mg_color_point_mouseover(args, elem, d) {
       process_point(args);
       init(args);
 
-      var xMaker, yMaker;
+      let xMaker, yMaker;
 
       if (args.x_axis_type === 'categorical') {
         xMaker = MG.scale_factory(args)
@@ -67,22 +63,17 @@ function mg_color_point_mouseover(args, elem, d) {
             .categoricalRangeBands('bottom');
 
         } else {
-          args.scales.XGROUP = function(d) {
-            return mg_get_plot_left(args) };
-          args.scalefns.xgroupf = function(d) {
-            return mg_get_plot_left(args) };
+          args.scales.XGROUP = () => mg_get_plot_left(args);
+          args.scalefns.xgroupf = () => mg_get_plot_left(args);
         }
 
-        args.scalefns.xoutf = function(d) {
-          return args.scalefns.xf(d) + args.scalefns.xgroupf(d)
-        };
+        args.scalefns.xoutf = d => args.scalefns.xf(d) + args.scalefns.xgroupf(d);
       } else {
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .inflateDomain(true)
           .zeroBottom(args.y_axis_type === 'categorical')
-          .numericalDomainFromData((args.baselines || []).map(function(d) {
-            return d[args.x_accessor] }))
+          .numericalDomainFromData((args.baselines || []).map(d => d[args.x_accessor]))
           .numericalRange('bottom');
 
         args.scalefns.xoutf = args.scalefns.xf;
@@ -104,18 +95,14 @@ function mg_color_point_mouseover(args, elem, d) {
             .categoricalRangeBands('left');
 
         } else {
-          args.scales.YGROUP = function() {
-            return mg_get_plot_top(args) };
-          args.scalefns.ygroupf = function(d) {
-            return mg_get_plot_top(args) };
+          args.scales.YGROUP = () => mg_get_plot_top(args);
+          args.scalefns.ygroupf = () => mg_get_plot_top(args);
 
         }
-        args.scalefns.youtf = function(d) {
-          return args.scalefns.yf(d) + args.scalefns.ygroupf(d) };
+        args.scalefns.youtf = d => args.scalefns.yf(d) + args.scalefns.ygroupf(d);
 
       } else {
-        var baselines = (args.baselines || []).map(function(d) {
-          return d[args.y_accessor] });
+        const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .inflateDomain(true)
@@ -123,13 +110,12 @@ function mg_color_point_mouseover(args, elem, d) {
           .numericalDomainFromData(baselines)
           .numericalRange('left');
 
-        args.scalefns.youtf = function(d) {
-          return args.scalefns.yf(d) };
+        args.scalefns.youtf = d => args.scalefns.yf(d);
       }
 
       /////// COLOR accessor
       if (args.color_accessor !== null) {
-        var colorScale = MG.scale_factory(args).namespace('color');
+        const colorScale = MG.scale_factory(args).namespace('color');
         if (args.color_type === 'number') {
           // do the color scale.
           // etiher get color range, or what.
@@ -193,27 +179,21 @@ function mg_color_point_mouseover(args, elem, d) {
     };
 
     this.mainPlot = function() {
-      var svg = mg_get_svg_child_of(args.target);
-      var g;
+      const svg = mg_get_svg_child_of(args.target);
 
-      var data = mg_filter_out_plot_bounds(args.data[0], args);
+      const data = mg_filter_out_plot_bounds(args.data[0], args);
       //remove the old points, add new one
       svg.selectAll('.mg-points').remove();
 
-      g = svg.append('g')
+      const g = svg.append('g')
         .classed('mg-points', true);
 
-
-      var pts = g.selectAll('circle')
+      const pts = g.selectAll('circle')
         .data(data)
         .enter().append('circle')
-        .attr('class', function(d, i) {
-          return 'path-' + i;
-        })
+        .attr('class', (d, i) => `path-${i}`)
         .attr('cx', args.scalefns.xoutf)
-        .attr('cy', function(d) {
-          return args.scalefns.youtf(d);
-        });
+        .attr('cy', d => args.scalefns.youtf(d));
 
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
@@ -233,7 +213,7 @@ function mg_color_point_mouseover(args, elem, d) {
     };
 
     this.rollover = function() {
-      var svg = mg_get_svg_child_of(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
         mg_add_g(svg, 'mg-active-datapoint-container');
@@ -243,7 +223,7 @@ function mg_color_point_mouseover(args, elem, d) {
       svg.selectAll('.mg-voronoi').remove();
 
       //add rollover paths
-      var voronoi = d3.voronoi()
+      const voronoi = d3.voronoi()
         .x(args.scalefns.xoutf)
         .y(args.scalefns.youtf)
         .extent([
@@ -251,17 +231,14 @@ function mg_color_point_mouseover(args, elem, d) {
           [args.width - args.buffer, args.height - args.buffer]
         ]);
 
-      var paths = svg.append('g')
+      const paths = svg.append('g')
         .attr('class', 'mg-voronoi');
 
       paths.selectAll('path')
         .data(voronoi.polygons(mg_filter_out_plot_bounds(args.data[0], args)))
         .enter().append('path')
-        .attr('d', function(d) {
-          return d == null ? null : 'M' + d.join(',') + 'Z'; })
-        .attr('class', function(d, i) {
-          return 'path-' + i;
-        })
+        .attr('d', d => d == null ? null : `M${d.join(',')}Z`)
+        .attr('class', (d, i) => `path-${i}`)
         .style('fill-opacity', 0)
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
@@ -274,21 +251,19 @@ function mg_color_point_mouseover(args, elem, d) {
       return this;
     };
 
-    this.rolloverOn = function(args) {
-      var svg = mg_get_svg_child_of(args.target);
+    this.rolloverOn = args => {
+      const svg = mg_get_svg_child_of(args.target);
 
-      return function(d, i) {
+      return (d, i) => {
         svg.selectAll('.mg-points circle')
           .classed('selected', false);
 
         //highlight active point
-        var pts = svg.selectAll('.mg-points circle.path-' + i)
+        const pts = svg.selectAll(`.mg-points circle.path-${i}`)
           .classed('selected', true);
 
         if (args.size_accessor) {
-          pts.attr('r', function(di) {
-            return args.scalefns.sizef(di) + args.active_point_size_increase;
-          });
+          pts.attr('r', di => args.scalefns.sizef(di) + args.active_point_size_increase);
         } else {
           pts.attr('r', args.point_size + args.active_point_size_increase);
         }
@@ -298,8 +273,8 @@ function mg_color_point_mouseover(args, elem, d) {
           MG.globals.link = true;
 
           //trigger mouseover on matching point in .linked charts
-          d3.selectAll('.mg-voronoi .path-' + i)
-            .each(function() {
+          d3.selectAll(`.mg-voronoi .path-${i}`)
+            .each(() => {
               d3.select(this).on('mouseover')(d, i);
             });
         }
@@ -314,21 +289,21 @@ function mg_color_point_mouseover(args, elem, d) {
       };
     };
 
-    this.rolloverOff = function(args) {
-      var svg = mg_get_svg_child_of(args.target);
+    this.rolloverOff = args => {
+      const svg = mg_get_svg_child_of(args.target);
 
-      return function(d, i) {
+      return (d, i) => {
         if (args.linked && MG.globals.link) {
           MG.globals.link = false;
 
-          d3.selectAll('.mg-voronoi .path-' + i)
-            .each(function() {
+          d3.selectAll(`.mg-voronoi .path-${i}`)
+            .each(() => {
               d3.select(this).on('mouseout')(d, i);
             });
         }
 
         //reset active point
-        var pts = svg.selectAll('.mg-points circle')
+        const pts = svg.selectAll('.mg-points circle')
           .classed('unselected', false)
           .classed('selected', false);
 
@@ -347,12 +322,10 @@ function mg_color_point_mouseover(args, elem, d) {
       };
     };
 
-    this.rolloverMove = function(args) {
-      return function(d, i) {
-        if (args.mousemove) {
-          args.mousemove(d, i);
-        }
-      };
+    this.rolloverMove = args => (d, i) => {
+      if (args.mousemove) {
+        args.mousemove(d, i);
+      }
     };
 
     this.update = function(args) {
@@ -367,7 +340,7 @@ function mg_color_point_mouseover(args, elem, d) {
     this.init(args);
   }
 
-  var defaults = {
+  const defaults = {
     y_padding_percentage: 0.05, // for categorical scales
     y_outer_padding_percentage: .2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
@@ -394,4 +367,4 @@ function mg_color_point_mouseover(args, elem, d) {
   };
 
   MG.register('point', pointChart, defaults);
-}).call(this);
+}
