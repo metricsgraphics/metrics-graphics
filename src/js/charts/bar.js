@@ -1,5 +1,4 @@
 {
-
   // TODO add styles to stylesheet instead
   function scaffold({target, width, height, top, left, right, buffer}) {
     const svg = mg_get_svg_child_of(target);
@@ -287,11 +286,7 @@
       let barplot = svg.select('g.mg-barplot');
       const fresh_render = barplot.empty();
 
-      let bars;
-      let predictor_bars;
-      let pp
-      let pp0;
-      let baseline_marks;
+      let bars, predictor_bars, pp, pp0, baseline_marks;
 
       const perform_load_animation = fresh_render && args.animate_on_load;
       const should_transition = perform_load_animation || args.transition_on_update;
@@ -355,25 +350,12 @@
       // }
 
       //appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-      let length;
-      let width;
-      let length_type;
-      let width_type;
-      let length_coord;
-      let width_coord;
-      let length_scalefn;
-      let width_scalefn;
-      let length_scale;
-      let width_scale;
-      let length_accessor;
-      let width_accessor;
-      let length_coord_map;
-      let width_coord_map;
-      let length_map;
-      let width_map;
+      let length, width, length_type, width_type, length_coord, width_coord,
+          length_scalefn, width_scalefn, length_scale, width_scale,
+          length_accessor, width_accessor, length_coord_map, width_coord_map,
+          length_map, width_map;
 
-      let reference_length_map;
-      let reference_length_coord_fn;
+      let reference_length_map, reference_length_coord_fn;
 
       if (args.orientation == 'vertical') {
         length = 'height';
@@ -593,23 +575,11 @@
       svg.selectAll('.mg-active-datapoint').remove();
 
       // get orientation
-      let length;
-      let width;
-      let length_type;
-      let width_type;
-      let length_coord;
-      let width_coord;
-      let length_scalefn;
-      let width_scalefn;
-      let length_scale;
-      let width_scale;
-      let length_accessor;
-      let width_accessor;
+      let length, width, length_type, width_type, length_coord, width_coord,
+          length_scalefn, width_scalefn, length_scale, width_scale,
+          length_accessor, width_accessor;
 
-      let length_coord_map;
-      let width_coord_map;
-      let length_map;
-      let width_map;
+      let length_coord_map, width_coord_map, length_map, width_map;
 
       if (args.orientation == 'vertical') {
         length = 'height';
@@ -654,8 +624,7 @@
       }
 
       //rollover text
-      let rollover_x;
-      let rollover_anchor;
+      let rollover_x, rollover_anchor;
       if (args.rollover_align === 'right') {
         rollover_x = args.width - args.right;
         rollover_anchor = 'end';
