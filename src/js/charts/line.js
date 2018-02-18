@@ -1,10 +1,8 @@
-(function() {
-  'use strict';
-
-  function mg_line_color_text(elem, d, args) {
-    elem.classed('mg-hover-line-color', args.color === null)
-      .classed('mg-hover-line' + d.line_id + '-color', args.colors === null)
-      .attr('fill', args.colors === null ? '' : args.colors[d.line_id - 1]);
+{
+  function mg_line_color_text(elem, {line_id}, {color, colors}) {
+    elem.classed('mg-hover-line-color', color === null)
+      .classed(`mg-hover-line${line_id}-color`, colors === null)
+      .attr('fill', colors === null ? '' : colors[line_id - 1]);
   }
 
   function mg_line_graph_generators(args, plot, svg) {
@@ -20,16 +18,16 @@
       plot.confidence_area = d3.area()
         .defined(plot.line.defined())
         .x(args.scalefns.xf)
-        .y0(function(d) {
-          var l = args.show_confidence_band[0];
+        .y0(d => {
+          const l = args.show_confidence_band[0];
           if (d[l] != undefined) {
             return args.scales.Y(d[l]);
           } else {
             return args.scales.Y(d[args.y_accessor]);
           }
         })
-        .y1(function(d) {
-          var u = args.show_confidence_band[1];
+        .y1(d => {
+          const u = args.show_confidence_band[1];
           if (d[u] != undefined) {
             return args.scales.Y(d[u]);
           } else {
@@ -40,67 +38,65 @@
     }
   }
 
-  function mg_add_area_generator(args, plot) {
+  function mg_add_area_generator({scalefns, scales, interpolate}, plot) {
     plot.area = d3.area()
       .defined(plot.line.defined())
-      .x(args.scalefns.xf)
-      .y0(args.scales.Y.range()[0])
-      .y1(args.scalefns.yf)
-      .curve(args.interpolate);
+      .x(scalefns.xf)
+      .y0(scales.Y.range()[0])
+      .y1(scalefns.yf)
+      .curve(interpolate);
   }
 
-  function mg_add_flat_line_generator(args, plot) {
+  function mg_add_flat_line_generator({y_accessor, scalefns, scales, interpolate}, plot) {
     plot.flat_line = d3.line()
-      .defined(function(d) {
-        return (d['_missing'] === undefined || d['_missing'] !== true) && d[args.y_accessor] !== null;
-      })
-      .x(args.scalefns.xf)
-      .y(function() {
-        return args.scales.Y(plot.data_median); })
-      .curve(args.interpolate);
+      .defined(d => (d['_missing'] === undefined || d['_missing'] !== true) && d[y_accessor] !== null)
+      .x(scalefns.xf)
+      .y(() => scales.Y(plot.data_median))
+      .curve(interpolate);
   }
 
-  function mg_add_line_generator(args, plot) {
+  function mg_add_line_generator({scalefns, interpolate, missing_is_zero, y_accessor}, plot) {
     plot.line = d3.line()
-      .x(args.scalefns.xf)
-      .y(args.scalefns.yf)
-      .curve(args.interpolate);
+      .x(scalefns.xf)
+      .y(scalefns.yf)
+      .curve(interpolate);
 
     // if missing_is_zero is not set, then hide data points that fall in missing
     // data ranges or that have been explicitly identified as missing in the
     // data source.
-    if (!args.missing_is_zero) {
+    if (!missing_is_zero) {
       // a line is defined if the _missing attrib is not set to true
       // and the y-accessor is not null
-      plot.line = plot.line.defined(function(d) {
-        return (d['_missing'] === undefined || d['_missing'] !== true) && d[args.y_accessor] !== null;
-      });
+      plot.line = plot.line.defined(d => (d['_missing'] === undefined || d['_missing'] !== true) && d[y_accessor] !== null);
     }
   }
 
-  function mg_add_confidence_band(args, plot, svg, which_line) {
-    if (args.show_confidence_band) {
-      var confidenceBand;
-      if (svg.select('.mg-confidence-band-' + which_line).empty()) {
+  function mg_add_confidence_band(
+    {show_confidence_band, transition_on_update, data, target},
+    plot,
+    svg,
+    which_line
+  ) {
+    if (show_confidence_band) {
+      let confidenceBand;
+      if (svg.select(`.mg-confidence-band-${which_line}`).empty()) {
         svg.append('path')
-          .attr('class', 'mg-confidence-band mg-confidence-band-' + which_line)
+          .attr('class', `mg-confidence-band mg-confidence-band-${which_line}`)
       }
 
       // transition this line's confidence band
-      confidenceBand = svg.select('.mg-confidence-band-' + which_line);
+      confidenceBand = svg.select(`.mg-confidence-band-${which_line}`);
 
       confidenceBand
         .transition()
-        .duration(function() {
-          return (args.transition_on_update) ? 1000 : 0;
-        })
-        .attr('d', plot.confidence_area(args.data[which_line - 1]))
-        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')')
+        .duration(() => (transition_on_update) ? 1000 : 0)
+        .attr('d', plot.confidence_area(data[which_line - 1]))
+        .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`)
     }
   }
 
-  function mg_add_area(args, plot, svg, which_line, line_id) {
-    var areas = svg.selectAll('.mg-main-area.mg-area' + line_id);
+  function mg_add_area({data, target, colors}, plot, svg, which_line, line_id) {
+    const areas = svg.selectAll(`.mg-main-area.mg-area${line_id}`);
     if (plot.display_area) {
       // if area already exists, transition it
       if (!areas.empty()) {
@@ -108,17 +104,17 @@
 
         areas.transition()
           .duration(plot.update_transition_duration)
-          .attr('d', plot.area(args.data[which_line]))
-          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+          .attr('d', plot.area(data[which_line]))
+          .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`);
       } else { // otherwise, add the area
         svg.append('path')
           .classed('mg-main-area', true)
-          .classed('mg-area' + line_id, true)
-          .classed('mg-area-color', args.colors === null)
-          .classed('mg-area' + line_id + '-color', args.colors === null)
-          .attr('d', plot.area(args.data[which_line]))
-          .attr('fill', args.colors === null ? '' : args.colors[line_id - 1])
-          .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+          .classed(`mg-area${line_id}`, true)
+          .classed('mg-area-color', colors === null)
+          .classed(`mg-area${line_id}-color`, colors === null)
+          .attr('d', plot.area(data[which_line]))
+          .attr('fill', colors === null ? '' : colors[line_id - 1])
+          .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`);
       }
     } else if (!areas.empty()) {
       areas.remove();
@@ -127,16 +123,16 @@
 
   function mg_default_color_for_path(this_path, line_id) {
     this_path.classed('mg-line-color', true)
-             .classed('mg-line' + (line_id) + '-color', true);
+             .classed(`mg-line${line_id}-color`, true);
   }
 
-  function mg_color_line(args, this_path, which_line, line_id) {
-    if (args.colors) {
+  function mg_color_line({colors}, this_path, which_line, line_id) {
+    if (colors) {
       // for now, if args.colors is not an array, then keep moving as if nothing happened.
       // if args.colors is not long enough, default to the usual line_id color.
-      if (args.colors.constructor === Array) {
-        this_path.attr('stroke', args.colors[which_line]);
-        if (args.colors.length < which_line + 1) {
+      if (colors.constructor === Array) {
+        this_path.attr('stroke', colors[which_line]);
+        if (colors.length < which_line + 1) {
           // Go with default coloring.
           // this_path.classed('mg-line' + (line_id) + '-color', true);
           mg_default_color_for_path(this_path, line_id);
@@ -152,18 +148,17 @@
     }
   }
 
-  function mg_add_line_element(args, plot, this_path, which_line) {
-    if (args.animate_on_load) {
-      plot.data_median = d3.median(args.data[which_line], function(d) {
-        return d[args.y_accessor]; });
-      this_path.attr('d', plot.flat_line(args.data[which_line]))
+  function mg_add_line_element({animate_on_load, data, y_accessor, target}, plot, this_path, which_line) {
+    if (animate_on_load) {
+      plot.data_median = d3.median(data[which_line], d => d[y_accessor]);
+      this_path.attr('d', plot.flat_line(data[which_line]))
         .transition()
         .duration(1000)
-        .attr('d', plot.line(args.data[which_line]))
-        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+        .attr('d', plot.line(data[which_line]))
+        .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`);
     } else { // or just add the line
-      this_path.attr('d', plot.line(args.data[which_line]))
-        .attr('clip-path', 'url(#mg-plot-window-' + mg_target_ref(args.target) + ')');
+      this_path.attr('d', plot.line(data[which_line]))
+        .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`);
     }
   }
 
@@ -171,7 +166,7 @@
     if (!existing_line.empty()) {
       svg.node().appendChild(existing_line.node());
 
-      var lineTransition = existing_line.transition()
+      const lineTransition = existing_line.transition()
         .duration(plot.update_transition_duration);
 
       if (!plot.display_area && args.transition_on_update && !args.missing_is_hidden) {
@@ -181,8 +176,8 @@
       }
     } else { // otherwise...
       // if we're animating on load, animate the line from its median value
-      var this_path = svg.append('path')
-        .attr('class', 'mg-main-line mg-line' + line_id);
+      const this_path = svg.append('path')
+        .attr('class', `mg-main-line mg-line${line_id}`);
 
       mg_color_line(args, this_path, which_line, line_id);
       mg_add_line_element(args, plot, this_path, which_line);
@@ -190,7 +185,7 @@
   }
 
   function mg_add_legend_element(args, plot, which_line, line_id) {
-    var this_legend;
+    let this_legend;
     if (args.legend) {
       if (is_array(args.legend)) {
         this_legend = args.legend[which_line];
@@ -200,14 +195,13 @@
 
       if (args.legend_target) {
         if (args.colors && args.colors.constructor === Array) {
-          plot.legend_text = "<span style='color:" + args.colors[which_line] + "'>&mdash; " +
-            this_legend + '&nbsp; </span>' + plot.legend_text;
+          plot.legend_text = `<span style='color:${args.colors[which_line]}'>&mdash; ${this_legend}&nbsp; </span>${plot.legend_text}`;
         } else {
-          plot.legend_text = "<span class='mg-line" + line_id + "-legend-color'>&mdash; " +
-            this_legend + '&nbsp; </span>' + plot.legend_text;
+          plot.legend_text = `<span class='mg-line${line_id}-legend-color'>&mdash; ${this_legend}&nbsp; </span>${plot.legend_text}`;
         }
       } else {
-        var anchor_point, anchor_orientation, dx;
+        let anchor_point, anchor_orientation, dx;
+
         if (args.y_axis_position === 'left') {
           anchor_point = args.data[which_line][args.data[which_line].length - 1];
           anchor_orientation = 'start';
@@ -217,7 +211,7 @@
           anchor_orientation = 'end';
           dx = -args.buffer;
         }
-        var legend_text = plot.legend_group.append('svg:text')
+        const legend_text = plot.legend_group.append('svg:text')
           .attr('x', args.scalefns.xf(anchor_point))
           .attr('dx', dx)
           .attr('y', args.scalefns.yf(anchor_point))
@@ -229,13 +223,13 @@
 
         if (args.colors && args.colors.constructor === Array) {
           if (args.colors.length < which_line + 1) {
-            legend_text.classed('mg-line' + (line_id) + '-legend-color', true);
+            legend_text.classed(`mg-line${line_id}-legend-color`, true);
           } else {
             legend_text.attr('fill', args.colors[which_line]);
           }
         } else {
           legend_text.classed('mg-line-legend-color', true)
-            .classed('mg-line' + (line_id) + '-legend-color', true);
+            .classed(`mg-line${line_id}-legend-color`, true);
         }
 
         mg_prevent_vertical_overlap(plot.legend_group.selectAll('.mg-line-legend text').nodes(), args);
@@ -244,13 +238,11 @@
   }
 
   function mg_plot_legend_if_legend_target(target, legend) {
-    if (target) {
-      d3.select(target).html(legend);
-    }
+    if (target) d3.select(target).html(legend);
   }
 
-  function mg_add_legend_group(args, plot, svg) {
-    if (args.legend) plot.legend_group = mg_add_g(svg, 'mg-line-legend');
+  function mg_add_legend_group({legend}, plot, svg) {
+    if (legend) plot.legend_group = mg_add_g(svg, 'mg-line-legend');
   }
 
   function mg_remove_existing_line_rollover_elements(svg) {
@@ -264,108 +256,94 @@
     //mg_selectAll_and_remove(svg, '.mg-active-datapoint-container');
   }
 
-  function mg_add_rollover_circle(args, svg) {
+  function mg_add_rollover_circle({data, colors}, svg) {
     // append circle
-    var circle = svg.selectAll('.mg-line-rollover-circle')
-      .data(args.data)
+    const circle = svg.selectAll('.mg-line-rollover-circle')
+      .data(data)
       .enter().append('circle')
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('r', 0);
 
-    if (args.colors && args.colors.constructor === Array) {
+    if (colors && colors.constructor === Array) {
       circle
-        .attr('class', function(d) {
-          return 'mg-line' + d.line_id;
-        })
-        .attr('fill', function(d, i) {
-          return args.colors[i];
-        })
-        .attr('stroke', function(d, i) {
-          return args.colors[i];
-        });
+        .attr('class', ({line_id}) => `mg-line${line_id}`)
+        .attr('fill', (d, i) => colors[i])
+        .attr('stroke', (d, i) => colors[i]);
     } else {
-      circle.attr('class', function(d, i) {
-        return [
-          'mg-line' + d.line_id,
-          'mg-line' + d.line_id + '-color',
-          'mg-area' + d.line_id + '-color'
-        ].join(' ');
-      });
+      circle.attr('class', ({line_id}, i) => [
+        `mg-line${line_id}`,
+        `mg-line${line_id}-color`,
+        `mg-area${line_id}-color`
+      ].join(' '));
     }
     circle.classed('mg-line-rollover-circle', true);
   }
 
-  function mg_set_unique_line_id_for_each_series(args) {
+  function mg_set_unique_line_id_for_each_series({data, custom_line_color_map}) {
     // update our data by setting a unique line id for each series
     // increment from 1... unless we have a custom increment series
-    var line_id = 1;
-    for (var i = 0; i < args.data.length; i++) {
-      for (var j = 0; j < args.data[i].length; j++) {
+
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].length; j++) {
         // Index is saved as original line id for the legend values
-        args.data[i][j].index = line_id;
+        data[i][j].index = i+1;
         // if custom line-color map is set, use that instead of line_id (For colors)
-        if (args.custom_line_color_map.length > 0) {
-          args.data[i][j].line_id = args.custom_line_color_map[i];
+        if (custom_line_color_map.length > 0) {
+          data[i][j].line_id = custom_line_color_map[i];
         } else {
-          args.data[i][j].line_id = line_id;
+          data[i][j].line_id = i+1;
         }
       }
-      line_id++;
     }
   }
 
-  function mg_nest_data_for_voronoi(args) {
-    return d3.merge(args.data);
+  function mg_nest_data_for_voronoi({data}) {
+    return d3.merge(data);
   }
 
   function mg_line_class_string(args) {
-    return function(d) {
-      var class_string;
+    return d => {
+      let class_string;
 
       if (args.linked) {
-        var v = d[args.x_accessor];
-        var formatter = MG.time_format(args.utc_time, args.linked_format);
+        const v = d[args.x_accessor];
+        const formatter = MG.time_format(args.utc_time, args.linked_format);
 
         // only format when x-axis is date
-        var id = (typeof v === 'number') ? (d.line_id - 1) : formatter(v);
-        class_string = 'roll_' + id + ' mg-line' + d.line_id;
+        const id = (typeof v === 'number') ? (d.line_id - 1) : formatter(v);
+        class_string = `roll_${id} mg-line${d.line_id}`;
 
         if (args.color === null) {
-          class_string += ' mg-line' + d.line_id + '-color';
+          class_string += ` mg-line${d.line_id}-color`;
         }
         return class_string;
 
       } else {
-        class_string = 'mg-line' + d.line_id;
-        if (args.color === null) class_string += ' mg-line' + d.line_id + '-color';
+        class_string = `mg-line${d.line_id}`;
+        if (args.color === null) class_string += ` mg-line${d.line_id}-color`;
         return class_string;
       }
     };
   }
 
   function mg_add_voronoi_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
-    var voronoi = d3.voronoi()
-      .x(function(d) {
-        return args.scales.X(d[args.x_accessor]).toFixed(2); })
-      .y(function(d) {
-        return args.scales.Y(d[args.y_accessor]).toFixed(2); })
+    const voronoi = d3.voronoi()
+      .x(d => args.scales.X(d[args.x_accessor]).toFixed(2))
+      .y(d => args.scales.Y(d[args.y_accessor]).toFixed(2))
       .extent([
         [args.buffer, args.buffer + args.title_y_position],
         [args.width - args.buffer, args.height - args.buffer]
       ]);
 
-    var g = mg_add_g(svg, 'mg-voronoi');
+    const g = mg_add_g(svg, 'mg-voronoi');
     g.selectAll('path')
       .data(voronoi.polygons(mg_nest_data_for_voronoi(args)))
       .enter()
       .append('path')
-      .filter(function(d) {
-        return d !== undefined && d.length > 0; })
-      .attr('d', function(d) {
-        return d == null ? null : 'M' + d.join('L') + 'Z'; })
-      .datum(function(d) {
-        return d == null ? null : d.data; }) // because of d3.voronoi, reassign d
+      .filter(d => d !== undefined && d.length > 0)
+      .attr('d', d => d == null ? null : `M${d.join('L')}Z`)
+      .datum(d => d == null ? null : d.data) // because of d3.voronoi, reassign d
       .attr('class', mg_line_class_string(args))
       .on('click', rollover_click)
       .on('mouseover', rollover_on)
@@ -375,19 +353,17 @@
     mg_configure_voronoi_rollover(args, svg);
   }
 
-  function nest_data_for_aggregate_rollover(args) {
-    var data_nested = d3.nest()
-      .key(function(d) {
-        return d[args.x_accessor]; })
-      .entries(d3.merge(args.data));
-    data_nested.forEach(function(entry) {
-      var datum = entry.values[0];
-      entry.key = datum[args.x_accessor];
+  function nest_data_for_aggregate_rollover({x_accessor, data, x_sort}) {
+    const data_nested = d3.nest()
+      .key(d => d[x_accessor])
+      .entries(d3.merge(data));
+    data_nested.forEach(entry => {
+      const datum = entry.values[0];
+      entry.key = datum[x_accessor];
     });
 
-    if (args.x_sort) {
-      return data_nested.sort(function(a, b) {
-        return new Date(a.key) - new Date(b.key); });
+    if (x_sort) {
+      return data_nested.sort((a, b) => new Date(a.key) - new Date(b.key));
     } else {
       return data_nested;
     }
@@ -396,38 +372,36 @@
   function mg_add_aggregate_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     // Undo the keys getting coerced to strings, by setting the keys from the values
     // This is necessary for when we have X axis keys that are things like
-    var data_nested = nest_data_for_aggregate_rollover(args);
+    const data_nested = nest_data_for_aggregate_rollover(args);
 
-    var xf = data_nested.map(function(di) {
-      return args.scales.X(di.key);
-    });
+    const xf = data_nested.map(({key}) => args.scales.X(key));
 
-    var g = svg.append('g')
+    const g = svg.append('g')
       .attr('class', 'mg-rollover-rect');
 
     g.selectAll('.mg-rollover-rects')
       .data(data_nested).enter()
       .append('rect')
-      .attr('x', function(d, i) {
+      .attr('x', (d, i) => {
         if (xf.length === 1) return mg_get_plot_left(args);
         else if (i === 0) return xf[i].toFixed(2);
         else return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
       .attr('y', args.top)
-      .attr('width', function(d, i) {
+      .attr('width', (d, i) => {
         if (xf.length === 1) return mg_get_plot_right(args);
         else if (i === 0) return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
         else if (i === xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
         else return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
       })
-      .attr('class', function(d) {
-        var line_classes = d.values.map(function(datum) {
-          var lc = mg_line_class(datum.line_id);
-          if (args.colors === null) lc += ' ' + mg_line_color_class(datum.line_id);
+      .attr('class', ({values}) => {
+        let line_classes = values.map(({line_id}) => {
+          let lc = mg_line_class(line_id);
+          if (args.colors === null) lc += ` ${mg_line_color_class(line_id)}`;
           return lc;
         }).join(' ');
-        if (args.linked && d.values.length > 0) {
-          line_classes += ' ' + mg_rollover_id_class(mg_rollover_format_id(d.values[0], args));
+        if (args.linked && values.length > 0) {
+          line_classes += ` ${mg_rollover_id_class(mg_rollover_format_id(values[0], args))}`;
         }
 
         return line_classes;
@@ -442,90 +416,86 @@
     mg_configure_aggregate_rollover(args, svg);
   }
 
-  function mg_configure_singleton_rollover(args, svg) {
+  function mg_configure_singleton_rollover({data}, svg) {
     svg.select('.mg-rollover-rect rect')
-      .on('mouseover')(args.data[0][0], 0);
+      .on('mouseover')(data[0][0], 0);
   }
 
-  function mg_configure_voronoi_rollover(args, svg) {
-    for (var i = 0; i < args.data.length; i++) {
-      var j = i + 1;
+  function mg_configure_voronoi_rollover({data, custom_line_color_map}, svg) {
+    for (let i = 0; i < data.length; i++) {
+      let j = i + 1;
 
-      if (args.custom_line_color_map.length > 0 &&
-        args.custom_line_color_map[i] !== undefined) {
-        j = args.custom_line_color_map[i];
+      if (custom_line_color_map.length > 0 &&
+        custom_line_color_map[i] !== undefined) {
+        j = custom_line_color_map[i];
       }
 
-      if (args.data[i].length === 1 && !svg.selectAll('.mg-voronoi .mg-line' + j).empty()) {
-        svg.selectAll('.mg-voronoi .mg-line' + j)
-          .on('mouseover')(args.data[i][0], 0);
+      if (data[i].length === 1 && !svg.selectAll(`.mg-voronoi .mg-line${j}`).empty()) {
+        svg.selectAll(`.mg-voronoi .mg-line${j}`)
+          .on('mouseover')(data[i][0], 0);
 
-        svg.selectAll('.mg-voronoi .mg-line' + j)
-          .on('mouseout')(args.data[i][0], 0);
+        svg.selectAll(`.mg-voronoi .mg-line${j}`)
+          .on('mouseout')(data[i][0], 0);
       }
     }
   }
 
   function mg_line_class(line_id) {
-    return 'mg-line' + line_id;
+    return `mg-line${line_id}`;
   }
 
   function mg_line_color_class(line_id) {
-    return 'mg-line' + line_id + '-color';
+    return `mg-line${line_id}-color`;
   }
 
   function mg_rollover_id_class(id) {
-    return 'roll_' + id;
+    return `roll_${id}`;
   }
 
-  function mg_rollover_format_id(d, args) {
-    var v = d[args.x_accessor];
-    var formatter = MG.time_format(args.utc_time, args.linked_format);
+  function mg_rollover_format_id(d, {x_accessor, utc_time, linked_format}) {
+    const v = d[x_accessor];
+    const formatter = MG.time_format(utc_time, linked_format);
     // only format when x-axis is date
     return (typeof v === 'number') ? v.toString().replace('.', '_') : formatter(v);
   }
 
   function mg_add_single_line_rollover(args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     // set to 1 unless we have a custom increment series
-    var line_id = 1;
+    let line_id = 1;
     if (args.custom_line_color_map.length > 0) {
       line_id = args.custom_line_color_map[0];
     }
 
-    var g = svg.append('g')
+    const g = svg.append('g')
       .attr('class', 'mg-rollover-rect');
 
-    var xf = args.data[0].map(args.scalefns.xf);
+    const xf = args.data[0].map(args.scalefns.xf);
 
     g.selectAll('.mg-rollover-rects')
       .data(args.data[0]).enter()
       .append('rect')
-      .attr('class', function(d, i) {
-        var cl = mg_line_color_class(line_id) + ' ' + mg_line_class(d.line_id);
-        if (args.linked) cl += cl + ' ' + mg_rollover_id_class(mg_rollover_format_id(d, args));
+      .attr('class', (d, i) => {
+        let cl = `${mg_line_color_class(line_id)} ${mg_line_class(d.line_id)}`;
+        if (args.linked) cl += `${cl} ${mg_rollover_id_class(mg_rollover_format_id(d, args))}`;
         return cl;
       })
-      .attr('x', function(d, i) {
+      .attr('x', (d, i) => {
         // if data set is of length 1
         if (xf.length === 1) return mg_get_plot_left(args);
         else if (i === 0) return xf[i].toFixed(2);
         else return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
-      .attr('y', function(d, i) {
-        return (args.data.length > 1) ? args.scalefns.yf(d) - 6 // multi-line chart sensitivity
-          : args.top;
-      })
-      .attr('width', function(d, i) {
+      .attr('y', (d, i) => (args.data.length > 1) ? args.scalefns.yf(d) - 6 // multi-line chart sensitivity
+      : args.top)
+      .attr('width', (d, i) => {
         // if data set is of length 1
         if (xf.length === 1) return mg_get_plot_right(args);
         else if (i === 0) return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
         else if (i === xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
         else return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
       })
-      .attr('height', function(d, i) {
-        return (args.data.length > 1) ? 12 // multi-line chart sensitivity
-          : args.height - args.bottom - args.top - args.buffer;
-      })
+      .attr('height', (d, i) => (args.data.length > 1) ? 12 // multi-line chart sensitivity
+      : args.height - args.bottom - args.top - args.buffer)
       .attr('opacity', 0)
       .on('click', rollover_click)
       .on('mouseover', rollover_on)
@@ -537,37 +507,37 @@
     }
   }
 
-  function mg_configure_aggregate_rollover(args, svg) {
-    var rect = svg.selectAll('.mg-rollover-rect rect');
-    var rect_first = rect.nodes()[0][0] || rect.nodes()[0];
-    if (args.data.filter(function(d) { return d.length === 1; }).length > 0) {
+  function mg_configure_aggregate_rollover({data}, svg) {
+    const rect = svg.selectAll('.mg-rollover-rect rect');
+    const rect_first = rect.nodes()[0][0] || rect.nodes()[0];
+    if (data.filter(({length}) => length === 1).length > 0) {
       rect.on('mouseover')(rect_first.__data__, 0);
     }
   }
 
-  function mg_is_standard_multiline(args) {
-    return args.data.length > 1 && !args.aggregate_rollover;
+  function mg_is_standard_multiline({data, aggregate_rollover}) {
+    return data.length > 1 && !aggregate_rollover;
   }
 
-  function mg_is_aggregated_rollover(args) {
-    return args.data.length > 1 && args.aggregate_rollover;
+  function mg_is_aggregated_rollover({data, aggregate_rollover}) {
+    return data.length > 1 && aggregate_rollover;
   }
 
-  function mg_is_singleton(args) {
-    return args.data.length === 1 && args.data[0].length === 1;
+  function mg_is_singleton({data}) {
+    return data.length === 1 && data[0].length === 1;
   }
 
   function mg_draw_all_line_elements(args, plot, svg) {
     mg_remove_dangling_bands(plot, svg);
 
-    for (var i = args.data.length - 1; i >= 0; i--) {
-      var this_data = args.data[i];
+    for (let i = args.data.length - 1; i >= 0; i--) {
+      const this_data = args.data[i];
 
       // passing the data for the current line
       MG.call_hook('line.before_each_series', [this_data, args]);
 
       // override increment if we have a custom increment series
-      var line_id = i + 1;
+      let line_id = i + 1;
       if (args.custom_line_color_map.length > 0) {
         line_id = args.custom_line_color_map[i];
       }
@@ -577,7 +547,7 @@
       if (this_data.length === 0) {
         continue;
       }
-      var existing_line = svg.select('path.mg-main-line.mg-line' + (line_id));
+      const existing_line = svg.select(`path.mg-main-line.mg-line${line_id}`);
 
       mg_add_confidence_band(args, plot, svg, line_id);
       mg_add_area(args, plot, svg, i, line_id);
@@ -589,15 +559,15 @@
     }
   }
 
-  function mg_remove_dangling_bands(plot, svg) {
-    if (plot.existing_band[0] && plot.existing_band[0].length > svg.selectAll('.mg-main-line').node().length) {
+  function mg_remove_dangling_bands({existing_band}, svg) {
+    if (existing_band[0] && existing_band[0].length > svg.selectAll('.mg-main-line').node().length) {
       svg.selectAll('.mg-confidence-band').remove();
     }
   }
 
   function mg_line_main_plot(args) {
-    var plot = {};
-    var svg = mg_get_svg_child_of(args.target);
+    const plot = {};
+    const svg = mg_get_svg_child_of(args.target);
 
     // remove any old legends if they exist
     mg_selectAll_and_remove(svg, '.mg-line-legend');
@@ -611,7 +581,7 @@
     plot.existing_band = svg.selectAll('.mg-confidence-band').nodes();
 
     // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
-    var continueWithDefault = MG.call_hook('line.before_all_series', [args]);
+    const continueWithDefault = MG.call_hook('line.before_all_series', [args]);
     if (continueWithDefault !== false) {
       mg_draw_all_line_elements(args, plot, svg);
     }
@@ -620,7 +590,7 @@
   }
 
   function mg_line_rollover_setup(args, graph) {
-    var svg = mg_get_svg_child_of(args.target);
+    const svg = mg_get_svg_child_of(args.target);
 
     if (args.showActivePoint && svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       mg_add_g(svg, 'mg-active-datapoint-container');
@@ -645,7 +615,7 @@
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0);
 
-      d.values.forEach(function(datum, index, list) {
+      d.values.forEach((datum, index, list) => {
         if (args.missing_is_hidden && list[index]['_missing']) {
           return;
         }
@@ -665,24 +635,20 @@
     }
   }
 
-  function mg_update_aggregate_rollover_circle(args, svg, datum) {
-    svg.select('circle.mg-line-rollover-circle.mg-line' + datum.line_id)
-      .attr('cx', args.scales.X(datum[args.x_accessor]).toFixed(2))
-      .attr('cy', args.scales.Y(datum[args.y_accessor]).toFixed(2))
-      .attr('r', args.point_size)
+  function mg_update_aggregate_rollover_circle({scales, x_accessor, y_accessor, point_size}, svg, datum) {
+    svg.select(`circle.mg-line-rollover-circle.mg-line${datum.line_id}`)
+      .attr('cx', scales.X(datum[x_accessor]).toFixed(2))
+      .attr('cy', scales.Y(datum[y_accessor]).toFixed(2))
+      .attr('r', point_size)
       .style('opacity', 1);
   }
 
-  function mg_update_generic_rollover_circle(args, svg, d) {
-    svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
+  function mg_update_generic_rollover_circle({scales, x_accessor, y_accessor, point_size}, svg, d) {
+    svg.selectAll(`circle.mg-line-rollover-circle.mg-line${d.line_id}`)
       .classed('mg-line-rollover-circle', true)
-      .attr('cx', function() {
-        return args.scales.X(d[args.x_accessor]).toFixed(2);
-      })
-      .attr('cy', function() {
-        return args.scales.Y(d[args.y_accessor]).toFixed(2);
-      })
-      .attr('r', args.point_size)
+      .attr('cx', () => scales.X(d[x_accessor]).toFixed(2))
+      .attr('cy', () => scales.Y(d[y_accessor]).toFixed(2))
+      .attr('r', point_size)
       .style('opacity', 1);
   }
 
@@ -690,10 +656,10 @@
     if (args.linked && !MG.globals.link) {
       MG.globals.link = true;
       if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
-        var datum = d.values ? d.values[0] : d;
-        var id = mg_rollover_format_id(datum, args);
+        const datum = d.values ? d.values[0] : d;
+        const id = mg_rollover_format_id(datum, args);
         // trigger mouseover on matching line in .linked charts
-        d3.selectAll('.' + mg_line_class(datum.line_id) + '.' + mg_rollover_id_class(id))
+        d3.selectAll(`.${mg_line_class(datum.line_id)}.${mg_rollover_id_class(id)}`)
           .each(function(d) {
             d3.select(this)
               .on('mouseover')(d, i);
@@ -702,18 +668,18 @@
     }
   }
 
-  function mg_trigger_linked_mouseouts(args, d, i) {
-    if (args.linked && MG.globals.link) {
+  function mg_trigger_linked_mouseouts({linked, utc_time, linked_format, x_accessor}, d, i) {
+    if (linked && MG.globals.link) {
       MG.globals.link = false;
 
-      var formatter = MG.time_format(args.utc_time, args.linked_format);
-      var datums = d.values ? d.values : [d];
-      datums.forEach(function(datum) {
-        var v = datum[args.x_accessor];
-        var id = (typeof v === 'number') ? i : formatter(v);
+      const formatter = MG.time_format(utc_time, linked_format);
+      const datums = d.values ? d.values : [d];
+      datums.forEach(datum => {
+        const v = datum[x_accessor];
+        const id = (typeof v === 'number') ? i : formatter(v);
 
         // trigger mouseout on matching line in .linked charts
-        d3.selectAll('.roll_' + id)
+        d3.selectAll(`.roll_${id}`)
           .each(function(d) {
             d3.select(this)
               .on('mouseout')(d);
@@ -723,24 +689,22 @@
   }
 
   function mg_remove_active_data_points_for_aggregate_rollover(args, svg) {
-    svg.selectAll('circle.mg-line-rollover-circle').filter(function(circle) {
-        return circle.length > 1;
-      })
+    svg.selectAll('circle.mg-line-rollover-circle').filter(({length}) => length > 1)
       .style('opacity', 0);
   }
 
-  function mg_remove_active_data_points_for_generic_rollover(args, svg, d) {
-    svg.selectAll('circle.mg-line-rollover-circle.mg-line' + d.line_id)
-      .style('opacity', function() {
-        var id = d.line_id - 1;
+  function mg_remove_active_data_points_for_generic_rollover({custom_line_color_map, data}, svg, {line_id}) {
+    svg.selectAll(`circle.mg-line-rollover-circle.mg-line${line_id}`)
+      .style('opacity', () => {
+        let id = line_id - 1;
 
-        if (args.custom_line_color_map.length > 0 &&
-          args.custom_line_color_map.indexOf(d.line_id) !== undefined
+        if (custom_line_color_map.length > 0 &&
+          custom_line_color_map.indexOf(line_id) !== undefined
         ) {
-          id = args.custom_line_color_map.indexOf(d.line_id);
+          id = custom_line_color_map.indexOf(line_id);
         }
 
-        if (args.data[id].length === 1) {
+        if (data[id].length === 1) {
           return 1;
         } else {
           return 0;
@@ -777,9 +741,7 @@
         .numericalDomainFromData()
         .numericalRange('bottom')
 
-      var baselines = (args.baselines || []).map(function(d) {
-        return d[args.y_accessor];
-      });
+      const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
 
       new MG.scale_factory(args)
         .namespace('y')
@@ -787,8 +749,6 @@
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
         .numericalRange('left');
-
-      var svg = mg_get_svg_child_of(args.target);
 
       if (args.x_axis) {
         new MG.axis_factory(args)
@@ -831,58 +791,52 @@
     };
 
     this.rollover = function() {
-      var that = this;
-      mg_line_rollover_setup(args, that);
+      mg_line_rollover_setup(args, this);
       MG.call_hook('line.after_rollover', args);
 
       return this;
     };
 
-    this.rolloverClick =  function(args) {
-        return function(d, i) {
-            if (args.click) {
-                args.click(d, i);
-            }
-        };
+    this.rolloverClick =  args => (d, i) => {
+        if (args.click) {
+            args.click(d, i);
+        }
     };
 
-    this.rolloverOn = function(args) {
-      var svg = mg_get_svg_child_of(args.target);
-      var fmt = mg_get_rollover_time_format(args);
+    this.rolloverOn = args => {
+      const svg = mg_get_svg_child_of(args.target);
 
-      return function(d, i) {
+      return (d, i) => {
         mg_update_rollover_circle(args, svg, d);
         mg_trigger_linked_mouseovers(args, d, i);
 
         svg.selectAll('text')
-          .filter(function(g, j) {
-            return d === g;
-          })
+          .filter((g, j) => d === g)
           .attr('opacity', 0.3);
 
         // update rollover text except for missing data points
         if (args.show_rollover_text &&
             !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)
           ) {
-          var mouseover = mg_mouseover_text(args, { svg: svg });
-          var row = mouseover.mouseover_row();
+          const mouseover = mg_mouseover_text(args, { svg });
+          let row = mouseover.mouseover_row();
           if (args.aggregate_rollover) {
             row.text((args.aggregate_rollover && args.data.length > 1
               ? mg_format_x_aggregate_mouseover
               : mg_format_x_mouseover)(args, d));
           }
 
-          var pts = args.aggregate_rollover && args.data.length > 1
+          const pts = args.aggregate_rollover && args.data.length > 1
             ? d.values
             : [d];
 
-          pts.forEach(function(di) {
+          pts.forEach(di => {
             if (args.aggregate_rollover) {
               row = mouseover.mouseover_row();
             }
 
             if (args.legend) {
-              mg_line_color_text(row.text(args.legend[di.index - 1] + '  ').bold().elem(), di, args);
+              mg_line_color_text(row.text(`${args.legend[di.index - 1]}  `).bold().elem(), di, args);
             }
 
             mg_line_color_text(row.text('\u2014  ').elem(), di, args);
@@ -900,10 +854,10 @@
       };
     };
 
-    this.rolloverOff = function(args) {
-      var svg = mg_get_svg_child_of(args.target);
+    this.rolloverOff = args => {
+      const svg = mg_get_svg_child_of(args.target);
 
-      return function(d, i) {
+      return (d, i) => {
         mg_trigger_linked_mouseouts(args, d, i);
         if (args.aggregate_rollover) {
           mg_remove_active_data_points_for_aggregate_rollover(args, svg);
@@ -921,12 +875,10 @@
       };
     };
 
-    this.rolloverMove = function(args) {
-      return function(d, i) {
-        if (args.mousemove) {
-          args.mousemove(d, i);
-        }
-      };
+    this.rolloverMove = args => (d, i) => {
+      if (args.mousemove) {
+        args.mousemove(d, i);
+      }
     };
 
     this.windowListeners = function() {
@@ -938,4 +890,4 @@
   }
 
   MG.register('line', lineChart);
-}).call(this);
+}
