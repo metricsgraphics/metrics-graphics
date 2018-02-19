@@ -974,7 +974,7 @@
                 }
             };
         }
-        // work with d3.time.[interval]
+        // work with dtime.[interval]
         else if (typeof resolution.round === 'function'
             && typeof resolution.offset === 'function') {
             interval = resolution;
