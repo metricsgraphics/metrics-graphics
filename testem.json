@@ -37,11 +37,14 @@
     "tests/**/*_test.js"
   ],
   "launch_in_ci": [
-    "PhantomJS"
+    "Chrome"
   ],
   "launch_in_dev": [
     "PhantomJS",
     "Chrome"
   ],
+  "browser_args": {
+    "Chrome": [ "--headless", "--disable-gpu", "--remote-debugging-port=9222" ]
+  },
   "phantomjs_debug_port": 9000
 }
