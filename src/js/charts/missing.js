@@ -1,87 +1,83 @@
-(function() {
-  'use strict';
-
-  function mg_missing_add_text(svg, args) {
-    svg.selectAll('.mg-missing-text').data([args.missing_text])
+{
+  function mg_missing_add_text(svg, {missing_text, width, height}) {
+    svg.selectAll('.mg-missing-text').data([missing_text])
       .enter().append('text')
       .attr('class', 'mg-missing-text')
-      .attr('x', args.width / 2)
-      .attr('y', args.height / 2)
+      .attr('x', width / 2)
+      .attr('y', height / 2)
       .attr('dy', '.50em')
       .attr('text-anchor', 'middle')
-      .text(args.missing_text);
+      .text(missing_text);
   }
 
   function mg_missing_x_scale(args) {
     args.scales.X = d3.scaleLinear()
       .domain([0, args.data.length])
       .range([mg_get_plot_left(args), mg_get_plot_right(args)]);
-    args.scalefns.yf = function(di) {
-      return args.scales.Y(di.y); };
+    args.scalefns.yf = ({y}) => args.scales.Y(y);
   }
 
   function mg_missing_y_scale(args) {
     args.scales.Y = d3.scaleLinear()
       .domain([-2, 2])
       .range([args.height - args.bottom - args.buffer * 2, args.top]);
-    args.scalefns.xf = function(di) {
-      return args.scales.X(di.x); };
+    args.scalefns.xf = ({x}) => args.scales.X(x);
   }
 
   function mg_make_fake_data(args) {
-    var data = [];
-    for (var x = 1; x <= 50; x++) {
-      data.push({ 'x': x, 'y': Math.random() - (x * 0.03) });
+    const data = [];
+    for (let x = 1; x <= 50; x++) {
+      data.push({ x, y: Math.random() - (x * 0.03) });
     }
     args.data = data;
   }
 
-  function mg_add_missing_background_rect(g, args) {
+  function mg_add_missing_background_rect(g, {buffer, title_y_position, width, height}) {
     g.append('svg:rect')
       .classed('mg-missing-background', true)
-      .attr('x', args.buffer)
-      .attr('y', args.buffer + args.title_y_position * 2)
-      .attr('width', args.width - args.buffer * 2)
-      .attr('height', args.height - args.buffer * 2 - args.title_y_position * 2)
+      .attr('x', buffer)
+      .attr('y', buffer + title_y_position * 2)
+      .attr('width', width - buffer * 2)
+      .attr('height', height - buffer * 2 - title_y_position * 2)
       .attr('rx', 15)
       .attr('ry', 15);
   }
 
-  function mg_missing_add_line(g, args) {
-    var line = d3.line()
-      .x(args.scalefns.xf)
-      .y(args.scalefns.yf)
-      .curve(args.interpolate);
+  function mg_missing_add_line(g, {scalefns, interpolate, data}) {
+    const line = d3.line()
+      .x(scalefns.xf)
+      .y(scalefns.yf)
+      .curve(interpolate);
 
     g.append('path')
       .attr('class', 'mg-main-line mg-line1-color')
-      .attr('d', line(args.data));
+      .attr('d', line(data));
   }
 
-  function mg_missing_add_area(g, args) {
-    var area = d3.area()
-      .x(args.scalefns.xf)
-      .y0(args.scales.Y.range()[0])
-      .y1(args.scalefns.yf)
-      .curve(args.interpolate);
+  function mg_missing_add_area(g, {scalefns, scales, interpolate, data}) {
+    const area = d3.area()
+      .x(scalefns.xf)
+      .y0(scales.Y.range()[0])
+      .y1(scalefns.yf)
+      .curve(interpolate);
 
     g.append('path')
       .attr('class', 'mg-main-area mg-area1-color')
-      .attr('d', area(args.data));
+      .attr('d', area(data));
   }
 
-  function mg_remove_all_children(args) {
-    d3.select(args.target).selectAll('svg *').remove();
+  function mg_remove_all_children({target}) {
+    d3.select(target).selectAll('svg *').remove();
   }
 
-  function mg_missing_remove_legend(args) {
-    if (args.legend_target) {
-      d3.select(args.legend_target).html('');
+  function mg_missing_remove_legend({legend_target}) {
+    if (legend_target) {
+      d3.select(legend_target).html('');
     }
   }
 
   function missingData(args) {
-    this.init = function(args) {
+    this.init = (args) => {
       this.args = args;
 
       mg_init_compute_width(args);
@@ -89,9 +85,9 @@
 
       // create svg if one doesn't exist
 
-      var container = d3.select(args.target);
+      const container = d3.select(args.target);
       mg_raise_container_error(container, args);
-      var svg = container.selectAll('svg');
+      let svg = container.selectAll('svg');
       mg_remove_svg_if_chart_type_has_changed(svg, args);
       svg = mg_add_svg_if_it_doesnt_exist(svg, args);
       mg_adjust_width_and_height_if_changed(svg, args);
@@ -108,7 +104,7 @@
         mg_make_fake_data(args);
         mg_missing_x_scale(args);
         mg_missing_y_scale(args);
-        var g = mg_add_g(svg, 'mg-missing-pane');
+        const g = mg_add_g(svg, 'mg-missing-pane');
 
         mg_add_missing_background_rect(g, args);
         mg_missing_add_line(g, args);
@@ -122,7 +118,7 @@
       return this;
     };
 
-    this.windowListeners = function() {
+    this.windowListeners = () => {
       mg_window_listeners(this.args);
       return this;
     };
@@ -130,7 +126,7 @@
     this.init(args);
   }
 
-  var defaults = {
+  const defaults = {
     top: 40, // the size of the top margin
     bottom: 30, // the size of the bottom margin
     right: 10, // size of the right margin
@@ -147,4 +143,4 @@
   };
 
   MG.register('missing-data', missingData, defaults);
-}).call(this);
+}
