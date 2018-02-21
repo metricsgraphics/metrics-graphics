@@ -10,7 +10,8 @@ var
   //minifycss = require('gulp-minify-css'), // for minifiing css
   jshint = require('gulp-jshint'),
   testem = require('gulp-testem'),
-  connect = require('gulp-connect');
+  connect = require('gulp-connect'),
+  babel = require('gulp-babel');
 
 // paths
 var
@@ -90,6 +91,9 @@ gulp.task('build:js', ['clean'], function () {
           }
         }
     ))
+    .pipe(babel({
+      presets: ['env']
+    }))
     .pipe(gulp.dest(dist))
     .pipe(rename('metricsgraphics.min.js'))
     .pipe(uglify())

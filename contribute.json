@@ -9,10 +9,11 @@
     "participate": {
         "home": "http://metricsgraphicsjs.org/",
         "docs": "https://github.com/mozilla/metrics-graphics/wiki#resources",
-        "irc": "irc://irc.mozilla.org/#metrics",
+        "irc": "irc://irc.mozilla.org/#metricsgraphics",
         "irc-contacts": [
             "almossawi",
-            "hulmer"
+            "hulmer",
+            "wlach"
         ]
     },
     "bugs": {

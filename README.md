@@ -23,7 +23,7 @@ The API is simple. All that's needed to create a graphic is to specify a few def
 
 The library is data-source agnostic. While it provides a number of convenience functions and options that allow for graphics to better handle things like missing observations, it doesn't care where the data comes from.
 
-Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for other to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We are currently using semantic versioning.
+Though originally envisioned for Mozilla Metrics dashboard projects, we are making this repository public for others to use, knowing full well that we are far from having this project in good-enough shape. Take a look at the issues to see the milestones and other upcoming work on this repository. We are currently using semantic versioning.
 
 <a href="http://metricsgraphicsjs.org">http://metricsgraphicsjs.org</a>
 
@@ -92,7 +92,7 @@ If library x works for you, you should keep using it. We're not aiming to be com
 
 __I only see colours for the first 10 lines in my chart, what gives?__
 
-The colors for the first ten lines, areas and legends are defined in the stylesheet for the light and dark themes. For an eleventh line, you would add the follow CSS rules:
+The colors for the first ten lines, areas and legends are defined in the stylesheet for the light and dark themes. For an eleventh line, you would add the following CSS rules:
 
 
 ```css
