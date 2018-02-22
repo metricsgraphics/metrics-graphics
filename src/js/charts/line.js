@@ -716,6 +716,41 @@
     svg.select('.mg-active-datapoint').text('');
   }
 
+  function get_brush_interval(args) {
+    var resolution = args.brushing_interval,
+      interval;
+
+    if (!resolution) {
+      if (args.time_series) {
+            resolution = d3.timeDay;
+      } else {
+        resolution = 1;
+      }
+    }
+
+    // work with N as integer
+    if (typeof resolution === 'number') {
+      interval = {
+        round: function(val) {
+          return resolution * Math.round(val / resolution);
+        },
+        offset: function(val, count) {
+          return val + (resolution * count);
+        }
+      };
+    }
+    // work with d3.time.[interval]
+    else if (typeof resolution.round === 'function'
+      && typeof resolution.offset === 'function' ) {
+      interval = resolution;
+    }
+    else {
+        console.warn('The `brushing_interval` provided is invalid. It must be either a number or expose both `round` and `offset` methods');
+    }
+
+    return interval;
+  }
+
   function lineChart(args, datum) {
 
     this.init = function(args, datum) {
