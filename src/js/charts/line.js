@@ -716,9 +716,9 @@
     svg.select('.mg-active-datapoint').text('');
   }
 
-  function lineChart(args) {
+  function lineChart(args, datum) {
 
-    this.init = function(args) {
+    this.init = function(args, datum) {
       this.args = args;
 
       if (!args.data || args.data.length === 0) {
@@ -778,12 +778,10 @@
 
       if (args.brushing) {
 
-          console.log('hey')
-
         this.getBrushInterval(args);
-        this.isWithinBounds(datum, args);
+        this.isWithinBounds(args => (d.datum), args);
         this.brushing();
-        this.processXAxis(args, min_x, max_x);
+        this.processXAxis(args, args.min_x, args.max_x);
         this.processYAxis(args);
         this.afterRollover(args);
       }
@@ -850,6 +848,8 @@
 
     this.brushing = function () {
         var chartContext = this;
+        var brushHistory = {};
+
 
         args = this.args;
 
