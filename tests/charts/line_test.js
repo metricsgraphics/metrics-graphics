@@ -330,3 +330,16 @@ test('legend-target and colors are set', function() {
     MG.data_graphic(params);
     ok(document.querySelector('.mg-line-legend'), "mg-line-legend is added");
 });
+
+//Explores branch 4
+test('legend-target is set to an integer', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        legend: 2
+    };
+
+    MG.data_graphic(params);
+    ok(document.querySelector('.mg-line-legend'), "mg-line-legend should have been added");
+});
