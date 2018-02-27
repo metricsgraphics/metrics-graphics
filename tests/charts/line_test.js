@@ -287,3 +287,17 @@ test('When 1 data series is empty (out of 2) and missing_is_zero is true, remain
 
     equal(document.querySelectorAll('.mg-main-line').length, 1, 'Line for non-empty data series is still rendered');
 });
+
+//Explores branch 10
+test('y_axis_position set to right', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        legend: ['US', 'CA'],
+        y_axis_position: 'right'
+    };
+
+    MG.data_graphic(params);
+    equal(document.querySelector('.mg-line-legend-color').getAttribute('text-anchor'), 'end', 'text-anchor is set to "end"');
+});
