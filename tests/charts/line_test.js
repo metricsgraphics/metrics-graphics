@@ -315,3 +315,18 @@ test('legend-target is set', function() {
     MG.data_graphic(params);
     equal(document.querySelector('#qunit-fixture').style.color, "", 'color is not set');
 });
+
+//Explores branch 5 and 7
+test('legend-target and colors are set', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        legend: ['US', 'CA'],
+        legend_target: '.legend',
+        colors: ['blue', 'rgb(255,100,43)', '#CCCCFF']
+    };
+
+    MG.data_graphic(params);
+    ok(document.querySelector('.mg-line-legend'), "mg-line-legend is added");
+});
