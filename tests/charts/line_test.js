@@ -301,3 +301,17 @@ test('y_axis_position set to right', function() {
     MG.data_graphic(params);
     equal(document.querySelector('.mg-line-legend-color').getAttribute('text-anchor'), 'end', 'text-anchor is set to "end"');
 });
+
+//Explores branches 5, 8
+test('legend-target is set', function() {
+    var params = {
+        target: '#qunit-fixture',
+        data: [{'date': new Date('2014-01-01'), 'value': 12},
+               {'date': new Date('2014-03-01'), 'value': 18}],
+        legend: ['US', 'CA'],
+        legend_target: '.legend',
+    };
+
+    MG.data_graphic(params);
+    equal(document.querySelector('#qunit-fixture').style.color, "", 'color is not set');
+});
