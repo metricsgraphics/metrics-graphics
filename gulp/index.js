@@ -72,6 +72,9 @@ gulp.task('clean', function () {
 gulp.task('build:js', ['clean'], function () {
   return gulp.src(jsFiles)
     .pipe(concat({path: 'metricsgraphics.js'}))
+    .pipe(babel({
+      presets: ['env']
+    }))
     .pipe(umd(
         {
           dependencies:function() {
@@ -91,9 +94,6 @@ gulp.task('build:js', ['clean'], function () {
           }
         }
     ))
-    .pipe(babel({
-      presets: ['env']
-    }))
     .pipe(gulp.dest(dist))
     .pipe(rename('metricsgraphics.min.js'))
     .pipe(uglify())
