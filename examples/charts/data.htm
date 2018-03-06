@@ -345,12 +345,12 @@ d3.json('data/fake_users1.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        area: false,
         point_size: 3,
         active_point_on_lines: true,
         active_point_accessor: 'active',
         active_point_size: 2,
-        target: '#display_active_point_01'
+        target: '#display_active_point_01',
+        aggregate_rollover: true
     });
 });
 

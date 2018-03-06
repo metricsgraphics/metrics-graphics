@@ -640,13 +640,13 @@
         .style('opacity', 0);
 
       d.values.forEach((datum, index, list) => {
-        if (args.missing_is_hidden && list[index]['_missing'] || (args.active_point_on_lines && !list[index]['active'])) {
+        if (args.missing_is_hidden && list[index]['_missing']) {
           return;
         }
 
         if (mg_data_in_plot_bounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum);
       });
-    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null || (args.active_point_on_lines && !d['active'])) {
+    } else if ((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null) {
       // disable rollovers for hidden parts of the line
       // recall that hidden parts are missing data ranges and possibly also
       // data points that have been explicitly identified as missing
