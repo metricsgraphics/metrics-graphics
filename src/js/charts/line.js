@@ -38,11 +38,16 @@
     }
   }
 
-  function mg_add_area_generator({scalefns, scales, interpolate}, plot) {
+  function mg_add_area_generator({scalefns, scales, interpolate, area_flip_under_zero}, plot) {
+
+    const areaBaselineValue = (area_flip_under_zero) ? scales.Y(0) : scales.Y.range()[0];
+
     plot.area = d3.area()
       .defined(plot.line.defined())
       .x(scalefns.xf)
-      .y0(scales.Y.range()[0])
+      .y0(() => {
+        return areaBaselineValue;
+      })
       .y1(scalefns.yf)
       .curve(interpolate);
   }
