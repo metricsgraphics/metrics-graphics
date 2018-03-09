@@ -191,7 +191,30 @@ d3.json('data/fake_users3.json', function(data) {
     <div class='col-lg-5'></div>
 </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='multiline_area_select'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
 
+                    <pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+
+    MG.data_graphic({
+        title: "Select lines of your multi-line chart having areas",
+        description: "By passing in an array of lines index in 'area' property, you can choose which lines has an area or not.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#multiline_area_select',
+        area: [2],
+        y_extended_ticks: true,
+        x_accessor: 'date'
+    });
+});</code></pre>
 
 <script>
 MG._hooks = {};
@@ -321,5 +344,25 @@ d3.json('data/fake_users2.json', function(data){
         colors: ['blue', 'rgb(255,100,43)', '#CCCCFF'],
         aggregate_rollover: true
     });
-})
+});
+
+d3.json('data/fake_users3.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+
+    MG.data_graphic({
+        title: "Select lines of your multi-line chart having areas",
+        description: "By passing in an array of lines index in 'area' property, you can choose which lines has an area or not.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#multiline_area_select',
+        area: [2],
+        y_extended_ticks: true,
+        x_accessor: 'date'
+    });
+});
 </script>
