@@ -154,6 +154,45 @@ d3.json('data/brief-2.json', function(data) {
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='area_flipped_users_gain_loss'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+
+    var max = d3.max(data, function (d) {
+        return d.value;
+    });
+    var min = d3.min(data, function(d) {
+        return d.value;
+    });
+
+    var offsetForNegativeValues = ((max - min) / 1.75);
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].value = (data[i].value - offsetForNegativeValues) / 1000000;
+    }
+
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Flipped area under zero baseline",
+        description: "This is a line chart having a flipped area under the zero baseline when values are negatives",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        area: true,
+        area_flip_under_zero: true,
+        target: document.getElementById('area_flipped_users_gain_loss'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
 <script>
 
 
@@ -261,5 +300,36 @@ MG.data_graphic({
     height: 200,
     right: 40,
     target: '#singleton'
+});
+
+d3.json('data/fake_users1.json', function(data) {
+
+    var max = d3.max(data, function (d) {
+        return d.value;
+    });
+    var min = d3.min(data, function(d) {
+        return d.value;
+    });
+
+    var offsetForNegativeValues = ((max - min) / 1.75);
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].value = (data[i].value - offsetForNegativeValues) / 1000000;
+    }
+
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Flipped area under zero baseline",
+        description: "This is a line chart having a flipped area under the zero baseline when values are negatives",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        area: true,
+        area_flip_under_zero: true,
+        target: document.getElementById('area_flipped_users_gain_loss'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
 });
 </script>
