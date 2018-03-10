@@ -751,9 +751,9 @@
     return interval;
   }
 
-  function lineChart(args, datum) {
+  function lineChart(args) {
 
-    this.init = function(args, datum) {
+    this.init = function(args) {
       this.args = args;
 
       if (!args.data || args.data.length === 0) {
@@ -810,11 +810,9 @@
       this.mainPlot();
       this.rollover();
       this.windowListeners();
-
       if (args.brushing) {
-
         this.getBrushInterval(args);
-        this.isWithinBounds(args => (d.datum), args);
+        this.isWithinBounds(args);
         this.brushing();
         this.processXAxis(args, args.min_x, args.max_x);
         this.processYAxis(args);
@@ -871,14 +869,24 @@
         return interval;
     }
 
-    this.isWithinBounds = function (datum, args) {
-        var x = +datum[args.x_accessor],
-            y = +datum[args.y_accessor];
+    this.isWithinBounds = function (args) {
 
-        return x >= (+args.processed.min_x || x)
-            && x <= (+args.processed.max_x || x)
-            && y >= (+args.processed.min_y || y)
-            && y <= (+args.processed.max_y || y);
+        const data_nested = d3.nest()
+            .key(d => d[args.x_accessor])
+            .entries(d3.merge(args.data));
+        data_nested.forEach(entry => {
+            var datum = entry.values[0];
+            entry.key = datum[args.x_accessor];
+
+
+            var x = +datum[args.x_accessor],
+                y = +datum[args.y_accessor];
+
+            return x >= (+args.processed.min_x || x)
+                && x <= (+args.processed.max_x || x)
+                && y >= (+args.processed.min_y || y)
+                && y <= (+args.processed.max_y || y);
+        });
     }
 
     this.brushing = function () {
@@ -1230,6 +1238,14 @@
           args.max_y = current.max_y;
           history.steps = [];
         }
+    },
+
+    zoom_in: function(target, options) {
+
+    },
+
+    zoom_out: function(target, options) {
+
     }
   };
 }

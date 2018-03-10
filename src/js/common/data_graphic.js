@@ -129,12 +129,6 @@ MG.data_graphic = function(args) {
     args.y_accessor = 1;
   }
 
-  if (args.brushing) {
-    var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "js/brushing/mg_line_brushing.js";
-      document.getElementsByTagName("head")[0].appendChild(script);
-  }
   // check for deprecated parameters
   for (var key in MG.deprecations) {
     if (args.hasOwnProperty(key)) {
