@@ -800,16 +800,17 @@ function mg_compute_yax_format (args) {
   if (!yax_format) {
     if (args.format === 'count') {
       // increase decimals if we have small values, useful for realtime data
-      if (args.processed.max_y < 0.0001) {
-        args.decimals = 6;
-      } else if (args.processed.max_y < 0.1) {
-        args.decimals = 4;
+      if (args.processed.y_ticks.length > 1) {
+        // calculate the number of decimals between the difference of ticks
+        args.decimals = Math.max(0, -Math.floor(
+          Math.log(args.processed.y_ticks[1] - args.processed.y_ticks[0]) / Math.LN10
+        ))
       }
 
       yax_format = function (d) {
         var pf;
 
-        if (d < 1.0 && d > -1.0 && d !== 0) {
+        if (args.decimals !== 0) {
           // don't scale tiny values
           pf = d3.format(',.' + args.decimals + 'f');
         } else if (d < 1000) {
