@@ -154,7 +154,7 @@
         if (args.show_rollover_text) {
           const mo = mg_mouseover_text(args, { svg });
           const row = mo.mouseover_row();
-          row.text('\u259F  ').elem()
+          row.text('\u259F  ').elem
             .classed('hist-symbol', true);
 
           row.text(mg_format_x_mouseover(args, d)); // x

@@ -836,10 +836,10 @@
             }
 
             if (args.legend) {
-              mg_line_color_text(row.text(`${args.legend[di.index - 1]}  `).bold().elem(), di, args);
+              mg_line_color_text(row.text(`${args.legend[di.index - 1]}  `).bold().elem, di, args);
             }
 
-            mg_line_color_text(row.text('\u2014  ').elem(), di, args);
+            mg_line_color_text(row.text('\u2014  ').elem, di, args);
             if (!args.aggregate_rollover) {
               row.text(mg_format_x_mouseover(args, di));
             }
