@@ -754,6 +754,9 @@
   function lineChart(args) {
 
     this.init = function(args) {
+
+      MG.add_hook('x_axis.process_min_max', this.processXAxis);
+      MG.add_hook('y_axis.process_min_max', this.processYAxis);
       this.args = args;
 
       if (!args.data || args.data.length === 0) {
