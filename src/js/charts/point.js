@@ -4,10 +4,10 @@ function point_mouseover(args, svg, d) {
 
   if (args.color_accessor !== null && args.color_type === 'category') {
     const label = d[args.color_accessor];
-    row.text(`${label}  `).bold().elem().attr('fill', args.scalefns.colorf(d));
+    row.text(`${label}  `).bold().attr('fill', args.scalefns.colorf(d));
   }
 
-  mg_color_point_mouseover(args, row.text('\u25CF   ').elem(), d); // point shape
+  mg_color_point_mouseover(args, row.text('\u25CF   ').elem, d); // point shape
 
   row.text(mg_format_x_mouseover(args, d)); // x
   row.text(mg_format_y_mouseover(args, d, args.time_series === false));
