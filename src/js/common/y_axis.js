@@ -579,6 +579,7 @@ function categoricalGuides (args, axisArgs) {
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
     var last = groupScale(group) + scale(scale.domain()[scale.domain().length - 1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
+    var x11, x21, y11, y21, x12, x22, y12, y22;
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
       x21 = mg_get_plot_left(args);

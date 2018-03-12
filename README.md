@@ -72,6 +72,10 @@ In order to request or faciliate deployments to metricsgraphicsjs.org, please co
 
 You might also be interested in writing addons for the library, in which case, [have a read through this page](https://github.com/mozilla/metrics-graphics/wiki/Developing-Addons).
 
+## Getting in touch
+
+If you have any questions about Mission Control (either as a user or contributor), the best place to ask is the [#metricsgraphics](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23metricsgraphics) channel on irc.mozilla.org ([learn more about irc @ Mozilla](https://wiki.mozilla.org/IRC)).
+
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
 * [Interactive demo](http://metricsgraphicsjs.org/interactive-demo.htm)
