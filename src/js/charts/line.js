@@ -836,7 +836,7 @@
             }
 
             if (args.legend) {
-              mg_line_color_text(row.text(`${args.legend[di.index - 1]}  `).bold().elem, di, args);
+              mg_line_color_text(row.text(`${args.legend[di.index - 1]}  `).bold(), di, args);
             }
 
             mg_line_color_text(row.text('\u2014  ').elem, di, args);
