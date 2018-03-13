@@ -38,9 +38,9 @@
     }
   }
 
-  function mg_add_area_generator({scalefns, scales, interpolate, area_flip_under_zero}, plot) {
+  function mg_add_area_generator({scalefns, scales, interpolate, flip_area_under_y_value}, plot) {
 
-    const areaBaselineValue = (area_flip_under_zero) ? scales.Y(0) : scales.Y.range()[0];
+    const areaBaselineValue = (Number.isFinite(flip_area_under_y_value)) ? scales.Y(flip_area_under_y_value) : scales.Y.range()[0];
 
     plot.area = d3.area()
       .defined(plot.line.defined())

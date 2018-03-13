@@ -176,14 +176,14 @@ d3.json('data/brief-2.json', function(data) {
 
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
-        title: "Flipped area under zero baseline",
-        description: "This is a line chart having a flipped area under the zero baseline when values are negatives",
+        title: "Flipped area under Y value baseline",
+        description: "This is a line chart having a flipped area under a Y value baseline",
         data: data,
         width: 600,
         height: 200,
         right: 40,
         area: true,
-        area_flip_under_zero: true,
+        flip_area_under_y_value: 0,
         target: document.getElementById('area_flipped_users_gain_loss'),
         x_accessor: 'date',
         y_accessor: 'value'
@@ -319,14 +319,14 @@ d3.json('data/fake_users1.json', function(data) {
 
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
-        title: "Flipped area under zero baseline",
-        description: "This is a line chart having a flipped area under the zero baseline when values are negatives",
+        title: "Flipped area under Y value baseline",
+        description: "This is a line chart having a flipped area under a Y value baseline",
         data: data,
         width: 600,
         height: 200,
         right: 40,
         area: true,
-        area_flip_under_zero: true,
+        flip_area_under_y_value: 0,
         target: document.getElementById('area_flipped_users_gain_loss'),
         x_accessor: 'date',
         y_accessor: 'value'
