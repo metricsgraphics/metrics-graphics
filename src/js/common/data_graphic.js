@@ -90,6 +90,7 @@ MG.data_graphic = function(args) {
     show_confidence_band: null,                 // given [l, u] shows a confidence at each point from l to u
     xax_format: null,                           // xax_format is a function that formats the labels for the x axis.
     area: true,
+    flip_area_under_y_value: null,              // Specify a Y baseline number value to flip area under it.
     chart_type: 'line',
     data: [],
     decimals: 2,                                // the number of decimals in any rollover
