@@ -551,20 +551,18 @@
 
       // If option activated, add active points for each lines
       if (args.active_point_on_lines) {
-
         svg.selectAll('circle-' + line_id)
           .data(args.data[i])
           .enter()
+          .filter((d) => {
+            return d[args.active_point_accessor];
+          })
           .append('circle')
           .attr('class', 'mg-area' + (line_id) + '-color mg-shown-active-point')
           .attr('cx', args.scalefns.xf)
           .attr('cy', args.scalefns.yf)
-          .attr('r', function (data) {
-            if (data.active) {
-              return args.active_point_size;
-            } else {
-              return 0;
-            }
+          .attr('r', () => {
+            return args.active_point_size;
           });
       }
 
