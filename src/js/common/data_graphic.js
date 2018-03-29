@@ -50,6 +50,10 @@ MG.data_graphic = function(args) {
     min_y: null,                                // if set, y axis starts at an arbitrary value
     min_y_from_data: false,                     // if set, y axis will start at minimum value rather than at 0
     point_size: 2.5,                            // the size of the dot that appears on a line on mouse-over
+    active_point_on_lines: false,               // if set, active dot on lines will be displayed.
+    active_point_accessor: 'active',            // data accessor value to determine if a point is active or not
+    active_point_size: 2,                       // the size of the dot that appears on a line when
+    points_always_visible: false,               // whether to always display data points and not just on hover
     x_accessor: 'date',
     xax_units: '',
     x_label: '',

@@ -149,6 +149,88 @@
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='display_active_point_01'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].active = (i % 5 === 0);
+    }
+
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Show active points on line chart",
+        description: "This line chart displays pre-defined active points",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='display_active_point_02'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 0) {
+                data[i][j].active = (j % 5 === 0);
+            }
+            if (i === 1) {
+                data[i][j].active = (j % 10 === 0);
+            }
+        }
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Show active points on multi-lines chart",
+        description: "This multi-lines chart displays pre-defined active points for each lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
 <script>
 MG._hooks = {};
 d3.json('data/missing-y.json', function(data) {
@@ -245,6 +327,60 @@ d3.json('data/fake_users2.json', function(data) {
         linked: true,
         x_accessor: 'date',
         y_accessor: ['value', 'value2', 'value3']
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].active = (i % 5 === 0);
+    }
+
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Show active points on line chart",
+        description: "This line chart displays pre-defined active points",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 0) {
+                data[i][j].active = (j % 5 === 0);
+            }
+            if (i === 1) {
+                data[i][j].active = (j % 10 === 0);
+            }
+        }
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Show active points on multi-lines chart",
+        description: "This multi-lines chart displays pre-defined active points for each lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_02',
+        aggregate_rollover: true
     });
 });
 </script>

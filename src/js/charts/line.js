@@ -535,6 +535,11 @@
   function mg_draw_all_line_elements(args, plot, svg) {
     mg_remove_dangling_bands(plot, svg);
 
+    // If option activated, remove existing active points if exists
+    if (args.active_point_on_lines) {
+      svg.selectAll('circle.mg-shown-active-point').remove();
+    }
+
     for (let i = args.data.length - 1; i >= 0; i--) {
       const this_data = args.data[i];
 
@@ -548,6 +553,23 @@
       }
 
       args.data[i].line_id = line_id;
+
+      // If option activated, add active points for each lines
+      if (args.active_point_on_lines) {
+        svg.selectAll('circle-' + line_id)
+          .data(args.data[i])
+          .enter()
+          .filter((d) => {
+            return d[args.active_point_accessor];
+          })
+          .append('circle')
+          .attr('class', 'mg-area' + (line_id) + '-color mg-shown-active-point')
+          .attr('cx', args.scalefns.xf)
+          .attr('cy', args.scalefns.yf)
+          .attr('r', () => {
+            return args.active_point_size;
+          });
+      }
 
       if (this_data.length === 0) {
         continue;
