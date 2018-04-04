@@ -223,9 +223,9 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   // add together all relevant data arrays.
   var all_data = mg_flatten_array(args.data)
-    .map(function(dp) {
-      return dp[accessor] })
-    .concat(mg_flatten_array(additional_data_arrays));
+    .map(dp => dp[accessor])
+    .concat(mg_flatten_array(additional_data_arrays))
+    .map(v => (typeof v === 'string') ? Number(v) : v);
 
   // do processing for log
   if (args[namespace + '_scale_type'] === 'log') {
