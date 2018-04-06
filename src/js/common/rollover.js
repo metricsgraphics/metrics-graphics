@@ -47,35 +47,15 @@ function mg_setup_mouseover_container(svg, args) {
 }
 
 function mg_mouseover_tspan(svg, text) {
-  var tspan = '';
-  var cl = null;
-  if (arguments.length === 3) cl = arguments[2];
-  tspan = svg.append('tspan').text(text);
-  if (cl !== null) tspan.classed(cl, true);
-  this.tspan = tspan;
+  let tspan = svg.append('tspan').text(text);
 
-  this.bold = function() {
-    this.tspan.attr('font-weight', 'bold');
-    return this;
+  return {
+    bold: () => tspan.attr('font-weight', 'bold'),
+    font_size: (pts) => tspan.attr('font-size', pts),
+    x: (x) => tspan.attr('x', x),
+    y: (y) => tspan.attr('y', y),
+    elem: tspan
   };
-
-  this.font_size = function(pts) {
-    this.tspan.attr('font-size', pts);
-    return this;
-  }
-
-  this.x = function(x) {
-    this.tspan.attr('x', x);
-    return this;
-  };
-  this.y = function(y) {
-    this.tspan.attr('y', y);
-    return this;
-  };
-  this.elem = function() {
-    return this.tspan;
-  };
-  return this;
 }
 
 function mg_reset_text_container(svg) {
@@ -88,32 +68,30 @@ function mg_reset_text_container(svg) {
 
 function mg_mouseover_row(row_number, container, rargs) {
   var lineHeight = 1.1;
-  this.rargs = rargs;
-
   var rrr = container.append('tspan')
     .attr('x', 0)
     .attr('y', (row_number * lineHeight) + 'em');
 
-  this.text = function(text) {
-    return mg_mouseover_tspan(rrr, text);
-  }
-  return this;
+  return {
+    rargs,
+    text: (text) => {
+      return mg_mouseover_tspan(rrr, text);
+    }
+  };
 }
 
 function mg_mouseover_text(args, rargs) {
-  var lineHeight = 1.1;
-  this.row_number = 0;
-  this.rargs = rargs;
   mg_setup_mouseover_container(rargs.svg, args);
 
-  this.text_container = mg_reset_text_container(rargs.svg);
+  let mouseOver = {
+    row_number: 0,
+    rargs,
+    mouseover_row: (rargs) => {
+      mouseOver.row_number += 1;
+      return mg_mouseover_row(mouseOver.row_number, mouseOver.text_container, rargs);
+    },
+    text_container: mg_reset_text_container(rargs.svg)
+  };
 
-  this.mouseover_row = function(rargs) {
-    var that = this;
-    var rrr = mg_mouseover_row(that.row_number, that.text_container, rargs);
-    that.row_number += 1;
-    return rrr;
-  }
-
-  return this;
+  return mouseOver;
 }

@@ -50,6 +50,10 @@ MG.data_graphic = function(args) {
     min_y: null,                                // if set, y axis starts at an arbitrary value
     min_y_from_data: false,                     // if set, y axis will start at minimum value rather than at 0
     point_size: 2.5,                            // the size of the dot that appears on a line on mouse-over
+    active_point_on_lines: false,               // if set, active dot on lines will be displayed.
+    active_point_accessor: 'active',            // data accessor value to determine if a point is active or not
+    active_point_size: 2,                       // the size of the dot that appears on a line when
+    points_always_visible: false,               // whether to always display data points and not just on hover
     x_accessor: 'date',
     xax_units: '',
     x_label: '',
@@ -90,6 +94,7 @@ MG.data_graphic = function(args) {
     show_confidence_band: null,                 // given [l, u] shows a confidence at each point from l to u
     xax_format: null,                           // xax_format is a function that formats the labels for the x axis.
     area: true,                                 // Can be also an array to select lines having areas (e.g. [1, 3])
+    flip_area_under_y_value: null,              // Specify a Y baseline number value to flip area under it.
     chart_type: 'line',
     data: [],
     decimals: 2,                                // the number of decimals in any rollover

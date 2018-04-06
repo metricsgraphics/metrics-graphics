@@ -579,6 +579,7 @@ function categoricalGuides (args, axisArgs) {
     var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
     var last = groupScale(group) + scale(scale.domain()[scale.domain().length - 1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position != 'bottom'));
 
+    var x11, x21, y11, y21, x12, x22, y12, y22;
     if (position === 'left' || position === 'right') {
       x11 = mg_get_plot_left(args);
       x21 = mg_get_plot_left(args);
@@ -800,16 +801,18 @@ function mg_compute_yax_format (args) {
   if (!yax_format) {
     if (args.format === 'count') {
       // increase decimals if we have small values, useful for realtime data
-      if (args.processed.max_y < 0.0001) {
-        args.decimals = 6;
-      } else if (args.processed.max_y < 0.1) {
-        args.decimals = 4;
+      if (args.processed.y_ticks.length > 1) {
+        // calculate the number of decimals between the difference of ticks
+        // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
+        args.decimals = Math.max(0, -Math.floor(
+          Math.log(args.processed.y_ticks[1] - args.processed.y_ticks[0]) / Math.LN10
+        ))
       }
 
       yax_format = function (d) {
         var pf;
 
-        if (d < 1.0 && d > -1.0 && d !== 0) {
+        if (args.decimals !== 0) {
           // don't scale tiny values
           pf = d3.format(',.' + args.decimals + 'f');
         } else if (d < 1000) {
