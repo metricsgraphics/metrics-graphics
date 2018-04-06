@@ -204,13 +204,13 @@ d3.json('data/fake_users3.json', function(data) {
 
     MG.data_graphic({
         title: "Select lines of your multi-line chart having areas",
-        description: "By passing in an array of lines index in 'area' property, you can choose which lines has an area or not.",
+        description: "By passing in an array of booleans in 'area' property, you can choose which lines has an area or not.",
         data: data,
         width: 600,
         height: 200,
         right: 40,
         target: '#multiline_area_select',
-        area: [2],
+        area: [false, true, false],
         y_extended_ticks: true,
         x_accessor: 'date'
     });
@@ -354,13 +354,13 @@ d3.json('data/fake_users3.json', function(data) {
 
     MG.data_graphic({
         title: "Select lines of your multi-line chart having areas",
-        description: "By passing in an array of lines index in 'area' property, you can choose which lines has an area or not.",
+        description: "By passing in an array of booleans in 'area' property, you can choose which lines has an area or not.",
         data: data,
         width: 600,
         height: 200,
         right: 40,
         target: '#multiline_area_select',
-        area: [2],
+        area: [false, true, false],
         y_extended_ticks: true,
         x_accessor: 'date'
     });

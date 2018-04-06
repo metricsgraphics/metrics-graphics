@@ -579,7 +579,7 @@
       mg_add_confidence_band(args, plot, svg, line_id);
 
       if (Array.isArray(args.area)) {
-        if (args.area.indexOf(line_id) !== -1) {
+        if (args.area[line_id - 1]) {
           mg_add_area(args, plot, svg, i, line_id);
         }
       } else {
