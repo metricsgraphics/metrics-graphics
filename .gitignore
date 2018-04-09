@@ -1,12 +1,17 @@
+# Dependencies
 bower_components
 node_modules
 
-other/divider.psd
+# Logs
+npm-debug.log
 
-other/htaccess.txt
+# IDE
+.idea
 
+# FS
 .DS_Store
 
+# Others
+other/divider.psd
+other/htaccess.txt
 bare.html
-
-npm-debug.log
