@@ -93,7 +93,7 @@ MG.data_graphic = function(args) {
     show_rollover_text: true,
     show_confidence_band: null,                 // given [l, u] shows a confidence at each point from l to u
     xax_format: null,                           // xax_format is a function that formats the labels for the x axis.
-    area: true,
+    area: true,                                 // Can be also an array to select lines having areas (e.g. [1, 3])
     flip_area_under_y_value: null,              // Specify a Y baseline number value to flip area under it.
     chart_type: 'line',
     data: [],

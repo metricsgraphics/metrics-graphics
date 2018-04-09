@@ -577,7 +577,15 @@
       const existing_line = svg.select(`path.mg-main-line.mg-line${line_id}`);
 
       mg_add_confidence_band(args, plot, svg, line_id);
-      mg_add_area(args, plot, svg, i, line_id);
+
+      if (Array.isArray(args.area)) {
+        if (args.area[line_id - 1]) {
+          mg_add_area(args, plot, svg, i, line_id);
+        }
+      } else {
+        mg_add_area(args, plot, svg, i, line_id);
+      }
+
       mg_add_line(args, plot, svg, existing_line, i, line_id);
       mg_add_legend_element(args, plot, i, line_id);
 
@@ -602,7 +610,7 @@
 
     plot.data_median = 0;
     plot.update_transition_duration = (args.transition_on_update) ? 1000 : 0;
-    plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false;
+    plot.display_area = (args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false) || (Array.isArray(args.area) && args.area.length > 0);
     plot.legend_text = '';
     mg_line_graph_generators(args, plot, svg);
     plot.existing_band = svg.selectAll('.mg-confidence-band').nodes();
