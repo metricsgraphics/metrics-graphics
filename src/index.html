@@ -46,6 +46,7 @@
     <script src='js/misc/formatters.js'></script>
     <script src='js/misc/transitions.js'></script>
     <script src='js/misc/error.js'></script>
+
     <!-- dev end -->
 
     <style>
@@ -139,6 +140,7 @@
             outline: none;
         }
     </style>
+
 </head>
 
 <body>
@@ -188,6 +190,7 @@
                 + '  target: ".result",\n'
                 + '  x_accessor: "year",\n'
                 + '  y_accessor: "sightings",\n'
+                + '  brushing: false,\n'
                 + '});';
 
         persisted = JSON.parse(localStorage.getItem(mgKey), null, 2) || {};
@@ -231,6 +234,7 @@
         function clearState() {
             localStorage.clear(mgKey);
         }
+
     </script>
 </body>
 </html>
