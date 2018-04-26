@@ -799,12 +799,13 @@ function mg_change_y_extents_for_bars (args, my) {
 function mg_compute_yax_format (args) {
   var yax_format = args.yax_format;
   if (!yax_format) {
+    let decimals = args.decimals;
     if (args.format === 'count') {
       // increase decimals if we have small values, useful for realtime data
       if (args.processed.y_ticks.length > 1) {
         // calculate the number of decimals between the difference of ticks
         // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
-        args.decimals = Math.max(0, -Math.floor(
+        decimals = Math.max(0, -Math.floor(
           Math.log(args.processed.y_ticks[1] - args.processed.y_ticks[0]) / Math.LN10
         ))
       }
@@ -812,9 +813,9 @@ function mg_compute_yax_format (args) {
       yax_format = function (d) {
         var pf;
 
-        if (args.decimals !== 0) {
+        if (decimals !== 0) {
           // don't scale tiny values
-          pf = d3.format(',.' + args.decimals + 'f');
+          pf = d3.format(',.' + decimals + 'f');
         } else if (d < 1000) {
           pf = d3.format(',.0f');
         } else {
