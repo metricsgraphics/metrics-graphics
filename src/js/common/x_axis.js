@@ -589,27 +589,6 @@ function mg_force_xax_count_to_be_two(args) {
   args.xax_count = 2;
 }
 
-function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data) {
-  if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
-    mg_min_max_x_for_nonbars(mx, args, data);
-
-  } else if (args.chart_type === 'bar') {
-    mg_min_max_x_for_bars(mx, args, data);
-  }
-  // if data set is of length 1, expand the range so that we can build the x-axis
-  if (mx.min === mx.max && !(args.min_x && args.max_x)) {
-    if (mg_is_date(mx.min)) {
-      mg_min_max_x_for_dates(mx);
-    } else if (typeof min_x === 'number') {
-      mg_min_max_x_for_numbers(mx);
-    } else if (typeof min_x === 'string') {
-      mg_min_max_x_for_strings(mx);
-    }
-    // force xax_count to be 2
-    mg_force_xax_count_to_be_two(args);
-  }
-}
-
 function mg_select_xax_format(args) {
   var c = args.chart_type;
   if (!args.processed.xax_format) {
