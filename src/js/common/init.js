@@ -160,6 +160,20 @@ function categoricalInitialization(args, ns) {
   if (which) mg_categorical_calculate_bar_thickness(args, ns);
 }
 
+function selectXaxFormat(args) {
+  var c = args.chart_type;
+  if (!args.processed.xax_format) {
+    if (args.xax_format) {
+      args.processed.xax_format = args.xax_format;
+    } else {
+      if (c === 'line' || c === 'point' || c === 'histogram') {
+        args.processed.xax_format = mg_default_xax_format(args);
+      } else if (c === 'bar') {
+        args.processed.xax_format = mg_default_bar_xax_format(args);
+      }
+    }
+  }
+}
 
 function mg_categorical_count_number_of_groups(args, ns) {
   var accessor_string = ns + 'group_accessor';
@@ -236,6 +250,8 @@ function init(args) {
   // some things that will need to be calculated if we have a categorical axis.
   if (args.y_axis_type === 'categorical') { categoricalInitialization(args, 'y'); }
   if (args.x_axis_type === 'categorical') { categoricalInitialization(args, 'x'); }
+
+  selectXaxFormat(args);
 
   mg_is_time_series(args);
   mg_init_compute_width(args);

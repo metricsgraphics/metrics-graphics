@@ -178,21 +178,6 @@ function labelPlacement (args, axisArgs) {
   return coordinates;
 }
 
-function selectXaxFormat (args) {
-  var c = args.chart_type;
-  if (!args.processed.xax_format) {
-    if (args.xax_format) {
-      args.processed.xax_format = args.xax_format;
-    } else {
-      if (c === 'line' || c === 'point' || c === 'histogram') {
-        args.processed.xax_format = mg_default_xax_format(args);
-      } else if (c === 'bar') {
-        args.processed.xax_format = mg_default_bar_xax_format(args);
-      }
-    }
-  }
-}
-
 function secondaryLabels (g, args, axisArgs) {
   if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
     var tf = mg_get_yformat_and_secondary_time_function(args);
@@ -277,10 +262,8 @@ function addNumericalLabels (g, args, axisArgs) {
     .attr('dy', coords.dy)
     .attr('text-anchor', coords.textAnchor)
     .text(coords.text);
-
   // move the labels if they overlap
   if (ns == 'x') {
-    selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
       labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
         var d = new Date(_d);
