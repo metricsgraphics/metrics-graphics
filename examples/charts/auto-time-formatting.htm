@@ -6,6 +6,7 @@
                         <div class='col-lg-12 text-center' id='time3'></div>
                         <div class='col-lg-12 text-center' id='time4'></div>
                         <div class='col-lg-12 text-center' id='many-months'></div>
+                        <div class='col-lg-12 text-center' id='a-few-years'></div>
                         <div class='col-lg-12 text-center' id='years'></div>
                         <div class='col-lg-12 text-center' id='decades'></div>
                         <div class='col-lg-12 text-center' id='centuries'></div>
@@ -62,6 +63,7 @@ var less_than_a_day = fake_data(25,60 * 20);
 var a_few_days = fake_data(75,60 * 60);
 var many_days = fake_days(60);
 var many_many_many_days = fake_days(365*2);
+var a_few_years = fake_days(365*4);
 
 MG.data_graphic({
     title: "European Clock",
@@ -114,6 +116,15 @@ MG.data_graphic({
     title: "Over Many Months",
     data: many_many_many_days,
     target: '#many-months',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    title: "Over A Few Years",
+    data: a_few_years,
+    target: '#a-few-years',
     width: 600,
     height: 200,
     right: 40
@@ -205,6 +216,7 @@ var less_than_a_day = fake_data(25,60 * 20);
 var a_few_days = fake_data(75,60 * 60);
 var many_days = fake_days(80);
 var many_many_many_days = fake_days(365*2);
+var a_few_years = fake_days(365*3);
 
 MG.data_graphic({
     title: "European Clock",
@@ -257,6 +269,15 @@ MG.data_graphic({
     title: "Over Many Months",
     data: many_many_many_days,
     target: '#many-months',
+    width: 600,
+    height: 200,
+    right: 40
+});
+
+MG.data_graphic({
+    title: "Over A Few Years",
+    data: a_few_years,
+    target: '#a-few-years',
     width: 600,
     height: 200,
     right: 40
