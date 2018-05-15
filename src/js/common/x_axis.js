@@ -353,7 +353,6 @@ function mg_add_x_ticks(g, args) {
 }
 
 function mg_add_x_axis_rim(args, g) {
-  var tick_length = args.processed.x_ticks.length;
   var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
   if (!args.x_extended_ticks) {
