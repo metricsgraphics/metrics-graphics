@@ -40,6 +40,7 @@ function processScaleTicks (args, axis) {
       return d % 1 === 0;
     });
   }
+
   args.processed[axis + '_ticks'] = scale_ticks;
 }
 
@@ -178,25 +179,19 @@ function labelPlacement (args, axisArgs) {
   return coordinates;
 }
 
-function secondaryLabels (g, args, axisArgs) {
-  if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-    var tf = mg_get_yformat_and_secondary_time_function(args);
-    addSecondaryLabelElements(args, axisArgs, g, tf.timeframe, tf.yformat, tf.secondary);
-  }
-}
-
-function addSecondaryLabelElements (args, axisArgs, g, time_frame, yformat, secondary_function) {
-  var years = secondary_function(args.processed.min_x, args.processed.max_x);
+function addSecondaryLabelElements (args, axisArgs, g) {
+  var tf = mg_get_yformat_and_secondary_time_function(args);
+  var years = tf.secondary(args.processed.min_x, args.processed.max_x);
   if (years.length === 0) {
     var first_tick = args.scales.X.ticks(args.xax_count)[0];
     years = [first_tick];
   }
 
   var yg = mg_add_g(g, 'mg-year-marker');
-  if (time_frame === 'default' && args.show_year_markers) {
-    yearMarkerLine(args, axisArgs, yg, years, yformat);
+  if (tf.timeframe === 'default' && args.show_year_markers) {
+    yearMarkerLine(args, axisArgs, yg, years, tf.yformat);
   }
-  if (time_frame != 'years') yearMarkerText(args, axisArgs, yg, years, yformat);
+  if (tf.tick_diff_timeframe != 'years') yearMarkerText(args, axisArgs, yg, years, tf.yformat);
 }
 
 function yearMarkerLine (args, axisArgs, g, years, yformat) {
@@ -279,7 +274,10 @@ function addNumericalLabels (g, args, axisArgs) {
         return args.xax_units + args.processed.xax_format(d);
       });
     }
-    secondaryLabels(g, args, axisArgs);
+
+    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
+      addSecondaryLabelElements(args, axisArgs, g);
+    }
   }
 
   if (mg_elements_are_overlapping(labels)) {

@@ -249,7 +249,7 @@ function mg_get_time_frame(diff) {
 }
 
 function mg_milisec_diff(diff) {
-  return diff < 10;
+  return diff < 1;
 }
 
 function mg_sec_diff(diff) {
@@ -265,15 +265,15 @@ function mg_four_days(diff) {
 }
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 93;
+  return diff / (60 * 60 * 24) <= 60;
 }
 
 function mg_many_months(diff) {
-  return diff / (60 * 60 * 24) < 365 * 2;
+  return diff / (60 * 60 * 24) < 365;
 }
 
 function mg_years(diff) {
-  return diff / (60 * 60 * 24) >= 365 * 2;
+  return diff / (60 * 60 * 24) >= 365;
 }
 
 function mg_get_time_format(utc, diff) {
@@ -300,14 +300,17 @@ function mg_process_time_format(args) {
   var diff;
   var main_time_format;
   var time_frame;
+  var tick_diff_time_frame;
 
   if (args.time_series) {
     diff = (args.processed.max_x - args.processed.min_x) / 1000;
     time_frame = mg_get_time_frame(diff);
-    main_time_format = mg_get_time_format(args.utc_time, diff);
+    tick_diff_time_frame = mg_get_time_frame(diff / args.processed.x_ticks.length);
+    main_time_format = mg_get_time_format(args.utc_time, diff / args.processed.x_ticks.length);
   }
 
   args.processed.main_x_time_format = main_time_format;
+  args.processed.x_tick_diff_time_frame = tick_diff_time_frame;
   args.processed.x_time_frame = time_frame;
 }
 
@@ -449,14 +452,15 @@ function mg_add_primary_x_axis_label(args, g) {
 
 function mg_add_secondary_x_axis_label(args, g) {
   if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-    var tf = mg_get_yformat_and_secondary_time_function(args);
-    mg_add_secondary_x_axis_elements(args, g, tf.timeframe, tf.yformat, tf.secondary);
+    mg_add_secondary_x_axis_elements(args, g);
   }
 }
 
 function mg_get_yformat_and_secondary_time_function(args) {
-  var tf = {};
-  tf.timeframe = args.processed.x_time_frame;
+  let tf = {
+    timeframe: args.processed.x_time_frame,
+    tick_diff_timeframe: args.processed.x_tick_diff_time_frame
+  };
   switch (tf.timeframe) {
     case 'millis':
     case 'seconds':
@@ -487,18 +491,20 @@ function mg_get_yformat_and_secondary_time_function(args) {
   return tf;
 }
 
-function mg_add_secondary_x_axis_elements(args, g, time_frame, yformat, secondary_function) {
-  var years = secondary_function(args.processed.min_x, args.processed.max_x);
+function mg_add_secondary_x_axis_elements(args, g) {
+  var tf = mg_get_yformat_and_secondary_time_function(args);
+
+  var years = tf.secondary(args.processed.min_x, args.processed.max_x);
   if (years.length === 0) {
     var first_tick = args.scales.X.ticks(args.xax_count)[0];
     years = [first_tick];
   }
 
   var yg = mg_add_g(g, 'mg-year-marker');
-  if (time_frame === 'default' && args.show_year_markers) {
-    mg_add_year_marker_line(args, yg, years, yformat);
+  if (tf.timeframe === 'default' && args.show_year_markers) {
+    mg_add_year_marker_line(args, yg, years, tf.yformat);
   }
-  if (time_frame != 'years') mg_add_year_marker_text(args, yg, years, yformat);
+  if (tf.tick_diff_time_frame != 'years') mg_add_year_marker_text(args, yg, years, tf.yformat);
 }
 
 function mg_add_year_marker_line(args, g, years, yformat) {
