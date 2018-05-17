@@ -432,7 +432,11 @@ tspan.mg-points-mono {
 /* a selected point in a scatterplot */
 .mg-points circle.selected {
     fill-opacity: 1;
-    stroke-opacity: 1;
+}
+
+.mg-points circle.highlighted {
+    stroke-width: 7px;
+    stroke-opacity: 0.5;
 }
 
 .mg-voronoi path {

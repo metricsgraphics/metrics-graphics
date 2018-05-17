@@ -195,6 +195,9 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', d => args.scalefns.youtf(d));
 
+      if (args.highlight && mg_is_function(args.highlight))
+        pts.filter(args.highlight).classed('highlighted', true);
+
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
         pts.attr('fill', args.scalefns.colorf);
