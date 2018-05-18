@@ -806,7 +806,7 @@ function mg_compute_yax_format (args) {
         // calculate the number of decimals between the difference of ticks
         // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
         decimals = Math.max(0, -Math.floor(
-          Math.log(args.processed.y_ticks[1] - args.processed.y_ticks[0]) / Math.LN10
+          Math.log(Math.abs(args.processed.y_ticks[1] - args.processed.y_ticks[0])) / Math.LN10
         ))
       }
 

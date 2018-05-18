@@ -271,7 +271,10 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   args.processed['min_' + namespace] = min_val;
   args.processed['max_' + namespace] = max_val;
-
+  if (args.processed['zoom_' + namespace]) {
+    args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0];
+    args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1];
+  }
   MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
   MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 }

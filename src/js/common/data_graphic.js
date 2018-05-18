@@ -118,7 +118,9 @@ MG.data_graphic = function(args) {
     max_data_size: null,                        // explicitly specify the the max number of line series, for use with custom_line_color_map
     aggregate_rollover: false,                  // links the lines in a multi-line chart
     show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    showActivePoint: true                       // If enabled show active data point information in chart
+    showActivePoint: true,                      // If enabled show active data point information in chart
+    brush: null,                                // add brushing function for this chart. could be set as 'xy', 'x', 'y' to restrict axis
+    zoom_target: null,                          // zooming target of brushing function. if not set the default is to zoom the current chart
   };
 
   MG.call_hook('global.defaults', defaults);
