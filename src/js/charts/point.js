@@ -165,7 +165,7 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
       this.markers();
       this.rollover();
       this.windowListeners();
-
+      if (args.brush) MG.add_brush_function(args);
       return this;
     };
 

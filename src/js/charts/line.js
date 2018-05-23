@@ -809,7 +809,7 @@
       this.mainPlot();
       this.rollover();
       this.windowListeners();
-
+      if (args.brush) MG.add_brush_function(args);
       MG.call_hook('line.after_init', this);
 
       return this;
