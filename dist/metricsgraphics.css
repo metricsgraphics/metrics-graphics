@@ -210,6 +210,15 @@ tspan.hist-symbol {
     stroke: red;
 }
 
+.mg-rollover-rect * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .mg-line-color {
     stroke: #000;
 }
@@ -440,6 +449,12 @@ tspan.mg-points-mono {
     pointer-events: all;
     stroke: none;
     stroke-opacity: 0.1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .mg-x-rug-mono,
