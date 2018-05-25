@@ -97,6 +97,7 @@ const add_brush_function = args => {
   if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
     return console.warn('The option "brush" does not support axis type "categorical" currently.');
   if (!args.zoom_target) args.zoom_target = args;
+  if (args.zoom_target !== args) args.zoom_target.processed.subplot = args;
   let brush_axis;
   switch (args.brush) {
     case 'x':
@@ -115,5 +116,7 @@ const add_brush_function = args => {
 }
 
 MG.add_brush_function = add_brush_function;
+MG.create_brushing_pattern = create_brushing_pattern;
+MG.remove_brushing_pattern = remove_brushing_pattern;
 
 }
