@@ -709,6 +709,10 @@ MG.data_graphic = function (args) {
     min_y: null, // if set, y axis starts at an arbitrary value
     min_y_from_data: false, // if set, y axis will start at minimum value rather than at 0
     point_size: 2.5, // the size of the dot that appears on a line on mouse-over
+    active_point_on_lines: false, // if set, active dot on lines will be displayed.
+    active_point_accessor: 'active', // data accessor value to determine if a point is active or not
+    active_point_size: 2, // the size of the dot that appears on a line when
+    points_always_visible: false, // whether to always display data points and not just on hover
     x_accessor: 'date',
     xax_units: '',
     x_label: '',
@@ -748,7 +752,7 @@ MG.data_graphic = function (args) {
     show_rollover_text: true,
     show_confidence_band: null, // given [l, u] shows a confidence at each point from l to u
     xax_format: null, // xax_format is a function that formats the labels for the x axis.
-    area: true,
+    area: true, // Can be also an array to select lines having areas (e.g. [1, 3])
     flip_area_under_y_value: null, // Specify a Y baseline number value to flip area under it.
     chart_type: 'line',
     data: [],
@@ -773,7 +777,9 @@ MG.data_graphic = function (args) {
     max_data_size: null, // explicitly specify the the max number of line series, for use with custom_line_color_map
     aggregate_rollover: false, // links the lines in a multi-line chart
     show_tooltips: true, // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    showActivePoint: true // If enabled show active data point information in chart
+    showActivePoint: true, // If enabled show active data point information in chart
+    brush: null, // add brushing function for this chart. could be set as 'xy', 'x', 'y' to restrict axis
+    zoom_target: null // zooming target of brushing function. if not set the default is to zoom the current chart
   };
 
   MG.call_hook('global.defaults', defaults);
@@ -1690,11 +1696,11 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
     max_val = max_val < 0 ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1);
   }
 
-  min_val = args['min_' + namespace] || min_val;
-  max_val = args['max_' + namespace] || max_val;
+  min_val = args['min_' + namespace] !== null ? args['min_' + namespace] : min_val;
+  max_val = args['max_' + namespace] !== null ? args['max_' + namespace] : max_val;
   // if there's a single data point, we should custom-set the max values
   // so we're displaying some kind of range
-  if (min_val === max_val && args['min_' + namespace] === undefined && args['max_' + namespace] === undefined) {
+  if (min_val === max_val && args['min_' + namespace] === null && args['max_' + namespace] === null) {
     if (mg_is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
     } else if (typeof min_val === 'number') {
@@ -1705,7 +1711,10 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
 
   args.processed['min_' + namespace] = min_val;
   args.processed['max_' + namespace] = max_val;
-
+  if (args.processed['zoom_' + namespace]) {
+    args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0];
+    args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1];
+  }
   MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
   MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 }
@@ -1809,6 +1818,7 @@ function processScaleTicks(args, axis) {
       return d % 1 === 0;
     });
   }
+
   args.processed[axis + '_ticks'] = scale_ticks;
 }
 
@@ -1946,40 +1956,19 @@ function labelPlacement(args, axisArgs) {
   return coordinates;
 }
 
-function selectXaxFormat(args) {
-  var c = args.chart_type;
-  if (!args.processed.xax_format) {
-    if (args.xax_format) {
-      args.processed.xax_format = args.xax_format;
-    } else {
-      if (c === 'line' || c === 'point' || c === 'histogram') {
-        args.processed.xax_format = mg_default_xax_format(args);
-      } else if (c === 'bar') {
-        args.processed.xax_format = mg_default_bar_xax_format(args);
-      }
-    }
-  }
-}
-
-function secondaryLabels(g, args, axisArgs) {
-  if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-    var tf = mg_get_yformat_and_secondary_time_function(args);
-    addSecondaryLabelElements(args, axisArgs, g, tf.timeframe, tf.yformat, tf.secondary);
-  }
-}
-
-function addSecondaryLabelElements(args, axisArgs, g, time_frame, yformat, secondary_function) {
-  var years = secondary_function(args.processed.min_x, args.processed.max_x);
+function addSecondaryLabelElements(args, axisArgs, g) {
+  var tf = mg_get_yformat_and_secondary_time_function(args);
+  var years = tf.secondary(args.processed.min_x, args.processed.max_x);
   if (years.length === 0) {
     var first_tick = args.scales.X.ticks(args.xax_count)[0];
     years = [first_tick];
   }
 
   var yg = mg_add_g(g, 'mg-year-marker');
-  if (time_frame === 'default' && args.show_year_markers) {
-    yearMarkerLine(args, axisArgs, yg, years, yformat);
+  if (tf.timeframe === 'default' && args.show_year_markers) {
+    yearMarkerLine(args, axisArgs, yg, years, tf.yformat);
   }
-  if (time_frame != 'years') yearMarkerText(args, axisArgs, yg, years, yformat);
+  if (tf.tick_diff_timeframe != 'years') yearMarkerText(args, axisArgs, yg, years, tf.yformat);
 }
 
 function yearMarkerLine(args, axisArgs, g, years, yformat) {
@@ -2029,10 +2018,8 @@ function addNumericalLabels(g, args, axisArgs) {
   var ticks = args.processed[ns + '_ticks'];
 
   var labels = g.selectAll('.mg-yax-labels').data(ticks).enter().append('text').attr('x', coords.x).attr('dx', coords.dx).attr('y', coords.y).attr('dy', coords.dy).attr('text-anchor', coords.textAnchor).text(coords.text);
-
   // move the labels if they overlap
   if (ns == 'x') {
-    selectXaxFormat(args);
     if (args.time_series && args.european_clock) {
       labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
         var d = new Date(_d);
@@ -2047,7 +2034,10 @@ function addNumericalLabels(g, args, axisArgs) {
         return args.xax_units + args.processed.xax_format(d);
       });
     }
-    secondaryLabels(g, args, axisArgs);
+
+    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
+      addSecondaryLabelElements(args, axisArgs, g);
+    }
   }
 
   if (mg_elements_are_overlapping(labels)) {
@@ -2493,20 +2483,21 @@ function mg_change_y_extents_for_bars(args, my) {
 function mg_compute_yax_format(args) {
   var yax_format = args.yax_format;
   if (!yax_format) {
+    var decimals = args.decimals;
     if (args.format === 'count') {
       // increase decimals if we have small values, useful for realtime data
       if (args.processed.y_ticks.length > 1) {
         // calculate the number of decimals between the difference of ticks
         // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
-        args.decimals = Math.max(0, -Math.floor(Math.log(args.processed.y_ticks[1] - args.processed.y_ticks[0]) / Math.LN10));
+        decimals = Math.max(0, -Math.floor(Math.log(Math.abs(args.processed.y_ticks[1] - args.processed.y_ticks[0])) / Math.LN10));
       }
 
       yax_format = function yax_format(d) {
         var pf;
 
-        if (args.decimals !== 0) {
+        if (decimals !== 0) {
           // don't scale tiny values
-          pf = d3.format(',.' + args.decimals + 'f');
+          pf = d3.format(',.' + decimals + 'f');
         } else if (d < 1000) {
           pf = d3.format(',.0f');
         } else {
@@ -2942,7 +2933,7 @@ function mg_get_time_frame(diff) {
 }
 
 function mg_milisec_diff(diff) {
-  return diff < 10;
+  return diff < 1;
 }
 
 function mg_sec_diff(diff) {
@@ -2958,15 +2949,15 @@ function mg_four_days(diff) {
 }
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 93;
+  return diff / (60 * 60 * 24) <= 60;
 }
 
 function mg_many_months(diff) {
-  return diff / (60 * 60 * 24) < 365 * 2;
+  return diff / (60 * 60 * 24) < 365;
 }
 
 function mg_years(diff) {
-  return diff / (60 * 60 * 24) >= 365 * 2;
+  return diff / (60 * 60 * 24) >= 365;
 }
 
 function mg_get_time_format(utc, diff) {
@@ -2993,14 +2984,17 @@ function mg_process_time_format(args) {
   var diff;
   var main_time_format;
   var time_frame;
+  var tick_diff_time_frame;
 
   if (args.time_series) {
     diff = (args.processed.max_x - args.processed.min_x) / 1000;
     time_frame = mg_get_time_frame(diff);
-    main_time_format = mg_get_time_format(args.utc_time, diff);
+    tick_diff_time_frame = mg_get_time_frame(diff / args.processed.x_ticks.length);
+    main_time_format = mg_get_time_format(args.utc_time, diff / args.processed.x_ticks.length);
   }
 
   args.processed.main_x_time_format = main_time_format;
+  args.processed.x_tick_diff_time_frame = tick_diff_time_frame;
   args.processed.x_time_frame = time_frame;
 }
 
@@ -3046,7 +3040,6 @@ function mg_add_x_ticks(g, args) {
 }
 
 function mg_add_x_axis_rim(args, g) {
-  var tick_length = args.processed.x_ticks.length;
   var last_i = args.scales.X.ticks(args.xax_count).length - 1;
 
   if (!args.x_extended_ticks) {
@@ -3124,14 +3117,15 @@ function mg_add_primary_x_axis_label(args, g) {
 
 function mg_add_secondary_x_axis_label(args, g) {
   if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
-    var tf = mg_get_yformat_and_secondary_time_function(args);
-    mg_add_secondary_x_axis_elements(args, g, tf.timeframe, tf.yformat, tf.secondary);
+    mg_add_secondary_x_axis_elements(args, g);
   }
 }
 
 function mg_get_yformat_and_secondary_time_function(args) {
-  var tf = {};
-  tf.timeframe = args.processed.x_time_frame;
+  var tf = {
+    timeframe: args.processed.x_time_frame,
+    tick_diff_timeframe: args.processed.x_tick_diff_time_frame
+  };
   switch (tf.timeframe) {
     case 'millis':
     case 'seconds':
@@ -3161,18 +3155,20 @@ function mg_get_yformat_and_secondary_time_function(args) {
   return tf;
 }
 
-function mg_add_secondary_x_axis_elements(args, g, time_frame, yformat, secondary_function) {
-  var years = secondary_function(args.processed.min_x, args.processed.max_x);
+function mg_add_secondary_x_axis_elements(args, g) {
+  var tf = mg_get_yformat_and_secondary_time_function(args);
+
+  var years = tf.secondary(args.processed.min_x, args.processed.max_x);
   if (years.length === 0) {
     var first_tick = args.scales.X.ticks(args.xax_count)[0];
     years = [first_tick];
   }
 
   var yg = mg_add_g(g, 'mg-year-marker');
-  if (time_frame === 'default' && args.show_year_markers) {
-    mg_add_year_marker_line(args, yg, years, yformat);
+  if (tf.timeframe === 'default' && args.show_year_markers) {
+    mg_add_year_marker_line(args, yg, years, tf.yformat);
   }
-  if (time_frame != 'years') mg_add_year_marker_text(args, yg, years, yformat);
+  if (tf.tick_diff_time_frame != 'years') mg_add_year_marker_text(args, yg, years, tf.yformat);
 }
 
 function mg_add_year_marker_line(args, g, years, yformat) {
@@ -3238,26 +3234,6 @@ function mg_min_max_x_for_strings(mx) {
 
 function mg_force_xax_count_to_be_two(args) {
   args.xax_count = 2;
-}
-
-function mg_sort_through_data_type_and_set_x_min_max_accordingly(mx, args, data) {
-  if (args.chart_type === 'line' || args.chart_type === 'point' || args.chart_type === 'histogram') {
-    mg_min_max_x_for_nonbars(mx, args, data);
-  } else if (args.chart_type === 'bar') {
-    mg_min_max_x_for_bars(mx, args, data);
-  }
-  // if data set is of length 1, expand the range so that we can build the x-axis
-  if (mx.min === mx.max && !(args.min_x && args.max_x)) {
-    if (mg_is_date(mx.min)) {
-      mg_min_max_x_for_dates(mx);
-    } else if (typeof min_x === 'number') {
-      mg_min_max_x_for_numbers(mx);
-    } else if (typeof min_x === 'string') {
-      mg_min_max_x_for_strings(mx);
-    }
-    // force xax_count to be 2
-    mg_force_xax_count_to_be_two(args);
-  }
 }
 
 function mg_select_xax_format(args) {
@@ -3419,6 +3395,21 @@ function categoricalInitialization(args, ns) {
   if (which) mg_categorical_calculate_bar_thickness(args, ns);
 }
 
+function selectXaxFormat(args) {
+  var c = args.chart_type;
+  if (!args.processed.xax_format) {
+    if (args.xax_format) {
+      args.processed.xax_format = args.xax_format;
+    } else {
+      if (c === 'line' || c === 'point' || c === 'histogram') {
+        args.processed.xax_format = mg_default_xax_format(args);
+      } else if (c === 'bar') {
+        args.processed.xax_format = mg_default_bar_xax_format(args);
+      }
+    }
+  }
+}
+
 function mg_categorical_count_number_of_groups(args, ns) {
   var accessor_string = ns + 'group_accessor';
   var accessor = args[accessor_string];
@@ -3496,6 +3487,8 @@ function init(args) {
   if (args.x_axis_type === 'categorical') {
     categoricalInitialization(args, 'x');
   }
+
+  selectXaxFormat(args);
 
   mg_is_time_series(args);
   mg_init_compute_width(args);
@@ -4598,6 +4591,11 @@ MG.button_layout = function (target) {
   var mg_draw_all_line_elements = function mg_draw_all_line_elements(args, plot, svg) {
     mg_remove_dangling_bands(plot, svg);
 
+    // If option activated, remove existing active points if exists
+    if (args.active_point_on_lines) {
+      svg.selectAll('circle.mg-shown-active-point').remove();
+    }
+
     for (var i = args.data.length - 1; i >= 0; i--) {
       var this_data = args.data[i];
 
@@ -4612,13 +4610,30 @@ MG.button_layout = function (target) {
 
       args.data[i].line_id = line_id;
 
+      // If option activated, add active points for each lines
+      if (args.active_point_on_lines) {
+        svg.selectAll('circle-' + line_id).data(args.data[i]).enter().filter(function (d) {
+          return d[args.active_point_accessor];
+        }).append('circle').attr('class', 'mg-area' + line_id + '-color mg-shown-active-point').attr('cx', args.scalefns.xf).attr('cy', args.scalefns.yf).attr('r', function () {
+          return args.active_point_size;
+        });
+      }
+
       if (this_data.length === 0) {
         continue;
       }
       var existing_line = svg.select('path.mg-main-line.mg-line' + line_id);
 
       mg_add_confidence_band(args, plot, svg, line_id);
-      mg_add_area(args, plot, svg, i, line_id);
+
+      if (Array.isArray(args.area)) {
+        if (args.area[line_id - 1]) {
+          mg_add_area(args, plot, svg, i, line_id);
+        }
+      } else {
+        mg_add_area(args, plot, svg, i, line_id);
+      }
+
       mg_add_line(args, plot, svg, existing_line, i, line_id);
       mg_add_legend_element(args, plot, i, line_id);
 
@@ -4645,7 +4660,7 @@ MG.button_layout = function (target) {
 
     plot.data_median = 0;
     plot.update_transition_duration = args.transition_on_update ? 1000 : 0;
-    plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false;
+    plot.display_area = args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false || Array.isArray(args.area) && args.area.length > 0;
     plot.legend_text = '';
     mg_line_graph_generators(args, plot, svg);
     plot.existing_band = svg.selectAll('.mg-confidence-band').nodes();
@@ -4834,7 +4849,7 @@ MG.button_layout = function (target) {
       this.mainPlot();
       this.rollover();
       this.windowListeners();
-
+      if (args.brush) MG.add_brush_function(args);
       MG.call_hook('line.after_init', this);
 
       return this;
@@ -5292,7 +5307,7 @@ function mg_color_point_mouseover(_ref35, elem, d) {
       this.markers();
       this.rollover();
       this.windowListeners();
-
+      if (args.brush) MG.add_brush_function(args);
       return this;
     };
 
