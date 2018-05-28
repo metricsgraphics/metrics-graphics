@@ -87,8 +87,8 @@ const add_event_handler_for_brush = (args, target, axis) => {
         const domain = MG.convert_range_to_domain(args, range);
         MG.zoom_to_data_domain(target, domain);
       }
-    } else if (target === args) {
-      MG.zoom_to_raw_range(args);
+    } else {
+      MG.zoom_to_raw_range(target);
     }
   });
 }
