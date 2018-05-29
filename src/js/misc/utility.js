@@ -11,7 +11,7 @@ MG.convert.date = function(data, accessor, time_format) {
   });
 
   return data;
-}
+};
 
 MG.convert.number = function(data, accessor) {
   data = data.map(function(d) {
@@ -20,11 +20,11 @@ MG.convert.number = function(data, accessor) {
   });
 
   return data;
-}
+};
 
 MG.time_format = function(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
-}
+};
 
 function mg_jquery_exists() {
   if (typeof jQuery !== 'undefined' || typeof $ !== 'undefined') {
@@ -101,7 +101,7 @@ function is_array_of_objects_or_empty(data) {
 
 function pluck(arr, accessor) {
   return arr.map(function(d) {
-    return d[accessor] });
+    return d[accessor]; });
 }
 
 function count_array_elements(arr) {

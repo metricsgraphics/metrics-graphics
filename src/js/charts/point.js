@@ -342,11 +342,11 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
 
   const defaults = {
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .2, // for categorical scales
+    y_outer_padding_percentage: 0.2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
     ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .2, // for categorical scales
+    x_outer_padding_percentage: 0.2, // for categorical scales
     xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     y_categorical_show_guides: true,
