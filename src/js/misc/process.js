@@ -9,7 +9,7 @@ function mg_process_scale_ticks(args, axis) {
     max = args.processed.max_x;
   } else if (axis === 'y') {
     accessor = args.y_accessor;
-    scale_ticks = args.scales.Y.ticks(args.yax_count)
+    scale_ticks = args.scales.Y.ticks(args.yax_count);
     max = args.processed.max_y;
   }
 

@@ -3,10 +3,10 @@
 const filter_in_range_data = (args, range) => {
   const is_data_in_range = (data, range) => {
     return data > Math.min(range[0], range[1]) && data < Math.max(range[0], range[1]);
-  }
+  };
   // if range without this axis return true, else judge is data in range or not.
   return d => ['x', 'y'].every(dim => !(dim in range) || is_data_in_range(d[args[`${dim}_accessor`]], range[dim]));
-}
+};
 
 // the range here is the range of data
 // range is an object with two optional attributes of x,y, respectively represent ranges on two axes
@@ -16,7 +16,7 @@ const zoom_to_data_domain = (args, range) => {
   if (!('raw_data' in args.processed)) {
     args.processed.raw_domain = {
       x: args.scales.X.domain(),
-      y: args.scales.Y.domain(),
+      y: args.scales.Y.domain()
     };
     args.processed.raw_data = raw_data;
   }
@@ -35,14 +35,14 @@ const zoom_to_data_domain = (args, range) => {
     else delete args.processed[`zoom_${dim}`];
   });
   new MG.charts[args.chart_type || defaults.chart_type].descriptor(args);
-}
+};
 
 const zoom_to_raw_range = args => {
   if (!('raw_domain' in args.processed)) return;
   zoom_to_data_domain(args, args.processed.raw_domain);
   delete args.processed.raw_domain;
   delete args.processed.raw_data;
-}
+};
 
 // converts the range of selection into the range of data that we can use to
 // zoom the chart to a particular region
@@ -58,7 +58,7 @@ const convert_range_to_domain = (args, range) =>
 const zoom_to_data_range = (args, range) => {
   const domain = convert_range_to_domain(args, range);
   zoom_to_data_domain(args, domain);
-}
+};
 
 MG.convert_range_to_domain = convert_range_to_domain;
 MG.zoom_to_data_domain = zoom_to_data_domain;

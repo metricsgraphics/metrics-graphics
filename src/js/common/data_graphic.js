@@ -67,12 +67,12 @@ MG.data_graphic = function(args) {
     ygroup_accessor: null,
     xgroup_accessor:null,
     y_padding_percentage: 0.05,                 // for categorical scales
-    y_outer_padding_percentage: .1,             // for categorical scales
-    ygroup_padding_percentage:.25,              // for categorical scales
+    y_outer_padding_percentage: 0.1,            // for categorical scales
+    ygroup_padding_percentage: 0.25,            // for categorical scales
     ygroup_outer_padding_percentage: 0,         // for categorical scales
     x_padding_percentage: 0.05,                 // for categorical scales
-    x_outer_padding_percentage: .1,             // for categorical scales
-    xgroup_padding_percentage:.25,              // for categorical scales
+    x_outer_padding_percentage: 0.1,            // for categorical scales
+    xgroup_padding_percentage: 0.25,            // for categorical scales
     xgroup_outer_padding_percentage: 0,         // for categorical scales
     y_categorical_show_guides: false,
     x_categorical_show_guide: false,
@@ -120,7 +120,7 @@ MG.data_graphic = function(args) {
     show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
     showActivePoint: true,                      // If enabled show active data point information in chart
     brush: null,                                // add brushing function for this chart. could be set as 'xy', 'x', 'y' to restrict axis
-    zoom_target: null,                          // zooming target of brushing function. if not set the default is to zoom the current chart
+    zoom_target: null                           // zooming target of brushing function. if not set the default is to zoom the current chart
   };
 
   MG.call_hook('global.defaults', defaults);

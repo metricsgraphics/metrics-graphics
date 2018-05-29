@@ -17,7 +17,7 @@ function mg_position(str, args) {
 
 function mg_cat_position(str, args) {
   if (str === 'bottom' || str === 'top') {
-    return [mg_get_plot_left(args), mg_get_plot_right(args)]
+    return [mg_get_plot_left(args), mg_get_plot_right(args)];
   }
 
   if (str === 'left' || str === 'right') {
@@ -28,7 +28,7 @@ function mg_cat_position(str, args) {
 function MGScale(args) {
   // big wrapper around d3 scale that automatically formats & calculates scale bounds
   // according to the data, and handles other niceties.
-  var scaleArgs = {}
+  var scaleArgs = {};
   scaleArgs.use_inflator = false;
   scaleArgs.zero_bottom = false;
   scaleArgs.scaleType = 'numerical';
@@ -39,23 +39,23 @@ function MGScale(args) {
     scaleArgs.scale_name = scaleArgs.namespace.toUpperCase();
     scaleArgs.scalefn_name = scaleArgs.namespace + 'f';
     return this;
-  }
+  };
 
   this.scaleName = function(scaleName) {
     scaleArgs.scale_name = scaleName.toUpperCase();
     scaleArgs.scalefn_name = scaleName +'f';
     return this;
-  }
+  };
 
   this.inflateDomain = function(tf) {
     scaleArgs.use_inflator = tf;
     return this;
-  }
+  };
 
   this.zeroBottom = function(tf) {
     scaleArgs.zero_bottom = tf;
     return this;
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// all scale domains are either numerical (number, date, etc.) or categorical (factor, label, etc) /////
@@ -100,27 +100,27 @@ function MGScale(args) {
     scaleArgs.scaleType = 'numerical';
 
     return this;
-  }
+  };
 
   this.categoricalDomain = function(domain) {
     args.scales[scaleArgs.scale_name] = d3.scaleOrdinal().domain(domain);
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
-  }
+  };
 
   this.categoricalDomainFromData = function() {
     // make args.categorical_variables.
     // lets make the categorical variables.
-    var all_data = mg_flatten_array(args.data)
+    var all_data = mg_flatten_array(args.data);
     //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
     scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
-      return d[args[scaleArgs.namespace_accessor_name]] })).values();
+      return d[args[scaleArgs.namespace_accessor_name]]; })).values();
     args.scales[scaleArgs.scale_name] = d3.scaleBand()
       .domain(scaleArgs.categoricalVariables);
 
     scaleArgs.scaleType = 'categorical';
     return this;
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// all scale ranges are either positional (for axes, etc) or arbitrary (colors, size, etc) //////////
@@ -138,7 +138,7 @@ function MGScale(args) {
     }
 
     return this;
-  }
+  };
 
   this.categoricalRangeBands = function(range, halfway) {
     if (halfway === undefined) halfway = false;
@@ -170,13 +170,13 @@ function MGScale(args) {
     );
 
     return this;
-  }
+  };
 
   this.categoricalRange = function(range) {
     args.scales[scaleArgs.scale_name].range(range);
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
-  }
+  };
 
   this.categoricalColorRange = function() {
     args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
@@ -189,12 +189,12 @@ function MGScale(args) {
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
     return this;
-  }
+  };
 
   this.clamp = function(yn) {
     args.scales[scaleArgs.scale_name].clamp(yn);
     return this;
-  }
+  };
 
   return this;
 }
@@ -224,7 +224,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // add together all relevant data arrays.
   var all_data = mg_flatten_array(args.data)
     .map(function(dp) {
-      return dp[accessor] })
+      return dp[accessor]; })
     .concat(mg_flatten_array(additional_data_arrays));
 
   // do processing for log

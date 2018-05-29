@@ -38,7 +38,7 @@ var time_rollover_format = function(f, d, accessor, utc) {
     fd = d[accessor];
   }
   return fd;
-}
+};
 
 // define our rollover format for numbers
 var number_rollover_format = function(f, d, accessor) {
@@ -51,7 +51,7 @@ var number_rollover_format = function(f, d, accessor) {
     fd = d[accessor];
   }
   return fd;
-}
+};
 
 function mg_format_y_rollover(args, num, d) {
   var formatted_y;
@@ -112,7 +112,7 @@ function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_ti
   if (typeof d[accessor] === 'string') {
     formatter = function(d) {
       return d;
-    }
+    };
   } else {
     formatter = format_rollover_number(args);
   }
@@ -141,7 +141,7 @@ function mg_format_y_mouseover(args, d) {
 }
 
 function mg_format_x_aggregate_mouseover(args, d) {
-  return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)
+  return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series);
 }
 
 MG.format_rollover_number = format_rollover_number;

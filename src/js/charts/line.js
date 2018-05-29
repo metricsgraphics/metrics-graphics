@@ -86,7 +86,7 @@
       let confidenceBand;
       if (svg.select(`.mg-confidence-band-${which_line}`).empty()) {
         svg.append('path')
-          .attr('class', `mg-confidence-band mg-confidence-band-${which_line}`)
+          .attr('class', `mg-confidence-band mg-confidence-band-${which_line}`);
       }
 
       // transition this line's confidence band
@@ -96,7 +96,7 @@
         .transition()
         .duration(() => (transition_on_update) ? 1000 : 0)
         .attr('d', plot.confidence_area(data[which_line - 1]))
-        .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`)
+        .attr('clip-path', `url(#mg-plot-window-${mg_target_ref(target)})`);
     }
   }
 
@@ -774,7 +774,7 @@
       new MG.scale_factory(args)
         .namespace('x')
         .numericalDomainFromData()
-        .numericalRange('bottom')
+        .numericalRange('bottom');
 
       const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
 
@@ -880,7 +880,7 @@
             }
 
             row.text(mg_format_y_mouseover(args, di, args.time_series === false));
-          })
+          });
         }
 
         if (args.mouseover) {

@@ -788,7 +788,7 @@ function mg_compute_yax_format (args) {
         // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
         decimals = Math.max(0, -Math.floor(
           Math.log(Math.abs(args.processed.y_ticks[1] - args.processed.y_ticks[0])) / Math.LN10
-        ))
+        ));
       }
 
       yax_format = function (d) {
@@ -835,7 +835,7 @@ function mg_bar_add_zero_line (args) {
       .attr('y1', r[0] + mg_get_plot_top(args))
       .attr('y2', r[r.length - 1] + g)
       .attr('stroke', 'black')
-      .attr('opacity', .2);
+      .attr('opacity', 0.2);
   }
 }
 

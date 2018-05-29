@@ -182,7 +182,7 @@ function mg_categorical_count_number_of_groups(args, ns) {
   if (accessor) {
     var data = args.data[0];
     args.categorical_groups = d3.set(data.map(function(d) {
-      return d[accessor] })).values();
+      return d[accessor]; })).values();
   }
 }
 
@@ -194,7 +194,7 @@ function mg_categorical_count_number_of_lanes(args, ns) {
   if (groupAccessor) {
     var group_bars = count_array_elements(pluck(args.data[0], groupAccessor));
     group_bars = d3.max(Object.keys(group_bars).map(function(d) {
-      return group_bars[d] }));
+      return group_bars[d]; }));
     args.bars_per_group = group_bars;
   } else {
     args.bars_per_group = args.data[0].length;

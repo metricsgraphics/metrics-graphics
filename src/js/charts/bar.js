@@ -66,8 +66,8 @@
     if (legend_target) {
 
       const div = d3.select(legend_target).append('div').classed('mg-bar-target-legend', true);
-      
-      if (orientation == 'horizontal') labels = scales.Y.domain()
+
+      if (orientation == 'horizontal') labels = scales.Y.domain();
       else labels = scales.X.domain();
 
       labels.forEach(label => {
@@ -88,7 +88,7 @@
     // get labels
 
     let labels;
-    if (args.orientation=='horizontal') labels = args.scales.Y.domain()
+    if (args.orientation=='horizontal') labels = args.scales.Y.domain();
     else labels = args.scales.X.domain();
 
     let lineCount = 0;
@@ -112,13 +112,13 @@
       sub_container.append('tspan')
         .text('\u25a0 ')
         .attr('fill', args.scales.COLOR(label))
-        .attr('font-size', 20)
+        .attr('font-size', 20);
       sub_container.append('tspan')
         .text(label)
         .attr('font-weight', 300)
         .attr('font-size', 10);
       lineCount++;
-    })
+    });
 
     // d.values.forEach(function (datum) {
     //   formatted_y = mg_format_y_rollover(args, num, datum);
@@ -163,7 +163,7 @@
       process_point(args);
       init(args);
 
-      let xMaker
+      let xMaker;
       let yMaker;
 
       if (args.x_axis_type === 'categorical') {
@@ -378,13 +378,13 @@
             l = length_scale(0);
           }
           return l;
-        }
+        };
 
-        length_map = d => Math.abs(length_scalefn(d) - length_scale(0))
+        length_map = d => Math.abs(length_scalefn(d) - length_scale(0));
 
-        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0))
+        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0));
 
-        reference_length_coord_fn = d => length_scale(d[args.reference_accessor])
+        reference_length_coord_fn = d => length_scale(d[args.reference_accessor]);
       }
 
       if (args.orientation == 'horizontal') {
@@ -405,13 +405,13 @@
           let l;
           l = length_scale(0);
           return l;
-        }
+        };
 
-        length_map = d => Math.abs(length_scalefn(d) - length_scale(0))
+        length_map = d => Math.abs(length_scalefn(d) - length_scale(0));
 
-        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0))
+        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0));
 
-        reference_length_coord_fn = d => length_scale(0)
+        reference_length_coord_fn = d => length_scale(0);
       }
 
       // if (perform_load_animation) {
@@ -449,7 +449,7 @@
       });
 
       if (args.scales.COLOR) {
-        bars.attr('fill', args.scalefns.colorf)
+        bars.attr('fill', args.scalefns.colorf);
       }
 
       bars
@@ -595,9 +595,9 @@
         length_accessor = args.y_accessor;
         width_accessor = args.x_accessor;
 
-        length_coord_map = d => mg_get_plot_top(args)
+        length_coord_map = d => mg_get_plot_top(args);
 
-        length_map = d => args.height -args.top-args.bottom-args.buffer*2
+        length_map = d => args.height -args.top-args.bottom-args.buffer*2;
       }
 
       if (args.orientation == 'horizontal') {
@@ -618,9 +618,9 @@
           let l;
           l = length_scale(0);
           return l;
-        }
+        };
 
-        length_map = d => args.width -args.left-args.right-args.buffer*2
+        length_map = d => args.width -args.left-args.right-args.buffer*2;
       }
 
       //rollover text
@@ -669,7 +669,7 @@
           return w;
         });
 
-      bars.attr(length, length_map)
+      bars.attr(length, length_map);
       bars.attr(width, d => args.bar_thickness);
 
       bars
@@ -713,8 +713,8 @@
           if (args.predictor_accessor || args.baseline_accessor) {
             row = mouseover.mouseover_row();
 
-            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false))
-            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false))
+            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false));
+            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false));
           }
         }
         if (args.mouseover) {
@@ -764,11 +764,11 @@
 
   const defaults = {
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .2, // for categorical scales
+    y_outer_padding_percentage: 0.2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
     ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .2, // for categorical scales
+    x_outer_padding_percentage: 0.2, // for categorical scales
     xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     buffer: 16,

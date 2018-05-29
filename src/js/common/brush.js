@@ -9,7 +9,7 @@ const get_extent_rect = args => {
       .classed('mg-brush', true)
       .append('rect')
       .classed('mg-extent', true);
-}
+};
 
 const create_brushing_pattern = (args, range) => {
   const x = range.x[0];
@@ -22,14 +22,14 @@ const create_brushing_pattern = (args, range) => {
     .attr('y', y)
     .attr('height', height)
     .attr('opacity', 1);
-}
+};
 
 const remove_brushing_pattern = args => {
   get_extent_rect(args)
     .attr('width', 0)
     .attr('height', 0)
     .attr('opacity', 0);
-}
+};
 
 const add_event_handler_for_brush = (args, target, axis) => {
   const svg = d3.select(args.target).select('svg');
@@ -48,14 +48,14 @@ const add_event_handler_for_brush = (args, target, axis) => {
     const range = {};
     range.x = axis.x ? [
       Math.max(min_x, Math.min(origin[0], mouse[0])),
-      Math.min(max_x, Math.max(origin[0], mouse[0])),
+      Math.min(max_x, Math.max(origin[0], mouse[0]))
     ] : [min_x, max_x];
     range.y = axis.y ? [
       Math.max(min_y, Math.min(origin[1], mouse[1])),
-      Math.min(max_y, Math.max(origin[1], mouse[1])),
+      Math.min(max_y, Math.max(origin[1], mouse[1]))
     ] : [min_y, max_y];
     return range;
-  }
+  };
 
   rollover.classed('mg-brush-container', true);
   rollover.on('mousedown.' + args.target, () => {
@@ -91,7 +91,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
       MG.zoom_to_raw_range(args);
     }
   });
-}
+};
 
 const add_brush_function = args => {
   if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
@@ -112,7 +112,7 @@ const add_brush_function = args => {
       brush_axis = {x: true, y: true};
   }
   add_event_handler_for_brush(args, args.zoom_target, brush_axis);
-}
+};
 
 MG.add_brush_function = add_brush_function;
 
