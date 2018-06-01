@@ -10,12 +10,12 @@ before_script:
 script: npm run test-ci
 
 before_deploy:
-  - cp dist/metricsgraphics.css examples
-  - cp -r src/js examples
+  - cp dist/metricsgraphics.css .
+  - cp -r examples/* .
+  - cp -r src/js/* js
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  local-dir: examples
   on:
     branch: master
