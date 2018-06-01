@@ -257,15 +257,15 @@ function mg_sec_diff(diff) {
 }
 
 function mg_day_diff(diff) {
-  return diff / (60 * 60) <= 24;
+  return diff / (60 * 60) < 24;
 }
 
 function mg_four_days(diff) {
-  return diff / (60 * 60) <= 24 * 4;
+  return diff / (60 * 60) < 24 * 4;
 }
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 60;
+  return diff / (60 * 60 * 24) < 60;
 }
 
 function mg_many_months(diff) {
@@ -284,9 +284,7 @@ function mg_get_time_format(utc, diff) {
     main_time_format = MG.time_format(utc, '%M:%S');
   } else if (mg_day_diff(diff)) {
     main_time_format = MG.time_format(utc, '%H:%M');
-  } else if (mg_four_days(diff)) {
-    main_time_format = MG.time_format(utc, '%H:%M');
-  } else if (mg_many_days(diff)) {
+  } else if (mg_four_days(diff) || mg_many_days(diff)) {
     main_time_format = MG.time_format(utc, '%b %d');
   } else if (mg_many_months(diff)) {
     main_time_format = MG.time_format(utc, '%b');
@@ -297,21 +295,13 @@ function mg_get_time_format(utc, diff) {
 }
 
 function mg_process_time_format(args) {
-  var diff;
-  var main_time_format;
-  var time_frame;
-  var tick_diff_time_frame;
-
   if (args.time_series) {
-    diff = (args.processed.max_x - args.processed.min_x) / 1000;
-    time_frame = mg_get_time_frame(diff);
-    tick_diff_time_frame = mg_get_time_frame(diff / args.processed.x_ticks.length);
-    main_time_format = mg_get_time_format(args.utc_time, diff / args.processed.x_ticks.length);
+    const diff = (args.processed.max_x - args.processed.min_x) / 1000;
+    const tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000;
+    args.processed.x_time_frame = mg_get_time_frame(diff);
+    args.processed.x_tick_diff_time_frame = mg_get_time_frame(tickDiff);
+    args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff);
   }
-
-  args.processed.main_x_time_format = main_time_format;
-  args.processed.x_tick_diff_time_frame = tick_diff_time_frame;
-  args.processed.x_time_frame = time_frame;
 }
 
 function mg_default_xax_format(args) {
