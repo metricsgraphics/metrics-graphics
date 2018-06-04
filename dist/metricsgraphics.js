@@ -726,12 +726,12 @@ MG.data_graphic = function (args) {
     ygroup_accessor: null,
     xgroup_accessor: null,
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .1, // for categorical scales
-    ygroup_padding_percentage: .25, // for categorical scales
+    y_outer_padding_percentage: 0.1, // for categorical scales
+    ygroup_padding_percentage: 0.25, // for categorical scales
     ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .1, // for categorical scales
-    xgroup_padding_percentage: .25, // for categorical scales
+    x_outer_padding_percentage: 0.1, // for categorical scales
+    xgroup_padding_percentage: 0.25, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     y_categorical_show_guides: false,
     x_categorical_show_guide: false,
@@ -2529,7 +2529,7 @@ function mg_bar_add_zero_line(args) {
     var r = args.scales.Y.range();
     var g = args.categorical_groups.length ? args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1]) : args.scales.YGROUP();
 
-    svg.append('svg:line').attr('x1', args.scales.X(0)).attr('x2', args.scales.X(0)).attr('y1', r[0] + mg_get_plot_top(args)).attr('y2', r[r.length - 1] + g).attr('stroke', 'black').attr('opacity', .2);
+    svg.append('svg:line').attr('x1', args.scales.X(0)).attr('x2', args.scales.X(0)).attr('y1', r[0] + mg_get_plot_top(args)).attr('y2', r[r.length - 1] + g).attr('stroke', 'black').attr('opacity', 0.2);
   }
 }
 
@@ -2941,15 +2941,15 @@ function mg_sec_diff(diff) {
 }
 
 function mg_day_diff(diff) {
-  return diff / (60 * 60) <= 24;
+  return diff / (60 * 60) < 24;
 }
 
 function mg_four_days(diff) {
-  return diff / (60 * 60) <= 24 * 4;
+  return diff / (60 * 60) < 24 * 4;
 }
 
 function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) <= 60;
+  return diff / (60 * 60 * 24) < 60;
 }
 
 function mg_many_months(diff) {
@@ -2968,9 +2968,7 @@ function mg_get_time_format(utc, diff) {
     main_time_format = MG.time_format(utc, '%M:%S');
   } else if (mg_day_diff(diff)) {
     main_time_format = MG.time_format(utc, '%H:%M');
-  } else if (mg_four_days(diff)) {
-    main_time_format = MG.time_format(utc, '%H:%M');
-  } else if (mg_many_days(diff)) {
+  } else if (mg_four_days(diff) || mg_many_days(diff)) {
     main_time_format = MG.time_format(utc, '%b %d');
   } else if (mg_many_months(diff)) {
     main_time_format = MG.time_format(utc, '%b');
@@ -2981,21 +2979,13 @@ function mg_get_time_format(utc, diff) {
 }
 
 function mg_process_time_format(args) {
-  var diff;
-  var main_time_format;
-  var time_frame;
-  var tick_diff_time_frame;
-
   if (args.time_series) {
-    diff = (args.processed.max_x - args.processed.min_x) / 1000;
-    time_frame = mg_get_time_frame(diff);
-    tick_diff_time_frame = mg_get_time_frame(diff / args.processed.x_ticks.length);
-    main_time_format = mg_get_time_format(args.utc_time, diff / args.processed.x_ticks.length);
+    var diff = (args.processed.max_x - args.processed.min_x) / 1000;
+    var tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000;
+    args.processed.x_time_frame = mg_get_time_frame(diff);
+    args.processed.x_tick_diff_time_frame = mg_get_time_frame(tickDiff);
+    args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff);
   }
-
-  args.processed.main_x_time_format = main_time_format;
-  args.processed.x_tick_diff_time_frame = tick_diff_time_frame;
-  args.processed.x_time_frame = time_frame;
 }
 
 function mg_default_xax_format(args) {
@@ -5469,11 +5459,11 @@ function mg_color_point_mouseover(_ref35, elem, d) {
 
   var _defaults = {
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .2, // for categorical scales
+    y_outer_padding_percentage: 0.2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
     ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .2, // for categorical scales
+    x_outer_padding_percentage: 0.2, // for categorical scales
     xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     y_categorical_show_guides: true,
@@ -6218,11 +6208,11 @@ function mg_color_point_mouseover(_ref35, elem, d) {
 
   var _defaults2 = {
     y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: .2, // for categorical scales
+    y_outer_padding_percentage: 0.2, // for categorical scales
     ygroup_padding_percentage: 0, // for categorical scales
     ygroup_outer_padding_percentage: 0, // for categorical scales
     x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: .2, // for categorical scales
+    x_outer_padding_percentage: 0.2, // for categorical scales
     xgroup_padding_percentage: 0, // for categorical scales
     xgroup_outer_padding_percentage: 0, // for categorical scales
     buffer: 16,
@@ -6251,6 +6241,7 @@ function mg_color_point_mouseover(_ref35, elem, d) {
 
   MG.register('bar', barChart, _defaults2);
 }
+
 /*
 Data Tables
 
