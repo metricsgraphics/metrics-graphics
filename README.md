@@ -74,7 +74,7 @@ You might also be interested in writing addons for the library, in which case, [
 
 ## Getting in touch
 
-If you have any questions about Mission Control (either as a user or contributor), the best place to ask is the [#metricsgraphics](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23metricsgraphics) channel on irc.mozilla.org ([learn more about irc @ Mozilla](https://wiki.mozilla.org/IRC)).
+If you have any questions about metrics graphics (either as a user or contributor), the best place to ask is the [#metricsgraphics](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23metricsgraphics) channel on irc.mozilla.org ([learn more about irc @ Mozilla](https://wiki.mozilla.org/IRC)).
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
