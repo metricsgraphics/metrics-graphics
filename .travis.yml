@@ -10,7 +10,7 @@ before_script:
 script: npm run test-ci
 
 before_deploy:
-  - cp dist/metricsgraphics.css .
+  - cp dist/metricsgraphics.css dist/metricsgraphics.min.js .
   - cp -r examples/* .
   - cp -r src/js/* js
 deploy:
