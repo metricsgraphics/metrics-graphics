@@ -227,7 +227,7 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .x(args.scalefns.xoutf)
         .y(args.scalefns.youtf)
         .extent([
-          [args.buffer, args.buffer + args.title_y_position],
+          [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
           [args.width - args.buffer, args.height - args.buffer]
         ]);
 

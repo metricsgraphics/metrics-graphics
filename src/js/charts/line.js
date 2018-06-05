@@ -337,7 +337,7 @@
       .x(d => args.scales.X(d[args.x_accessor]).toFixed(2))
       .y(d => args.scales.Y(d[args.y_accessor]).toFixed(2))
       .extent([
-        [args.buffer, args.buffer + args.title_y_position],
+        [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
         [args.width - args.buffer, args.height - args.buffer]
       ]);
 
