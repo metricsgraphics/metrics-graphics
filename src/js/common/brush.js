@@ -90,6 +90,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
     } else if (target === args) {
       MG.zoom_to_raw_range(args);
     }
+    if (mg_is_function(args.onbrushing)) args.onbrushing(args, range);
   });
 };
 

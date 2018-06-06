@@ -120,7 +120,8 @@ MG.data_graphic = function(args) {
     show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
     showActivePoint: true,                      // If enabled show active data point information in chart
     brush: null,                                // add brushing function for this chart. could be set as 'xy', 'x', 'y' to restrict axis
-    zoom_target: null                           // zooming target of brushing function. if not set the default is to zoom the current chart
+    zoom_target: null,                          // zooming target of brushing function. if not set the default is to zoom the current chart
+    onbrushing: null                            // callback function on brushing. the first parameter is the current object, the second parameter is the range of the selection
   };
 
   MG.call_hook('global.defaults', defaults);
