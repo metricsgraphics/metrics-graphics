@@ -104,7 +104,7 @@
 
       bar.append('rect')
         .attr('x', 1)
-        .attr('y', args.buffer + args.title_y_position)
+        .attr('y', args.buffer + (args.title ? args.title_y_position : 0))
         .attr('width', (d, i) => {
           //if data set is of length 1
           if (args.data[0].length === 1) {

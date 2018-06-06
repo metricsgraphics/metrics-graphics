@@ -87,8 +87,8 @@ const add_event_handler_for_brush = (args, target, axis) => {
         const domain = MG.convert_range_to_domain(args, range);
         MG.zoom_to_data_domain(target, domain);
       }
-    } else if (target === args) {
-      MG.zoom_to_raw_range(args);
+    } else {
+      MG.zoom_to_raw_range(target);
     }
   });
 };
@@ -97,6 +97,7 @@ const add_brush_function = args => {
   if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
     return console.warn('The option "brush" does not support axis type "categorical" currently.');
   if (!args.zoom_target) args.zoom_target = args;
+  if (args.zoom_target !== args) args.zoom_target.processed.subplot = args;
   let brush_axis;
   switch (args.brush) {
     case 'x':
@@ -115,5 +116,7 @@ const add_brush_function = args => {
 };
 
 MG.add_brush_function = add_brush_function;
+MG.create_brushing_pattern = create_brushing_pattern;
+MG.remove_brushing_pattern = remove_brushing_pattern;
 
 }

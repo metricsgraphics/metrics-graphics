@@ -34,6 +34,13 @@ const zoom_to_data_domain = (args, range) => {
     if (dim in range) args.processed[`zoom_${dim}`] = range[dim];
     else delete args.processed[`zoom_${dim}`];
   });
+  if (args.processed.subplot) {
+    if (range !== args.processed.raw_domain) {
+      MG.create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
+    } else {
+      MG.remove_brushing_pattern(args.processed.subplot);
+    }
+  }
   new MG.charts[args.chart_type || defaults.chart_type].descriptor(args);
 };
 
@@ -52,6 +59,14 @@ const convert_range_to_domain = (args, range) =>
     domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v));
     if (dim === 'y') domain[dim].reverse();
     return domain;
+  }, {});
+
+const convert_domain_to_range = (args, domain) =>
+  ['x', 'y'].reduce((range, dim) => {
+    if (!(dim in domain)) return range;
+    range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v));
+    if (dim === 'y') range[dim].reverse();
+    return range;
   }, {});
 
 // the range here is the range of selection
