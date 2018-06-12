@@ -6,7 +6,8 @@
   "scripts": {
     "build": "gulp build:js",
     "test": "gulp test",
-    "test-ci": "./node_modules/testem/testem.js ci testem.json"
+    "test-ci": "./node_modules/testem/testem.js ci testem.json",
+    "version": "npm run build && git add ."
   },
   "repository": {
     "type": "git",
