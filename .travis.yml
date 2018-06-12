@@ -5,17 +5,23 @@ node_js:
 addons:
     chrome: stable
 before_script:
-    - "sudo chown root /opt/google/chrome/chrome-sandbox"
-    - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
+    - sudo chown root /opt/google/chrome/chrome-sandbox
+    - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
 script: npm run test-ci
-
 before_deploy:
   - cp dist/metricsgraphics.css dist/metricsgraphics.min.js .
   - cp -r examples/* .
   - cp -r src/js/* js
 deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  on:
-    branch: master
+  - provider: npm
+    email: wrlach@gmail.com
+    api_key:
+      secure: $NPM_TOKEN
+    on:
+      tags: true
+      repo: metricsgraphics/metrics-graphics
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    on:
+      branch: master
