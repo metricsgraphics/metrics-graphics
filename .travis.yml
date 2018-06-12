@@ -16,7 +16,7 @@ deploy:
   - provider: npm
     email: wrlach@gmail.com
     api_key:
-      secure: $NPM_TOKEN
+      secure: YQ2Rusxq4Z07D3YD+9IoK4FtJI+W3I27B2nimf3H1xgJHlWUDquENJylSEhmUlUg9g1hj0QAsrcTihrdtRBS3p81RW7yXVVA9s6gC6830AJP77sGSqI/rK6erFk9s12f42Nr6d7MArBUTj6mxET+I7p3rKYbmY+8oePH9bnSN3c=
     on:
       tags: true
       repo: metricsgraphics/metrics-graphics
@@ -24,4 +24,5 @@ deploy:
     skip-cleanup: true
     github-token: $GITHUB_TOKEN
     on:
+      tags: true
       branch: master
