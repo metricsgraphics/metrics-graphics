@@ -16,40 +16,37 @@ var
 // paths
 var
   src = './src/js/',
-//scss = './scss/',
-//scssFiles = [],
-//scssDependencies = [],
   dist = './dist/',
   jsFiles = [
-    src + 'MG.js',
-    src + 'misc/utility.js',
-    src + 'common/register.js',
-    src + 'common/hooks.js',
-    src + 'common/data_graphic.js',
-    src + 'common/bootstrap_tooltip_popover.js',
-    src + 'common/chart_title.js',
-    src + 'common/scales.js',
-    src + 'common/y_axis.js',
-    src + 'common/x_axis.js',
-    src + 'common/scales.js',
-    src + 'common/init.js',
-    src + 'common/markers.js',
-    src + 'common/rollover.js',
-    src + 'common/window_listeners.js',
-    src + 'layout/bootstrap_dropdown.js',
-    src + 'layout/button.js',
-    src + 'charts/line.js',
-    src + 'charts/histogram.js',
-    src + 'charts/point.js',
-    src + 'charts/bar.js',
-    src + 'charts/table.js',
-    src + 'charts/missing.js',
-    src + 'misc/process.js',
-    src + 'misc/smoothers.js',
-    src + 'misc/formatters.js',
-    src + 'misc/transitions.js',
-    src + 'misc/markup.js',
-    src + 'misc/error.js'
+    'MG.js',
+    'charts/bar.js',
+    'charts/histogram.js',
+    'charts/line.js',
+    'charts/missing.js',
+    'charts/point.js',
+    'charts/table.js',
+    'common/bootstrap_tooltip_popover.js',
+    'common/chart_title.js',
+    'common/data_graphic.js',
+    'common/hooks.js',
+    'common/init.js',
+    'common/markers.js',
+    'common/register.js',
+    'common/rollover.js',
+    'common/scales.js',
+    'common/scales.js',
+    'common/window_listeners.js',
+    'common/x_axis.js',
+    'common/y_axis.js',
+    'layout/bootstrap_dropdown.js',
+    'layout/button.js',
+    'misc/error.js',
+    'misc/formatters.js',
+    'misc/markup.js',
+    'misc/process.js',
+    'misc/smoothers.js',
+    'misc/transitions.js',
+    'misc/utility.js'
   ];
 
 
@@ -70,7 +67,7 @@ gulp.task('clean', function () {
 
 // create 'metricsgraphics.js' and 'metricsgraphics.min.js' from source js
 gulp.task('build:js', ['clean'], function () {
-  return gulp.src(jsFiles)
+  return gulp.src(jsFiles.map(path => src + path))
     .pipe(concat({path: 'metricsgraphics.js'}))
     .pipe(babel({
       presets: ['env']
