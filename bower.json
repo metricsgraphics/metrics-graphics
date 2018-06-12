@@ -29,7 +29,7 @@
   "homepage": "http://metricsgraphicsjs.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mozilla/metrics-graphics.git"
+    "url": "git://github.com/metricsgraphics/metrics-graphics.git"
   },
   "keywords": [
     "metrics-graphics",
