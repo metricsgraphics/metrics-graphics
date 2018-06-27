@@ -68,7 +68,10 @@ A development server will be available at http://localhost:4300. Just reload
 it as you make modifications to the files in `src/` -- any changes made to
 the example source and data should be preserved.
 
-In order to request or faciliate deployments to metricsgraphicsjs.org, please contact Natalie Haywood (nhaywood@mozilla.com).
+The website [metricsgraphicsjs.org](https://metricsgraphicsjs.org) is automatically
+uploaded/updated by travis ci when a new tag is created (corresponding to a
+new release). It is served from github pages using a [netlify](https://netlify.com)
+configuration maintained and controlled by [William Lachance](https://github.com/wlach/).
 
 You might also be interested in writing addons for the library, in which case, [have a read through this page](https://github.com/metricsgraphics/metrics-graphics/wiki/Developing-Addons).
 
@@ -132,7 +135,7 @@ Feel free to add your addons and websites to this list.
 * [R package (htmlwidget)](https://github.com/hrbrmstr/metricsgraphics)
 * [Python library - using Pyxley](http://multithreaded.stitchfix.com/blog/2015/07/16/pyxley)
 * [Angular directive](https://github.com/elmarquez/angular-metrics-graphics)
-* [React component](https://github.com/mozilla/react-metrics-graphics)
+* [React component](https://github.com/metricsgraphics/react-metrics-graphics)
 
 ## License
 
