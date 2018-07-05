@@ -17,6 +17,7 @@ function mg_setup_mouseover_container(svg, args) {
       : (args.width - args.left - args.right) / 2 + args.left);
 
   var active_datapoint = svg.select('.mg-active-datapoint-container')
+    .attr('transform', 'translate(0 -18)')
     .append('text')
     .attr('class', 'mg-active-datapoint')
     .attr('xml:space', 'preserve')
