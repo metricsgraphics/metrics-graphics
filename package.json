@@ -59,7 +59,7 @@
     "gulp-util": "^3.0.1",
     "jquery": ">=1.11.1",
     "qunitjs": "^1.16.0",
-    "require-dir": "^0.1.0",
+    "require-dir": "^1.0.0",
     "testem": "^2.0.0"
   }
 }
