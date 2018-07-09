@@ -49,7 +49,7 @@
     "gulp": "^3.8.10",
     "gulp-babel": "^7.0.1",
     "gulp-concat": "^2.4.2",
-    "gulp-connect": "^2.2.0",
+    "gulp-connect": "^5.0.0",
     "gulp-jshint": "^2.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-rimraf": "^0.1.1",
