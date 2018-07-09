@@ -55,7 +55,7 @@
     "gulp-rimraf": "^0.1.1",
     "gulp-testem": "0.0.1",
     "gulp-uglify": "3.0.0",
-    "gulp-umd": "^0.1.3",
+    "gulp-umd": "^0.2.0",
     "gulp-util": "^3.0.1",
     "jquery": ">=1.11.1",
     "qunitjs": "^1.16.0",
