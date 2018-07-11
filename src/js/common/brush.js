@@ -82,12 +82,13 @@ const add_event_handler_for_brush = (args, target, axis) => {
       isDragging = false;
       if (target === args) {
         MG.zoom_to_data_range(target, range);
-        svg.select('.mg-rollover-rect, .mg-voronoi').classed('mg-brushed', true);
+        if (args.click_to_zoom_out)
+          svg.select('.mg-rollover-rect, .mg-voronoi').classed('mg-brushed', true);
       } else {
         const domain = MG.convert_range_to_domain(args, range);
         MG.zoom_to_data_domain(target, domain);
       }
-    } else {
+    } else if (args.click_to_zoom_out) {
       MG.zoom_to_raw_range(target);
     }
     if (mg_is_function(args.brushing_selection_changed))
