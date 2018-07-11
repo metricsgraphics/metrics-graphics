@@ -2,7 +2,7 @@
   "framework": "qunit",
   "src_files": [
     "node_modules/jquery/dist/jquery.js",
-    "node_modules/d3/build/d3.js",
+    "node_modules/d3/dist/d3.js",
 
     "src/js/MG.js",
     "src/js/misc/utility.js",
