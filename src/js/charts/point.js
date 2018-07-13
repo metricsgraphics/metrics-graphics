@@ -240,6 +240,7 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .attr('d', d => d == null ? null : `M${d.join(',')}Z`)
         .attr('class', (d, i) => `path-${i}`)
         .style('fill-opacity', 0)
+        .on('click', this.rolloverClick(args))
         .on('mouseover', this.rolloverOn(args))
         .on('mouseout', this.rolloverOff(args))
         .on('mousemove', this.rolloverMove(args));
@@ -250,6 +251,14 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
 
       return this;
     };
+
+    this.rolloverClick = args => {
+      return (d, i) => {
+        if (args.click) {
+          args.click(d, i)
+        }
+      }
+    }
 
     this.rolloverOn = args => {
       const svg = mg_get_svg_child_of(args.target);
