@@ -195,21 +195,43 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', d => args.scalefns.youtf(d));
 
-      if (args.highlight && mg_is_function(args.highlight))
-        pts.filter(args.highlight).classed('highlighted', true);
+      let highlights
+      if (args.highlight && mg_is_function(args.highlight)) {
+        svg.selectAll('.mg-highlight').remove();
+        highlights = svg.append('g')
+          .classed('mg-highlight', true)
+          .selectAll('circle')
+          .data(data.filter(args.highlight))
+          .enter().append('circle')
+          .attr('cx', args.scalefns.xoutf)
+          .attr('cy', d => args.scalefns.youtf(d))
+      }
 
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
         pts.attr('fill', args.scalefns.colorf);
         pts.attr('stroke', args.scalefns.colorf);
+        if (highlights) {
+          highlights.attr('fill', args.scalefns.colorf);
+          highlights.attr('stroke', args.scalefns.colorf);
+        }
       } else {
         pts.classed('mg-points-mono', true);
+        if (highlights) {
+          highlights.classed('mg-points-mono', true);
+        }
       }
 
       if (args.size_accessor !== null) {
         pts.attr('r', args.scalefns.sizef);
+        if (highlights) {
+          highlights.attr('r', (d, i) => args.scalefns.sizef(d, i) + 2);
+        }
       } else {
         pts.attr('r', args.point_size);
+        if (highlights) {
+          highlights.attr('r', args.point_size + 2);
+        }
       }
 
       return this;
