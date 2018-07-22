@@ -6,6 +6,7 @@
                     <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
                     <div class='col-lg-6 text-center' id='scatter-size-and-color'></div>
                     <div class='col-lg-6 text-center' id='sls-time-series'></div>
+                    <div class='col-lg-6 text-center' id='highlight'></div>
                 </div>
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/points1.json'>data</a></div>
@@ -72,6 +73,21 @@
         target: '#scatter-line-best-fit',
         x_accessor: 'x',
         y_accessor: 'y'
+    });
+
+    MG.data_graphic({
+        title: "Points Highlighting",
+        description: "You can set <i>highlight</i> to filter the points you want to highlight.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#highlight',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        highlight: (d, i) => d.z > 2
     });
 });
 
@@ -689,6 +705,21 @@ d3.json('data/points1.json', function(data) {
         target: '#scatter-line-best-fit',
         x_accessor: 'x',
         y_accessor: 'y'
+    });
+
+    MG.data_graphic({
+        title: "Points Highlighting",
+        description: "You can set <i>highlight</i> to filter the points you want to highlight.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#highlight',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        highlight: (d, i) => d.z > 2
     });
 });
 

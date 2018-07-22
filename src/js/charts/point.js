@@ -195,43 +195,29 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', d => args.scalefns.youtf(d));
 
-      let highlights
+      let highlights;
+      svg.selectAll('.mg-highlight').remove();
       if (args.highlight && mg_is_function(args.highlight)) {
-        svg.selectAll('.mg-highlight').remove();
         highlights = svg.append('g')
           .classed('mg-highlight', true)
           .selectAll('circle')
           .data(data.filter(args.highlight))
           .enter().append('circle')
           .attr('cx', args.scalefns.xoutf)
-          .attr('cy', d => args.scalefns.youtf(d))
+          .attr('cy', d => args.scalefns.youtf(d));
       }
 
+      const elements = [pts].concat(highlights ? [highlights] : []);
       //are we coloring our points, or just using the default color?
       if (args.color_accessor !== null) {
-        pts.attr('fill', args.scalefns.colorf);
-        pts.attr('stroke', args.scalefns.colorf);
-        if (highlights) {
-          highlights.attr('fill', args.scalefns.colorf);
-          highlights.attr('stroke', args.scalefns.colorf);
-        }
+        elements.forEach(e => e.attr('fill', args.scalefns.colorf).attr('stroke', args.scalefns.colorf));
       } else {
-        pts.classed('mg-points-mono', true);
-        if (highlights) {
-          highlights.classed('mg-points-mono', true);
-        }
+        elements.forEach(e => e.classed('mg-points-mono', true));
       }
 
-      if (args.size_accessor !== null) {
-        pts.attr('r', args.scalefns.sizef);
-        if (highlights) {
-          highlights.attr('r', (d, i) => args.scalefns.sizef(d, i) + 2);
-        }
-      } else {
-        pts.attr('r', args.point_size);
-        if (highlights) {
-          highlights.attr('r', args.point_size + 2);
-        }
+      pts.attr('r', (args.size_accessor !== null) ? args.scalefns.sizef : args.point_size);
+      if (highlights) {
+        highlights.attr('r', (args.size_accessor !== null) ? (d, i) => args.scalefns.sizef(d, i) + 2 : args.point_size + 2);
       }
 
       return this;
@@ -388,7 +374,8 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     size_domain: null,
     color_domain: null,
     active_point_size_increase: 1,
-    color_type: 'number' // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
+    color_type: 'number', // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
+    highlight: null // callback function to select the point to highlight
   };
 
   MG.register('point', pointChart, defaults);
