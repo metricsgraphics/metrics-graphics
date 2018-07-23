@@ -571,10 +571,11 @@
           });
       }
 
+      const existing_line = svg.select(`path.mg-main-line.mg-line${line_id}`);
       if (this_data.length === 0) {
+        existing_line.remove();
         continue;
       }
-      const existing_line = svg.select(`path.mg-main-line.mg-line${line_id}`);
 
       mg_add_confidence_band(args, plot, svg, line_id);
 
