@@ -375,7 +375,7 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     color_domain: null,
     active_point_size_increase: 1,
     color_type: 'number', // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
-    highlight: null // callback function to select the point to highlight
+    highlight: null // if this callback function returns true, the selected point will be highlighted
   };
 
   MG.register('point', pointChart, defaults);
