@@ -626,6 +626,94 @@ var buttons = MG.button_layout('#buttons')
                 </div>
             </div>
 
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class="tooltip"></div>
+                    <style>
+                    .tooltip {
+                        display: none;
+                        min-height: 32px;
+                        min-width: 100px;
+                        padding: 12px;
+                        margin-bottom: 8px;
+                        background-color: #333;
+                        color: white;
+                        opacity: 0.7;
+                        text-align: left;
+                    }
+                    </style>
+                    <div class='col-lg-12 text-center' id='tooltip-line-chart'></div>
+                    <div class='col-lg-12 text-center' id='tooltip-point-chart'></div>
+                </div>
+                <div class='col-lg-5'>
+
+<pre><code class='html'>&#x3C;div class=&#x22;tooltip&#x22;&#x3E;&#x3C;/div&#x3E;
+&#x3C;style&#x3E;
+.tooltip {
+    display: none;
+    min-height: 32px;
+    min-width: 100px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: #333;
+    color: white;
+    opacity: 0.7;
+    text-align: left;
+}
+&#x3C;/style&#x3E;
+</code></pre>
+
+<pre><code class='javascript'>const tooltipEl = d3.select('.tooltip').node();
+const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Tooltip on line chart",
+        description: "This is an example to use popper.js to show a tooltip on line chart.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#tooltip-line-chart',
+        x_accessor: 'date',
+        y_accessor: 'value',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
+            tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
+            tooltip.update();
+        }
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Tooltip on point chart",
+        description: "This is an example to use popper.js to show a tooltip on point chart.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 350,
+        right: 10,
+        target: '#tooltip-point-chart',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
+            tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
+            tooltip.update();
+        }
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
 <script>
 MG._hooks = {};
 d3.json('data/points1.json', function(data) {
@@ -966,4 +1054,51 @@ function fake_days(length) {
     }
     return data;
 }
+
+const tooltipEl = d3.select('.tooltip').node();
+const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Tooltip on line chart",
+        description: "This is an example to use popper.js to show a tooltip on line chart.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#tooltip-line-chart',
+        x_accessor: 'date',
+        y_accessor: 'value',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
+            tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
+            tooltip.update();
+        }
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Tooltip on point chart",
+        description: "This is an example to use popper.js to show a tooltip on point chart.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 350,
+        right: 10,
+        target: '#tooltip-point-chart',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
+            tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
+            tooltip.update();
+        }
+    });
+});
 </script>
