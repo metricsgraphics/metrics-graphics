@@ -665,12 +665,18 @@ var buttons = MG.button_layout('#buttons')
 
 <pre><code class='javascript'>const tooltipEl = d3.select('.tooltip').node();
 const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+tooltipEl.addEventListener('mouseover', () => {
+    tooltipEl.style.display = 'block'
+})
+tooltipEl.addEventListener('mouseout', () => {
+    tooltipEl.style.display = 'none'
+})
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Tooltip on line chart",
-        description: "This is an example to use popper.js to show a tooltip on line chart.",
+        description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
         data: data,
         width: 600,
         height: 200,
@@ -684,6 +690,9 @@ d3.json('data/fake_users1.json', function(data) {
             tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
             tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
             tooltip.update();
+        },
+        mouseout: () => {
+            tooltipEl.style.display = 'none'
         }
     });
 });
@@ -691,7 +700,7 @@ d3.json('data/fake_users1.json', function(data) {
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Tooltip on point chart",
-        description: "This is an example to use popper.js to show a tooltip on point chart.",
+        description: "This technique also works for point charts.",
         data: data,
         chart_type: 'point',
         width: 600,
@@ -706,6 +715,9 @@ d3.json('data/points1.json', function(data) {
             tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
             tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
             tooltip.update();
+        },
+        mouseout: (d, i) => {
+            tooltipEl.style.display = 'none'
         }
     });
 });</code></pre>
@@ -1057,12 +1069,18 @@ function fake_days(length) {
 
 const tooltipEl = d3.select('.tooltip').node();
 const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+tooltipEl.addEventListener('mouseover', () => {
+    tooltipEl.style.display = 'block'
+})
+tooltipEl.addEventListener('mouseout', () => {
+    tooltipEl.style.display = 'none'
+})
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Tooltip on line chart",
-        description: "This is an example to use popper.js to show a tooltip on line chart.",
+        description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
         data: data,
         width: 600,
         height: 200,
@@ -1076,6 +1094,9 @@ d3.json('data/fake_users1.json', function(data) {
             tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
             tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
             tooltip.update();
+        },
+        mouseout: () => {
+            tooltipEl.style.display = 'none'
         }
     });
 });
@@ -1083,7 +1104,7 @@ d3.json('data/fake_users1.json', function(data) {
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Tooltip on point chart",
-        description: "This is an example to use popper.js to show a tooltip on point chart.",
+        description: "This technique also works for point charts.",
         data: data,
         chart_type: 'point',
         width: 600,
@@ -1098,6 +1119,9 @@ d3.json('data/points1.json', function(data) {
             tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
             tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
             tooltip.update();
+        },
+        mouseout: (d, i) => {
+            tooltipEl.style.display = 'none'
         }
     });
 });
