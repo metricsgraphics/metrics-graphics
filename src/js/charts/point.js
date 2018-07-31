@@ -255,10 +255,10 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     this.rolloverClick = args => {
       return (d, i) => {
         if (args.click) {
-          args.click(d, i)
+          args.click(d, i);
         }
-      }
-    }
+      };
+    };
 
     this.rolloverOn = args => {
       const svg = mg_get_svg_child_of(args.target);

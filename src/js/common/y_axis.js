@@ -55,8 +55,8 @@ function rugPlacement (args, axisArgs) {
     coordinates.y2 = args.scalefns[ns + 'f'];
   }
   if (position === 'right') {
-    coordinates.x1 = mg_get_right(args) - 1,
-    coordinates.x2 = mg_get_right(args) - args.rug_buffer_size,
+    coordinates.x1 = mg_get_right(args) - 1;
+    coordinates.x2 = mg_get_right(args) - args.rug_buffer_size;
     coordinates.y1 = args.scalefns[ns + 'f'];
     coordinates.y2 = args.scalefns[ns + 'f'];
   }
@@ -486,9 +486,10 @@ function categoricalLabels (args, axisArgs) {
     // grab group placement stuff.
     var coords = categoricalLabelPlacement(args, axisArgs, group);
 
+    var labels;
     group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group));
     if (args[groupAccessor] !== null) {
-      var labels = group_g.append('text')
+      labels = group_g.append('text')
         .classed('mg-barplot-group-label', true)
         .attr('x', coords.group.x)
         .attr('y', coords.group.y)
@@ -497,7 +498,7 @@ function categoricalLabels (args, axisArgs) {
         .text(group);
 
     } else {
-      var labels = group_g.selectAll('text')
+      labels = group_g.selectAll('text')
         .data(scale.domain())
         .enter()
         .append('text')
