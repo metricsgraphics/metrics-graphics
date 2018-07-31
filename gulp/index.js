@@ -101,9 +101,10 @@ gulp.task('build:js', ['clean'], function () {
 
 // Check source js files with jshint
 gulp.task('jshint', function () {
-  return gulp.src(jsFiles)
+  return gulp.src(jsFiles.map(fname => `src/js/${fname}`))
     .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'))
 });
 
 // Run test suite server (testem')

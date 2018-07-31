@@ -7,7 +7,9 @@ addons:
 before_script:
     - sudo chown root /opt/google/chrome/chrome-sandbox
     - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
-script: npm run test-ci
+script:
+  - npm run lint
+  - npm run test-ci
 before_deploy:
   - cp dist/metricsgraphics.css dist/metricsgraphics.min.js .
   - cp -r examples/* .
