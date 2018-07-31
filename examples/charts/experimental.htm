@@ -666,10 +666,10 @@ var buttons = MG.button_layout('#buttons')
 <pre><code class='javascript'>const tooltipEl = d3.select('.tooltip').node();
 const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
 tooltipEl.addEventListener('mouseover', () => {
-    tooltipEl.style.display = 'block'
+    tooltipEl.style.display = 'block';
 })
 tooltipEl.addEventListener('mouseout', () => {
-    tooltipEl.style.display = 'none'
+    tooltipEl.style.display = 'none';
 })
 
 d3.json('data/fake_users1.json', function(data) {
@@ -692,7 +692,7 @@ d3.json('data/fake_users1.json', function(data) {
             tooltip.update();
         },
         mouseout: () => {
-            tooltipEl.style.display = 'none'
+            tooltipEl.style.display = 'none';
         }
     });
 });
@@ -717,7 +717,7 @@ d3.json('data/points1.json', function(data) {
             tooltip.update();
         },
         mouseout: (d, i) => {
-            tooltipEl.style.display = 'none'
+            tooltipEl.style.display = 'none';
         }
     });
 });</code></pre>
@@ -1070,10 +1070,10 @@ function fake_days(length) {
 const tooltipEl = d3.select('.tooltip').node();
 const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
 tooltipEl.addEventListener('mouseover', () => {
-    tooltipEl.style.display = 'block'
+    tooltipEl.style.display = 'block';
 })
 tooltipEl.addEventListener('mouseout', () => {
-    tooltipEl.style.display = 'none'
+    tooltipEl.style.display = 'none';
 })
 
 d3.json('data/fake_users1.json', function(data) {
@@ -1096,7 +1096,7 @@ d3.json('data/fake_users1.json', function(data) {
             tooltip.update();
         },
         mouseout: () => {
-            tooltipEl.style.display = 'none'
+            tooltipEl.style.display = 'none';
         }
     });
 });
@@ -1121,7 +1121,7 @@ d3.json('data/points1.json', function(data) {
             tooltip.update();
         },
         mouseout: (d, i) => {
-            tooltipEl.style.display = 'none'
+            tooltipEl.style.display = 'none';
         }
     });
 });
