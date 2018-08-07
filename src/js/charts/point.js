@@ -195,18 +195,29 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
         .attr('cx', args.scalefns.xoutf)
         .attr('cy', d => args.scalefns.youtf(d));
 
-      //are we coloring our points, or just using the default color?
-      if (args.color_accessor !== null) {
-        pts.attr('fill', args.scalefns.colorf);
-        pts.attr('stroke', args.scalefns.colorf);
-      } else {
-        pts.classed('mg-points-mono', true);
+      let highlights;
+      svg.selectAll('.mg-highlight').remove();
+      if (args.highlight && mg_is_function(args.highlight)) {
+        highlights = svg.append('g')
+          .classed('mg-highlight', true)
+          .selectAll('circle')
+          .data(data.filter(args.highlight))
+          .enter().append('circle')
+          .attr('cx', args.scalefns.xoutf)
+          .attr('cy', d => args.scalefns.youtf(d));
       }
 
-      if (args.size_accessor !== null) {
-        pts.attr('r', args.scalefns.sizef);
+      const elements = [pts].concat(highlights ? [highlights] : []);
+      //are we coloring our points, or just using the default color?
+      if (args.color_accessor !== null) {
+        elements.forEach(e => e.attr('fill', args.scalefns.colorf).attr('stroke', args.scalefns.colorf));
       } else {
-        pts.attr('r', args.point_size);
+        elements.forEach(e => e.classed('mg-points-mono', true));
+      }
+
+      pts.attr('r', (args.size_accessor !== null) ? args.scalefns.sizef : args.point_size);
+      if (highlights) {
+        highlights.attr('r', (args.size_accessor !== null) ? (d, i) => args.scalefns.sizef(d, i) + 2 : args.point_size + 2);
       }
 
       return this;
@@ -372,7 +383,8 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     size_domain: null,
     color_domain: null,
     active_point_size_increase: 1,
-    color_type: 'number' // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
+    color_type: 'number', // can be either 'number' - the color scale is quantitative - or 'category' - the color scale is qualitative.
+    highlight: null // if this callback function returns true, the selected point will be highlighted
   };
 
   MG.register('point', pointChart, defaults);
