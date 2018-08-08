@@ -412,6 +412,13 @@ function merge_with_defaults(obj) {
 
 MG.merge_with_defaults = merge_with_defaults;
 
+function options_to_defaults(obj) {
+  return Object.keys(obj).reduce((r, k) => {
+    r[k] = obj[k][0];
+    return r;
+  }, {});
+}
+
 function number_of_values(data, accessor, value) {
   var values = data.filter(function(d) {
     return d[accessor] === value;

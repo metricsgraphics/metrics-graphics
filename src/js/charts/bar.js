@@ -762,39 +762,39 @@
     this.init(args);
   }
 
-  const defaults = {
-    y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: 0.2, // for categorical scales
-    ygroup_padding_percentage: 0, // for categorical scales
-    ygroup_outer_padding_percentage: 0, // for categorical scales
-    x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: 0.2, // for categorical scales
-    xgroup_padding_percentage: 0, // for categorical scales
-    xgroup_outer_padding_percentage: 0, // for categorical scales
-    buffer: 16,
-    y_accessor: 'factor',
-    x_accessor: 'value',
-    reference_accessor: null,
-    comparison_accessor: null,
-    secondary_label_accessor: null,
-    color_accessor: null,
-    color_type: 'category',
-    color_domain: null,
-    reference_thickness: 1,
-    comparison_width: 3,
-    comparison_thickness: null,
-    legend: false,
-    legend_target: null,
-    mouseover_align: 'right',
-    baseline_accessor: null,
-    predictor_accessor: null,
-    predictor_proportion: 5,
-    show_bar_zero: true,
-    binned: true,
-    truncate_x_labels: true,
-    truncate_y_labels: true
+  const options = {
+    y_padding_percentage: [0.05], // for categorical scales
+    y_outer_padding_percentage: [0.2], // for categorical scales
+    ygroup_padding_percentage: [0], // for categorical scales
+    ygroup_outer_padding_percentage: [0], // for categorical scales
+    x_padding_percentage: [0.05], // for categorical scales
+    x_outer_padding_percentage: [0.2], // for categorical scales
+    xgroup_padding_percentage: [0], // for categorical scales
+    xgroup_outer_padding_percentage: [0], // for categorical scales
+    buffer: [16],
+    y_accessor: ['factor'],
+    x_accessor: ['value'],
+    reference_accessor: [null],
+    comparison_accessor: [null],
+    secondary_label_accessor: [null],
+    color_accessor: [null],
+    color_type: ['category'],
+    color_domain: [null],
+    reference_thickness: [1],
+    comparison_width: [3],
+    comparison_thickness: [null],
+    legend: [false],
+    legend_target: [null],
+    mouseover_align: ['right'],
+    baseline_accessor: [null],
+    predictor_accessor: [null],
+    predictor_proportion: [5],
+    show_bar_zero: [true],
+    binned: [true],
+    truncate_x_labels: [true],
+    truncate_y_labels: [true]
   };
 
-  MG.register('bar', barChart, defaults);
+  MG.register('bar', barChart, options);
 
 }
