@@ -361,22 +361,14 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
   }
 
   const options = {
-    color_accessor: [null, 'string', 'the data element to use to map points to colors'],
-    color_range: [null, 'array', 'the range used to color different groups of points'],
-    color_type: ['number', ['number', 'category'], 'specifies whether the color scale is quantitative or qualitative'],
-    point_size: [2.5, 'number', 'the radius of the dots in the scatterplot'],
-    size_accessor: [null, 'string', 'should point sizes be mapped to data'],
-    size_range: [null, 'array', 'the range of point sizes'],
-    lowess: [false, 'boolean', 'specifies whether to show a lowess line of best-fit'],
-    least_squares: [false, 'boolean', 'specifies whether to show a least-squares line of best-fit'],
-    y_padding_percentage: [0.05], // for categorical scales
-    y_outer_padding_percentage: [0.2], // for categorical scales
-    ygroup_padding_percentage: [0], // for categorical scales
-    ygroup_outer_padding_percentage: [0], // for categorical scales
-    x_padding_percentage: [0.05], // for categorical scales
-    x_outer_padding_percentage: [0.2], // for categorical scales
-    xgroup_padding_percentage: [0], // for categorical scales
-    xgroup_outer_padding_percentage: [0], // for categorical scales
+    color_accessor: [null, 'string'], // the data element to use to map points to colors
+    color_range: [null, 'array'], // the range used to color different groups of points
+    color_type: ['number', ['number', 'category']], // specifies whether the color scale is quantitative or qualitative
+    point_size: [2.5, 'number'], // the radius of the dots in the scatterplot
+    size_accessor: [null, 'string'], // should point sizes be mapped to data
+    size_range: [null, 'array'], // the range of point sizes
+    lowess: [false, 'boolean'], // specifies whether to show a lowess line of best-fit
+    least_squares: [false, 'boolean'], // specifies whether to show a least-squares line of best-fit
     y_categorical_show_guides: [true],
     x_categorical_show_guides: [true],
     buffer: [16],
@@ -385,7 +377,7 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     size_domain: [null],
     color_domain: [null],
     active_point_size_increase: [1],
-    highlight: [null, 'function', 'if this callback function returns true, the selected point will be highlighted']
+    highlight: [null, 'function'] // if this callback function returns true, the selected point will be highlighted
   };
 
   MG.register('point', pointChart, options);

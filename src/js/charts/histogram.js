@@ -210,9 +210,9 @@
   }
 
   const options = {
-    bar_margin: [1, "number", "the margin between bars"],
-    binned: [false, "boolean", "determines whether the data is already binned"],
-    bins: [null, undefined, "the number of bins to use"],
+    bar_margin: [1, "number"], // the margin between bars
+    binned: [false, "boolean"], // determines whether the data is already binned
+    bins: [null], // the number of bins to use
     processed_x_accessor: ['x'],
     processed_y_accessor: ['y'],
     processed_dx_accessor: ['dx']
