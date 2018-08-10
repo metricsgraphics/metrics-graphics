@@ -290,16 +290,10 @@
     // increment from 1... unless we have a custom increment series
 
     for (let i = 0; i < data.length; i++) {
-      for (let j = 0; j < data[i].length; j++) {
-        // Index is saved as original line id for the legend values
-        data[i][j].index = i+1;
-        // if custom line-color map is set, use that instead of line_id (For colors)
-        if (custom_line_color_map.length > 0) {
-          data[i][j].line_id = custom_line_color_map[i];
-        } else {
-          data[i][j].line_id = i+1;
-        }
-      }
+      data[i].forEach(datum => {
+        datum.index = i + 1;
+        datum.line_id = (custom_line_color_map.length > 0) ? custom_line_color_map[i] : i + 1;
+      });
     }
   }
 
