@@ -127,19 +127,17 @@
   }
 
   const defaults = {
-    top: [40], // the size of the top margin
-    bottom: [30], // the size of the bottom margin
-    right: [10], // size of the right margin
-    left: [0], // size of the left margin
-    buffer: [8], // the buffer between the actual chart area and the margins
-    legend_target: [''],
-    width: [350],
-    height: [220],
-    missing_text: ['Data currently missing or unavailable'],
-    scalefns: [{}],
-    scales: [{}],
-    show_tooltips: [true],
-    show_missing_background: [true]
+    top: [40, 'number'], // the size of the top margin
+    bottom: [30, 'number'], // the size of the bottom margin
+    right: [10, 'number'], // size of the right margin
+    left: [0, 'number'], // size of the left margin
+    buffer: [8, 'number'], // the buffer between the actual chart area and the margins
+    legend_target: ['', 'string'],
+    width: [350, 'number'],
+    height: [220, 'number'],
+    missing_text: ['Data currently missing or unavailable', 'string'],
+    show_tooltips: [true, 'boolean'],
+    show_missing_background: [true, 'boolean']
   };
 
   MG.register('missing-data', missingData, defaults);

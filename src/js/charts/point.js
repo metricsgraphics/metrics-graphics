@@ -369,14 +369,13 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     size_range: [null, 'array'], // the range of point sizes
     lowess: [false, 'boolean'], // specifies whether to show a lowess line of best-fit
     least_squares: [false, 'boolean'], // specifies whether to show a least-squares line of best-fit
-    y_categorical_show_guides: [true],
-    x_categorical_show_guides: [true],
-    buffer: [16],
-    ls: [false],
-    label_accessor: [null],
-    size_domain: [null],
-    color_domain: [null],
-    active_point_size_increase: [1],
+    y_categorical_show_guides: [true, 'boolean'],
+    x_categorical_show_guides: [true, 'boolean'],
+    buffer: [16, 'string'],
+    label_accessor: [null, 'boolean'],
+    size_domain: [null, 'number[]'],
+    color_domain: [null, 'number[]'],
+    active_point_size_increase: [1, 'number'],
     highlight: [null, 'function'] // if this callback function returns true, the selected point will be highlighted
   };
 

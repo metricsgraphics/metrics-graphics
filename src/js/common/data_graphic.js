@@ -12,22 +12,22 @@ MG.globals.link = false;
 MG.globals.version = "1.1";
 
 MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
-  x_axis_type: [null], // TO BE INTRODUCED IN 2.10
-  y_axis_type: [null], // TO BE INTRODUCED IN 2.10
-  ygroup_accessor: [null],
-  xgroup_accessor: [null],
-  y_padding_percentage: [0.05],                 // for categorical scales
-  y_outer_padding_percentage: [0.1],            // for categorical scales
-  ygroup_padding_percentage: [0.25],            // for categorical scales
-  ygroup_outer_padding_percentage: [0],         // for categorical scales
-  x_padding_percentage: [0.05],                 // for categorical scales
-  x_outer_padding_percentage: [0.1],            // for categorical scales
-  xgroup_padding_percentage: [0.25],            // for categorical scales
-  xgroup_outer_padding_percentage: [0],         // for categorical scales
-  y_categorical_show_guides: [false],
-  x_categorical_show_guide: [false],
-  rotate_x_labels: [0],
-  rotate_y_labels: [0],
+  x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  y_padding_percentage: [0.05, 'number'],                 // for categorical scales
+  y_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
+  ygroup_padding_percentage: [0.25, 'number'],            // for categorical scales
+  ygroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
+  x_padding_percentage: [0.05, 'number'],                 // for categorical scales
+  x_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
+  xgroup_padding_percentage: [0.25, 'number'],            // for categorical scales
+  xgroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
+  ygroup_accessor: [null, 'string'],
+  xgroup_accessor: [null, 'string'],
+  y_categorical_show_guides: [false, 'boolean'],
+  x_categorical_show_guide: [false, 'boolean'],
+  rotate_x_labels: [0, 'number'],
+  rotate_y_labels: [0, 'number'],
   scales: [{}],
   scalefns: [{}],
   // Data
