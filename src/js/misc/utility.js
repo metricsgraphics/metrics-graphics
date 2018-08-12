@@ -419,6 +419,26 @@ function options_to_defaults(obj) {
   }, {});
 }
 
+function compare_type(type, value) {
+  if (value == null) return true; // allow null or undefined
+  if (typeof type === 'string') {
+    if (type.substr(-2) === '[]') {
+      if (!is_array(value)) return false;
+      return value.every(i => compare_type(type.slice(0, -2), i));
+    }
+    if (typeof value === type || value === type) return true;
+    return false;
+  }
+  return is_array(type) && !!~type.findIndex(i => compare_type(i, value, true));
+}
+
+function mg_validate_option(key, value) {
+  if (!is_array(MG.options[key])) return false; // not existed option
+  const typeDef = MG.options[key][1];
+  if (!typeDef) return true; // not restricted type
+  return compare_type(typeDef, value);
+}
+
 function number_of_values(data, accessor, value) {
   var values = data.filter(function(d) {
     return d[accessor] === value;

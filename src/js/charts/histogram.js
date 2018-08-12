@@ -212,7 +212,7 @@
   const options = {
     bar_margin: [1, "number"], // the margin between bars
     binned: [false, "boolean"], // determines whether the data is already binned
-    bins: [null], // the number of bins to use. type: {null, number | thresholds | threshold_function}
+    bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
     processed_x_accessor: ['x', 'string'],
     processed_y_accessor: ['y', 'string'],
     processed_dx_accessor: ['dx', 'string']

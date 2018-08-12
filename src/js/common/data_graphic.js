@@ -96,12 +96,12 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   missing_text: [null, 'string'], // The text to display for missing graphics
   show_missing_background: [true, 'boolean'], // Displays a background for missing graphics
   mousemove_align: ['right', 'string'], // implemented in point.js
-  x_mouseover: [null],
-  y_mouseover: [null],
+  x_mouseover: [null, ['string', 'function']],
+  y_mouseover: [null, ['string', 'function']],
   mouseover: [null, 'function'], // custom rollover function
   mousemove: [null, 'function'], // custom rollover function
   mouseout: [null, 'function'], // custom rollover function
-  click: [null], // function
+  click: [null, 'function'],
   point_size: [2.5, 'number'], // the radius of the dots in the scatterplot
   active_point_on_lines: [false, 'boolean'], // if set, active dot on lines will be displayed.
   active_point_accessor: ['active', 'string'], // data accessor value to determine if a point is active or not
@@ -116,7 +116,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   transition_on_update: [true, 'boolean'], // gracefully transitions the lines on data change
   x_rug: [false, 'boolean'], // show a rug plot along the x-axis
   y_rug: [false, 'boolean'], // show a rug plot along the y-axis
-  mouseover_align: ['right'],
+  mouseover_align: ['right', ['right', 'left']],
   brush: [null, ['xy','x','y']], // add brush function
   brushing_selection_changed: [null, 'function'], // callback function on brushing. the first parameter are the arguments that correspond to this chart, the second parameter is the range of the selection
   zoom_target: [null, 'object'], // the zooming target of brushing function

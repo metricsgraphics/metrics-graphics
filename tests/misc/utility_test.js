@@ -70,3 +70,21 @@ test('Overlapping markers are taken care of', function() {
 
     equal(mg_is_horizontally_overlapping(d3.selectAll('.mg-marker-text').node(), d3.selectAll('.mg-marker-text').nodes()), false, 'Markers aren\'t overlapping');
 });
+
+test('compare_type', function() {
+    [
+        ['number', null, true],
+        ['number', 1, true],
+        ['number', 'str', false],
+        ['number[]', 1, false],
+        ['number[]', [1], true],
+        ['object[]', [{}, 1], false],
+        [['number', 'string'], 1, true],
+        [['number', 'string'], 'str', true],
+        [['number', 'string'], {}, false],
+        [['a', 'b'], 'a', true],
+        [['a', 'b'], 'c', false]
+    ].forEach(i => {
+        equal(compare_type(i[0], i[1]), i[2], i);
+    });
+});
