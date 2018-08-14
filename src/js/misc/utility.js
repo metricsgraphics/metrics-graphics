@@ -426,14 +426,17 @@ function compare_type(type, value) {
       if (!is_array(value)) return false;
       return value.every(i => compare_type(type.slice(0, -2), i));
     }
-    if (typeof value === type || value === type) return true;
-    return false;
+    return typeof value === type
+      || value === type
+      || type.length === 0
+      || type === 'array' && is_array(value);
   }
-  return is_array(type) && !!~type.findIndex(i => compare_type(i, value, true));
+  if (typeof type === 'function') return value === type || value instanceof type;
+  return is_array(type) && !!~type.findIndex(i => compare_type(i, value));
 }
 
 function mg_validate_option(key, value) {
-  if (!is_array(MG.options[key])) return false; // not existed option
+  if (!is_array(MG.options[key])) return false; // non-existent option
   const typeDef = MG.options[key][1];
   if (!typeDef) return true; // not restricted type
   return compare_type(typeDef, value);

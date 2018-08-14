@@ -373,8 +373,8 @@ function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
     x_categorical_show_guides: [true, 'boolean'],
     buffer: [16, 'string'],
     label_accessor: [null, 'boolean'],
-    size_domain: [null, 'number[]'],
-    color_domain: [null, 'number[]'],
+    size_domain: [null, 'array'],
+    color_domain: [null, 'array'],
     active_point_size_increase: [1, 'number'],
     highlight: [null, 'function'] // if this callback function returns true, the selected point will be highlighted
   };

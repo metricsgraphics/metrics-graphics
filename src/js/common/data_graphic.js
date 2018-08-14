@@ -11,7 +11,7 @@ MG.deprecations = {
 MG.globals.link = false;
 MG.globals.version = "1.1";
 
-MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
+MG.options = { // <name>: [<defaultValue>, <availableType>]
   x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_padding_percentage: [0.05, 'number'],                 // for categorical scales
@@ -31,22 +31,22 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   scales: [{}],
   scalefns: [{}],
   // Data
-  data: [[], 'object[]'], // the data object
+  data: [[], ['object[]', 'number[]']], // the data object
   missing_is_zero: [false, 'boolean'], // assume missing observations are zero
   missing_is_hidden: [false, 'boolean'], // show missing observations as missing line segments
   missing_is_hidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
   utc_time: [false, 'boolean'], // determines whether to use a UTC or local time scale
   x_accessor: ['date', 'string'], // the data element that's the x-accessor
   x_sort: [true, 'boolean'], // determines whether to sort the x-axis' values
-  y_accessor: ['value', 'string'], // the data element that's the y-accessor
+  y_accessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
   // Axes
   axes_not_compact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
   european_clock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
   inflator: [10/9, 'number'], // a multiplier for inflating max_x and max_y
-  max_x: [null, 'number'], // the maximum x-value
-  max_y: [null, 'number'], // the maximum y-value
-  min_x: [null, 'number'], // the minimum x-value
-  min_y: [null, 'number'], // the minimum y-value
+  max_x: [null, ['number', Date]], // the maximum x-value
+  max_y: [null, ['number', Date]], // the maximum y-value
+  min_x: [null, ['number', Date]], // the minimum x-value
+  min_y: [null, ['number', Date]], // the minimum y-value
   min_y_from_data: [false, 'boolean'], // starts y-axis at data's minimum value
   show_year_markers: [false, 'boolean'], // determines whether to show year markers along the x-axis
   show_secondary_x_label: [true, 'boolean'], // determines whether to show years along the x-axis
@@ -73,19 +73,19 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   // GraphicOptions
   aggregate_rollover: [false, 'boolean'], // links the lines in a multi-line graphic
   animate_on_load: [false, 'boolean'], // determines whether lines are transitioned on first-load
-  area: [true, ['boolean', 'number[]']], // determines whether to fill the area below the line
+  area: [true, ['boolean', 'array']], // determines whether to fill the area below the line
   flip_area_under_y_value: [null, 'number'], // Specify a Y baseline number value to flip area under it
   baselines: [null, 'object[]'], // horizontal lines that indicate, say, goals.
   chart_type: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
-  color: [null, 'string[]'],
-  colors: [null, 'string[]'],
+  color: [null, ['string', 'string[]']],
+  colors: [null, ['string', 'string[]']],
   custom_line_color_map: [[], 'number[]'], // maps an arbitrary set of lines to colors
   decimals: [2, 'number'], // the number of decimals to show in a rollover
   error: ['', 'string'], // does the graphic have an error that we want to communicate to users
   format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
   full_height: [false, 'boolean'], // sets height to that of the parent, adjusts dimensions on window resize
   full_width: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
-  interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveLinearClosed, d3.curveStep, d3.curveStepBefore, d3.curveStepAfter, d3.curveBasis, d3.curveBasisOpen, d3.curveBasisClosed, d3.curveBundle, d3.curveCardinal, d3.curveCardinalOpen, d3.curveCardinalClosed, d3.curveMonotoneX, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen]], // the interpolation function to use for rendering lines
+  interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
   legend: ['', 'string[]'], // an array of literals used to label lines
   legend_target: ['', 'string'], // the DOM element to insert the legend in
   linked: [false, 'boolean'], // used to link multiple graphics together
@@ -112,7 +112,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   show_rollover_text: [true, 'boolean'], // determines whether to show text for a data point on rollover
   show_tooltips: [true, 'boolean'], // determines whether to display descriptions in tooltips
   showActivePoint: [true, 'boolean'], // If enabled show active data point information in chart
-  target: ['#viz', 'string'], // the DOM element to insert the graphic in
+  target: ['#viz', ['string', HTMLElement]], // the DOM element to insert the graphic in
   transition_on_update: [true, 'boolean'], // gracefully transitions the lines on data change
   x_rug: [false, 'boolean'], // show a rug plot along the x-axis
   y_rug: [false, 'boolean'], // show a rug plot along the y-axis
@@ -132,7 +132,9 @@ MG.options = { // <name>: [<defaultValue>, <availableType>, <description>]
   small_width_threshold: [160, 'number'], // maximum width for a small graphic
   top: [65, 'number'], // the size of the top margin
   width: [350, 'number'], // the graphic's width
-  title_y_position: [10, 'number'] // how many pixels from the top edge (0) should we show the title at
+  title_y_position: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
+  title: [null, 'string'],
+  description: [null, 'string']
 };
 
 MG.charts = {};
@@ -145,6 +147,16 @@ MG.data_graphic = function(args) {
   MG.call_hook('global.defaults', MG.defaults);
 
   if (!args) { args = {}; }
+
+  for (let key in args) {
+    if (!mg_validate_option(key, args[key])) {
+      if (!(key in MG.options)) {
+        console.warn(`${key} is not recognized`);
+      } else {
+        console.warn(`${key} expected ${MG.options[key][1]} but receive`, args[key]);
+      }
+    }
+  }
 
   var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type];
   merge_with_defaults(args, selected_chart.defaults, MG.defaults);
