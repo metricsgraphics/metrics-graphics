@@ -151,9 +151,9 @@ MG.data_graphic = function(args) {
   for (let key in args) {
     if (!mg_validate_option(key, args[key])) {
       if (!(key in MG.options)) {
-        console.warn(`${key} is not recognized`);
+        console.warn(`Option ${key} not recognized`);
       } else {
-        console.warn(`${key} expected ${MG.options[key][1]} but receive`, args[key]);
+        console.warn(`Option ${key} expected type ${MG.options[key][1]} but got ${args[key]} instead`);
       }
     }
   }
