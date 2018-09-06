@@ -20,7 +20,7 @@ function format_rollover_number(args) {
     };
   } else {
     num = function(d_) {
-      var fmt_string = (args.decimals ? '.' + args.decimals : '') + '%';
+      var fmt_string = (isNumeric(args.decimals) ? '.' + args.decimals : '') + '%';
       var pf = d3.format(fmt_string);
       return pf(d_);
     };
