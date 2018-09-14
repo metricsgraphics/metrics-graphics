@@ -209,14 +209,14 @@
     this.init(args);
   }
 
-  const defaults = {
-    binned: false,
-    bins: null,
-    processed_x_accessor: 'x',
-    processed_y_accessor: 'y',
-    processed_dx_accessor: 'dx',
-    bar_margin: 1
+  const options = {
+    bar_margin: [1, "number"], // the margin between bars
+    binned: [false, "boolean"], // determines whether the data is already binned
+    bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
+    processed_x_accessor: ['x', 'string'],
+    processed_y_accessor: ['y', 'string'],
+    processed_dx_accessor: ['dx', 'string']
   };
 
-  MG.register('histogram', histogram, defaults);
+  MG.register('histogram', histogram, options);
 }

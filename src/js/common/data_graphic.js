@@ -11,126 +11,155 @@ MG.deprecations = {
 MG.globals.link = false;
 MG.globals.version = "1.1";
 
+MG.options = { // <name>: [<defaultValue>, <availableType>]
+  x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  y_padding_percentage: [0.05, 'number'],                 // for categorical scales
+  y_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
+  ygroup_padding_percentage: [0.25, 'number'],            // for categorical scales
+  ygroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
+  x_padding_percentage: [0.05, 'number'],                 // for categorical scales
+  x_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
+  xgroup_padding_percentage: [0.25, 'number'],            // for categorical scales
+  xgroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
+  ygroup_accessor: [null, 'string'],
+  xgroup_accessor: [null, 'string'],
+  y_categorical_show_guides: [false, 'boolean'],
+  x_categorical_show_guide: [false, 'boolean'],
+  rotate_x_labels: [0, 'number'],
+  rotate_y_labels: [0, 'number'],
+  scales: [{}],
+  scalefns: [{}],
+  // Data
+  data: [[], ['object[]', 'number[]']], // the data object
+  missing_is_zero: [false, 'boolean'], // assume missing observations are zero
+  missing_is_hidden: [false, 'boolean'], // show missing observations as missing line segments
+  missing_is_hidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
+  utc_time: [false, 'boolean'], // determines whether to use a UTC or local time scale
+  x_accessor: ['date', 'string'], // the data element that's the x-accessor
+  x_sort: [true, 'boolean'], // determines whether to sort the x-axis' values
+  y_accessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
+  // Axes
+  axes_not_compact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
+  european_clock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
+  inflator: [10/9, 'number'], // a multiplier for inflating max_x and max_y
+  max_x: [null, ['number', Date]], // the maximum x-value
+  max_y: [null, ['number', Date]], // the maximum y-value
+  min_x: [null, ['number', Date]], // the minimum x-value
+  min_y: [null, ['number', Date]], // the minimum y-value
+  min_y_from_data: [false, 'boolean'], // starts y-axis at data's minimum value
+  show_year_markers: [false, 'boolean'], // determines whether to show year markers along the x-axis
+  show_secondary_x_label: [true, 'boolean'], // determines whether to show years along the x-axis
+  small_text: [false, 'boolean'],
+  x_extended_ticks: [false, 'boolean'], // determines whether to extend the x-axis ticks across the chart
+  x_axis: [true, 'boolean'], // determines whether to display the x-axis
+  x_label: ['', 'string'], // the label to show below the x-axis
+  xax_count: [6, 'number'], // the number of x-axis ticks
+  xax_format: [null, 'function'], // a function that formats the x-axis' labels
+  xax_tick_length: [5, 'number'], // the x-axis' tick length in pixels
+  xax_units: ['', 'string'], // a prefix symbol to be shown alongside the x-axis' labels
+  x_scale_type: ['linear', 'log'], // the x-axis scale type
+  y_axis: [true, 'boolean'], // determines whether to display the y-axis
+  x_axis_position: ['bottom'], // string
+  y_axis_position: ['left'], // string
+  y_extended_ticks: [false, 'boolean'], // determines whether to extend the y-axis ticks across the chart
+  y_label: ['', 'string'], // the label to show beside the y-axis
+  y_scale_type: ['linear', ['linear', 'log']], // the y-axis scale type
+  yax_count: [3, 'number'], // the number of y-axis ticks
+  yax_format: [null, 'function'], // a function that formats the y-axis' labels
+  yax_tick_length: [5, 'number'], // the y-axis' tick length in pixels
+  yax_units: ['', 'string'], // a prefix symbol to be shown alongside the y-axis' labels
+  yax_units_append: [false, 'boolean'], // determines whether to append rather than prepend units
+  // GraphicOptions
+  aggregate_rollover: [false, 'boolean'], // links the lines in a multi-line graphic
+  animate_on_load: [false, 'boolean'], // determines whether lines are transitioned on first-load
+  area: [true, ['boolean', 'array']], // determines whether to fill the area below the line
+  flip_area_under_y_value: [null, 'number'], // Specify a Y baseline number value to flip area under it
+  baselines: [null, 'object[]'], // horizontal lines that indicate, say, goals.
+  chart_type: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
+  color: [null, ['string', 'string[]']],
+  colors: [null, ['string', 'string[]']],
+  custom_line_color_map: [[], 'number[]'], // maps an arbitrary set of lines to colors
+  decimals: [2, 'number'], // the number of decimals to show in a rollover
+  error: ['', 'string'], // does the graphic have an error that we want to communicate to users
+  format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
+  full_height: [false, 'boolean'], // sets height to that of the parent, adjusts dimensions on window resize
+  full_width: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
+  interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
+  legend: ['', 'string[]'], // an array of literals used to label lines
+  legend_target: ['', 'string'], // the DOM element to insert the legend in
+  linked: [false, 'boolean'], // used to link multiple graphics together
+  linked_format: ['%Y-%m-%d', 'string'], // specifies the format of linked rollovers
+  list: [false, 'boolean'], // automatically maps the data to x and y accessors
+  markers: [null, 'object[]'], // vertical lines that indicate, say, milestones
+  max_data_size: [null, 'number'], // for use with custom_line_color_map
+  missing_text: [null, 'string'], // The text to display for missing graphics
+  show_missing_background: [true, 'boolean'], // Displays a background for missing graphics
+  mousemove_align: ['right', 'string'], // implemented in point.js
+  x_mouseover: [null, ['string', 'function']],
+  y_mouseover: [null, ['string', 'function']],
+  mouseover: [null, 'function'], // custom rollover function
+  mousemove: [null, 'function'], // custom rollover function
+  mouseout: [null, 'function'], // custom rollover function
+  click: [null, 'function'],
+  point_size: [2.5, 'number'], // the radius of the dots in the scatterplot
+  active_point_on_lines: [false, 'boolean'], // if set, active dot on lines will be displayed.
+  active_point_accessor: ['active', 'string'], // data accessor value to determine if a point is active or not
+  active_point_size: [2, 'number'], // the size of the dot that appears on a line when
+  points_always_visible: [false, 'boolean'], //  whether to always display data points and not just on hover
+  rollover_time_format: [null, 'string'], // custom time format for rollovers
+  show_confidence_band: [null, 'string[]'], // determines whether to show a confidence band
+  show_rollover_text: [true, 'boolean'], // determines whether to show text for a data point on rollover
+  show_tooltips: [true, 'boolean'], // determines whether to display descriptions in tooltips
+  showActivePoint: [true, 'boolean'], // If enabled show active data point information in chart
+  target: ['#viz', ['string', HTMLElement]], // the DOM element to insert the graphic in
+  transition_on_update: [true, 'boolean'], // gracefully transitions the lines on data change
+  x_rug: [false, 'boolean'], // show a rug plot along the x-axis
+  y_rug: [false, 'boolean'], // show a rug plot along the y-axis
+  mouseover_align: ['right', ['right', 'left']],
+  brush: [null, ['xy','x','y']], // add brush function
+  brushing_selection_changed: [null, 'function'], // callback function on brushing. the first parameter are the arguments that correspond to this chart, the second parameter is the range of the selection
+  zoom_target: [null, 'object'], // the zooming target of brushing function
+  click_to_zoom_out: [true, 'boolean'], // if true and the graph is currently zoomed in, clicking on the graph will zoom out
+  // Layout
+  buffer: [8, 'number'], // the padding around the graphic
+  bottom: [45, 'number'], // the size of the bottom margin
+  center_title_full_width: [false, 'boolean'], // center title over entire graph
+  height: [220, 'number'], // the graphic's height
+  left: [50, 'number'], // the size of the left margin
+  right: [10, 'number'], // the size of the right margin
+  small_height_threshold: [120, 'number'], // maximum height for a small graphic
+  small_width_threshold: [160, 'number'], // maximum width for a small graphic
+  top: [65, 'number'], // the size of the top margin
+  width: [350, 'number'], // the graphic's width
+  title_y_position: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
+  title: [null, 'string'],
+  description: [null, 'string']
+};
+
 MG.charts = {};
+
+MG.defaults = options_to_defaults(MG.options);
 
 MG.data_graphic = function(args) {
   'use strict';
-  var defaults = {
-    missing_is_zero: false,                     // if true, missing values will be treated as zeros
-    missing_is_hidden: false,                   // if true, missing values will appear as broken segments
-    missing_is_hidden_accessor: null,           // the accessor that determines the boolean value for missing data points
-    legend: '' ,                                // an array identifying the labels for a chart's lines
-    legend_target: '',                          // if set, the specified element is populated with a legend
-    error: '',                                  // if set, a graph will show an error icon and log the error to the console
-    animate_on_load: false,                     // animate lines on load
-    top: 65,                                    // the size of the top margin
-    title_y_position: 10,                       // how many pixels from the top edge (0) should we show the title at
-    center_title_full_width: false,             // center the title over the full graph (i.e. ignore left and right margins)
-    bottom: 45,                                 // the size of the bottom margin
-    right: 10,                                  // size of the right margin
-    left: 50,                                   // size of the left margin
-    buffer: 8,                                  // the buffer between the actual chart area and the margins
-    width: 350,                                 // the width of the entire graphic
-    height: 220,                                // the height of the entire graphic
-    full_width: false,                          // sets the graphic width to be the width of the parent element and resizes dynamically
-    full_height: false,                         // sets the graphic width to be the width of the parent element and resizes dynamically
-    small_height_threshold: 120,                // the height threshold for when smaller text appears
-    small_width_threshold: 160,                 // the width  threshold for when smaller text appears
-    xax_count: 6,                               // number of x axis ticks
-    xax_tick_length: 5,                         // x axis tick length
-    axes_not_compact: true,
-    yax_count: 3,                               // number of y axis ticks
-    yax_tick_length: 5,                         // y axis tick length
-    x_extended_ticks: false,                    // extends x axis ticks across chart - useful for tall charts
-    y_extended_ticks: false,                    // extends y axis ticks across chart - useful for long charts
-    y_scale_type: 'linear',
-    max_x: null,
-    max_y: null,
-    min_x: null,
-    min_y: null,                                // if set, y axis starts at an arbitrary value
-    min_y_from_data: false,                     // if set, y axis will start at minimum value rather than at 0
-    point_size: 2.5,                            // the size of the dot that appears on a line on mouse-over
-    active_point_on_lines: false,               // if set, active dot on lines will be displayed.
-    active_point_accessor: 'active',            // data accessor value to determine if a point is active or not
-    active_point_size: 2,                       // the size of the dot that appears on a line when
-    points_always_visible: false,               // whether to always display data points and not just on hover
-    x_accessor: 'date',
-    xax_units: '',
-    x_label: '',
-    x_sort: true,
-    x_axis: true,
-    y_axis: true,
-    x_axis_position: 'bottom',
-    y_axis_position: 'left',
-    x_axis_type: null,                          // TO BE INTRODUCED IN 2.10
-    y_axis_type: null,                          // TO BE INTRODUCED IN 2.10
-    ygroup_accessor: null,
-    xgroup_accessor:null,
-    y_padding_percentage: 0.05,                 // for categorical scales
-    y_outer_padding_percentage: 0.1,            // for categorical scales
-    ygroup_padding_percentage: 0.25,            // for categorical scales
-    ygroup_outer_padding_percentage: 0,         // for categorical scales
-    x_padding_percentage: 0.05,                 // for categorical scales
-    x_outer_padding_percentage: 0.1,            // for categorical scales
-    xgroup_padding_percentage: 0.25,            // for categorical scales
-    xgroup_outer_padding_percentage: 0,         // for categorical scales
-    y_categorical_show_guides: false,
-    x_categorical_show_guide: false,
-    rotate_x_labels: 0,
-    rotate_y_labels: 0,
-    y_accessor: 'value',
-    y_label: '',
-    yax_units: '',
-    yax_units_append: false,
-    x_rug: false,
-    y_rug: false,
-    mouseover_align: 'right',                   // implemented in point.js
-    x_mouseover: null,
-    y_mouseover: null,
-    transition_on_update: true,
-    mouseover: null,
-    click: null,
-    show_rollover_text: true,
-    show_confidence_band: null,                 // given [l, u] shows a confidence at each point from l to u
-    xax_format: null,                           // xax_format is a function that formats the labels for the x axis.
-    area: true,                                 // Can be also an array to select lines having areas (e.g. [1, 3])
-    flip_area_under_y_value: null,              // Specify a Y baseline number value to flip area under it.
-    chart_type: 'line',
-    data: [],
-    decimals: 2,                                // the number of decimals in any rollover
-    format: 'count',                            // format = {count, percentage}
-    inflator: 10/9,                             // for setting y axis max
-    linked: false,                              // links together all other graphs with linked:true, so rollovers in one trigger rollovers in the others
-    linked_format: '%Y-%m-%d',                  // What granularity to link on for graphs. Default is at day
-    list: false,
-    baselines: null,                            // sets the baseline lines
-    markers: null,                              // sets the marker lines
-    scalefns: {},
-    scales: {},
-    utc_time: false,
-    european_clock: false,
-    show_year_markers: false,
-    show_secondary_x_label: true,
-    target: '#viz',
-    interpolate: d3.curveCatmullRom.alpha(0),   // interpolation method to use when rendering lines; increase tension if your data is irregular and you notice artifacts
-    custom_line_color_map: [],                  // allows arbitrary mapping of lines to colors, e.g. [2,3] will map line 1 to color 2 and line 2 to color 3
-    colors: null,                               // UNIMPLEMENTED - allows direct color mapping to line colors. Will eventually require
-    max_data_size: null,                        // explicitly specify the the max number of line series, for use with custom_line_color_map
-    aggregate_rollover: false,                  // links the lines in a multi-line chart
-    show_tooltips: true,                        // if enabled, a chart's description will appear in a tooltip (requires jquery)
-    showActivePoint: true,                      // If enabled show active data point information in chart
-    brush: null,                                // add brushing function for this chart. could be set as 'xy', 'x', 'y' to restrict axis
-    zoom_target: null,                          // zooming target of brushing function. if not set the default is to zoom the current chart
-    brushing_selection_changed: null,           // callback function on brushing. the first parameter are the arguments that correspond to this chart, the second parameter is the range of the selection
-    click_to_zoom_out: true                     // if true and the graph is currently zoomed in, clicking on the graph will zoom out
-  };
 
-  MG.call_hook('global.defaults', defaults);
+  MG.call_hook('global.defaults', MG.defaults);
 
   if (!args) { args = {}; }
 
-  var selected_chart = MG.charts[args.chart_type || defaults.chart_type];
-  merge_with_defaults(args, selected_chart.defaults, defaults);
+  for (let key in args) {
+    if (!mg_validate_option(key, args[key])) {
+      if (!(key in MG.options)) {
+        console.warn(`Option ${key} not recognized`);
+      } else {
+        console.warn(`Option ${key} expected type ${MG.options[key][1]} but got ${args[key]} instead`);
+      }
+    }
+  }
+
+  var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type];
+  merge_with_defaults(args, selected_chart.defaults, MG.defaults);
 
   if (args.list) {
     args.x_accessor = 0;

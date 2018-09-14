@@ -762,39 +762,31 @@
     this.init(args);
   }
 
-  const defaults = {
-    y_padding_percentage: 0.05, // for categorical scales
-    y_outer_padding_percentage: 0.2, // for categorical scales
-    ygroup_padding_percentage: 0, // for categorical scales
-    ygroup_outer_padding_percentage: 0, // for categorical scales
-    x_padding_percentage: 0.05, // for categorical scales
-    x_outer_padding_percentage: 0.2, // for categorical scales
-    xgroup_padding_percentage: 0, // for categorical scales
-    xgroup_outer_padding_percentage: 0, // for categorical scales
-    buffer: 16,
-    y_accessor: 'factor',
-    x_accessor: 'value',
-    reference_accessor: null,
-    comparison_accessor: null,
-    secondary_label_accessor: null,
-    color_accessor: null,
-    color_type: 'category',
-    color_domain: null,
-    reference_thickness: 1,
-    comparison_width: 3,
-    comparison_thickness: null,
-    legend: false,
-    legend_target: null,
-    mouseover_align: 'right',
-    baseline_accessor: null,
-    predictor_accessor: null,
-    predictor_proportion: 5,
-    show_bar_zero: true,
-    binned: true,
-    truncate_x_labels: true,
-    truncate_y_labels: true
+  const options = {
+    buffer: [16, 'number'],
+    y_accessor: ['factor', 'string'],
+    x_accessor: ['value', 'string'],
+    reference_accessor: [null, 'string'],
+    comparison_accessor: [null, 'string'],
+    secondary_label_accessor: [null, 'string'],
+    color_accessor: [null, 'string'],
+    color_type: ['category', ['number', 'category']],
+    color_domain: [null, 'number[]'],
+    reference_thickness: [1, 'number'],
+    comparison_width: [3, 'number'],
+    comparison_thickness: [null, 'number'],
+    legend: [false, 'boolean'],
+    legend_target: [null, 'string'],
+    mouseover_align: ['right', ['right', 'left']],
+    baseline_accessor: [null, 'string'],
+    predictor_accessor: [null, 'string'],
+    predictor_proportion: [5, 'number'],
+    show_bar_zero: [true, 'boolean'],
+    binned: [true, 'boolean'],
+    truncate_x_labels: [true, 'boolean'],
+    truncate_y_labels: [true, 'boolean']
   };
 
-  MG.register('bar', barChart, defaults);
+  MG.register('bar', barChart, options);
 
 }
