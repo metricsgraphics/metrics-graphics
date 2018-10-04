@@ -20,6 +20,7 @@ const zoom_to_data_domain = (args, range) => {
     };
     args.processed.raw_data = raw_data;
   }
+  if (['x', 'y'].some(dim => range[dim][0] === range[dim][1])) return;
   // to avoid drawing outside the chart in the point chart, unnecessary in line chart.
   if (args.chart_type === 'point') {
     if (is_array_of_arrays(raw_data)) {
@@ -29,6 +30,7 @@ const zoom_to_data_domain = (args, range) => {
     } else {
       args.data = raw_data.filter(filter_in_range_data(args, range));
     }
+    if (mg_flatten_array(args.data).length === 0) return;
   }
   ['x', 'y'].forEach(dim => {
     if (dim in range) args.processed[`zoom_${dim}`] = range[dim];
