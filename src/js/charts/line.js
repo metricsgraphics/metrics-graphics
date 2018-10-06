@@ -200,7 +200,6 @@
 
       mg_color_line(args, this_path, which_line, line_id);
       mg_dashes_line(args, this_path, which_line, line_id);
-
       mg_add_line_element(args, plot, this_path, which_line);
     }
   }
