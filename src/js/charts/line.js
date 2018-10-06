@@ -153,6 +153,20 @@
     }
   }
 
+  function mg_dashes_line({dasharrays}, this_path, which_line, line_id) {
+    if (dasharrays) {
+      // for now, if args.dasharrays is not an array, then keep moving as if nothing happened.
+      // if args.dasharrays is not long enough, default to the usual line_id.
+      if (dasharrays.constructor === Array) {
+        if (dasharrays[which_line]) {
+          this_path.attr('stroke-dasharray', dasharrays[which_line]);
+        }
+      } else if (dasharrays.constructor === String) {
+        this_path.attr('stroke-dasharray', dasharrays);
+      }
+    }
+  }
+
   function mg_add_line_element({animate_on_load, data, y_accessor, target}, plot, this_path, which_line) {
     if (animate_on_load) {
       plot.data_median = d3.median(data[which_line], d => d[y_accessor]);
@@ -185,6 +199,8 @@
         .attr('class', `mg-main-line mg-line${line_id}`);
 
       mg_color_line(args, this_path, which_line, line_id);
+      mg_dashes_line(args, this_path, which_line, line_id);
+
       mg_add_line_element(args, plot, this_path, which_line);
     }
   }

@@ -79,6 +79,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   chart_type: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
   color: [null, ['string', 'string[]']],
   colors: [null, ['string', 'string[]']],
+  dasharrays: [null, ['string', 'string[]']], // determines whether to create lines with dasharray css property
   custom_line_color_map: [[], 'number[]'], // maps an arbitrary set of lines to colors
   decimals: [2, 'number'], // the number of decimals to show in a rollover
   error: ['', 'string'], // does the graphic have an error that we want to communicate to users
