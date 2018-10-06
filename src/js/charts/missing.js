@@ -1,3 +1,5 @@
+import { chart_title } from '../common/chart_title.js';
+
 {
   function mg_missing_add_text(svg, {missing_text, width, height}) {
     svg.selectAll('.mg-missing-text').data([missing_text])

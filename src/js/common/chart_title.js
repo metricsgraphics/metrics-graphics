@@ -1,4 +1,4 @@
-function chart_title(args) {
+export function chart_title(args) {
   'use strict';
 
   var svg = mg_get_svg_child_of(args.target);
@@ -63,5 +63,3 @@ function chart_title(args) {
     error(args);
   }
 }
-
-MG.chart_title = chart_title;

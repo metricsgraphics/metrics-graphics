@@ -2,21 +2,21 @@
   Record of all registered hooks.
   For internal use only.
 */
-MG._hooks = {};
+let _hooks = {};
 
 /**
   Add a hook callthrough to the stack.
 
   Hooks are executed in the order that they were registered.
 */
-MG.add_hook = function(name, func, context) {
+export function add_hook(name, func, context) {
   var hooks;
 
-  if (!MG._hooks[name]) {
-    MG._hooks[name] = [];
+  if (!_hooks[name]) {
+    hooks[name] = [];
   }
 
-  hooks = MG._hooks[name];
+  hooks = _hooks[name];
 
   var already_registered =
     hooks.filter(function(hook) {
@@ -32,15 +32,15 @@ MG.add_hook = function(name, func, context) {
     func: func,
     context: context
   });
-};
+}
 
 /**
   Execute registered hooks.
 
   Optional arguments
 */
-MG.call_hook = function(name) {
-  var hooks = MG._hooks[name],
+export function call_hook(name) {
+  var hooks = _hooks[name],
     result = [].slice.apply(arguments, [1]),
     processed;
 
@@ -60,4 +60,4 @@ MG.call_hook = function(name) {
   }
 
   return processed || result;
-};
+}

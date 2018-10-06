@@ -1,5 +1,3 @@
-{
-
 const get_extent_rect = args => {
   return d3.select(args.target).select('.mg-extent').size()
     ? d3.select(args.target).select('.mg-extent')
@@ -11,7 +9,7 @@ const get_extent_rect = args => {
       .classed('mg-extent', true);
 };
 
-const create_brushing_pattern = (args, range) => {
+export const create_brushing_pattern = (args, range) => {
   const x = range.x[0];
   const width = range.x[1] - range.x[0];
   const y = range.y[0];
@@ -24,7 +22,7 @@ const create_brushing_pattern = (args, range) => {
     .attr('opacity', 1);
 };
 
-const remove_brushing_pattern = args => {
+export const remove_brushing_pattern = args => {
   get_extent_rect(args)
     .attr('width', 0)
     .attr('height', 0)
@@ -96,7 +94,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
   });
 };
 
-const add_brush_function = args => {
+export const add_brush_function = args => {
   if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
     return console.warn('The option "brush" does not support axis type "categorical" currently.');
   if (!args.zoom_target) args.zoom_target = args;
@@ -117,9 +115,3 @@ const add_brush_function = args => {
   }
   add_event_handler_for_brush(args, args.zoom_target, brush_axis);
 };
-
-MG.add_brush_function = add_brush_function;
-MG.create_brushing_pattern = create_brushing_pattern;
-MG.remove_brushing_pattern = remove_brushing_pattern;
-
-}

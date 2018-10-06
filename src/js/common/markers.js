@@ -119,7 +119,7 @@ function mg_place_baseline_text(gb, args) {
     .text(mg_return_label);
 }
 
-function markers(args) {
+export function markers(args) {
   'use strict';
 
   var svg = mg_get_svg_child_of(args.target);
@@ -128,5 +128,3 @@ function markers(args) {
   mg_place_baselines(args, svg);
   return this;
 }
-
-MG.markers = markers;

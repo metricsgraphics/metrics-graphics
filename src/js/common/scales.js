@@ -1,4 +1,4 @@
-function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
+export function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
   args.scalefns[scalefcn_name] = function(di) {
     if (inflation === undefined) return args.scales[scale](di[accessor]);
     else return args.scales[scale](di[accessor]) + inflation;
@@ -25,7 +25,7 @@ function mg_cat_position(str, args) {
   }
 }
 
-function MGScale(args) {
+export function scale_factory(args) {
   // big wrapper around d3 scale that automatically formats & calculates scale bounds
   // according to the data, and handles other niceties.
   var scaleArgs = {};
@@ -199,8 +199,6 @@ function MGScale(args) {
   return this;
 }
 
-MG.scale_factory = MGScale;
-
 /////////////////////////////// x, x_accessor, markers, baselines, etc.
 function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // A BIT OF EXPLANATION ABOUT THIS FUNCTION
@@ -288,7 +286,7 @@ function mg_categorical_group_color_scale(args) {
       } else {}
     }
     if (args.color_accessor !== null) {
-      new MG.scale_factory(args)
+      new scale_factory(args)
         .namespace('color')
         .categoricalDomainFromData()
         .categoricalColorRange();

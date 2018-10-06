@@ -1,6 +1,7 @@
 // Gulp and plugins
 var
   gulp = require('gulp'),
+  rollup = require('rollup'),
   umd    = require('gulp-umd'),
   rimraf = require('gulp-rimraf'),
   uglify = require('gulp-uglify'),
@@ -68,35 +69,17 @@ gulp.task('clean', function () {
 //});
 
 // create 'metricsgraphics.js' and 'metricsgraphics.min.js' from source js
-gulp.task('build:js', ['clean'], function () {
-  return gulp.src(jsFiles.map(path => src + path))
-    .pipe(concat({path: 'metricsgraphics.js'}))
-    .pipe(babel({
-      presets: ['env']
-    }))
-    .pipe(umd(
-        {
-          dependencies:function() {
-            return [{
-              name: 'd3',
-              amd: 'd3',
-              cjs: 'd3',
-              global: 'd3',
-              param: 'd3'
-            }];
-          },
-          exports: function() {
-            return "MG";
-          },
-          namespace: function() {
-            return "MG";
-          }
-        }
-    ))
-    .pipe(gulp.dest(dist))
-    .pipe(rename('metricsgraphics.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest(dist));
+gulp.task('build:js', function () {
+  return rollup.rollup({
+    input: 'src/js/MG.js',
+  }).then(bundle => {
+    return bundle.write({
+      file: './dist/metricsgraphics.js',
+      format: 'umd',
+      name: 'MG',
+      sourcemap: true
+    });
+  });
 });
 
 // Check source js files with jshint
@@ -123,9 +106,9 @@ var roots = ['dist', 'examples', 'src', 'bower_components'],
         return root + '/**/*';
     });
 
-gulp.task('dev:watch', function() { return gulp.watch(watchables, ['jshint', 'dev:reload']); });
+gulp.task('dev:watch', function() { return gulp.watch(watchables, ['jshint', 'build:js', 'dev:reload']); });
 gulp.task('dev:reload', function() { return gulp.src(watchables).pipe(connect.reload()); });
-gulp.task('serve', ['jshint', 'dev:serve', 'dev:watch']);
+gulp.task('serve', ['jshint', 'build:js', 'dev:serve', 'dev:watch']);
 
 gulp.task('dev:serve', function() {
     connect.server({

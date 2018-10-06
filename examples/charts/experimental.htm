@@ -574,75 +574,6 @@ MG.data_graphic({
             </div>
 
             <div class='row trunk-section'>
-                <div class='col-lg-7 text-center' id='table1'></div>
-                <div class='col-lg-5'>
-
-<pre><code class='javascript'>var table_data = [
-    { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
-    { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
-    { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
-    { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
-    { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
-];
-
-var table1 = MG.data_table({
-        title: "A Data Table",
-        description: "A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.",
-        data: table_data,
-        show_tooltips: true
-    })
-    .target('#table1')
-    .title({
-        accessor: 'geo',
-        secondary_accessor:'year',
-        label: 'Country',
-        description: "These are arbitrary countries with arbitrary years underneath."
-    })
-    .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
-    .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
-    .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
-    .number({
-        accessor: 'total',
-        label: 'Volume',
-        format: 'count', currency: '$',
-        width: 100,
-        font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
-        color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
-    })
-    .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
-    .text({ accessor: 'description', width: 240, font_style: 'italic' })
-    .display();</code></pre>
-
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
-                <div class='col-lg-7 text-center' id='buttons'></div>
-                <div class='col-lg-5'>
-
-<pre><code class='javascript'>var bdata = [
-    {a:'apples', b:'quartz'},
-    {a:'bananas', b:'pyrite'},
-    {a:'durian', b:'obsidian'}
-];
-
-var resolution_features = ['weekly', 'monthly'];
-
-var buttons = MG.button_layout('#buttons')
-    .data(bdata)
-    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
-    .button('a', 'Fruit')
-    .button('b', 'Rock')
-    .callback(function(){
-        console.log('made it');
-        return false;
-    })
-    .display();</code></pre>
-
-                </div>
-            </div>
-
-            <div class='row trunk-section'>
                 <div class='col-lg-7 text-center'>
                     <div class="tooltip"></div>
                     <style>
@@ -1033,17 +964,6 @@ var bdata = [
 ];
 
 var resolution_features = ['weekly', 'monthly'];
-
-var buttons = MG.button_layout('#buttons')
-    .data(bdata)
-    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
-    .button('a', 'Fruit')
-    .button('b', 'Rock')
-    .callback(function(){
-        console.log('made it');
-        return false;
-    })
-    .display();
 
 addScatterplotSizeAndColor(theme);
 

@@ -1,3 +1,7 @@
+import { merge_with_defaults } from '../misc/options.js';
+import { chart_title } from './chart_title.js';
+import { get_width, get_height } from '../misc/utility.js';
+
 function mg_merge_args_with_defaults(args) {
   var defaults = {
     target: null,
@@ -236,7 +240,7 @@ function mg_barchart_extrapolate_group_and_thickness_from_height(args) {
   // we need to set args.bar_thickness, group_height
 }
 
-function init(args) {
+export function init(args) {
   'use strict';
   args = arguments[0];
   args = mg_merge_args_with_defaults(args);
@@ -269,5 +273,3 @@ function init(args) {
 
   return this;
 }
-
-MG.init = init;

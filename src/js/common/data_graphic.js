@@ -1,5 +1,13 @@
-MG.globals = {};
-MG.deprecations = {
+import { merge_with_defaults, validate_option, options_to_defaults } from '../misc/options.js';
+import { call_hook } from './hooks.js';
+import { CHARTS, OPTIONS } from './charts.js';
+
+export const globals = {
+  link: false,
+  version: "1.1"
+};
+
+export let deprecations = {
   rollover_callback: { replacement: 'mouseover', version: '2.0' },
   rollout_callback: { replacement: 'mouseout', version: '2.0' },
   x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
@@ -8,10 +16,8 @@ MG.deprecations = {
   xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
   interpolate_tension: { replacement: 'interpolate', version: '2.10' }
 };
-MG.globals.link = false;
-MG.globals.version = "1.1";
 
-MG.options = { // <name>: [<defaultValue>, <availableType>]
+export let options = { // <name>: [<defaultValue>, <availableType>]
   x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_padding_percentage: [0.05, 'number'],                 // for categorical scales
@@ -137,20 +143,20 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   description: [null, 'string']
 };
 
-MG.charts = {};
+let charts = {};
 
-MG.defaults = options_to_defaults(MG.options);
+let defaults = options_to_defaults(options);
 
-MG.data_graphic = function(args) {
+export function data_graphic(args) {
   'use strict';
 
-  MG.call_hook('global.defaults', MG.defaults);
+  call_hook('global.defaults', defaults);
 
   if (!args) { args = {}; }
 
   for (let key in args) {
-    if (!mg_validate_option(key, args[key])) {
-      if (!(key in MG.options)) {
+    if (!validate_option(options, key, args[key])) {
+      if (!(key in options)) {
         console.warn(`Option ${key} not recognized`);
       } else {
         console.warn(`Option ${key} expected type ${MG.options[key][1]} but got ${args[key]} instead`);
@@ -158,8 +164,8 @@ MG.data_graphic = function(args) {
     }
   }
 
-  var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type];
-  merge_with_defaults(args, selected_chart.defaults, MG.defaults);
+  var selected_chart = CHARTS[args.chart_type || defaults.chart_type];
+  merge_with_defaults(args, selected_chart.defaults, defaults);
 
   if (args.list) {
     args.x_accessor = 0;
@@ -167,9 +173,9 @@ MG.data_graphic = function(args) {
   }
 
   // check for deprecated parameters
-  for (var key in MG.deprecations) {
+  for (var key in deprecations) {
     if (args.hasOwnProperty(key)) {
-      var deprecation = MG.deprecations[key],
+      var deprecation = deprecations[key],
         message = 'Use of `args.' + key + '` has been deprecated',
         replacement = deprecation.replacement,
         version;
@@ -197,9 +203,9 @@ MG.data_graphic = function(args) {
     }
   }
 
-  MG.call_hook('global.before_init', args);
+  call_hook('global.before_init', args);
 
   new selected_chart.descriptor(args);
 
   return args.data;
-};
+}

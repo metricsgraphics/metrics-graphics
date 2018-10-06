@@ -684,7 +684,7 @@ mgDrawAxis.numerical = function (args, axisArgs) {
   return this;
 };
 
-function axisFactory (args) {
+export function axis_factory(args) {
   var axisArgs = {};
   axisArgs.type = 'numerical';
 
@@ -728,8 +728,6 @@ function axisFactory (args) {
 
 }
 
-MG.axis_factory = axisFactory;
-
 /* ================================================================================ */
 /* ================================================================================ */
 /* ================================================================================ */
@@ -754,8 +752,6 @@ function y_rug (args) {
 
   mg_add_color_accessor_to_rug(rug, args, 'mg-y-rug-mono');
 }
-
-MG.y_rug = y_rug;
 
 function mg_change_y_extents_for_bars (args, my) {
   if (args.chart_type === 'bar') {
@@ -980,8 +976,6 @@ function y_axis (args) {
   return this;
 }
 
-MG.y_axis = y_axis;
-
 function mg_add_categorical_labels (args) {
   var svg = mg_get_svg_child_of(args.target);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
@@ -1068,5 +1062,3 @@ function y_axis_categorical (args) {
   if (args.y_categorical_show_guides) mg_y_categorical_show_guides(args);
   return this;
 }
-
-MG.y_axis_categorical = y_axis_categorical;

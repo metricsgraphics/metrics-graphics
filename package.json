@@ -61,6 +61,7 @@
     "jshint": "^2.9.5",
     "qunitjs": "^2.0.0",
     "require-dir": "^1.0.0",
+    "rollup": "^0.65.2",
     "testem": "^2.0.0"
   }
 }

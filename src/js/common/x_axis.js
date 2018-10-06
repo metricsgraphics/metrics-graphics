@@ -1,3 +1,5 @@
+import { mg_add_scale_function } from './scales.js';
+
 function x_rug(args) {
   'use strict';
 
@@ -18,8 +20,6 @@ function x_rug(args) {
 
   mg_add_color_accessor_to_rug(rug, args, 'mg-x-rug-mono');
 }
-
-MG.x_rug = x_rug;
 
 function mg_add_processed_object(args) {
   if (!args.processed) {

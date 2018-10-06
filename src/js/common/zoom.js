@@ -1,4 +1,5 @@
-{
+import { is_array_of_arrays } from '../misc/utility.js';
+import { create_brushing_pattern, remove_brushing_pattern } from './brush.js';
 
 const filter_in_range_data = (args, range) => {
   const is_data_in_range = (data, range) => {
@@ -10,7 +11,7 @@ const filter_in_range_data = (args, range) => {
 
 // the range here is the range of data
 // range is an object with two optional attributes of x,y, respectively represent ranges on two axes
-const zoom_to_data_domain = (args, range) => {
+export const zoom_to_data_domain = (args, range) => {
   const raw_data = args.processed.raw_data || args.data;
   // store raw data and raw domain to in order to zoom back to the initial state
   if (!('raw_data' in args.processed)) {
@@ -36,15 +37,15 @@ const zoom_to_data_domain = (args, range) => {
   });
   if (args.processed.subplot) {
     if (range !== args.processed.raw_domain) {
-      MG.create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
+      create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
     } else {
-      MG.remove_brushing_pattern(args.processed.subplot);
+      remove_brushing_pattern(args.processed.subplot);
     }
   }
   new MG.charts[args.chart_type || defaults.chart_type].descriptor(args);
 };
 
-const zoom_to_raw_range = args => {
+export const zoom_to_raw_range = args => {
   if (!('raw_domain' in args.processed)) return;
   zoom_to_data_domain(args, args.processed.raw_domain);
   delete args.processed.raw_domain;
@@ -53,7 +54,7 @@ const zoom_to_raw_range = args => {
 
 // converts the range of selection into the range of data that we can use to
 // zoom the chart to a particular region
-const convert_range_to_domain = (args, range) =>
+export const convert_range_to_domain = (args, range) =>
   ['x', 'y'].reduce((domain, dim) => {
     if (!(dim in range)) return domain;
     domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v));
@@ -61,7 +62,7 @@ const convert_range_to_domain = (args, range) =>
     return domain;
   }, {});
 
-const convert_domain_to_range = (args, domain) =>
+export const convert_domain_to_range = (args, domain) =>
   ['x', 'y'].reduce((range, dim) => {
     if (!(dim in domain)) return range;
     range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v));
@@ -70,14 +71,7 @@ const convert_domain_to_range = (args, domain) =>
   }, {});
 
 // the range here is the range of selection
-const zoom_to_data_range = (args, range) => {
+export const zoom_to_data_range = (args, range) => {
   const domain = convert_range_to_domain(args, range);
   zoom_to_data_domain(args, domain);
 };
-
-MG.convert_range_to_domain = convert_range_to_domain;
-MG.zoom_to_data_domain = zoom_to_data_domain;
-MG.zoom_to_data_range = zoom_to_data_range;
-MG.zoom_to_raw_range = zoom_to_raw_range;
-
-}
