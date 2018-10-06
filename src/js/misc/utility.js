@@ -1,4 +1,5 @@
 //a set of helper functions, some that we've written, others that we've borrowed
+import { is_date, is_object } from './types.js';
 
 export const convert = {
   date: function(data, accessor, time_format) {
@@ -25,65 +26,11 @@ export function time_format(utc, specifier) {
   return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
 }
 
-export function mg_get_rollover_time_format(args) {
-  // if a rollover time format is defined, use that
-  if (args.rollover_time_format) {
-    return MG.time_format(args.utc_time, args.rollover_time_format);
-  }
-
-  switch (args.processed.x_time_frame) {
-    case 'millis':
-      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
-    case 'seconds':
-      return MG.time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
-    case 'less-than-a-day':
-      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-    case 'four-days':
-      return MG.time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
-  }
-
-  // default
-  return MG.time_format(args.utc_time, '%b %e, %Y');
-}
-
 export function mg_data_in_plot_bounds(datum, args) {
   return datum[args.x_accessor] >= args.processed.min_x &&
     datum[args.x_accessor] <= args.processed.max_x &&
     datum[args.y_accessor] >= args.processed.min_y &&
     datum[args.y_accessor] <= args.processed.max_y;
-}
-
-export function is_function(thing) {
-  return Object.prototype.toString.call(thing) === '[object Function]';
-}
-
-export function is_empty_array(thing) {
-  return Array.isArray(thing) && thing.length === 0;
-}
-
-export function is_object(thing) {
-  return Object.prototype.toString.call(thing) === '[object Object]';
-}
-
-export function is_array_of_arrays(data) {
-  var all_elements = data.map(function(d) {
-    return Array.isArray(d) === true && d.length > 0;
-  });
-
-  return d3.sum(all_elements) === data.length;
-}
-
-export function is_array_of_objects(data) {
-  // is every element of data an object?
-  var all_elements = data.map(function(d) {
-    return is_object(d) === true;
-  });
-
-  return d3.sum(all_elements) === data.length;
-}
-
-export function is_array_of_objects_or_empty(data) {
-  return is_empty_array(data) || is_array_of_objects(data);
 }
 
 export function pluck(arr, accessor) {
@@ -305,7 +252,7 @@ export function mg_infer_type(args, ns) {
 
     testPoint = testPoint[0][args[ns + '_accessor']];
     return typeof testPoint === 'string' ? 'categorical' : 'numerical';
-  }
+}
 
 export function mg_get_svg_child_of(selector_or_node) {
   return d3.select(selector_or_node).select('svg');
@@ -361,38 +308,6 @@ export function get_height(target) {
   return get_pixel_dimension(target, 'height');
 }
 
-export function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-export function compare_type(type, value) {
-  if (value == null) return true; // allow null or undefined
-  if (typeof type === 'string') {
-    if (type.substr(-2) === '[]') {
-      if (!Array.isArray(value)) return false;
-      return value.every(i => compare_type(type.slice(0, -2), i));
-    }
-    return typeof value === type
-      || value === type
-      || type.length === 0
-      || type === 'array' && Array.isArray(value);
-  }
-  if (typeof type === 'function') return value === type || value instanceof type;
-  return Array.isArray(type) && !!~type.findIndex(i => compare_type(i, value));
-}
-
-export function mg_is_date(obj) {
-  return Object.prototype.toString.call(obj) === '[object Date]';
-}
-
-export function mg_is_object(obj) {
-  return Object.prototype.toString.call(obj) === '[object Object]';
-}
-
-export function mg_is_function(obj) {
-  return Object.prototype.toString.call(obj) === '[object Function]';
-}
-
 // deep copy
 // http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 export function clone(obj) {
@@ -402,7 +317,7 @@ export function clone(obj) {
   if (null === obj || "object" !== typeof obj) return obj;
 
   // Handle Date
-  if (mg_is_date(obj)) {
+  if (is_date(obj)) {
     copy = new Date();
     copy.setTime(obj.getTime());
     return copy;
@@ -418,7 +333,7 @@ export function clone(obj) {
   }
 
   // Handle Object
-  if (mg_is_object(obj)) {
+  if (is_object(obj)) {
     copy = {};
     for (var attr in obj) {
       if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);

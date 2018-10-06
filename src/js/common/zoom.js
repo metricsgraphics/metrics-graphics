@@ -1,4 +1,4 @@
-import { is_array_of_arrays } from '../misc/utility.js';
+import { is_array_of_arrays } from '../misc/types.js';
 import { create_brushing_pattern, remove_brushing_pattern } from './brush.js';
 
 const filter_in_range_data = (args, range) => {

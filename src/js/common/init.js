@@ -1,6 +1,8 @@
 import { merge_with_defaults } from '../misc/options.js';
+import { is_date } from '../misc/types.js';
+import { get_width, get_height, mg_flatten_array, mg_get_left, mg_get_top, mg_get_svg_child_of, mg_target_ref } from '../misc/utility.js';
 import { chart_title } from './chart_title.js';
-import { get_width, get_height } from '../misc/utility.js';
+import { mg_default_xax_format } from './x_axis.js';
 
 function mg_merge_args_with_defaults(args) {
   var defaults = {
@@ -23,7 +25,7 @@ function mg_merge_args_with_defaults(args) {
 
 function mg_is_time_series(args) {
   var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
-  args.time_series = mg_is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
+  args.time_series = is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
 }
 
 function mg_init_compute_width(args) {

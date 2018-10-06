@@ -1,3 +1,6 @@
+import { time_format } from './utility.js';
+import { is_numeric } from './types.js';
+
 function format_rollover_number(args) {
   var num;
   if (args.format === 'count') {
@@ -20,7 +23,7 @@ function format_rollover_number(args) {
     };
   } else {
     num = function(d_) {
-      var fmt_string = (isNumeric(args.decimals) ? '.' + args.decimals : '') + '%';
+      var fmt_string = (is_numeric(args.decimals) ? '.' + args.decimals : '') + '%';
       var pf = d3.format(fmt_string);
       return pf(d_);
     };
@@ -106,6 +109,27 @@ function mg_format_x_rollover(args, fmt, d) {
   return formatted_x;
 }
 
+function mg_get_rollover_time_format(args) {
+  // if a rollover time format is defined, use that
+  if (args.rollover_time_format) {
+    return time_format(args.utc_time, args.rollover_time_format);
+  }
+
+  switch (args.processed.x_time_frame) {
+    case 'millis':
+      return time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+    case 'seconds':
+      return time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
+    case 'less-than-a-day':
+      return time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+    case 'four-days':
+      return time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+  }
+
+  // default
+  return time_format(args.utc_time, '%b %e, %Y');
+}
+
 function mg_format_data_for_mouseover(args, d, mouseover_fcn, accessor, check_time) {
   var formatted_data, formatter;
   var time_fmt = mg_get_rollover_time_format(args);
@@ -132,16 +156,14 @@ function mg_format_number_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, false);
 }
 
-function mg_format_x_mouseover(args, d) {
+export function mg_format_x_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.x_accessor, args.time_series);
 }
 
-function mg_format_y_mouseover(args, d) {
+export function mg_format_y_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.y_accessor, false);
 }
 
-function mg_format_x_aggregate_mouseover(args, d) {
+export function mg_format_x_aggregate_mouseover(args, d) {
   return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series);
 }
-
-MG.format_rollover_number = format_rollover_number;

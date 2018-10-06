@@ -1,3 +1,5 @@
+import { get_width } from '../misc/utility.js';
+
 function MG_WindowResizeTracker() {
   var targets = [];
 
@@ -70,7 +72,7 @@ function MG_WindowResizeTracker() {
 
 var mg_window_resize_tracker = new MG_WindowResizeTracker();
 
-function mg_window_listeners(args) {
+export function mg_window_listeners(args) {
   mg_if_aspect_ratio_resize_svg(args);
 }
 

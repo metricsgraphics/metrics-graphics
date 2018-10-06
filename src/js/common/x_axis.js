@@ -1,6 +1,8 @@
 import { mg_add_scale_function } from './scales.js';
+import { is_date } from '../misc/types.js';
+import { clone, mg_elements_are_overlapping, mg_flatten_array, mg_add_color_accessor_to_rug, mg_selectAll_and_remove } from '../misc/utility.js';
 
-function x_rug(args) {
+export function x_rug(args) {
   'use strict';
 
   if(!args.x_rug) {
@@ -45,13 +47,11 @@ function x_axis(args) {
 
   mg_add_x_ticks(g, args);
   mg_add_x_tick_labels(g, args);
-  if (args.x_label) { mg_add_x_label(g, args); }
+  if (args.x_label) { add_x_label(g, args); }
   if (args.x_rug) { x_rug(args); }
 
   return this;
 }
-
-MG.x_axis = x_axis;
 
 function x_axis_categorical(args) {
   var svg = mg_get_svg_child_of(args.target);
@@ -97,8 +97,6 @@ function mg_add_x_axis_categorical_labels(g, args, additional_buffer) {
   }
   mg_rotate_labels(labels, args.rotate_x_labels);
 }
-
-MG.x_axis_categorical = x_axis_categorical;
 
 function mg_point_add_color_scale(args) {
   var color_domain, color_range;
@@ -192,7 +190,7 @@ function mg_get_size_range(args) {
   return size_range;
 }
 
-function mg_add_x_label(g, args) {
+export function add_x_label(g, args) {
   if (args.x_label) {
     g.append('text')
       .attr('class', 'label')
@@ -304,7 +302,7 @@ function mg_process_time_format(args) {
   }
 }
 
-function mg_default_xax_format(args) {
+export function mg_default_xax_format(args) {
   if (args.xax_format) {
     return args.xax_format;
   }
@@ -319,7 +317,7 @@ function mg_default_xax_format(args) {
   return function(d) {
     mg_process_time_format(args);
 
-    if (mg_is_date(test_point_x)) {
+    if (is_date(test_point_x)) {
       return args.processed.main_x_time_format(new Date(d));
     } else if (typeof test_point_x === 'number') {
       var is_float = d % 1 !== 0;
@@ -562,8 +560,8 @@ function mg_min_max_x_for_bars(mx, args, data) {
 }
 
 function mg_min_max_x_for_dates(mx) {
-  var yesterday = MG.clone(mx.min).setDate(mx.min.getDate() - 1);
-  var tomorrow = MG.clone(mx.min).setDate(mx.min.getDate() + 1);
+  var yesterday = clone(mx.min).setDate(mx.min.getDate() - 1);
+  var tomorrow = clone(mx.min).setDate(mx.min.getDate() + 1);
   mx.min = yesterday;
   mx.max = tomorrow;
 }

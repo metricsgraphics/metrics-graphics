@@ -1,3 +1,6 @@
+import { clone } from './utility.js';
+import { is_array_of_arrays, is_array_of_objects, is_array_of_objects_or_empty, is_date } from './types.js';
+
 function mg_process_scale_ticks(args, axis) {
   var accessor;
   var scale_ticks;
@@ -58,11 +61,11 @@ function mg_process_scale_ticks(args, axis) {
   }
 }
 
-function raw_data_transformation(args) {
+export function raw_data_transformation(args) {
   'use strict';
 
   // dupe our data so we can modify it without adverse effect
-  args.data = MG.clone(args.data);
+  args.data = clone(args.data);
 
   // we need to account for a few data format cases:
   // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
@@ -95,7 +98,7 @@ function raw_data_transformation(args) {
       args.data = [args.data];
     }
   } else {
-    if (!(mg_is_array(args.data[0]))) {
+    if (!(Array.isArray(args.data[0]))) {
       args.data = [args.data];
     }
   }
@@ -128,11 +131,11 @@ function raw_data_transformation(args) {
 
 function mg_process_multiple_accessors(args, which_accessor) {
   // turns an array of accessors into ...
-  if (mg_is_array(args[which_accessor])) {
+  if (Array.isArray(args[which_accessor])) {
     args.data = args.data.map(function(_d) {
       return args[which_accessor].map(function(ya) {
         return _d.map(function(di) {
-          di = MG.clone(di);
+          di = clone(di);
 
           if (di[ya] === undefined) {
             return undefined;
@@ -157,16 +160,14 @@ function mg_process_multiple_y_accessors(args) {
   mg_process_multiple_accessors(args, 'y_accessor');
 }
 
-MG.raw_data_transformation = raw_data_transformation;
-
-function process_line(args) {
+export function process_line(args) {
   'use strict';
 
   var time_frame;
 
   // do we have a time-series?
   var is_time_series = d3.sum(args.data.map(function(series) {
-    return series.length > 0 && mg_is_date(series[0][args.x_accessor]);
+    return series.length > 0 && is_date(series[0][args.x_accessor]);
   })) > 0;
 
   // are we replacing missing y values with zeros?
@@ -184,7 +185,7 @@ function process_line(args) {
       var processed_data = [];
 
       // we'll be starting from the day after our first date
-      var start_date = MG.clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
+      var start_date = clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
 
       // if we've set a max_x, add data points up to there
       var from = (args.min_x) ? args.min_x : start_date;
@@ -199,7 +200,7 @@ function process_line(args) {
 
           // add the first date item, we'll be starting from the day after our first date
           if (Date.parse(d) === Date.parse(new Date(start_date))) {
-            processed_data.push(MG.clone(args.data[i][0]));
+            processed_data.push(clone(args.data[i][0]));
           }
 
           // check to see if we already have this date in our data object
@@ -234,7 +235,7 @@ function process_line(args) {
         }
       } else {
         for (var j = 0; j < args.data[i].length; j += 1) {
-          var obj = MG.clone(args.data[i][j]);
+          var obj = clone(args.data[i][j]);
           obj['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
           processed_data.push(obj);
         }
@@ -247,8 +248,6 @@ function process_line(args) {
 
   return this;
 }
-
-MG.process_line = process_line;
 
 function process_histogram(args) {
   'use strict';
@@ -330,8 +329,6 @@ function process_histogram(args) {
   return this;
 }
 
-MG.process_histogram = process_histogram;
-
 // for use with bar charts, etc.
 function process_categorical_variables(args) {
   'use strict';
@@ -345,9 +342,7 @@ function process_categorical_variables(args) {
   return this;
 }
 
-MG.process_categorical_variables = process_categorical_variables;
-
-function process_point(args) {
+export function process_point(args) {
   'use strict';
 
   var data = args.data[0];
@@ -364,5 +359,3 @@ function process_point(args) {
 
   return this;
 }
-
-MG.process_point = process_point;

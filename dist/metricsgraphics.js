@@ -4,6 +4,63 @@
   (global.MG = factory());
 }(this, (function () { 'use strict';
 
+  function is_numeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  function compare_type(type, value) {
+    if (value == null) return true; // allow null or undefined
+    if (typeof type === 'string') {
+      if (type.substr(-2) === '[]') {
+        if (!Array.isArray(value)) return false;
+        return value.every(i => compare_type(type.slice(0, -2), i));
+      }
+      return typeof value === type
+        || value === type
+        || type.length === 0
+        || type === 'array' && Array.isArray(value);
+    }
+    if (typeof type === 'function') return value === type || value instanceof type;
+    return Array.isArray(type) && !!~type.findIndex(i => compare_type(i, value));
+  }
+
+  function is_date(obj) {
+    return Object.prototype.toString.call(obj) === '[object Date]';
+  }
+
+  function is_function$1(obj) {
+    return Object.prototype.toString.call(obj) === '[object Function]';
+  }
+
+  function is_empty_array(thing) {
+    return Array.isArray(thing) && thing.length === 0;
+  }
+
+  function is_object(thing) {
+    return Object.prototype.toString.call(thing) === '[object Object]';
+  }
+
+  function is_array_of_arrays(data) {
+    var all_elements = data.map(function(d) {
+      return Array.isArray(d) === true && d.length > 0;
+    });
+
+    return d3.sum(all_elements) === data.length;
+  }
+
+  function is_array_of_objects(data) {
+    // is every element of data an object?
+    var all_elements = data.map(function(d) {
+      return is_object(d) === true;
+    });
+
+    return d3.sum(all_elements) === data.length;
+  }
+
+  function is_array_of_objects_or_empty(data) {
+    return is_empty_array(data) || is_array_of_objects(data);
+  }
+
   //a set of helper functions, some that we've written, others that we've borrowed
 
   const convert = {
@@ -31,25 +88,128 @@
     return utc ? d3.utcFormat(specifier) : d3.timeFormat(specifier);
   }
 
-  function is_array_of_arrays(data) {
-    var all_elements = data.map(function(d) {
-      return Array.isArray(d) === true && d.length > 0;
-    });
-
-    return d3.sum(all_elements) === data.length;
+  function mg_data_in_plot_bounds(datum, args) {
+    return datum[args.x_accessor] >= args.processed.min_x &&
+      datum[args.x_accessor] <= args.processed.max_x &&
+      datum[args.y_accessor] >= args.processed.min_y &&
+      datum[args.y_accessor] <= args.processed.max_y;
   }
 
-  function mg_selectAll_and_remove$1(svg, cl) {
+  function mg_get_bottom$1(args) {
+    return args.height - args.bottom;
+  }
+
+  function mg_get_plot_bottom$1(args) {
+    // returns the pixel location of the bottom side of the plot area.
+    return mg_get_bottom$1(args) - args.buffer;
+  }
+
+  function mg_get_top$1(args) {
+    return args.top;
+  }
+
+  function mg_get_plot_top$1(args) {
+    // returns the pixel location of the top side of the plot area.
+    return mg_get_top$1(args) + args.buffer;
+  }
+
+  function mg_get_left(args) {
+    return args.left;
+  }
+
+  function mg_get_plot_left$1(args) {
+    // returns the pixel location of the left side of the plot area.
+    return mg_get_left(args) + args.buffer;
+  }
+
+  function mg_get_right$1(args) {
+    return args.width - args.right;
+  }
+
+  function mg_get_plot_right$1(args) {
+    // returns the pixel location of the right side of the plot area.
+    return mg_get_right$1(args) - args.buffer;
+  }
+
+  function mg_selectAll_and_remove(svg, cl) {
     svg.selectAll(cl).remove();
   }
 
-  function mg_infer_type$1(args, ns) {
+  function mg_add_g$1(svg, cl) {
+    return svg.append('g').classed(cl, true);
+  }
+
+  function mg_add_color_accessor_to_rug$1(rug, args, rug_mono_class) {
+    if (args.color_accessor) {
+      rug.attr('stroke', args.scalefns.colorf);
+      rug.classed(rug_mono_class, false);
+    } else {
+      rug.attr('stroke', null);
+      rug.classed(rug_mono_class, true);
+    }
+  }
+
+  //////////////////////////////////////////////////
+
+  function mg_elements_are_overlapping(labels) {
+    labels = labels.node();
+    if (!labels) {
+      return false;
+    }
+
+    for (var i = 0; i < labels.length; i++) {
+      if (mg_is_horizontally_overlapping(labels[i], labels)) return true;
+    }
+
+    return false;
+  }
+
+  function mg_prevent_horizontal_overlap(labels, args) {
+    if (!labels || labels.length == 1) {
+      return;
+    }
+
+    //see if each of our labels overlaps any of the other labels
+    for (var i = 0; i < labels.length; i++) {
+      //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+      if (mg_is_horizontally_overlapping(labels[i], labels)) {
+        var node = d3.select(labels[i]);
+        var newY = +node.attr('y');
+        if (newY + 8 >= args.top) {
+          newY = args.top - 16;
+        }
+        node.attr('y', newY);
+      }
+    }
+  }
+
+  function mg_is_horizontally_overlapping(element, labels) {
+    var element_bbox = element.getBoundingClientRect();
+
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i] == element) {
+        continue;
+      }
+
+      //check to see if this label overlaps with any of the other labels
+      var sibling_bbox = labels[i].getBoundingClientRect();
+      if (element_bbox.top === sibling_bbox.top &&
+        !(sibling_bbox.left > element_bbox.right || sibling_bbox.right < element_bbox.left)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function mg_infer_type(args, ns) {
       // must return categorical or numerical.
       var testPoint = mg_flatten_array$1(args.data);
 
       testPoint = testPoint[0][args[ns + '_accessor']];
       return typeof testPoint === 'string' ? 'categorical' : 'numerical';
-    }
+  }
 
   function mg_get_svg_child_of$1(selector_or_node) {
     return d3.select(selector_or_node).select('svg');
@@ -58,6 +218,39 @@
   function mg_flatten_array$1(arr) {
     var flat_data = [];
     return flat_data.concat.apply(flat_data, arr);
+  }
+
+  function mg_next_id() {
+    if (typeof MG._next_elem_id === 'undefined') {
+      MG._next_elem_id = 0;
+    }
+
+    return 'mg-' + (MG._next_elem_id++);
+  }
+
+  function mg_target_ref(target) {
+    if (typeof target === 'string') {
+      return mg_normalize(target);
+
+    } else if (target instanceof window.HTMLElement) {
+      var target_ref = target.getAttribute('data-mg-uid');
+      if (!target_ref) {
+        target_ref = mg_next_id();
+        target.setAttribute('data-mg-uid', target_ref);
+      }
+
+      return target_ref;
+
+    } else {
+      console.warn('The specified target should be a string or an HTMLElement.', target);
+      return mg_normalize(target);
+    }
+  }
+
+  function mg_normalize(string) {
+    return string
+      .replace(/[^a-zA-Z0-9 _-]+/g, '')
+      .replace(/ +?/g, '');
   }
 
   function get_pixel_dimension(target, dimension) {
@@ -72,20 +265,40 @@
     return get_pixel_dimension(target, 'height');
   }
 
-  function compare_type(type, value) {
-    if (value == null) return true; // allow null or undefined
-    if (typeof type === 'string') {
-      if (type.substr(-2) === '[]') {
-        if (!Array.isArray(value)) return false;
-        return value.every(i => compare_type(type.slice(0, -2), i));
-      }
-      return typeof value === type
-        || value === type
-        || type.length === 0
-        || type === 'array' && Array.isArray(value);
+  // deep copy
+  // http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+  function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null === obj || "object" !== typeof obj) return obj;
+
+    // Handle Date
+    if (is_date(obj)) {
+      copy = new Date();
+      copy.setTime(obj.getTime());
+      return copy;
     }
-    if (typeof type === 'function') return value === type || value instanceof type;
-    return Array.isArray(type) && !!~type.findIndex(i => compare_type(i, value));
+
+    // Handle Array
+    if (Array.isArray(obj)) {
+      copy = [];
+      for (var i = 0, len = obj.length; i < len; i++) {
+        copy[i] = clone(obj[i]);
+      }
+      return copy;
+    }
+
+    // Handle Object
+    if (is_object(obj)) {
+      copy = {};
+      for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+      }
+      return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
   // give us the difference of two int arrays
@@ -109,7 +322,7 @@
     @author Dan de Havilland (github.com/dandehavilland)
     @date 2014-12-02
   */
-  function truncate_text(textObj, textString, width) {
+  function truncate_text$1(textObj, textString, width) {
     var bbox,
       position = 0;
 
@@ -180,7 +393,7 @@
 
   function mg_in_range(args) {
     return function(d) {
-      return (args.scales.X(d[args.x_accessor]) >= mg_get_plot_left(args)) && (args.scales.X(d[args.x_accessor]) <= mg_get_plot_right(args));
+      return (args.scales.X(d[args.x_accessor]) >= mg_get_plot_left$1(args)) && (args.scales.X(d[args.x_accessor]) <= mg_get_plot_right$1(args));
     };
   }
 
@@ -230,7 +443,7 @@
       .attr('x1', x_pos_fixed)
       .attr('x2', x_pos_fixed)
       .attr('y1', args.top)
-      .attr('y2', mg_get_plot_bottom(args))
+      .attr('y2', mg_get_plot_bottom$1(args))
       .attr('class', function(d) {
         return d.lineclass;
       })
@@ -246,7 +459,7 @@
           return d.textclass || ''; })
         .classed('mg-marker-text', true)
         .attr('x', mg_x_position(args))
-        .attr('y', args.x_axis_position === 'bottom' ? mg_get_top(args) * 0.95 : mg_get_bottom(args) + args.buffer)
+        .attr('y', args.x_axis_position === 'bottom' ? mg_get_top$1(args) * 0.95 : mg_get_bottom$1(args) + args.buffer)
         .attr('text-anchor', 'middle')
         .text(mg_return_label)
         .each(function(d) {
@@ -272,8 +485,8 @@
     gb.selectAll('.mg-baselines')
       .data(args.baselines)
       .enter().append('line')
-      .attr('x1', mg_get_plot_left(args))
-      .attr('x2', mg_get_plot_right(args))
+      .attr('x1', mg_get_plot_left$1(args))
+      .attr('x2', mg_get_plot_right$1(args))
       .attr('y1', y_pos)
       .attr('y2', y_pos);
   }
@@ -283,7 +496,7 @@
     gb.selectAll('.mg-baselines')
       .data(args.baselines)
       .enter().append('text')
-      .attr('x', mg_get_plot_right(args))
+      .attr('x', mg_get_plot_right$1(args))
       .attr('y', y_pos)
       .attr('dy', -3)
       .attr('text-anchor', 'end')
@@ -292,7 +505,7 @@
 
   function markers$1(args) {
 
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
     mg_remove_existing_markers(svg);
     mg_place_markers(args, svg);
     mg_place_baselines(args, svg);
@@ -468,7 +681,7 @@
 
   function chart_title(args) {
 
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
 
     //remove the current title if it exists
     svg.select('.mg-header').remove();
@@ -487,7 +700,9 @@
         .text(args.title);
 
       //show and activate the description icon if we have a description
-      if (args.show_tooltips && args.description && mg_jquery_exists()) {
+      //FIXME: this is disabled until we can replace with an implementation
+      //based on popper.js
+      if (args.show_tooltips && args.description && false) {
         chartTitle.append('tspan')
           .attr('class', 'mg-chart-description')
           .attr('dx', '0.3em')
@@ -531,6 +746,430 @@
     }
   }
 
+  function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
+    args.scalefns[scalefcn_name] = function(di) {
+      if (inflation === undefined) return args.scales[scale](di[accessor]);
+      else return args.scales[scale](di[accessor]) + inflation;
+    };
+  }
+
+  function mg_position(str, args) {
+    if (str === 'bottom' || str === 'top') {
+      return [mg_get_plot_left$1(args), mg_get_plot_right$1(args)];
+    }
+
+    if (str === 'left' || str === 'right') {
+      return [mg_get_plot_bottom$1(args), args.top];
+    }
+  }
+
+  function scale_factory(args) {
+    // big wrapper around d3 scale that automatically formats & calculates scale bounds
+    // according to the data, and handles other niceties.
+    var scaleArgs = {};
+    scaleArgs.use_inflator = false;
+    scaleArgs.zero_bottom = false;
+    scaleArgs.scaleType = 'numerical';
+
+    this.namespace = function(_namespace) {
+      scaleArgs.namespace = _namespace;
+      scaleArgs.namespace_accessor_name = scaleArgs.namespace + '_accessor';
+      scaleArgs.scale_name = scaleArgs.namespace.toUpperCase();
+      scaleArgs.scalefn_name = scaleArgs.namespace + 'f';
+      return this;
+    };
+
+    this.scaleName = function(scaleName) {
+      scaleArgs.scale_name = scaleName.toUpperCase();
+      scaleArgs.scalefn_name = scaleName +'f';
+      return this;
+    };
+
+    this.inflateDomain = function(tf) {
+      scaleArgs.use_inflator = tf;
+      return this;
+    };
+
+    this.zeroBottom = function(tf) {
+      scaleArgs.zero_bottom = tf;
+      return this;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// all scale domains are either numerical (number, date, etc.) or categorical (factor, label, etc) /////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // these functions automatically create the d3 scale function and place the domain.
+
+    this.numericalDomainFromData = function() {
+      var other_flat_data_arrays = [];
+
+      if (arguments.length > 0) {
+        other_flat_data_arrays = arguments;
+      }
+
+      // pull out a non-empty array in args.data.
+      var illustrative_data;
+      for (var i = 0; i < args.data.length; i++) {
+        if (args.data[i].length > 0) {
+          illustrative_data = args.data[i];
+        }
+      }
+      scaleArgs.is_time_series = is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+        ? true
+        : false;
+
+      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
+
+      mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator);
+
+      var time_scale = (args.utc_time)
+        ? d3.scaleUtc()
+        : d3.scaleTime();
+
+      args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
+        ? time_scale
+        : (is_function$1(args[scaleArgs.namespace + '_scale_type']))
+          ? args.y_scale_type()
+          : (args[scaleArgs.namespace + '_scale_type'] === 'log')
+            ? d3.scaleLog()
+            : d3.scaleLinear();
+
+      args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
+      scaleArgs.scaleType = 'numerical';
+
+      return this;
+    };
+
+    this.categoricalDomain = function(domain) {
+      args.scales[scaleArgs.scale_name] = d3.scaleOrdinal().domain(domain);
+      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
+      return this;
+    };
+
+    this.categoricalDomainFromData = function() {
+      // make args.categorical_variables.
+      // lets make the categorical variables.
+      var all_data = mg_flatten_array$1(args.data);
+      //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
+      scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
+        return d[args[scaleArgs.namespace_accessor_name]]; })).values();
+      args.scales[scaleArgs.scale_name] = d3.scaleBand()
+        .domain(scaleArgs.categoricalVariables);
+
+      scaleArgs.scaleType = 'categorical';
+      return this;
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////// all scale ranges are either positional (for axes, etc) or arbitrary (colors, size, etc) //////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    this.numericalRange = function(range) {
+      if (typeof range === 'string') {
+        args
+          .scales[scaleArgs.scale_name]
+          .range(mg_position(range, args));
+      } else {
+        args
+          .scales[scaleArgs.scale_name]
+          .range(range);
+      }
+
+      return this;
+    };
+
+    this.categoricalRangeBands = function(range, halfway) {
+      if (halfway === undefined) halfway = false;
+
+      var namespace = scaleArgs.namespace;
+      var paddingPercentage = args[namespace + '_padding_percentage'];
+      var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
+      if (typeof range === 'string') {
+        // if string, it's a location. Place it accordingly.
+        args.scales[scaleArgs.scale_name]
+          .range(mg_position(range, args))
+          .paddingInner(paddingPercentage)
+          .paddingOuter(outerPaddingPercentage);
+      } else {
+        args.scales[scaleArgs.scale_name]
+          .range(range)
+          .paddingInner(paddingPercentage)
+          .paddingOuter(outerPaddingPercentage);
+      }
+
+      mg_add_scale_function(
+        args,
+        scaleArgs.scalefn_name,
+        scaleArgs.scale_name,
+        args[scaleArgs.namespace_accessor_name],
+        halfway
+          ? args.scales[scaleArgs.scale_name].bandwidth() / 2
+          : 0
+      );
+
+      return this;
+    };
+
+    this.categoricalRange = function(range) {
+      args.scales[scaleArgs.scale_name].range(range);
+      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
+      return this;
+    };
+
+    this.categoricalColorRange = function() {
+      args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
+        ? d3.scaleOrdinal(d3.schemeCategory20)
+        : d3.scaleOrdinal(d3.schemeCategory10);
+
+      args
+        .scales[scaleArgs.scale_name]
+        .domain(scaleArgs.categoricalVariables);
+
+      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
+      return this;
+    };
+
+    this.clamp = function(yn) {
+      args.scales[scaleArgs.scale_name].clamp(yn);
+      return this;
+    };
+
+    return this;
+  }
+
+  /////////////////////////////// x, x_accessor, markers, baselines, etc.
+  function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
+    // A BIT OF EXPLANATION ABOUT THIS FUNCTION
+    // This function pulls out all the accessor values in all the arrays in args.data.
+    // We also have this additional argument, additional_data_arrays, which is an array of arrays of raw data values.
+    // These values also get concatenated to the data pulled from args.data, and the extents are calculate from that.
+    // They are optional.
+    //
+    // This may seem arbitrary, but it gives us a lot of flexibility. For instance, if we're calculating
+    // the min and max for the y axis of a line chart, we're going to want to also factor in baselines (horizontal lines
+    // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code
+    // & scale creation to just flatten the args.baselines array, pull out hte values, and feed it in
+    // so it appears in additional_data_arrays.
+    var namespace = scaleArgs.namespace;
+    var namespace_accessor_name = scaleArgs.namespace_accessor_name;
+    var use_inflator = scaleArgs.use_inflator;
+    var zero_bottom = scaleArgs.zero_bottom;
+
+    var accessor = args[namespace_accessor_name];
+
+    // add together all relevant data arrays.
+    var all_data = mg_flatten_array$1(args.data)
+      .map(function(dp) {
+        return dp[accessor]; })
+      .concat(mg_flatten_array$1(additional_data_arrays));
+
+    // do processing for log
+    if (args[namespace + '_scale_type'] === 'log') {
+      all_data = all_data.filter(function(d) {
+        return d > 0;
+      });
+    }
+
+    // use inflator?
+    var extents = d3.extent(all_data);
+    var min_val = extents[0];
+    var max_val = extents[1];
+
+    // bolt scale domain to zero when the right conditions are met:
+    // not pulling the bottom of the range from data
+    // not zero-bottomed
+    // not a time series
+    if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_time_series) {
+      min_val = args[namespace + '_scale_type'] === 'log' ? 1 : 0;
+    }
+
+    if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_time_series) {
+      min_val = min_val - (min_val - min_val * args.inflator) * use_inflator;
+    }
+
+    if (!scaleArgs.is_time_series) {
+      max_val = (max_val < 0) ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1);
+    }
+
+    min_val = args['min_' + namespace] != null ? args['min_' + namespace] : min_val;
+    max_val = args['max_' + namespace] != null ? args['max_' + namespace] : max_val;
+    // if there's a single data point, we should custom-set the max values
+    // so we're displaying some kind of range
+    if (min_val === max_val && args['min_' + namespace] == null &&
+        args['max_' + namespace] == null) {
+      if (is_date(min_val)) {
+        max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
+      } else if (typeof min_val === 'number') {
+        max_val = min_val + 1;
+        mg_force_xax_count_to_be_two(args);
+      }
+    }
+
+    args.processed['min_' + namespace] = min_val;
+    args.processed['max_' + namespace] = max_val;
+    if (args.processed['zoom_' + namespace]) {
+      args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0];
+      args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1];
+    }
+    call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
+    call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
+  }
+
+  function x_rug(args) {
+
+    if(!args.x_rug) {
+      return;
+    }
+
+    args.rug_buffer_size = args.chart_type === 'point'
+      ? args.buffer / 2
+      : args.buffer;
+
+    var rug = mg_make_rug(args, 'mg-x-rug');
+
+    rug.attr('x1', args.scalefns.xf)
+      .attr('x2', args.scalefns.xf)
+      .attr('y1', args.height - args.bottom - args.rug_buffer_size)
+      .attr('y2', args.height - args.bottom);
+
+    mg_add_color_accessor_to_rug$1(rug, args, 'mg-x-rug-mono');
+  }
+
+  function add_x_label(g, args) {
+    if (args.x_label) {
+      g.append('text')
+        .attr('class', 'label')
+        .attr('x', function() {
+          return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
+        })
+        .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+        .attr('y', function() {
+          var xAxisTextElement = d3.select(args.target)
+            .select('.mg-x-axis text').node().getBoundingClientRect();
+          return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
+        })
+        .attr('dy', '.5em')
+        .attr('text-anchor', 'middle')
+        .text(function(d) {
+          return args.x_label;
+        });
+    }
+  }
+
+  function mg_get_time_frame$1(diff) {
+    // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
+    var time_frame;
+    if (mg_milisec_diff(diff)) {
+      time_frame = 'millis';
+    } else if (mg_sec_diff(diff)) {
+      time_frame = 'seconds';
+    } else if (mg_day_diff(diff)) {
+      time_frame = 'less-than-a-day';
+    } else if (mg_four_days(diff)) {
+      time_frame = 'four-days';
+    } else if (mg_many_days(diff)) { // a handful of months?
+      time_frame = 'many-days';
+    } else if (mg_many_months(diff)) {
+      time_frame = 'many-months';
+    } else if (mg_years(diff)) {
+      time_frame = 'years';
+    } else {
+      time_frame = 'default';
+    }
+    return time_frame;
+  }
+
+  function mg_milisec_diff(diff) {
+    return diff < 1;
+  }
+
+  function mg_sec_diff(diff) {
+    return diff < 60;
+  }
+
+  function mg_day_diff(diff) {
+    return diff / (60 * 60) < 24;
+  }
+
+  function mg_four_days(diff) {
+    return diff / (60 * 60) < 24 * 4;
+  }
+
+  function mg_many_days(diff) {
+    return diff / (60 * 60 * 24) < 60;
+  }
+
+  function mg_many_months(diff) {
+    return diff / (60 * 60 * 24) < 365;
+  }
+
+  function mg_years(diff) {
+    return diff / (60 * 60 * 24) >= 365;
+  }
+
+  function mg_get_time_format(utc, diff) {
+    var main_time_format;
+    if (mg_milisec_diff(diff)) {
+      main_time_format = MG.time_format(utc, '%M:%S.%L');
+    } else if (mg_sec_diff(diff)) {
+      main_time_format = MG.time_format(utc, '%M:%S');
+    } else if (mg_day_diff(diff)) {
+      main_time_format = MG.time_format(utc, '%H:%M');
+    } else if (mg_four_days(diff) || mg_many_days(diff)) {
+      main_time_format = MG.time_format(utc, '%b %d');
+    } else if (mg_many_months(diff)) {
+      main_time_format = MG.time_format(utc, '%b');
+    } else {
+      main_time_format = MG.time_format(utc, '%Y');
+    }
+    return main_time_format;
+  }
+
+  function mg_process_time_format(args) {
+    if (args.time_series) {
+      const diff = (args.processed.max_x - args.processed.min_x) / 1000;
+      const tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000;
+      args.processed.x_time_frame = mg_get_time_frame$1(diff);
+      args.processed.x_tick_diff_time_frame = mg_get_time_frame$1(tickDiff);
+      args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff);
+    }
+  }
+
+  function mg_default_xax_format(args) {
+    if (args.xax_format) {
+      return args.xax_format;
+    }
+
+    var data = args.processed.original_data || args.data;
+    var flattened = mg_flatten_array$1(data)[0];
+    var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
+    if (test_point_x === undefined) {
+      test_point_x = flattened;
+    }
+
+    return function(d) {
+      mg_process_time_format(args);
+
+      if (is_date(test_point_x)) {
+        return args.processed.main_x_time_format(new Date(d));
+      } else if (typeof test_point_x === 'number') {
+        var is_float = d % 1 !== 0;
+        var pf;
+
+        if (is_float) {
+          pf = d3.format(',.' + args.decimals + 'f');
+        } else if (d < 1000) {
+          pf = d3.format(',.0f');
+        } else {
+          pf = d3.format(',.2s');
+        }
+        return args.xax_units + pf(d);
+      } else {
+        return args.xax_units + d;
+      }
+    };
+  }
+
   function mg_merge_args_with_defaults(args) {
     var defaults = {
       target: null,
@@ -551,8 +1190,8 @@
   }
 
   function mg_is_time_series(args) {
-    var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
-    args.time_series = mg_is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
+    var first_elem = mg_flatten_array$1(args.processed.original_data || args.data)[0];
+    args.time_series = is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
   }
 
   function mg_init_compute_width(args) {
@@ -590,7 +1229,7 @@
   }
 
   function mg_add_svg_if_it_doesnt_exist(svg, args) {
-    if (mg_get_svg_child_of(args.target).empty()) {
+    if (mg_get_svg_child_of$1(args.target).empty()) {
       svg = d3.select(args.target)
         .append('svg')
         .classed('linked', args.linked)
@@ -608,7 +1247,7 @@
       .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
       .append('svg:rect')
       .attr('x', mg_get_left(args))
-      .attr('y', mg_get_top(args))
+      .attr('y', mg_get_top$1(args))
       .attr('width', args.width - args.left - args.right - args.buffer)
       .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
   }
@@ -765,7 +1404,7 @@
       (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']));
   }
 
-  function init$1(args) {
+  function init(args) {
     args = arguments[0];
     args = mg_merge_args_with_defaults(args);
     // If you pass in a dom element for args.target, the expectation
@@ -798,273 +1437,207 @@
     return this;
   }
 
-  function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
-    args.scalefns[scalefcn_name] = function(di) {
-      if (inflation === undefined) return args.scales[scale](di[accessor]);
-      else return args.scales[scale](di[accessor]) + inflation;
-    };
-  }
+  function raw_data_transformation(args) {
 
-  function mg_position(str, args) {
-    if (str === 'bottom' || str === 'top') {
-      return [mg_get_plot_left(args), mg_get_plot_right(args)];
+    // dupe our data so we can modify it without adverse effect
+    args.data = clone(args.data);
+
+    // we need to account for a few data format cases:
+    // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
+    // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
+    // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
+    // #3 [[4323, 2343],..]                                       // unnested 2d array
+    // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
+    args.single_object = false; // for bar charts.
+    args.array_of_objects = false;
+    args.array_of_arrays = false;
+    args.nested_array_of_arrays = false;
+    args.nested_array_of_objects = false;
+
+    // is the data object a nested array?
+
+    if (is_array_of_arrays(args.data)) {
+      args.nested_array_of_objects = args.data.map(function(d) {
+        return is_array_of_objects_or_empty(d);
+      }); // Case #2
+      args.nested_array_of_arrays = args.data.map(function(d) {
+        return is_array_of_arrays(d);
+      }); // Case #4
+    } else {
+      args.array_of_objects = is_array_of_objects(args.data); // Case #1
+      args.array_of_arrays = is_array_of_arrays(args.data); // Case #3
     }
 
-    if (str === 'left' || str === 'right') {
-      return [mg_get_plot_bottom(args), args.top];
-    }
-  }
-
-  function scale_factory(args) {
-    // big wrapper around d3 scale that automatically formats & calculates scale bounds
-    // according to the data, and handles other niceties.
-    var scaleArgs = {};
-    scaleArgs.use_inflator = false;
-    scaleArgs.zero_bottom = false;
-    scaleArgs.scaleType = 'numerical';
-
-    this.namespace = function(_namespace) {
-      scaleArgs.namespace = _namespace;
-      scaleArgs.namespace_accessor_name = scaleArgs.namespace + '_accessor';
-      scaleArgs.scale_name = scaleArgs.namespace.toUpperCase();
-      scaleArgs.scalefn_name = scaleArgs.namespace + 'f';
-      return this;
-    };
-
-    this.scaleName = function(scaleName) {
-      scaleArgs.scale_name = scaleName.toUpperCase();
-      scaleArgs.scalefn_name = scaleName +'f';
-      return this;
-    };
-
-    this.inflateDomain = function(tf) {
-      scaleArgs.use_inflator = tf;
-      return this;
-    };
-
-    this.zeroBottom = function(tf) {
-      scaleArgs.zero_bottom = tf;
-      return this;
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// all scale domains are either numerical (number, date, etc.) or categorical (factor, label, etc) /////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // these functions automatically create the d3 scale function and place the domain.
-
-    this.numericalDomainFromData = function() {
-      var other_flat_data_arrays = [];
-
-      if (arguments.length > 0) {
-        other_flat_data_arrays = arguments;
+    if (args.chart_type === 'line') {
+      if (args.array_of_objects || args.array_of_arrays) {
+        args.data = [args.data];
       }
+    } else {
+      if (!(Array.isArray(args.data[0]))) {
+        args.data = [args.data];
+      }
+    }
+    // if the y_accessor is an array, break it up and store the result in args.data
+    mg_process_multiple_x_accessors(args);
+    mg_process_multiple_y_accessors(args);
 
-      // pull out a non-empty array in args.data.
-      var illustrative_data;
+    // if user supplies keyword in args.color, change to arg.colors.
+    // this is so that the API remains fairly sensible and legible.
+    if (args.color !== undefined) {
+      args.colors = args.color;
+    }
+
+    // if user has supplied args.colors, and that value is a string, turn it into an array.
+    if (args.colors !== null && typeof args.colors === 'string') {
+      args.colors = [args.colors];
+    }
+
+    // sort x-axis data
+    if (args.chart_type === 'line' && args.x_sort === true) {
       for (var i = 0; i < args.data.length; i++) {
-        if (args.data[i].length > 0) {
-          illustrative_data = args.data[i];
-        }
+        args.data[i].sort(function(a, b) {
+          return a[args.x_accessor] - b[args.x_accessor];
+        });
       }
-      scaleArgs.is_time_series = mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
-        ? true
-        : false;
-
-      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
-
-      mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator);
-
-      var time_scale = (args.utc_time)
-        ? d3.scaleUtc()
-        : d3.scaleTime();
-
-      args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
-        ? time_scale
-        : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
-          ? args.y_scale_type()
-          : (args[scaleArgs.namespace + '_scale_type'] === 'log')
-            ? d3.scaleLog()
-            : d3.scaleLinear();
-
-      args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]]);
-      scaleArgs.scaleType = 'numerical';
-
-      return this;
-    };
-
-    this.categoricalDomain = function(domain) {
-      args.scales[scaleArgs.scale_name] = d3.scaleOrdinal().domain(domain);
-      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
-      return this;
-    };
-
-    this.categoricalDomainFromData = function() {
-      // make args.categorical_variables.
-      // lets make the categorical variables.
-      var all_data = mg_flatten_array(args.data);
-      //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
-      scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
-        return d[args[scaleArgs.namespace_accessor_name]]; })).values();
-      args.scales[scaleArgs.scale_name] = d3.scaleBand()
-        .domain(scaleArgs.categoricalVariables);
-
-      scaleArgs.scaleType = 'categorical';
-      return this;
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////// all scale ranges are either positional (for axes, etc) or arbitrary (colors, size, etc) //////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    this.numericalRange = function(range) {
-      if (typeof range === 'string') {
-        args
-          .scales[scaleArgs.scale_name]
-          .range(mg_position(range, args));
-      } else {
-        args
-          .scales[scaleArgs.scale_name]
-          .range(range);
-      }
-
-      return this;
-    };
-
-    this.categoricalRangeBands = function(range, halfway) {
-      if (halfway === undefined) halfway = false;
-
-      var namespace = scaleArgs.namespace;
-      var paddingPercentage = args[namespace + '_padding_percentage'];
-      var outerPaddingPercentage = args[namespace + '_outer_padding_percentage'];
-      if (typeof range === 'string') {
-        // if string, it's a location. Place it accordingly.
-        args.scales[scaleArgs.scale_name]
-          .range(mg_position(range, args))
-          .paddingInner(paddingPercentage)
-          .paddingOuter(outerPaddingPercentage);
-      } else {
-        args.scales[scaleArgs.scale_name]
-          .range(range)
-          .paddingInner(paddingPercentage)
-          .paddingOuter(outerPaddingPercentage);
-      }
-
-      mg_add_scale_function(
-        args,
-        scaleArgs.scalefn_name,
-        scaleArgs.scale_name,
-        args[scaleArgs.namespace_accessor_name],
-        halfway
-          ? args.scales[scaleArgs.scale_name].bandwidth() / 2
-          : 0
-      );
-
-      return this;
-    };
-
-    this.categoricalRange = function(range) {
-      args.scales[scaleArgs.scale_name].range(range);
-      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
-      return this;
-    };
-
-    this.categoricalColorRange = function() {
-      args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
-        ? d3.scaleOrdinal(d3.schemeCategory20)
-        : d3.scaleOrdinal(d3.schemeCategory10);
-
-      args
-        .scales[scaleArgs.scale_name]
-        .domain(scaleArgs.categoricalVariables);
-
-      mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name]);
-      return this;
-    };
-
-    this.clamp = function(yn) {
-      args.scales[scaleArgs.scale_name].clamp(yn);
-      return this;
-    };
+    }
 
     return this;
   }
 
-  /////////////////////////////// x, x_accessor, markers, baselines, etc.
-  function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
-    // A BIT OF EXPLANATION ABOUT THIS FUNCTION
-    // This function pulls out all the accessor values in all the arrays in args.data.
-    // We also have this additional argument, additional_data_arrays, which is an array of arrays of raw data values.
-    // These values also get concatenated to the data pulled from args.data, and the extents are calculate from that.
-    // They are optional.
-    //
-    // This may seem arbitrary, but it gives us a lot of flexibility. For instance, if we're calculating
-    // the min and max for the y axis of a line chart, we're going to want to also factor in baselines (horizontal lines
-    // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code
-    // & scale creation to just flatten the args.baselines array, pull out hte values, and feed it in
-    // so it appears in additional_data_arrays.
-    var namespace = scaleArgs.namespace;
-    var namespace_accessor_name = scaleArgs.namespace_accessor_name;
-    var use_inflator = scaleArgs.use_inflator;
-    var zero_bottom = scaleArgs.zero_bottom;
+  function mg_process_multiple_accessors(args, which_accessor) {
+    // turns an array of accessors into ...
+    if (Array.isArray(args[which_accessor])) {
+      args.data = args.data.map(function(_d) {
+        return args[which_accessor].map(function(ya) {
+          return _d.map(function(di) {
+            di = clone(di);
 
-    var accessor = args[namespace_accessor_name];
+            if (di[ya] === undefined) {
+              return undefined;
+            }
 
-    // add together all relevant data arrays.
-    var all_data = mg_flatten_array(args.data)
-      .map(function(dp) {
-        return dp[accessor]; })
-      .concat(mg_flatten_array(additional_data_arrays));
-
-    // do processing for log
-    if (args[namespace + '_scale_type'] === 'log') {
-      all_data = all_data.filter(function(d) {
-        return d > 0;
-      });
+            di['multiline_' + which_accessor] = di[ya];
+            return di;
+          }).filter(function(di) {
+            return di !== undefined;
+          });
+        });
+      })[0];
+      args[which_accessor] = 'multiline_' + which_accessor;
     }
+  }
 
-    // use inflator?
-    var extents = d3.extent(all_data);
-    var min_val = extents[0];
-    var max_val = extents[1];
+  function mg_process_multiple_x_accessors(args) {
+    mg_process_multiple_accessors(args, 'x_accessor');
+  }
 
-    // bolt scale domain to zero when the right conditions are met:
-    // not pulling the bottom of the range from data
-    // not zero-bottomed
-    // not a time series
-    if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_time_series) {
-      min_val = args[namespace + '_scale_type'] === 'log' ? 1 : 0;
-    }
+  function mg_process_multiple_y_accessors(args) {
+    mg_process_multiple_accessors(args, 'y_accessor');
+  }
 
-    if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_time_series) {
-      min_val = min_val - (min_val - min_val * args.inflator) * use_inflator;
-    }
+  function process_line(args) {
 
-    if (!scaleArgs.is_time_series) {
-      max_val = (max_val < 0) ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1);
-    }
+    var time_frame;
 
-    min_val = args['min_' + namespace] != null ? args['min_' + namespace] : min_val;
-    max_val = args['max_' + namespace] != null ? args['max_' + namespace] : max_val;
-    // if there's a single data point, we should custom-set the max values
-    // so we're displaying some kind of range
-    if (min_val === max_val && args['min_' + namespace] == null &&
-        args['max_' + namespace] == null) {
-      if (mg_is_date(min_val)) {
-        max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
-      } else if (typeof min_val === 'number') {
-        max_val = min_val + 1;
-        mg_force_xax_count_to_be_two(args);
+    // do we have a time-series?
+    var is_time_series = d3.sum(args.data.map(function(series) {
+      return series.length > 0 && is_date(series[0][args.x_accessor]);
+    })) > 0;
+
+    // are we replacing missing y values with zeros?
+    if ((args.missing_is_zero || args.missing_is_hidden) && args.chart_type === 'line' && is_time_series) {
+      for (var i = 0; i < args.data.length; i++) {
+        // we need to have a dataset of length > 2, so if it's less than that, skip
+        if (args.data[i].length <= 1) {
+          continue;
+        }
+
+        var first = args.data[i][0];
+        var last = args.data[i][args.data[i].length - 1];
+
+        // initialize our new array for storing the processed data
+        var processed_data = [];
+
+        // we'll be starting from the day after our first date
+        var start_date = clone(first[args.x_accessor]).setDate(first[args.x_accessor].getDate() + 1);
+
+        // if we've set a max_x, add data points up to there
+        var from = (args.min_x) ? args.min_x : start_date;
+        var upto = (args.max_x) ? args.max_x : last[args.x_accessor];
+
+        time_frame = mg_get_time_frame((upto - from) / 1000);
+
+        if (['four-days', 'many-days', 'many-months', 'years', 'default'].indexOf(time_frame) !== -1 && args.missing_is_hidden_accessor === null) {
+          for (var d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) {
+            var o = {};
+            d.setHours(0, 0, 0, 0);
+
+            // add the first date item, we'll be starting from the day after our first date
+            if (Date.parse(d) === Date.parse(new Date(start_date))) {
+              processed_data.push(clone(args.data[i][0]));
+            }
+
+            // check to see if we already have this date in our data object
+            var existing_o = null;
+            args.data[i].forEach(function(val, i) {
+              if (Date.parse(val[args.x_accessor]) === Date.parse(new Date(d))) {
+                existing_o = val;
+
+                return false;
+              }
+            });
+
+            // if we don't have this date in our data object, add it and set it to zero
+            if (!existing_o) {
+              o[args.x_accessor] = new Date(d);
+              o[args.y_accessor] = 0;
+              o['_missing'] = true; //we want to distinguish between zero-value and missing observations
+              processed_data.push(o);
+            }
+
+            // if the data point has, say, a 'missing' attribute set or if its
+            // y-value is null identify it internally as missing
+            else if (existing_o[args.missing_is_hidden_accessor] || existing_o[args.y_accessor] === null) {
+              existing_o['_missing'] = true;
+              processed_data.push(existing_o);
+            }
+
+            //otherwise, use the existing object for that date
+            else {
+              processed_data.push(existing_o);
+            }
+          }
+        } else {
+          for (var j = 0; j < args.data[i].length; j += 1) {
+            var obj = clone(args.data[i][j]);
+            obj['_missing'] = args.data[i][j][args.missing_is_hidden_accessor];
+            processed_data.push(obj);
+          }
+        }
+
+        // update our date object
+        args.data[i] = processed_data;
       }
     }
 
-    args.processed['min_' + namespace] = min_val;
-    args.processed['max_' + namespace] = max_val;
-    if (args.processed['zoom_' + namespace]) {
-      args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0];
-      args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1];
+    return this;
+  }
+
+  function process_point$1(args) {
+
+    var data = args.data[0];
+    var x = data.map(function(d) {
+      return d[args.x_accessor];
+    });
+    var y = data.map(function(d) {
+      return d[args.y_accessor];
+    });
+
+    if (args.least_squares) {
+      args.ls_line = least_squares(x, y);
     }
-    MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
-    MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
+
+    return this;
   }
 
   function processScaleTicks (args, axis) {
@@ -1124,22 +1697,22 @@
       coordinates.y2 = args.scalefns[ns + 'f'];
     }
     if (position === 'right') {
-      coordinates.x1 = mg_get_right(args) - 1;
-      coordinates.x2 = mg_get_right(args) - args.rug_buffer_size;
+      coordinates.x1 = mg_get_right$1(args) - 1;
+      coordinates.x2 = mg_get_right$1(args) - args.rug_buffer_size;
       coordinates.y1 = args.scalefns[ns + 'f'];
       coordinates.y2 = args.scalefns[ns + 'f'];
     }
     if (position === 'top') {
       coordinates.x1 = args.scalefns[ns + 'f'];
       coordinates.x2 = args.scalefns[ns + 'f'];
-      coordinates.y1 = mg_get_top(args) + 1;
-      coordinates.y2 = mg_get_top(args) + args.rug_buffer_size;
+      coordinates.y1 = mg_get_top$1(args) + 1;
+      coordinates.y2 = mg_get_top$1(args) + args.rug_buffer_size;
     }
     if (position === 'bottom') {
       coordinates.x1 = args.scalefns[ns + 'f'];
       coordinates.x2 = args.scalefns[ns + 'f'];
-      coordinates.y1 = mg_get_bottom(args) - 1;
-      coordinates.y2 = mg_get_bottom(args) - args.rug_buffer_size;
+      coordinates.y1 = mg_get_bottom$1(args) - 1;
+      coordinates.y2 = mg_get_bottom$1(args) - args.rug_buffer_size;
     }
     return coordinates;
   }
@@ -1159,28 +1732,28 @@
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
     if (position === 'right') {
-      coordinates.x1 = mg_get_right(args);
-      coordinates.x2 = mg_get_right(args);
+      coordinates.x1 = mg_get_right$1(args);
+      coordinates.x2 = mg_get_right$1(args);
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
     if (position === 'top') {
       coordinates.x1 = mg_get_left(args);
-      coordinates.x2 = mg_get_right(args);
-      coordinates.y1 = mg_get_top(args);
-      coordinates.y2 = mg_get_top(args);
+      coordinates.x2 = mg_get_right$1(args);
+      coordinates.y1 = mg_get_top$1(args);
+      coordinates.y2 = mg_get_top$1(args);
     }
     if (position === 'bottom') {
       coordinates.x1 = mg_get_left(args);
-      coordinates.x2 = mg_get_right(args);
-      coordinates.y1 = mg_get_bottom(args);
-      coordinates.y2 = mg_get_bottom(args);
+      coordinates.x2 = mg_get_right$1(args);
+      coordinates.y1 = mg_get_bottom$1(args);
+      coordinates.y2 = mg_get_bottom$1(args);
     }
 
     if (position === 'left' || position === 'right') {
       if (args.axes_not_compact) {
-        coordinates.y1 = mg_get_bottom(args);
-        coordinates.y2 = mg_get_top(args);
+        coordinates.y1 = mg_get_bottom$1(args);
+        coordinates.y2 = mg_get_top$1(args);
       } else if (tick_length) {
         coordinates.y1 = scale(ticks[0]).toFixed(2);
         coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
@@ -1210,7 +1783,7 @@
       };
     }
     if (position === 'right') {
-      coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
+      coordinates.x = mg_get_right$1(args) + tickLength * 3 / 2;
       coordinates.y = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1224,7 +1797,7 @@
       coordinates.x = function (d) {
         return scale(d).toFixed(2);
       };
-      coordinates.y = (mg_get_top(args) - tickLength * 7 / 3).toFixed(2);
+      coordinates.y = (mg_get_top$1(args) - tickLength * 7 / 3).toFixed(2);
       coordinates.dx = 0;
       coordinates.dy = '0em';
       coordinates.textAnchor = 'middle';
@@ -1236,7 +1809,7 @@
       coordinates.x = function (d) {
         return scale(d).toFixed(2);
       };
-      coordinates.y = (mg_get_bottom(args) + tickLength * 7 / 3).toFixed(2);
+      coordinates.y = (mg_get_bottom$1(args) + tickLength * 7 / 3).toFixed(2);
       coordinates.dx = 0;
       coordinates.dy = '.50em';
       coordinates.textAnchor = 'middle';
@@ -1256,7 +1829,7 @@
       years = [first_tick];
     }
 
-    var yg = mg_add_g(g, 'mg-year-marker');
+    var yg = mg_add_g$1(g, 'mg-year-marker');
     if (tf.timeframe === 'default' && args.show_year_markers) {
       yearMarkerLine(args, axisArgs, yg, years, tf.yformat);
     }
@@ -1271,8 +1844,8 @@
         return args.scales.X(d).toFixed(2); })
       .attr('x2', function (d) {
         return args.scales.X(d).toFixed(2); })
-      .attr('y1', mg_get_top(args))
-      .attr('y2', mg_get_bottom(args));
+      .attr('y1', mg_get_top$1(args))
+      .attr('y2', mg_get_bottom$1(args));
   }
 
   function yearMarkerText (args, axisArgs, g, years, yformat) {
@@ -1286,7 +1859,7 @@
     if (position === 'top') {
       x = function (d, i) {
         return scale(d).toFixed(2); };
-      y = (mg_get_top(args) - args.xax_tick_length * 7 / 3) - (xAxisTextElement.height);
+      y = (mg_get_top$1(args) - args.xax_tick_length * 7 / 3) - (xAxisTextElement.height);
       dy = '.50em';
       textAnchor = 'middle';
       textFcn = function (d) {
@@ -1295,7 +1868,7 @@
     if (position === 'bottom') {
       x = function (d, i) {
         return scale(d).toFixed(2); };
-      y = (mg_get_bottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
+      y = (mg_get_bottom$1(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
       dy = '.50em';
       textAnchor = 'middle';
       textFcn = function (d) {
@@ -1354,7 +1927,7 @@
         return (i + 1) % 2 === 0;
       }).remove();
 
-      var svg = mg_get_svg_child_of(args.target);
+      var svg = mg_get_svg_child_of$1(args.target);
       svg.selectAll('.mg-' + ns + 'ax-ticks').filter(function (d, i) {
         return (i + 1) % 2 === 0; })
         .remove();
@@ -1377,7 +1950,7 @@
 
     if (position === 'left') {
       x1 = mg_get_left(args);
-      x2 = extendedTicks ? mg_get_right(args) : mg_get_left(args) - tickLength;
+      x2 = extendedTicks ? mg_get_right$1(args) : mg_get_left(args) - tickLength;
       y1 = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1386,8 +1959,8 @@
       };
     }
     if (position === 'right') {
-      x1 = mg_get_right(args);
-      x2 = extendedTicks ? mg_get_left(args) : mg_get_right(args) + tickLength;
+      x1 = mg_get_right$1(args);
+      x2 = extendedTicks ? mg_get_left(args) : mg_get_right$1(args) + tickLength;
       y1 = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1402,8 +1975,8 @@
       x2 = function (d) {
         return scale(d).toFixed(2);
       };
-      y1 = mg_get_top(args);
-      y2 = extendedTicks ? mg_get_bottom(args) : mg_get_top(args) - tickLength;
+      y1 = mg_get_top$1(args);
+      y2 = extendedTicks ? mg_get_bottom$1(args) : mg_get_top$1(args) - tickLength;
     }
     if (position === 'bottom') {
       x1 = function (d) {
@@ -1412,8 +1985,8 @@
       x2 = function (d) {
         return scale(d).toFixed(2);
       };
-      y1 = mg_get_bottom(args);
-      y2 = extendedTicks ? mg_get_top(args) : mg_get_bottom(args) + tickLength;
+      y1 = mg_get_bottom$1(args);
+      y2 = extendedTicks ? mg_get_top$1(args) : mg_get_bottom$1(args) + tickLength;
     }
 
     g.selectAll('.' + ticksClass)
@@ -1442,7 +2015,7 @@
   }
 
   function initializeRug (args, rug_class) {
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
     var all_data = mg_flatten_array(args.data);
     var rug = svg.selectAll('line.' + rug_class).data(all_data);
 
@@ -1481,26 +2054,26 @@
     // x, y, dy, text-anchor
 
     if (position === 'left') {
-      coords.cat.x = mg_get_plot_left(args) - args.buffer;
+      coords.cat.x = mg_get_plot_left$1(args) - args.buffer;
       coords.cat.y = function (d) {
         return groupScale(group) + scale(d) + scale.bandwidth() / 2;
       };
       coords.cat.dy = '.35em';
       coords.cat.textAnchor = 'end';
-      coords.group.x = mg_get_plot_left(args) - args.buffer;
+      coords.group.x = mg_get_plot_left$1(args) - args.buffer;
       coords.group.y = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
       coords.group.dy = '.35em';
       coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'end' : 'end';
     }
 
     if (position === 'right') {
-      coords.cat.x = mg_get_plot_right(args) - args.buffer;
+      coords.cat.x = mg_get_plot_right$1(args) - args.buffer;
       coords.cat.y = function (d) {
         return groupScale(group) + scale(d) + scale.bandwidth() / 2;
       };
       coords.cat.dy = '.35em';
       coords.cat.textAnchor = 'start';
-      coords.group.x = mg_get_plot_right(args) - args.buffer;
+      coords.group.x = mg_get_plot_right$1(args) - args.buffer;
       coords.group.y = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
       coords.group.dy = '.35em';
       coords.group.textAnchor = 'start';
@@ -1510,11 +2083,11 @@
       coords.cat.x = function (d) {
         return groupScale(group) + scale(d) + scale.bandwidth() / 2;
       };
-      coords.cat.y = mg_get_plot_top(args) + args.buffer;
+      coords.cat.y = mg_get_plot_top$1(args) + args.buffer;
       coords.cat.dy = '.35em';
       coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
       coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 : 0);
-      coords.group.y = mg_get_plot_top(args) + args.buffer;
+      coords.group.y = mg_get_plot_top$1(args) + args.buffer;
       coords.group.dy = '.35em';
       coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
     }
@@ -1523,11 +2096,11 @@
       coords.cat.x = function (d) {
         return groupScale(group) + scale(d) + scale.bandwidth() / 2;
       };
-      coords.cat.y = mg_get_plot_bottom(args) + args.buffer;
+      coords.cat.y = mg_get_plot_bottom$1(args) + args.buffer;
       coords.cat.dy = '.35em';
       coords.cat.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
       coords.group.x = groupScale(group) + (groupScale.bandwidth ? groupScale.bandwidth() / 2 - scale.bandwidth() / 2 : 0);
-      coords.group.y = mg_get_plot_bottom(args) + args.buffer;
+      coords.group.y = mg_get_plot_bottom$1(args) + args.buffer;
       coords.group.dy = '.35em';
       coords.group.textAnchor = args['rotate_' + ns + '_labels'] ? 'start' : 'middle';
     }
@@ -1542,9 +2115,9 @@
     var groupScale = args.scales[(ns + 'group').toUpperCase()];
     var groupAccessor = ns + 'group_accessor';
 
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
     mg_selectAll_and_remove(svg, '.' + nsClass);
-    var g = mg_add_g(svg, nsClass);
+    var g = mg_add_g$1(svg, nsClass);
     var group_g;
     var groups = groupScale.domain && groupScale.domain()
       ? groupScale.domain()
@@ -1555,7 +2128,7 @@
       var coords = categoricalLabelPlacement(args, axisArgs, group);
 
       var labels;
-      group_g = mg_add_g(g, 'mg-group-' + mg_normalize(group));
+      group_g = mg_add_g$1(g, 'mg-group-' + mg_normalize(group));
       if (args[groupAccessor] !== null) {
         labels = group_g.append('text')
           .classed('mg-barplot-group-label', true)
@@ -1593,19 +2166,19 @@
     var scale = args.scales[ns.toUpperCase()];
     var position = axisArgs.position;
 
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
 
     var x1, x2, y1, y2;
     var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
 
     mg_selectAll_and_remove(svg, '.mg-category-guides');
-    var g = mg_add_g(svg, 'mg-category-guides');
+    var g = mg_add_g$1(svg, 'mg-category-guides');
 
     grs.forEach(function (group) {
       scale.domain().forEach(function (cat) {
         if (position === 'left' || position === 'right') {
-          x1 = mg_get_plot_left(args);
-          x2 = mg_get_plot_right(args);
+          x1 = mg_get_plot_left$1(args);
+          x2 = mg_get_plot_right$1(args);
           y1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
           y2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2;
         }
@@ -1613,8 +2186,8 @@
         if (position === 'top' || position === 'bottom') {
           x1 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
           x2 = scale(cat) + groupScale(group) + scale.bandwidth() / 2 * (group === null);
-          y1 = mg_get_plot_bottom(args);
-          y2 = mg_get_plot_top(args);
+          y1 = mg_get_plot_bottom$1(args);
+          y2 = mg_get_plot_top$1(args);
         }
 
         g.append('line')
@@ -1630,13 +2203,13 @@
 
       var x11, x21, y11, y21, x12, x22, y12, y22;
       if (position === 'left' || position === 'right') {
-        x11 = mg_get_plot_left(args);
-        x21 = mg_get_plot_left(args);
+        x11 = mg_get_plot_left$1(args);
+        x21 = mg_get_plot_left$1(args);
         y11 = first;
         y21 = last;
 
-        x12 = mg_get_plot_right(args);
-        x22 = mg_get_plot_right(args);
+        x12 = mg_get_plot_right$1(args);
+        x22 = mg_get_plot_right$1(args);
         y12 = first;
         y22 = last;
       }
@@ -1644,13 +2217,13 @@
       if (position === 'bottom' || position === 'top') {
         x11 = first;
         x21 = last;
-        y11 = mg_get_plot_bottom(args);
-        y21 = mg_get_plot_bottom(args);
+        y11 = mg_get_plot_bottom$1(args);
+        y21 = mg_get_plot_bottom$1(args);
 
         x12 = first;
         x22 = last;
-        y12 = mg_get_plot_top(args);
-        y22 = mg_get_plot_top(args);
+        y12 = mg_get_plot_top$1(args);
+        y22 = mg_get_plot_top$1(args);
       }
 
       g.append('line')
@@ -1692,7 +2265,7 @@
     var namespace = axisArgs.namespace;
     var axisName = namespace + '_axis';
     var axisClass = 'mg-' + namespace + '-axis';
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
 
     mg_selectAll_and_remove(svg, '.' + axisClass);
 
@@ -1700,7 +2273,7 @@
       return this;
     }
 
-    var g = mg_add_g(svg, axisClass);
+    var g = mg_add_g$1(svg, axisClass);
 
     processScaleTicks(args, namespace);
     initializeAxisRim(g, args, axisArgs);
@@ -1768,6 +2341,30 @@
 
   }
 
+  /* ================================================================================ */
+  /* ================================================================================ */
+  /* ================================================================================ */
+
+  function y_rug (args) {
+
+    if (!args.y_rug) {
+      return;
+    }
+
+    args.rug_buffer_size = args.chart_type === 'point'
+      ? args.buffer / 2
+      : args.buffer * 2 / 3;
+
+    var rug = mg_make_rug(args, 'mg-y-rug');
+
+    rug.attr('x1', args.left + 1)
+      .attr('x2', args.left + args.rug_buffer_size)
+      .attr('y1', args.scalefns.yf)
+      .attr('y2', args.scalefns.yf);
+
+    mg_add_color_accessor_to_rug(rug, args, 'mg-y-rug-mono');
+  }
+
   function mg_compute_yax_format (args) {
     var yax_format = args.yax_format;
     if (!yax_format) {
@@ -1812,7 +2409,7 @@
   }
 
   function mg_bar_add_zero_line (args) {
-    var svg = mg_get_svg_child_of(args.target);
+    var svg = mg_get_svg_child_of$1(args.target);
     var extents = args.scales.X.domain();
     if (0 >= extents[0] && extents[1] >= 0) {
       var r = args.scales.Y.range();
@@ -1823,10 +2420,32 @@
       svg.append('svg:line')
         .attr('x1', args.scales.X(0))
         .attr('x2', args.scales.X(0))
-        .attr('y1', r[0] + mg_get_plot_top(args))
+        .attr('y1', r[0] + mg_get_plot_top$1(args))
         .attr('y2', r[r.length - 1] + g)
         .attr('stroke', 'black')
         .attr('opacity', 0.2);
+    }
+  }
+
+  function add_y_label (g, args) {
+    if (args.y_label) {
+      g.append('text')
+        .attr('class', 'label')
+        .attr('x', function () {
+          return -1 * (mg_get_plot_top$1(args) +
+          ((mg_get_plot_bottom$1(args)) - (mg_get_plot_top$1(args))) / 2);
+        })
+        .attr('y', function () {
+          return args.left / 2;
+        })
+        .attr('dy', '-1.2em')
+        .attr('text-anchor', 'middle')
+        .text(function (d) {
+          return args.y_label;
+        })
+        .attr('transform', function (d) {
+          return 'rotate(-90)';
+        });
     }
   }
 
@@ -1914,8 +2533,8 @@
 
     this.init = (args) => {
       this.args = args;
-      args.x_axis_type = mg_infer_type$1(args, 'x');
-      args.y_axis_type = mg_infer_type$1(args, 'y');
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
 
       // this is specific to how rects work in svg, let's keep track of the bar orientation to
       // plot appropriately.
@@ -1931,7 +2550,7 @@
       raw_data_transformation(args);
 
       process_point(args);
-      init$1(args);
+      init(args);
 
       let xMaker;
       let yMaker;
@@ -2528,6 +3147,294 @@
     truncate_y_labels: [true, 'boolean']
   };
 
+  function mg_clear_mouseover_container$1(svg) {
+    svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove();
+  }
+
+  function mg_setup_mouseover_container(svg, args) {
+    svg.select('.mg-active-datapoint').remove();
+    var text_anchor = args.mouseover_align === 'right'
+      ? 'end'
+      : (args.mouseover_align === 'left'
+        ? 'start'
+        : 'middle');
+
+    var mouseover_x = (args.mouseover_align === 'right')
+      ? mg_get_plot_right$1(args)
+      : (args.mouseover_align === 'left'
+        ? mg_get_plot_left$1(args)
+        : (args.width - args.left - args.right) / 2 + args.left);
+
+    var active_datapoint = svg.select('.mg-active-datapoint-container')
+      .attr('transform', 'translate(0 -18)')
+      .append('text')
+      .attr('class', 'mg-active-datapoint')
+      .attr('xml:space', 'preserve')
+      .attr('text-anchor', text_anchor);
+
+    // set the rollover text's position; if we have markers on two lines,
+    // nudge up the rollover text a bit
+    var active_datapoint_y_nudge = 0.75;
+
+    var y_position = (args.x_axis_position === 'bottom')
+      ? mg_get_top$1(args) * active_datapoint_y_nudge
+      : mg_get_bottom$1(args) + args.buffer * 3;
+
+    if (args.markers) {
+      var yPos;
+      svg.selectAll('.mg-marker-text')
+        .each(function() {
+          if (!yPos) {
+            yPos = d3.select(this).attr('y');
+          } else if (yPos !== d3.select(this).attr('y')) {
+            active_datapoint_y_nudge = 0.56;
+          }
+        });
+    }
+
+    active_datapoint
+      .attr('transform', 'translate(' + mouseover_x + ',' + (y_position) + ')');
+  }
+
+  function mg_mouseover_tspan(svg, text) {
+    let tspan = svg.append('tspan').text(text);
+
+    return {
+      bold: () => tspan.attr('font-weight', 'bold'),
+      font_size: (pts) => tspan.attr('font-size', pts),
+      x: (x) => tspan.attr('x', x),
+      y: (y) => tspan.attr('y', y),
+      elem: tspan
+    };
+  }
+
+  function mg_reset_text_container(svg) {
+    var textContainer = svg.select('.mg-active-datapoint');
+    textContainer
+      .selectAll('*')
+      .remove();
+    return textContainer;
+  }
+
+  function mg_mouseover_row(row_number, container, rargs) {
+    var lineHeight = 1.1;
+    var rrr = container.append('tspan')
+      .attr('x', 0)
+      .attr('y', (row_number * lineHeight) + 'em');
+
+    return {
+      rargs,
+      text: (text) => {
+        return mg_mouseover_tspan(rrr, text);
+      }
+    };
+  }
+
+  function mg_mouseover_text$1(args, rargs) {
+    mg_setup_mouseover_container(rargs.svg, args);
+
+    let mouseOver = {
+      row_number: 0,
+      rargs,
+      mouseover_row: (rargs) => {
+        mouseOver.row_number += 1;
+        return mg_mouseover_row(mouseOver.row_number, mouseOver.text_container, rargs);
+      },
+      text_container: mg_reset_text_container(rargs.svg)
+    };
+
+    return mouseOver;
+  }
+
+  function MG_WindowResizeTracker() {
+    var targets = [];
+
+    var Observer;
+    if (typeof MutationObserver !== "undefined") {
+      Observer = MutationObserver;
+    } else if (typeof WebKitMutationObserver !== "undefined") {
+      Observer = WebKitMutationObserver;
+    }
+
+    function window_listener() {
+      targets.forEach(function(target) {
+        var svg = d3.select(target).select('svg');
+
+        // skip if svg is not visible
+        if (!svg.empty() && (svg.node().parentNode.offsetWidth > 0 || svg.node().parentNode.offsetHeight > 0)) {
+          var aspect = svg.attr('width') !== 0 ? (svg.attr('height') / svg.attr('width')) : 0;
+
+          var newWidth = get_width(target);
+
+          svg.attr('width', newWidth);
+          svg.attr('height', aspect * newWidth);
+        }
+      });
+    }
+
+    function remove_target(target) {
+      var index = targets.indexOf(target);
+      if (index !== -1) {
+        targets.splice(index, 1);
+      }
+
+      if (targets.length === 0) {
+        window.removeEventListener('resize', window_listener, true);
+      }
+    }
+
+    return {
+      add_target: function(target) {
+        if (targets.length === 0) {
+          window.addEventListener('resize', window_listener, true);
+        }
+
+        if (targets.indexOf(target) === -1) {
+          targets.push(target);
+
+          if (Observer) {
+            var observer = new Observer(function(mutations) {
+              var targetNode = d3.select(target).node();
+
+              if (!targetNode || mutations.some(
+                  function(mutation) {
+                    for (var i = 0; i < mutation.removedNodes.length; i++) {
+                      if (mutation.removedNodes[i] === targetNode) {
+                        return true;
+                      }
+                    }
+                  })) {
+                observer.disconnect();
+                remove_target(target);
+              }
+            });
+
+            observer.observe(d3.select(target).node().parentNode, { childList: true });
+          }
+        }
+      }
+    };
+  }
+
+  var mg_window_resize_tracker = new MG_WindowResizeTracker();
+
+  function mg_window_listeners$1(args) {
+    mg_if_aspect_ratio_resize_svg(args);
+  }
+
+  function mg_if_aspect_ratio_resize_svg(args) {
+    // have we asked the svg to fill a div, if so resize with div
+    if (args.full_width || args.full_height) {
+      mg_window_resize_tracker.add_target(args.target);
+    }
+  }
+
+  function format_rollover_number$1(args) {
+    var num;
+    if (args.format === 'count') {
+      num = function(d) {
+        var is_float = d % 1 !== 0;
+        var pf;
+
+        if (is_float) {
+          pf = d3.format(',.' + args.decimals + 'f');
+        } else {
+          pf = d3.format(',.0f');
+        }
+
+        // are we adding units after the value or before?
+        if (args.yax_units_append) {
+          return pf(d) + args.yax_units;
+        } else {
+          return args.yax_units + pf(d);
+        }
+      };
+    } else {
+      num = function(d_) {
+        var fmt_string = (is_numeric(args.decimals) ? '.' + args.decimals : '') + '%';
+        var pf = d3.format(fmt_string);
+        return pf(d_);
+      };
+    }
+    return num;
+  }
+
+  var time_rollover_format = function(f, d, accessor, utc) {
+    var fd;
+    if (typeof f === 'string') {
+      fd = MG.time_format(utc, f)(d[accessor]);
+    } else if (typeof f === 'function') {
+      fd = f(d);
+    } else {
+      fd = d[accessor];
+    }
+    return fd;
+  };
+
+  // define our rollover format for numbers
+  var number_rollover_format = function(f, d, accessor) {
+    var fd;
+    if (typeof f === 'string') {
+      fd = d3.format('s')(d[accessor]);
+    } else if (typeof f === 'function') {
+      fd = f(d);
+    } else {
+      fd = d[accessor];
+    }
+    return fd;
+  };
+
+  function mg_get_rollover_time_format(args) {
+    // if a rollover time format is defined, use that
+    if (args.rollover_time_format) {
+      return time_format(args.utc_time, args.rollover_time_format);
+    }
+
+    switch (args.processed.x_time_frame) {
+      case 'millis':
+        return time_format(args.utc_time, '%b %e, %Y  %H:%M:%S.%L');
+      case 'seconds':
+        return time_format(args.utc_time, '%b %e, %Y  %H:%M:%S');
+      case 'less-than-a-day':
+        return time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+      case 'four-days':
+        return time_format(args.utc_time, '%b %e, %Y  %I:%M%p');
+    }
+
+    // default
+    return time_format(args.utc_time, '%b %e, %Y');
+  }
+
+  function mg_format_data_for_mouseover$1(args, d, mouseover_fcn, accessor, check_time) {
+    var formatted_data, formatter;
+    var time_fmt = mg_get_rollover_time_format(args);
+    if (typeof d[accessor] === 'string') {
+      formatter = function(d) {
+        return d;
+      };
+    } else {
+      formatter = format_rollover_number$1(args);
+    }
+
+    if (mouseover_fcn !== null) {
+      if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc);
+      else formatted_data = number_rollover_format(mouseover_fcn, d, accessor);
+
+    } else {
+      if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  ';
+      else formatted_data = (args.time_series ? '' : accessor + ': ') + formatter(d[accessor]) + '   ';
+    }
+    return formatted_data;
+  }
+
+  function mg_format_x_mouseover$1(args, d) {
+    return mg_format_data_for_mouseover$1(args, d, args.x_mouseover, args.x_accessor, args.time_series);
+  }
+
+  function mg_format_y_mouseover(args, d) {
+    return mg_format_data_for_mouseover$1(args, d, args.y_mouseover, args.y_accessor, false);
+  }
+
   function mg_line_color_text(elem, line_id, {color, colors}) {
     elem.classed('mg-hover-line-color', color === null)
       .classed(`mg-hover-line${line_id}-color`, colors === null)
@@ -2723,7 +3630,7 @@
     if (args.legend) {
       if (Array.isArray(args.legend)) {
         this_legend = args.legend[which_line];
-      } else if (is_function(args.legend)) {
+      } else if (is_function$1(args.legend)) {
         this_legend = args.legend(args.data[which_line]);
       }
 
@@ -2776,17 +3683,17 @@
   }
 
   function mg_add_legend_group({legend}, plot, svg) {
-    if (legend) plot.legend_group = mg_add_g(svg, 'mg-line-legend');
+    if (legend) plot.legend_group = mg_add_g$1(svg, 'mg-line-legend');
   }
 
   function mg_remove_existing_line_rollover_elements(svg) {
     // remove the old rollovers if they already exist
-    mg_selectAll_and_remove$1(svg, '.mg-rollover-rect');
-    mg_selectAll_and_remove$1(svg, '.mg-voronoi');
+    mg_selectAll_and_remove(svg, '.mg-rollover-rect');
+    mg_selectAll_and_remove(svg, '.mg-voronoi');
 
     // remove the old rollover text and circle if they already exist
-    mg_selectAll_and_remove$1(svg, '.mg-active-datapoint');
-    mg_selectAll_and_remove$1(svg, '.mg-line-rollover-circle');
+    mg_selectAll_and_remove(svg, '.mg-active-datapoint');
+    mg_selectAll_and_remove(svg, '.mg-line-rollover-circle');
     //mg_selectAll_and_remove(svg, '.mg-active-datapoint-container');
   }
 
@@ -2864,7 +3771,7 @@
         [args.width - args.buffer, args.height - args.buffer]
       ]);
 
-    const g = mg_add_g(svg, 'mg-voronoi');
+    const g = mg_add_g$1(svg, 'mg-voronoi');
     g.selectAll('path')
       .data(voronoi.polygons(mg_nest_data_for_voronoi(args)))
       .enter()
@@ -2911,13 +3818,13 @@
       .data(data_nested).enter()
       .append('rect')
       .attr('x', (d, i) => {
-        if (xf.length === 1) return mg_get_plot_left(args);
+        if (xf.length === 1) return mg_get_plot_left$1(args);
         else if (i === 0) return xf[i].toFixed(2);
         else return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
       .attr('y', args.top)
       .attr('width', (d, i) => {
-        if (xf.length === 1) return mg_get_plot_right(args);
+        if (xf.length === 1) return mg_get_plot_right$1(args);
         else if (i === 0) return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
         else if (i === xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
         else return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
@@ -3009,7 +3916,7 @@
       })
       .attr('x', (d, i) => {
         // if data set is of length 1
-        if (xf.length === 1) return mg_get_plot_left(args);
+        if (xf.length === 1) return mg_get_plot_left$1(args);
         else if (i === 0) return xf[i].toFixed(2);
         else return ((xf[i - 1] + xf[i]) / 2).toFixed(2);
       })
@@ -3017,7 +3924,7 @@
       : args.top)
       .attr('width', (d, i) => {
         // if data set is of length 1
-        if (xf.length === 1) return mg_get_plot_right(args);
+        if (xf.length === 1) return mg_get_plot_right$1(args);
         else if (i === 0) return ((xf[i + 1] - xf[i]) / 2).toFixed(2);
         else if (i === xf.length - 1) return ((xf[i] - xf[i - 1]) / 2).toFixed(2);
         else return ((xf[i + 1] - xf[i - 1]) / 2).toFixed(2);
@@ -3129,7 +4036,7 @@
     const svg = mg_get_svg_child_of$1(args.target);
 
     // remove any old legends if they exist
-    mg_selectAll_and_remove$1(svg, '.mg-line-legend');
+    mg_selectAll_and_remove(svg, '.mg-line-legend');
     mg_add_legend_group(args, plot, svg);
 
     plot.data_median = 0;
@@ -3152,7 +4059,7 @@
     const svg = mg_get_svg_child_of$1(args.target);
 
     if (args.showActivePoint && svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
-      mg_add_g(svg, 'mg-active-datapoint-container');
+      mg_add_g$1(svg, 'mg-active-datapoint-container');
     }
 
     mg_remove_existing_line_rollover_elements(svg);
@@ -3310,7 +4217,7 @@
           .type('numerical')
           .position(args.x_axis_position)
           .rug(x_rug(args))
-          .label(mg_add_x_label)
+          .label(add_x_label)
           .draw();
       }
 
@@ -3320,7 +4227,7 @@
           .type('numerical')
           .position(args.y_axis_position)
           .rug(y_rug(args))
-          .label(mg_add_y_label)
+          .label(add_y_label)
           .draw();
       }
 
@@ -3340,7 +4247,7 @@
     };
 
     this.markers = function() {
-      markers(args);
+      markers$1(args);
       return this;
     };
 
@@ -3372,12 +4279,12 @@
         if (args.show_rollover_text &&
             !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)
           ) {
-          const mouseover = mg_mouseover_text(args, { svg });
+          const mouseover = mg_mouseover_text$1(args, { svg });
           let row = mouseover.mouseover_row();
           if (args.aggregate_rollover) {
             row.text((args.aggregate_rollover && args.data.length > 1
               ? mg_format_x_aggregate_mouseover
-              : mg_format_x_mouseover)(args, d));
+              : mg_format_x_mouseover$1)(args, d));
           }
 
           const pts = args.aggregate_rollover && args.data.length > 1
@@ -3395,7 +4302,7 @@
 
             mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, args);
             if (!args.aggregate_rollover) {
-              row.text(mg_format_x_mouseover(args, di));
+              row.text(mg_format_x_mouseover$1(args, di));
             }
 
             row.text(mg_format_y_mouseover(args, di, args.time_series === false));
@@ -3420,7 +4327,7 @@
         }
 
         if (args.data[0].length > 1) {
-          mg_clear_mouseover_container(svg);
+          mg_clear_mouseover_container$1(svg);
         }
 
         if (args.mouseout) {
@@ -3436,7 +4343,367 @@
     };
 
     this.windowListeners = function() {
-      mg_window_listeners(this.args);
+      mg_window_listeners$1(this.args);
+      return this;
+    };
+
+    this.init(args);
+  }
+
+  function point_mouseover(args, svg, d) {
+    const mouseover = mg_mouseover_text$1(args, { svg });
+    const row = mouseover.mouseover_row();
+
+    if (args.color_accessor !== null && args.color_type === 'category') {
+      const label = d[args.color_accessor];
+      row.text(`${label}  `).bold().attr('fill', args.scalefns.colorf(d));
+    }
+
+    mg_color_point_mouseover(args, row.text('\u25CF   ').elem, d); // point shape
+
+    row.text(mg_format_x_mouseover$1(args, d)); // x
+    row.text(mg_format_y_mouseover(args, d, args.time_series === false));
+  }
+
+  function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
+    if (color_accessor !== null) {
+      elem.attr('fill', scalefns.colorf(d));
+      elem.attr('stroke', scalefns.colorf(d));
+    } else {
+      elem.classed('mg-points-mono', true);
+    }
+  }
+
+  function mg_filter_out_plot_bounds(data, args) {
+    // max_x, min_x, max_y, min_y;
+    const x = args.x_accessor;
+    const y = args.y_accessor;
+    const new_data = data.filter(d => (args.min_x === null || d[x] >= args.min_x) &&
+      (args.max_x === null || d[x] <= args.max_x) &&
+      (args.min_y === null || d[y] >= args.min_y) &&
+      (args.max_y === null || d[y] <= args.max_y));
+    return new_data;
+  }
+
+  function pointChart(args) {
+    this.init = function(args) {
+      this.args = args;
+
+      // infer y_axis and x_axis type;
+      args.x_axis_type = mg_infer_type(args, 'x');
+      args.y_axis_type = mg_infer_type(args, 'y');
+
+      raw_data_transformation(args);
+
+      process_point$1(args);
+      init(args);
+
+      let xMaker, yMaker;
+
+      if (args.x_axis_type === 'categorical') {
+        xMaker = new scale_factory(args)
+          .namespace('x')
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
+
+        if (args.xgroup_accessor) {
+          new scale_factory(args)
+            .namespace('xgroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('bottom');
+
+        } else {
+          args.scales.XGROUP = () => mg_get_plot_left$1(args);
+          args.scalefns.xgroupf = () => mg_get_plot_left$1(args);
+        }
+
+        args.scalefns.xoutf = d => args.scalefns.xf(d) + args.scalefns.xgroupf(d);
+      } else {
+        xMaker = new scale_factory(args)
+          .namespace('x')
+          .inflateDomain(true)
+          .zeroBottom(args.y_axis_type === 'categorical')
+          .numericalDomainFromData((args.baselines || []).map(d => d[args.x_accessor]))
+          .numericalRange('bottom');
+
+        args.scalefns.xoutf = args.scalefns.xf;
+      }
+
+      // y-scale generation. This needs to get simplified.
+      if (args.y_axis_type === 'categorical') {
+        yMaker = new scale_factory(args)
+          .namespace('y')
+          .zeroBottom(true)
+          .categoricalDomainFromData()
+          .categoricalRangeBands([0, args.ygroup_height], true);
+
+        if (args.ygroup_accessor) {
+
+          new scale_factory(args)
+            .namespace('ygroup')
+            .categoricalDomainFromData()
+            .categoricalRangeBands('left');
+
+        } else {
+          args.scales.YGROUP = () => mg_get_plot_top$1(args);
+          args.scalefns.ygroupf = () => mg_get_plot_top$1(args);
+
+        }
+        args.scalefns.youtf = d => args.scalefns.yf(d) + args.scalefns.ygroupf(d);
+
+      } else {
+        const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
+        yMaker = new scale_factory(args)
+          .namespace('y')
+          .inflateDomain(true)
+          .zeroBottom(args.x_axis_type === 'categorical')
+          .numericalDomainFromData(baselines)
+          .numericalRange('left');
+
+        args.scalefns.youtf = d => args.scalefns.yf(d);
+      }
+
+      /////// COLOR accessor
+      if (args.color_accessor !== null) {
+        const colorScale = new scale_factory(args).namespace('color');
+        if (args.color_type === 'number') {
+          // do the color scale.
+          // etiher get color range, or what.
+          colorScale
+            .numericalDomainFromData(mg_get_color_domain(args))
+            .numericalRange(mg_get_color_range(args))
+            .clamp(true);
+        } else {
+          if (args.color_domain) {
+            colorScale
+              .categoricalDomain(args.color_domain)
+              .categoricalRange(args.color_range);
+          } else {
+            colorScale
+              .categoricalDomainFromData()
+              .categoricalColorRange();
+          }
+        }
+      }
+
+      if (args.size_accessor) {
+        new scale_factory(args).namespace('size')
+          .numericalDomainFromData()
+          .numericalRange(mg_get_size_range(args))
+          .clamp(true);
+      }
+
+      new axis_factory(args)
+        .namespace('x')
+        .type(args.x_axis_type)
+        .zeroLine(args.y_axis_type === 'categorical')
+        .position(args.x_axis_position)
+        .rug(x_rug(args))
+        .label(add_x_label)
+        .draw();
+
+      new axis_factory(args)
+        .namespace('y')
+        .type(args.y_axis_type)
+        .zeroLine(args.x_axis_type === 'categorical')
+        .position(args.y_axis_position)
+        .rug(y_rug(args))
+        .label(add_y_label)
+        .draw();
+
+      this.mainPlot();
+      this.markers();
+      this.rollover();
+      this.windowListeners();
+      if (args.brush) MG.add_brush_function(args);
+      return this;
+    };
+
+    this.markers = function() {
+      markers$1(args);
+      if (args.least_squares) {
+        add_ls(args);
+      }
+
+      return this;
+    };
+
+    this.mainPlot = function() {
+      const svg = mg_get_svg_child_of$1(args.target);
+
+      const data = mg_filter_out_plot_bounds(args.data[0], args);
+      //remove the old points, add new one
+      svg.selectAll('.mg-points').remove();
+
+      const g = svg.append('g')
+        .classed('mg-points', true);
+
+      const pts = g.selectAll('circle')
+        .data(data)
+        .enter().append('circle')
+        .attr('class', (d, i) => `path-${i}`)
+        .attr('cx', args.scalefns.xoutf)
+        .attr('cy', d => args.scalefns.youtf(d));
+
+      let highlights;
+      svg.selectAll('.mg-highlight').remove();
+      if (args.highlight && is_function(args.highlight)) {
+        highlights = svg.append('g')
+          .classed('mg-highlight', true)
+          .selectAll('circle')
+          .data(data.filter(args.highlight))
+          .enter().append('circle')
+          .attr('cx', args.scalefns.xoutf)
+          .attr('cy', d => args.scalefns.youtf(d));
+      }
+
+      const elements = [pts].concat(highlights ? [highlights] : []);
+      //are we coloring our points, or just using the default color?
+      if (args.color_accessor !== null) {
+        elements.forEach(e => e.attr('fill', args.scalefns.colorf).attr('stroke', args.scalefns.colorf));
+      } else {
+        elements.forEach(e => e.classed('mg-points-mono', true));
+      }
+
+      pts.attr('r', (args.size_accessor !== null) ? args.scalefns.sizef : args.point_size);
+      if (highlights) {
+        highlights.attr('r', (args.size_accessor !== null) ? (d, i) => args.scalefns.sizef(d, i) + 2 : args.point_size + 2);
+      }
+
+      return this;
+    };
+
+    this.rollover = function() {
+      const svg = mg_get_svg_child_of$1(args.target);
+
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g$1(svg, 'mg-active-datapoint-container');
+      }
+
+      //remove the old rollovers if they already exist
+      svg.selectAll('.mg-voronoi').remove();
+
+      //add rollover paths
+      const voronoi = d3.voronoi()
+        .x(args.scalefns.xoutf)
+        .y(args.scalefns.youtf)
+        .extent([
+          [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
+          [args.width - args.buffer, args.height - args.buffer]
+        ]);
+
+      const paths = svg.append('g')
+        .attr('class', 'mg-voronoi');
+
+      paths.selectAll('path')
+        .data(voronoi.polygons(mg_filter_out_plot_bounds(args.data[0], args)))
+        .enter().append('path')
+        .attr('d', d => d == null ? null : `M${d.join(',')}Z`)
+        .attr('class', (d, i) => `path-${i}`)
+        .style('fill-opacity', 0)
+        .on('click', this.rolloverClick(args))
+        .on('mouseover', this.rolloverOn(args))
+        .on('mouseout', this.rolloverOff(args))
+        .on('mousemove', this.rolloverMove(args));
+
+      if (args.data[0].length === 1) {
+        point_mouseover(args, svg, args.data[0][0]);
+      }
+
+      return this;
+    };
+
+    this.rolloverClick = args => {
+      return (d, i) => {
+        if (args.click) {
+          args.click(d, i);
+        }
+      };
+    };
+
+    this.rolloverOn = args => {
+      const svg = mg_get_svg_child_of$1(args.target);
+
+      return (d, i) => {
+        svg.selectAll('.mg-points circle')
+          .classed('selected', false);
+
+        //highlight active point
+        const pts = svg.selectAll(`.mg-points circle.path-${i}`)
+          .classed('selected', true);
+
+        if (args.size_accessor) {
+          pts.attr('r', di => args.scalefns.sizef(di) + args.active_point_size_increase);
+        } else {
+          pts.attr('r', args.point_size + args.active_point_size_increase);
+        }
+
+        //trigger mouseover on all points for this class name in .linked charts
+        if (args.linked && !MG.globals.link) {
+          MG.globals.link = true;
+
+          //trigger mouseover on matching point in .linked charts
+          d3.selectAll(`.mg-voronoi .path-${i}`)
+            .each(() => {
+              d3.select(this).on('mouseover')(d, i);
+            });
+        }
+
+        if (args.show_rollover_text) {
+          point_mouseover(args, svg, d.data);
+        }
+
+        if (args.mouseover) {
+          args.mouseover(d, i);
+        }
+      };
+    };
+
+    this.rolloverOff = args => {
+      const svg = mg_get_svg_child_of$1(args.target);
+
+      return (d, i) => {
+        if (args.linked && MG.globals.link) {
+          MG.globals.link = false;
+
+          d3.selectAll(`.mg-voronoi .path-${i}`)
+            .each(() => {
+              d3.select(this).on('mouseout')(d, i);
+            });
+        }
+
+        //reset active point
+        const pts = svg.selectAll('.mg-points circle')
+          .classed('unselected', false)
+          .classed('selected', false);
+
+        if (args.size_accessor) {
+          pts.attr('r', args.scalefns.sizef);
+        } else {
+          pts.attr('r', args.point_size);
+        }
+
+        //reset active data point text
+        if (args.data[0].length > 1) mg_clear_mouseover_container$1(svg);
+
+        if (args.mouseout) {
+          args.mouseout(d, i);
+        }
+      };
+    };
+
+    this.rolloverMove = args => (d, i) => {
+      if (args.mousemove) {
+        args.mousemove(d, i);
+      }
+    };
+
+    this.update = function(args) {
+      return this;
+    };
+
+    this.windowListeners = function() {
+      mg_window_listeners$1(this.args);
       return this;
     };
 
@@ -3482,7 +4749,7 @@
 
   register('bar', barChart, barchartOptions);
   register('line', lineChart);
-  register('point', pointChartOptions);
+  register('point', pointChart, pointChartOptions);
 
   let deprecations = {
     rollover_callback: { replacement: 'mouseover', version: '2.0' },
@@ -3639,6 +4906,7 @@
     }
 
     var selected_chart = CHARTS[args.chart_type || defaults$1.chart_type];
+    console.log(selected_chart);
     merge_with_defaults(args, selected_chart.defaults, defaults$1);
 
     if (args.list) {
@@ -3690,7 +4958,7 @@
     data_graphic,
     markers: markers$1,
     time_format,
-    truncate_text,
+    truncate_text: truncate_text$1,
     wrap_text,
     zoom_to_data_domain,
     zoom_to_data_range,

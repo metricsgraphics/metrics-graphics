@@ -89,7 +89,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
     } else if (args.click_to_zoom_out) {
       MG.zoom_to_raw_range(target);
     }
-    if (mg_is_function(args.brushing_selection_changed))
+    if (is_function(args.brushing_selection_changed))
       args.brushing_selection_changed(args, range);
   });
 };

@@ -1,3 +1,13 @@
+import {
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_top,
+  mg_get_bottom,
+  mg_get_plot_bottom,
+  mg_get_svg_child_of,
+  mg_prevent_horizontal_overlap
+} from '../misc/utility.js';
+
 function mg_return_label(d) {
   return d.label;
 }

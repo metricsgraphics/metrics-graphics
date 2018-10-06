@@ -1,3 +1,19 @@
+import { init } from '../common/init.js';
+import { markers } from '../common/markers.js';
+import { mg_clear_mouseover_container, mg_mouseover_text } from '../common/rollover.js';
+import { scale_factory } from '../common/scales.js';
+import { add_x_label, x_rug } from '../common/x_axis.js';
+import { add_y_label, axis_factory, y_rug } from '../common/y_axis.js';
+import { mg_window_listeners } from '../common/window_listeners.js';
+import { mg_format_x_mouseover, mg_format_y_mouseover } from '../misc/formatters.js';
+import { process_point, raw_data_transformation } from '../misc/process.js';
+import {
+  mg_add_g,
+  mg_get_plot_left,
+  mg_get_plot_top,
+  mg_infer_type,
+  mg_get_svg_child_of
+} from '../misc/utility.js';
 
 function point_mouseover(args, svg, d) {
   const mouseover = mg_mouseover_text(args, { svg });
@@ -50,13 +66,13 @@ export function pointChart(args) {
     let xMaker, yMaker;
 
     if (args.x_axis_type === 'categorical') {
-      xMaker = MG.scale_factory(args)
+      xMaker = new scale_factory(args)
         .namespace('x')
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null);
 
       if (args.xgroup_accessor) {
-        new MG.scale_factory(args)
+        new scale_factory(args)
           .namespace('xgroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('bottom');
@@ -68,7 +84,7 @@ export function pointChart(args) {
 
       args.scalefns.xoutf = d => args.scalefns.xf(d) + args.scalefns.xgroupf(d);
     } else {
-      xMaker = MG.scale_factory(args)
+      xMaker = new scale_factory(args)
         .namespace('x')
         .inflateDomain(true)
         .zeroBottom(args.y_axis_type === 'categorical')
@@ -80,7 +96,7 @@ export function pointChart(args) {
 
     // y-scale generation. This needs to get simplified.
     if (args.y_axis_type === 'categorical') {
-      yMaker = MG.scale_factory(args)
+      yMaker = new scale_factory(args)
         .namespace('y')
         .zeroBottom(true)
         .categoricalDomainFromData()
@@ -88,7 +104,7 @@ export function pointChart(args) {
 
       if (args.ygroup_accessor) {
 
-        new MG.scale_factory(args)
+        new scale_factory(args)
           .namespace('ygroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('left');
@@ -102,7 +118,7 @@ export function pointChart(args) {
 
     } else {
       const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
-      yMaker = MG.scale_factory(args)
+      yMaker = new scale_factory(args)
         .namespace('y')
         .inflateDomain(true)
         .zeroBottom(args.x_axis_type === 'categorical')
@@ -114,7 +130,7 @@ export function pointChart(args) {
 
     /////// COLOR accessor
     if (args.color_accessor !== null) {
-      const colorScale = MG.scale_factory(args).namespace('color');
+      const colorScale = new scale_factory(args).namespace('color');
       if (args.color_type === 'number') {
         // do the color scale.
         // etiher get color range, or what.
@@ -136,28 +152,28 @@ export function pointChart(args) {
     }
 
     if (args.size_accessor) {
-      new MG.scale_factory(args).namespace('size')
+      new scale_factory(args).namespace('size')
         .numericalDomainFromData()
         .numericalRange(mg_get_size_range(args))
         .clamp(true);
     }
 
-    new MG.axis_factory(args)
+    new axis_factory(args)
       .namespace('x')
       .type(args.x_axis_type)
       .zeroLine(args.y_axis_type === 'categorical')
       .position(args.x_axis_position)
       .rug(x_rug(args))
-      .label(mg_add_x_label)
+      .label(add_x_label)
       .draw();
 
-    new MG.axis_factory(args)
+    new axis_factory(args)
       .namespace('y')
       .type(args.y_axis_type)
       .zeroLine(args.x_axis_type === 'categorical')
       .position(args.y_axis_position)
       .rug(y_rug(args))
-      .label(mg_add_y_label)
+      .label(add_y_label)
       .draw();
 
     this.mainPlot();
@@ -196,7 +212,7 @@ export function pointChart(args) {
 
     let highlights;
     svg.selectAll('.mg-highlight').remove();
-    if (args.highlight && mg_is_function(args.highlight)) {
+    if (args.highlight && is_function(args.highlight)) {
       highlights = svg.append('g')
         .classed('mg-highlight', true)
         .selectAll('circle')

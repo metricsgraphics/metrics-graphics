@@ -1,3 +1,7 @@
+import { call_hook } from './hooks.js';
+import { is_date, is_function } from '../misc/types.js';
+import { mg_flatten_array, mg_get_plot_left, mg_get_plot_right, mg_get_plot_top, mg_get_plot_bottom } from '../misc/utility.js';
+
 export function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
   args.scalefns[scalefcn_name] = function(di) {
     if (inflation === undefined) return args.scales[scale](di[accessor]);
@@ -76,7 +80,7 @@ export function scale_factory(args) {
         illustrative_data = args.data[i];
       }
     }
-    scaleArgs.is_time_series = mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+    scaleArgs.is_time_series = is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
       ? true
       : false;
 
@@ -90,7 +94,7 @@ export function scale_factory(args) {
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
       ? time_scale
-      : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
+      : (is_function(args[scaleArgs.namespace + '_scale_type']))
         ? args.y_scale_type()
         : (args[scaleArgs.namespace + '_scale_type'] === 'log')
           ? d3.scaleLog()
@@ -259,7 +263,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   // so we're displaying some kind of range
   if (min_val === max_val && args['min_' + namespace] == null &&
       args['max_' + namespace] == null) {
-    if (mg_is_date(min_val)) {
+    if (is_date(min_val)) {
       max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
     } else if (typeof min_val === 'number') {
       max_val = min_val + 1;
@@ -273,8 +277,8 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
     args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0];
     args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1];
   }
-  MG.call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
-  MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
+  call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
+  call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
 }
 
 function mg_categorical_group_color_scale(args) {

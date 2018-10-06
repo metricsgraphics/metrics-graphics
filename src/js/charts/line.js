@@ -1,7 +1,24 @@
 import { call_hook } from '../common/hooks.js';
+import { init } from '../common/init.js';
+import { markers } from '../common/markers.js';
+import { mg_clear_mouseover_container, mg_mouseover_text } from '../common/rollover.js';
 import { scale_factory } from '../common/scales.js';
-import { axis_factory } from '../common/y_axis.js';
-import { mg_get_svg_child_of, mg_selectAll_and_remove, time_format } from '../misc/utility.js';
+import { mg_window_listeners } from '../common/window_listeners.js';
+import { add_x_label, x_rug } from '../common/x_axis.js';
+import { add_y_label, axis_factory, y_rug } from '../common/y_axis.js';
+import { mg_format_x_mouseover, mg_format_y_mouseover } from '../misc/formatters.js';
+import { process_line, raw_data_transformation } from '../misc/process.js';
+import { is_function } from '../misc/types.js';
+import {
+  mg_add_g,
+  mg_data_in_plot_bounds,
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_svg_child_of,
+  mg_selectAll_and_remove,
+  mg_target_ref,
+  time_format
+} from '../misc/utility.js';
 
 function mg_line_color_text(elem, line_id, {color, colors}) {
   elem.classed('mg-hover-line-color', color === null)
@@ -789,7 +806,7 @@ export function lineChart(args) {
         .type('numerical')
         .position(args.x_axis_position)
         .rug(x_rug(args))
-        .label(mg_add_x_label)
+        .label(add_x_label)
         .draw();
     }
 
@@ -799,7 +816,7 @@ export function lineChart(args) {
         .type('numerical')
         .position(args.y_axis_position)
         .rug(y_rug(args))
-        .label(mg_add_y_label)
+        .label(add_y_label)
         .draw();
     }
 

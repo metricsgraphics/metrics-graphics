@@ -1,3 +1,20 @@
+import {
+  mg_add_g,
+  mg_elements_are_overlapping,
+  mg_get_left,
+  mg_get_right,
+  mg_get_top,
+  mg_get_bottom,
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_plot_top,
+  mg_get_plot_bottom,
+  mg_get_svg_child_of,
+  mg_normalize,
+  mg_selectAll_and_remove
+} from '../misc/utility.js';
+import { mg_default_xax_format } from './x_axis.js';
+
 function processScaleTicks (args, axis) {
   var accessor = args[axis + '_accessor'];
   var scale_ticks = args.scales[axis.toUpperCase()].ticks(args[axis + 'ax_count']);
@@ -732,7 +749,7 @@ export function axis_factory(args) {
 /* ================================================================================ */
 /* ================================================================================ */
 
-function y_rug (args) {
+export function y_rug (args) {
   'use strict';
 
   if (!args.y_rug) {
@@ -843,7 +860,7 @@ function mg_y_domain_range (args, scale) {
 }
 
 function mg_define_y_scales (args) {
-  var scale = (mg_is_function(args.y_scale_type))
+  var scale = (is_function(args.y_scale_type))
     ? args.y_scale_type()
     : (args.y_scale_type === 'log')
       ? d3.scaleLog()
@@ -867,7 +884,7 @@ function mg_define_y_scales (args) {
   args.scales.Y_axis = mg_y_domain_range(args, d3.scaleLinear());
 }
 
-function mg_add_y_label (g, args) {
+export function add_y_label (g, args) {
   if (args.y_label) {
     g.append('text')
       .attr('class', 'label')
@@ -963,7 +980,7 @@ function y_axis (args) {
   }
 
   var g = mg_add_g(svg, 'mg-y-axis');
-  mg_add_y_label(g, args);
+  add_y_label(g, args);
   mg_process_scale_ticks(args, 'y');
   mg_add_y_axis_rim(g, args);
   mg_add_y_axis_tick_lines(g, args);

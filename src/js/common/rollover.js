@@ -1,8 +1,15 @@
-function mg_clear_mouseover_container(svg) {
+import {
+  mg_get_bottom,
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_top
+} from '../misc/utility.js';
+
+export function mg_clear_mouseover_container(svg) {
   svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove();
 }
 
-function mg_setup_mouseover_container(svg, args) {
+export function mg_setup_mouseover_container(svg, args) {
   svg.select('.mg-active-datapoint').remove();
   var text_anchor = args.mouseover_align === 'right'
     ? 'end'
@@ -81,7 +88,7 @@ function mg_mouseover_row(row_number, container, rargs) {
   };
 }
 
-function mg_mouseover_text(args, rargs) {
+export function mg_mouseover_text(args, rargs) {
   mg_setup_mouseover_container(rargs.svg, args);
 
   let mouseOver = {

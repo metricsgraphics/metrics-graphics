@@ -1,3 +1,5 @@
+import { mg_get_svg_child_of } from '../misc/utility.js';
+
 export function chart_title(args) {
   'use strict';
 
@@ -20,7 +22,9 @@ export function chart_title(args) {
       .text(args.title);
 
     //show and activate the description icon if we have a description
-    if (args.show_tooltips && args.description && mg_jquery_exists()) {
+    //FIXME: this is disabled until we can replace with an implementation
+    //based on popper.js
+    if (args.show_tooltips && args.description && false) {
       chartTitle.append('tspan')
         .attr('class', 'mg-chart-description')
         .attr('dx', '0.3em')

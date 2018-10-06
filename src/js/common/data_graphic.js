@@ -165,6 +165,7 @@ export function data_graphic(args) {
   }
 
   var selected_chart = CHARTS[args.chart_type || defaults.chart_type];
+  console.log(selected_chart);
   merge_with_defaults(args, selected_chart.defaults, defaults);
 
   if (args.list) {
