@@ -53,7 +53,7 @@
     "gulp-connect": "^5.0.0",
     "gulp-jshint": "^2.1.0",
     "gulp-rename": "^1.2.0",
-    "gulp-rimraf": "^0.2.0",
+    "gulp-rimraf": "^1.0.0",
     "gulp-testem": "0.0.1",
     "gulp-uglify": "3.0.1",
     "gulp-umd": "^2.0.0",
