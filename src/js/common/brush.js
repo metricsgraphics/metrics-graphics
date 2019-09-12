@@ -35,6 +35,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
   const svg = d3.select(args.target).select('svg');
   const rollover = svg.select('.mg-rollover-rect, .mg-voronoi');
   const container = rollover.node();
+  const targetUid = mg_target_ref(args.target);
   let isDragging = false;
   let mouseDown = false;
   let origin = [];
@@ -58,7 +59,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
   };
 
   rollover.classed('mg-brush-container', true);
-  rollover.on('mousedown.' + args.target, () => {
+  rollover.on('mousedown.' + targetUid, () => {
     mouseDown = true;
     isDragging = false;
     origin = d3.mouse(container);
@@ -66,14 +67,14 @@ const add_event_handler_for_brush = (args, target, axis) => {
     svg.classed('mg-brushing-in-progress', true);
     remove_brushing_pattern(args);
   });
-  d3.select(document).on('mousemove.' + args.target, () => {
+  d3.select(document).on('mousemove.' + targetUid, () => {
     if (mouseDown) {
       isDragging = true;
       rollover.classed('mg-brushing', true);
       create_brushing_pattern(args, calculateSelectionRange());
     }
   });
-  d3.select(document).on('mouseup.' + args.target, () => {
+  d3.select(document).on('mouseup.' + targetUid, () => {
     if (!mouseDown) return;
     mouseDown = false;
     svg.classed('mg-brushing-in-progress', false);
