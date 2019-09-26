@@ -1,5 +1,8 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status][travis-badge]][travis-badge-url] [![CDNJS](https://img.shields.io/cdnjs/v/metrics-graphics.svg)](https://cdnjs.com/libraries/metrics-graphics)
 
+
+***this project is unmaintained. please see this blog post: https://wlach.github.io/blog/2019/09/metrics-graphics-stepping-back-for-a-while/***
+
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
 _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-series data. At under 80KB (minified), it provides a simple way to produce common types of graphics in a principled and consistent way. The library currently supports line charts, scatterplots, histograms, bar charts and data tables, as well as features like rug plots and basic linear regression.
@@ -74,10 +77,6 @@ new release). It is served from github pages using a [netlify](https://netlify.c
 configuration maintained and controlled by [William Lachance](https://github.com/wlach/).
 
 You might also be interested in writing addons for the library, in which case, [have a read through this page](https://github.com/metricsgraphics/metrics-graphics/wiki/Developing-Addons).
-
-## Getting in touch
-
-If you have any questions about metrics graphics (either as a user or contributor), the best place to ask is the [#metricsgraphics](https://client00.chat.mibbit.com/?server=irc.mozilla.org&channel=%23metricsgraphics) channel on irc.mozilla.org ([learn more about irc @ Mozilla](https://wiki.mozilla.org/IRC)).
 
 ## Resources
 * [Examples](http://metricsgraphicsjs.org/examples.htm)
