@@ -1,3 +1,4 @@
+import { add_brush_function } from '../common/brush.js';
 import { call_hook } from '../common/hooks.js';
 import { init } from '../common/init.js';
 import { markers } from '../common/markers.js';
@@ -6,15 +7,22 @@ import { scale_factory } from '../common/scales.js';
 import { mg_window_listeners } from '../common/window_listeners.js';
 import { add_x_label, x_rug } from '../common/x_axis.js';
 import { add_y_label, axis_factory, y_rug } from '../common/y_axis.js';
-import { mg_format_x_mouseover, mg_format_y_mouseover } from '../misc/formatters.js';
+import {
+  mg_format_x_aggregate_mouseover,
+  mg_format_x_mouseover,
+  mg_format_y_mouseover
+} from '../misc/formatters.js';
 import { process_line, raw_data_transformation } from '../misc/process.js';
+import { path_tween } from '../misc/transitions.js';
 import { is_function } from '../misc/types.js';
 import {
+  clone,
   mg_add_g,
   mg_data_in_plot_bounds,
   mg_get_plot_left,
   mg_get_plot_right,
   mg_get_svg_child_of,
+  mg_prevent_vertical_overlap,
   mg_selectAll_and_remove,
   mg_target_ref,
   time_format
@@ -703,9 +711,11 @@ function mg_update_generic_rollover_circle({scales, x_accessor, y_accessor, poin
     .style('opacity', 1);
 }
 
+let link;
+
 function mg_trigger_linked_mouseovers(args, d, i) {
-  if (args.linked && !MG.globals.link) {
-    MG.globals.link = true;
+  if (args.linked && !link) {
+    link = true;
     if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
       const datum = d.values ? d.values[0] : d;
       const id = mg_rollover_format_id(datum, args);
@@ -720,8 +730,8 @@ function mg_trigger_linked_mouseovers(args, d, i) {
 }
 
 function mg_trigger_linked_mouseouts({linked, utc_time, linked_format, x_accessor}, d, i) {
-  if (linked && MG.globals.link) {
-    MG.globals.link = false;
+  if (linked && link) {
+    link = false;
 
     const formatter = time_format(utc_time, linked_format);
     const datums = d.values ? d.values : [d];
@@ -768,7 +778,6 @@ function mg_remove_active_text(svg) {
 
 export function lineChart(args) {
   this.init = function(args) {
-    this.args = args;
 
     if (!args.data || args.data.length === 0) {
       args.internal_error = 'No data was supplied';
@@ -783,39 +792,39 @@ export function lineChart(args) {
 
     call_hook('line.before_destroy', this);
 
-    init(args);
+    this.args = init(args);
 
     // TODO incorporate markers into calculation of x scales
-    new scale_factory(args)
+    new scale_factory(this.args)
       .namespace('x')
       .numericalDomainFromData()
       .numericalRange('bottom');
 
-    const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
+    const baselines = (this.args.baselines || []).map(d => d[this.args.y_accessor]);
 
-    new scale_factory(args)
+    new scale_factory(this.args)
       .namespace('y')
       .zeroBottom(true)
       .inflateDomain(true)
       .numericalDomainFromData(baselines)
       .numericalRange('left');
 
-    if (args.x_axis) {
-      new axis_factory(args)
+    if (this.args.x_axis) {
+      new axis_factory(this.args)
         .namespace('x')
         .type('numerical')
-        .position(args.x_axis_position)
+        .position(this.args.x_axis_position)
         .rug(x_rug(args))
         .label(add_x_label)
         .draw();
     }
 
-    if (args.y_axis) {
-      new axis_factory(args)
+    if (this.args.y_axis) {
+      new axis_factory(this.args)
         .namespace('y')
         .type('numerical')
-        .position(args.y_axis_position)
-        .rug(y_rug(args))
+        .position(this.args.y_axis_position)
+        .rug(y_rug(this.args))
         .label(add_y_label)
         .draw();
     }
@@ -824,41 +833,40 @@ export function lineChart(args) {
     this.mainPlot();
     this.rollover();
     this.windowListeners();
-    if (args.brush) MG.add_brush_function(args);
+    if (this.args.brush) add_brush_function(this.args);
     call_hook('line.after_init', this);
 
     return this;
   };
 
   this.mainPlot = function() {
-    mg_line_main_plot(args);
+    mg_line_main_plot(this.args);
     return this;
   };
 
   this.markers = function() {
-    markers(args);
+    markers(this.args);
     return this;
   };
 
   this.rollover = function() {
-    mg_line_rollover_setup(args, this);
-    call_hook('line.after_rollover', args);
+    mg_line_rollover_setup(this.args, this);
+    call_hook('line.after_rollover', this.args);
 
     return this;
   };
 
   this.rolloverClick =  args => (d, i) => {
-      if (args.click) {
-          args.click(d, i);
+      if (this.args.click) {
+          this.args.click(d, i);
       }
   };
 
   this.rolloverOn = args => {
-    const svg = mg_get_svg_child_of(args.target);
-
+    const svg = mg_get_svg_child_of(this.args.target);
     return (d, i) => {
-      mg_update_rollover_circle(args, svg, d);
-      mg_trigger_linked_mouseovers(args, d, i);
+      mg_update_rollover_circle(this.args, svg, d);
+      mg_trigger_linked_mouseovers(this.args, d, i);
 
       svg.selectAll('text')
         .filter((g, j) => d === g)
@@ -868,38 +876,39 @@ export function lineChart(args) {
       if (args.show_rollover_text &&
           !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)
         ) {
-        const mouseover = mg_mouseover_text(args, { svg });
+        const mouseover = mg_mouseover_text(this.args, { svg });
         let row = mouseover.mouseover_row();
-        if (args.aggregate_rollover) {
-          row.text((args.aggregate_rollover && args.data.length > 1
+        if (this.args.aggregate_rollover) {
+          row.text((this.args.aggregate_rollover && this.args.data.length > 1
             ? mg_format_x_aggregate_mouseover
-            : mg_format_x_mouseover)(args, d));
+            : mg_format_x_mouseover)(this.args, d));
         }
 
-        const pts = args.aggregate_rollover && args.data.length > 1
+        const pts = this.args.aggregate_rollover && this.args.data.length > 1
           ? d.values
           : [d];
 
         pts.forEach(di => {
-          if (args.aggregate_rollover) {
+          if (this.args.aggregate_rollover) {
             row = mouseover.mouseover_row();
           }
 
           if (args.legend) {
-            mg_line_color_text(row.text(`${args.legend[di.__index__ - 1]}  `).bold(), di.__line_id__, args);
+            mg_line_color_text(row.text(`${args.legend[di.__index__ - 1]}  `).bold(), di.__line_id__,
+                               this.args);
           }
 
-          mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, args);
-          if (!args.aggregate_rollover) {
-            row.text(mg_format_x_mouseover(args, di));
+          mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, this.args);
+          if (!this.args.aggregate_rollover) {
+            row.text(mg_format_x_mouseover(this.args, di));
           }
 
-          row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+          row.text(mg_format_y_mouseover(this.args, di, this.args.time_series === false));
         });
       }
 
       if (args.mouseover) {
-        args.mouseover(d, i);
+        this.args.mouseover(d, i);
       }
     };
   };

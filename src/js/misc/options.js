@@ -1,4 +1,5 @@
-import { compare_type } from '../misc/types.js';
+import { compare_type, is_object } from '../misc/types.js';
+import { clone } from '../misc/utility.js';
 
 export function validate_option(options, key, value) {
   if (!Array.isArray(options[key])) return false; // non-existent option
@@ -15,14 +16,17 @@ export function options_to_defaults(obj) {
 }
 
 export function merge_with_defaults(obj) {
+  let newObj = Object.assign({}, obj);
+
   // code outline taken from underscore
   Array.prototype.slice.call(arguments, 1).forEach(source => {
     if (source) {
       for (var prop in source) {
-        if (obj[prop] === void 0) obj[prop] = source[prop];
+        if (newObj[prop] === void 0) newObj[prop] = is_object(source[prop]) ?
+          clone(source[prop]) : source[prop];
       }
     }
   });
 
-  return obj;
+  return newObj;
 }

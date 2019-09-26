@@ -1,4 +1,4 @@
-function add_ls(args) {
+export function add_ls(args) {
   var svg = mg_get_svg_child_of(args.target);
   var data = args.data[0];
   var min_x = d3.min(data, function(d) {
@@ -15,68 +15,6 @@ function add_ls(args) {
     .attr('y2', args.scales.Y(args.ls_line.fit(max_x)))
     .attr('class', 'mg-least-squares-line');
 }
-
-MG.add_ls = add_ls;
-
-function add_lowess(args) {
-  var svg = mg_get_svg_child_of(args.target);
-  var lowess = args.lowess_line;
-
-  var line = d3.svg.line()
-    .x(function(d) {
-      return args.scales.X(d.x); })
-    .y(function(d) {
-      return args.scales.Y(d.y); })
-    .interpolate(args.interpolate);
-
-  svg.append('path')
-    .attr('d', line(lowess))
-    .attr('class', 'mg-lowess-line');
-}
-
-MG.add_lowess = add_lowess;
-
-function lowess_robust(x, y, alpha, inc) {
-  // Used http://www.unc.edu/courses/2007spring/biol/145/001/docs/lectures/Oct27.html
-  // for the clear explanation of robust lowess.
-
-  // calculate the the first pass.
-  var _l;
-  var r = [];
-  var yhat = d3.mean(y);
-  var i;
-  for (i = 0; i < x.length; i += 1) { r.push(1); }
-  _l = _calculate_lowess_fit(x, y, alpha, inc, r);
-  var x_proto = _l.x;
-  var y_proto = _l.y;
-
-  // Now, take the fit, recalculate the weights, and re-run LOWESS using r*w instead of w.
-
-  for (i = 0; i < 100; i += 1) {
-    r = d3.zip(y_proto, y).map(function(yi) {
-      return Math.abs(yi[1] - yi[0]);
-    });
-
-    var q = d3.quantile(r.sort(), 0.5);
-
-    r = r.map(function(ri) {
-      return _bisquare_weight(ri / (6 * q));
-    });
-
-    _l = _calculate_lowess_fit(x, y, alpha, inc, r);
-    x_proto = _l.x;
-    y_proto = _l.y;
-  }
-
-  return d3.zip(x_proto, y_proto).map(function(d) {
-    var p = {};
-    p.x = d[0];
-    p.y = d[1];
-    return p;
-  });
-}
-
-MG.lowess_robust = lowess_robust;
 
 function lowess(x, y, alpha, inc) {
   var r = [];

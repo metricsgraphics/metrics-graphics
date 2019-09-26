@@ -166,7 +166,7 @@ export function barChart(args) {
     raw_data_transformation(args);
 
     process_point(args);
-    init(args);
+    args = init(args);
 
     let xMaker;
     let yMaker;

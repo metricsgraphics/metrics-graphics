@@ -90,7 +90,7 @@ d3.json('data/some_percentage.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    var all_the_data = MG.clone(data[0]);
+    var all_the_data = data[0].map(d => d);
     for (i = 1; i < data.length; i++){
         for (var j = 0; j < data[i].length; j++){
             if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
@@ -282,7 +282,7 @@ d3.json('data/fake_users2.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    var all_the_data = MG.clone(data[0]);
+    var all_the_data = data[0].map(d => d);
     for (i = 1; i < data.length; i++){
         for (var j = 0; j < data[i].length; j++){
             if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {

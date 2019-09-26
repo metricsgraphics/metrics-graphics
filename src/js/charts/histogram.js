@@ -1,14 +1,23 @@
-import { raw_data_transformation } from '../misc/process.js';
-import { mg_get_svg_child_of, time_format } from '../misc/utility.js';
+import { init } from '../common/init.js';
+import { markers } from '../common/markers.js';
 import { scale_factory } from '../common/scales.js';
+import { x_axis } from '../common/x_axis.js';
+import { y_axis } from '../common/y_axis.js';
+import { mg_window_listeners } from '../common/window_listeners.js';
+import { process_histogram, raw_data_transformation } from '../misc/process.js';
+import {
+  mg_add_g,
+  mg_get_svg_child_of,
+  time_format
+} from '../misc/utility.js';
 
-function histogram(args) {
+export function histogram(args) {
   this.init = (args) => {
     this.args = args;
 
     raw_data_transformation(args);
     process_histogram(args);
-    init(args);
+    args = init(args);
 
     new scale_factory(args)
       .namespace('x')
@@ -212,7 +221,7 @@ function histogram(args) {
   this.init(args);
 }
 
-const options = {
+export const histogramOptions = {
   bar_margin: [1, "number"], // the margin between bars
   binned: [false, "boolean"], // determines whether the data is already binned
   bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
@@ -220,5 +229,3 @@ const options = {
   processed_y_accessor: ['y', 'string'],
   processed_dx_accessor: ['dx', 'string']
 };
-
-MG.register('histogram', histogram, options);

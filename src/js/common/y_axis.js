@@ -1,6 +1,11 @@
+import { call_hook } from '../common/hooks.js';
+import { mg_process_scale_ticks } from '../misc/process.js';
 import {
+  mg_add_color_accessor_to_rug,
   mg_add_g,
   mg_elements_are_overlapping,
+  mg_exit_and_remove,
+  mg_flatten_array,
   mg_get_left,
   mg_get_right,
   mg_get_top,
@@ -10,10 +15,14 @@ import {
   mg_get_plot_top,
   mg_get_plot_bottom,
   mg_get_svg_child_of,
+  mg_make_rug,
   mg_normalize,
   mg_selectAll_and_remove
 } from '../misc/utility.js';
-import { mg_default_xax_format } from './x_axis.js';
+import {
+  mg_default_xax_format,
+  mg_get_yformat_and_secondary_time_function
+} from './x_axis.js';
 
 function processScaleTicks (args, axis) {
   var accessor = args[axis + '_accessor'];
@@ -966,13 +975,13 @@ function mg_add_y_axis_tick_labels (g, args) {
 }
 
 // TODO ought to be deprecated, only used by histogram
-function y_axis (args) {
+export function y_axis (args) {
   if (!args.processed) {
     args.processed = {};
   }
 
   var svg = mg_get_svg_child_of(args.target);
-  MG.call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
+  call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
   mg_selectAll_and_remove(svg, '.mg-y-axis');
 
   if (!args.y_axis) {

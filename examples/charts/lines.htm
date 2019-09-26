@@ -213,7 +213,6 @@ d3.json('data/fake_users1.json', function(data) {
     });
 });
 
-MG._hooks = {};
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
@@ -240,7 +239,7 @@ d3.json('data/confidence_band.json', function(data) {
         height: 200,
         right: 40,
         area: false,
-        target: '#confidence_band',
+        target: document.getElementById('confidence_band'),
         show_secondary_x_label: false,
         show_confidence_band: ['l', 'u'],
         x_extended_ticks: true

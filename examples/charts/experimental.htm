@@ -999,7 +999,7 @@ function fake_data(length, seconds) {
 
     for (var i = 0; i < length; i++){
         v += (Math.random() - 0.5) * 10000;
-        data.push({date: MG.clone(d), value: v});
+        data.push({date: d, value: v});
         d = new Date(d.getTime() + seconds * 1000);
     }
     return data;
@@ -1012,7 +1012,7 @@ function fake_days(length) {
     var data = [];
     for (var i = 0; i<length; i++) {
         v += (Math.random() - 0.5) * 10000;
-        data.push({date: MG.clone(d), value: v});
+        data.push({date: new Date(d), value: v});
         d.setDate(d.getDate() + 1);
     }
     return data;

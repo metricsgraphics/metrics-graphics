@@ -1,6 +1,14 @@
 import { merge_with_defaults } from '../misc/options.js';
 import { is_date } from '../misc/types.js';
-import { get_width, get_height, mg_flatten_array, mg_get_left, mg_get_top, mg_get_svg_child_of, mg_target_ref } from '../misc/utility.js';
+import {
+  get_width,
+  get_height,
+  mg_flatten_array,
+  mg_get_left,
+  mg_get_top,
+  mg_get_svg_child_of,
+  mg_target_ref
+} from '../misc/utility.js';
 import { chart_title } from './chart_title.js';
 import { mg_default_xax_format } from './x_axis.js';
 
@@ -19,8 +27,7 @@ function mg_merge_args_with_defaults(args) {
     args.processed = {};
   }
 
-  args = merge_with_defaults(args, defaults);
-  return args;
+  return merge_with_defaults(args, defaults);
 }
 
 function mg_is_time_series(args) {
@@ -28,7 +35,7 @@ function mg_is_time_series(args) {
   args.time_series = is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
 }
 
-function mg_init_compute_width(args) {
+export function mg_init_compute_width(args) {
   var svg_width = parseInt(args.width);
   if (args.full_width) {
     svg_width = get_width(args.target);
@@ -40,7 +47,7 @@ function mg_init_compute_width(args) {
   args.width = svg_width;
 }
 
-function mg_init_compute_height(args) {
+export function mg_init_compute_height(args) {
   var svg_height = parseInt(args.height);
   if (args.full_height) {
     svg_height = get_height(args.target);
@@ -52,7 +59,7 @@ function mg_init_compute_height(args) {
   args.height = svg_height;
 }
 
-function mg_remove_svg_if_chart_type_has_changed(svg, args) {
+export function mg_remove_svg_if_chart_type_has_changed(svg, args) {
   if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line') ||
     (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point') ||
     (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram') ||
@@ -62,7 +69,7 @@ function mg_remove_svg_if_chart_type_has_changed(svg, args) {
   }
 }
 
-function mg_add_svg_if_it_doesnt_exist(svg, args) {
+export function mg_add_svg_if_it_doesnt_exist(svg, args) {
   if (mg_get_svg_child_of(args.target).empty()) {
     svg = d3.select(args.target)
       .append('svg')
@@ -86,7 +93,7 @@ function mg_add_clip_path_for_plot_area(svg, args) {
     .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
 }
 
-function mg_adjust_width_and_height_if_changed(svg, args) {
+export function mg_adjust_width_and_height_if_changed(svg, args) {
   if (args.width !== Number(svg.attr('width'))) {
     svg.attr('width', args.width);
   }
@@ -95,7 +102,7 @@ function mg_adjust_width_and_height_if_changed(svg, args) {
   }
 }
 
-function mg_set_viewbox_for_scaling(svg, args) {
+export function mg_set_viewbox_for_scaling(svg, args) {
   // we need to reconsider how we handle automatic scaling
   svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
   if (args.full_width || args.full_height) {
@@ -151,7 +158,7 @@ function mg_remove_outdated_lines(svg, args) {
   }
 }
 
-function mg_raise_container_error(container, args) {
+export function mg_raise_container_error(container, args) {
   if (container.empty()) {
     console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
     return;
@@ -243,8 +250,6 @@ function mg_barchart_extrapolate_group_and_thickness_from_height(args) {
 }
 
 export function init(args) {
-  'use strict';
-  args = arguments[0];
   args = mg_merge_args_with_defaults(args);
   // If you pass in a dom element for args.target, the expectation
   // of a string elsewhere will break.
@@ -273,5 +278,5 @@ export function init(args) {
   chart_title(args);
   mg_remove_outdated_lines(svg, args);
 
-  return this;
+  return args;
 }

@@ -87,7 +87,7 @@ $('.modify-time-period-controls button').click(function() {
 
 function modify_time_period(data, past_n_days) {
     if (past_n_days !== '') {
-        return MG.clone(data).slice(past_n_days * -1);
+        return data.slice(past_n_days * -1);
     }
 
     return data;
@@ -145,6 +145,7 @@ $('.split-by-controls button').click(function() {
     $(this).addClass('active').siblings().removeClass('active');
 
     // update data
+    console.log(split_by_params);
     MG.data_graphic(split_by_params);
 });
 
@@ -161,7 +162,7 @@ $('.modify-time-period-controls button').click(function() {
 
 function modify_time_period(data, past_n_days) {
     if (past_n_days !== '') {
-        return MG.clone(data).slice(past_n_days * -1);
+        return data.slice(past_n_days * -1);
     }
 
     return data;

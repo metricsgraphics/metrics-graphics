@@ -141,7 +141,7 @@ d3.json('data/fake_users3.json', function(data) {
     }
 
     data[1][data[1].length-1].value = 50000000;
-    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1] = data[1][data[1].length-1];
     data[2][data[2].length-1].value += 10000000;
 
     MG.data_graphic({
@@ -312,7 +312,7 @@ d3.json('data/fake_users3.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
     data[1][data[1].length-1].value = 50000000;
-    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1] = data[1][data[1].length-1];
     data[2][data[2].length-1].value += 10000000;
 
 

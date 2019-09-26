@@ -1,6 +1,22 @@
 import { mg_add_scale_function } from './scales.js';
+import { mg_get_time_format, mg_get_time_frame } from '../misc/time.js';
 import { is_date } from '../misc/types.js';
-import { clone, mg_elements_are_overlapping, mg_flatten_array, mg_add_color_accessor_to_rug, mg_selectAll_and_remove } from '../misc/utility.js';
+import { mg_process_scale_ticks } from '../misc/process.js';
+import {
+  clone,
+  mg_add_color_accessor_to_rug,
+  mg_add_g,
+  mg_elements_are_overlapping,
+  mg_flatten_array,
+  mg_get_bottom,
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_svg_child_of,
+  mg_get_right,
+  mg_get_top,
+  mg_make_rug,
+  mg_selectAll_and_remove
+} from '../misc/utility.js';
 
 export function x_rug(args) {
   'use strict';
@@ -30,7 +46,7 @@ function mg_add_processed_object(args) {
 }
 
 // TODO ought to be deprecated, only used by histogram
-function x_axis(args) {
+export function x_axis(args) {
   'use strict';
 
   var svg = mg_get_svg_child_of(args.target);
@@ -223,75 +239,6 @@ function mg_default_bar_xax_format(args) {
   };
 }
 
-function mg_get_time_frame(diff) {
-  // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
-  var time_frame;
-  if (mg_milisec_diff(diff)) {
-    time_frame = 'millis';
-  } else if (mg_sec_diff(diff)) {
-    time_frame = 'seconds';
-  } else if (mg_day_diff(diff)) {
-    time_frame = 'less-than-a-day';
-  } else if (mg_four_days(diff)) {
-    time_frame = 'four-days';
-  } else if (mg_many_days(diff)) { // a handful of months?
-    time_frame = 'many-days';
-  } else if (mg_many_months(diff)) {
-    time_frame = 'many-months';
-  } else if (mg_years(diff)) {
-    time_frame = 'years';
-  } else {
-    time_frame = 'default';
-  }
-  return time_frame;
-}
-
-function mg_milisec_diff(diff) {
-  return diff < 1;
-}
-
-function mg_sec_diff(diff) {
-  return diff < 60;
-}
-
-function mg_day_diff(diff) {
-  return diff / (60 * 60) < 24;
-}
-
-function mg_four_days(diff) {
-  return diff / (60 * 60) < 24 * 4;
-}
-
-function mg_many_days(diff) {
-  return diff / (60 * 60 * 24) < 60;
-}
-
-function mg_many_months(diff) {
-  return diff / (60 * 60 * 24) < 365;
-}
-
-function mg_years(diff) {
-  return diff / (60 * 60 * 24) >= 365;
-}
-
-function mg_get_time_format(utc, diff) {
-  var main_time_format;
-  if (mg_milisec_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%M:%S.%L');
-  } else if (mg_sec_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%M:%S');
-  } else if (mg_day_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%H:%M');
-  } else if (mg_four_days(diff) || mg_many_days(diff)) {
-    main_time_format = MG.time_format(utc, '%b %d');
-  } else if (mg_many_months(diff)) {
-    main_time_format = MG.time_format(utc, '%b');
-  } else {
-    main_time_format = MG.time_format(utc, '%Y');
-  }
-  return main_time_format;
-}
-
 function mg_process_time_format(args) {
   if (args.time_series) {
     const diff = (args.processed.max_x - args.processed.min_x) / 1000;
@@ -444,7 +391,7 @@ function mg_add_secondary_x_axis_label(args, g) {
   }
 }
 
-function mg_get_yformat_and_secondary_time_function(args) {
+export function mg_get_yformat_and_secondary_time_function(args) {
   let tf = {
     timeframe: args.processed.x_time_frame,
     tick_diff_timeframe: args.processed.x_tick_diff_time_frame

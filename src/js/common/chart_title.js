@@ -1,4 +1,5 @@
 import { mg_get_svg_child_of } from '../misc/utility.js';
+import { error } from '../misc/error.js';
 
 export function chart_title(args) {
   'use strict';

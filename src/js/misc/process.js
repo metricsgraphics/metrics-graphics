@@ -1,7 +1,8 @@
+import { mg_get_time_frame } from './time.js';
 import { clone } from './utility.js';
 import { is_array_of_arrays, is_array_of_objects, is_array_of_objects_or_empty, is_date } from './types.js';
 
-function mg_process_scale_ticks(args, axis) {
+export function mg_process_scale_ticks(args, axis) {
   var accessor;
   var scale_ticks;
   var max;
@@ -249,7 +250,7 @@ export function process_line(args) {
   return this;
 }
 
-function process_histogram(args) {
+export function process_histogram(args) {
   'use strict';
 
   // if args.binned == false, then we need to bin the data appropriately.

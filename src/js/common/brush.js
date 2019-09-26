@@ -1,3 +1,6 @@
+import { is_function } from '../misc/types.js';
+import { convert_range_to_domain, zoom_to_data_domain, zoom_to_data_range, zoom_to_raw_range} from './zoom.js';
+
 const get_extent_rect = args => {
   return d3.select(args.target).select('.mg-extent').size()
     ? d3.select(args.target).select('.mg-extent')
@@ -79,15 +82,16 @@ const add_event_handler_for_brush = (args, target, axis) => {
     if (isDragging) {
       isDragging = false;
       if (target === args) {
-        MG.zoom_to_data_range(target, range);
+        console.log(target);
+        zoom_to_data_range(target, range);
         if (args.click_to_zoom_out)
           svg.select('.mg-rollover-rect, .mg-voronoi').classed('mg-brushed', true);
       } else {
-        const domain = MG.convert_range_to_domain(args, range);
-        MG.zoom_to_data_domain(target, domain);
+        const domain = convert_range_to_domain(args, range);
+        zoom_to_data_domain(target, domain);
       }
     } else if (args.click_to_zoom_out) {
-      MG.zoom_to_raw_range(target);
+      zoom_to_raw_range(target);
     }
     if (is_function(args.brushing_selection_changed))
       args.brushing_selection_changed(args, range);
@@ -97,8 +101,12 @@ const add_event_handler_for_brush = (args, target, axis) => {
 export const add_brush_function = args => {
   if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
     return console.warn('The option "brush" does not support axis type "categorical" currently.');
-  if (!args.zoom_target) args.zoom_target = args;
-  if (args.zoom_target !== args) args.zoom_target.processed.subplot = args;
+  console.log(args)
+  if (!args.zoom_target) {
+    args.zoom_target = args;
+  } else {
+    args.zoom_target.processed.subplot = args;
+  }
   let brush_axis;
   switch (args.brush) {
     case 'x':

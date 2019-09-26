@@ -22,7 +22,7 @@
 
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
-        data.push({date: MG.clone(d), value: v});
+        data.push({date: d, value: v});
         d = new Date(d.getTime() + seconds * 1000);
     }
     return data;
@@ -36,7 +36,7 @@ function fake_days(length) {
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
         if (v < 0) v = 0;
-        data.push({date: MG.clone(d), value: v});
+        data.push({date: new Date(d), value: v});
         d.setDate(d.getDate() + 1);
     }
     return data;
@@ -49,7 +49,7 @@ function fake_years(length) {
     v = 100000;
     for (var i = 0; i < length; i++) {
         v += (Math.random()-.5) * 10000;
-        out.push({value:v, date: MG.clone(d)});
+        out.push({value: v, date: d});
         y -=1;
         d = new Date(y,0,1);
     }
@@ -175,7 +175,7 @@ function fake_data(length, seconds) {
 
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
-        data.push({date: MG.clone(d), value: v});
+        data.push({date: d, value: v});
         d = new Date(d.getTime() + seconds * 1000);
     }
     return data;
@@ -189,7 +189,7 @@ function fake_days(length) {
     for (var i = 0; i < length; i++) {
         v += (Math.random() - 0.5) * 10000;
         if (v < 0) v = 0;
-        data.push({date: MG.clone(d), value: v});
+          data.push({date: new Date(d), value: v});
         d.setDate(d.getDate() + 1);
     }
     return data;
@@ -202,7 +202,7 @@ function fake_years(length) {
     v = 100000;
     for (var i = 0; i < length; i++) {
         v += (Math.random()-.5) * 10000;
-        out.push({value:v, date: MG.clone(d)});
+        out.push({value: v, date: d});
         y -=1;
         d = new Date(y,0,1);
     }

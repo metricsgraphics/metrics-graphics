@@ -95,22 +95,22 @@
       datum[args.y_accessor] <= args.processed.max_y;
   }
 
-  function mg_get_bottom$1(args) {
+  function mg_get_bottom(args) {
     return args.height - args.bottom;
   }
 
   function mg_get_plot_bottom$1(args) {
     // returns the pixel location of the bottom side of the plot area.
-    return mg_get_bottom$1(args) - args.buffer;
+    return mg_get_bottom(args) - args.buffer;
   }
 
-  function mg_get_top$1(args) {
+  function mg_get_top(args) {
     return args.top;
   }
 
   function mg_get_plot_top$1(args) {
     // returns the pixel location of the top side of the plot area.
-    return mg_get_top$1(args) + args.buffer;
+    return mg_get_top(args) + args.buffer;
   }
 
   function mg_get_left(args) {
@@ -122,13 +122,19 @@
     return mg_get_left(args) + args.buffer;
   }
 
-  function mg_get_right$1(args) {
+  function mg_get_right(args) {
     return args.width - args.right;
   }
 
   function mg_get_plot_right$1(args) {
     // returns the pixel location of the right side of the plot area.
-    return mg_get_right$1(args) - args.buffer;
+    return mg_get_right(args) - args.buffer;
+  }
+
+  //////// adding elements, removing elements /////////////
+
+  function mg_exit_and_remove(elem) {
+    elem.exit().remove();
   }
 
   function mg_selectAll_and_remove(svg, cl) {
@@ -139,7 +145,27 @@
     return svg.append('g').classed(cl, true);
   }
 
-  function mg_add_color_accessor_to_rug$1(rug, args, rug_mono_class) {
+  //////// axis helper functions ////////////
+
+  function mg_make_rug(args, rug_class) {
+    var svg = mg_get_svg_child_of(args.target);
+    var all_data = mg_flatten_array(args.data);
+    var rug = svg.selectAll('line.' + rug_class).data(all_data);
+
+    rug.enter()
+      .append('line')
+        .attr('class', rug_class)
+        .attr('opacity', 0.3);
+
+    //remove rug elements that are no longer in use
+    mg_exit_and_remove(rug);
+
+    //set coordinates of new rug elements
+    mg_exit_and_remove(rug);
+    return rug;
+  }
+
+  function mg_add_color_accessor_to_rug(rug, args, rug_mono_class) {
     if (args.color_accessor) {
       rug.attr('stroke', args.scalefns.colorf);
       rug.classed(rug_mono_class, false);
@@ -183,6 +209,49 @@
     }
   }
 
+  function mg_prevent_vertical_overlap(labels, args) {
+    if (!labels || labels.length == 1) {
+      return;
+    }
+
+    labels.sort(function(b, a) {
+      return d3.select(a).attr('y') - d3.select(b).attr('y');
+    });
+
+    labels.reverse();
+
+    var overlap_amount, label_i, label_j;
+
+    //see if each of our labels overlaps any of the other labels
+    for (var i = 0; i < labels.length; i++) {
+      //if so, nudge it up a bit, if the label it intersects hasn't already been nudged
+      label_i = d3.select(labels[i]).text();
+
+      for (var j = 0; j < labels.length; j++) {
+        label_j = d3.select(labels[j]).text();
+        overlap_amount = mg_is_vertically_overlapping(labels[i], labels[j]);
+
+        if (overlap_amount !== false && label_i !== label_j) {
+          var node = d3.select(labels[i]);
+          var newY = +node.attr('y');
+          newY = newY + overlap_amount;
+          node.attr('y', newY);
+        }
+      }
+    }
+  }
+
+  function mg_is_vertically_overlapping(element, sibling) {
+    var element_bbox = element.getBoundingClientRect();
+    var sibling_bbox = sibling.getBoundingClientRect();
+
+    if (element_bbox.top <= sibling_bbox.bottom && element_bbox.top >= sibling_bbox.top) {
+      return sibling_bbox.bottom - element_bbox.top;
+    }
+
+    return false;
+  }
+
   function mg_is_horizontally_overlapping(element, labels) {
     var element_bbox = element.getBoundingClientRect();
 
@@ -205,37 +274,29 @@
 
   function mg_infer_type(args, ns) {
       // must return categorical or numerical.
-      var testPoint = mg_flatten_array$1(args.data);
+      var testPoint = mg_flatten_array(args.data);
 
       testPoint = testPoint[0][args[ns + '_accessor']];
       return typeof testPoint === 'string' ? 'categorical' : 'numerical';
   }
 
-  function mg_get_svg_child_of$1(selector_or_node) {
+  function mg_get_svg_child_of(selector_or_node) {
     return d3.select(selector_or_node).select('svg');
   }
 
-  function mg_flatten_array$1(arr) {
+  function mg_flatten_array(arr) {
     var flat_data = [];
     return flat_data.concat.apply(flat_data, arr);
   }
 
-  function mg_next_id() {
-    if (typeof MG._next_elem_id === 'undefined') {
-      MG._next_elem_id = 0;
-    }
-
-    return 'mg-' + (MG._next_elem_id++);
-  }
-
+  let _next_elem_id = 0;
   function mg_target_ref(target) {
     if (typeof target === 'string') {
       return mg_normalize(target);
-
     } else if (target instanceof window.HTMLElement) {
       var target_ref = target.getAttribute('data-mg-uid');
       if (!target_ref) {
-        target_ref = mg_next_id();
+        target_ref = 'mg-' + (_next_elem_id++);
         target.setAttribute('data-mg-uid', target_ref);
       }
 
@@ -459,7 +520,7 @@
           return d.textclass || ''; })
         .classed('mg-marker-text', true)
         .attr('x', mg_x_position(args))
-        .attr('y', args.x_axis_position === 'bottom' ? mg_get_top$1(args) * 0.95 : mg_get_bottom$1(args) + args.buffer)
+        .attr('y', args.x_axis_position === 'bottom' ? mg_get_top(args) * 0.95 : mg_get_bottom(args) + args.buffer)
         .attr('text-anchor', 'middle')
         .text(mg_return_label)
         .each(function(d) {
@@ -505,7 +566,7 @@
 
   function markers$1(args) {
 
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
     mg_remove_existing_markers(svg);
     mg_place_markers(args, svg);
     mg_place_baselines(args, svg);
@@ -543,79 +604,96 @@
       .attr('opacity', 0);
   };
 
-  const filter_in_range_data = (args, range) => {
-    const is_data_in_range = (data, range) => {
-      return data > Math.min(range[0], range[1]) && data < Math.max(range[0], range[1]);
-    };
-    // if range without this axis return true, else judge is data in range or not.
-    return d => ['x', 'y'].every(dim => !(dim in range) || is_data_in_range(d[args[`${dim}_accessor`]], range[dim]));
-  };
+  const add_event_handler_for_brush = (args, target, axis) => {
+    const svg = d3.select(args.target).select('svg');
+    const rollover = svg.select('.mg-rollover-rect, .mg-voronoi');
+    const container = rollover.node();
+    let isDragging = false;
+    let mouseDown = false;
+    let origin = [];
 
-  // the range here is the range of data
-  // range is an object with two optional attributes of x,y, respectively represent ranges on two axes
-  const zoom_to_data_domain = (args, range) => {
-    const raw_data = args.processed.raw_data || args.data;
-    // store raw data and raw domain to in order to zoom back to the initial state
-    if (!('raw_data' in args.processed)) {
-      args.processed.raw_domain = {
-        x: args.scales.X.domain(),
-        y: args.scales.Y.domain()
-      };
-      args.processed.raw_data = raw_data;
-    }
-    // to avoid drawing outside the chart in the point chart, unnecessary in line chart.
-    if (args.chart_type === 'point') {
-      if (is_array_of_arrays(raw_data)) {
-        args.data = raw_data.map(function(d) {
-          return d.filter(filter_in_range_data(args, range));
-        });
-      } else {
-        args.data = raw_data.filter(filter_in_range_data(args, range));
-      }
-    }
-    ['x', 'y'].forEach(dim => {
-      if (dim in range) args.processed[`zoom_${dim}`] = range[dim];
-      else delete args.processed[`zoom_${dim}`];
-    });
-    if (args.processed.subplot) {
-      if (range !== args.processed.raw_domain) {
-        create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
-      } else {
-        remove_brushing_pattern(args.processed.subplot);
-      }
-    }
-    new MG.charts[args.chart_type || defaults.chart_type].descriptor(args);
-  };
-
-  const zoom_to_raw_range = args => {
-    if (!('raw_domain' in args.processed)) return;
-    zoom_to_data_domain(args, args.processed.raw_domain);
-    delete args.processed.raw_domain;
-    delete args.processed.raw_data;
-  };
-
-  // converts the range of selection into the range of data that we can use to
-  // zoom the chart to a particular region
-  const convert_range_to_domain = (args, range) =>
-    ['x', 'y'].reduce((domain, dim) => {
-      if (!(dim in range)) return domain;
-      domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v));
-      if (dim === 'y') domain[dim].reverse();
-      return domain;
-    }, {});
-
-  const convert_domain_to_range = (args, domain) =>
-    ['x', 'y'].reduce((range, dim) => {
-      if (!(dim in domain)) return range;
-      range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v));
-      if (dim === 'y') range[dim].reverse();
+    const calculateSelectionRange = () => {
+      const min_x = args.left;
+      const max_x = args.width - args.right - args.buffer;
+      const min_y = args.top;
+      const max_y = args.height - args.bottom - args.buffer;
+      const mouse = d3.mouse(container);
+      const range = {};
+      range.x = axis.x ? [
+        Math.max(min_x, Math.min(origin[0], mouse[0])),
+        Math.min(max_x, Math.max(origin[0], mouse[0]))
+      ] : [min_x, max_x];
+      range.y = axis.y ? [
+        Math.max(min_y, Math.min(origin[1], mouse[1])),
+        Math.min(max_y, Math.max(origin[1], mouse[1]))
+      ] : [min_y, max_y];
       return range;
-    }, {});
+    };
 
-  // the range here is the range of selection
-  const zoom_to_data_range = (args, range) => {
-    const domain = convert_range_to_domain(args, range);
-    zoom_to_data_domain(args, domain);
+    rollover.classed('mg-brush-container', true);
+    rollover.on('mousedown.' + args.target, () => {
+      mouseDown = true;
+      isDragging = false;
+      origin = d3.mouse(container);
+      svg.classed('mg-brushed', false);
+      svg.classed('mg-brushing-in-progress', true);
+      remove_brushing_pattern(args);
+    });
+    d3.select(document).on('mousemove.' + args.target, () => {
+      if (mouseDown) {
+        isDragging = true;
+        rollover.classed('mg-brushing', true);
+        create_brushing_pattern(args, calculateSelectionRange());
+      }
+    });
+    d3.select(document).on('mouseup.' + args.target, () => {
+      if (!mouseDown) return;
+      mouseDown = false;
+      svg.classed('mg-brushing-in-progress', false);
+      const range = calculateSelectionRange();
+      if (isDragging) {
+        isDragging = false;
+        if (target === args) {
+          console.log(target);
+          zoom_to_data_range(target, range);
+          if (args.click_to_zoom_out)
+            svg.select('.mg-rollover-rect, .mg-voronoi').classed('mg-brushed', true);
+        } else {
+          const domain = convert_range_to_domain(args, range);
+          zoom_to_data_domain(target, domain);
+        }
+      } else if (args.click_to_zoom_out) {
+        zoom_to_raw_range(target);
+      }
+      if (is_function$1(args.brushing_selection_changed))
+        args.brushing_selection_changed(args, range);
+    });
+  };
+
+  const add_brush_function = args => {
+    if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical')
+      return console.warn('The option "brush" does not support axis type "categorical" currently.');
+    console.log(args);
+    if (!args.zoom_target) {
+      args.zoom_target = args;
+    } else {
+      args.zoom_target.processed.subplot = args;
+    }
+    let brush_axis;
+    switch (args.brush) {
+      case 'x':
+        brush_axis = {x: true, y: false};
+        break;
+      case 'y':
+        brush_axis = {x: false, y: true};
+        break;
+      case 'xy':
+        brush_axis = {x: true, y: true};
+        break;
+      default:
+        brush_axis = {x: true, y: true};
+    }
+    add_event_handler_for_brush(args, args.zoom_target, brush_axis);
   };
 
   function validate_option(options, key, value) {
@@ -633,55 +711,35 @@
   }
 
   function merge_with_defaults(obj) {
+    let newObj = Object.assign({}, obj);
+
     // code outline taken from underscore
     Array.prototype.slice.call(arguments, 1).forEach(source => {
       if (source) {
         for (var prop in source) {
-          if (obj[prop] === void 0) obj[prop] = source[prop];
+          if (newObj[prop] === void 0) newObj[prop] = is_object(source[prop]) ?
+            clone(source[prop]) : source[prop];
         }
       }
     });
 
-    return obj;
+    return newObj;
   }
 
-  /**
-    Record of all registered hooks.
-    For internal use only.
-  */
-  let _hooks = {};
+  // call this to add a warning icon to a graph and log an error to the console
+  function error(args) {
+    console.error('ERROR : ', args.target, ' : ', args.error);
 
-  /**
-    Execute registered hooks.
-
-    Optional arguments
-  */
-  function call_hook(name) {
-    var hooks = _hooks[name],
-      result = [].slice.apply(arguments, [1]),
-      processed;
-
-    if (hooks) {
-      hooks.forEach(function(hook) {
-        if (hook.func) {
-          var params = processed || result;
-
-          if (params && params.constructor !== Array) {
-            params = [params];
-          }
-
-          params = [].concat.apply([], params);
-          processed = hook.func.apply(hook.context, params);
-        }
-      });
-    }
-
-    return processed || result;
+    d3.select(args.target).select('.mg-chart-title')
+      .append('tspan')
+        .attr('class', 'fa fa-x fa-exclamation-circle mg-warning')
+        .attr('dx', '0.3em')
+        .text('\uf06a');
   }
 
   function chart_title(args) {
 
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
 
     //remove the current title if it exists
     svg.select('.mg-header').remove();
@@ -744,6 +802,40 @@
     if (args.error) {
       error(args);
     }
+  }
+
+  /**
+    Record of all registered hooks.
+    For internal use only.
+  */
+  let _hooks = {};
+
+  /**
+    Execute registered hooks.
+
+    Optional arguments
+  */
+  function call_hook(name) {
+    var hooks = _hooks[name],
+      result = [].slice.apply(arguments, [1]),
+      processed;
+
+    if (hooks) {
+      hooks.forEach(function(hook) {
+        if (hook.func) {
+          var params = processed || result;
+
+          if (params && params.constructor !== Array) {
+            params = [params];
+          }
+
+          params = [].concat.apply([], params);
+          processed = hook.func.apply(hook.context, params);
+        }
+      });
+    }
+
+    return processed || result;
   }
 
   function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
@@ -849,7 +941,7 @@
     this.categoricalDomainFromData = function() {
       // make args.categorical_variables.
       // lets make the categorical variables.
-      var all_data = mg_flatten_array$1(args.data);
+      var all_data = mg_flatten_array(args.data);
       //d3.set(data.map(function(d){return d[args.group_accessor]})).values()
       scaleArgs.categoricalVariables = d3.set(all_data.map(function(d) {
         return d[args[scaleArgs.namespace_accessor_name]]; })).values();
@@ -958,10 +1050,10 @@
     var accessor = args[namespace_accessor_name];
 
     // add together all relevant data arrays.
-    var all_data = mg_flatten_array$1(args.data)
+    var all_data = mg_flatten_array(args.data)
       .map(function(dp) {
         return dp[accessor]; })
-      .concat(mg_flatten_array$1(additional_data_arrays));
+      .concat(mg_flatten_array(additional_data_arrays));
 
     // do processing for log
     if (args[namespace + '_scale_type'] === 'log') {
@@ -998,7 +1090,7 @@
     if (min_val === max_val && args['min_' + namespace] == null &&
         args['max_' + namespace] == null) {
       if (is_date(min_val)) {
-        max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
+        max_val = new Date(clone(min_val).setDate(min_val.getDate() + 1));
       } else if (typeof min_val === 'number') {
         max_val = min_val + 1;
         mg_force_xax_count_to_be_two(args);
@@ -1013,70 +1105,6 @@
     }
     call_hook('x_axis.process_min_max', args, args.processed.min_x, args.processed.max_x);
     call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
-  }
-
-  function x_rug(args) {
-
-    if(!args.x_rug) {
-      return;
-    }
-
-    args.rug_buffer_size = args.chart_type === 'point'
-      ? args.buffer / 2
-      : args.buffer;
-
-    var rug = mg_make_rug(args, 'mg-x-rug');
-
-    rug.attr('x1', args.scalefns.xf)
-      .attr('x2', args.scalefns.xf)
-      .attr('y1', args.height - args.bottom - args.rug_buffer_size)
-      .attr('y2', args.height - args.bottom);
-
-    mg_add_color_accessor_to_rug$1(rug, args, 'mg-x-rug-mono');
-  }
-
-  function add_x_label(g, args) {
-    if (args.x_label) {
-      g.append('text')
-        .attr('class', 'label')
-        .attr('x', function() {
-          return mg_get_plot_left(args) + (mg_get_plot_right(args) - mg_get_plot_left(args)) / 2;
-        })
-        .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
-        .attr('y', function() {
-          var xAxisTextElement = d3.select(args.target)
-            .select('.mg-x-axis text').node().getBoundingClientRect();
-          return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
-        })
-        .attr('dy', '.5em')
-        .attr('text-anchor', 'middle')
-        .text(function(d) {
-          return args.x_label;
-        });
-    }
-  }
-
-  function mg_get_time_frame$1(diff) {
-    // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
-    var time_frame;
-    if (mg_milisec_diff(diff)) {
-      time_frame = 'millis';
-    } else if (mg_sec_diff(diff)) {
-      time_frame = 'seconds';
-    } else if (mg_day_diff(diff)) {
-      time_frame = 'less-than-a-day';
-    } else if (mg_four_days(diff)) {
-      time_frame = 'four-days';
-    } else if (mg_many_days(diff)) { // a handful of months?
-      time_frame = 'many-days';
-    } else if (mg_many_months(diff)) {
-      time_frame = 'many-months';
-    } else if (mg_years(diff)) {
-      time_frame = 'years';
-    } else {
-      time_frame = 'default';
-    }
-    return time_frame;
   }
 
   function mg_milisec_diff(diff) {
@@ -1107,6 +1135,29 @@
     return diff / (60 * 60 * 24) >= 365;
   }
 
+  function mg_get_time_frame(diff) {
+    // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
+    var time_frame;
+    if (mg_milisec_diff(diff)) {
+      time_frame = 'millis';
+    } else if (mg_sec_diff(diff)) {
+      time_frame = 'seconds';
+    } else if (mg_day_diff(diff)) {
+      time_frame = 'less-than-a-day';
+    } else if (mg_four_days(diff)) {
+      time_frame = 'four-days';
+    } else if (mg_many_days(diff)) { // a handful of months?
+      time_frame = 'many-days';
+    } else if (mg_many_months(diff)) {
+      time_frame = 'many-months';
+    } else if (mg_years(diff)) {
+      time_frame = 'years';
+    } else {
+      time_frame = 'default';
+    }
+    return time_frame;
+  }
+
   function mg_get_time_format(utc, diff) {
     var main_time_format;
     if (mg_milisec_diff(diff)) {
@@ -1125,316 +1176,64 @@
     return main_time_format;
   }
 
-  function mg_process_time_format(args) {
-    if (args.time_series) {
-      const diff = (args.processed.max_x - args.processed.min_x) / 1000;
-      const tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000;
-      args.processed.x_time_frame = mg_get_time_frame$1(diff);
-      args.processed.x_tick_diff_time_frame = mg_get_time_frame$1(tickDiff);
-      args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff);
-    }
-  }
+  function mg_process_scale_ticks(args, axis) {
+    var accessor;
+    var scale_ticks;
+    var max;
 
-  function mg_default_xax_format(args) {
-    if (args.xax_format) {
-      return args.xax_format;
-    }
-
-    var data = args.processed.original_data || args.data;
-    var flattened = mg_flatten_array$1(data)[0];
-    var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
-    if (test_point_x === undefined) {
-      test_point_x = flattened;
+    if (axis === 'x') {
+      accessor = args.x_accessor;
+      scale_ticks = args.scales.X.ticks(args.xax_count);
+      max = args.processed.max_x;
+    } else if (axis === 'y') {
+      accessor = args.y_accessor;
+      scale_ticks = args.scales.Y.ticks(args.yax_count);
+      max = args.processed.max_y;
     }
 
-    return function(d) {
-      mg_process_time_format(args);
-
-      if (is_date(test_point_x)) {
-        return args.processed.main_x_time_format(new Date(d));
-      } else if (typeof test_point_x === 'number') {
-        var is_float = d % 1 !== 0;
-        var pf;
-
-        if (is_float) {
-          pf = d3.format(',.' + args.decimals + 'f');
-        } else if (d < 1000) {
-          pf = d3.format(',.0f');
-        } else {
-          pf = d3.format(',.2s');
-        }
-        return args.xax_units + pf(d);
-      } else {
-        return args.xax_units + d;
+    function log10(val) {
+      if (val === 1000) {
+        return 3;
       }
-    };
-  }
-
-  function mg_merge_args_with_defaults(args) {
-    var defaults = {
-      target: null,
-      title: null,
-      description: null
-    };
-
-    if (!args) {
-      args = {};
-    }
-
-    if (!args.processed) {
-      args.processed = {};
-    }
-
-    args = merge_with_defaults(args, defaults);
-    return args;
-  }
-
-  function mg_is_time_series(args) {
-    var first_elem = mg_flatten_array$1(args.processed.original_data || args.data)[0];
-    args.time_series = is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
-  }
-
-  function mg_init_compute_width(args) {
-    var svg_width = parseInt(args.width);
-    if (args.full_width) {
-      svg_width = get_width(args.target);
-    }
-    if (args.x_axis_type === 'categorical' && svg_width === null) {
-      svg_width = mg_categorical_calculate_height(args, 'x');
-    }
-
-    args.width = svg_width;
-  }
-
-  function mg_init_compute_height(args) {
-    var svg_height = parseInt(args.height);
-    if (args.full_height) {
-      svg_height = get_height(args.target);
-    }
-    if (args.y_axis_type === 'categorical' && svg_height === null) {
-      svg_height = mg_categorical_calculate_height(args, 'y');
-    }
-
-    args.height = svg_height;
-  }
-
-  function mg_remove_svg_if_chart_type_has_changed(svg, args) {
-    if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line') ||
-      (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point') ||
-      (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram') ||
-      (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
-    ) {
-      svg.remove();
-    }
-  }
-
-  function mg_add_svg_if_it_doesnt_exist(svg, args) {
-    if (mg_get_svg_child_of$1(args.target).empty()) {
-      svg = d3.select(args.target)
-        .append('svg')
-        .classed('linked', args.linked)
-        .attr('width', args.width)
-        .attr('height', args.height);
-    }
-    return svg;
-  }
-
-  function mg_add_clip_path_for_plot_area(svg, args) {
-    svg.selectAll('.mg-clip-path').remove();
-    svg.append('defs')
-      .attr('class', 'mg-clip-path')
-      .append('clipPath')
-      .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
-      .append('svg:rect')
-      .attr('x', mg_get_left(args))
-      .attr('y', mg_get_top$1(args))
-      .attr('width', args.width - args.left - args.right - args.buffer)
-      .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
-  }
-
-  function mg_adjust_width_and_height_if_changed(svg, args) {
-    if (args.width !== Number(svg.attr('width'))) {
-      svg.attr('width', args.width);
-    }
-    if (args.height !== Number(svg.attr('height'))) {
-      svg.attr('height', args.height);
-    }
-  }
-
-  function mg_set_viewbox_for_scaling(svg, args) {
-    // we need to reconsider how we handle automatic scaling
-    svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
-    if (args.full_width || args.full_height) {
-      svg.attr('preserveAspectRatio', 'xMinYMin meet');
-    }
-  }
-
-  function mg_remove_missing_classes_and_text(svg) {
-    // remove missing class
-    svg.classed('mg-missing', false);
-
-    // remove missing text
-    svg.selectAll('.mg-missing-text').remove();
-    svg.selectAll('.mg-missing-pane').remove();
-  }
-
-  function mg_remove_outdated_lines(svg, args) {
-    // if we're updating an existing chart and we have fewer lines than
-    // before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
-    // data_graphic() on the same target with 2 lines, remove the 3rd line
-
-    var i = 0;
-
-    if (svg.selectAll('.mg-main-line').nodes().length >= args.data.length) {
-      // now, the thing is we can't just remove, say, line3 if we have a custom
-      // line-color map, instead, see which are the lines to be removed, and delete those
-      if (args.custom_line_color_map.length > 0) {
-        var array_full_series = function(len) {
-          var arr = new Array(len);
-          for (var i = 0; i < arr.length; i++) { arr[i] = i + 1; }
-          return arr;
-        };
-
-        // get an array of lines ids to remove
-        var lines_to_remove = arr_diff(
-          array_full_series(args.max_data_size),
-          args.custom_line_color_map);
-
-        for (i = 0; i < lines_to_remove.length; i++) {
-          svg.selectAll('.mg-main-line.mg-line' + lines_to_remove[i] + '-color')
-            .remove();
-        }
-      } else {
-        // if we don't have a custom line-color map, just remove the lines from the end
-        var num_of_new = args.data.length;
-        var num_of_existing = (svg.selectAll('.mg-main-line').nodes()) ? svg.selectAll('.mg-main-line').nodes().length : 0;
-
-        for (i = num_of_existing; i > num_of_new; i--) {
-          svg.selectAll('.mg-main-line.mg-line' + i + '-color')
-            .remove();
-        }
+      if (val === 1000000) {
+        return 7;
       }
+      return Math.log(val) / Math.LN10;
     }
-  }
 
-  function mg_raise_container_error(container, args) {
-    if (container.empty()) {
-      console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
-      return;
+    if ((axis === 'x' && args.x_scale_type === 'log') || (axis === 'y' && args.y_scale_type === 'log')) {
+      // get out only whole logs
+      scale_ticks = scale_ticks.filter(function(d) {
+        return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6;
+      });
     }
-  }
 
-  function categoricalInitialization(args, ns) {
-    var which = ns === 'x' ? args.width : args.height;
-    mg_categorical_count_number_of_groups(args, ns);
-    mg_categorical_count_number_of_lanes(args, ns);
-    mg_categorical_calculate_group_length(args, ns, which);
-    if (which) mg_categorical_calculate_bar_thickness(args, ns);
-  }
+    // filter out fraction ticks if our data is ints and if xmax > number of generated ticks
+    var number_of_ticks = scale_ticks.length;
 
-  function selectXaxFormat(args) {
-    var c = args.chart_type;
-    if (!args.processed.xax_format) {
-      if (args.xax_format) {
-        args.processed.xax_format = args.xax_format;
-      } else {
-        if (c === 'line' || c === 'point' || c === 'histogram') {
-          args.processed.xax_format = mg_default_xax_format(args);
-        } else if (c === 'bar') {
-          args.processed.xax_format = mg_default_bar_xax_format(args);
+    // is our data object all ints?
+    var data_is_int = true;
+    args.data.forEach(function(d, i) {
+      d.forEach(function(d, i) {
+        if (d[accessor] % 1 !== 0) {
+          data_is_int = false;
+          return false;
         }
-      }
+      });
+    });
+
+    if (data_is_int && number_of_ticks > max && args.format === 'count') {
+      // remove non-integer ticks
+      scale_ticks = scale_ticks.filter(function(d) {
+        return d % 1 === 0;
+      });
     }
-  }
 
-  function mg_categorical_count_number_of_groups(args, ns) {
-    var accessor_string = ns + 'group_accessor';
-    var accessor = args[accessor_string];
-    args.categorical_groups = [];
-    if (accessor) {
-      var data = args.data[0];
-      args.categorical_groups = d3.set(data.map(function(d) {
-        return d[accessor]; })).values();
+    if (axis === 'x') {
+      args.processed.x_ticks = scale_ticks;
+    } else if (axis === 'y') {
+      args.processed.y_ticks = scale_ticks;
     }
-  }
-
-  function mg_categorical_count_number_of_lanes(args, ns) {
-    var accessor_string = ns + 'group_accessor';
-    var groupAccessor = args[accessor_string];
-
-    args.total_bars = args.data[0].length;
-    if (groupAccessor) {
-      var group_bars = count_array_elements(pluck(args.data[0], groupAccessor));
-      group_bars = d3.max(Object.keys(group_bars).map(function(d) {
-        return group_bars[d]; }));
-      args.bars_per_group = group_bars;
-    } else {
-      args.bars_per_group = args.data[0].length;
-    }
-  }
-
-  function mg_categorical_calculate_group_length(args, ns, which) {
-    var groupHeight = ns + 'group_height';
-    if (which) {
-      var gh = ns === 'y' ?
-        (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
-        (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
-
-      args[groupHeight] = gh;
-    } else {
-      var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;
-      args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step; //args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
-    }
-  }
-
-  function mg_categorical_calculate_bar_thickness(args, ns) {
-    // take one group height.
-    var step = (args[ns + 'group_height']) / (args.bars_per_group + args[ns + '_outer_padding_percentage']);
-    args.bar_thickness = step - (step * args[ns + '_padding_percentage']);
-  }
-
-  function mg_categorical_calculate_height(args, ns) {
-    var groupContribution = (args[ns + 'group_height']) * (args.categorical_groups.length || 1);
-
-    var marginContribution = ns === 'y'
-      ? args.top + args.bottom + args.buffer * 2
-      : args.left + args.right + args.buffer * 2;
-
-    return groupContribution + marginContribution +
-      (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']));
-  }
-
-  function init(args) {
-    args = arguments[0];
-    args = mg_merge_args_with_defaults(args);
-    // If you pass in a dom element for args.target, the expectation
-    // of a string elsewhere will break.
-    var container = d3.select(args.target);
-    mg_raise_container_error(container, args);
-
-    var svg = container.selectAll('svg');
-
-    // some things that will need to be calculated if we have a categorical axis.
-    if (args.y_axis_type === 'categorical') { categoricalInitialization(args, 'y'); }
-    if (args.x_axis_type === 'categorical') { categoricalInitialization(args, 'x'); }
-
-    selectXaxFormat(args);
-
-    mg_is_time_series(args);
-    mg_init_compute_width(args);
-    mg_init_compute_height(args);
-
-    mg_remove_svg_if_chart_type_has_changed(svg, args);
-    svg = mg_add_svg_if_it_doesnt_exist(svg, args);
-
-    mg_add_clip_path_for_plot_area(svg, args);
-    mg_adjust_width_and_height_if_changed(svg, args);
-    mg_set_viewbox_for_scaling(svg, args);
-    mg_remove_missing_classes_and_text(svg);
-    chart_title(args);
-    mg_remove_outdated_lines(svg, args);
-
-    return this;
   }
 
   function raw_data_transformation(args) {
@@ -1623,6 +1422,85 @@
     return this;
   }
 
+  function process_histogram(args) {
+
+    // if args.binned == false, then we need to bin the data appropriately.
+    // if args.binned == true, then we need to make sure to compute the relevant computed data.
+    // the outcome of either of these should be something in args.computed_data.
+    // the histogram plotting function will be looking there for the data to plot.
+
+    // we need to compute an array of objects.
+    // each object has an x, y, and dx.
+
+    // histogram data is always single dimension
+    var our_data = args.data[0];
+
+    var extracted_data;
+    if (args.binned === false) {
+      // use d3's built-in layout.histogram functionality to compute what you need.
+
+      if (typeof(our_data[0]) === 'object') {
+        // we are dealing with an array of objects. Extract the data value of interest.
+        extracted_data = our_data
+          .map(function(d) {
+            return d[args.x_accessor];
+          });
+      } else if (typeof(our_data[0]) === 'number') {
+        // we are dealing with a simple array of numbers. No extraction needed.
+        extracted_data = our_data;
+      } else {
+        console.log('TypeError: expected an array of numbers, found ' + typeof(our_data[0]));
+        return;
+      }
+
+      var hist = d3.histogram();
+      if (args.bins) {
+        hist.thresholds(args.bins);
+      }
+
+      var bins = hist(extracted_data);
+      args.processed_data = bins.map(function(d) {
+        return { 'x': d.x0, 'y': d.length };
+      });
+    } else {
+      // here, we just need to reconstruct the array of objects
+      // take the x accessor and y accessor.
+      // pull the data as x and y. y is count.
+
+      args.processed_data = our_data.map(function(d) {
+        return { 'x': d[args.x_accessor], 'y': d[args.y_accessor] };
+      });
+
+      var this_pt;
+      var next_pt;
+
+      // we still need to compute the dx component for each data point
+      for (var i = 0; i < args.processed_data.length; i++) {
+        this_pt = args.processed_data[i];
+        if (i === args.processed_data.length - 1) {
+          this_pt.dx = args.processed_data[i - 1].dx;
+        } else {
+          next_pt = args.processed_data[i + 1];
+          this_pt.dx = next_pt.x - this_pt.x;
+        }
+      }
+    }
+
+    // capture the original data and accessors before replacing args.data
+    if (!args.processed) {
+      args.processed = {};
+    }
+    args.processed.original_data = args.data;
+    args.processed.original_x_accessor = args.x_accessor;
+    args.processed.original_y_accessor = args.y_accessor;
+
+    args.data = [args.processed_data];
+    args.x_accessor = args.processed_x_accessor;
+    args.y_accessor = args.processed_y_accessor;
+
+    return this;
+  }
+
   function process_point$1(args) {
 
     var data = args.data[0];
@@ -1638,6 +1516,604 @@
     }
 
     return this;
+  }
+
+  function x_rug(args) {
+
+    if(!args.x_rug) {
+      return;
+    }
+
+    args.rug_buffer_size = args.chart_type === 'point'
+      ? args.buffer / 2
+      : args.buffer;
+
+    var rug = mg_make_rug(args, 'mg-x-rug');
+
+    rug.attr('x1', args.scalefns.xf)
+      .attr('x2', args.scalefns.xf)
+      .attr('y1', args.height - args.bottom - args.rug_buffer_size)
+      .attr('y2', args.height - args.bottom);
+
+    mg_add_color_accessor_to_rug(rug, args, 'mg-x-rug-mono');
+  }
+
+  function mg_add_processed_object(args) {
+    if (!args.processed) {
+      args.processed = {};
+    }
+  }
+
+  // TODO ought to be deprecated, only used by histogram
+  function x_axis(args) {
+
+    var svg = mg_get_svg_child_of(args.target);
+    mg_add_processed_object(args);
+
+    mg_select_xax_format(args);
+    mg_selectAll_and_remove(svg, '.mg-x-axis');
+
+    if (!args.x_axis) {
+      return this;
+    }
+
+    var g = mg_add_g$1(svg, 'mg-x-axis');
+
+    mg_add_x_ticks(g, args);
+    mg_add_x_tick_labels(g, args);
+    if (args.x_label) { add_x_label(g, args); }
+    if (args.x_rug) { x_rug(args); }
+
+    return this;
+  }
+
+  function add_x_label(g, args) {
+    if (args.x_label) {
+      g.append('text')
+        .attr('class', 'label')
+        .attr('x', function() {
+          return mg_get_plot_left$1(args) + (mg_get_plot_right$1(args) - mg_get_plot_left$1(args)) / 2;
+        })
+        .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+        .attr('y', function() {
+          var xAxisTextElement = d3.select(args.target)
+            .select('.mg-x-axis text').node().getBoundingClientRect();
+          return mg_get_bottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10;
+        })
+        .attr('dy', '.5em')
+        .attr('text-anchor', 'middle')
+        .text(function(d) {
+          return args.x_label;
+        });
+    }
+  }
+
+  function mg_default_bar_xax_format$1(args) {
+    return function(d) {
+      if (d < 1.0 && d > -1.0 && d !== 0) {
+        // don't scale tiny values
+        return args.xax_units + d.toFixed(args.decimals);
+      } else {
+        var pf = d3.format(',.0f');
+        return args.xax_units + pf(d);
+      }
+    };
+  }
+
+  function mg_process_time_format(args) {
+    if (args.time_series) {
+      const diff = (args.processed.max_x - args.processed.min_x) / 1000;
+      const tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000;
+      args.processed.x_time_frame = mg_get_time_frame(diff);
+      args.processed.x_tick_diff_time_frame = mg_get_time_frame(tickDiff);
+      args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff);
+    }
+  }
+
+  function mg_default_xax_format(args) {
+    if (args.xax_format) {
+      return args.xax_format;
+    }
+
+    var data = args.processed.original_data || args.data;
+    var flattened = mg_flatten_array(data)[0];
+    var test_point_x = flattened[args.processed.original_x_accessor || args.x_accessor];
+    if (test_point_x === undefined) {
+      test_point_x = flattened;
+    }
+
+    return function(d) {
+      mg_process_time_format(args);
+
+      if (is_date(test_point_x)) {
+        return args.processed.main_x_time_format(new Date(d));
+      } else if (typeof test_point_x === 'number') {
+        var is_float = d % 1 !== 0;
+        var pf;
+
+        if (is_float) {
+          pf = d3.format(',.' + args.decimals + 'f');
+        } else if (d < 1000) {
+          pf = d3.format(',.0f');
+        } else {
+          pf = d3.format(',.2s');
+        }
+        return args.xax_units + pf(d);
+      } else {
+        return args.xax_units + d;
+      }
+    };
+  }
+
+  function mg_add_x_ticks(g, args) {
+    mg_process_scale_ticks(args, 'x');
+    mg_add_x_axis_rim(args, g);
+    mg_add_x_axis_tick_lines(args, g);
+  }
+
+  function mg_add_x_axis_rim(args, g) {
+    var last_i = args.scales.X.ticks(args.xax_count).length - 1;
+
+    if (!args.x_extended_ticks) {
+      g.append('line')
+        .attr('x1', function() {
+          if (args.xax_count === 0) {
+            return mg_get_plot_left$1(args);
+          } else if (args.axes_not_compact && args.chart_type !== 'bar') {
+            return args.left;
+          } else {
+            return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2);
+          }
+        })
+        .attr('x2', function() {
+          if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
+            return mg_get_right(args);
+          } else {
+            return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2);
+          }
+        })
+        .attr('y1', args.height - args.bottom)
+        .attr('y2', args.height - args.bottom);
+    }
+  }
+
+  function mg_add_x_axis_tick_lines(args, g) {
+    g.selectAll('.mg-xax-ticks')
+      .data(args.processed.x_ticks).enter()
+      .append('line')
+      .attr('x1', function(d) {
+        return args.scales.X(d).toFixed(2); })
+      .attr('x2', function(d) {
+        return args.scales.X(d).toFixed(2); })
+      .attr('y1', args.height - args.bottom)
+      .attr('y2', function() {
+        return (args.x_extended_ticks) ? args.top : args.height - args.bottom + args.xax_tick_length;
+      })
+      .attr('class', function() {
+        if (args.x_extended_ticks) {
+          return 'mg-extended-xax-ticks';
+        }
+      })
+      .classed('mg-xax-ticks', true);
+  }
+
+  function mg_add_x_tick_labels(g, args) {
+    mg_add_primary_x_axis_label(args, g);
+    mg_add_secondary_x_axis_label(args, g);
+  }
+
+  function mg_add_primary_x_axis_label(args, g) {
+    var labels = g.selectAll('.mg-xax-labels')
+      .data(args.processed.x_ticks).enter()
+      .append('text')
+      .attr('x', function(d) {
+        return args.scales.X(d).toFixed(2);
+      })
+      .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
+      .attr('dy', '.50em')
+      .attr('text-anchor', 'middle');
+
+    if (args.time_series && args.european_clock) {
+      labels.append('tspan').classed('mg-european-hours', true).text(function(_d, i) {
+        var d = new Date(_d);
+        if (i === 0) return d3.timeFormat('%H')(d);
+        else return '';
+      });
+      labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function(_d, i) {
+        var d = new Date(_d);
+        return ':' + args.processed.xax_format(d);
+      });
+    } else {
+      labels.text(function(d) {
+        return args.xax_units + args.processed.xax_format(d);
+      });
+    }
+
+    // CHECK TO SEE IF OVERLAP for labels. If so,
+    // remove half of them. This is a dirty hack.
+    // We will need to figure out a more principled way of doing this.
+    if (mg_elements_are_overlapping(labels)) {
+      labels.filter(function(d, i) {
+        return (i + 1) % 2 === 0;
+      }).remove();
+
+      var svg = mg_get_svg_child_of(args.target);
+      svg.selectAll('.mg-xax-ticks')
+        .filter(function(d, i) {
+          return (i + 1) % 2 === 0;
+        })
+        .remove();
+    }
+  }
+
+  function mg_add_secondary_x_axis_label(args, g) {
+    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
+      mg_add_secondary_x_axis_elements(args, g);
+    }
+  }
+
+  function mg_get_yformat_and_secondary_time_function(args) {
+    let tf = {
+      timeframe: args.processed.x_time_frame,
+      tick_diff_timeframe: args.processed.x_tick_diff_time_frame
+    };
+    switch (tf.timeframe) {
+      case 'millis':
+      case 'seconds':
+        tf.secondary = d3.timeDays;
+        if (args.european_clock) tf.yformat = MG.time_format(args.utc_time, '%b %d');
+        else tf.yformat = MG.time_format(args.utc_time, '%I %p');
+        break;
+      case 'less-than-a-day':
+        tf.secondary = d3.timeDays;
+        tf.yformat = MG.time_format(args.utc_time, '%b %d');
+        break;
+      case 'four-days':
+        tf.secondary = d3.timeDays;
+        tf.yformat = MG.time_format(args.utc_time, '%b %d');
+        break;
+      case 'many-days':
+        tf.secondary = d3.timeYears;
+        tf.yformat = MG.time_format(args.utc_time, '%Y');
+        break;
+      case 'many-months':
+        tf.secondary = d3.timeYears;
+        tf.yformat = MG.time_format(args.utc_time, '%Y');
+        break;
+      default:
+        tf.secondary = d3.timeYears;
+        tf.yformat = MG.time_format(args.utc_time, '%Y');
+    }
+    return tf;
+  }
+
+  function mg_add_secondary_x_axis_elements(args, g) {
+    var tf = mg_get_yformat_and_secondary_time_function(args);
+
+    var years = tf.secondary(args.processed.min_x, args.processed.max_x);
+    if (years.length === 0) {
+      var first_tick = args.scales.X.ticks(args.xax_count)[0];
+      years = [first_tick];
+    }
+
+    var yg = mg_add_g$1(g, 'mg-year-marker');
+    if (tf.timeframe === 'default' && args.show_year_markers) {
+      mg_add_year_marker_line(args, yg, years, tf.yformat);
+    }
+    mg_add_year_marker_text(args, yg, years, tf.yformat);
+  }
+
+  function mg_add_year_marker_line(args, g, years, yformat) {
+    g.selectAll('.mg-year-marker')
+      .data(years).enter()
+      .append('line')
+      .attr('x1', function(d) {
+        return args.scales.X(d).toFixed(2);
+      })
+      .attr('x2', function(d) {
+        return args.scales.X(d).toFixed(2);
+      })
+      .attr('y1', mg_get_top(args))
+      .attr('y2', mg_get_bottom(args));
+  }
+
+  function mg_add_year_marker_text(args, g, years, yformat) {
+    g.selectAll('.mg-year-marker')
+      .data(years).enter()
+      .append('text')
+      .attr('x', function(d, i) {
+        return args.scales.X(d).toFixed(2);
+      })
+      .attr('y', function() {
+        var xAxisTextElement = d3.select(args.target)
+          .select('.mg-x-axis text').node().getBoundingClientRect();
+        return (mg_get_bottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
+      })
+      .attr('dy', '.50em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        return yformat(new Date(d));
+      });
+  }
+
+  function mg_select_xax_format(args) {
+    var c = args.chart_type;
+    if (!args.processed.xax_format) {
+      if (args.xax_format) {
+        args.processed.xax_format = args.xax_format;
+      } else {
+        if (c === 'line' || c === 'point' || c === 'histogram') {
+          args.processed.xax_format = mg_default_xax_format(args);
+        } else if (c === 'bar') {
+          args.processed.xax_format = mg_default_bar_xax_format$1(args);
+        }
+      }
+    }
+  }
+
+  function mg_merge_args_with_defaults(args) {
+    var defaults = {
+      target: null,
+      title: null,
+      description: null
+    };
+
+    if (!args) {
+      args = {};
+    }
+
+    if (!args.processed) {
+      args.processed = {};
+    }
+
+    return merge_with_defaults(args, defaults);
+  }
+
+  function mg_is_time_series(args) {
+    var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0];
+    args.time_series = is_date(first_elem[args.processed.original_x_accessor || args.x_accessor]);
+  }
+
+  function mg_init_compute_width(args) {
+    var svg_width = parseInt(args.width);
+    if (args.full_width) {
+      svg_width = get_width(args.target);
+    }
+    if (args.x_axis_type === 'categorical' && svg_width === null) {
+      svg_width = mg_categorical_calculate_height(args, 'x');
+    }
+
+    args.width = svg_width;
+  }
+
+  function mg_init_compute_height(args) {
+    var svg_height = parseInt(args.height);
+    if (args.full_height) {
+      svg_height = get_height(args.target);
+    }
+    if (args.y_axis_type === 'categorical' && svg_height === null) {
+      svg_height = mg_categorical_calculate_height(args, 'y');
+    }
+
+    args.height = svg_height;
+  }
+
+  function mg_remove_svg_if_chart_type_has_changed(svg, args) {
+    if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line') ||
+      (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point') ||
+      (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram') ||
+      (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
+    ) {
+      svg.remove();
+    }
+  }
+
+  function mg_add_svg_if_it_doesnt_exist(svg, args) {
+    if (mg_get_svg_child_of(args.target).empty()) {
+      svg = d3.select(args.target)
+        .append('svg')
+        .classed('linked', args.linked)
+        .attr('width', args.width)
+        .attr('height', args.height);
+    }
+    return svg;
+  }
+
+  function mg_add_clip_path_for_plot_area(svg, args) {
+    svg.selectAll('.mg-clip-path').remove();
+    svg.append('defs')
+      .attr('class', 'mg-clip-path')
+      .append('clipPath')
+      .attr('id', 'mg-plot-window-' + mg_target_ref(args.target))
+      .append('svg:rect')
+      .attr('x', mg_get_left(args))
+      .attr('y', mg_get_top(args))
+      .attr('width', args.width - args.left - args.right - args.buffer)
+      .attr('height', args.height - args.top - args.bottom - args.buffer + 1);
+  }
+
+  function mg_adjust_width_and_height_if_changed(svg, args) {
+    if (args.width !== Number(svg.attr('width'))) {
+      svg.attr('width', args.width);
+    }
+    if (args.height !== Number(svg.attr('height'))) {
+      svg.attr('height', args.height);
+    }
+  }
+
+  function mg_set_viewbox_for_scaling(svg, args) {
+    // we need to reconsider how we handle automatic scaling
+    svg.attr('viewBox', '0 0 ' + args.width + ' ' + args.height);
+    if (args.full_width || args.full_height) {
+      svg.attr('preserveAspectRatio', 'xMinYMin meet');
+    }
+  }
+
+  function mg_remove_missing_classes_and_text(svg) {
+    // remove missing class
+    svg.classed('mg-missing', false);
+
+    // remove missing text
+    svg.selectAll('.mg-missing-text').remove();
+    svg.selectAll('.mg-missing-pane').remove();
+  }
+
+  function mg_remove_outdated_lines(svg, args) {
+    // if we're updating an existing chart and we have fewer lines than
+    // before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
+    // data_graphic() on the same target with 2 lines, remove the 3rd line
+
+    var i = 0;
+
+    if (svg.selectAll('.mg-main-line').nodes().length >= args.data.length) {
+      // now, the thing is we can't just remove, say, line3 if we have a custom
+      // line-color map, instead, see which are the lines to be removed, and delete those
+      if (args.custom_line_color_map.length > 0) {
+        var array_full_series = function(len) {
+          var arr = new Array(len);
+          for (var i = 0; i < arr.length; i++) { arr[i] = i + 1; }
+          return arr;
+        };
+
+        // get an array of lines ids to remove
+        var lines_to_remove = arr_diff(
+          array_full_series(args.max_data_size),
+          args.custom_line_color_map);
+
+        for (i = 0; i < lines_to_remove.length; i++) {
+          svg.selectAll('.mg-main-line.mg-line' + lines_to_remove[i] + '-color')
+            .remove();
+        }
+      } else {
+        // if we don't have a custom line-color map, just remove the lines from the end
+        var num_of_new = args.data.length;
+        var num_of_existing = (svg.selectAll('.mg-main-line').nodes()) ? svg.selectAll('.mg-main-line').nodes().length : 0;
+
+        for (i = num_of_existing; i > num_of_new; i--) {
+          svg.selectAll('.mg-main-line.mg-line' + i + '-color')
+            .remove();
+        }
+      }
+    }
+  }
+
+  function mg_raise_container_error(container, args) {
+    if (container.empty()) {
+      console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.');
+      return;
+    }
+  }
+
+  function categoricalInitialization(args, ns) {
+    var which = ns === 'x' ? args.width : args.height;
+    mg_categorical_count_number_of_groups(args, ns);
+    mg_categorical_count_number_of_lanes(args, ns);
+    mg_categorical_calculate_group_length(args, ns, which);
+    if (which) mg_categorical_calculate_bar_thickness(args, ns);
+  }
+
+  function selectXaxFormat(args) {
+    var c = args.chart_type;
+    if (!args.processed.xax_format) {
+      if (args.xax_format) {
+        args.processed.xax_format = args.xax_format;
+      } else {
+        if (c === 'line' || c === 'point' || c === 'histogram') {
+          args.processed.xax_format = mg_default_xax_format(args);
+        } else if (c === 'bar') {
+          args.processed.xax_format = mg_default_bar_xax_format(args);
+        }
+      }
+    }
+  }
+
+  function mg_categorical_count_number_of_groups(args, ns) {
+    var accessor_string = ns + 'group_accessor';
+    var accessor = args[accessor_string];
+    args.categorical_groups = [];
+    if (accessor) {
+      var data = args.data[0];
+      args.categorical_groups = d3.set(data.map(function(d) {
+        return d[accessor]; })).values();
+    }
+  }
+
+  function mg_categorical_count_number_of_lanes(args, ns) {
+    var accessor_string = ns + 'group_accessor';
+    var groupAccessor = args[accessor_string];
+
+    args.total_bars = args.data[0].length;
+    if (groupAccessor) {
+      var group_bars = count_array_elements(pluck(args.data[0], groupAccessor));
+      group_bars = d3.max(Object.keys(group_bars).map(function(d) {
+        return group_bars[d]; }));
+      args.bars_per_group = group_bars;
+    } else {
+      args.bars_per_group = args.data[0].length;
+    }
+  }
+
+  function mg_categorical_calculate_group_length(args, ns, which) {
+    var groupHeight = ns + 'group_height';
+    if (which) {
+      var gh = ns === 'y' ?
+        (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1) :
+        (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1);
+
+      args[groupHeight] = gh;
+    } else {
+      var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness;
+      args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step; //args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+    }
+  }
+
+  function mg_categorical_calculate_bar_thickness(args, ns) {
+    // take one group height.
+    var step = (args[ns + 'group_height']) / (args.bars_per_group + args[ns + '_outer_padding_percentage']);
+    args.bar_thickness = step - (step * args[ns + '_padding_percentage']);
+  }
+
+  function mg_categorical_calculate_height(args, ns) {
+    var groupContribution = (args[ns + 'group_height']) * (args.categorical_groups.length || 1);
+
+    var marginContribution = ns === 'y'
+      ? args.top + args.bottom + args.buffer * 2
+      : args.left + args.right + args.buffer * 2;
+
+    return groupContribution + marginContribution +
+      (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']));
+  }
+
+  function init(args) {
+    args = mg_merge_args_with_defaults(args);
+    // If you pass in a dom element for args.target, the expectation
+    // of a string elsewhere will break.
+    var container = d3.select(args.target);
+    mg_raise_container_error(container, args);
+
+    var svg = container.selectAll('svg');
+
+    // some things that will need to be calculated if we have a categorical axis.
+    if (args.y_axis_type === 'categorical') { categoricalInitialization(args, 'y'); }
+    if (args.x_axis_type === 'categorical') { categoricalInitialization(args, 'x'); }
+
+    selectXaxFormat(args);
+
+    mg_is_time_series(args);
+    mg_init_compute_width(args);
+    mg_init_compute_height(args);
+
+    mg_remove_svg_if_chart_type_has_changed(svg, args);
+    svg = mg_add_svg_if_it_doesnt_exist(svg, args);
+
+    mg_add_clip_path_for_plot_area(svg, args);
+    mg_adjust_width_and_height_if_changed(svg, args);
+    mg_set_viewbox_for_scaling(svg, args);
+    mg_remove_missing_classes_and_text(svg);
+    chart_title(args);
+    mg_remove_outdated_lines(svg, args);
+
+    return args;
   }
 
   function processScaleTicks (args, axis) {
@@ -1697,22 +2173,22 @@
       coordinates.y2 = args.scalefns[ns + 'f'];
     }
     if (position === 'right') {
-      coordinates.x1 = mg_get_right$1(args) - 1;
-      coordinates.x2 = mg_get_right$1(args) - args.rug_buffer_size;
+      coordinates.x1 = mg_get_right(args) - 1;
+      coordinates.x2 = mg_get_right(args) - args.rug_buffer_size;
       coordinates.y1 = args.scalefns[ns + 'f'];
       coordinates.y2 = args.scalefns[ns + 'f'];
     }
     if (position === 'top') {
       coordinates.x1 = args.scalefns[ns + 'f'];
       coordinates.x2 = args.scalefns[ns + 'f'];
-      coordinates.y1 = mg_get_top$1(args) + 1;
-      coordinates.y2 = mg_get_top$1(args) + args.rug_buffer_size;
+      coordinates.y1 = mg_get_top(args) + 1;
+      coordinates.y2 = mg_get_top(args) + args.rug_buffer_size;
     }
     if (position === 'bottom') {
       coordinates.x1 = args.scalefns[ns + 'f'];
       coordinates.x2 = args.scalefns[ns + 'f'];
-      coordinates.y1 = mg_get_bottom$1(args) - 1;
-      coordinates.y2 = mg_get_bottom$1(args) - args.rug_buffer_size;
+      coordinates.y1 = mg_get_bottom(args) - 1;
+      coordinates.y2 = mg_get_bottom(args) - args.rug_buffer_size;
     }
     return coordinates;
   }
@@ -1732,28 +2208,28 @@
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
     if (position === 'right') {
-      coordinates.x1 = mg_get_right$1(args);
-      coordinates.x2 = mg_get_right$1(args);
+      coordinates.x1 = mg_get_right(args);
+      coordinates.x2 = mg_get_right(args);
       coordinates.y1 = scale(ticks[0]).toFixed(2);
       coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
     }
     if (position === 'top') {
       coordinates.x1 = mg_get_left(args);
-      coordinates.x2 = mg_get_right$1(args);
-      coordinates.y1 = mg_get_top$1(args);
-      coordinates.y2 = mg_get_top$1(args);
+      coordinates.x2 = mg_get_right(args);
+      coordinates.y1 = mg_get_top(args);
+      coordinates.y2 = mg_get_top(args);
     }
     if (position === 'bottom') {
       coordinates.x1 = mg_get_left(args);
-      coordinates.x2 = mg_get_right$1(args);
-      coordinates.y1 = mg_get_bottom$1(args);
-      coordinates.y2 = mg_get_bottom$1(args);
+      coordinates.x2 = mg_get_right(args);
+      coordinates.y1 = mg_get_bottom(args);
+      coordinates.y2 = mg_get_bottom(args);
     }
 
     if (position === 'left' || position === 'right') {
       if (args.axes_not_compact) {
-        coordinates.y1 = mg_get_bottom$1(args);
-        coordinates.y2 = mg_get_top$1(args);
+        coordinates.y1 = mg_get_bottom(args);
+        coordinates.y2 = mg_get_top(args);
       } else if (tick_length) {
         coordinates.y1 = scale(ticks[0]).toFixed(2);
         coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
@@ -1783,7 +2259,7 @@
       };
     }
     if (position === 'right') {
-      coordinates.x = mg_get_right$1(args) + tickLength * 3 / 2;
+      coordinates.x = mg_get_right(args) + tickLength * 3 / 2;
       coordinates.y = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1797,7 +2273,7 @@
       coordinates.x = function (d) {
         return scale(d).toFixed(2);
       };
-      coordinates.y = (mg_get_top$1(args) - tickLength * 7 / 3).toFixed(2);
+      coordinates.y = (mg_get_top(args) - tickLength * 7 / 3).toFixed(2);
       coordinates.dx = 0;
       coordinates.dy = '0em';
       coordinates.textAnchor = 'middle';
@@ -1809,7 +2285,7 @@
       coordinates.x = function (d) {
         return scale(d).toFixed(2);
       };
-      coordinates.y = (mg_get_bottom$1(args) + tickLength * 7 / 3).toFixed(2);
+      coordinates.y = (mg_get_bottom(args) + tickLength * 7 / 3).toFixed(2);
       coordinates.dx = 0;
       coordinates.dy = '.50em';
       coordinates.textAnchor = 'middle';
@@ -1844,8 +2320,8 @@
         return args.scales.X(d).toFixed(2); })
       .attr('x2', function (d) {
         return args.scales.X(d).toFixed(2); })
-      .attr('y1', mg_get_top$1(args))
-      .attr('y2', mg_get_bottom$1(args));
+      .attr('y1', mg_get_top(args))
+      .attr('y2', mg_get_bottom(args));
   }
 
   function yearMarkerText (args, axisArgs, g, years, yformat) {
@@ -1859,7 +2335,7 @@
     if (position === 'top') {
       x = function (d, i) {
         return scale(d).toFixed(2); };
-      y = (mg_get_top$1(args) - args.xax_tick_length * 7 / 3) - (xAxisTextElement.height);
+      y = (mg_get_top(args) - args.xax_tick_length * 7 / 3) - (xAxisTextElement.height);
       dy = '.50em';
       textAnchor = 'middle';
       textFcn = function (d) {
@@ -1868,7 +2344,7 @@
     if (position === 'bottom') {
       x = function (d, i) {
         return scale(d).toFixed(2); };
-      y = (mg_get_bottom$1(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
+      y = (mg_get_bottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8);
       dy = '.50em';
       textAnchor = 'middle';
       textFcn = function (d) {
@@ -1927,7 +2403,7 @@
         return (i + 1) % 2 === 0;
       }).remove();
 
-      var svg = mg_get_svg_child_of$1(args.target);
+      var svg = mg_get_svg_child_of(args.target);
       svg.selectAll('.mg-' + ns + 'ax-ticks').filter(function (d, i) {
         return (i + 1) % 2 === 0; })
         .remove();
@@ -1950,7 +2426,7 @@
 
     if (position === 'left') {
       x1 = mg_get_left(args);
-      x2 = extendedTicks ? mg_get_right$1(args) : mg_get_left(args) - tickLength;
+      x2 = extendedTicks ? mg_get_right(args) : mg_get_left(args) - tickLength;
       y1 = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1959,8 +2435,8 @@
       };
     }
     if (position === 'right') {
-      x1 = mg_get_right$1(args);
-      x2 = extendedTicks ? mg_get_left(args) : mg_get_right$1(args) + tickLength;
+      x1 = mg_get_right(args);
+      x2 = extendedTicks ? mg_get_left(args) : mg_get_right(args) + tickLength;
       y1 = function (d) {
         return scale(d).toFixed(2);
       };
@@ -1975,8 +2451,8 @@
       x2 = function (d) {
         return scale(d).toFixed(2);
       };
-      y1 = mg_get_top$1(args);
-      y2 = extendedTicks ? mg_get_bottom$1(args) : mg_get_top$1(args) - tickLength;
+      y1 = mg_get_top(args);
+      y2 = extendedTicks ? mg_get_bottom(args) : mg_get_top(args) - tickLength;
     }
     if (position === 'bottom') {
       x1 = function (d) {
@@ -1985,8 +2461,8 @@
       x2 = function (d) {
         return scale(d).toFixed(2);
       };
-      y1 = mg_get_bottom$1(args);
-      y2 = extendedTicks ? mg_get_top$1(args) : mg_get_bottom$1(args) + tickLength;
+      y1 = mg_get_bottom(args);
+      y2 = extendedTicks ? mg_get_top(args) : mg_get_bottom(args) + tickLength;
     }
 
     g.selectAll('.' + ticksClass)
@@ -2015,7 +2491,7 @@
   }
 
   function initializeRug (args, rug_class) {
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
     var all_data = mg_flatten_array(args.data);
     var rug = svg.selectAll('line.' + rug_class).data(all_data);
 
@@ -2115,7 +2591,7 @@
     var groupScale = args.scales[(ns + 'group').toUpperCase()];
     var groupAccessor = ns + 'group_accessor';
 
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
     mg_selectAll_and_remove(svg, '.' + nsClass);
     var g = mg_add_g$1(svg, nsClass);
     var group_g;
@@ -2166,7 +2642,7 @@
     var scale = args.scales[ns.toUpperCase()];
     var position = axisArgs.position;
 
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
 
     var x1, x2, y1, y2;
     var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null];
@@ -2265,7 +2741,7 @@
     var namespace = axisArgs.namespace;
     var axisName = namespace + '_axis';
     var axisClass = 'mg-' + namespace + '-axis';
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
 
     mg_selectAll_and_remove(svg, '.' + axisClass);
 
@@ -2409,7 +2885,7 @@
   }
 
   function mg_bar_add_zero_line (args) {
-    var svg = mg_get_svg_child_of$1(args.target);
+    var svg = mg_get_svg_child_of(args.target);
     var extents = args.scales.X.domain();
     if (0 >= extents[0] && extents[1] >= 0) {
       var r = args.scales.Y.range();
@@ -2447,6 +2923,93 @@
           return 'rotate(-90)';
         });
     }
+  }
+
+  function mg_add_y_axis_rim (g, args) {
+    var tick_length = args.processed.y_ticks.length;
+    if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
+      var y1scale, y2scale;
+
+      if (args.axes_not_compact && args.chart_type !== 'bar') {
+        y1scale = args.height - args.bottom;
+        y2scale = args.top;
+      } else if (tick_length) {
+        y1scale = args.scales.Y(args.processed.y_ticks[0]).toFixed(2);
+        y2scale = args.scales.Y(args.processed.y_ticks[tick_length - 1]).toFixed(2);
+      } else {
+        y1scale = 0;
+        y2scale = 0;
+      }
+
+      g.append('line')
+        .attr('x1', args.left)
+        .attr('x2', args.left)
+        .attr('y1', y1scale)
+        .attr('y2', y2scale);
+    }
+  }
+
+  function mg_add_y_axis_tick_lines (g, args) {
+    g.selectAll('.mg-yax-ticks')
+      .data(args.processed.y_ticks).enter()
+      .append('line')
+      .classed('mg-extended-yax-ticks', args.y_extended_ticks)
+      .attr('x1', args.left)
+      .attr('x2', function () {
+        return (args.y_extended_ticks) ? args.width - args.right : args.left - args.yax_tick_length;
+      })
+      .attr('y1', function (d) {
+        return args.scales.Y(d).toFixed(2);
+      })
+      .attr('y2', function (d) {
+        return args.scales.Y(d).toFixed(2);
+      });
+  }
+
+  function mg_add_y_axis_tick_labels (g, args) {
+    var yax_format = mg_compute_yax_format(args);
+    g.selectAll('.mg-yax-labels')
+      .data(args.processed.y_ticks).enter()
+      .append('text')
+      .attr('x', args.left - args.yax_tick_length * 3 / 2)
+      .attr('dx', -3)
+      .attr('y', function (d) {
+        return args.scales.Y(d).toFixed(2);
+      })
+      .attr('dy', '.35em')
+      .attr('text-anchor', 'end')
+      .text(function (d) {
+        var o = yax_format(d);
+        return o;
+      });
+  }
+
+  // TODO ought to be deprecated, only used by histogram
+  function y_axis (args) {
+    if (!args.processed) {
+      args.processed = {};
+    }
+
+    var svg = mg_get_svg_child_of(args.target);
+    call_hook('y_axis.process_min_max', args, args.processed.min_y, args.processed.max_y);
+    mg_selectAll_and_remove(svg, '.mg-y-axis');
+
+    if (!args.y_axis) {
+      return this;
+    }
+
+    var g = mg_add_g$1(svg, 'mg-y-axis');
+    add_y_label(g, args);
+    mg_process_scale_ticks(args, 'y');
+    mg_add_y_axis_rim(g, args);
+    mg_add_y_axis_tick_lines(g, args);
+    mg_add_y_axis_tick_labels(g, args);
+
+    if (args.y_rug) {
+      y_rug(args);
+    }
+
+    return this;
   }
 
   // barchart re-write.
@@ -2550,7 +3113,7 @@
       raw_data_transformation(args);
 
       process_point(args);
-      init(args);
+      args = init(args);
 
       let xMaker;
       let yMaker;
@@ -2670,7 +3233,7 @@
     };
 
     this.mainPlot = () => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
       const data = args.data[0];
       let barplot = svg.select('g.mg-barplot');
       const fresh_render = barplot.empty();
@@ -2923,7 +3486,7 @@
     };
 
     this.rollover = () => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
       let g;
 
       if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
@@ -3041,7 +3604,7 @@
     };
 
     this.rolloverOn = (args) => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
       const label_accessor = this.is_vertical ? args.x_accessor : args.y_accessor;
       const data_accessor = this.is_vertical ? args.y_accessor : args.x_accessor;
       const label_units = this.is_vertical ? args.yax_units : args.xax_units;
@@ -3084,7 +3647,7 @@
     };
 
     this.rolloverOff = (args) => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       return (d, i) => {
         //reset active bar
@@ -3146,105 +3709,6 @@
     truncate_x_labels: [true, 'boolean'],
     truncate_y_labels: [true, 'boolean']
   };
-
-  function mg_clear_mouseover_container$1(svg) {
-    svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove();
-  }
-
-  function mg_setup_mouseover_container(svg, args) {
-    svg.select('.mg-active-datapoint').remove();
-    var text_anchor = args.mouseover_align === 'right'
-      ? 'end'
-      : (args.mouseover_align === 'left'
-        ? 'start'
-        : 'middle');
-
-    var mouseover_x = (args.mouseover_align === 'right')
-      ? mg_get_plot_right$1(args)
-      : (args.mouseover_align === 'left'
-        ? mg_get_plot_left$1(args)
-        : (args.width - args.left - args.right) / 2 + args.left);
-
-    var active_datapoint = svg.select('.mg-active-datapoint-container')
-      .attr('transform', 'translate(0 -18)')
-      .append('text')
-      .attr('class', 'mg-active-datapoint')
-      .attr('xml:space', 'preserve')
-      .attr('text-anchor', text_anchor);
-
-    // set the rollover text's position; if we have markers on two lines,
-    // nudge up the rollover text a bit
-    var active_datapoint_y_nudge = 0.75;
-
-    var y_position = (args.x_axis_position === 'bottom')
-      ? mg_get_top$1(args) * active_datapoint_y_nudge
-      : mg_get_bottom$1(args) + args.buffer * 3;
-
-    if (args.markers) {
-      var yPos;
-      svg.selectAll('.mg-marker-text')
-        .each(function() {
-          if (!yPos) {
-            yPos = d3.select(this).attr('y');
-          } else if (yPos !== d3.select(this).attr('y')) {
-            active_datapoint_y_nudge = 0.56;
-          }
-        });
-    }
-
-    active_datapoint
-      .attr('transform', 'translate(' + mouseover_x + ',' + (y_position) + ')');
-  }
-
-  function mg_mouseover_tspan(svg, text) {
-    let tspan = svg.append('tspan').text(text);
-
-    return {
-      bold: () => tspan.attr('font-weight', 'bold'),
-      font_size: (pts) => tspan.attr('font-size', pts),
-      x: (x) => tspan.attr('x', x),
-      y: (y) => tspan.attr('y', y),
-      elem: tspan
-    };
-  }
-
-  function mg_reset_text_container(svg) {
-    var textContainer = svg.select('.mg-active-datapoint');
-    textContainer
-      .selectAll('*')
-      .remove();
-    return textContainer;
-  }
-
-  function mg_mouseover_row(row_number, container, rargs) {
-    var lineHeight = 1.1;
-    var rrr = container.append('tspan')
-      .attr('x', 0)
-      .attr('y', (row_number * lineHeight) + 'em');
-
-    return {
-      rargs,
-      text: (text) => {
-        return mg_mouseover_tspan(rrr, text);
-      }
-    };
-  }
-
-  function mg_mouseover_text$1(args, rargs) {
-    mg_setup_mouseover_container(rargs.svg, args);
-
-    let mouseOver = {
-      row_number: 0,
-      rargs,
-      mouseover_row: (rargs) => {
-        mouseOver.row_number += 1;
-        return mg_mouseover_row(mouseOver.row_number, mouseOver.text_container, rargs);
-      },
-      text_container: mg_reset_text_container(rargs.svg)
-    };
-
-    return mouseOver;
-  }
 
   function MG_WindowResizeTracker() {
     var targets = [];
@@ -3327,6 +3791,324 @@
     if (args.full_width || args.full_height) {
       mg_window_resize_tracker.add_target(args.target);
     }
+  }
+
+  function histogram(args) {
+    this.init = (args) => {
+      this.args = args;
+
+      raw_data_transformation(args);
+      process_histogram(args);
+      args = init(args);
+
+      new scale_factory(args)
+        .namespace('x')
+        .numericalDomainFromData()
+        .numericalRange('bottom');
+
+      const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
+
+      new scale_factory(args)
+        .namespace('y')
+        .zeroBottom(true)
+        .inflateDomain(true)
+        .numericalDomainFromData(baselines)
+        .numericalRange('left');
+
+      x_axis(args);
+      y_axis(args);
+
+      this.mainPlot();
+      this.markers();
+      this.rollover();
+      this.windowListeners();
+
+      return this;
+    };
+
+    this.mainPlot = () => {
+      const svg = mg_get_svg_child_of(args.target);
+
+      //remove the old histogram, add new one
+      svg.selectAll('.mg-histogram').remove();
+
+      const g = svg.append('g')
+        .attr('class', 'mg-histogram');
+
+      const bar = g.selectAll('.mg-bar')
+        .data(args.data[0])
+        .enter().append('g')
+        .attr('class', 'mg-bar')
+        .attr('transform', d => `translate(${args.scales.X(d[args.x_accessor]).toFixed(2)},${args.scales.Y(d[args.y_accessor]).toFixed(2)})`);
+
+      //draw bars
+      bar.append('rect')
+        .attr('x', 1)
+        .attr('width', (d, i) => {
+          if (args.data[0].length === 1) {
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(0);
+          } else if (i !== args.data[0].length - 1) {
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(0);
+          } else {
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(0);
+          }
+        })
+        .attr('height', d => {
+          if (d[args.y_accessor] === 0) {
+            return 0;
+          }
+
+          return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.y_accessor])).toFixed(2);
+        });
+
+      return this;
+    };
+
+    this.markers = () => {
+      markers$1(args);
+      return this;
+    };
+
+    this.rollover = () => {
+      const svg = mg_get_svg_child_of(args.target);
+
+      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+        mg_add_g$1(svg, 'mg-active-datapoint-container');
+      }
+
+      //remove the old rollovers if they already exist
+      svg.selectAll('.mg-rollover-rect').remove();
+      svg.selectAll('.mg-active-datapoint').remove();
+
+      const g = svg.append('g')
+        .attr('class', 'mg-rollover-rect');
+
+      //draw rollover bars
+      const bar = g.selectAll('.mg-bar')
+        .data(args.data[0])
+        .enter().append('g')
+        .attr('class', (d, i) => {
+          if (args.linked) {
+            return `mg-rollover-rects roll_${i}`;
+          } else {
+            return 'mg-rollover-rects';
+          }
+        })
+        .attr('transform', d => `translate(${args.scales.X(d[args.x_accessor])},${0})`);
+
+      bar.append('rect')
+        .attr('x', 1)
+        .attr('y', args.buffer + (args.title ? args.title_y_position : 0))
+        .attr('width', (d, i) => {
+          //if data set is of length 1
+          if (args.data[0].length === 1) {
+            return (args.scalefns.xf(args.data[0][0]) - args.bar_margin).toFixed(0);
+          } else if (i !== args.data[0].length - 1) {
+            return (args.scalefns.xf(args.data[0][i + 1]) - args.scalefns.xf(d)).toFixed(0);
+          } else {
+            return (args.scalefns.xf(args.data[0][1]) - args.scalefns.xf(args.data[0][0])).toFixed(0);
+          }
+        })
+        .attr('height', d => args.height)
+        .attr('opacity', 0)
+        .on('mouseover', this.rolloverOn(args))
+        .on('mouseout', this.rolloverOff(args))
+        .on('mousemove', this.rolloverMove(args));
+
+      return this;
+    };
+
+    this.rolloverOn = (args) => {
+      const svg = mg_get_svg_child_of(args.target);
+
+      return (d, i) => {
+        svg.selectAll('text')
+          .filter((g, j) => d === g)
+          .attr('opacity', 0.3);
+
+        const fmt = args.processed.xax_format || time_format(args.utc_time, '%b %e, %Y');
+        const num = format_rollover_number(args);
+
+        svg.selectAll('.mg-bar rect')
+          .filter((d, j) => j === i)
+          .classed('active', true);
+
+        //trigger mouseover on all matching bars
+        if (args.linked && !MG.globals.link) {
+          MG.globals.link = true;
+
+          //trigger mouseover on matching bars in .linked charts
+          d3.selectAll(`.mg-rollover-rects.roll_${i} rect`)
+            .each(function(d) { //use existing i
+              d3.select(this).on('mouseover')(d, i);
+            });
+        }
+
+        //update rollover text
+        if (args.show_rollover_text) {
+          const mo = mg_mouseover_text(args, { svg });
+          const row = mo.mouseover_row();
+          row.text('\u259F  ').elem
+            .classed('hist-symbol', true);
+
+          row.text(mg_format_x_mouseover(args, d)); // x
+          row.text(mg_format_y_mouseover(args, d, args.time_series === false));
+        }
+
+        if (args.mouseover) {
+          mg_setup_mouseover_container(svg, args);
+          args.mouseover(d, i);
+        }
+      };
+    };
+
+    this.rolloverOff = (args) => {
+      const svg = mg_get_svg_child_of(args.target);
+
+      return (d, i) => {
+        if (args.linked && MG.globals.link) {
+          MG.globals.link = false;
+
+          //trigger mouseout on matching bars in .linked charts
+          d3.selectAll(`.mg-rollover-rects.roll_${i} rect`)
+            .each(function(d) { //use existing i
+              d3.select(this).on('mouseout')(d, i);
+            });
+        }
+
+        //reset active bar
+        svg.selectAll('.mg-bar rect')
+          .classed('active', false);
+
+        //reset active data point text
+        mg_clear_mouseover_container(svg);
+
+        if (args.mouseout) {
+          args.mouseout(d, i);
+        }
+      };
+    };
+
+    this.rolloverMove = (args) => (d, i) => {
+      if (args.mousemove) {
+        args.mousemove(d, i);
+      }
+    };
+
+    this.windowListeners = () => {
+      mg_window_listeners$1(this.args);
+      return this;
+    };
+
+    this.init(args);
+  }
+
+  const histogramOptions = {
+    bar_margin: [1, "number"], // the margin between bars
+    binned: [false, "boolean"], // determines whether the data is already binned
+    bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
+    processed_x_accessor: ['x', 'string'],
+    processed_y_accessor: ['y', 'string'],
+    processed_dx_accessor: ['dx', 'string']
+  };
+
+  function mg_clear_mouseover_container$1(svg) {
+    svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove();
+  }
+
+  function mg_setup_mouseover_container$1(svg, args) {
+    svg.select('.mg-active-datapoint').remove();
+    var text_anchor = args.mouseover_align === 'right'
+      ? 'end'
+      : (args.mouseover_align === 'left'
+        ? 'start'
+        : 'middle');
+
+    var mouseover_x = (args.mouseover_align === 'right')
+      ? mg_get_plot_right$1(args)
+      : (args.mouseover_align === 'left'
+        ? mg_get_plot_left$1(args)
+        : (args.width - args.left - args.right) / 2 + args.left);
+
+    var active_datapoint = svg.select('.mg-active-datapoint-container')
+      .attr('transform', 'translate(0 -18)')
+      .append('text')
+      .attr('class', 'mg-active-datapoint')
+      .attr('xml:space', 'preserve')
+      .attr('text-anchor', text_anchor);
+
+    // set the rollover text's position; if we have markers on two lines,
+    // nudge up the rollover text a bit
+    var active_datapoint_y_nudge = 0.75;
+
+    var y_position = (args.x_axis_position === 'bottom')
+      ? mg_get_top(args) * active_datapoint_y_nudge
+      : mg_get_bottom(args) + args.buffer * 3;
+
+    if (args.markers) {
+      var yPos;
+      svg.selectAll('.mg-marker-text')
+        .each(function() {
+          if (!yPos) {
+            yPos = d3.select(this).attr('y');
+          } else if (yPos !== d3.select(this).attr('y')) {
+            active_datapoint_y_nudge = 0.56;
+          }
+        });
+    }
+
+    active_datapoint
+      .attr('transform', 'translate(' + mouseover_x + ',' + (y_position) + ')');
+  }
+
+  function mg_mouseover_tspan(svg, text) {
+    let tspan = svg.append('tspan').text(text);
+
+    return {
+      bold: () => tspan.attr('font-weight', 'bold'),
+      font_size: (pts) => tspan.attr('font-size', pts),
+      x: (x) => tspan.attr('x', x),
+      y: (y) => tspan.attr('y', y),
+      elem: tspan
+    };
+  }
+
+  function mg_reset_text_container(svg) {
+    var textContainer = svg.select('.mg-active-datapoint');
+    textContainer
+      .selectAll('*')
+      .remove();
+    return textContainer;
+  }
+
+  function mg_mouseover_row(row_number, container, rargs) {
+    var lineHeight = 1.1;
+    var rrr = container.append('tspan')
+      .attr('x', 0)
+      .attr('y', (row_number * lineHeight) + 'em');
+
+    return {
+      rargs,
+      text: (text) => {
+        return mg_mouseover_tspan(rrr, text);
+      }
+    };
+  }
+
+  function mg_mouseover_text$1(args, rargs) {
+    mg_setup_mouseover_container$1(rargs.svg, args);
+
+    let mouseOver = {
+      row_number: 0,
+      rargs,
+      mouseover_row: (rargs) => {
+        mouseOver.row_number += 1;
+        return mg_mouseover_row(mouseOver.row_number, mouseOver.text_container, rargs);
+      },
+      text_container: mg_reset_text_container(rargs.svg)
+    };
+
+    return mouseOver;
   }
 
   function format_rollover_number$1(args) {
@@ -3431,8 +4213,42 @@
     return mg_format_data_for_mouseover$1(args, d, args.x_mouseover, args.x_accessor, args.time_series);
   }
 
-  function mg_format_y_mouseover(args, d) {
+  function mg_format_y_mouseover$1(args, d) {
     return mg_format_data_for_mouseover$1(args, d, args.y_mouseover, args.y_accessor, false);
+  }
+
+  function mg_format_x_aggregate_mouseover(args, d) {
+    return mg_format_data_for_mouseover$1(args, d, args.x_mouseover, 'key', args.time_series);
+  }
+
+  // http://bl.ocks.org/mbostock/3916621
+  function path_tween(d1, precision) {
+    return function() {
+      var path0 = this,
+        path1 = path0.cloneNode(),
+        n0 = path0.getTotalLength() || 0,
+        n1 = (path1.setAttribute("d", d1), path1).getTotalLength() || 0;
+
+      // Uniform sampling of distance based on specified precision.
+      var distances = [0],
+        i = 0,
+        dt = precision / Math.max(n0, n1);
+      while ((i += dt) < 1) distances.push(i);
+      distances.push(1);
+
+      // Compute point-interpolators at each distance.
+      var points = distances.map(function(t) {
+        var p0 = path0.getPointAtLength(t * n0),
+          p1 = path1.getPointAtLength(t * n1);
+        return d3.interpolate([p0.x, p0.y], [p1.x, p1.y]);
+      });
+
+      return function(t) {
+        return t < 1 ? "M" + points.map(function(p) {
+          return p(t);
+        }).join("L") : d1;
+      };
+    };
   }
 
   function mg_line_color_text(elem, line_id, {color, colors}) {
@@ -4033,7 +4849,7 @@
 
   function mg_line_main_plot(args) {
     const plot = {};
-    const svg = mg_get_svg_child_of$1(args.target);
+    const svg = mg_get_svg_child_of(args.target);
 
     // remove any old legends if they exist
     mg_selectAll_and_remove(svg, '.mg-line-legend');
@@ -4056,7 +4872,7 @@
   }
 
   function mg_line_rollover_setup(args, graph) {
-    const svg = mg_get_svg_child_of$1(args.target);
+    const svg = mg_get_svg_child_of(args.target);
 
     if (args.showActivePoint && svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       mg_add_g$1(svg, 'mg-active-datapoint-container');
@@ -4118,9 +4934,11 @@
       .style('opacity', 1);
   }
 
+  let link;
+
   function mg_trigger_linked_mouseovers(args, d, i) {
-    if (args.linked && !MG.globals.link) {
-      MG.globals.link = true;
+    if (args.linked && !link) {
+      link = true;
       if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
         const datum = d.values ? d.values[0] : d;
         const id = mg_rollover_format_id(datum, args);
@@ -4135,8 +4953,8 @@
   }
 
   function mg_trigger_linked_mouseouts({linked, utc_time, linked_format, x_accessor}, d, i) {
-    if (linked && MG.globals.link) {
-      MG.globals.link = false;
+    if (linked && link) {
+      link = false;
 
       const formatter = time_format(utc_time, linked_format);
       const datums = d.values ? d.values : [d];
@@ -4179,7 +4997,6 @@
 
   function lineChart(args) {
     this.init = function(args) {
-      this.args = args;
 
       if (!args.data || args.data.length === 0) {
         args.internal_error = 'No data was supplied';
@@ -4194,39 +5011,39 @@
 
       call_hook('line.before_destroy', this);
 
-      init(args);
+      this.args = init(args);
 
       // TODO incorporate markers into calculation of x scales
-      new scale_factory(args)
+      new scale_factory(this.args)
         .namespace('x')
         .numericalDomainFromData()
         .numericalRange('bottom');
 
-      const baselines = (args.baselines || []).map(d => d[args.y_accessor]);
+      const baselines = (this.args.baselines || []).map(d => d[this.args.y_accessor]);
 
-      new scale_factory(args)
+      new scale_factory(this.args)
         .namespace('y')
         .zeroBottom(true)
         .inflateDomain(true)
         .numericalDomainFromData(baselines)
         .numericalRange('left');
 
-      if (args.x_axis) {
-        new axis_factory(args)
+      if (this.args.x_axis) {
+        new axis_factory(this.args)
           .namespace('x')
           .type('numerical')
-          .position(args.x_axis_position)
+          .position(this.args.x_axis_position)
           .rug(x_rug(args))
           .label(add_x_label)
           .draw();
       }
 
-      if (args.y_axis) {
-        new axis_factory(args)
+      if (this.args.y_axis) {
+        new axis_factory(this.args)
           .namespace('y')
           .type('numerical')
-          .position(args.y_axis_position)
-          .rug(y_rug(args))
+          .position(this.args.y_axis_position)
+          .rug(y_rug(this.args))
           .label(add_y_label)
           .draw();
       }
@@ -4235,41 +5052,40 @@
       this.mainPlot();
       this.rollover();
       this.windowListeners();
-      if (args.brush) MG.add_brush_function(args);
+      if (this.args.brush) add_brush_function(this.args);
       call_hook('line.after_init', this);
 
       return this;
     };
 
     this.mainPlot = function() {
-      mg_line_main_plot(args);
+      mg_line_main_plot(this.args);
       return this;
     };
 
     this.markers = function() {
-      markers$1(args);
+      markers$1(this.args);
       return this;
     };
 
     this.rollover = function() {
-      mg_line_rollover_setup(args, this);
-      call_hook('line.after_rollover', args);
+      mg_line_rollover_setup(this.args, this);
+      call_hook('line.after_rollover', this.args);
 
       return this;
     };
 
     this.rolloverClick =  args => (d, i) => {
-        if (args.click) {
-            args.click(d, i);
+        if (this.args.click) {
+            this.args.click(d, i);
         }
     };
 
     this.rolloverOn = args => {
-      const svg = mg_get_svg_child_of$1(args.target);
-
+      const svg = mg_get_svg_child_of(this.args.target);
       return (d, i) => {
-        mg_update_rollover_circle(args, svg, d);
-        mg_trigger_linked_mouseovers(args, d, i);
+        mg_update_rollover_circle(this.args, svg, d);
+        mg_trigger_linked_mouseovers(this.args, d, i);
 
         svg.selectAll('text')
           .filter((g, j) => d === g)
@@ -4279,44 +5095,45 @@
         if (args.show_rollover_text &&
             !((args.missing_is_hidden && d['_missing']) || d[args.y_accessor] === null)
           ) {
-          const mouseover = mg_mouseover_text$1(args, { svg });
+          const mouseover = mg_mouseover_text$1(this.args, { svg });
           let row = mouseover.mouseover_row();
-          if (args.aggregate_rollover) {
-            row.text((args.aggregate_rollover && args.data.length > 1
+          if (this.args.aggregate_rollover) {
+            row.text((this.args.aggregate_rollover && this.args.data.length > 1
               ? mg_format_x_aggregate_mouseover
-              : mg_format_x_mouseover$1)(args, d));
+              : mg_format_x_mouseover$1)(this.args, d));
           }
 
-          const pts = args.aggregate_rollover && args.data.length > 1
+          const pts = this.args.aggregate_rollover && this.args.data.length > 1
             ? d.values
             : [d];
 
           pts.forEach(di => {
-            if (args.aggregate_rollover) {
+            if (this.args.aggregate_rollover) {
               row = mouseover.mouseover_row();
             }
 
             if (args.legend) {
-              mg_line_color_text(row.text(`${args.legend[di.__index__ - 1]}  `).bold(), di.__line_id__, args);
+              mg_line_color_text(row.text(`${args.legend[di.__index__ - 1]}  `).bold(), di.__line_id__,
+                                 this.args);
             }
 
-            mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, args);
-            if (!args.aggregate_rollover) {
-              row.text(mg_format_x_mouseover$1(args, di));
+            mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, this.args);
+            if (!this.args.aggregate_rollover) {
+              row.text(mg_format_x_mouseover$1(this.args, di));
             }
 
-            row.text(mg_format_y_mouseover(args, di, args.time_series === false));
+            row.text(mg_format_y_mouseover$1(this.args, di, this.args.time_series === false));
           });
         }
 
         if (args.mouseover) {
-          args.mouseover(d, i);
+          this.args.mouseover(d, i);
         }
       };
     };
 
     this.rolloverOff = args => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       return (d, i) => {
         mg_trigger_linked_mouseouts(args, d, i);
@@ -4350,6 +5167,149 @@
     this.init(args);
   }
 
+  function mg_missing_add_text(svg, {missing_text, width, height}) {
+    svg.selectAll('.mg-missing-text').data([missing_text])
+      .enter().append('text')
+      .attr('class', 'mg-missing-text')
+      .attr('x', width / 2)
+      .attr('y', height / 2)
+      .attr('dy', '.50em')
+      .attr('text-anchor', 'middle')
+      .text(missing_text);
+  }
+
+  function mg_missing_x_scale(args) {
+    args.scales.X = d3.scaleLinear()
+      .domain([0, args.data.length])
+      .range([mg_get_plot_left$1(args), mg_get_plot_right$1(args)]);
+    args.scalefns.yf = ({y}) => args.scales.Y(y);
+  }
+
+  function mg_missing_y_scale(args) {
+    args.scales.Y = d3.scaleLinear()
+      .domain([-2, 2])
+      .range([args.height - args.bottom - args.buffer * 2, args.top]);
+    args.scalefns.xf = ({x}) => args.scales.X(x);
+  }
+
+  function mg_make_fake_data(args) {
+    const data = [];
+    for (let x = 1; x <= 50; x++) {
+      data.push({ x, y: Math.random() - (x * 0.03) });
+    }
+    args.data = data;
+  }
+
+  function mg_add_missing_background_rect(g, {title, buffer, title_y_position, width, height}) {
+    g.append('svg:rect')
+      .classed('mg-missing-background', true)
+      .attr('x', buffer)
+      .attr('y', buffer + (title ? title_y_position : 0) * 2)
+      .attr('width', width - buffer * 2)
+      .attr('height', height - buffer * 2 - (title ? title_y_position : 0) * 2)
+      .attr('rx', 15)
+      .attr('ry', 15);
+  }
+
+  function mg_missing_add_line(g, {scalefns, interpolate, data}) {
+    const line = d3.line()
+      .x(scalefns.xf)
+      .y(scalefns.yf)
+      .curve(interpolate);
+
+    g.append('path')
+      .attr('class', 'mg-main-line mg-line1-color')
+      .attr('d', line(data));
+  }
+
+  function mg_missing_add_area(g, {scalefns, scales, interpolate, data}) {
+    const area = d3.area()
+      .x(scalefns.xf)
+      .y0(scales.Y.range()[0])
+      .y1(scalefns.yf)
+      .curve(interpolate);
+
+    g.append('path')
+      .attr('class', 'mg-main-area mg-area1-color')
+      .attr('d', area(data));
+  }
+
+  function mg_remove_all_children({target}) {
+    d3.select(target).selectAll('svg *').remove();
+  }
+
+  function mg_missing_remove_legend({legend_target}) {
+    if (legend_target) {
+      d3.select(legend_target).html('');
+    }
+  }
+
+  function missingData(args) {
+    this.init = (args) => {
+      this.args = args;
+
+      mg_init_compute_width(args);
+      mg_init_compute_height(args);
+
+      // create svg if one doesn't exist
+
+      const container = d3.select(args.target);
+      mg_raise_container_error(container, args);
+      let svg = container.selectAll('svg');
+      mg_remove_svg_if_chart_type_has_changed(svg, args);
+      svg = mg_add_svg_if_it_doesnt_exist(svg, args);
+      mg_adjust_width_and_height_if_changed(svg, args);
+      mg_set_viewbox_for_scaling(svg, args);
+      mg_remove_all_children(args);
+
+      svg.classed('mg-missing', true);
+      mg_missing_remove_legend(args);
+
+      chart_title(args);
+
+      // are we adding a background placeholder
+      if (args.show_missing_background) {
+        mg_make_fake_data(args);
+        mg_missing_x_scale(args);
+        mg_missing_y_scale(args);
+        const g = mg_add_g$1(svg, 'mg-missing-pane');
+
+        mg_add_missing_background_rect(g, args);
+        mg_missing_add_line(g, args);
+        mg_missing_add_area(g, args);
+      }
+
+      mg_missing_add_text(svg, args);
+
+      this.windowListeners();
+
+      return this;
+    };
+
+    this.windowListeners = () => {
+      mg_window_listeners$1(this.args);
+      return this;
+    };
+
+    this.init(args);
+  }
+
+  const missingDataOptions = {
+    top: [40, 'number'], // the size of the top margin
+    bottom: [30, 'number'], // the size of the bottom margin
+    right: [10, 'number'], // size of the right margin
+    left: [0, 'number'], // size of the left margin
+    buffer: [8, 'number'], // the buffer between the actual chart area and the margins
+    legend_target: ['', 'string'],
+    width: [350, 'number'],
+    height: [220, 'number'],
+    missing_text: ['Data currently missing or unavailable', 'string'],
+    show_tooltips: [true, 'boolean'],
+    show_missing_background: [true, 'boolean']
+  };
+
+  let link$1;
+
   function point_mouseover(args, svg, d) {
     const mouseover = mg_mouseover_text$1(args, { svg });
     const row = mouseover.mouseover_row();
@@ -4362,7 +5322,7 @@
     mg_color_point_mouseover(args, row.text('\u25CF   ').elem, d); // point shape
 
     row.text(mg_format_x_mouseover$1(args, d)); // x
-    row.text(mg_format_y_mouseover(args, d, args.time_series === false));
+    row.text(mg_format_y_mouseover$1(args, d, args.time_series === false));
   }
 
   function mg_color_point_mouseover({color_accessor, scalefns}, elem, d) {
@@ -4387,8 +5347,6 @@
 
   function pointChart(args) {
     this.init = function(args) {
-      this.args = args;
-
       // infer y_axis and x_axis type;
       args.x_axis_type = mg_infer_type(args, 'x');
       args.y_axis_type = mg_infer_type(args, 'y');
@@ -4396,7 +5354,7 @@
       raw_data_transformation(args);
 
       process_point$1(args);
-      init(args);
+      this.args = init(args);
 
       let xMaker, yMaker;
 
@@ -4515,7 +5473,7 @@
       this.markers();
       this.rollover();
       this.windowListeners();
-      if (args.brush) MG.add_brush_function(args);
+      if (args.brush) add_brush_function(args);
       return this;
     };
 
@@ -4529,7 +5487,7 @@
     };
 
     this.mainPlot = function() {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       const data = mg_filter_out_plot_bounds(args.data[0], args);
       //remove the old points, add new one
@@ -4574,7 +5532,7 @@
     };
 
     this.rollover = function() {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
         mg_add_g$1(svg, 'mg-active-datapoint-container');
@@ -4622,7 +5580,7 @@
     };
 
     this.rolloverOn = args => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       return (d, i) => {
         svg.selectAll('.mg-points circle')
@@ -4639,8 +5597,8 @@
         }
 
         //trigger mouseover on all points for this class name in .linked charts
-        if (args.linked && !MG.globals.link) {
-          MG.globals.link = true;
+        if (args.linked && !link$1) {
+          link$1 = true;
 
           //trigger mouseover on matching point in .linked charts
           d3.selectAll(`.mg-voronoi .path-${i}`)
@@ -4660,11 +5618,11 @@
     };
 
     this.rolloverOff = args => {
-      const svg = mg_get_svg_child_of$1(args.target);
+      const svg = mg_get_svg_child_of(args.target);
 
       return (d, i) => {
-        if (args.linked && MG.globals.link) {
-          MG.globals.link = false;
+        if (args.linked && link$1) {
+          link$1 = false;
 
           d3.selectAll(`.mg-voronoi .path-${i}`)
             .each(() => {
@@ -4729,39 +5687,7 @@
     highlight: [null, 'function'] // if this callback function returns true, the selected point will be highlighted
   };
 
-  const CHARTS = {};
-  const OPTIONS = {};
-
-  function register(chartType, descriptor, options) {
-    const defaults = options ? options_to_defaults(options) : {};
-    CHARTS[chartType] = {
-      descriptor: descriptor,
-      defaults: defaults,
-    };
-    if (options) {
-      Object.keys(options).map(key => {
-        if (!(key in options)) {
-          OPTIONS[key] = options[key];
-        }
-      });
-    }
-  }
-
-  register('bar', barChart, barchartOptions);
-  register('line', lineChart);
-  register('point', pointChart, pointChartOptions);
-
-  let deprecations = {
-    rollover_callback: { replacement: 'mouseover', version: '2.0' },
-    rollout_callback: { replacement: 'mouseout', version: '2.0' },
-    x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
-    y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
-    show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
-    xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
-    interpolate_tension: { replacement: 'interpolate', version: '2.10' }
-  };
-
-  let options = { // <name>: [<defaultValue>, <availableType>]
+  const baseOptions = { // <name>: [<defaultValue>, <availableType>]
     x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
     y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
     y_padding_percentage: [0.05, 'number'],                 // for categorical scales
@@ -4808,7 +5734,7 @@
     xax_format: [null, 'function'], // a function that formats the x-axis' labels
     xax_tick_length: [5, 'number'], // the x-axis' tick length in pixels
     xax_units: ['', 'string'], // a prefix symbol to be shown alongside the x-axis' labels
-    x_scale_type: ['linear', 'log'], // the x-axis scale type
+    x_scale_type: ['linear', ['linear', 'log']], // the x-axis scale type
     y_axis: [true, 'boolean'], // determines whether to display the y-axis
     x_axis_position: ['bottom'], // string
     y_axis_position: ['left'], // string
@@ -4835,7 +5761,7 @@
     format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
     full_height: [false, 'boolean'], // sets height to that of the parent, adjusts dimensions on window resize
     full_width: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
-    interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
+    interpolate: [d3.curveCatmullRom.alpha(0), 'function'], // the interpolation function to use for rendering lines
     legend: ['', 'string[]'], // an array of literals used to label lines
     legend_target: ['', 'string'], // the DOM element to insert the legend in
     linked: [false, 'boolean'], // used to link multiple graphics together
@@ -4887,27 +5813,131 @@
     description: [null, 'string']
   };
 
-  let defaults$1 = options_to_defaults(options);
+  const CHARTS = {};
+  const OPTIONS = Object.assign(baseOptions);
 
-  function data_graphic(args) {
-
-    call_hook('global.defaults', defaults$1);
-
-    if (!args) { args = {}; }
-
-    for (let key in args) {
-      if (!validate_option(options, key, args[key])) {
+  function register(chartType, descriptor, options) {
+    const defaults = options ? options_to_defaults(options) : {};
+    CHARTS[chartType] = {
+      descriptor: descriptor,
+      defaults: defaults,
+    };
+    if (options) {
+      Object.keys(options).map(key => {
         if (!(key in options)) {
+          OPTIONS[key] = options[key];
+        }
+      });
+    }
+  }
+
+  register('bar', barChart, barchartOptions);
+  register('histogram', histogram, histogramOptions);
+  register('line', lineChart);
+  register('point', pointChart, pointChartOptions);
+  register('missing-data', missingData, missingDataOptions);
+
+  const filter_in_range_data = (args, range) => {
+    const is_data_in_range = (data, range) => {
+      return data > Math.min(range[0], range[1]) && data < Math.max(range[0], range[1]);
+    };
+    // if range without this axis return true, else judge is data in range or not.
+    return d => ['x', 'y'].every(dim => !(dim in range) || is_data_in_range(d[args[`${dim}_accessor`]], range[dim]));
+  };
+
+  // the range here is the range of data
+  // range is an object with two optional attributes of x,y, respectively represent ranges on two axes
+  const zoom_to_data_domain = (args, range) => {
+    const raw_data = args.processed.raw_data || args.data;
+    // store raw data and raw domain to in order to zoom back to the initial state
+    if (!('raw_data' in args.processed)) {
+      args.processed.raw_domain = {
+        x: args.scales.X.domain(),
+        y: args.scales.Y.domain()
+      };
+      args.processed.raw_data = raw_data;
+    }
+    // to avoid drawing outside the chart in the point chart, unnecessary in line chart.
+    if (args.chart_type === 'point') {
+      if (is_array_of_arrays(raw_data)) {
+        args.data = raw_data.map(function(d) {
+          return d.filter(filter_in_range_data(args, range));
+        });
+      } else {
+        args.data = raw_data.filter(filter_in_range_data(args, range));
+      }
+    }
+    ['x', 'y'].forEach(dim => {
+      if (dim in range) args.processed[`zoom_${dim}`] = range[dim];
+      else delete args.processed[`zoom_${dim}`];
+    });
+    console.log(args.processed.subplot);
+    if (args.processed.subplot) {
+      if (range !== args.processed.raw_domain) {
+        create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
+      } else {
+        remove_brushing_pattern(args.processed.subplot);
+      }
+    }
+    new CHARTS[args.chart_type || defaults.chart_type].descriptor(args);
+  };
+
+  const zoom_to_raw_range = args => {
+    if (!('raw_domain' in args.processed)) return;
+    zoom_to_data_domain(args, args.processed.raw_domain);
+    delete args.processed.raw_domain;
+    delete args.processed.raw_data;
+  };
+
+  // converts the range of selection into the range of data that we can use to
+  // zoom the chart to a particular region
+  const convert_range_to_domain = (args, range) =>
+    ['x', 'y'].reduce((domain, dim) => {
+      if (!(dim in range)) return domain;
+      domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v));
+      if (dim === 'y') domain[dim].reverse();
+      return domain;
+    }, {});
+
+  const convert_domain_to_range = (args, domain) =>
+    ['x', 'y'].reduce((range, dim) => {
+      if (!(dim in domain)) return range;
+      range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v));
+      if (dim === 'y') range[dim].reverse();
+      return range;
+    }, {});
+
+  // the range here is the range of selection
+  const zoom_to_data_range = (args, range) => {
+    const domain = convert_range_to_domain(args, range);
+    zoom_to_data_domain(args, domain);
+  };
+
+  let deprecations = {
+    rollover_callback: { replacement: 'mouseover', version: '2.0' },
+    rollout_callback: { replacement: 'mouseout', version: '2.0' },
+    x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
+    y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
+    show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
+    xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
+    interpolate_tension: { replacement: 'interpolate', version: '2.10' }
+  };
+
+  const defaults$1 = options_to_defaults(OPTIONS);
+
+  function data_graphic(options = {}) {
+    call_hook('global.defaults', defaults$1);
+    for (let key in options) {
+      if (!validate_option(OPTIONS, key, options[key])) {
+        if (!(key in OPTIONS)) {
           console.warn(`Option ${key} not recognized`);
         } else {
-          console.warn(`Option ${key} expected type ${MG.options[key][1]} but got ${args[key]} instead`);
+          console.warn(`Option ${key} expected type ${OPTIONS[key][1]} but got ${options[key]} instead`);
         }
       }
     }
-
-    var selected_chart = CHARTS[args.chart_type || defaults$1.chart_type];
-    console.log(selected_chart);
-    merge_with_defaults(args, selected_chart.defaults, defaults$1);
+    let selected_chart = CHARTS[options.chart_type || defaults$1.chart_type];
+    let args = merge_with_defaults(options, selected_chart.defaults, defaults$1);
 
     if (args.list) {
       args.x_accessor = 0;
@@ -4947,8 +5977,8 @@
     call_hook('global.before_init', args);
 
     new selected_chart.descriptor(args);
-
-    return args.data;
+    console.log(args);
+    return args;
   }
 
   const lib = {

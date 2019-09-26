@@ -263,22 +263,14 @@ export function mg_flatten_array(arr) {
   return flat_data.concat.apply(flat_data, arr);
 }
 
-export function mg_next_id() {
-  if (typeof MG._next_elem_id === 'undefined') {
-    MG._next_elem_id = 0;
-  }
-
-  return 'mg-' + (MG._next_elem_id++);
-}
-
+let _next_elem_id = 0;
 export function mg_target_ref(target) {
   if (typeof target === 'string') {
     return mg_normalize(target);
-
   } else if (target instanceof window.HTMLElement) {
     var target_ref = target.getAttribute('data-mg-uid');
     if (!target_ref) {
-      target_ref = mg_next_id();
+      target_ref = 'mg-' + (_next_elem_id++);
       target.setAttribute('data-mg-uid', target_ref);
     }
 

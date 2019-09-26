@@ -60,7 +60,7 @@ d3.json('data/points1.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-    const main = {
+    const main = MG.data_graphic({
         title: "Overview Plot",
         description: "This is a simple example of an overview plot. You can create an overview plot by creating another chart with 'zoom_target' option and then setting it as the object of the main chart.",
         data: data,
@@ -71,8 +71,7 @@ d3.json('data/points1.json', function(data) {
         missing_is_hidden: true,
         target: '#main',
         brush: 'xy',
-    }
-    MG.data_graphic(main);
+    });
     MG.data_graphic({
         data: data,
         width: 600,
@@ -133,7 +132,7 @@ d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-    const main = {
+    const main = MG.data_graphic({
         title: "Overview Plot",
         description: "This is a simple example of an overview plot. You can create an overview plot by creating another chart with 'zoom_target' option and then setting it as the object of the main chart.",
         data: data,
@@ -144,8 +143,7 @@ d3.json('data/fake_users2.json', function(data) {
         missing_is_hidden: true,
         target: '#main',
         brush: 'xy',
-    }
-    MG.data_graphic(main);
+    });
     MG.data_graphic({
         data: data,
         width: 600,

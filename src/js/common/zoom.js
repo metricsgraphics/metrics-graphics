@@ -1,5 +1,6 @@
 import { is_array_of_arrays } from '../misc/types.js';
 import { create_brushing_pattern, remove_brushing_pattern } from './brush.js';
+import { CHARTS } from './charts.js';
 
 const filter_in_range_data = (args, range) => {
   const is_data_in_range = (data, range) => {
@@ -35,6 +36,7 @@ export const zoom_to_data_domain = (args, range) => {
     if (dim in range) args.processed[`zoom_${dim}`] = range[dim];
     else delete args.processed[`zoom_${dim}`];
   });
+  console.log(args.processed.subplot);
   if (args.processed.subplot) {
     if (range !== args.processed.raw_domain) {
       create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range));
@@ -42,7 +44,7 @@ export const zoom_to_data_domain = (args, range) => {
       remove_brushing_pattern(args.processed.subplot);
     }
   }
-  new MG.charts[args.chart_type || defaults.chart_type].descriptor(args);
+  new CHARTS[args.chart_type || defaults.chart_type].descriptor(args);
 };
 
 export const zoom_to_raw_range = args => {

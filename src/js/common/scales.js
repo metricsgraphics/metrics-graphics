@@ -1,6 +1,13 @@
 import { call_hook } from './hooks.js';
 import { is_date, is_function } from '../misc/types.js';
-import { mg_flatten_array, mg_get_plot_left, mg_get_plot_right, mg_get_plot_top, mg_get_plot_bottom } from '../misc/utility.js';
+import {
+  clone,
+  mg_flatten_array,
+  mg_get_plot_left,
+  mg_get_plot_right,
+  mg_get_plot_top,
+  mg_get_plot_bottom
+} from '../misc/utility.js';
 
 export function mg_add_scale_function(args, scalefcn_name, scale, accessor, inflation) {
   args.scalefns[scalefcn_name] = function(di) {
@@ -264,7 +271,7 @@ function mg_min_max_numerical(args, scaleArgs, additional_data_arrays) {
   if (min_val === max_val && args['min_' + namespace] == null &&
       args['max_' + namespace] == null) {
     if (is_date(min_val)) {
-      max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1));
+      max_val = new Date(clone(min_val).setDate(min_val.getDate() + 1));
     } else if (typeof min_val === 'number') {
       max_val = min_val + 1;
       mg_force_xax_count_to_be_two(args);

@@ -1,3 +1,4 @@
+import { add_brush_function } from '../common/brush.js';
 import { init } from '../common/init.js';
 import { markers } from '../common/markers.js';
 import { mg_clear_mouseover_container, mg_mouseover_text } from '../common/rollover.js';
@@ -14,6 +15,8 @@ import {
   mg_infer_type,
   mg_get_svg_child_of
 } from '../misc/utility.js';
+
+let link;
 
 function point_mouseover(args, svg, d) {
   const mouseover = mg_mouseover_text(args, { svg });
@@ -52,8 +55,6 @@ function mg_filter_out_plot_bounds(data, args) {
 
 export function pointChart(args) {
   this.init = function(args) {
-    this.args = args;
-
     // infer y_axis and x_axis type;
     args.x_axis_type = mg_infer_type(args, 'x');
     args.y_axis_type = mg_infer_type(args, 'y');
@@ -61,7 +62,7 @@ export function pointChart(args) {
     raw_data_transformation(args);
 
     process_point(args);
-    init(args);
+    this.args = init(args);
 
     let xMaker, yMaker;
 
@@ -180,7 +181,7 @@ export function pointChart(args) {
     this.markers();
     this.rollover();
     this.windowListeners();
-    if (args.brush) MG.add_brush_function(args);
+    if (args.brush) add_brush_function(args);
     return this;
   };
 
@@ -304,8 +305,8 @@ export function pointChart(args) {
       }
 
       //trigger mouseover on all points for this class name in .linked charts
-      if (args.linked && !MG.globals.link) {
-        MG.globals.link = true;
+      if (args.linked && !link) {
+        link = true;
 
         //trigger mouseover on matching point in .linked charts
         d3.selectAll(`.mg-voronoi .path-${i}`)
@@ -328,8 +329,8 @@ export function pointChart(args) {
     const svg = mg_get_svg_child_of(args.target);
 
     return (d, i) => {
-      if (args.linked && MG.globals.link) {
-        MG.globals.link = false;
+      if (args.linked && link) {
+        link = false;
 
         d3.selectAll(`.mg-voronoi .path-${i}`)
           .each(() => {
