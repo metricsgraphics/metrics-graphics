@@ -1,0 +1,48 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='aspect1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+    for(var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Preserving the aspect ratio",
+        description: "You can automatically set the width or height of a data graphic to fit its parent element. When done the graphic will rescale to fit the size of the parent element while preserving its aspect ratio.",
+        data: data,
+        full_width: true,
+        height: 300,
+        right: 40,
+        x_extended_ticks: true,
+        target: '#aspect1',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+MG._hooks = {};
+d3.json('data/fake_users3.json', function(data) {
+    for(var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Preserving the aspect ratio",
+        description: "You can automatically set the width or height of a data graphic to fit its parent element. When done the graphic will rescale to fit the size of the parent element while preserving its aspect ratio.",
+        data: data,
+        full_width: true,
+        height: 300,
+        right: 40,
+        x_extended_ticks: true,
+        target: '#aspect1',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+</script>

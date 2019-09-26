@@ -1,0 +1,368 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='fake_users2'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Chart",
+        description: "This line chart contains multiple lines.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#fake_users2',
+        legend: ['Line 1','Line 2','Line 3'],
+        legend_target: '.legend'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-lg-7 text-center legend'></div>
+                <div class='col-lg-5'></div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden_multi'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden-multi.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden-multi.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Broken Multi-Lines",
+        description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#missing_is_hidden_multi',
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='linked_multi1'></div>
+                    <div id='linked_multi2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data 1</a>,
+                        <a href='data/fake_users3.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Linked",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi1',
+        linked: true
+    });
+})
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Linked 2",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi2',
+        linked: true
+    });
+});</code></pre>
+
+    </div>
+</div>
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='missing-multi'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    // set this to an empty array.
+    // data[0] and data[2] both still arrays of objects.
+    data[1] = [];
+
+    MG.data_graphic({
+        title: "Missing Time Series Don't Get Drawn",
+        description: "We set the second array to [] instead of the loaded data. The line color order is preserved.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing-multi'
+    });
+});
+});</code></pre>
+
+    </div>
+</div>
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='multi-labelled'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    data[1][data[1].length-1].value = 50000000;
+    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1].value += 10000000;
+
+    MG.data_graphic({
+        title: "Labeling Lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        legend: ['US', 'CA', 'DE'],
+        target: '#multi-labelled'
+    });
+});</code></pre>
+
+    </div>
+</div>
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='custom-colors'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data){
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+    MG.data_graphic({
+        title: "Custom Line Coloring",
+        description: "By passing in an array of hex / rgb / rgba / html strings, you can specify the colors of the lines. NOTE: this feature may have an API change before it is fully in Metrics Graphics. Use at your own risk.",
+        data: [data[0], data[1], data[2]],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#custom-colors',
+        legend: ['Team A','Team B','Team C'],
+        legend_target: 'div#custom-color-key',
+        colors: ['blue', 'rgb(255,100,43)', '#CCCCFF'],
+        aggregate_rollover: true
+    });
+})
+</code></pre>
+
+    </div>
+</div>
+<div class='row'>
+    <div class='col-lg-7 text-center legend' id='custom-color-key'></div>
+    <div class='col-lg-5'></div>
+</div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='multiline_area_select'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users3.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+
+    MG.data_graphic({
+        title: "Select lines of your multi-line chart having areas",
+        description: "By passing in an array of booleans in 'area' property, you can choose which lines has an area or not.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#multiline_area_select',
+        area: [false, true, false],
+        y_extended_ticks: true,
+        x_accessor: 'date'
+    });
+});</code></pre>
+
+<script>
+MG._hooks = {};
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Chart",
+        description: "This line chart contains multiple lines.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#fake_users2',
+        legend: ['Line 1','Line 2','Line 3'],
+        legend_target: '.legend'
+    });
+});
+
+d3.json('data/missing-is-hidden-multi.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Broken Multi-Lines",
+        description: 'Setting <i>missing_is_hidden</i> works with multiple lines too.',
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#missing_is_hidden_multi',
+        show_secondary_x_label: false
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Linked",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi1',
+        linked: true
+    });
+})
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Multi-Line Linked 2",
+        description: "Demoing linked multi-line charts.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#linked_multi2',
+        linked: true
+    });
+});
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    // set this to an empty array.
+    // data[0] and data[2] both still arrays of objects.
+    data[1] = [];
+    MG.data_graphic({
+        title: "Missing Time Series Don't Get Drawn",
+        description: "We set the second array to [] instead of the loaded data. The line color order is preserved.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing-multi'
+    });
+});
+
+d3.json('data/fake_users3.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    data[1][data[1].length-1].value = 50000000;
+    data[2][data[2].length-1] = MG.clone(data[1][data[1].length-1]);
+    data[2][data[2].length-1].value += 10000000;
+
+
+    MG.data_graphic({
+        title: "Labeling Lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        legend: ['US', 'CA', 'DE'],
+        target: '#multi-labelled'
+    });
+});
+
+d3.json('data/fake_users2.json', function(data){
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+    MG.data_graphic({
+        title: "Custom Line Coloring",
+        description: "By passing in an array of hex / rgb / rgba / html strings, you can specify the colors of the lines. NOTE: this feature may have an API change before it is fully in Metrics Graphics. Use at your own risk.",
+        data: [data[0], data[1], data[2]],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#custom-colors',
+        legend: ['Team A','Team B','Team C'],
+        legend_target: 'div#custom-color-key',
+        colors: ['blue', 'rgb(255,100,43)', '#CCCCFF'],
+        aggregate_rollover: true
+    });
+});
+
+d3.json('data/fake_users3.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    };
+
+    MG.data_graphic({
+        title: "Select lines of your multi-line chart having areas",
+        description: "By passing in an array of booleans in 'area' property, you can choose which lines has an area or not.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#multiline_area_select',
+        area: [false, true, false],
+        y_extended_ticks: true,
+        x_accessor: 'date'
+    });
+});
+</script>

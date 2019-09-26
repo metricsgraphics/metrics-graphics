@@ -1,0 +1,386 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='missing-y'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/missing-y.json'>data</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/missing-y.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Few Observations",
+        description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+        data: data,
+        interpolate: d3.curveLinear,
+        missing_is_zero: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        min_x: new Date('2014-01-01'),
+        max_x: new Date('2014-06-01'),
+        target: '#missing-y',
+        mouseover: function(d, i) {
+            var df = d3.timeFormat('%b %d, %Y');
+            var date = df(d.date);
+            var y_val = (d.value === 0) ? 'no data' : d.value;
+
+            d3.select('#missing-y svg .mg-active-datapoint')
+                .text(date +  '   ' + y_val);
+        }
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Broken Lines",
+        description: "Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.",
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='missing_is_hidden_accessor'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/missing-is-hidden-accessor.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/missing-is-hidden-accessor.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Broken Lines (Missing Data Points)",
+        description: "You can hide individual data points on a particular attribute by setting <i>missing_is_hidden_accessor</i>. Data points whose y-accessor values are null are also hidden.",
+        data: data,
+        missing_is_hidden: true,
+        missing_is_hidden_accessor: 'dead',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden_accessor'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='missing-data'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Missing Data",
+    description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
+    error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
+    chart_type: 'missing-data',
+    missing_text: 'This is an example of a missing chart',
+    target: '#missing-data',
+    width: 600,
+    height: 200
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='missing1'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var all_the_data = MG.clone(data[0]);
+    for (i = 1; i < data.length; i++){
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+            } else {
+                all_the_data[j]['value' + (i + 1)] = data[i][j].value;
+            }
+        }
+    }
+
+    MG.data_graphic({
+        title: "Handling Different Sized Lines in a Single Array",
+        description: "How do you handle data with multiple implied time series lengths?",
+        data: all_the_data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing1',
+        linked: true,
+        x_accessor: 'date',
+        y_accessor: ['value', 'value2', 'value3']
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='display_active_point_01'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].active = (i % 5 === 0);
+    }
+
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Show active points on line chart",
+        description: "This line chart displays pre-defined active points",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='display_active_point_02'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users2.json'>data</a>
+                    </div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 0) {
+                data[i][j].active = (j % 5 === 0);
+            }
+            if (i === 1) {
+                data[i][j].active = (j % 10 === 0);
+            }
+        }
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Show active points on multi-lines chart",
+        description: "This multi-lines chart displays pre-defined active points for each lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+MG._hooks = {};
+d3.json('data/missing-y.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Few Observations",
+        description: "We sometimes have only a few observations. By setting <i>missing_is_zero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+        data: data,
+        interpolate: d3.curveLinear,
+        missing_is_zero: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        min_x: new Date('2014-01-01'),
+        max_x: new Date('2014-06-01'),
+        target: '#missing-y',
+        mouseover: function(d, i) {
+            var df = d3.timeFormat('%b %d, %Y');
+            var date = df(d.date);
+            var y_val = (d.value === 0) ? 'no data' : d.value;
+
+            d3.select('#missing-y svg .mg-active-datapoint')
+                .text(date +  '   ' + y_val);
+        }
+    });
+});
+
+d3.json('data/missing-is-hidden.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Broken Lines (Missing Data Range)",
+        description: "Setting <i>missing_is_hidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.",
+        data: data,
+        missing_is_hidden: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden',
+        area: false,
+        show_secondary_x_label: false
+    });
+});
+
+d3.json('data/missing-is-hidden-accessor.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Broken Lines (Missing Data Points)",
+        description: "You can hide individual data points on a particular attribute by setting <i>missing_is_hidden_accessor</i>. Data points whose y-accessor values are null are also hidden.",
+        data: data,
+        missing_is_hidden: true,
+        missing_is_hidden_accessor: 'dead',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing_is_hidden_accessor'
+    });
+});
+
+
+MG.data_graphic({
+    title: "Missing Data",
+    chart_type: 'missing-data',
+    description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
+    error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
+    missing_text: 'This is an example of a missing chart',
+    target: '#missing-data',
+    width: 600,
+    height: 200
+});
+
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var all_the_data = MG.clone(data[0]);
+    for (i = 1; i < data.length; i++){
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+            } else {
+                all_the_data[j]['value' + (i + 1)] = data[i][j].value;
+            }
+        }
+    }
+
+    MG.data_graphic({
+        title: "Handling Different Sized Lines in a Single Array",
+        description: "How do you handle data with multiple implied time series lengths?",
+        data: all_the_data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#missing1',
+        linked: true,
+        x_accessor: 'date',
+        y_accessor: ['value', 'value2', 'value3']
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].active = (i % 5 === 0);
+    }
+
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Show active points on line chart",
+        description: "This line chart displays pre-defined active points",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_01',
+        aggregate_rollover: true
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+
+    for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+            if (i === 0) {
+                data[i][j].active = (j % 5 === 0);
+            }
+            if (i === 1) {
+                data[i][j].active = (j % 10 === 0);
+            }
+        }
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Show active points on multi-lines chart",
+        description: "This multi-lines chart displays pre-defined active points for each lines",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        point_size: 3,
+        active_point_on_lines: true,
+        active_point_accessor: 'active',
+        active_point_size: 2,
+        target: '#display_active_point_02',
+        aggregate_rollover: true
+    });
+});
+</script>

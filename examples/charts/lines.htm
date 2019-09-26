@@ -1,0 +1,335 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='fake_users1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Line Chart",
+        description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: document.getElementById('fake_users1'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='confidence_band'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/confidence_band.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/confidence_band.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Confidence Band",
+        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+        data: data,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        area: false,
+        target: '#confidence_band',
+        show_secondary_x_label: false,
+        show_confidence_band: ['l', 'u'],
+        x_extended_ticks: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='small-range'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/small-range.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/small-range.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Small Range of Integers",
+        description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+        data: data,
+        interpolate: d3.curveLinear,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#small-range'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div id='briefing-1'></div>
+                    <div id='briefing-2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/brief-1.json'>data 1</a>,
+                        <a href='data/brief-2.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Linked Graphic",
+        description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
+        data: data,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-1'
+    });
+});
+
+d3.json('data/brief-2.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Other Linked Graphic",
+        description: "Roll over and watch as the graphic to the left triggers.",
+        data: data,
+        area: false,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-2'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='singleton'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Singleton",
+    description: "Handling a solitary data point.",
+    data: [{'date': new Date('2015-03-05T21:00:00Z'), 'value': 12000}],
+    width: 600,
+    height: 200,
+    right: 40,
+    target: '#singleton'
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='custom-color'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Changing Single Line Color",
+        description: "For single line charts, there are two simple ways to change a line color. The first is to change the css (described on the wiki). The other is to specify a color value using color: <em>string</em> or colors: <em>string</em>.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        color: '#8C001A',
+        target: 'div#custom-color',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='area_flipped_users_gain_loss'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+
+    var max = d3.max(data, function (d) {
+        return d.value;
+    });
+    var min = d3.min(data, function(d) {
+        return d.value;
+    });
+
+    var offsetForNegativeValues = ((max - min) / 1.75);
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].value = (data[i].value - offsetForNegativeValues) / 1000000;
+    }
+
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Flipped area under Y value baseline",
+        description: "This is a line chart having a flipped area under a Y value baseline",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        area: true,
+        flip_area_under_y_value: 0,
+        target: document.getElementById('area_flipped_users_gain_loss'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+
+
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Changing Single Line Color",
+        description: "For single line charts, there are two simple ways to change a line color. The first is to change the css (described on the wiki). The other is to specify a color value using color: <em>string</em> or colors: <em>string</em>.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        color: '#8C001A',
+        target: 'div#custom-color',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+MG._hooks = {};
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Line Chart",
+        description: "This is a simple line chart. You can remove the area portion by adding <i>area: false</i> to the arguments list.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: document.getElementById('fake_users1'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+d3.json('data/confidence_band.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Confidence Band",
+        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+        data: data,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        area: false,
+        target: '#confidence_band',
+        show_secondary_x_label: false,
+        show_confidence_band: ['l', 'u'],
+        x_extended_ticks: true
+    });
+});
+
+d3.json('data/small-range.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Small Range of Integers",
+        description: "When we have a data object of integers and a small range of values, the auto-generated set of y-axis ticks are filtered so that we don't include fractional values.",
+        data: data,
+        interpolate: d3.curveLinear,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#small-range'
+    });
+});
+
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Linked Graphic",
+        description: "The two graphics in this section are linked together. A rollover in one causes a rollover in the other.",
+        data: data,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-1'
+    });
+});
+
+d3.json('data/brief-2.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Other Linked Graphic",
+        description: "Roll over and watch as the graphic to the left triggers.",
+        data: data,
+        area: false,
+        linked: true,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#briefing-2'
+    });
+});
+
+MG.data_graphic({
+    title: "Singleton",
+    description: "Handling a solitary data point.",
+    data: [{'date': new Date('2015-03-05T21:00:00Z'), 'value': 12000}],
+    width: 600,
+    height: 200,
+    right: 40,
+    target: '#singleton'
+});
+
+d3.json('data/fake_users1.json', function(data) {
+
+    var max = d3.max(data, function (d) {
+        return d.value;
+    });
+    var min = d3.min(data, function(d) {
+        return d.value;
+    });
+
+    var offsetForNegativeValues = ((max - min) / 1.75);
+
+    for (var i = 0; i < data.length; i++) {
+        data[i].value = (data[i].value - offsetForNegativeValues) / 1000000;
+    }
+
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Flipped area under Y value baseline",
+        description: "This is a line chart having a flipped area under a Y value baseline",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        area: true,
+        flip_area_under_y_value: 0,
+        target: document.getElementById('area_flipped_users_gain_loss'),
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+</script>

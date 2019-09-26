@@ -1,0 +1,338 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': '1st Milestone'
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': '2nd Milestone'
+    }];
+
+    MG.data_graphic({
+        title: "Markers",
+        description: "Markers are vertical lines that can be added at arbitrary points. Markers that are close to each other won't collide.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers-clickable'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var clicker = function() {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    };
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Click me",
+        'click': clicker
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Clickable Markers",
+        description: "You can assign arbitrary functions to markers' click events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-clickable'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers-mouseover'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var mouseover = function() {
+        alert("You are over me!");
+    };
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Place your mouse here",
+        'mouseover': mouseover
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Mouse Over Markers",
+        description: "You can assign arbitrary functions to markers' mouseover events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-mouseover'
+    });</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='markers-mouseout'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+                    <pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var mouseout = function() {
+        alert("You just left me!");
+    };
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Place your mouse here and out!",
+        'mouseout': mouseout
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Mouse Out Markers",
+        description: "You can assign arbitrary functions to markers' mouseout events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-mouseout'
+    });</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='baselines'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Baselines",
+        description: "Baselines are horizontal lines that can added at arbitrary points.",
+        data: data,
+        baselines: [{value: 160000000, label: 'a baseline'}],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#baselines'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center mg-main-area-solid' id='spike'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+
+    var markers = [{
+        'date': new Date('2014-03-17T00:00:00.000Z'),
+        'label': 'Look, a spike!'
+    }];
+
+    MG.data_graphic({
+        title: "Annotating a Point",
+        description: "By setting the graphic's target a class name of mg-main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        target: '#spike'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+MG._hooks = {};
+d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': '1st Milestone'
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': '2nd Milestone'
+    }];
+
+    MG.data_graphic({
+        title: "Markers",
+        description: "Markers are vertical lines that can be added at arbitrary points. Markers that are close to each other won't collide.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers'
+    });
+
+    var clicker = function() {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+    };
+
+    markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Click me",
+        'click': clicker
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Clickable Markers",
+        description: "You can assign arbitrary functions to markers' click events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-clickable'
+    });
+
+    var mouseover = function() {
+        alert("You are over me!");
+    };
+
+    markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Place your mouse here",
+        'mouseover': mouseover
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Mouse Over Markers",
+        description: "You can assign arbitrary functions to markers' mouseover events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-mouseover'
+    });
+
+    var mouseout = function() {
+        alert("You just left me!");
+    };
+
+    markers = [{
+        'date': new Date('2014-02-01T00:00:00.000Z'),
+        'label': "Place your mouse here and out!",
+        'mouseout': mouseout
+    }, {
+        'date': new Date('2014-03-15T00:00:00.000Z'),
+        'label': "Nothing to see here"
+    }];
+
+    MG.data_graphic({
+        title: "Mouse Out Markers",
+        description: "You can assign arbitrary functions to markers' mouseout events.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        format: 'percentage',
+        target: '#markers-mouseout'
+    });
+
+});
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Baselines",
+        description: "Baselines are horizontal lines that can added at arbitrary points.",
+        data: data,
+        baselines: [{value: 160000000, label: 'goal'}],
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#baselines'
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+
+    var markers = [{
+        'date': new Date('2014-03-17T00:00:00.000Z'),
+        'label': 'Look, a spike!'
+    }];
+
+    MG.data_graphic({
+        title: "Annotating a Point",
+        description: "By setting the graphic's target a class name of main-area-solid, markers don't extend down to the bottom of the graphic, which better draws attention to, say, spikes.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        markers: markers,
+        target: '#spike'
+    });
+});
+</script>

@@ -1,0 +1,30 @@
+sudo: required
+language: node_js
+node_js:
+  - "8"
+addons:
+    chrome: stable
+before_script:
+    - sudo chown root /opt/google/chrome/chrome-sandbox
+    - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+script:
+  - npm run lint
+  - npm run test-ci
+before_deploy:
+  - cp dist/metricsgraphics.css dist/metricsgraphics.min.js .
+  - cp -r examples/* .
+  - cp -r src/js/* js
+deploy:
+  - provider: npm
+    email: wrlach@gmail.com
+    api_key:
+      secure: LtS+7V8yMNMRelHAFv+ms71pYJzocX+jTePtUvNNY4k2j2b4rUkBYU0vSAmBbzOnSaIf5X8dXVzxEtYaMIliUr0vVbFvooK4GF6p4X/043dq2MRnm1GUdtG4byDd3JlYNyNo4REgmnpcARNLf3bffl3kXkb4JCvxbAWk/yuj2V4=
+    on:
+      tags: true
+      repo: metricsgraphics/metrics-graphics
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    on:
+      tags: true
+      branch: master

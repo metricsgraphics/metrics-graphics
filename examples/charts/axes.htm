@@ -1,0 +1,486 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='xnotdate'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/xnotdate.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/xnotdate.json', function(data) {
+    MG.data_graphic({
+        title: "Axis Labels",
+        description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load. We've also enabled extended ticks along the y-axis.",
+        data: data,
+        animate_on_load: true,
+        area: false,
+        width: 600,
+        height: 240,
+        right: 40,
+        left: 90,
+        bottom: 50,
+        y_extended_ticks: true,
+        target: '#xnotdate',
+        x_accessor: 'males',
+        y_accessor: 'females',
+        x_label: 'males',
+        y_label: 'females',
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='percentage'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_percentage.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Some Percentages",
+        description: "Here is an example that shows percentages.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        format: 'percentage',
+        target: '#percentage'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='currency'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/some_currency.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/some_currency.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Some Currency",
+        description: "Here is an example that uses custom units for currency.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#currency',
+        yax_units: '$'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='log1'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/log.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/log.json', function(data) {
+    data = [data];
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Log Scale",
+        description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
+        data: data,
+        y_scale_type: 'log',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#log1'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12 text-center' id='hidden1'></div>
+                    <div class='col-lg-12 text-center' id='hidden2'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/fake_users1.json'>data 1</a>,
+                        <a href='data/brief-1.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No X Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#hidden1',
+        area: false,
+        x_axis: false,
+    });
+});
+
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No Y Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 20,
+        xax_count: 4,
+        target: '#hidden2',
+        area: false,
+        y_axis: false
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='y_rug'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Rug Plots",
+        description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#y_rug',
+        area: false,
+        y_rug: true
+    });
+});</code></pre>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center'>
+        <div class='row'>
+            <div class='col-lg-6 text-center' id='axis-pos-1'></div>
+            <div class='col-lg-6 text-center' id='axis-pos-2'></div>
+        </div>
+        <div class='row'>
+            <div class='col-lg-6 text-center' id='axis-pos-3'></div>
+            <div class='col-lg-6 text-center' id='axis-pos-4'></div>
+        </div>
+    </div>
+    <div class='col-lg-5'>
+        <div class='data-column'>
+            <a href='data/fake_users1.json'>data 1</a>,
+            <a href='data/brief-1.json'>data 2</a>
+        </div>
+
+<pre><code class='javascript'>d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    var position = [['left', 'top'],['right', 'top'], ['left', 'bottom'], ['right', 'bottom']];
+    position.forEach(function(pos,i) {
+        console.log(pos,i)
+        var i = i+1;
+        
+        MG.data_graphic({
+            title: "Axis Positions: " + pos[0] +', ' + pos[1],
+            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
+            x_axis_position: pos[1],
+            y_axis_position: pos[0],
+            data: data,
+            decimals: 0,
+            left: pos[0] === 'right' ? 20 : 50,
+            right: pos[0] === 'left' ? 20 : 50,
+            top: pos[1] === 'bottom' ? 50 : 50,
+            bottom: pos[1] === 'top' ? 25 : 50,
+            target: '#axis-pos-'+i,
+            area: false
+        });      
+    })
+});</code></pre>
+
+    </div>
+</div>
+
+
+<script>
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    var position = [['left', 'top'],['right', 'top'], ['left', 'bottom'], ['right', 'bottom']];
+    position.forEach(function(pos,i) {
+        var i = i+1;
+        
+        MG.data_graphic({
+            title: "Axis Positions: " + pos[0] +', ' + pos[1],
+            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
+            x_axis_position: pos[1],
+            y_axis_position: pos[0],
+            data: data,
+            decimals: 0,
+            left: pos[0] === 'right' ? 20 : 50,
+            right: pos[0] === 'left' ? 20 : 50,
+            top: pos[1] === 'bottom' ? 50 : 50,
+            bottom: pos[1] === 'top' ? 25 : 50,
+            target: '#axis-pos-'+i,
+            area: false
+        });      
+    })
+});
+</script>
+
+
+
+
+
+
+
+
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='neg1'></div>
+                    <div class='col-lg-6 text-center' id='neg2'></div>
+                    <div class='col-lg-6 text-center' id='y-axis-not-zero'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/neg1.json'>data 1</a>,
+                        <a href='data/neg2.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/neg1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Negative Values 1",
+        description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
+        data: data,
+        width: 295,
+        height: 220,
+        right: 10,
+        target: '#neg1'
+    });
+
+    var data2 = MG.clone(data).map(function(d) {
+        d.value = d.value + 550;
+        return d;
+    });
+
+    MG.data_graphic({
+        title: "Y-Axis Not Zero",
+        data: data2,
+        width: 295,
+        height: 220,
+        right: 10,
+        min_y_from_data: true,
+        yax_units: '$',
+        target: '#y-axis-not-zero',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+d3.json('data/neg2.json', function(data) {
+    MG.data_graphic({
+        title: "Negative Values 2",
+        data: data,
+        width: 295,
+        height: 220,
+        right: 10,
+        target: '#neg2',
+        x_accessor: 'subject',
+        y_accessor: 'measure'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+MG._hooks = {};
+d3.json('data/xnotdate.json', function(data) {
+    MG.data_graphic({
+        title: "Axis Labels",
+        description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load. We've also enabled extended ticks along the y-axis.",
+        data: data,
+        animate_on_load: true,
+        area: false,
+        width: 600,
+        height: 240,
+        right: 40,
+        left: 90,
+        bottom: 50,
+        y_extended_ticks: true,
+        target: '#xnotdate',
+        x_accessor: 'males',
+        y_accessor: 'females',
+        x_label: 'males',
+        y_label: 'females',
+    });
+});
+
+d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Some Percentages",
+        description: "Here is an example that shows percentages.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        format: 'percentage',
+        target: '#percentage'
+    });
+});
+
+d3.json('data/some_currency.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Some Currency",
+        description: "Here is an example that uses custom units for currency.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#currency',
+        yax_units: '$'
+    });
+});
+
+d3.json('data/log.json', function(data) {
+    data = [data];
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Log Scale",
+        description: "You can change the y-axis' scale to logarithmic by setting <i>y_scale_type</i> to <i>log</i>.",
+        data: data,
+        y_scale_type: 'log',
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#log1'
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No X Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#hidden1',
+        area: false,
+        x_axis: false,
+    });
+});
+
+d3.json('data/brief-1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "No Y Axis",
+        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 20,
+        xax_count: 4,
+        target: '#hidden2',
+        area: false,
+        y_axis: false
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Rug Plots",
+        description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+        data: data,
+        decimals: 0,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#y_rug',
+        area: false,
+        y_rug: true
+    });
+});
+
+d3.json('data/neg1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Negative Values 1",
+        description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
+        data: data,
+        width: 295,
+        height: 220,
+        right: 10,
+        target: '#neg1'
+    });
+
+    var data2 = MG.clone(data).map(function(d) {
+        d.value = d.value + 550;
+        return d;
+    });
+
+    MG.data_graphic({
+        title: "Y-Axis Not Zero",
+        data: data2,
+        width: 295,
+        height: 220,
+        right: 10,
+        min_y_from_data: true,
+        yax_units: '$',
+        target: '#y-axis-not-zero',
+        x_accessor: 'date',
+        y_accessor: 'value'
+    });
+});
+
+d3.json('data/neg2.json', function(data) {
+    MG.data_graphic({
+        title: "Negative Values 2",
+        data: data,
+        width: 295,
+        height: 220,
+        right: 10,
+        target: '#neg2',
+        x_accessor: 'subject',
+        y_accessor: 'measure'
+    });
+});
+</script>

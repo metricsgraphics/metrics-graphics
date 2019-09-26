@@ -1,0 +1,50 @@
+{
+  "framework": "qunit",
+  "src_files": [
+    "node_modules/jquery/dist/jquery.js",
+    "node_modules/d3/dist/d3.js",
+
+    "src/js/MG.js",
+    "src/js/misc/utility.js",
+    "src/js/common/register.js",
+    "src/js/common/hooks.js",
+    "src/js/common/data_graphic.js",
+    "src/js/common/bootstrap_tooltip_popover.js",
+    "src/js/common/chart_title.js",
+    "src/js/common/y_axis.js",
+    "src/js/common/x_axis.js",
+    "src/js/common/init.js",
+    "src/js/common/scales.js",
+    "src/js/common/rollover.js",
+    "src/js/common/markers.js",
+    "src/js/common/window_listeners.js",
+    "src/js/layout/bootstrap_dropdown.js",
+    "src/js/layout/button.js",
+    "src/js/charts/line.js",
+    "src/js/charts/histogram.js",
+    "src/js/charts/point.js",
+    "src/js/charts/bar.js",
+    "src/js/charts/table.js",
+    "src/js/charts/missing.js",
+    "src/js/misc/process.js",
+    "src/js/misc/smoothers.js",
+    "src/js/misc/formatters.js",
+    "src/js/misc/transitions.js",
+    "src/js/misc/error.js",
+
+    "tests/helpers.js",
+
+    "tests/**/*_test.js"
+  ],
+  "launch_in_ci": [
+    "Chrome"
+  ],
+  "launch_in_dev": [
+    "PhantomJS",
+    "Chrome"
+  ],
+  "browser_args": {
+    "Chrome": [ "--headless", "--disable-gpu", "--remote-debugging-port=9222" ]
+  },
+  "phantomjs_debug_port": 9000
+}

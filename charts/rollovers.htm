@@ -1,0 +1,309 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12 text-center' id='precision1'></div>
+                    <div class='col-lg-12 text-center' id='precision2'></div>
+                    <div class='col-lg-12 text-center' id='custom-rollover'></div>
+                    <div class='col-lg-12 text-center' id='no-rollover-text'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'>
+                        <a href='data/float.json'>data 1</a>,
+                        <a href='data/some_percentage.json'>data 2</a>
+                    </div>
+
+<pre><code class='javascript'>d3.json('data/float.json', function(data) {
+    data = MG.convert.date(data, 'date');
+
+    MG.data_graphic({
+        title: "Changing Precision 1",
+        description: "We can change the precision if the axis data type is a float. We can also change both the formatting, or hide the rollover text altogether. Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
+        data: data,
+        decimals: 3,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision1'
+    });
+
+    MG.data_graphic({
+        title: "Custom Rollover Text",
+        description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        mouseover: function(d, i) {
+            // custom format the rollover text, show days
+            var pf = d3.format('.0s');
+            d3.select('#custom-rollover svg .mg-active-datapoint')
+                .text('Day ' + (i + 1) + '   ' + pf(d.value));
+        },
+        target: '#custom-rollover'
+    });
+});
+
+d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Changing Precision 2",
+        description: "Here we set <i>decimals: 0</i> for percentages.",
+        data: data,
+        decimals: 0,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision2'
+    });
+
+    MG.data_graphic({
+        title: "... Or No Rollover Text",
+        description: "By setting <i>show_rollover_text: false</i>, you can hide the default rollover text from even appearing. This, coupled with the custom callback, gives a lot of interesting options for controlling rollovers.",
+        data: data,
+        decimals: 0,
+        show_rollover_text: false,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#no-rollover-text'
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='aggregate'></div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var all_the_data = MG.clone(data[0]);
+    for (i = 1; i < data.length; i++){
+        for (var j = 0; j < data[i].length; j++){
+            if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+            } else {
+                all_the_data[j]['value' + (i + 1)] = data[i][j].value;
+            }
+        }
+    }
+
+    MG.data_graphic({
+        title: "Aggregated Rollover Information",
+        description: "Aggregated information can be displayed with the <i>aggregate_rollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
+        data: all_the_data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#aggregate',
+        y_extended_ticks: true,
+        x_accessor: 'date',
+        y_accessor: ['value', 'value2', 'value3'],
+        aggregate_rollover: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='formatting-with-strings'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>
+d3.json('data/float.json', function(data) {
+
+    data = MG.convert.date(data, 'date');
+    // check out https://github.com/mbostock/d3/wiki/Formatting for number formatting
+    //and https://github.com/mbostock/d3/wiki/Time-Formatting for time formatting options.
+
+    MG.data_graphic({
+        title: "Rollover Formatting With Strings",
+        description: "Metrics Graphics comes with two arguments: y_rollover_format and x_rollover_format. These arguments take either strings or functions. Strings are formatted according to D3's number format, or D3's time formatting, if the accessor pulls out Date objects.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_mouseover: '%d',
+        x_mouseover: '%e of %b? Well, ',
+        target: '#y-formatting'
+    });
+})
+</code></pre>
+
+    </div>
+</div>
+
+
+<div class='row trunk-section'>
+    <div class='col-lg-7 text-center' id='formatting-with-functions'></div>
+    <div class='col-lg-5'>
+        <div class='data-column'><a href='data/fake_users2.json'>data</a></div>
+
+<pre><code class='javascript'>
+d3.json('data/float.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Rollover Formatting With Functions",
+        description: "You can also pass in a function, whose arguments are the data point and the index.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_rollover_format: function(d){
+            return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
+        },
+        x_rollover_format: function(d){
+            var today = new Date()
+            return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
+        },
+        target: '#formatting-with-functions'
+    });
+})
+</code></pre>
+
+    </div>
+</div>
+
+
+<script>
+MG._hooks = {};
+d3.json('data/float.json', function(data) {
+    data = MG.convert.date(data, 'date');
+
+     MG.data_graphic({
+        title: "Updating Rollover Accessor Formatting With Strings",
+        description: "Metrics Graphics comes with two arguments: y_rollover_format and x_rollover_format. These arguments take either strings or functions. Strings are formatted according to D3's number format, or D3's time formatting, if the accessor pulls out Date objects.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_mouseover: '%d',
+        x_mouseover: '%e of %b? Well, ',
+        target: '#formatting-with-strings'
+    });
+
+    MG.data_graphic({
+        title: "Updating Rollover Accessor Formatting With Functions",
+        description: "You can also pass in a function, whose arguments are the data point and the index.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        y_mouseover: function(d){
+            return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
+        },
+        x_mouseover: function(d){
+            var today = new Date()
+            return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
+        },
+        target: '#formatting-with-functions'
+    });
+
+    MG.data_graphic({
+        title: "Changing Precision 1",
+        description: "We can change the precision if the axis data type is a float. We can also change both the formatting, or hide the rollover text altogether. Here we set <i>decimals: 3</i> to get three decimals in the rollover for percentages.",
+        data: data,
+        decimals: 3,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision1'
+    });
+
+    MG.data_graphic({
+        title: "Custom Rollover Text",
+        description: "Here is an example of changing the rollover text. You could in theory actually update any DOM element with the data from that rollover - a title, for instance.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        mouseover: function(d, i) {
+            // custom format the rollover text, show days
+            var pf = d3.format('.0s');
+            d3.select('#custom-rollover svg .mg-active-datapoint')
+                .text('Day ' + (i + 1) + '   ' + pf(d.value));
+        },
+        target: '#custom-rollover'
+    });
+});
+
+d3.json('data/some_percentage.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    MG.data_graphic({
+        title: "Changing Precision 2",
+        description: "Here we set <i>decimals: 0</i> for percentages.",
+        data: data,
+        decimals: 0,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#precision2'
+    });
+
+    MG.data_graphic({
+        title: "... Or No Rollover Text",
+        description: "By setting <i>show_rollover_text: false</i>, you can hide the default rollover text from even appearing. This, coupled with the custom callback, gives a lot of interesting options for controlling rollovers.",
+        data: data,
+        decimals: 0,
+        show_rollover_text: false,
+        format: 'percentage',
+        width: 600,
+        height: 200,
+        right: 40,
+        xax_count: 4,
+        target: '#no-rollover-text'
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+
+    var all_the_data = MG.clone(data[0]);
+    for (i = 1; i < data.length; i++){
+        for (var j = 0; j < data[i].length; j++){
+            if (i === 2 && all_the_data[j].date < new Date('2014-02-01')) {
+            } else {
+                all_the_data[j]['value' + (i + 1)] = data[i][j].value;
+            }
+        }
+    }
+
+    MG.data_graphic({
+        title: "Aggregated Rollover Information",
+        description: "Aggregated information can be displayed with the <i>aggregate_rollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
+        data: all_the_data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#aggregate',
+        y_extended_ticks: true,
+        x_accessor: 'date',
+        y_accessor: ['value', 'value2', 'value3'],
+        aggregate_rollover: true
+    });
+});
+</script>

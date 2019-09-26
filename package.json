@@ -1,0 +1,66 @@
+{
+  "name": "metrics-graphics",
+  "version": "3.0.0-alpha3",
+  "description": "A library optimized for concise, principled data graphics and layouts",
+  "main": "dist/metricsgraphics.js",
+  "scripts": {
+    "build": "gulp build:js",
+    "lint": "gulp jshint",
+    "test": "gulp test",
+    "test-ci": "./node_modules/testem/testem.js ci testem.json",
+    "version": "npm run build && git add ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/metricsgraphics/metrics-graphics.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "metrics-graphics",
+    "metricsgraphicsjs",
+    "metricsgraphics",
+    "metricsgraphics.js",
+    "d3 charts"
+  ],
+  "author": "Mozilla",
+  "contributors": [
+    "Ali Almossawi",
+    "Hamilton Ulmer",
+    "William Lachance"
+  ],
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/metricsgraphics/metrics-graphics/issues"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "homepage": "http://metricsgraphicsjs.org",
+  "dependencies": {
+    "d3": "^5.0.0"
+  },
+  "peerDependencies": {
+    "jquery": ">=1.11.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "gulp": "^3.8.10",
+    "gulp-babel": "^7.0.1",
+    "gulp-concat": "^2.4.2",
+    "gulp-connect": "^5.0.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-testem": "0.0.1",
+    "gulp-uglify": "3.0.1",
+    "gulp-umd": "^2.0.0",
+    "jquery": ">=1.11.1",
+    "jshint": "^2.9.5",
+    "qunitjs": "^2.0.0",
+    "require-dir": "^1.0.0",
+    "testem": "^2.0.0"
+  }
+}

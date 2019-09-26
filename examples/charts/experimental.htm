@@ -1,0 +1,1159 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='scatter-simple'></div>
+                    <div class='col-lg-6 text-center' id='categorical1'></div>
+                    <div class='col-lg-6 text-center' id='categorical2'></div>
+                    <div class='col-lg-6 text-center' id='scatter-line-best-fit'></div>
+                    <div class='col-lg-6 text-center' id='scatter-size-and-color'></div>
+                    <div class='col-lg-6 text-center' id='sls-time-series'></div>
+                    <div class='col-lg-6 text-center' id='highlight'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/points1.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Simple Scatterplot",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-simple',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        mouseover: function(d, i) { console.log(d,i); },
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Automatic Category Coloring",
+        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#categorical1',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor: 'v',
+        color_type:'category',
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Custom Category Color Mapping",
+        description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#categorical2',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor: 'v',
+        color_domain: ['cat_0', 'cat_1', 'other'],
+        color_range: ['blue', 'gray', 'black'],
+        color_type: 'category',
+        x_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Simple Line of Best Fit",
+        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        data: data,
+        least_squares: true,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-line-best-fit',
+        x_accessor: 'x',
+        y_accessor: 'y'
+    });
+
+    MG.data_graphic({
+        title: "Points Highlighting",
+        description: "You can set <i>highlight</i> to filter the points you want to highlight.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#highlight',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        highlight: (d, i) => d.z > 2
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
+            title: "Another Least Squares Example",
+            description: "Least squares effortlessly works with dates or times on axes.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 225,
+            left: 60,
+            right: 10,
+            least_squares: true,
+            target: '#sls-time-series',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+});
+
+var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Scatterplot with Size and Color",
+        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-size-and-color',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor:'z',
+        color_range: color_range,
+        size_accessor:'w',
+        x_rug: true,
+        y_rug: true
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+<div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='point-categorical'></div>
+                        <div class='col-lg-6 text-center' id='bar-categorical'></div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='point-categorical2'></div>
+                        <div class='col-lg-6 text-center' id='bar-categorical2'></div>
+
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-6 text-center' id='point-categorical-group'></div>
+                        <div class='col-lg-6 text-center' id='bar-categorical-group'>
+                        </div>
+
+                    </div>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='point-categorical-group-horizontal'></div>
+                    </div>
+                                        <div class='row'>
+                        <div class='col-lg-12 text-center' id='bar-categorical-group-horizontal'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/nh-gop.tsv'>data</a></div>
+
+<pre><code class='javascript'>
+d3.tsv('data/nh-gop.tsv', function(data) {
+    var polls = [];
+    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
+    data.forEach(function(p){
+        who.forEach(function(d){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            out.size = Math.random();
+            out.when = p.Date;
+            polls.push(out);
+        })
+    });
+
+    var trump = polls.filter(function(d){
+        return d.poll == 'PPP (D)';
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: X, points',
+        data: trump,
+        chart_type: 'point',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        height:400,
+        width:300,
+        target: '#point-categorical',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: X, bars',
+        data: trump,
+        chart_type: 'bar',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        height:400,
+        width:300,
+        target: '#bar-categorical',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, points',
+        data: trump,
+        chart_type: 'point',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        height:400,
+        width:300,
+        target: '#point-categorical2',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, bars',
+        data: trump,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        height:400,
+        width:300,
+        target: '#bar-categorical2',
+    })
+
+    MG.data_graphic({
+        title: 'Y points, groups',
+        data: polls,
+        chart_type: 'point',
+        y_axis_type: 'categorical',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        ygroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:550,
+        width:300,
+        left:100,
+        target: '#point-categorical-group'
+    })
+
+    MG.data_graphic({
+        title: 'Y bars, groups',
+        data: polls,
+        chart_type: 'bar',
+        y_axis_type: 'categorical',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        ygroup_accessor: 'poll',
+        height:550,
+        width:300,
+        left:100,
+        right:40,
+        target: '#bar-categorical-group'
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, groups, horizontal',
+        data: polls,
+        chart_type: 'point',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        xgroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:350,
+        width:700,
+        target: '#point-categorical-group-horizontal'
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, groups, horizontal',
+        data: polls,
+        chart_type: 'bar',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        xgroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:350,
+        width:700,
+        target: '#bar-categorical-group-horizontal'
+    })
+})
+</code></pre>
+
+    </div>
+</div>
+
+
+<script>
+d3.tsv('data/nh-gop.tsv', function(data) {
+    var polls = [];
+    var who = ['Bush', 'Rubio', 'Trump', 'Cruz'];
+    data.forEach(function(p,j){
+        who.forEach(function(d,i){
+            var out = {};
+            out.candidate = d;
+            out.number = p[d] === '--' ? 0 : parseFloat(p[d]);
+            out.poll = p.Poll;
+            out.size = Math.random();
+            out.when = p.Date;
+            out.reference = Math.floor(Math.random() * 20 + 1);
+            out.comparison = j+i + 1;
+            polls.push(out);
+        })
+    });
+
+    var trump = polls.filter(function(d){
+        return d.poll == 'PPP (D)';
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: X, points',
+        data: trump,
+        chart_type: 'point',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        height:300,
+        width:300,
+        target: '#point-categorical',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: X, bars',
+        data: trump,
+        chart_type: 'bar',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        height:300,
+        width:300,
+        target: '#bar-categorical',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, points',
+        data: trump,
+        chart_type: 'point',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        height:300,
+        width:300,
+        target: '#point-categorical2',
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, bars',
+        data: trump,
+        chart_type: 'bar',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        height:300,
+        width:300,
+        target: '#bar-categorical2',
+    })
+
+    MG.data_graphic({
+        title: 'Y points, groups',
+        data: polls,
+        chart_type: 'point',
+        y_axis_type: 'categorical',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        ygroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:550,
+        width:300,
+        left:100,
+        target: '#point-categorical-group'
+    })
+
+    MG.data_graphic({
+        title: 'Y bars, groups',
+        data: polls,
+        chart_type: 'bar',
+        y_axis_type: 'categorical',
+        x_accessor: 'number',
+        y_accessor: 'candidate',
+        ygroup_accessor: 'poll',
+        height:550,
+        width:300,
+        left:100,
+        target: '#bar-categorical-group'
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, groups, horizontal',
+        data: polls,
+        chart_type: 'point',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        xgroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:300,
+        width:650,
+        target: '#point-categorical-group-horizontal'
+    })
+
+    MG.data_graphic({
+        title: 'Categorical Scale: Y, groups, horizontal',
+        data: polls,
+        chart_type: 'bar',
+        y_accessor: 'number',
+        x_accessor: 'candidate',
+        xgroup_accessor: 'poll',
+        size_accessor: 'size',
+        size_domain: [0,1],
+        size_range: [3,6],
+        height:300,
+        width:650,
+        target: '#bar-categorical-group-horizontal'
+    })
+})
+</script>
+
+
+
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-6 text-center' id='histogram1'></div>
+                    <div class='col-lg-6 text-center' id='histogram2'></div>
+                    <div class='col-lg-6 text-center' id='histogram3'></div>
+                    <div class='col-lg-6 text-center' id='histogram4'></div>
+                    <div class='col-lg-12 text-center' id='time-hist'></div>
+                    <div class='col-lg-12 text-center' id='ufos'></div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/ufo_dates.csv'>data</a></div>
+
+<pre><code class='javascript'>var values = d3.range(10000).map(d3.randomBates(10));
+
+MG.data_graphic({
+    title: "Histogram 1",
+    description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
+    data: values,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    right: 10,
+    bins: 50,
+    bar_margin: 0,
+    target: '#histogram1',
+    y_extended_ticks: true,
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram1 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+d3.csv('data/ufo_dates.csv', function(ufos){
+    var data = ufos.map(function(d){
+        return parseInt(d.value) / 30;
+    });
+    data.sort();
+    MG.data_graphic({
+        title: "Difference in UFO Sighting and Reporting Dates (in months)",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
+        data: data,
+        chart_type: 'histogram',
+        width: 600,
+        height: 300,
+        right: 40,
+        bar_margin: 0,
+        bins: 150,
+        target: '#ufos',
+        y_extended_ticks: true,
+        mouseover: function(d, i) {
+            var pf = d3.format(',.2f');
+            d3.select('#ufos svg .mg-active-datapoint')
+                .text(pf(d.x) + ' months      Volume: ' + pf(d.y));
+        }
+    });
+});
+
+var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
+second = d3.histogram()(second)
+    .map(function(d) {
+        return {'count': d.y, 'value': d.x};
+});
+
+MG.data_graphic({
+    title: "Histogram 2",
+    description: "Already binned data being fed in.",
+    data: second,
+    binned: true,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    right: 10,
+    target: '#histogram2',
+    y_extended_ticks: true,
+    x_accessor: 'value',
+    y_accessor: 'count',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram2 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+var third = d3.range(10000).map(d3.randomBates(10));
+third = third.map(function(d,i){ return {val1: d, val2: i}; });
+
+MG.data_graphic({
+    title: "Histogram 3",
+    description: "Unbinned, but in same format as other line chart data.",
+    data: third,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    right: 10,
+    target: '#histogram3',
+    linked: true,
+    y_extended_ticks: true,
+    x_accessor: 'val1',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram3 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+// check for negative values, for sanity.
+var fourth = d3.range(10000).map(d3.randomBates(10));
+fourth = fourth.map(function(d,i){ return d - 0.5; });
+
+MG.data_graphic({
+    title: "Histogram 4",
+    description: "Sanity-checking negative data.",
+    data: fourth,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    right: 10,
+    target: '#histogram4',
+    y_extended_ticks: true,
+    x_accessor: 'val1',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram4 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+var hist1 = fake_data(25, 60).map(function(d){
+    d.value = Math.round(d.value);
+    return d;
+});
+
+MG.data_graphic({
+    title: "Histograms can be time series as well",
+    data: hist1,
+    target: '#time-hist',
+    chart_type: 'histogram',
+    width: 600,
+    height: 200,
+    binned: true,
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='table1'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>var table_data = [
+    { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
+    { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
+    { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
+    { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
+    { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
+];
+
+var table1 = MG.data_table({
+        title: "A Data Table",
+        description: "A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.",
+        data: table_data,
+        show_tooltips: true
+    })
+    .target('#table1')
+    .title({
+        accessor: 'geo',
+        secondary_accessor:'year',
+        label: 'Country',
+        description: "These are arbitrary countries with arbitrary years underneath."
+    })
+    .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
+    .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
+    .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
+    .number({
+        accessor: 'total',
+        label: 'Volume',
+        format: 'count', currency: '$',
+        width: 100,
+        font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
+        color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
+    })
+    .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
+    .text({ accessor: 'description', width: 240, font_style: 'italic' })
+    .display();</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center' id='buttons'></div>
+                <div class='col-lg-5'>
+
+<pre><code class='javascript'>var bdata = [
+    {a:'apples', b:'quartz'},
+    {a:'bananas', b:'pyrite'},
+    {a:'durian', b:'obsidian'}
+];
+
+var resolution_features = ['weekly', 'monthly'];
+
+var buttons = MG.button_layout('#buttons')
+    .data(bdata)
+    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
+    .button('a', 'Fruit')
+    .button('b', 'Rock')
+    .callback(function(){
+        console.log('made it');
+        return false;
+    })
+    .display();</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class="tooltip"></div>
+                    <style>
+                    .tooltip {
+                        display: none;
+                        min-height: 32px;
+                        min-width: 100px;
+                        padding: 12px;
+                        margin-bottom: 8px;
+                        background-color: #333;
+                        color: white;
+                        opacity: 0.7;
+                        text-align: left;
+                    }
+                    </style>
+                    <div class='col-lg-12 text-center' id='tooltip-line-chart'></div>
+                    <div class='col-lg-12 text-center' id='tooltip-point-chart'></div>
+                </div>
+                <div class='col-lg-5'>
+
+<pre><code class='html'>&#x3C;div class=&#x22;tooltip&#x22;&#x3E;&#x3C;/div&#x3E;
+&#x3C;style&#x3E;
+.tooltip {
+    display: none;
+    min-height: 32px;
+    min-width: 100px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: #333;
+    color: white;
+    opacity: 0.7;
+    text-align: left;
+}
+&#x3C;/style&#x3E;
+</code></pre>
+
+<pre><code class='javascript'>const tooltipEl = d3.select('.tooltip').node();
+const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+tooltipEl.addEventListener('mouseover', () => {
+    tooltipEl.style.display = 'block';
+})
+tooltipEl.addEventListener('mouseout', () => {
+    tooltipEl.style.display = 'none';
+})
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Tooltip on line chart",
+        description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#tooltip-line-chart',
+        x_accessor: 'date',
+        y_accessor: 'value',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
+            tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
+            tooltip.update();
+        },
+        mouseout: () => {
+            tooltipEl.style.display = 'none';
+        }
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Tooltip on point chart",
+        description: "This technique also works for point charts.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 350,
+        right: 10,
+        target: '#tooltip-point-chart',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
+            tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
+            tooltip.update();
+        },
+        mouseout: (d, i) => {
+            tooltipEl.style.display = 'none';
+        }
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+
+<script>
+MG._hooks = {};
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Simple Scatterplot",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-simple',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Automatic Category Coloring",
+        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#categorical1',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor: 'v',
+        color_type: 'category',
+        y_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Custom Category Color Mapping",
+        description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#categorical2',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor: 'v',
+        color_domain: ['cat_0', 'cat_1', 'other'],
+        color_range: ['blue', 'gray', 'black'],
+        color_type: 'category',
+        x_rug: true
+    });
+
+    MG.data_graphic({
+        title: "Simple Line of Best Fit",
+        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        data: data,
+        least_squares: true,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-line-best-fit',
+        x_accessor: 'x',
+        y_accessor: 'y'
+    });
+
+    MG.data_graphic({
+        title: "Points Highlighting",
+        description: "You can set <i>highlight</i> to filter the points you want to highlight.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#highlight',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        highlight: (d, i) => d.z > 2
+    });
+});
+
+d3.json('data/fake_users1.json', function(data) {
+        data = MG.convert.date(data, 'date');
+        MG.data_graphic({
+            title: "Another Least Squares Example",
+            description: "Least squares effortlessly works with dates or times on axes.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 225,
+            left: 60,
+            right: 10,
+            least_squares: true,
+            target: '#sls-time-series',
+            x_accessor: 'date',
+            y_accessor: 'value'
+        });
+});
+
+var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Scatterplot with Size and Color",
+        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        data: data,
+        chart_type: 'point',
+        width: 295,
+        height: 225,
+        right: 10,
+        target: '#scatter-size-and-color',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        color_accessor: 'z',
+        color_range: color_range,
+        size_accessor: 'w',
+        x_rug: true,
+        y_rug: true
+    });
+});
+
+var values = d3.range(10000).map(d3.randomBates(10));
+
+MG.data_graphic({
+    title: "Histogram 1",
+    description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
+    data: values,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    bins: 50,
+    bar_margin: 0,
+    target: '#histogram1',
+    y_extended_ticks: true,
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram1 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+d3.csv('data/ufo_dates.csv', function(ufos){
+    var data = ufos.map(function(d){
+        return parseInt(d.value) / 30;
+    });
+    data.sort();
+    MG.data_graphic({
+        title: "Difference in UFO Sighting and Reporting Dates (in months)",
+        description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
+        data: data,
+        chart_type: 'histogram',
+        width: 600,
+        height: 300,
+        right: 40,
+        bar_margin: 0,
+        bins: 150,
+        target: '#ufos',
+        y_extended_ticks: true,
+        mouseover: function(d, i) {
+            var pf = d3.format(',.2f');
+            d3.select('#ufos svg .mg-active-datapoint')
+                .text(pf(d.x) + ' months       Volume: ' + d.y);
+        }
+    });
+});
+
+var second = d3.range(10000).map(function(d) { return Math.random() * 10; });
+second = d3.histogram()(second)
+    .map(function(d) {
+        return {'value': d.x0, 'count': d.length};
+});
+
+MG.data_graphic({
+    title: "Histogram 2",
+    description: "Already binned data being fed in.",
+    data: second,
+    binned: true,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    target: '#histogram2',
+    y_extended_ticks: true,
+    x_accessor: 'value',
+    y_accessor: 'count',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram2 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+var third = d3.range(10000).map(d3.randomBates(10));
+third = third.map(function(d,i){ return {val1: d, val2: i}; });
+
+MG.data_graphic({
+    title: "Histogram 3",
+    description: "Unbinned, but in same format as other line chart data.",
+    data: third,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    target: '#histogram3',
+    linked: true,
+    y_extended_ticks: true,
+    x_accessor: 'val1',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram3 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+// check for negative values, for sanity.
+var fourth = d3.range(10000).map(d3.randomBates(10));
+fourth = fourth.map(function(d,i){ return d - 0.5; });
+
+MG.data_graphic({
+    title: "Histogram 4",
+    description: "Sanity-checking negative data.",
+    data: fourth,
+    chart_type: 'histogram',
+    width: 295,
+    height: 180,
+    target: '#histogram4',
+    y_extended_ticks: true,
+    x_accessor: 'val1',
+    mouseover: function(d, i) {
+        var pf = d3.format(',.2f');
+        d3.select('#histogram4 svg .mg-active-datapoint')
+            .text('Value: ' + pf(d.x) +  '   Count: ' + d.y);
+    }
+});
+
+var hist1 = fake_data(25, 60).map(function(d){
+    d.value = Math.round(d.value);
+    return d;
+});
+
+MG.data_graphic({
+    title: "Histograms can be time series as well",
+    data: hist1,
+    target: '#time-hist',
+    chart_type: 'histogram',
+    width: 600,
+    height: 200,
+    binned: true,
+});
+
+var table_data = [
+    { 'year': 1852, 'value1': 10.2, 'value2': 1030004.43423,'share': 0.12, 'total': 34003400, 'temp': 43, 'geo': 'United Kingdom', 'description': "Having a way of describing a row can be useful." },
+    { 'year': 1901, 'value1': 10.1, 'value2': 54003.223, 'share': 0.11, 'total': 4302100, 'temp': 55, 'geo': 'United States', 'description': "More made-up numbers." },
+    { 'year': 1732, 'value1': 4.3, 'value2': 1004.91422,   'share': 0.14, 'total': 4300240, 'temp': 42, 'geo': 'France', 'description': "We didn't specify a title for this column." },
+    { 'year': 1945, 'value1': 2.9, 'value2': 2430.121,  'share': 0.23, 'total': 24000000, 'temp': 54, 'geo': 'Brazil', 'description': "Brazil, Brazil." },
+    { 'year': 1910, 'value1': 1.0, 'value2': 5432.3,  'share': 0.19, 'total': 130000, 'temp': 52, 'geo': 'India', 'description': "Last description in the whole thing." }
+];
+
+var table1 = MG.data_table({
+        title: "A Data Table",
+        description: "A table is often the most appropriate way to present data. We aim to make the creation of data tables very simple. We are working on implementing sparklines, bullet charts, and other niceties.",
+        data: table_data,
+        show_tooltips: true
+    })
+    .target('#table1')
+    .title({
+        accessor: 'geo',
+        secondary_accessor:'year',
+        label: 'Country',
+        description: "These are arbitrary countries with arbitrary years underneath."
+    })
+    .number({ accessor: 'value1', label: 'Size', value_formatter: function(d){ return d + ' yrds'; }})
+    .number({ accessor: 'value2', label: 'Score', round: 2,  font_weight: 'bold' })
+    .number({ accessor: 'temp', label: 'Temp.', format: 'temperature', width: 100, color: 'gray' })
+    .number({
+        accessor: 'total',
+        label: 'Volume',
+        format: 'count', currency: '$',
+        width: 100,
+        font_weight: function(d){ return d < 5000000 ? 'bold' : 'normal'; },
+        color: function(d){ return d < 5000000 ? '#f70101' : 'auto'; }
+    })
+    .number({ accessor: 'share', label: 'Share', format: 'percentage', width: 100 })
+    .text({ accessor: 'description', width: 240, font_style: 'italic' })
+    .display();
+
+var bdata = [
+    {a:'apples', b:'quartz'},
+    {a:'bananas', b:'pyrite'},
+    {a:'durian', b:'obsidian'}
+];
+
+var resolution_features = ['weekly', 'monthly'];
+
+var buttons = MG.button_layout('#buttons')
+    .data(bdata)
+    .manual_button('Time Scale', resolution_features, function(){ console.log('switched time scales'); })
+    .button('a', 'Fruit')
+    .button('b', 'Rock')
+    .callback(function(){
+        console.log('made it');
+        return false;
+    })
+    .display();
+
+addScatterplotSizeAndColor(theme);
+
+function addScatterplotSizeAndColor(theme) {
+    var color_range = (theme === 'light') ? null : ['white','yellow'];
+
+    // call data_graphic again since we need to use a different color_range for the dark theme
+    d3.json('data/points1.json', function(data) {
+        MG.data_graphic({
+            title: "Scatterplot with Size and Color",
+            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+            data: data,
+            chart_type: 'point',
+            width: 295,
+            height: 225,
+            right: 10,
+            target: '#scatter-size-and-color',
+            x_accessor: 'x',
+            y_accessor: 'y',
+            color_accessor: 'z',
+            color_range: color_range,
+            size_accessor: 'w',
+            x_rug: true,
+            y_rug: true
+        });
+    });
+}
+
+function fake_data(length, seconds) {
+    var d = new Date();
+    var v = 100000;
+    var data=[];
+
+    for (var i = 0; i < length; i++){
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d = new Date(d.getTime() + seconds * 1000);
+    }
+    return data;
+}
+
+function fake_days(length) {
+    var d = new Date();
+    var v = 100000;
+
+    var data = [];
+    for (var i = 0; i<length; i++) {
+        v += (Math.random() - 0.5) * 10000;
+        data.push({date: MG.clone(d), value: v});
+        d.setDate(d.getDate() + 1);
+    }
+    return data;
+}
+
+const tooltipEl = d3.select('.tooltip').node();
+const tooltip = new Popper(document.documentElement, tooltipEl, { placement: 'top' });
+tooltipEl.addEventListener('mouseover', () => {
+    tooltipEl.style.display = 'block';
+})
+tooltipEl.addEventListener('mouseout', () => {
+    tooltipEl.style.display = 'none';
+})
+
+d3.json('data/fake_users1.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    MG.data_graphic({
+        title: "Tooltip on line chart",
+        description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
+        data: data,
+        width: 600,
+        height: 200,
+        right: 40,
+        target: '#tooltip-line-chart',
+        x_accessor: 'date',
+        y_accessor: 'value',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `date: ${d3.timeFormat('%b %e, %Y')(d.date)}\nvalue: ${d.value}`;
+            tooltip.reference = d3.select(`#tooltip-line-chart .mg-line-rollover-circle`).node();
+            tooltip.update();
+        },
+        mouseout: () => {
+            tooltipEl.style.display = 'none';
+        }
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Tooltip on point chart",
+        description: "This technique also works for point charts.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 350,
+        right: 10,
+        target: '#tooltip-point-chart',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        show_rollover_text: false,
+        mouseover: (d, i) => {
+            tooltipEl.style.display = 'block';
+            tooltipEl.innerText = `X: ${d.data.x}\nY: ${d.data.y}`;
+            tooltip.reference = d3.select(`#tooltip-point-chart .mg-points .path-${i}`).node();
+            tooltip.update();
+        },
+        mouseout: (d, i) => {
+            tooltipEl.style.display = 'none';
+        }
+    });
+});
+</script>

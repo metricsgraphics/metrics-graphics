@@ -1,0 +1,169 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7 text-center'>
+                    <div class='col-lg-12' id='split_by'></div>
+                    <div class='btn-group btn-group-sm text-center split-by-controls'>
+                        <button type='button' class='btn btn-default active'
+                            data-y_accessor='release'>Release</button>
+                        <button type='button' class='btn btn-default'
+                            data-y_accessor='beta'>Beta</button>
+                        <button type='button' class='btn btn-default'
+                            data-y_accessor='alpha'>Alpha</button>
+                    </div>
+                    <div class='col-lg-12' id='modify_time_period'></div>
+                    <div class='btn-group btn-group-sm text-center
+                        modify-time-period-controls'>
+                        <button type='button' class='btn btn-default active'
+                            data-time_period=''>All time</button>
+                        <button type='button' class='btn btn-default'
+                            data-time_period='61'>Past 2 months</button>
+                        <button type='button' class='btn btn-default'
+                            data-time_period='31'>Past month</button>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/split_by.json'>data</a></div>
+
+<pre><code class='javascript'>var globals = {};
+
+var split_by_params = {
+    title: "Downloads by Channel",
+    description: "We sometimes have the need to split the data and then gracefully update the graphic with the newly selected subset of data.",
+    width: 600,
+    height: 200,
+    right: 40,
+    xax_count: 4,
+    target: '#split_by',
+    x_accessor: 'date',
+    y_accessor: 'release'
+};
+
+var modify_time_period_params = {
+    title: "Beta Downloads",
+    description: "We sometimes have the need to view data for just the past n days. Here, the <i>transition_on_update</i> option is set to false.",
+    width: 600,
+    height: 200,
+    right: 40,
+    show_secondary_x_label: false,
+    xax_count: 4,
+    target: '#modify_time_period',
+    x_accessor: 'date',
+    y_accessor: 'beta'
+}
+
+d3.json('data/split_by.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    globals.data = data;
+
+    split_by_params.data = data;
+    MG.data_graphic(split_by_params);
+
+    modify_time_period_params.data = data;
+    MG.data_graphic(modify_time_period_params);
+});
+
+$('.split-by-controls button').click(function() {
+    var new_y_accessor = $(this).data('y_accessor');
+    split_by_params.y_accessor = new_y_accessor;
+
+    // change button state
+    $(this).addClass('active').siblings().removeClass('active');
+
+    // update data
+    delete split_by_params.xax_format;
+    MG.data_graphic(split_by_params);
+});
+
+$('.modify-time-period-controls button').click(function() {
+    var past_n_days = $(this).data('time_period');
+    var data = modify_time_period(globals.data, past_n_days);
+
+    // change button state
+    $(this).addClass('active').siblings().removeClass('active');
+
+    delete modify_time_period_params.xax_format;
+    modify_time_period_params.data = data;
+    MG.data_graphic(modify_time_period_params);
+});
+
+function modify_time_period(data, past_n_days) {
+    if (past_n_days !== '') {
+        return MG.clone(data).slice(past_n_days * -1);
+    }
+
+    return data;
+}</code></pre>
+
+                </div>
+            </div>
+
+<script>
+MG._hooks = {};
+var globals = {};
+
+var split_by_params = {
+    title: "Downloads by Channel",
+    description: "We sometimes have the need to split the data and then gracefully update the graphic with the newly selected subset of data.",
+    width: 600,
+    height: 200,
+    right: 40,
+    xax_count: 4,
+    target: '#split_by',
+    x_accessor: 'date',
+    y_accessor: 'release'
+};
+
+var modify_time_period_params = {
+    title: "Beta Downloads",
+    description: "We sometimes have the need to view data for just the past n days. Here, the <i>transition_on_update</i> option is set to false.",
+    width: 600,
+    height: 200,
+    right: 40,
+    show_secondary_x_label: false,
+    xax_count: 4,
+    transition_on_update: false,
+    target: '#modify_time_period',
+    x_accessor: 'date',
+    y_accessor: 'beta'
+}
+
+d3.json('data/split_by.json', function(data) {
+    data = MG.convert.date(data, 'date');
+    globals.data = data;
+
+    split_by_params.data = data;
+    MG.data_graphic(split_by_params);
+
+    modify_time_period_params.data = data;
+    MG.data_graphic(modify_time_period_params);
+});
+
+$('.split-by-controls button').click(function() {
+    var new_y_accessor = $(this).data('y_accessor');
+    split_by_params.y_accessor = new_y_accessor;
+
+    // change button state
+    $(this).addClass('active').siblings().removeClass('active');
+
+    // update data
+    MG.data_graphic(split_by_params);
+});
+
+$('.modify-time-period-controls button').click(function() {
+    var past_n_days = $(this).data('time_period');
+    var data = modify_time_period(globals.data, past_n_days);
+
+    // change button state
+    $(this).addClass('active').siblings().removeClass('active');
+
+    modify_time_period_params.data = data;
+    MG.data_graphic(modify_time_period_params);
+});
+
+function modify_time_period(data, past_n_days) {
+    if (past_n_days !== '') {
+        return MG.clone(data).slice(past_n_days * -1);
+    }
+
+    return data;
+}
+</script>

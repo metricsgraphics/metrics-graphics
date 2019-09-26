@@ -1,0 +1,236 @@
+<html lang='en'>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+
+    <title>MetricsGraphics.js - a library based on D3.js, optimized for visualizing and laying out time-series data</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+    <link href='metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js" charset="utf-8"></script>
+
+    <!-- dev start -->
+    <script src='js/MG.js'></script>
+    <script src='js/misc/utility.js'></script>
+    <script src='js/common/data_graphic.js'></script>
+    <script src='js/common/hooks.js'></script>
+    <script src='js/common/register.js'></script>
+    <script src='js/common/bootstrap_tooltip_popover.js'></script>
+    <script src='js/common/chart_title.js'></script>
+    <script src='js/common/scales.js'></script>
+    <script src='js/common/y_axis.js'></script>
+    <script src='js/common/x_axis.js'></script>
+    <script src='js/common/init.js'></script>
+    <script src='js/common/markers.js'></script>
+    <script src='js/common/rollover.js'></script>
+    <script src='js/common/zoom.js'></script>
+    <script src='js/common/brush.js'></script>
+    <script src='js/common/window_listeners.js'></script>
+    <script src='js/layout/bootstrap_dropdown.js'></script>
+    <script src='js/layout/button.js'></script>
+    <script src='js/charts/line.js'></script>
+    <script src='js/charts/histogram.js'></script>
+    <script src='js/charts/point.js'></script>
+    <script src='js/charts/bar.js'></script>
+    <script src='js/charts/table.js'></script>
+    <script src='js/charts/missing.js'></script>
+    <script src='js/misc/process.js'></script>
+    <script src='js/misc/smoothers.js'></script>
+    <script src='js/misc/formatters.js'></script>
+    <script src='js/misc/transitions.js'></script>
+    <script src='js/misc/error.js'></script>
+    <!-- dev end -->
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51487512-1', 'metricsgraphicsjs.org');
+      ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <div class='container'>
+        <div class='head'>
+            <ul>
+                <li><a href='./'>Home</a></li>
+                <li><a href='https://github.com/metricsgraphics/metrics-graphics/releases'>Download</a></li>
+                <li><a href='https://github.com/metricsgraphics/metrics-graphics'>Code</a></li>
+                <li><a href='https://github.com/metricsgraphics/metrics-graphics/issues'>Issues</a></li>
+                <li><a href='examples.htm'>Examples</a></li>
+            </ul>
+
+            <img src='images/logo.svg' id='logo' class='svg' />
+        </div>
+
+        <div id='description'>
+            <p><i>MetricsGraphics.js</i> is a library built on top of
+            <a href='http://d3js.org/'>D3</a> that is optimized for visualizing and
+            laying out time-series data. It provides a simple way to produce common
+            types of graphics in a principled, consistent and responsive way. The
+            library currently supports line charts, scatterplots and histograms as
+            well as features like rug plots and basic linear regression.</p>
+
+            <p>This demo allows you to play around with the library without having to
+            download it. Try doubling the number of sightings in, say, 1995 and see
+            how that affects the graphic. Or how about changing any of the options in
+            <i>MG.data_graphic</i>? Or perhaps change the chart type to a scatterplot by
+            setting <code>chart_type:'point'</code>, switching the <i>x</i> and <i>y</i>
+            accessors and increasing the <i>height</i>? The data object is set to the
+            contents of the <i>Data</i> text area. Errors are logged to the console.</p>
+        </div>
+    </div>
+
+    <div class='container'>
+        <div class='row main-windows-titles'>
+            <div class='col-xs-2'>Data</div>
+            <div class='js-title col-xs-5'>
+                JavaScript <a href='https://github.com/metricsgraphics/metrics-graphics/wiki/List-of-Options#list-of-options' target='_blank'>See Full List of Options</a>
+                <button type='button' class='update btn'>Run</button>
+            </div>
+        </div>
+        <div class='row main-windows'>
+            <div class='data col-xs-2'>
+                <textarea></textarea>
+            </div>
+            <div class='js col-xs-5' id='editor'></div>
+            <div class='result text-center col-xs-5'></div>
+        </div>
+    </div>
+
+    <div class='container footer'>
+      Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a>,
+      <a href='https://github.com/hamilton'>Hamilton Ulmer</a> &mdash; Metrics at
+      <a href='https://www.mozilla.org/en-US/'>Mozilla</a>
+      <br />Shared under the <a href='http://www.mozilla.org/MPL/2.0/'>
+        Mozilla Public License</a>.
+    </div>
+
+    <style>
+        body {
+            background-color: #fcfcfc;
+        }
+
+        .container {
+            width: 90%;
+            min-width: 960px;
+        }
+
+        .data textarea {
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+            font-size: 11px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .footer {
+            background-image: url(images/divider.png);
+            background-repeat: no-repeat;
+            background-position: center 115px;
+            padding-top: 70px;
+            margin-bottom: 20px;
+        }
+
+        .hightop {
+            margin-top: 40px;
+        }
+
+        #logo {
+            margin: 15px 0 10px 0;
+        }
+
+        .main-windows-titles {
+            color: #3b3b3b;
+            font-size: 16px;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .main-windows-titles .js-title a {
+            position: absolute;
+            right: 0;
+            font-size: 70%;
+            margin: 7px 1px 0 0;
+        }
+
+        .main-windows .data,
+        .main-windows .js,
+        .main-windows .result {
+            height: 400px;
+        }
+
+        p {
+            padding-top: 6px;
+        }
+
+        textarea,
+        #editor {
+            border-radius: 3px;
+            border: none;
+            overflow: auto;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .btn.update {
+            background-color: steelblue;
+            color: white;
+            margin-top: 34px;
+            outline: none;
+            position: absolute;
+            right: 7px;
+            z-index: 99;
+        }
+
+        .btn.update:hover,
+        .btn.update:active,
+        .btn.update:visited {
+            color: #efefef;
+            outline: none;
+        }
+    </style>
+    <script>
+        var default_call = '//modify away!\n'
+            + 'MG.data_graphic({\n'
+            + '  title: "UFO Sightings",\n'
+            + '  description: "Yearly UFO sightings from 1945 to 2010.",\n'
+            + '  data: JSON.parse(document.querySelector(\'.data textarea\').value),\n'
+            + '  markers: [{\'year\': 1964, \'label\': \'"The Creeping Terror" released\'}],\n'
+            + '  width: 400,\n'
+            + '  height: 250,\n'
+            + '  target: ".result",\n'
+            + '  x_accessor: "year",\n'
+            + '  y_accessor: "sightings",\n'
+            + '});';
+
+        var editor = ace.edit("editor");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setValue(default_call);
+        editor.gotoLine(1);
+        editor.setHighlightActiveLine(false);
+
+        d3.json('data/ufo-sightings.json', function(data) {
+            document.querySelector('.data textarea').value = JSON.stringify(data, null, 2);
+            eval(editor.getValue());
+        })
+
+        d3.select('.update').on('click', function() {
+            eval(editor.getValue());
+        })
+    </script>
+</body>
+</html>

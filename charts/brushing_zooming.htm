@@ -1,0 +1,166 @@
+            <div class='row trunk-section'>
+                <div class='col-lg-7'>
+                    <div class='row'>
+                        <div class='col-lg-12 text-center' id='basic_brushing'></div>
+                        <div class='col-lg-12 text-center' id='point_chart_brushing'></div>
+                    </div>
+                </div>
+                <div class='col-lg-5'>
+                    <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    MG.data_graphic({
+        title: "Basic Brushing &amp; Zooming",
+        description: "This is a simple example of brushing and zooming. You can set 'brush' as 'xy', 'x', 'y' to specify the axis(es) that may be brushed.",
+        data: data,
+        top: 70,
+        width: 600,
+        height: 240,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#basic_brushing',
+        brush: 'xy',
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Point Chart Brushing",
+        description: "Brushing and zooming also works for point charts.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 240,
+        right: 40,
+        target: '#point_chart_brushing',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        brush: 'xy',
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+            <div class='row trunk-section'>
+                    <div class='col-lg-7'>
+                        <div class='row'>
+                            <div class='col-lg-12 text-center' id='main'></div>
+                            <div class='col-lg-12 text-center' id='overview_plot'></div>
+                        </div>
+                    </div>
+                    <div class='col-lg-5'>
+                        <div class='data-column'><a href='data/fake_users3.json'>data</a></div>
+
+<pre><code class='javascript'>d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    const main = {
+        title: "Overview Plot",
+        description: "This is a simple example of an overview plot. You can create an overview plot by creating another chart with 'zoom_target' option and then setting it as the object of the main chart.",
+        data: data,
+        top: 70,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#main',
+        brush: 'xy',
+    }
+    MG.data_graphic(main);
+    MG.data_graphic({
+        data: data,
+        width: 600,
+        height: 50,
+        top: 8,
+        bottom: 0,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#overview_plot',
+        brush: 'x',
+        zoom_target: main,
+        x_axis: false,
+        y_axis: false,
+        showActivePoint: false,
+    });
+});</code></pre>
+
+                </div>
+            </div>
+
+<script>
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    MG.data_graphic({
+        title: "Basic Brushing & Zooming",
+        description: "This is a simple example of brushing and zooming. You can set 'brush' as 'xy', 'x', 'y' to specify the axis(es) that may be brushed.",
+        data: data,
+        top: 70,
+        width: 600,
+        height: 240,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#basic_brushing',
+        brush: 'xy',
+    });
+});
+
+d3.json('data/points1.json', function(data) {
+    MG.data_graphic({
+        title: "Point Chart Brushing",
+        description: "Brushing and zooming also works for point charts.",
+        data: data,
+        chart_type: 'point',
+        width: 600,
+        height: 240,
+        right: 40,
+        target: '#point_chart_brushing',
+        x_accessor: 'x',
+        y_accessor: 'y',
+        y_rug: true,
+        brush: 'xy',
+    });
+});
+
+d3.json('data/fake_users2.json', function(data) {
+    for (var i = 0; i < data.length; i++) {
+        data[i] = MG.convert.date(data[i], 'date');
+    }
+    const main = {
+        title: "Overview Plot",
+        description: "This is a simple example of an overview plot. You can create an overview plot by creating another chart with 'zoom_target' option and then setting it as the object of the main chart.",
+        data: data,
+        top: 70,
+        width: 600,
+        height: 200,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#main',
+        brush: 'xy',
+    }
+    MG.data_graphic(main);
+    MG.data_graphic({
+        data: data,
+        width: 600,
+        height: 50,
+        top: 8,
+        bottom: 0,
+        right: 40,
+        missing_is_hidden: true,
+        target: '#overview_plot',
+        brush: 'x',
+        zoom_target: main,
+        x_axis: false,
+        y_axis: false,
+        showActivePoint: false,
+    });
+});
+
+</script>

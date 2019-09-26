@@ -1,0 +1,269 @@
+<html lang='en'>
+<head>
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+
+    <title>MetricsGraphics.js - a library based on D3.js, optimized for visualizing and laying out time-series data</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+    <link href='metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <link href='css/metricsgraphics-demo.css' rel='stylesheet' type='text/css'>
+    <link href='css/highlightjs-default.css' rel='stylesheet' type='text/css'>
+
+    <script src='js/lib/highlight.pack.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://d3js.org/d3.v4.min.js' charset='utf-8'></script>
+    <script src='metricsgraphics.min.js'></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-51487512-1', 'metricsgraphicsjs.org');
+      ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <a href="https://github.com/metrics-graphics/metrics-graphics"><img style="z-index: 2; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+    <div class='container'>
+        <div id='content-body'>
+            <img src='images/logo.svg' id='logo' class='svg' />
+            <iframe src="https://ghbtns.com/github-btn.html?user=mozilla&repo=metrics-graphics&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20" class='github-stars-top'></iframe>
+
+            <div id='description'>
+                <p><i>MetricsGraphics.js</i> is a library built on top of
+                <a href='http://d3js.org/'>D3</a> that is optimized for visualizing and
+                laying out time-series data. It provides a simple way to produce common types of
+                graphics in a principled, consistent and responsive way. The library
+                currently supports line charts, scatterplots, histograms, bar charts and data 
+                tables as well as features like rug plots and basic linear regression.</p>
+            </div>
+
+            <div id='torso'>
+                <div class='thumb'><a href='https://github.com/metricsgraphics/metrics-graphics/releases'><i class="fa fa-download fa-4x"></i><br /><span class='text'>Download</span></a></div>
+                <div class='thumb'><a href='examples.htm'><i class="fa fa-area-chart fa-4x"></i><br /><span class='text'>Examples</span></a></div>
+                <div class='thumb'><a href='https://github.com/metricsgraphics/metrics-graphics'><i class="fa fa-github fa-4x"></i><br /><span class='text'>Github</span></a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class='api-example'>
+        <div class='container'>
+
+<pre><code class='javascript'>MG.data_graphic({
+    title: "Downloads",
+    description: "This graphic shows a time-series of downloads.",
+    data: [{'date':new Date('2014-11-01'),'value':12},
+           {'date':new Date('2014-11-02'),'value':18}],
+    width: 600,
+    height: 250,
+    target: '#downloads',
+    x_accessor: 'date',
+    y_accessor: 'value',
+})</code></pre>
+
+        </div>
+    </div>
+
+    <div class='container'>
+        <p>The API is simple. All that's needed to create a graphic is to specify a few default parameters and then, if desired, override one or more of the <a href='https://github.com/metricsgraphics/metrics-graphics/wiki/List-of-Options'>optional parameters on offer</a>. We don't maintain state. To update a graphic, one would call <i>MG.data_graphic</i> on the same target element.</p>
+        <p>The library is data-source agnostic. While it provides a number of convenience functions and options that allow for graphics to better handle things like missing observations, it doesn't care where the data comes from.</p>
+        <p>The library makes it easy to construct narratives by providing a layout template based on Bootstrap. Take a look at <a href='examples.htm'>the examples</a> to see that in action.</p>
+        <p>MetricsGraphics.js <a href='https://www.youtube.com/watch?v=ZmkeAlut7KI#t=399'>takes the misery out of</a> creating beautiful interactive graphics. <a href='http://blog.mozilla.org/metrics/2014/11/10/introducing-metricsgraphics-js/'>Read our blog post for more details</a>.</p>
+
+        <h1>A bit about the library's design philosophy</h1>
+        <p>MetricsGraphics.js is an opinionated library that aims to take the mystery and complication out of presenting simple data. It offers only line charts, scatterplots, bar charts, histograms and data tables, while maintaining a wide variety of options for each, and elevates the layout and explanation of these graphics to the same level of priority as the graphics themselves. The emergent philosophy is one of efficiency and practicality - by following the standards embodied by the library, you will make beautiful, concise and impactful presentations and dashboards.</p>
+
+        <h1>Creating your first graphic</h1>
+        <p>Here's a quick tutorial to get you started. Say that we have some data on a scholarly topic like <a href='http://geocommons.com/overlays/134594'>UFO sightings</a>. We decide that we're interested in creating a line chart of yearly sightings.</p>
+        <p>We create a JSON file called <a href='data/ufo-sightings.json'>data/ufo-sightings.json</a> based on the original dataset, where we aggregate yearly sightings. The data doesn't have to be JSON of course, but that will mean less work later on.</p>
+        <p>The next thing we do is load the data:</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+})</code></pre>
+
+        <p><i>MG.data_graphic</i> expects the data object to be an array of objects, which is already the case for us. That's good. It also needs dates to be timestamps if they're in a format like <i>yyyy-mm-dd</i>. We've got aggregated yearly data, so we don't need to worry about that. Otherwise, we'd add a line like this one.</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    data = MG.convert.date(data, 'year');
+})</code></pre>
+
+        <p>Finally, we create the graphic and place it in the element specified in <i>target</i>.</p>
+
+<pre class='highbottom'><code class='javascript'>d3.json('data/ufo-sightings.json', function(data) {
+    MG.data_graphic({
+        title: "UFO Sightings",
+        description: "Yearly UFO sightings from the year 1945 to 2010.",
+        data: data,
+        width: 650,
+        height: 150,
+        target: '#ufo-sightings',
+        x_accessor: 'year',
+        y_accessor: 'sightings',
+        markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}]
+    })
+})</code></pre>
+
+        <p class='highbottom'>And this is what we end up with. In this example, we're adding a marker to draw attention to a particular data point. This is optional of course.</p>
+        <div id='ufo-sightings'></div>
+        <p class='hightop'>It's as easy as that. If for whatever reason we decide to update the data in the graphic, we call <i>MG.data_graphic</i> with the updated data object on the same target element. The library will gracefully transition the existing plot to the new one. It's ridiculously easy to modify every aspect of the graphic by setting one or more of the <a href='https://github.com/metricsgraphics/metrics-graphics/wiki/List-of-Options'>available options</a>.</p>
+
+        <h1>Still not convinced?</h1>
+        <p>We've set up an interactive version of this example that you can play around with. You don't need to download anything. <a href='interactive-demo.htm'>Check it out</a>.</p>
+        <p>Take the library out for a spin, file bugs and don't forget to star the project on Github!</p>
+    </div>
+
+    <div class='container footer'>
+        Created by <a href='https://twitter.com/alialmossawi'>Ali Almossawi</a>,
+        <a href='https://github.com/hamilton'>Hamilton Ulmer</a> &mdash; Metrics at
+        <a href='https://www.mozilla.org/en-US/'>Mozilla</a>
+        <br />Shared under the <a href='http://www.mozilla.org/MPL/2.0/'>
+        Mozilla Public License</a>.
+    </div>
+
+    <style>
+        body {
+            background-color: #fcfcfc;
+        }
+
+        .api-example {
+            margin: 80px 0 40px 0;
+            width: 100%;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .container {
+            width: 680px;
+        }
+
+        #fb-block {
+            display: inline;
+            padding: 0 0 0 6px;
+            position: relative;
+            top: 0;
+            width: 60px;
+        }
+
+        @media only screen
+        and (min-device-width : 320px)
+        and (max-device-width : 480px) {
+            #fb-block {
+                top: -5px;
+            }
+        }
+
+        .github-stars-top {
+            margin: 95px 0 0 160px;
+            position: absolute;
+        }
+
+        h1 {
+            font-size: 24px;
+            padding-top: 40px;
+        }
+
+        .highbottom {
+            margin-bottom: 40px;
+        }
+
+        .hightop {
+            margin-top: 40px;
+        }
+
+        p {
+            padding-top: 6px;
+        }
+
+        pre {
+            background-color: #f1f1f1;
+            border: none;
+            margin: 0 0 0 0 ;
+        }
+
+        .social-buttons {
+            background-image: url(images/divider.png);
+            background-repeat: no-repeat;
+            background-position: center 35px;
+            padding-top: 80px;
+        }
+
+        .thumb {
+            padding: 0 35px 0 35px;
+        }
+
+        .thumb a {
+            color: #227dc4;
+        }
+
+        .thumb a i.fa {
+            background-color: #036bbc;
+            color: transparent;
+            text-shadow: 0px 1px 1px rgba(255,255,255,0.5);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            padding: 10px;
+        }
+
+        @-moz-document url-prefix() {
+            .thumb a i.fa {
+                background-color: transparent;
+                color: #60a2d5;
+            }
+        }
+
+        .thumb a span.text {
+            color: white;
+            font-size: 12px;
+            letter-spacing: 1;
+            text-transform: uppercase;
+            background: #60a2d5;
+            border-radius: 6px;
+            padding: 1px 5px 1px 5px;
+        }
+
+        /*.thumb a:hover span.text {
+            border-bottom: 1px solid #227dc4;
+        }*/
+
+        .thumb a:hover {
+            text-decoration: none;
+        }
+
+        #twitter-block {
+            display: inline;
+            overflow: hidden;
+            padding-top: 2px;
+            position: relative;
+            top: 0;
+        }
+    </style>
+
+    <script>
+        hljs.initHighlightingOnLoad();
+
+        d3.json('data/ufo-sightings.json', function(data) {
+            MG.data_graphic({
+                title: "UFO Sightings",
+                description: "Yearly UFO sightings from the year 1945 to 2010.",
+                data: data,
+                markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}],
+                width: 650,
+                height: 180,
+                target: '#ufo-sightings',
+                x_accessor: 'year',
+                y_accessor: 'sightings'
+            })
+        })
+    </script>
+</body>
+</html>
