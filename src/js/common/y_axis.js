@@ -86,14 +86,14 @@ function rimPlacement (args, axisArgs) {
   if (position === 'left') {
     coordinates.x1 = mg_get_left(args);
     coordinates.x2 = mg_get_left(args);
-    coordinates.y1 = scale(ticks[0]).toFixed(2);
-    coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
+    coordinates.y1 = tick_length ? scale(ticks[0]).toFixed(2) : mg_get_top(args);
+    coordinates.y2 = tick_length ? scale(ticks[tick_length - 1]).toFixed(2) : mg_get_bottom(args);
   }
   if (position === 'right') {
     coordinates.x1 = mg_get_right(args);
     coordinates.x2 = mg_get_right(args);
-    coordinates.y1 = scale(ticks[0]).toFixed(2);
-    coordinates.y2 = scale(ticks[tick_length - 1]).toFixed(2);
+    coordinates.y1 = tick_length ? scale(ticks[0]).toFixed(2) : mg_get_top(args);
+    coordinates.y2 = tick_length ? scale(ticks[tick_length - 1]).toFixed(2) : mg_get_bottom(args);
   }
   if (position === 'top') {
     coordinates.x1 = mg_get_left(args);
