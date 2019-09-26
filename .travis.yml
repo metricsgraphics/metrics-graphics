@@ -2,7 +2,7 @@ dist: trusty
 sudo: required
 language: node_js
 node_js:
-  - "8"
+  - "8.12.0"
 addons:
     chrome: stable
 before_script:
