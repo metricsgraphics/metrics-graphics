@@ -18,7 +18,7 @@ deploy:
   - provider: npm
     email: wrlach@gmail.com
     api_key:
-      secure: YQ2Rusxq4Z07D3YD+9IoK4FtJI+W3I27B2nimf3H1xgJHlWUDquENJylSEhmUlUg9g1hj0QAsrcTihrdtRBS3p81RW7yXVVA9s6gC6830AJP77sGSqI/rK6erFk9s12f42Nr6d7MArBUTj6mxET+I7p3rKYbmY+8oePH9bnSN3c=
+      secure: LtS+7V8yMNMRelHAFv+ms71pYJzocX+jTePtUvNNY4k2j2b4rUkBYU0vSAmBbzOnSaIf5X8dXVzxEtYaMIliUr0vVbFvooK4GF6p4X/043dq2MRnm1GUdtG4byDd3JlYNyNo4REgmnpcARNLf3bffl3kXkb4JCvxbAWk/yuj2V4=
     on:
       tags: true
       repo: metricsgraphics/metrics-graphics
