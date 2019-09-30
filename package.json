@@ -61,6 +61,6 @@
     "jshint": "^2.9.5",
     "qunitjs": "^2.0.0",
     "require-dir": "^1.0.0",
-    "testem": "^2.0.0"
+    "testem": "^3.0.0"
   }
 }
