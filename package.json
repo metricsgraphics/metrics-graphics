@@ -5,7 +5,7 @@
   "main": "dist/metricsgraphics.js",
   "scripts": {
     "build": "gulp build:js",
-    "lint": "gulp eslint",
+    "lint": "gulp lint",
     "test": "gulp test",
     "serve": "gulp serve",
     "test-ci": "./node_modules/testem/testem.js ci testem.json",

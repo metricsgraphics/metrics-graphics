@@ -13,7 +13,7 @@ const babel = require('gulp-babel')
 
 // paths
 const distFolder = 'dist'
-const jsFiles = 'src/js/*.js'
+const jsFiles = 'src/js/**/*'
 
 const clean = () => {
   return src(join(distFolder, '*'), { read: false })
@@ -71,7 +71,7 @@ const roots = ['dist', 'examples', 'src', 'bower_components']
 const watchables = roots.map(root => `${root}/**/*`)
 
 const devReload = () => src(watchables).pipe(reload())
-const devWatch = () => watch(watchables, series(lint, devReload))
+const devWatch = () => watch(watchables, devReload)
 
 const devServe = () => server({
   root: roots,
@@ -82,3 +82,4 @@ const devServe = () => server({
 exports.clean = clean
 exports.default = series(eslint, test, buildJs)
 exports.serve = series(devServe, devWatch)
+exports.lint = lint
