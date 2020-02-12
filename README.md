@@ -1,7 +1,10 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status][travis-badge]][travis-badge-url] [![CDNJS](https://img.shields.io/cdnjs/v/metrics-graphics.svg)](https://cdnjs.com/libraries/metrics-graphics)
 
-
-***this project is unmaintained. please see this blog post: https://wlach.github.io/blog/2019/09/metrics-graphics-stepping-back-for-a-while/***
+Changes on this fork:
+* updated all dependencies
+* renovated gulp tasks
+* migrated from jshint to eslint
+* removed dist files from git
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 

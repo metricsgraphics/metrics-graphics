@@ -5,8 +5,9 @@
   "main": "dist/metricsgraphics.js",
   "scripts": {
     "build": "gulp build:js",
-    "lint": "gulp jshint",
+    "lint": "gulp eslint",
     "test": "gulp test",
+    "serve": "gulp serve",
     "test-ci": "./node_modules/testem/testem.js ci testem.json",
     "version": "npm run build && git add ."
   },
@@ -39,28 +40,34 @@
   },
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {
-    "d3": "^5.0.0"
+    "d3": "^5.15.0"
   },
   "peerDependencies": {
-    "jquery": ">=1.11.1"
+    "jquery": ">=3.4.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "gulp": "^3.8.10",
-    "gulp-babel": "^7.0.1",
-    "gulp-concat": "^2.4.2",
-    "gulp-connect": "^5.0.0",
-    "gulp-jshint": "^2.1.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-rimraf": "^0.2.0",
+    "@babel/core": "^7.8.4",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-rimraf": "^1.0.0",
     "gulp-testem": "0.0.1",
-    "gulp-uglify": "3.0.1",
+    "gulp-uglify": "3.0.2",
     "gulp-umd": "^2.0.0",
-    "jquery": ">=1.11.1",
-    "jshint": "^2.9.5",
-    "qunitjs": "^2.0.0",
-    "require-dir": "^1.0.0",
-    "testem": "^2.0.0"
+    "gulp-util": "^3.0.8",
+    "jquery": ">=3.4.1",
+    "qunitjs": "^2.4.1",
+    "require-dir": "^1.2.0",
+    "testem": "^3.0.2"
   }
 }

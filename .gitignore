@@ -15,3 +15,8 @@ npm-debug.log
 other/divider.psd
 other/htaccess.txt
 bare.html
+yarn.lock
+yarn-error.log
+
+# Dist files
+dist
