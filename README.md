@@ -5,6 +5,8 @@ Changes on this fork:
 * renovated gulp tasks
 * migrated from jshint to eslint
 * removed dist files from git
+* added missing styling
+* updated build tasks to compile Sass files
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
