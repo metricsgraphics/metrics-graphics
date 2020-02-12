@@ -1,5 +1,5 @@
 const { join } = require('path')
-const { src, dest, watch, series } = require('gulp')
+const { src, dest, watch, series, parallel } = require('gulp')
 const umd = require('gulp-umd')
 
 const rimraf = require('gulp-rimraf')
@@ -11,9 +11,14 @@ const testem = require('gulp-testem')
 const { reload, server } = require('gulp-connect')
 const babel = require('gulp-babel')
 
+const sass = require('gulp-sass')
+sass.compiler = require('node-sass')
+
 // paths
 const distFolder = 'dist'
 const jsFiles = 'src/js/**/*'
+const sassFiles = 'src/sass/**/*'
+const exampleCssFolder = 'examples/css'
 
 const clean = () => {
   return src(join(distFolder, '*'), { read: false })
@@ -67,11 +72,16 @@ const test = () => {
     }))
 }
 
-const roots = ['dist', 'examples', 'src', 'bower_components']
+const compileSass = () => src(sassFiles)
+  .pipe(sass().on('error', sass.logError))
+  .pipe(dest(distFolder))
+  .pipe(dest(exampleCssFolder))
+
+const roots = ['dist', 'src', 'examples']
 const watchables = roots.map(root => `${root}/**/*`)
 
 const devReload = () => src(watchables).pipe(reload())
-const devWatch = () => watch(watchables, devReload)
+const devWatch = () => parallel(watch(watchables, devReload), watch(sassFiles, compileSass))
 
 const devServe = () => server({
   root: roots,
@@ -80,6 +90,6 @@ const devServe = () => server({
 })
 
 exports.clean = clean
-exports.default = series(eslint, test, buildJs)
-exports.serve = series(devServe, devWatch)
+exports.default = series(lint, test, buildJs, compileSass)
+exports.serve = series(compileSass, devServe, devWatch)
 exports.lint = lint

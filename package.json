@@ -4,7 +4,7 @@
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/metricsgraphics.js",
   "scripts": {
-    "build": "gulp build:js",
+    "build": "gulp",
     "lint": "gulp lint",
     "test": "gulp test",
     "serve": "gulp serve",
@@ -61,11 +61,13 @@
     "gulp-eslint": "^6.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-rimraf": "^1.0.0",
+    "gulp-sass": "^4.0.2",
     "gulp-testem": "0.0.1",
     "gulp-uglify": "3.0.2",
     "gulp-umd": "^2.0.0",
     "gulp-util": "^3.0.8",
     "jquery": ">=3.4.1",
+    "node-sass": "^4.13.1",
     "qunitjs": "^2.4.1",
     "require-dir": "^1.2.0",
     "testem": "^3.0.2"
