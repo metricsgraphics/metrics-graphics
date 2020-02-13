@@ -42,7 +42,7 @@ test('Only one mg-category-guides group is added on multiple calls to the same t
         data: [{"year": "1945","sightings": 6},{"year": "1946","sightings": 8}],
         chart_type: 'point',
         y_accessor: "year",
-        x_accessor: "sightings",
+        xAccessor: "sightings",
     };
 
     MG.data_graphic(params);

@@ -1,5 +1,5 @@
 function register(chartType, descriptor, options) {
-  const defaults = options ? options_to_defaults(options) : {};
+  const defaults = options ? optionsToDefaults(options) : {};
   MG.charts[chartType] = {
     descriptor: descriptor,
     defaults: defaults,

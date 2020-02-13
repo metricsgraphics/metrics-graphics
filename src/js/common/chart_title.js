@@ -1,7 +1,7 @@
 function chart_title(args) {
   'use strict';
 
-  var svg = mg_get_svg_child_of(args.target);
+  var svg = getSvgChildOf(args.target);
 
   //remove the current title if it exists
   svg.select('.mg-header').remove();

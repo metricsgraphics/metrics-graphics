@@ -1,4 +1,6 @@
-MG.globals = {};
+const deepmerge = require('deepmerge')
+
+MG.globals = {}
 MG.deprecations = {
   rollover_callback: { replacement: 'mouseover', version: '2.0' },
   rollout_callback: { replacement: 'mouseout', version: '2.0' },
@@ -7,21 +9,21 @@ MG.deprecations = {
   show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
   xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
   interpolate_tension: { replacement: 'interpolate', version: '2.10' }
-};
-MG.globals.link = false;
-MG.globals.version = "1.1";
+}
+MG.globals.link = false
+MG.globals.version = '1.1'
 
 MG.options = { // <name>: [<defaultValue>, <availableType>]
   x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
-  y_padding_percentage: [0.05, 'number'],                 // for categorical scales
-  y_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
-  ygroup_padding_percentage: [0.25, 'number'],            // for categorical scales
-  ygroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
-  x_padding_percentage: [0.05, 'number'],                 // for categorical scales
-  x_outer_padding_percentage: [0.1, 'number'],            // for categorical scales
-  xgroup_padding_percentage: [0.25, 'number'],            // for categorical scales
-  xgroup_outer_padding_percentage: [0, 'number'],         // for categorical scales
+  y_padding_percentage: [0.05, 'number'], // for categorical scales
+  y_outer_padding_percentage: [0.1, 'number'], // for categorical scales
+  ygroup_padding_percentage: [0.25, 'number'], // for categorical scales
+  ygroup_outer_padding_percentage: [0, 'number'], // for categorical scales
+  x_padding_percentage: [0.05, 'number'], // for categorical scales
+  x_outer_padding_percentage: [0.1, 'number'], // for categorical scales
+  xgroup_padding_percentage: [0.25, 'number'], // for categorical scales
+  xgroup_outer_padding_percentage: [0, 'number'], // for categorical scales
   ygroup_accessor: [null, 'string'],
   xgroup_accessor: [null, 'string'],
   y_categorical_show_guides: [false, 'boolean'],
@@ -29,20 +31,20 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   rotate_x_labels: [0, 'number'],
   rotate_y_labels: [0, 'number'],
   scales: [{}],
-  scalefns: [{}],
+  scaleFunctions: [{}],
   // Data
   data: [[], ['object[]', 'number[]']], // the data object
   missing_is_zero: [false, 'boolean'], // assume missing observations are zero
   missing_is_hidden: [false, 'boolean'], // show missing observations as missing line segments
   missing_is_hidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
   utc_time: [false, 'boolean'], // determines whether to use a UTC or local time scale
-  x_accessor: ['date', 'string'], // the data element that's the x-accessor
+  xAccessor: ['date', 'string'], // the data element that's the x-accessor
   x_sort: [true, 'boolean'], // determines whether to sort the x-axis' values
   y_accessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
   // Axes
   axes_not_compact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
   european_clock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
-  inflator: [10/9, 'number'], // a multiplier for inflating max_x and max_y
+  inflator: [10 / 9, 'number'], // a multiplier for inflating max_x and max_y
   max_x: [null, ['number', Date]], // the maximum x-value
   max_y: [null, ['number', Date]], // the maximum y-value
   min_x: [null, ['number', Date]], // the minimum x-value
@@ -117,7 +119,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   x_rug: [false, 'boolean'], // show a rug plot along the x-axis
   y_rug: [false, 'boolean'], // show a rug plot along the y-axis
   mouseover_align: ['right', ['right', 'left']],
-  brush: [null, ['xy','x','y']], // add brush function
+  brush: [null, ['xy', 'x', 'y']], // add brush function
   brushing_selection_changed: [null, 'function'], // callback function on brushing. the first parameter are the arguments that correspond to this chart, the second parameter is the range of the selection
   zoom_target: [null, 'object'], // the zooming target of brushing function
   click_to_zoom_out: [true, 'boolean'], // if true and the graph is currently zoomed in, clicking on the graph will zoom out
@@ -135,71 +137,61 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   title_y_position: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
   title: [null, 'string'],
   description: [null, 'string']
-};
+}
 
-MG.charts = {};
+MG.charts = {}
 
-MG.defaults = options_to_defaults(MG.options);
+MG.defaults = optionsToDefaults(MG.options)
 
-MG.data_graphic = function(args) {
-  'use strict';
+MG.data_graphic = function (args) {
+  'use strict'
 
-  MG.call_hook('global.defaults', MG.defaults);
+  MG.call_hook('global.defaults', MG.defaults)
 
-  if (!args) { args = {}; }
+  if (!args) { args = {} }
 
-  for (let key in args) {
-    if (!mg_validate_option(key, args[key])) {
-      if (!(key in MG.options)) {
-        console.warn(`Option ${key} not recognized`);
-      } else {
-        console.warn(`Option ${key} expected type ${MG.options[key][1]} but got ${args[key]} instead`);
-      }
-    }
-  }
-
-  var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type];
-  merge_with_defaults(args, selected_chart.defaults, MG.defaults);
+  var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type]
+  deepmerge(args, selected_chart.defaults, MG.defaults)
 
   if (args.list) {
-    args.x_accessor = 0;
-    args.y_accessor = 1;
+    args.xAccessor = 0
+    args.y_accessor = 1
   }
 
   // check for deprecated parameters
   for (var key in MG.deprecations) {
     if (args.hasOwnProperty(key)) {
-      var deprecation = MG.deprecations[key],
-        message = 'Use of `args.' + key + '` has been deprecated',
-        replacement = deprecation.replacement,
-        version;
+      var deprecation = MG.deprecations[key]
+      var message = 'Use of `args.' + key + '` has been deprecated'
+      var replacement = deprecation.replacement
+      var version
 
       // transparently alias the deprecated
       if (replacement) {
         if (args[replacement]) {
-          message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.';
+          message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.'
         } else {
-          args[replacement] = args[key];
+          args[replacement] = args[key]
         }
       }
 
       if (deprecation.warned) {
-        continue;
+        continue
       }
 
-      deprecation.warned = true;
+      deprecation.warned = true
 
       if (replacement) {
-        message += ' in favor of `args.' + replacement + '`';
+        message += ' in favor of `args.' + replacement + '`'
       }
 
-      warn_deprecation(message, deprecation.version);
+      warnDeprecation(message, deprecation.version)
     }
   }
 
-  MG.call_hook('global.before_init', args);
+  MG.call_hook('global.before_init', args)
 
-  new selected_chart.descriptor(args);
+  new selected_chart.descriptor(args)
 
-  return args.data;
-};
+  return args.data
+}

@@ -138,7 +138,7 @@ test('Correctly calculates min and max values for line, point and histogram char
     // single series
     var params = {
         target: '#qunit-fixture',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         data: [
             [
@@ -156,7 +156,7 @@ test('Correctly calculates min and max values for line, point and histogram char
     // multiple series
     var params2 = {
         target: '#qunit-fixture',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         data: [
             [
@@ -181,7 +181,7 @@ test('Correctly calculates min and max values for line, point and histogram char
 
     // single series
     args = {
-        x_accessor: 'x',
+        xAccessor: 'x',
         baseline_accessor: 'b',
         predictor_accessor: 'p',
         chart_type: 'bar',

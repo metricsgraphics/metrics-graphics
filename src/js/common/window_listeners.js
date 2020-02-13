@@ -16,7 +16,7 @@ function MG_WindowResizeTracker() {
       if (!svg.empty() && (svg.node().parentNode.offsetWidth > 0 || svg.node().parentNode.offsetHeight > 0)) {
         var aspect = svg.attr('width') !== 0 ? (svg.attr('height') / svg.attr('width')) : 0;
 
-        var newWidth = get_width(target);
+        var newWidth = getWidth(target);
 
         svg.attr('width', newWidth);
         svg.attr('height', aspect * newWidth);

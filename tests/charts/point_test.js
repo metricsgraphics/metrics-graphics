@@ -95,13 +95,13 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     equal(document.querySelectorAll('.mg-y-rug').length, 2, 'We only have one rugplot (two ticks) on the y-axis');
 });
 
-test('args.least_squares', function() {
+test('args.leastSquares', function() {
     var params = {
         target: '#qunit-fixture',
         data: [{'date': new Date('2014-01-01'), 'value': 12},
                {'date': new Date('2014-03-01'), 'value': 18}],
         chart_type: 'point',
-        least_squares: true
+        leastSquares: true
     };
 
     MG.data_graphic(params);
@@ -114,7 +114,7 @@ test('Only one least-squares line is added on multiple calls to the same target 
         data: [{'date': new Date('2014-01-01'), 'value': 12},
                {'date': new Date('2014-03-01'), 'value': 18}],
         chart_type: 'point',
-        least_squares: true
+        leastSquares: true
     };
 
     MG.data_graphic(params);

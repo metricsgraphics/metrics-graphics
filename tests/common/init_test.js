@@ -5,14 +5,14 @@ test('MG properly detects time series vs. not.', function () {
     target: '#qunit-fixture',
     data: [{'date': new Date('2014-11-01'), 'value': 12},
       {'date': new Date('2014-11-02'), 'value': 18}],
-    x_accessor: 'date'
+    xAccessor: 'date'
   };
 
   var params2 = {
     target: '#qunit-fixture',
     data: [{'date': 5434, 'value': 12},
       {'date': 5435, 'value': 18}],
-    x_accessor: 'date'
+    xAccessor: 'date'
   };
 
   var params3 = {
@@ -21,7 +21,7 @@ test('MG properly detects time series vs. not.', function () {
       {'date': new Date('2014-11-02'), 'value': 18}],
       [{'date': new Date('2014-11-01'), 'value': 32},
         {'date': new Date('2014-11-02'), 'value': 43}]],
-    x_accessor: 'date'
+    xAccessor: 'date'
   };
   mg_merge_args_with_defaults(params1);
   mg_merge_args_with_defaults(params2);
@@ -213,7 +213,7 @@ test('args.time_series is set to true when data is time-series', function () {
     target: '#qunit-fixture',
     data: [{'foo': new Date('2014-11-01'), 'value': 12},
       {'foo': new Date('2014-11-02'), 'value': 18}],
-    x_accessor: 'foo'
+    xAccessor: 'foo'
   };
 
   MG.data_graphic(params);
@@ -225,7 +225,7 @@ test('args.time_series is set to false when data is not time-series', function (
     target: '#qunit-fixture',
     data: [{'foo': 100, 'value': 12},
       {'foo': 200, 'value': 18}],
-    x_accessor: 'foo'
+    xAccessor: 'foo'
   };
 
   MG.data_graphic(params);

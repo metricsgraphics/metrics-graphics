@@ -21,7 +21,7 @@
         height: 225,
         right: 10,
         target: '#scatter-simple',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         mouseover: function(d, i) { console.log(d,i); },
         y_rug: true
@@ -36,7 +36,7 @@
         height: 225,
         right: 10,
         target: '#categorical1',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
         color_type:'category',
@@ -52,7 +52,7 @@
         height: 225,
         right: 10,
         target: '#categorical2',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
         color_domain: ['cat_0', 'cat_1', 'other'],
@@ -63,15 +63,15 @@
 
     MG.data_graphic({
         title: "Simple Line of Best Fit",
-        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        description: "For any scatterplot, set <i>leastSquares</i> to true to add.",
         data: data,
-        least_squares: true,
+        leastSquares: true,
         chart_type: 'point',
         width: 295,
         height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y'
     });
 
@@ -84,7 +84,7 @@
         height: 225,
         right: 10,
         target: '#highlight',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         y_rug: true,
         highlight: (d, i) => d.z > 2
@@ -102,9 +102,9 @@ d3.json('data/fake_users1.json', function(data) {
             height: 225,
             left: 60,
             right: 10,
-            least_squares: true,
+            leastSquares: true,
             target: '#sls-time-series',
-            x_accessor: 'date',
+            xAccessor: 'date',
             y_accessor: 'value'
         });
 });
@@ -114,14 +114,14 @@ var color_range = (theme === 'light') ? null : ['white','yellow'];
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Scatterplot with Size and Color",
-        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        description: "Scatterplots have <i>xAccessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
         data: data,
         chart_type: 'point',
         width: 295,
         height: 225,
         right: 10,
         target: '#scatter-size-and-color',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor:'z',
         color_range: color_range,
@@ -188,7 +188,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: trump,
         chart_type: 'point',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         height:400,
         width:300,
         target: '#point-categorical',
@@ -199,7 +199,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: trump,
         chart_type: 'bar',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         height:400,
         width:300,
         target: '#bar-categorical',
@@ -209,7 +209,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Categorical Scale: Y, points',
         data: trump,
         chart_type: 'point',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         height:400,
         width:300,
@@ -220,7 +220,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Categorical Scale: Y, bars',
         data: trump,
         chart_type: 'bar',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         height:400,
         width:300,
@@ -232,7 +232,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'point',
         y_axis_type: 'categorical',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         ygroup_accessor: 'poll',
         size_accessor: 'size',
@@ -249,7 +249,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'bar',
         y_axis_type: 'categorical',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         ygroup_accessor: 'poll',
         height:550,
@@ -264,7 +264,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'point',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         xgroup_accessor: 'poll',
         size_accessor: 'size',
         size_domain: [0,1],
@@ -279,7 +279,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'bar',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         xgroup_accessor: 'poll',
         size_accessor: 'size',
         size_domain: [0,1],
@@ -322,7 +322,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: trump,
         chart_type: 'point',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         height:300,
         width:300,
         target: '#point-categorical',
@@ -333,7 +333,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: trump,
         chart_type: 'bar',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         height:300,
         width:300,
         target: '#bar-categorical',
@@ -343,7 +343,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Categorical Scale: Y, points',
         data: trump,
         chart_type: 'point',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         height:300,
         width:300,
@@ -354,7 +354,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Categorical Scale: Y, bars',
         data: trump,
         chart_type: 'bar',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         height:300,
         width:300,
@@ -366,7 +366,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'point',
         y_axis_type: 'categorical',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         ygroup_accessor: 'poll',
         size_accessor: 'size',
@@ -383,7 +383,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'bar',
         y_axis_type: 'categorical',
-        x_accessor: 'number',
+        xAccessor: 'number',
         y_accessor: 'candidate',
         ygroup_accessor: 'poll',
         height:550,
@@ -397,7 +397,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'point',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         xgroup_accessor: 'poll',
         size_accessor: 'size',
         size_domain: [0,1],
@@ -412,7 +412,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         data: polls,
         chart_type: 'bar',
         y_accessor: 'number',
-        x_accessor: 'candidate',
+        xAccessor: 'candidate',
         xgroup_accessor: 'poll',
         size_accessor: 'size',
         size_domain: [0,1],
@@ -502,7 +502,7 @@ MG.data_graphic({
     right: 10,
     target: '#histogram2',
     y_extended_ticks: true,
-    x_accessor: 'value',
+    xAccessor: 'value',
     y_accessor: 'count',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
@@ -525,7 +525,7 @@ MG.data_graphic({
     target: '#histogram3',
     linked: true,
     y_extended_ticks: true,
-    x_accessor: 'val1',
+    xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
@@ -547,7 +547,7 @@ MG.data_graphic({
     right: 10,
     target: '#histogram4',
     y_extended_ticks: true,
-    x_accessor: 'val1',
+    xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
@@ -698,7 +698,7 @@ d3.json('data/fake_users1.json', function(data) {
         height: 200,
         right: 40,
         target: '#tooltip-line-chart',
-        x_accessor: 'date',
+        xAccessor: 'date',
         y_accessor: 'value',
         show_rollover_text: false,
         mouseover: (d, i) => {
@@ -723,7 +723,7 @@ d3.json('data/points1.json', function(data) {
         height: 350,
         right: 10,
         target: '#tooltip-point-chart',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         show_rollover_text: false,
         mouseover: (d, i) => {
@@ -754,7 +754,7 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#scatter-simple',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         y_rug: true
     });
@@ -768,7 +768,7 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#categorical1',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
         color_type: 'category',
@@ -784,7 +784,7 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#categorical2',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor: 'v',
         color_domain: ['cat_0', 'cat_1', 'other'],
@@ -795,15 +795,15 @@ d3.json('data/points1.json', function(data) {
 
     MG.data_graphic({
         title: "Simple Line of Best Fit",
-        description: "For any scatterplot, set <i>least_squares</i> to true to add.",
+        description: "For any scatterplot, set <i>leastSquares</i> to true to add.",
         data: data,
-        least_squares: true,
+        leastSquares: true,
         chart_type: 'point',
         width: 295,
         height: 225,
         right: 10,
         target: '#scatter-line-best-fit',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y'
     });
 
@@ -816,7 +816,7 @@ d3.json('data/points1.json', function(data) {
         height: 225,
         right: 10,
         target: '#highlight',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         y_rug: true,
         highlight: (d, i) => d.z > 2
@@ -834,9 +834,9 @@ d3.json('data/fake_users1.json', function(data) {
             height: 225,
             left: 60,
             right: 10,
-            least_squares: true,
+            leastSquares: true,
             target: '#sls-time-series',
-            x_accessor: 'date',
+            xAccessor: 'date',
             y_accessor: 'value'
         });
 });
@@ -846,14 +846,14 @@ var color_range = (theme === 'light') ? null : ['white','yellow'];
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Scatterplot with Size and Color",
-        description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        description: "Scatterplots have <i>xAccessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
         data: data,
         chart_type: 'point',
         width: 295,
         height: 225,
         right: 10,
         target: '#scatter-size-and-color',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         color_accessor: 'z',
         color_range: color_range,
@@ -924,7 +924,7 @@ MG.data_graphic({
     height: 180,
     target: '#histogram2',
     y_extended_ticks: true,
-    x_accessor: 'value',
+    xAccessor: 'value',
     y_accessor: 'count',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
@@ -946,7 +946,7 @@ MG.data_graphic({
     target: '#histogram3',
     linked: true,
     y_extended_ticks: true,
-    x_accessor: 'val1',
+    xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram3 svg .mg-active-datapoint')
@@ -967,7 +967,7 @@ MG.data_graphic({
     height: 180,
     target: '#histogram4',
     y_extended_ticks: true,
-    x_accessor: 'val1',
+    xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram4 svg .mg-active-datapoint')
@@ -1054,14 +1054,14 @@ function addScatterplotSizeAndColor(theme) {
     d3.json('data/points1.json', function(data) {
         MG.data_graphic({
             title: "Scatterplot with Size and Color",
-            description: "Scatterplots have <i>x_accessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+            description: "Scatterplots have <i>xAccessor</i>, <i>y_accessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
             data: data,
             chart_type: 'point',
             width: 295,
             height: 225,
             right: 10,
             target: '#scatter-size-and-color',
-            x_accessor: 'x',
+            xAccessor: 'x',
             y_accessor: 'y',
             color_accessor: 'z',
             color_range: color_range,
@@ -1117,7 +1117,7 @@ d3.json('data/fake_users1.json', function(data) {
         height: 200,
         right: 40,
         target: '#tooltip-line-chart',
-        x_accessor: 'date',
+        xAccessor: 'date',
         y_accessor: 'value',
         show_rollover_text: false,
         mouseover: (d, i) => {
@@ -1142,7 +1142,7 @@ d3.json('data/points1.json', function(data) {
         height: 350,
         right: 10,
         target: '#tooltip-point-chart',
-        x_accessor: 'x',
+        xAccessor: 'x',
         y_accessor: 'y',
         show_rollover_text: false,
         mouseover: (d, i) => {

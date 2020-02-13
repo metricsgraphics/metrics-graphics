@@ -35,7 +35,7 @@ const add_event_handler_for_brush = (args, target, axis) => {
   const svg = d3.select(args.target).select('svg');
   const rollover = svg.select('.mg-rollover-rect, .mg-voronoi');
   const container = rollover.node();
-  const targetUid = mg_target_ref(args.target);
+  const targetUid = targetRef(args.target);
   let isDragging = false;
   let mouseDown = false;
   let origin = [];

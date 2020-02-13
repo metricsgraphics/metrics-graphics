@@ -1,5 +1,7 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status][travis-badge]][travis-badge-url] [![CDNJS](https://img.shields.io/cdnjs/v/metrics-graphics.svg)](https://cdnjs.com/libraries/metrics-graphics)
 
+**Note**: As heavy rework is underway, this fork is currently broken. Please come back later.
+
 Changes on this fork:
 * updated all dependencies
 * renovated gulp tasks
@@ -7,6 +9,9 @@ Changes on this fork:
 * removed dist files from git
 * added missing styling
 * updated build tasks to compile Sass files
+* modernized JavaScript
+* removed magic numbers
+* removed obsolete helper functions
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
@@ -22,7 +27,7 @@ MG.data_graphic({
     width: 600,
     height: 250,
     target: '#downloads', // the html element that the graphic is inserted in
-    x_accessor: 'date',  // the key that accesses the x value
+    xAccessor: 'date',  // the key that accesses the x value
     y_accessor: 'value' // the key that accesses the y value
 })
 ```

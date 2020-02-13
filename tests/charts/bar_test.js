@@ -6,7 +6,7 @@ module('bar', {
     defaults = {
         target: target,
         chart_type: 'bar',
-        x_accessor: 'value',
+        xAccessor: 'value',
         y_accessor: 'label',
         transition_on_update: false,
         data: [{
