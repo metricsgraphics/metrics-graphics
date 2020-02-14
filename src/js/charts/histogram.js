@@ -12,7 +12,7 @@
         .numericalDomainFromData()
         .numericalRange('bottom')
 
-      const baselines = (args.baselines || []).map(d => d[args.y_accessor])
+      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
       new MG.scale_factory(args)
         .namespace('y')
@@ -45,7 +45,7 @@
         .data(args.data[0])
         .enter().append('g')
         .attr('class', 'mg-bar')
-        .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor]).toFixed(2)},${args.scales.Y(d[args.y_accessor]).toFixed(2)})`)
+        .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor]).toFixed(2)},${args.scales.Y(d[args.yAccessor]).toFixed(2)})`)
 
       // draw bars
       bar.append('rect')
@@ -60,11 +60,11 @@
           }
         })
         .attr('height', d => {
-          if (d[args.y_accessor] === 0) {
+          if (d[args.yAccessor] === 0) {
             return 0
           }
 
-          return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.y_accessor])).toFixed(2)
+          return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.yAccessor])).toFixed(2)
         })
 
       return this
@@ -214,7 +214,7 @@
     binned: [false, 'boolean'], // determines whether the data is already binned
     bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
     processed_xAccessor: ['x', 'string'],
-    processed_y_accessor: ['y', 'string'],
+    processed_yAccessor: ['y', 'string'],
     processed_dxAccessor: ['dx', 'string']
   }
 

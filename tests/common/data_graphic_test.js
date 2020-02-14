@@ -35,7 +35,7 @@ test('Correctly aliases callbacks when using 1.x-style method names', function()
     params = {
       target: '#qunit-fixture',
       data: [{value: 1, label: 'One'}],
-      chart_type: 'bar',
+      chartType: 'bar',
       rollover_callback: function() {
         mouseoverCalled = true;
       },

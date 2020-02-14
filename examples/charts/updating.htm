@@ -3,11 +3,11 @@
                     <div class='col-lg-12' id='split_by'></div>
                     <div class='btn-group btn-group-sm text-center split-by-controls'>
                         <button type='button' class='btn btn-default active'
-                            data-y_accessor='release'>Release</button>
+                            data-yAccessor='release'>Release</button>
                         <button type='button' class='btn btn-default'
-                            data-y_accessor='beta'>Beta</button>
+                            data-yAccessor='beta'>Beta</button>
                         <button type='button' class='btn btn-default'
-                            data-y_accessor='alpha'>Alpha</button>
+                            data-yAccessor='alpha'>Alpha</button>
                     </div>
                     <div class='col-lg-12' id='modify_time_period'></div>
                     <div class='btn-group btn-group-sm text-center
@@ -34,7 +34,7 @@ var split_by_params = {
     xax_count: 4,
     target: '#split_by',
     xAccessor: 'date',
-    y_accessor: 'release'
+    yAccessor: 'release'
 };
 
 var modify_time_period_params = {
@@ -47,7 +47,7 @@ var modify_time_period_params = {
     xax_count: 4,
     target: '#modify_time_period',
     xAccessor: 'date',
-    y_accessor: 'beta'
+    yAccessor: 'beta'
 }
 
 d3.json('data/split_by.json', function(data) {
@@ -62,8 +62,8 @@ d3.json('data/split_by.json', function(data) {
 });
 
 $('.split-by-controls button').click(function() {
-    var new_y_accessor = $(this).data('y_accessor');
-    split_by_params.y_accessor = new_y_accessor;
+    var new_yAccessor = $(this).data('yAccessor');
+    split_by_params.yAccessor = new_yAccessor;
 
     // change button state
     $(this).addClass('active').siblings().removeClass('active');
@@ -109,7 +109,7 @@ var split_by_params = {
     xax_count: 4,
     target: '#split_by',
     xAccessor: 'date',
-    y_accessor: 'release'
+    yAccessor: 'release'
 };
 
 var modify_time_period_params = {
@@ -123,7 +123,7 @@ var modify_time_period_params = {
     transition_on_update: false,
     target: '#modify_time_period',
     xAccessor: 'date',
-    y_accessor: 'beta'
+    yAccessor: 'beta'
 }
 
 d3.json('data/split_by.json', function(data) {
@@ -138,8 +138,8 @@ d3.json('data/split_by.json', function(data) {
 });
 
 $('.split-by-controls button').click(function() {
-    var new_y_accessor = $(this).data('y_accessor');
-    split_by_params.y_accessor = new_y_accessor;
+    var new_yAccessor = $(this).data('yAccessor');
+    split_by_params.yAccessor = new_yAccessor;
 
     // change button state
     $(this).addClass('active').siblings().removeClass('active');

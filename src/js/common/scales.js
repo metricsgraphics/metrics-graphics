@@ -284,7 +284,7 @@ function mg_categorical_group_color_scale (args) {
     if (args.ygroup_accessor) {
       // add a custom accessor element.
       if (args.color_accessor === null) {
-        args.color_accessor = args.y_accessor
+        args.color_accessor = args.yAccessor
       } else {}
     }
     if (args.color_accessor !== null) {

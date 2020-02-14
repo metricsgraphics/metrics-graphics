@@ -26,7 +26,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
   function mg_filter_out_plot_bounds (data, args) {
     // max_x, min_x, max_y, min_y;
     const x = args.xAccessor
-    const y = args.y_accessor
+    const y = args.yAccessor
     const new_data = data.filter(d => (args.min_x === null || d[x] >= args.min_x) &&
       (args.max_x === null || d[x] <= args.max_x) &&
       (args.min_y === null || d[y] >= args.min_y) &&
@@ -96,7 +96,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
         }
         args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.ygroupf(d)
       } else {
-        const baselines = (args.baselines || []).map(d => d[args.y_accessor])
+        const baselines = (args.baselines || []).map(d => d[args.yAccessor])
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .inflateDomain(true)

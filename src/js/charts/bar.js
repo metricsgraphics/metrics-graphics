@@ -123,9 +123,9 @@
     //   formatted_y = mg_format_y_rollover(args, num, datum);
 
     //   if (args.y_rollover_format !== null) {
-    //     formatted_y = number_rollover_format(args.y_rollover_format, datum, args.y_accessor);
+    //     formatted_y = number_rollover_format(args.y_rollover_format, datum, args.yAccessor);
     //   } else {
-    //     formatted_y = args.yax_units + num(datum[args.y_accessor]);
+    //     formatted_y = args.yax_units + num(datum[args.yAccessor]);
     //   }
 
     //   sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
@@ -212,7 +212,7 @@
         }
         args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.ygroupf(d)
       } else {
-        const baselines = (args.baselines || []).map(d => d[args.y_accessor])
+        const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
         yMaker = MG.scale_factory(args)
           .namespace('y')
@@ -225,7 +225,7 @@
       }
 
       if (args.ygroup_accessor !== null) {
-        args.ycolor_accessor = args.y_accessor
+        args.ycolor_accessor = args.yAccessor
         MG.scale_factory(args)
           .namespace('ycolor')
           .scaleName('color')
@@ -362,7 +362,7 @@
         width_scalefn = width_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
         length_scale = args.scales.Y
         width_scale = args.scales.X
-        length_accessor = args.y_accessor
+        length_accessor = args.yAccessor
         width_accessor = args.xAccessor
 
         length_coord_map = d => {
@@ -393,7 +393,7 @@
         length_scale = args.scales.X
         width_scale = args.scales.Y
         length_accessor = args.xAccessor
-        width_accessor = args.y_accessor
+        width_accessor = args.yAccessor
 
         length_coord_map = d => {
           let l
@@ -492,7 +492,7 @@
       // bars.attr('height', 50);
       // bars.attr('y', function(d){
       //   var y = args.scales.Y(0);
-      //   if (d[args.y_accessor] < 0) {
+      //   if (d[args.yAccessor] < 0) {
       //     y = args.scaleFunctions.yf(d);
       //   }
       //   return y;
@@ -586,7 +586,7 @@
         width_scalefn = width_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
         length_scale = args.scales.Y
         width_scale = args.scales.X
-        length_accessor = args.y_accessor
+        length_accessor = args.yAccessor
         width_accessor = args.xAccessor
 
         length_coord_map = d => getPlotTop(args)
@@ -606,7 +606,7 @@
         length_scale = args.scales.X
         width_scale = args.scales.Y
         length_accessor = args.xAccessor
-        width_accessor = args.y_accessor
+        width_accessor = args.yAccessor
 
         length_coord_map = d => {
           let l
@@ -676,8 +676,8 @@
 
     this.rolloverOn = (args) => {
       const svg = getSvgChildOf(args.target)
-      const label_accessor = this.is_vertical ? args.xAccessor : args.y_accessor
-      const data_accessor = this.is_vertical ? args.y_accessor : args.xAccessor
+      const label_accessor = this.is_vertical ? args.xAccessor : args.yAccessor
+      const data_accessor = this.is_vertical ? args.yAccessor : args.xAccessor
       const label_units = this.is_vertical ? args.yax_units : args.xax_units
 
       return (d, i) => {
@@ -702,7 +702,7 @@
           if (args.ygroup_accessor) row.text(`${d[args.ygroup_accessor]}   `).bold()
 
           row.text(mg_format_x_mouseover(args, d))
-          row.text(`${args.y_accessor}: ${d[args.y_accessor]}`)
+          row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
           if (args.predictor_accessor || args.baseline_accessor) {
             row = mouseover.mouseover_row()
 
@@ -757,7 +757,7 @@
 
   const options = {
     buffer: [16, 'number'],
-    y_accessor: ['factor', 'string'],
+    yAccessor: ['factor', 'string'],
     xAccessor: ['value', 'string'],
     reference_accessor: [null, 'string'],
     comparison_accessor: [null, 'string'],

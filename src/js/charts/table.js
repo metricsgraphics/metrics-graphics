@@ -208,9 +208,9 @@ MG.data_table = function (args) {
           this_title = td.append('div').text(td_text)
           this._format_element(this_title, td_text, this_column)
 
-          if (args.columns[j].hasOwnProperty('secondary_accessor')) {
+          if (args.columns[j].hasOwnProperty('secondaryAccessor')) {
             td.append('div')
-              .text(args.data[i][args.columns[j].secondary_accessor])
+              .text(args.data[i][args.columns[j].secondaryAccessor])
               .classed('secondary-title', true)
           }
         } else {

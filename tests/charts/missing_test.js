@@ -3,7 +3,7 @@ module('missing');
 test('Missing chart\'s text matches specified missing_text', function() {
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         missing_text: 'In an astral plane that was never meant to fly...'
     };
 
@@ -16,7 +16,7 @@ test('Missing chart\'s text matches specified missing_text', function() {
 test('Only one mg-missing-pane on multiple calls to the same target element', function() {
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         missing_text: 'In an astral plane that was never meant to fly...'
     };
 
@@ -29,7 +29,7 @@ test('Only one mg-missing-pane on multiple calls to the same target element', fu
 test('Only one mg-missing-text on multiple calls to the same target element', function() {
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         missing_text: 'In an astral plane that was never meant to fly...'
     };
 
@@ -42,7 +42,7 @@ test('Only one mg-missing-text on multiple calls to the same target element', fu
 test('missing chart obeys full_width: true', function() {
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         full_width: true,
         missing_text: 'In an astral plane that was never meant to fly...'
     };
@@ -56,7 +56,7 @@ test('missing chart obeys full_width: true', function() {
 test('missing chart obeys full_height: true', function() {
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         full_height: true,
         missing_text: 'In an astral plane that was never meant to fly...'
     };
@@ -70,13 +70,13 @@ test('missing chart obeys full_height: true', function() {
 test('Missing chart\'s width is set correctly on subsequent calls to existing chart', function() {
     var params_0 = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         missing_text: 'In an astral plane that was never meant to fly...'
     };
 
     var params = {
         target: '#qunit-fixture',
-        chart_type: 'missing-data',
+        chartType: 'missing-data',
         missing_text: 'In an astral plane that was never meant to fly...',
         width: 200,
         height: 100,

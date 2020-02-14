@@ -110,7 +110,7 @@ d3.json('data/some_percentage.json', function(data) {
         target: '#aggregate',
         y_extended_ticks: true,
         xAccessor: 'date',
-        y_accessor: ['value', 'value2', 'value3'],
+        yAccessor: ['value', 'value2', 'value3'],
         aggregate_rollover: true
     });
 });</code></pre>
@@ -302,7 +302,7 @@ d3.json('data/fake_users2.json', function(data) {
         target: '#aggregate',
         y_extended_ticks: true,
         xAccessor: 'date',
-        y_accessor: ['value', 'value2', 'value3'],
+        yAccessor: ['value', 'value2', 'value3'],
         aggregate_rollover: true
     });
 });

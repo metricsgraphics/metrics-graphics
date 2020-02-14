@@ -5,7 +5,7 @@ function x_rug (args) {
     return
   }
 
-  args.rug_buffer_size = args.chart_type === 'point'
+  args.rug_buffer_size = args.chartType === 'point'
     ? args.buffer / 2
     : args.buffer
 
@@ -43,7 +43,7 @@ function x_axis (args) {
 
   var g = addG(svg, 'mg-x-axis')
 
-  mg_add_x_ticks(g, args)
+  mg_add_xTicks(g, args)
   mg_add_x_tick_labels(g, args)
   if (args.x_label) { mg_add_x_label(g, args) }
   if (args.x_rug) { x_rug(args) }
@@ -56,7 +56,7 @@ MG.x_axis = x_axis
 function x_axis_categorical (args) {
   var svg = getSvgChildOf(args.target)
   var additional_buffer = 0
-  if (args.chart_type === 'bar') {
+  if (args.chartType === 'bar') {
     additional_buffer = args.buffer + 5
   }
 
@@ -297,7 +297,7 @@ function mg_get_time_format (utc, diff) {
 function mg_process_time_format (args) {
   if (args.time_series) {
     const diff = (args.processed.max_x - args.processed.min_x) / 1000
-    const tickDiff = (args.processed.x_ticks[1] - args.processed.x_ticks[0]) / 1000
+    const tickDiff = (args.processed.xTicks[1] - args.processed.xTicks[0]) / 1000
     args.processed.x_time_frame = getTimeFrame(diff)
     args.processed.x_tick_diff_time_frame = getTimeFrame(tickDiff)
     args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff)
@@ -339,7 +339,7 @@ function mg_default_xax_format (args) {
   }
 }
 
-function mg_add_x_ticks (g, args) {
+function mg_add_xTicks (g, args) {
   processScaleTicks(args, 'x')
   mg_add_x_axis_rim(args, g)
   mg_add_x_axis_tick_lines(args, g)
@@ -353,14 +353,14 @@ function mg_add_x_axis_rim (args, g) {
       .attr('x1', function () {
         if (args.xax_count === 0) {
           return getPlotLeft(args)
-        } else if (args.axes_not_compact && args.chart_type !== 'bar') {
+        } else if (args.axes_not_compact && args.chartType !== 'bar') {
           return args.left
         } else {
           return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
         }
       })
       .attr('x2', function () {
-        if (args.xax_count === 0 || (args.axes_not_compact && args.chart_type !== 'bar')) {
+        if (args.xax_count === 0 || (args.axes_not_compact && args.chartType !== 'bar')) {
           return getRight(args)
         } else {
           return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2)
@@ -373,7 +373,7 @@ function mg_add_x_axis_rim (args, g) {
 
 function mg_add_x_axis_tick_lines (args, g) {
   g.selectAll('.mg-xax-ticks')
-    .data(args.processed.x_ticks).enter()
+    .data(args.processed.xTicks).enter()
     .append('line')
     .attr('x1', function (d) {
       return args.scales.X(d).toFixed(2)
@@ -400,7 +400,7 @@ function mg_add_x_tick_labels (g, args) {
 
 function mg_add_primary_x_axis_label (args, g) {
   var labels = g.selectAll('.mg-xax-labels')
-    .data(args.processed.x_ticks).enter()
+    .data(args.processed.xTicks).enter()
     .append('text')
     .attr('x', function (d) {
       return args.scales.X(d).toFixed(2)
@@ -587,7 +587,7 @@ function mg_force_xax_count_to_be_two (args) {
 }
 
 function mg_select_xax_format (args) {
-  var c = args.chart_type
+  var c = args.chartType
   if (!args.processed.xax_format) {
     if (args.xax_format) {
       args.processed.xax_format = args.xax_format

@@ -274,7 +274,7 @@ test('Only one active data point container added on multiple calls to the same t
     equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one mg-active-datapoint-container with lines');
 });
 
-test('When 1 data series is empty (out of 2) and missing_is_zero is true, remaining line is rendered', function() {
+test('When 1 data series is empty (out of 2) and missingIsZero is true, remaining line is rendered', function() {
     var data = [];
     data[0] = [];
     data[1] = [{'date': new Date('2015-03-07'), 'value': 23000},{'date': new Date('2015-03-08'), 'value': 20000}];
@@ -282,7 +282,7 @@ test('When 1 data series is empty (out of 2) and missing_is_zero is true, remain
     MG.data_graphic({
         target: '#qunit-fixture',
         data: data,
-        missing_is_zero: true
+        missingIsZero: true
     });
 
     equal(document.querySelectorAll('.mg-main-line').length, 1, 'Line for non-empty data series is still rendered');

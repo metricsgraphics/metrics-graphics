@@ -28,7 +28,7 @@ MG.data_graphic({
     height: 250,
     target: '#downloads', // the html element that the graphic is inserted in
     xAccessor: 'date',  // the key that accesses the x value
-    y_accessor: 'value' // the key that accesses the y value
+    yAccessor: 'value' // the key that accesses the y value
 })
 ```
 

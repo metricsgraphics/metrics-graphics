@@ -23,7 +23,7 @@
           if (d[l] != undefined) {
             return args.scales.Y(d[l])
           } else {
-            return args.scales.Y(d[args.y_accessor])
+            return args.scales.Y(d[args.yAccessor])
           }
         })
         .y1(d => {
@@ -31,7 +31,7 @@
           if (d[u] != undefined) {
             return args.scales.Y(d[u])
           } else {
-            return args.scales.Y(d[args.y_accessor])
+            return args.scales.Y(d[args.yAccessor])
           }
         })
         .curve(args.interpolate)
@@ -51,27 +51,27 @@
       .curve(interpolate)
   }
 
-  function mg_add_flat_line_generator ({ y_accessor, scaleFunctions, scales, interpolate }, plot) {
+  function mg_add_flat_line_generator ({ yAccessor, scaleFunctions, scales, interpolate }, plot) {
     plot.flat_line = d3.line()
-      .defined(d => (d._missing === undefined || d._missing !== true) && d[y_accessor] !== null)
+      .defined(d => (d._missing === undefined || d._missing !== true) && d[yAccessor] !== null)
       .x(scaleFunctions.xf)
       .y(() => scales.Y(plot.data_median))
       .curve(interpolate)
   }
 
-  function mg_add_line_generator ({ scaleFunctions, interpolate, missing_is_zero, y_accessor }, plot) {
+  function mg_add_line_generator ({ scaleFunctions, interpolate, missingIsZero, yAccessor }, plot) {
     plot.line = d3.line()
       .x(scaleFunctions.xf)
       .y(scaleFunctions.yf)
       .curve(interpolate)
 
-    // if missing_is_zero is not set, then hide data points that fall in missing
+    // if missingIsZero is not set, then hide data points that fall in missing
     // data ranges or that have been explicitly identified as missing in the
     // data source.
-    if (!missing_is_zero) {
+    if (!missingIsZero) {
       // a line is defined if the _missing attrib is not set to true
       // and the y-accessor is not null
-      plot.line = plot.line.defined(d => (d._missing === undefined || d._missing !== true) && d[y_accessor] !== null)
+      plot.line = plot.line.defined(d => (d._missing === undefined || d._missing !== true) && d[yAccessor] !== null)
     }
   }
 
@@ -152,9 +152,9 @@
     }
   }
 
-  function mg_add_line_element ({ animate_on_load, data, y_accessor, target }, plot, this_path, which_line) {
+  function mg_add_line_element ({ animate_on_load, data, yAccessor, target }, plot, this_path, which_line) {
     if (animate_on_load) {
-      plot.data_median = d3.median(data[which_line], d => d[y_accessor])
+      plot.data_median = d3.median(data[which_line], d => d[yAccessor])
       this_path.attr('d', plot.flat_line(data[which_line]))
         .transition()
         .duration(1000)
@@ -173,7 +173,7 @@
       const lineTransition = existing_line.transition()
         .duration(plot.update_transition_duration)
 
-      if (!plot.display_area && args.transition_on_update && !args.missing_is_hidden) {
+      if (!plot.display_area && args.transition_on_update && !args.missingIsHidden) {
         lineTransition.attrTween('d', pathTween(plot.line(args.data[which_line]), 4))
       } else {
         lineTransition.attr('d', plot.line(args.data[which_line]))
@@ -327,7 +327,7 @@
   function mg_add_voronoi_rollover (args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     const voronoi = d3.voronoi()
       .x(d => args.scales.X(d[args.xAccessor]).toFixed(2))
-      .y(d => args.scales.Y(d[args.y_accessor]).toFixed(2))
+      .y(d => args.scales.Y(d[args.yAccessor]).toFixed(2))
       .extent([
         [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
         [args.width - args.buffer, args.height - args.buffer]
@@ -350,7 +350,7 @@
     mg_configure_voronoi_rollover(args, svg)
   }
 
-  function nest_data_for_aggregate_rollover ({ xAccessor, data, x_sort }) {
+  function nest_data_for_aggregate_rollover ({ xAccessor, data, xSort }) {
     const data_nested = d3.nest()
       .key(d => d[xAccessor])
       .entries(d3.merge(data))
@@ -359,7 +359,7 @@
       entry.key = datum[xAccessor]
     })
 
-    if (x_sort) {
+    if (xSort) {
       return data_nested.sort((a, b) => new Date(a.key) - new Date(b.key))
     } else {
       return data_nested
@@ -644,13 +644,13 @@
         .style('opacity', 0)
 
       d.values.forEach((datum, index, list) => {
-        if (args.missing_is_hidden && list[index]._missing) {
+        if (args.missingIsHidden && list[index]._missing) {
           return
         }
 
         if (dataInPlotBounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum)
       })
-    } else if ((args.missing_is_hidden && d._missing) || d[args.y_accessor] === null) {
+    } else if ((args.missingIsHidden && d._missing) || d[args.yAccessor] === null) {
       // disable rollovers for hidden parts of the line
       // recall that hidden parts are missing data ranges and possibly also
       // data points that have been explicitly identified as missing
@@ -663,19 +663,19 @@
     }
   }
 
-  function mg_update_aggregate_rollover_circle ({ scales, xAccessor, y_accessor, point_size }, svg, datum) {
+  function mg_update_aggregate_rollover_circle ({ scales, xAccessor, yAccessor, point_size }, svg, datum) {
     svg.select(`circle.mg-line-rollover-circle.mg-line${datum.__line_id__}`)
       .attr('cx', scales.X(datum[xAccessor]).toFixed(2))
-      .attr('cy', scales.Y(datum[y_accessor]).toFixed(2))
+      .attr('cy', scales.Y(datum[yAccessor]).toFixed(2))
       .attr('r', point_size)
       .style('opacity', 1)
   }
 
-  function mg_update_generic_rollover_circle ({ scales, xAccessor, y_accessor, point_size }, svg, d) {
+  function mg_update_generic_rollover_circle ({ scales, xAccessor, yAccessor, point_size }, svg, d) {
     svg.selectAll(`circle.mg-line-rollover-circle.mg-line${d.__line_id__}`)
       .classed('mg-line-rollover-circle', true)
       .attr('cx', () => scales.X(d[xAccessor]).toFixed(2))
-      .attr('cy', () => scales.Y(d[y_accessor]).toFixed(2))
+      .attr('cy', () => scales.Y(d[yAccessor]).toFixed(2))
       .attr('r', point_size)
       .style('opacity', 1)
   }
@@ -683,7 +683,7 @@
   function mg_trigger_linked_mouseovers (args, d, i) {
     if (args.linked && !MG.globals.link) {
       MG.globals.link = true
-      if (!args.aggregate_rollover || d[args.y_accessor] !== undefined || (d.values && d.values.length > 0)) {
+      if (!args.aggregate_rollover || d[args.yAccessor] !== undefined || (d.values && d.values.length > 0)) {
         const datum = d.values ? d.values[0] : d
         const id = mg_rollover_format_id(datum, args)
         // trigger mouseover on matching line in .linked charts
@@ -768,7 +768,7 @@
         .numericalDomainFromData()
         .numericalRange('bottom')
 
-      const baselines = (args.baselines || []).map(d => d[args.y_accessor])
+      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
       new MG.scale_factory(args)
         .namespace('y')
@@ -843,7 +843,7 @@
 
         // update rollover text except for missing data points
         if (args.show_rollover_text &&
-            !((args.missing_is_hidden && d._missing) || d[args.y_accessor] === null)
+            !((args.missingIsHidden && d._missing) || d[args.yAccessor] === null)
         ) {
           const mouseover = mg_mouseover_text(args, { svg })
           let row = mouseover.mouseover_row()

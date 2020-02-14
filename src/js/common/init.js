@@ -48,11 +48,11 @@ function mg_init_compute_height (args) {
   args.height = svg_height
 }
 
-function mg_remove_svg_if_chart_type_has_changed (svg, args) {
-  if ((!svg.selectAll('.mg-main-line').empty() && args.chart_type !== 'line') ||
-    (!svg.selectAll('.mg-points').empty() && args.chart_type !== 'point') ||
-    (!svg.selectAll('.mg-histogram').empty() && args.chart_type !== 'histogram') ||
-    (!svg.selectAll('.mg-barplot').empty() && args.chart_type !== 'bar')
+function mg_remove_svg_if_chartType_has_changed (svg, args) {
+  if ((!svg.selectAll('.mg-main-line').empty() && args.chartType !== 'line') ||
+    (!svg.selectAll('.mg-points').empty() && args.chartType !== 'point') ||
+    (!svg.selectAll('.mg-histogram').empty() && args.chartType !== 'histogram') ||
+    (!svg.selectAll('.mg-barplot').empty() && args.chartType !== 'bar')
   ) {
     svg.remove()
   }
@@ -162,7 +162,7 @@ function categoricalInitialization (args, ns) {
 }
 
 function selectXaxFormat (args) {
-  var c = args.chart_type
+  var c = args.chartType
   if (!args.processed.xax_format) {
     if (args.xax_format) {
       args.processed.xax_format = args.xax_format
@@ -260,7 +260,7 @@ function init (args) {
   mg_init_compute_width(args)
   mg_init_compute_height(args)
 
-  mg_remove_svg_if_chart_type_has_changed(svg, args)
+  mg_remove_svg_if_chartType_has_changed(svg, args)
   svg = mg_add_svg_if_it_doesnt_exist(svg, args)
 
   mg_add_clip_path_for_plot_area(svg, args)

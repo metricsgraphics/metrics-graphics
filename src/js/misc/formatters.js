@@ -57,19 +57,19 @@ function mg_format_y_rollover (args, num, d) {
   var formatted_y
   if (args.y_mouseover !== null) {
     if (args.aggregate_rollover) {
-      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor)
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.yAccessor)
     } else {
-      formatted_y = number_rollover_format(args.y_mouseover, d, args.y_accessor)
+      formatted_y = number_rollover_format(args.y_mouseover, d, args.yAccessor)
     }
   } else {
     if (args.time_series) {
       if (args.aggregate_rollover) {
-        formatted_y = num(d[args.y_accessor])
+        formatted_y = num(d[args.yAccessor])
       } else {
-        formatted_y = args.yax_units + num(d[args.y_accessor])
+        formatted_y = args.yax_units + num(d[args.yAccessor])
       }
     } else {
-      formatted_y = args.y_accessor + ': ' + args.yax_units + num(d[args.y_accessor])
+      formatted_y = args.yAccessor + ': ' + args.yax_units + num(d[args.yAccessor])
     }
   }
   return formatted_y
@@ -136,7 +136,7 @@ function mg_format_x_mouseover (args, d) {
 }
 
 function mg_format_y_mouseover (args, d) {
-  return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.y_accessor, false)
+  return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.yAccessor, false)
 }
 
 function mg_format_x_aggregate_mouseover (args, d) {

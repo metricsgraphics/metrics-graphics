@@ -34,13 +34,13 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   scaleFunctions: [{}],
   // Data
   data: [[], ['object[]', 'number[]']], // the data object
-  missing_is_zero: [false, 'boolean'], // assume missing observations are zero
-  missing_is_hidden: [false, 'boolean'], // show missing observations as missing line segments
-  missing_is_hidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
+  missingIsZero: [false, 'boolean'], // assume missing observations are zero
+  missingIsHidden: [false, 'boolean'], // show missing observations as missing line segments
+  missingIsHidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
   utc_time: [false, 'boolean'], // determines whether to use a UTC or local time scale
   xAccessor: ['date', 'string'], // the data element that's the x-accessor
-  x_sort: [true, 'boolean'], // determines whether to sort the x-axis' values
-  y_accessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
+  xSort: [true, 'boolean'], // determines whether to sort the x-axis' values
+  yAccessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
   // Axes
   axes_not_compact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
   european_clock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
@@ -78,7 +78,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   area: [true, ['boolean', 'array']], // determines whether to fill the area below the line
   flip_area_under_y_value: [null, 'number'], // Specify a Y baseline number value to flip area under it
   baselines: [null, 'object[]'], // horizontal lines that indicate, say, goals.
-  chart_type: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
+  chartType: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
   color: [null, ['string', 'string[]']],
   colors: [null, ['string', 'string[]']],
   custom_line_color_map: [[], 'number[]'], // maps an arbitrary set of lines to colors
@@ -150,12 +150,12 @@ MG.data_graphic = function (args) {
 
   if (!args) { args = {} }
 
-  var selected_chart = MG.charts[args.chart_type || MG.defaults.chart_type]
+  var selected_chart = MG.charts[args.chartType || MG.defaults.chartType]
   deepmerge(args, selected_chart.defaults, MG.defaults)
 
   if (args.list) {
     args.xAccessor = 0
-    args.y_accessor = 1
+    args.yAccessor = 1
   }
 
   // check for deprecated parameters

@@ -398,7 +398,7 @@ function initializeRug (args, rug_class) {
 
 function rug (args, axisArgs) {
   'use strict'
-  args.rug_buffer_size = args.chart_type === 'point' ? args.buffer / 2 : args.buffer * 2 / 3
+  args.rug_buffer_size = args.chartType === 'point' ? args.buffer / 2 : args.buffer * 2 / 3
 
   var rug = initializeRug(args, 'mg-' + axisArgs.namespace + '-rug')
   var rug_positions = rugPlacement(args, axisArgs)
@@ -746,7 +746,7 @@ function y_rug (args) {
     return
   }
 
-  args.rug_buffer_size = args.chart_type === 'point'
+  args.rug_buffer_size = args.chartType === 'point'
     ? args.buffer / 2
     : args.buffer * 2 / 3
 
@@ -763,11 +763,11 @@ function y_rug (args) {
 MG.y_rug = y_rug
 
 function mg_change_y_extents_for_bars (args, my) {
-  if (args.chart_type === 'bar') {
+  if (args.chartType === 'bar') {
     my.min = 0
     my.max = d3.max(args.data[0], function (d) {
       var trio = []
-      trio.push(d[args.y_accessor])
+      trio.push(d[args.yAccessor])
 
       if (args.baseline_accessor !== null) {
         trio.push(d[args.baseline_accessor])
@@ -789,11 +789,11 @@ function mg_compute_yax_format (args) {
     let decimals = args.decimals
     if (args.format === 'count') {
       // increase decimals if we have small values, useful for realtime data
-      if (args.processed.y_ticks.length > 1) {
+      if (args.processed.yTicks.length > 1) {
         // calculate the number of decimals between the difference of ticks
         // based on approach in flot: https://github.com/flot/flot/blob/958e5fd43c6dff4bab3e1fd5cb6109df5c1e8003/jquery.flot.js#L1810
         decimals = Math.max(0, -Math.floor(
-          Math.log(Math.abs(args.processed.y_ticks[1] - args.processed.y_ticks[0])) / Math.LN10
+          Math.log(Math.abs(args.processed.yTicks[1] - args.processed.yTicks[0])) / Math.LN10
         ))
       }
 
@@ -859,7 +859,7 @@ function mg_define_y_scales (args) {
       : d3.scaleLinear()
 
   if (args.y_scale_type === 'log') {
-    if (args.chart_type === 'histogram') {
+    if (args.chartType === 'histogram') {
       // log histogram plots should start just below 1
       // so that bins with single counts are visible
       args.processed.min_y = 0.2
@@ -899,16 +899,16 @@ function mg_add_y_label (g, args) {
 }
 
 function mg_add_y_axis_rim (g, args) {
-  var tick_length = args.processed.y_ticks.length
+  var tick_length = args.processed.yTicks.length
   if (!args.x_extended_ticks && !args.y_extended_ticks && tick_length) {
     var y1scale, y2scale
 
-    if (args.axes_not_compact && args.chart_type !== 'bar') {
+    if (args.axes_not_compact && args.chartType !== 'bar') {
       y1scale = args.height - args.bottom
       y2scale = args.top
     } else if (tick_length) {
-      y1scale = args.scales.Y(args.processed.y_ticks[0]).toFixed(2)
-      y2scale = args.scales.Y(args.processed.y_ticks[tick_length - 1]).toFixed(2)
+      y1scale = args.scales.Y(args.processed.yTicks[0]).toFixed(2)
+      y2scale = args.scales.Y(args.processed.yTicks[tick_length - 1]).toFixed(2)
     } else {
       y1scale = 0
       y2scale = 0
@@ -924,7 +924,7 @@ function mg_add_y_axis_rim (g, args) {
 
 function mg_add_y_axis_tick_lines (g, args) {
   g.selectAll('.mg-yax-ticks')
-    .data(args.processed.y_ticks).enter()
+    .data(args.processed.yTicks).enter()
     .append('line')
     .classed('mg-extended-yax-ticks', args.y_extended_ticks)
     .attr('x1', args.left)
@@ -942,7 +942,7 @@ function mg_add_y_axis_tick_lines (g, args) {
 function mg_add_y_axis_tick_labels (g, args) {
   var yax_format = mg_compute_yax_format(args)
   g.selectAll('.mg-yax-labels')
-    .data(args.processed.y_ticks).enter()
+    .data(args.processed.yTicks).enter()
     .append('text')
     .attr('x', args.left - args.yax_tick_length * 3 / 2)
     .attr('dx', -3)
@@ -1050,7 +1050,7 @@ function mg_y_categorical_show_guides (args) {
   var svg = getSvgChildOf(args.target)
   var alreadyPlotted = []
   args.data[0].forEach(function (d) {
-    if (alreadyPlotted.indexOf(d[args.y_accessor]) === -1) {
+    if (alreadyPlotted.indexOf(d[args.yAccessor]) === -1) {
       svg.select('.mg-category-guides').append('line')
         .attr('x1', getPlotLeft(args))
         .attr('x2', getPlotRight(args))

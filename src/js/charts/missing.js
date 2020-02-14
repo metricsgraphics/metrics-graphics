@@ -88,7 +88,7 @@
       const container = d3.select(args.target)
       mg_raise_container_error(container, args)
       let svg = container.selectAll('svg')
-      mg_remove_svg_if_chart_type_has_changed(svg, args)
+      mg_remove_svg_if_chartType_has_changed(svg, args)
       svg = mg_add_svg_if_it_doesnt_exist(svg, args)
       mg_adjust_width_and_height_if_changed(svg, args)
       mg_set_viewbox_for_scaling(svg, args)

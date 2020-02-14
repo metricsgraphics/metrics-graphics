@@ -85,7 +85,7 @@
             download it. Try doubling the number of sightings in, say, 1995 and see
             how that affects the graphic. Or how about changing any of the options in
             <i>MG.data_graphic</i>? Or perhaps change the chart type to a scatterplot by
-            setting <code>chart_type:'point'</code>, switching the <i>x</i> and <i>y</i>
+            setting <code>chartType:'point'</code>, switching the <i>x</i> and <i>y</i>
             accessors and increasing the <i>height</i>? The data object is set to the
             contents of the <i>Data</i> text area. Errors are logged to the console.</p>
         </div>
@@ -214,7 +214,7 @@
             + '  height: 250,\n'
             + '  target: ".result",\n'
             + '  xAccessor: "year",\n'
-            + '  y_accessor: "sightings",\n'
+            + '  yAccessor: "sightings",\n'
             + '});';
 
         var editor = ace.edit("editor");
