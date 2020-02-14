@@ -748,11 +748,11 @@
       this.args = args
 
       if (!args.data || args.data.length === 0) {
-        args.internal_error = 'No data was supplied'
-        internal_error(args)
+        args.internalError = 'No data was supplied'
+        internalError(args)
         return this
       } else {
-        args.internal_error = undefined
+        args.internalError = undefined
       }
 
       rawDataTransformation(args)
