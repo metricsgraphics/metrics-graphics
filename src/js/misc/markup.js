@@ -1,66 +1,62 @@
 // influenced by https://bl.ocks.org/tomgp/c99a699587b5c5465228
 
-function render_markup_for_server(callback) {
-  var virtual_window = MG.virtual_window;
-  var virtual_d3 = d3.select(virtual_window.document);
-  var target = virtual_window.document.createElement('div');
+import { select } from 'd3-selection'
 
-  var original_d3 = global.d3;
-  var original_window = global.window;
-  var original_document = global.document;
-  global.d3 = virtual_d3;
-  global.window = virtual_window;
-  global.document = virtual_window.document;
+let virtualWindow
 
-  var error;
+export function renderMarkupForServer (callback) {
+  const virtualD3 = select(virtualWindow.document)
+  const target = virtualWindow.document.createElement('div')
+
+  const originalD3 = global.d3
+  const originalWindow = global.window
+  const originalDocument = global.document
+  global.d3 = virtualD3
+  global.window = virtualWindow
+  global.document = virtualWindow.document
+
+  let error
   try {
-    callback(target);
-  } catch(e) {
-    error = e;
+    callback(target)
+  } catch (e) {
+    error = e
   }
 
-  global.d3 = original_d3;
-  global.window = original_window;
-  global.document = original_document;
+  global.d3 = originalD3
+  global.window = originalWindow
+  global.document = originalDocument
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error
 
   /* for some reason d3.select parses jsdom elements incorrectly
    * but it works if we wrap the element in a function.
    */
-  return virtual_d3.select(function targetFn() {
-    return target;
-  }).html();
+  return virtualD3.select(function targetFn () {
+    return target
+  }).html()
 }
 
-function render_markup_for_client(callback) {
-  var target = document.createElement('div');
-  callback(target);
-  return d3.select(target).html();
+export function renderMarkupForClient (callback) {
+  const target = document.createElement('div')
+  callback(target)
+  return select(target).html()
 }
 
-function render_markup(callback) {
-  switch(typeof window) {
+export function renderMarkup (callback) {
+  switch (typeof window) {
     case 'undefined':
-      return render_markup_for_server(callback);
+      return renderMarkupForServer(callback)
     default:
-      return render_markup_for_client(callback);
+      return renderMarkupForClient(callback)
   }
 }
 
-function init_virtual_window(jsdom, force) {
-  if (MG.virtual_window && !force) {
-    return;
-  }
+export function initVirtualWindow (jsdom, force) {
+  if (virtualWindow && !force) return
 
-  var doc = jsdom.jsdom({
+  const doc = jsdom.jsdom({
     html: '',
     features: { QuerySelector: true }
-  });
-  MG.virtual_window = doc.defaultView;
+  })
+  virtualWindow = doc.defaultView
 }
-
-MG.render_markup = render_markup;
-MG.init_virtual_window = init_virtual_window;
