@@ -295,7 +295,7 @@ function mg_get_time_format (utc, diff) {
 }
 
 function mg_process_time_format (args) {
-  if (args.time_series) {
+  if (args.timeSeries) {
     const diff = (args.processed.max_x - args.processed.min_x) / 1000
     const tickDiff = (args.processed.xTicks[1] - args.processed.xTicks[0]) / 1000
     args.processed.x_time_frame = getTimeFrame(diff)
@@ -409,7 +409,7 @@ function mg_add_primary_x_axis_label (args, g) {
     .attr('dy', '.50em')
     .attr('text-anchor', 'middle')
 
-  if (args.time_series && args.european_clock) {
+  if (args.timeSeries && args.european_clock) {
     labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
       var d = new Date(_d)
       if (i === 0) return d3.timeFormat('%H')(d)
@@ -443,7 +443,7 @@ function mg_add_primary_x_axis_label (args, g) {
 }
 
 function mg_add_secondary_x_axis_label (args, g) {
-  if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
+  if (args.timeSeries && (args.show_years || args.show_secondary_x_label)) {
     mg_add_secondary_x_axis_elements(args, g)
   }
 }

@@ -266,7 +266,7 @@ function addNumericalLabels (g, args, axisArgs) {
     .text(coords.text)
   // move the labels if they overlap
   if (ns == 'x') {
-    if (args.time_series && args.european_clock) {
+    if (args.timeSeries && args.european_clock) {
       labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
         var d = new Date(_d)
         if (i === 0) return d3.timeFormat('%H')(d)
@@ -282,7 +282,7 @@ function addNumericalLabels (g, args, axisArgs) {
       })
     }
 
-    if (args.time_series && (args.show_years || args.show_secondary_x_label)) {
+    if (args.timeSeries && (args.show_years || args.show_secondary_x_label)) {
       addSecondaryLabelElements(args, axisArgs, g)
     }
   }
@@ -810,10 +810,10 @@ function mg_compute_yax_format (args) {
         }
 
         // are we adding units after the value or before?
-        if (args.yax_units_append) {
-          return pf(d) + args.yax_units
+        if (args.yaxUnitsAppend) {
+          return pf(d) + args.yaxUnits
         } else {
-          return args.yax_units + pf(d)
+          return args.yaxUnits + pf(d)
         }
       }
     } else { // percentage

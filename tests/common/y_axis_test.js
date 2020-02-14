@@ -182,12 +182,12 @@ test('percentage args.format is correct', function () {
   equal(document.querySelectorAll('.mg-y-axis text')[2].textContent, '120%', 'Y-axis label formats correctly')
 })
 
-test('args.yax_units', function () {
+test('args.yaxUnits', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 2.12 },
       { date: new Date('2014-03-01'), value: 4.18 }],
-    yax_units: '$'
+    yaxUnits: '$'
   }
 
   MG.data_graphic(params)

@@ -26,13 +26,13 @@ test('MG properly detects time series vs. not.', function () {
   mg_merge_args_with_defaults(params1)
   mg_merge_args_with_defaults(params2)
   mg_merge_args_with_defaults(params3)
-  mg_is_time_series(params1)
-  mg_is_time_series(params2)
-  mg_is_time_series(params3)
+  mg_is_timeSeries(params1)
+  mg_is_timeSeries(params2)
+  mg_is_timeSeries(params3)
 
-  ok(params1.time_series === true, 'Date-accessed data set is a time series.')
-  ok(params2.time_series === false, 'Number-accessed data set is not a time series.')
-  ok(params3.time_series === true, 'Nested data set w/ dates detected as time series.')
+  ok(params1.timeSeries === true, 'Date-accessed data set is a time series.')
+  ok(params2.timeSeries === false, 'Number-accessed data set is not a time series.')
+  ok(params3.timeSeries === true, 'Nested data set w/ dates detected as time series.')
 })
 
 test("Chart's width is set correctly on subsequent calls to existing chart", function () {
@@ -208,7 +208,7 @@ test('Linked chart has the required class set', function () {
   ok(matches, 'Linked chart has class `linked` set')
 })
 
-test('args.time_series is set to true when data is time-series', function () {
+test('args.timeSeries is set to true when data is time-series', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ foo: new Date('2014-11-01'), value: 12 },
@@ -217,10 +217,10 @@ test('args.time_series is set to true when data is time-series', function () {
   }
 
   MG.data_graphic(params)
-  ok(params.time_series, 'args.time_series is set to true when data is time-series')
+  ok(params.timeSeries, 'args.timeSeries is set to true when data is time-series')
 })
 
-test('args.time_series is set to false when data is not time-series', function () {
+test('args.timeSeries is set to false when data is not time-series', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ foo: 100, value: 12 },
@@ -229,7 +229,7 @@ test('args.time_series is set to false when data is not time-series', function (
   }
 
   MG.data_graphic(params)
-  equal(params.time_series, false, 'args.time_series is set to false when data is not time-series')
+  equal(params.timeSeries, false, 'args.timeSeries is set to false when data is not time-series')
 })
 
 test('Only one clip path is added on multiple calls to the same target element', function () {

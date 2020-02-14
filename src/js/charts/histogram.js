@@ -133,7 +133,7 @@
           .attr('opacity', 0.3)
 
         const fmt = args.processed.xax_format || MG.time_format(args.utc_time, '%b %e, %Y')
-        const num = format_rollover_number(args)
+        const num = formatRolloverNumber(args)
 
         svg.selectAll('.mg-bar rect')
           .filter((d, j) => j === i)
@@ -157,8 +157,8 @@
           row.text('\u259F  ').elem
             .classed('hist-symbol', true)
 
-          row.text(mg_format_x_mouseover(args, d)) // x
-          row.text(mg_format_y_mouseover(args, d, args.time_series === false))
+          row.text(formatXMouseover(args, d)) // x
+          row.text(formatYMouseover(args, d, args.timeSeries === false))
         }
 
         if (args.mouseover) {

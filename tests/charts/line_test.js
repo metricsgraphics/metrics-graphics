@@ -120,14 +120,14 @@ test('We have only one set of rollovers for multiple lines', function() {
     equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists');
 });
 
-test('We use the rect-style rollovers when `aggregate_rolloveres == true`', function() {
+test('We use the rect-style rollovers when `aggregateRolloveres == true`', function() {
     var params = {
         target: '#qunit-fixture',
         data: [[{'date': new Date('2014-01-01'), 'value': 12},
                {'date': new Date('2014-03-01'), 'value': 18}],
                [{'date': new Date('2014-01-01'), 'value': 120},
                {'date': new Date('2014-03-01'), 'value': 180}]],
-        aggregate_rollover: true
+        aggregateRollover: true
     };
 
     MG.data_graphic(params);

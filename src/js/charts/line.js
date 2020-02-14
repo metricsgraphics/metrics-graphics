@@ -350,7 +350,7 @@
     mg_configure_voronoi_rollover(args, svg)
   }
 
-  function nest_data_for_aggregate_rollover ({ xAccessor, data, xSort }) {
+  function nest_data_for_aggregateRollover ({ xAccessor, data, xSort }) {
     const data_nested = d3.nest()
       .key(d => d[xAccessor])
       .entries(d3.merge(data))
@@ -366,10 +366,10 @@
     }
   }
 
-  function mg_add_aggregate_rollover (args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
+  function mg_add_aggregateRollover (args, svg, rollover_on, rollover_off, rollover_move, rollover_click) {
     // Undo the keys getting coerced to strings, by setting the keys from the values
     // This is necessary for when we have X axis keys that are things like
-    const data_nested = nest_data_for_aggregate_rollover(args)
+    const data_nested = nest_data_for_aggregateRollover(args)
 
     const xf = data_nested.map(({ key }) => args.scales.X(key))
 
@@ -410,7 +410,7 @@
       .on('mouseout', rollover_off)
       .on('mousemove', rollover_move)
 
-    mg_configure_aggregate_rollover(args, svg)
+    mg_configure_aggregateRollover(args, svg)
   }
 
   function mg_configure_singleton_rollover ({ data }, svg) {
@@ -504,7 +504,7 @@
     }
   }
 
-  function mg_configure_aggregate_rollover ({ data }, svg) {
+  function mg_configure_aggregateRollover ({ data }, svg) {
     const rect = svg.selectAll('.mg-rollover-rect rect')
     const rect_first = rect.nodes()[0][0] || rect.nodes()[0]
     if (data.filter(({ length }) => length === 1).length > 0) {
@@ -512,12 +512,12 @@
     }
   }
 
-  function mg_is_standard_multiline ({ data, aggregate_rollover }) {
-    return data.length > 1 && !aggregate_rollover
+  function mg_is_standard_multiline ({ data, aggregateRollover }) {
+    return data.length > 1 && !aggregateRollover
   }
 
-  function mg_is_aggregated_rollover ({ data, aggregate_rollover }) {
-    return data.length > 1 && aggregate_rollover
+  function mg_is_aggregated_rollover ({ data, aggregateRollover }) {
+    return data.length > 1 && aggregateRollover
   }
 
   function mg_is_singleton ({ data }) {
@@ -603,7 +603,7 @@
 
     plot.data_median = 0
     plot.update_transition_duration = (args.transition_on_update) ? 1000 : 0
-    plot.display_area = (args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregate_rollover === false) || (Array.isArray(args.area) && args.area.length > 0)
+    plot.display_area = (args.area && !args.use_data_y_min && args.data.length <= 1 && args.aggregateRollover === false) || (Array.isArray(args.area) && args.area.length > 0)
     plot.legend_text = ''
     mg_line_graph_generators(args, plot, svg)
     plot.existing_band = svg.selectAll('.mg-confidence-band').nodes()
@@ -631,14 +631,14 @@
     if (mg_is_standard_multiline(args)) {
       mg_add_voronoi_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args))
     } else if (mg_is_aggregated_rollover(args)) {
-      mg_add_aggregate_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args))
+      mg_add_aggregateRollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args))
     } else {
       mg_add_single_line_rollover(args, svg, graph.rolloverOn(args), graph.rolloverOff(args), graph.rolloverMove(args), graph.rolloverClick(args))
     }
   }
 
   function mg_update_rollover_circle (args, svg, d) {
-    if (args.aggregate_rollover && args.data.length > 1) {
+    if (args.aggregateRollover && args.data.length > 1) {
       // hide the circles in case a non-contiguous series is present
       svg.selectAll('circle.mg-line-rollover-circle')
         .style('opacity', 0)
@@ -648,7 +648,7 @@
           return
         }
 
-        if (dataInPlotBounds(datum, args)) mg_update_aggregate_rollover_circle(args, svg, datum)
+        if (dataInPlotBounds(datum, args)) mg_update_aggregateRollover_circle(args, svg, datum)
       })
     } else if ((args.missingIsHidden && d._missing) || d[args.yAccessor] === null) {
       // disable rollovers for hidden parts of the line
@@ -663,7 +663,7 @@
     }
   }
 
-  function mg_update_aggregate_rollover_circle ({ scales, xAccessor, yAccessor, point_size }, svg, datum) {
+  function mg_update_aggregateRollover_circle ({ scales, xAccessor, yAccessor, point_size }, svg, datum) {
     svg.select(`circle.mg-line-rollover-circle.mg-line${datum.__line_id__}`)
       .attr('cx', scales.X(datum[xAccessor]).toFixed(2))
       .attr('cy', scales.Y(datum[yAccessor]).toFixed(2))
@@ -683,7 +683,7 @@
   function mg_trigger_linked_mouseovers (args, d, i) {
     if (args.linked && !MG.globals.link) {
       MG.globals.link = true
-      if (!args.aggregate_rollover || d[args.yAccessor] !== undefined || (d.values && d.values.length > 0)) {
+      if (!args.aggregateRollover || d[args.yAccessor] !== undefined || (d.values && d.values.length > 0)) {
         const datum = d.values ? d.values[0] : d
         const id = mg_rollover_format_id(datum, args)
         // trigger mouseover on matching line in .linked charts
@@ -716,7 +716,7 @@
     }
   }
 
-  function mg_remove_active_data_points_for_aggregate_rollover (args, svg) {
+  function mg_remove_active_data_points_for_aggregateRollover (args, svg) {
     svg.selectAll('circle.mg-line-rollover-circle').filter(({ length }) => length > 1)
       .style('opacity', 0)
   }
@@ -847,18 +847,18 @@
         ) {
           const mouseover = mg_mouseover_text(args, { svg })
           let row = mouseover.mouseover_row()
-          if (args.aggregate_rollover) {
-            row.text((args.aggregate_rollover && args.data.length > 1
-              ? mg_format_x_aggregate_mouseover
-              : mg_format_x_mouseover)(args, d))
+          if (args.aggregateRollover) {
+            row.text((args.aggregateRollover && args.data.length > 1
+              ? formatXAggregateMouseover
+              : formatXMouseover)(args, d))
           }
 
-          const pts = args.aggregate_rollover && args.data.length > 1
+          const pts = args.aggregateRollover && args.data.length > 1
             ? d.values
             : [d]
 
           pts.forEach(di => {
-            if (args.aggregate_rollover) {
+            if (args.aggregateRollover) {
               row = mouseover.mouseover_row()
             }
 
@@ -867,11 +867,11 @@
             }
 
             mg_line_color_text(row.text('\u2014  ').elem, di.__line_id__, args)
-            if (!args.aggregate_rollover) {
-              row.text(mg_format_x_mouseover(args, di))
+            if (!args.aggregateRollover) {
+              row.text(formatXMouseover(args, di))
             }
 
-            row.text(mg_format_y_mouseover(args, di, args.time_series === false))
+            row.text(formatYMouseover(args, di, args.timeSeries === false))
           })
         }
 
@@ -886,8 +886,8 @@
 
       return (d, i) => {
         mg_trigger_linked_mouseouts(args, d, i)
-        if (args.aggregate_rollover) {
-          mg_remove_active_data_points_for_aggregate_rollover(args, svg)
+        if (args.aggregateRollover) {
+          mg_remove_active_data_points_for_aggregateRollover(args, svg)
         } else {
           mg_remove_active_data_points_for_generic_rollover(args, svg, d.__line_id__)
         }

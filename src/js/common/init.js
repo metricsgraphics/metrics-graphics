@@ -19,9 +19,9 @@ function mg_merge_args_with_defaults (args) {
   return args
 }
 
-function mg_is_time_series (args) {
+function mg_is_timeSeries (args) {
   var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0]
-  args.time_series = mg_is_date(first_elem[args.processed.original_xAccessor || args.xAccessor])
+  args.timeSeries = mg_is_date(first_elem[args.processed.original_xAccessor || args.xAccessor])
 }
 
 function mg_init_compute_width (args) {
@@ -256,7 +256,7 @@ function init (args) {
 
   selectXaxFormat(args)
 
-  mg_is_time_series(args)
+  mg_is_timeSeries(args)
   mg_init_compute_width(args)
   mg_init_compute_height(args)
 

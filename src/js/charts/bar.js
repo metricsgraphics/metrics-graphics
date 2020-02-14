@@ -120,19 +120,19 @@
     })
 
     // d.values.forEach(function (datum) {
-    //   formatted_y = mg_format_y_rollover(args, num, datum);
+    //   formattedY = formatYRollover(args, num, datum);
 
     //   if (args.y_rollover_format !== null) {
-    //     formatted_y = number_rollover_format(args.y_rollover_format, datum, args.yAccessor);
+    //     formattedY = numberRolloverFormat(args.y_rollover_format, datum, args.yAccessor);
     //   } else {
-    //     formatted_y = args.yax_units + num(datum[args.yAccessor]);
+    //     formattedY = args.yaxUnits + num(datum[args.yAccessor]);
     //   }
 
     //   sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
-    //   formatted_y = mg_format_y_rollover(args, num, datum);
+    //   formattedY = formatYRollover(args, num, datum);
     //   mouseover_tspan(sub_container, '\u2014  ')
     //     .color(args, datum);
-    //   mouseover_tspan(sub_container, formatted_x + ' ' + formatted_y);
+    //   mouseover_tspan(sub_container, formattedX + ' ' + formattedY);
 
     //   lineCount++;
     // });
@@ -678,11 +678,11 @@
       const svg = getSvgChildOf(args.target)
       const label_accessor = this.is_vertical ? args.xAccessor : args.yAccessor
       const data_accessor = this.is_vertical ? args.yAccessor : args.xAccessor
-      const label_units = this.is_vertical ? args.yax_units : args.xax_units
+      const label_units = this.is_vertical ? args.yaxUnits : args.xax_units
 
       return (d, i) => {
         const fmt = MG.time_format(args.utc_time, '%b %e, %Y')
-        const num = format_rollover_number(args)
+        const num = formatRolloverNumber(args)
 
         // highlight active bar
         const bar = svg.selectAll('g.mg-barplot .mg-bar')
@@ -701,13 +701,13 @@
 
           if (args.ygroup_accessor) row.text(`${d[args.ygroup_accessor]}   `).bold()
 
-          row.text(mg_format_x_mouseover(args, d))
+          row.text(formatXMouseover(args, d))
           row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
           if (args.predictor_accessor || args.baseline_accessor) {
             row = mouseover.mouseover_row()
 
-            if (args.predictor_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.predictor_accessor, false))
-            if (args.baseline_accessor) row.text(mg_format_data_for_mouseover(args, d, null, args.baseline_accessor, false))
+            if (args.predictor_accessor) row.text(formatDataForMouseover(args, d, null, args.predictor_accessor, false))
+            if (args.baseline_accessor) row.text(formatDataForMouseover(args, d, null, args.baseline_accessor, false))
           }
         }
         if (args.mouseover) {

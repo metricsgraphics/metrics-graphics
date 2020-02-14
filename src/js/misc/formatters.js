@@ -1,146 +1,118 @@
-function format_rollover_number (args) {
-  var num
-  if (args.format === 'count') {
-    num = function (d) {
-      var is_float = d % 1 !== 0
-      var pf
+import { format } from 'd3-format'
+import { getRolloverTimeFormat, timeFormat } from './utility'
 
-      if (is_float) {
-        pf = d3.format(',.' + args.decimals + 'f')
-      } else {
-        pf = d3.format(',.0f')
-      }
+export function formatRolloverNumber (args) {
+  if (args.format === 'count') {
+    return d => {
+      const pf = d % 1 !== 0 ? format(',.' + args.decimals + 'f') : format(',.0f')
 
       // are we adding units after the value or before?
-      if (args.yax_units_append) {
-        return pf(d) + args.yax_units
-      } else {
-        return args.yax_units + pf(d)
-      }
+      return args.yaxUnitsAppend ? pf(d) + args.yaxUnits : args.yaxUnits + pf(d)
     }
   } else {
-    num = function (d_) {
-      var fmt_string = (isNumeric(args.decimals) ? '.' + args.decimals : '') + '%'
-      var pf = d3.format(fmt_string)
-      return pf(d_)
+    return d => {
+      const fmtString = (Number.isInteger(args.decimals) ? '.' + args.decimals : '') + '%'
+      const pf = format(fmtString)
+      return pf(d)
     }
   }
-  return num
 }
 
-var time_rollover_format = function (f, d, accessor, utc) {
-  var fd
+export function timeRolloverFormat (f, d, accessor, utc) {
   if (typeof f === 'string') {
-    fd = MG.time_format(utc, f)(d[accessor])
+    return timeFormat(utc, f)(d[accessor])
   } else if (typeof f === 'function') {
-    fd = f(d)
-  } else {
-    fd = d[accessor]
+    return f(d)
   }
-  return fd
+  return d[accessor]
 }
 
 // define our rollover format for numbers
-var number_rollover_format = function (f, d, accessor) {
-  var fd
+export function numberRolloverFormat (f, d, accessor) {
   if (typeof f === 'string') {
-    fd = d3.format('s')(d[accessor])
+    return format('s')(d[accessor])
   } else if (typeof f === 'function') {
-    fd = f(d)
-  } else {
-    fd = d[accessor]
+    return f(d)
   }
-  return fd
+  return d[accessor]
 }
 
-function mg_format_y_rollover (args, num, d) {
-  var formatted_y
-  if (args.y_mouseover !== null) {
-    if (args.aggregate_rollover) {
-      formatted_y = number_rollover_format(args.y_mouseover, d, args.yAccessor)
-    } else {
-      formatted_y = number_rollover_format(args.y_mouseover, d, args.yAccessor)
-    }
+export function formatYRollover (args, num, d) {
+  let formattedY
+  if (args.yMouseover !== null) {
+    formattedY = numberRolloverFormat(args.yMouseover, d, args.yAccessor)
   } else {
-    if (args.time_series) {
-      if (args.aggregate_rollover) {
-        formatted_y = num(d[args.yAccessor])
-      } else {
-        formatted_y = args.yax_units + num(d[args.yAccessor])
-      }
+    if (args.timeSeries) {
+      formattedY = args.aggregateRollover
+        ? num(d[args.yAccessor])
+        : args.yaxUnits + num(d[args.yAccessor])
     } else {
-      formatted_y = args.yAccessor + ': ' + args.yax_units + num(d[args.yAccessor])
+      formattedY = args.yAccessor + ': ' + args.yaxUnits + num(d[args.yAccessor])
     }
   }
-  return formatted_y
+  return formattedY
 }
 
-function mg_format_x_rollover (args, fmt, d) {
-  var formatted_x
-  if (args.x_mouseover !== null) {
-    if (args.time_series) {
-      if (args.aggregate_rollover) {
-        formatted_x = time_rollover_format(args.x_mouseover, d, 'key', args.utc)
-      } else {
-        formatted_x = time_rollover_format(args.x_mouseover, d, args.xAccessor, args.utc)
-      }
+export function formatXRollover (args, fmt, d) {
+  let formattedX
+  if (args.xMouseover !== null) {
+    if (args.timeSeries) {
+      formattedX = args.aggregateRollover
+        ? timeRolloverFormat(args.xMouseover, d, 'key', args.utc)
+        : timeRolloverFormat(args.xMouseover, d, args.xAccessor, args.utc)
     } else {
-      formatted_x = number_rollover_format(args.x_mouseover, d, args.xAccessor)
+      formattedX = numberRolloverFormat(args.xMouseover, d, args.xAccessor)
     }
   } else {
-    if (args.time_series) {
-      var date
+    if (args.timeSeries) {
+      let date
 
-      if (args.aggregate_rollover && args.data.length > 1) {
+      if (args.aggregateRollover && args.data.length > 1) {
         date = new Date(d.key)
       } else {
         date = new Date(+d[args.xAccessor])
         date.setDate(date.getDate())
       }
 
-      formatted_x = fmt(date) + '  '
+      formattedX = fmt(date) + '  '
     } else {
-      formatted_x = args.xAccessor + ': ' + d[args.xAccessor] + '   '
+      formattedX = args.xAccessor + ': ' + d[args.xAccessor] + '   '
     }
   }
-  return formatted_x
+  return formattedX
 }
 
-function mg_format_data_for_mouseover (args, d, mouseover_fcn, accessor, check_time) {
-  var formatted_data, formatter
-  var time_fmt = getRolloverTimeFormat(args)
-  if (typeof d[accessor] === 'string') {
-    formatter = function (d) {
-      return d
-    }
+export function formatDataForMouseover (args, d, mouseoverFunction, accessor, checkTime) {
+  const timeFmt = getRolloverTimeFormat(args)
+  const formatter = typeof d[accessor] === 'string'
+    ? d => d
+    : formatRolloverNumber(args)
+
+  let formattedData
+  if (mouseoverFunction !== null) {
+    formattedData = checkTime
+      ? timeRolloverFormat(mouseoverFunction, d, accessor, args.utc)
+      : numberRolloverFormat(mouseoverFunction, d, accessor)
   } else {
-    formatter = format_rollover_number(args)
+    formattedData = checkTime
+      ? timeFmt(new Date(+d[accessor])) + '  '
+      : (args.timeSeries ? '' : accessor + ': ') + formatter(d[accessor]) + '   '
   }
-
-  if (mouseover_fcn !== null) {
-    if (check_time) formatted_data = time_rollover_format(mouseover_fcn, d, accessor, args.utc)
-    else formatted_data = number_rollover_format(mouseover_fcn, d, accessor)
-  } else {
-    if (check_time) formatted_data = time_fmt(new Date(+d[accessor])) + '  '
-    else formatted_data = (args.time_series ? '' : accessor + ': ') + formatter(d[accessor]) + '   '
-  }
-  return formatted_data
+  return formattedData
 }
 
-function mg_format_number_mouseover (args, d) {
-  return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.xAccessor, false)
+export function formatNumberMouseover (args, d) {
+  return formatDataForMouseover(args, d, args.xMouseover, args.xAccessor, false)
 }
 
-function mg_format_x_mouseover (args, d) {
-  return mg_format_data_for_mouseover(args, d, args.x_mouseover, args.xAccessor, args.time_series)
+export function formatXMouseover (args, d) {
+  return formatDataForMouseover(args, d, args.xMouseover, args.xAccessor, args.timeSeries)
 }
 
-function mg_format_y_mouseover (args, d) {
-  return mg_format_data_for_mouseover(args, d, args.y_mouseover, args.yAccessor, false)
+export function formatYMouseover (args, d) {
+  return formatDataForMouseover(args, d, args.yMouseover, args.yAccessor, false)
 }
 
-function mg_format_x_aggregate_mouseover (args, d) {
-  return mg_format_data_for_mouseover(args, d, args.x_mouseover, 'key', args.time_series)
+export function formatXAggregateMouseover (args, d) {
+  return formatDataForMouseover(args, d, args.xMouseover, 'key', args.timeSeries)
 }
-
-MG.format_rollover_number = format_rollover_number

@@ -9,8 +9,8 @@ function point_mouseover (args, svg, d) {
 
   mg_color_point_mouseover(args, row.text('\u25CF   ').elem, d) // point shape
 
-  row.text(mg_format_x_mouseover(args, d)) // x
-  row.text(mg_format_y_mouseover(args, d, args.time_series === false))
+  row.text(formatXMouseover(args, d)) // x
+  row.text(formatYMouseover(args, d, args.timeSeries === false))
 }
 
 function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) {

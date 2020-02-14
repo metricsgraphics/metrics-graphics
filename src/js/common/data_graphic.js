@@ -4,8 +4,8 @@ MG.globals = {}
 MG.deprecations = {
   rollover_callback: { replacement: 'mouseover', version: '2.0' },
   rollout_callback: { replacement: 'mouseout', version: '2.0' },
-  x_rollover_format: { replacement: 'x_mouseover', version: '2.10' },
-  y_rollover_format: { replacement: 'y_mouseover', version: '2.10' },
+  x_rollover_format: { replacement: 'xMouseover', version: '2.10' },
+  y_rollover_format: { replacement: 'yMouseover', version: '2.10' },
   show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
   xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
   interpolate_tension: { replacement: 'interpolate', version: '2.10' }
@@ -70,10 +70,10 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   yax_count: [3, 'number'], // the number of y-axis ticks
   yax_format: [null, 'function'], // a function that formats the y-axis' labels
   yax_tick_length: [5, 'number'], // the y-axis' tick length in pixels
-  yax_units: ['', 'string'], // a prefix symbol to be shown alongside the y-axis' labels
-  yax_units_append: [false, 'boolean'], // determines whether to append rather than prepend units
+  yaxUnits: ['', 'string'], // a prefix symbol to be shown alongside the y-axis' labels
+  yaxUnitsAppend: [false, 'boolean'], // determines whether to append rather than prepend units
   // GraphicOptions
-  aggregate_rollover: [false, 'boolean'], // links the lines in a multi-line graphic
+  aggregateRollover: [false, 'boolean'], // links the lines in a multi-line graphic
   animate_on_load: [false, 'boolean'], // determines whether lines are transitioned on first-load
   area: [true, ['boolean', 'array']], // determines whether to fill the area below the line
   flip_area_under_y_value: [null, 'number'], // Specify a Y baseline number value to flip area under it
@@ -98,8 +98,8 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   missing_text: [null, 'string'], // The text to display for missing graphics
   show_missing_background: [true, 'boolean'], // Displays a background for missing graphics
   mousemove_align: ['right', 'string'], // implemented in point.js
-  x_mouseover: [null, ['string', 'function']],
-  y_mouseover: [null, ['string', 'function']],
+  xMouseover: [null, ['string', 'function']],
+  yMouseover: [null, ['string', 'function']],
   mouseover: [null, 'function'], // custom rollover function
   mousemove: [null, 'function'], // custom rollover function
   mouseout: [null, 'function'], // custom rollover function

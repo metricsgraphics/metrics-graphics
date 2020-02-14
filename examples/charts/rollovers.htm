@@ -102,7 +102,7 @@ d3.json('data/some_percentage.json', function(data) {
 
     MG.data_graphic({
         title: "Aggregated Rollover Information",
-        description: "Aggregated information can be displayed with the <i>aggregate_rollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
+        description: "Aggregated information can be displayed with the <i>aggregateRollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
         data: all_the_data,
         width: 600,
         height: 200,
@@ -111,7 +111,7 @@ d3.json('data/some_percentage.json', function(data) {
         y_extended_ticks: true,
         xAccessor: 'date',
         yAccessor: ['value', 'value2', 'value3'],
-        aggregate_rollover: true
+        aggregateRollover: true
     });
 });</code></pre>
 
@@ -138,8 +138,8 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_mouseover: '%d',
-        x_mouseover: '%e of %b? Well, ',
+        yMouseover: '%d',
+        xMouseover: '%e of %b? Well, ',
         target: '#y-formatting'
     });
 })
@@ -192,8 +192,8 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_mouseover: '%d',
-        x_mouseover: '%e of %b? Well, ',
+        yMouseover: '%d',
+        xMouseover: '%e of %b? Well, ',
         target: '#formatting-with-strings'
     });
 
@@ -204,10 +204,10 @@ d3.json('data/float.json', function(data) {
         width: 600,
         height: 200,
         right: 40,
-        y_mouseover: function(d){
+        yMouseover: function(d){
             return Math.round(d.value) + (Math.random() > .5 ? ' + 1' : ' - 1')
         },
-        x_mouseover: function(d){
+        xMouseover: function(d){
             var today = new Date()
             return Math.round((today - d.date)/ (1000 * 60 * 60 * 24)) + ' days ago, ';
         },
@@ -294,7 +294,7 @@ d3.json('data/fake_users2.json', function(data) {
 
     MG.data_graphic({
         title: "Aggregated Rollover Information",
-        description: "Aggregated information can be displayed with the <i>aggregate_rollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
+        description: "Aggregated information can be displayed with the <i>aggregateRollover</i> option in order to clearly highlight the relationship between lines. Also handles non-contiguous data",
         data: all_the_data,
         width: 600,
         height: 200,
@@ -303,7 +303,7 @@ d3.json('data/fake_users2.json', function(data) {
         y_extended_ticks: true,
         xAccessor: 'date',
         yAccessor: ['value', 'value2', 'value3'],
-        aggregate_rollover: true
+        aggregateRollover: true
     });
 });
 </script>

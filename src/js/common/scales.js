@@ -76,7 +76,7 @@ function MGScale (args) {
         illustrative_data = args.data[i]
       }
     }
-    scaleArgs.is_time_series = !!mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+    scaleArgs.is_timeSeries = !!mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
 
     mg_add_scale_function(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name])
 
@@ -86,7 +86,7 @@ function MGScale (args) {
       ? d3.scaleUtc()
       : d3.scaleTime()
 
-    args.scales[scaleArgs.scale_name] = (scaleArgs.is_time_series)
+    args.scales[scaleArgs.scale_name] = (scaleArgs.is_timeSeries)
       ? time_scale
       : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
         ? args.y_scale_type()
@@ -243,15 +243,15 @@ function mg_min_max_numerical (args, scaleArgs, additional_data_arrays) {
   // not pulling the bottom of the range from data
   // not zero-bottomed
   // not a time series
-  if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_time_series) {
+  if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_timeSeries) {
     min_val = args[namespace + '_scale_type'] === 'log' ? 1 : 0
   }
 
-  if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_time_series) {
+  if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_timeSeries) {
     min_val = min_val - (min_val - min_val * args.inflator) * use_inflator
   }
 
-  if (!scaleArgs.is_time_series) {
+  if (!scaleArgs.is_timeSeries) {
     max_val = (max_val < 0) ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1)
   }
 
