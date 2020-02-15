@@ -1,41 +1,20 @@
 const path = require('path')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-  plugins: [
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // all options are optional
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-      ignoreOrder: false // Enable to remove warnings about conflicting order
-    })
-  ],
-  entry: [
-    './src/js/MG.js',
-    './src/sass/mg.sass'
-  ],
+  mode: 'production',
+  entry: './src/js/MG.js',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'metrics-graphics.js',
-    libraryTarget: 'umd',
-    library: 'metricsGraphics',
-    globalObject: 'this'
+    library: 'MG',
+    libraryTarget: 'umd2'
   },
   module: {
     rules: [
       {
-        test: /\.(sa|sc|c)ss$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: process.env.NODE_ENV === 'development'
-            }
-          },
-          'css-loader',
-          'sass-loader'
-        ]
+        test: /\.(js)$/,
+        exclude: /(node_modules|bower_components)/,
+        use: 'babel-loader'
       }
     ]
   }
