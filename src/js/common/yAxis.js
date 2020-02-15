@@ -8,9 +8,9 @@ import { defaultXaxFormat, getYFormatAndSecondaryTimeFunction } from './xAxis'
 import { callHook } from './hooks'
 
 export function processScaleTicks (args, axis) {
-  var accessor = args[axis + 'Accessor']
-  var scaleTicks = args.scales[axis.toUpperCase()].ticks(args[axis + 'axCount'])
-  var max = args.processed[axis + 'Max']
+  const accessor = args[axis + 'Accessor']
+  let scaleTicks = args.scales[axis.toUpperCase()].ticks(args[axis + 'axCount'])
+  const max = args.processed[axis + 'Max']
 
   function log10 (val) {
     if (val === 1000) {
@@ -30,10 +30,10 @@ export function processScaleTicks (args, axis) {
   }
 
   // filter out fraction ticks if our data is ints and if xmax > number of generated ticks
-  var numberOfTicks = scaleTicks.length
+  const numberOfTicks = scaleTicks.length
 
   // is our data object all ints?
-  var dataIsInt = true
+  let dataIsInt = true
   args.data.forEach(function (d, i) {
     d.forEach(function (d, i) {
       if (d[accessor] % 1 !== 0) {
@@ -54,9 +54,9 @@ export function processScaleTicks (args, axis) {
 }
 
 export function rugPlacement (args, axisArgs) {
-  var position = axisArgs.position
-  var ns = axisArgs.namespace
-  var coordinates = {}
+  const position = axisArgs.position
+  const ns = axisArgs.namespace
+  const coordinates = {}
   if (position === 'left') {
     coordinates.x1 = args.left + 1
     coordinates.x2 = args.left + args.rugBufferSize
@@ -85,12 +85,12 @@ export function rugPlacement (args, axisArgs) {
 }
 
 export function rimPlacement (args, axisArgs) {
-  var ns = axisArgs.namespace
-  var position = axisArgs.position
-  var tickLength = args.processed[ns + 'Ticks'].length
-  var ticks = args.processed[ns + 'Ticks']
-  var scale = args.scales[ns.toUpperCase()]
-  var coordinates = {}
+  const ns = axisArgs.namespace
+  const position = axisArgs.position
+  const tickLength = args.processed[ns + 'Ticks'].length
+  const ticks = args.processed[ns + 'Ticks']
+  const scale = args.scales[ns.toUpperCase()]
+  const coordinates = {}
 
   if (position === 'left') {
     coordinates.x1 = args.left
@@ -131,11 +131,11 @@ export function rimPlacement (args, axisArgs) {
 }
 
 export function labelPlacement (args, axisArgs) {
-  var position = axisArgs.position
-  var ns = axisArgs.namespace
-  var tickLength = args[ns + 'axTickLength']
-  var scale = args.scales[ns.toUpperCase()]
-  var coordinates = {}
+  const position = axisArgs.position
+  const ns = axisArgs.namespace
+  const tickLength = args[ns + 'axTickLength']
+  const scale = args.scales[ns.toUpperCase()]
+  const coordinates = {}
 
   if (position === 'left') {
     coordinates.x = args.left - tickLength * 3 / 2
@@ -190,14 +190,14 @@ export function labelPlacement (args, axisArgs) {
 }
 
 export function addSecondaryLabelElements (args, axisArgs, g) {
-  var tf = getYFormatAndSecondaryTimeFunction(args)
-  var years = tf.secondary(args.processed.minX, args.processed.maxX)
+  const tf = getYFormatAndSecondaryTimeFunction(args)
+  let years = tf.secondary(args.processed.minX, args.processed.maxX)
   if (years.length === 0) {
-    var firstTick = args.scales.X.ticks(args.xaxCount)[0]
+    const firstTick = args.scales.X.ticks(args.xaxCount)[0]
     years = [firstTick]
   }
 
-  var yg = addG(g, 'mg-year-marker')
+  const yg = addG(g, 'mg-year-marker')
   if (tf.timeframe === 'default' && args.showYearMarkers) {
     yearMarkerLine(args, axisArgs, yg, years, tf.yFormat)
   }
@@ -219,11 +219,11 @@ export function yearMarkerLine (args, axisArgs, g, years, yFormat) {
 }
 
 export function yearMarkerText (args, axisArgs, g, years, yFormat) {
-  var position = axisArgs.position
-  var ns = axisArgs.namespace
-  var scale = args.scales[ns.toUpperCase()]
-  var x, y, dy, textAnchor, textFcn
-  var xAxisTextElement = select(args.target)
+  const position = axisArgs.position
+  const ns = axisArgs.namespace
+  const scale = args.scales[ns.toUpperCase()]
+  let x, y, dy, textAnchor, textFcn
+  const xAxisTextElement = select(args.target)
     .select('.mg-x-axis text').node().getBoundingClientRect()
 
   if (position === 'top') {
@@ -260,11 +260,11 @@ export function yearMarkerText (args, axisArgs, g, years, yFormat) {
 }
 
 export function addNumericalLabels (g, args, axisArgs) {
-  var ns = axisArgs.namespace
-  var coords = labelPlacement(args, axisArgs)
-  var ticks = args.processed[ns + 'Ticks']
+  const ns = axisArgs.namespace
+  const coords = labelPlacement(args, axisArgs)
+  const ticks = args.processed[ns + 'Ticks']
 
-  var labels = g.selectAll('.mg-yax-labels')
+  const labels = g.selectAll('.mg-yax-labels')
     .data(ticks).enter()
     .append('text')
     .attr('x', coords.x)
@@ -277,12 +277,12 @@ export function addNumericalLabels (g, args, axisArgs) {
   if (ns === 'x') {
     if (args.timeSeries && args.europeanClock) {
       labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
-        var d = new Date(_d)
+        const d = new Date(_d)
         if (i === 0) return d3TimeFormat('%H')(d)
         else return ''
       })
       labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function (_d, i) {
-        var d = new Date(_d)
+        const d = new Date(_d)
         return ':' + args.processed.xaxFormat(d)
       })
     } else {
@@ -301,7 +301,7 @@ export function addNumericalLabels (g, args, axisArgs) {
       return (i + 1) % 2 === 0
     }).remove()
 
-    var svg = getSvgChildOf(args.target)
+    const svg = getSvgChildOf(args.target)
     svg.selectAll('.mg-' + ns + 'ax-ticks').filter(function (d, i) {
       return (i + 1) % 2 === 0
     })
@@ -311,17 +311,17 @@ export function addNumericalLabels (g, args, axisArgs) {
 
 export function addTickLines (g, args, axisArgs) {
   // name
-  var ns = axisArgs.namespace
-  var position = axisArgs.position
-  var scale = args.scales[ns.toUpperCase()]
+  const ns = axisArgs.namespace
+  const position = axisArgs.position
+  const scale = args.scales[ns.toUpperCase()]
 
-  var ticks = args.processed[ns + 'Ticks']
-  var ticksClass = 'mg-' + ns + 'ax-ticks'
-  var extendedTicksClass = 'mg-extended-' + ns + 'ax-ticks'
-  var extendedTicks = args[ns + 'ExtendedTicks']
-  var tickLength = args[ns + 'axTickLength']
+  const ticks = args.processed[ns + 'Ticks']
+  const ticksClass = 'mg-' + ns + 'ax-ticks'
+  const extendedTicksClass = 'mg-extended-' + ns + 'ax-ticks'
+  const extendedTicks = args[ns + 'ExtendedTicks']
+  const tickLength = args[ns + 'axTickLength']
 
-  var x1, x2, y1, y2
+  let x1, x2, y1, y2
 
   if (position === 'left') {
     x1 = args.left
@@ -375,10 +375,10 @@ export function addTickLines (g, args, axisArgs) {
 }
 
 export function initializeAxisRim (g, args, axisArgs) {
-  var namespace = axisArgs.namespace
-  var tickLength = args.processed[namespace + 'Ticks'].length
+  const namespace = axisArgs.namespace
+  const tickLength = args.processed[namespace + 'Ticks'].length
 
-  var rim = rimPlacement(args, axisArgs)
+  const rim = rimPlacement(args, axisArgs)
 
   if (!args[namespace + 'ExtendedTicks'] && !args[namespace + 'ExtendedTicks'] && tickLength) {
     g.append('line')
@@ -390,9 +390,9 @@ export function initializeAxisRim (g, args, axisArgs) {
 }
 
 export function initializeRug (args, rugClass) {
-  var svg = getSvgChildOf(args.target)
-  var allData = args.data.flat()
-  var rug = svg.selectAll('line.' + rugClass).data(allData)
+  const svg = getSvgChildOf(args.target)
+  const allData = args.data.flat()
+  const rug = svg.selectAll('line.' + rugClass).data(allData)
 
   // set the attributes that do not change after initialization, per
   rug.enter().append('svg:line').attr('class', rugClass).attr('opacity', 0.3)
@@ -407,8 +407,8 @@ export function rug (args, axisArgs) {
   'use strict'
   args.rugBufferSize = args.chartType === 'point' ? args.buffer / 2 : args.buffer * 2 / 3
 
-  var rug = initializeRug(args, 'mg-' + axisArgs.namespace + '-rug')
-  var rugPositions = rugPlacement(args, axisArgs)
+  const rug = initializeRug(args, 'mg-' + axisArgs.namespace + '-rug')
+  const rugPositions = rugPlacement(args, axisArgs)
   rug.attr('x1', rugPositions.x1)
     .attr('x2', rugPositions.x2)
     .attr('y1', rugPositions.y1)
@@ -418,11 +418,11 @@ export function rug (args, axisArgs) {
 }
 
 export function categoricalLabelPlacement (args, axisArgs, group) {
-  var ns = axisArgs.namespace
-  var position = axisArgs.position
-  var scale = args.scales[ns.toUpperCase()]
-  var groupScale = args.scales[(ns + 'group').toUpperCase()]
-  var coords = {}
+  const ns = axisArgs.namespace
+  const position = axisArgs.position
+  const scale = args.scales[ns.toUpperCase()]
+  const groupScale = args.scales[(ns + 'group').toUpperCase()]
+  const coords = {}
   coords.cat = {}
   coords.group = {}
   // x, y, dy, text-anchor
@@ -483,25 +483,25 @@ export function categoricalLabelPlacement (args, axisArgs, group) {
 }
 
 export function categoricalLabels (args, axisArgs) {
-  var ns = axisArgs.namespace
-  var nsClass = 'mg-' + ns + '-axis'
-  var scale = args.scales[ns.toUpperCase()]
-  var groupScale = args.scales[(ns + 'group').toUpperCase()]
-  var groupAccessor = ns + 'group_accessor'
+  const ns = axisArgs.namespace
+  const nsClass = 'mg-' + ns + '-axis'
+  const scale = args.scales[ns.toUpperCase()]
+  const groupScale = args.scales[(ns + 'group').toUpperCase()]
+  const groupAccessor = ns + 'group_accessor'
 
-  var svg = getSvgChildOf(args.target)
+  const svg = getSvgChildOf(args.target)
   selectAllAndRemove(svg, '.' + nsClass)
-  var g = addG(svg, nsClass)
-  var groupG
-  var groups = groupScale.domain && groupScale.domain()
+  const g = addG(svg, nsClass)
+  let groupG
+  const groups = groupScale.domain && groupScale.domain()
     ? groupScale.domain()
     : ['1']
 
   groups.forEach(function (group) {
     // grab group placement stuff.
-    var coords = categoricalLabelPlacement(args, axisArgs, group)
+    const coords = categoricalLabelPlacement(args, axisArgs, group)
 
-    var labels
+    let labels
     groupG = addG(g, 'mg-group-' + normalize(group))
     if (args[groupAccessor] !== null) {
       labels = groupG.append('text')
@@ -532,18 +532,18 @@ export function categoricalGuides (args, axisArgs) {
   // for each group
   // for each data point
 
-  var ns = axisArgs.namespace
-  var groupScale = args.scales[(ns + 'group').toUpperCase()]
-  var scale = args.scales[ns.toUpperCase()]
-  var position = axisArgs.position
+  const ns = axisArgs.namespace
+  const groupScale = args.scales[(ns + 'group').toUpperCase()]
+  const scale = args.scales[ns.toUpperCase()]
+  const position = axisArgs.position
 
-  var svg = getSvgChildOf(args.target)
+  const svg = getSvgChildOf(args.target)
 
-  var x1, x2, y1, y2
-  var grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null]
+  let x1, x2, y1, y2
+  const grs = (groupScale.domain && groupScale.domain()) ? groupScale.domain() : [null]
 
   selectAllAndRemove(svg, '.mg-category-guides')
-  var g = addG(svg, 'mg-category-guides')
+  const g = addG(svg, 'mg-category-guides')
 
   grs.forEach(function (group) {
     scale.domain().forEach(function (cat) {
@@ -569,10 +569,10 @@ export function categoricalGuides (args, axisArgs) {
         .attr('stroke-dasharray', '2,1')
     })
 
-    var first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position !== 'bottom'))
-    var last = groupScale(group) + scale(scale.domain()[scale.domain().length - 1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position !== 'bottom'))
+    const first = groupScale(group) + scale(scale.domain()[0]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position !== 'bottom'))
+    const last = groupScale(group) + scale(scale.domain()[scale.domain().length - 1]) + scale.bandwidth() / 2 * (group === null || (position !== 'top' && position !== 'bottom'))
 
-    var x11, x21, y11, y21, x12, x22, y12, y22
+    let x11, x21, y11, y21, x12, x22, y12, y22
     if (position === 'left' || position === 'right') {
       x11 = getPlotLeft(args)
       x21 = getPlotLeft(args)
@@ -616,18 +616,18 @@ export function categoricalGuides (args, axisArgs) {
 export function rotateLabels (labels, rotationDegree) {
   if (rotationDegree) {
     labels.attr('transform', function () {
-      var elem = select(this)
+      const elem = select(this)
       return 'rotate(' + rotationDegree + ' ' + elem.attr('x') + ',' + elem.attr('y') + ')'
     })
   }
 }
 
 export function zeroLine (args, axisArgs) {
-  var svg = getSvgChildOf(args.target)
-  var ns = axisArgs.namespace
-  var position = axisArgs.position
-  var scale = args.scales[ns.toUpperCase()]
-  var x1, x2, y1, y2
+  const svg = getSvgChildOf(args.target)
+  const ns = axisArgs.namespace
+  const position = axisArgs.position
+  const scale = args.scales[ns.toUpperCase()]
+  let x1, x2, y1, y2
   if (position === 'left' || position === 'right') {
     x1 = getPlotLeft(args)
     x2 = getPlotRight(args)
@@ -649,90 +649,66 @@ export function zeroLine (args, axisArgs) {
     .attr('stroke', 'black')
 }
 
-var mgDrawAxis = {}
+const mgDrawAxis = {
+  categorical: function (args, axisArgs) {
+    categoricalLabels(args, axisArgs)
+    categoricalGuides(args, axisArgs)
+  },
+  numerical: function (args, axisArgs) {
+    const namespace = axisArgs.namespace
+    const axisName = namespace + '_axis'
+    const axisClass = 'mg-' + namespace + '-axis'
+    const svg = getSvgChildOf(args.target)
 
-mgDrawAxis.categorical = function (args, axisArgs) {
-  categoricalLabels(args, axisArgs)
-  categoricalGuides(args, axisArgs)
+    selectAllAndRemove(svg, '.' + axisClass)
+
+    if (!args[axisName]) {
+      return this
+    }
+
+    const g = addG(svg, axisClass)
+
+    processScaleTicks(args, namespace)
+    initializeAxisRim(g, args, axisArgs)
+    addTickLines(g, args, axisArgs)
+    addNumericalLabels(g, args, axisArgs)
+
+    // add label
+    if (args[namespace + '_label']) {
+      axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args)
+    }
+
+    // add rugs
+    if (args[namespace + '_rug']) {
+      rug(args, axisArgs)
+    }
+
+    if (args.showBarZero) {
+      barAddZeroLine(args)
+    }
+
+    return this
+  }
 }
 
-mgDrawAxis.numerical = function (args, axisArgs) {
-  var namespace = axisArgs.namespace
-  var axisName = namespace + '_axis'
-  var axisClass = 'mg-' + namespace + '-axis'
-  var svg = getSvgChildOf(args.target)
-
-  selectAllAndRemove(svg, '.' + axisClass)
-
-  if (!args[axisName]) {
-    return this
+export class AxisFactory {
+  constructor (args) {
+    this.args = args
+    this.axisArgs = {
+      type: 'numerical'
+    }
   }
 
-  var g = addG(svg, axisClass)
+  namespace (ns) { this.axisArgs.namespace = ns }
+  rug (tf) { this.axisArgs.ruf = tf }
+  label (label) { this.axisArgs.label = label }
+  type (t) { this.axisArgs.type = t }
+  position (p) { this.axisArgs.position = p }
+  zeroLine (tf) { this.axisArgs.zeroLine = tf }
 
-  processScaleTicks(args, namespace)
-  initializeAxisRim(g, args, axisArgs)
-  addTickLines(g, args, axisArgs)
-  addNumericalLabels(g, args, axisArgs)
-
-  // add label
-  if (args[namespace + '_label']) {
-    axisArgs.label(svg.select('.mg-' + namespace + '-axis'), args)
+  draw () {
+    mgDrawAxis[this.axisArgs.type](this.args, this.axisArgs)
   }
-
-  // add rugs
-  if (args[namespace + '_rug']) {
-    rug(args, axisArgs)
-  }
-
-  if (args.showBarZero) {
-    barAddZeroLine(args)
-  }
-
-  return this
-}
-
-export function axisFactory (args) {
-  var axisArgs = {}
-  axisArgs.type = 'numerical'
-
-  this.namespace = function (ns) {
-    // take the ns in the scale, and use it to
-    axisArgs.namespace = ns
-    return this
-  }
-
-  this.rug = function (tf) {
-    axisArgs.rug = tf
-    return this
-  }
-
-  this.label = function (tf) {
-    axisArgs.label = tf
-    return this
-  }
-
-  this.type = function (t) {
-    axisArgs.type = t
-    return this
-  }
-
-  this.position = function (pos) {
-    axisArgs.position = pos
-    return this
-  }
-
-  this.zeroLine = function (tf) {
-    axisArgs.zeroLine = tf
-    return this
-  }
-
-  this.draw = function () {
-    mgDrawAxis[axisArgs.type](args, axisArgs)
-    return this
-  }
-
-  return this
 }
 
 export function yRug (args) {
@@ -746,7 +722,7 @@ export function yRug (args) {
     ? args.buffer / 2
     : args.buffer * 2 / 3
 
-  var rug = makeRug(args, 'mg-y-rug')
+  const rug = makeRug(args, 'mg-y-rug')
 
   rug.attr('x1', args.left + 1)
     .attr('x2', args.left + args.rugBufferSize)
@@ -760,7 +736,7 @@ export function changeYExtentsForBars (args, my) {
   if (args.chartType === 'bar') {
     my.min = 0
     my.max = max(args.data[0], function (d) {
-      var trio = []
+      const trio = []
       trio.push(d[args.yAccessor])
 
       if (args.baselineAccessor !== null) {
@@ -778,7 +754,7 @@ export function changeYExtentsForBars (args, my) {
 }
 
 export function computeYaxFormat (args) {
-  var yaxFormat = args.yaxFormat
+  let yaxFormat = args.yaxFormat
   if (!yaxFormat) {
     let decimals = args.decimals
     if (args.format === 'count') {
@@ -792,7 +768,7 @@ export function computeYaxFormat (args) {
       }
 
       yaxFormat = function (d) {
-        var pf
+        let pf
 
         if (decimals !== 0) {
           // don't scale tiny values
@@ -812,7 +788,7 @@ export function computeYaxFormat (args) {
       }
     } else { // percentage
       yaxFormat = function (d_) {
-        var n = format('.0%')
+        const n = format('.0%')
         return n(d_)
       }
     }
@@ -821,11 +797,11 @@ export function computeYaxFormat (args) {
 }
 
 export function barAddZeroLine (args) {
-  var svg = getSvgChildOf(args.target)
-  var extents = args.scales.X.domain()
+  const svg = getSvgChildOf(args.target)
+  const extents = args.scales.X.domain()
   if (extents[0] <= 0 && extents[1] >= 0) {
-    var r = args.scales.Y.range()
-    var g = args.categoricalGroups.length
+    const r = args.scales.Y.range()
+    const g = args.categoricalGroups.length
       ? args.scales.YGROUP(args.categoricalGroups[args.categoricalGroups.length - 1])
       : args.scales.YGROUP()
 
@@ -846,7 +822,7 @@ export function yDomainRange (args, scale) {
 }
 
 export function defineYScales (args) {
-  var scale = (typeof args.yScaleType === 'function')
+  const scale = (typeof args.yScaleType === 'function')
     ? args.yScaleType()
     : (args.yScaleType === 'log')
       ? scaleLog()
@@ -893,9 +869,9 @@ export function addYLabel (g, args) {
 }
 
 export function addYAxisRim (g, args) {
-  var tickLength = args.processed.yTicks.length
+  const tickLength = args.processed.yTicks.length
   if (!args.xExtendedTicks && !args.yExtendedTicks && tickLength) {
-    var y1scale, y2scale
+    let y1scale, y2scale
 
     if (args.axesNotCompact && args.chartType !== 'bar') {
       y1scale = args.height - args.bottom
@@ -934,7 +910,7 @@ export function addYAxisTickLines (g, args) {
 }
 
 export function addYAxisTickLabels (g, args) {
-  var yaxFormat = computeYaxFormat(args)
+  const yaxFormat = computeYaxFormat(args)
   g.selectAll('.mg-yax-labels')
     .data(args.processed.yTicks).enter()
     .append('text')
@@ -946,7 +922,7 @@ export function addYAxisTickLabels (g, args) {
     .attr('dy', '.35em')
     .attr('text-anchor', 'end')
     .text(function (d) {
-      var o = yaxFormat(d)
+      const o = yaxFormat(d)
       return o
     })
 }
@@ -957,7 +933,7 @@ export function yAxis (args) {
     args.processed = {}
   }
 
-  var svg = getSvgChildOf(args.target)
+  const svg = getSvgChildOf(args.target)
   callHook('yAxis.processMinMax', args, args.processed.minY, args.processed.maxY)
   selectAllAndRemove(svg, '.mg-y-axis')
 
@@ -965,7 +941,7 @@ export function yAxis (args) {
     return this
   }
 
-  var g = addG(svg, 'mg-y-axis')
+  const g = addG(svg, 'mg-y-axis')
   addYLabel(g, args)
   processScaleTicks(args, 'y')
   addYAxisRim(g, args)
@@ -980,16 +956,16 @@ export function yAxis (args) {
 }
 
 export function addCategoricalLabels (args) {
-  var svg = getSvgChildOf(args.target)
+  const svg = getSvgChildOf(args.target)
   selectAllAndRemove(svg, '.mg-y-axis')
-  var g = addG(svg, 'mg-y-axis')
-  var groupG; (args.categoricalGroups.length ? args.categoricalGroups : ['1']).forEach(function (group) {
+  const g = addG(svg, 'mg-y-axis')
+  let groupG; (args.categoricalGroups.length ? args.categoricalGroups : ['1']).forEach(function (group) {
     groupG = addG(g, 'mg-group-' + normalize(group))
 
     if (args.yGroupAccessor !== null) {
       addGroupLabel(groupG, group, args)
     } else {
-      var labels = addGraphicLabels(groupG, group, args)
+      const labels = addGraphicLabels(groupG, group, args)
       rotateLabels(labels, args.rotateYLabels)
     }
   })
@@ -1017,8 +993,8 @@ export function addGroupLabel (g, group, args) {
 }
 
 export function drawGroupLines (args) {
-  var svg = getSvgChildOf(args.target)
-  var groups = args.scales.YGROUP.domain()
+  const svg = getSvgChildOf(args.target)
+  const groups = args.scales.YGROUP.domain()
 
   svg.select('.mg-category-guides').selectAll('mg-group-lines')
     .data(groups)
@@ -1037,8 +1013,8 @@ export function drawGroupLines (args) {
 export function yCategoricalShowGuides (args) {
   // for each group
   // for each data point
-  var svg = getSvgChildOf(args.target)
-  var alreadyPlotted = []
+  const svg = getSvgChildOf(args.target)
+  const alreadyPlotted = []
   args.data[0].forEach(function (d) {
     if (alreadyPlotted.indexOf(d[args.yAccessor]) === -1) {
       svg.select('.mg-category-guides').append('line')
