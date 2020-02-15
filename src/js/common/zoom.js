@@ -1,83 +1,79 @@
-{
-  const filter_in_range_data = (args, range) => {
-    const is_data_in_range = (data, range) => {
-      return data > Math.min(range[0], range[1]) && data < Math.max(range[0], range[1])
+import { isArrayOfArrays } from '../misc/utility'
+import { min, max } from 'd3-array'
+
+export function filterInRangeData (args, range) {
+  const isDataInRange = (data, range) => data > min(range) && data < max(range)
+
+  // if range without this axis return true, else judge is data in range or not.
+  return d => ['x', 'y'].every(dim => !(dim in range) || isDataInRange(d[args[`${dim}_accessor`]], range[dim]))
+}
+
+// the range here is the range of data
+// range is an object with two optional attributes of x,y, respectively represent ranges on two axes
+export function zoomToDataDomain (args, range) {
+  const rawData = args.processed.rawData || args.data
+
+  // store raw data and raw domain to in order to zoom back to the initial state
+  if (!('rawData' in args.processed)) {
+    args.processed.rawDomain = {
+      x: args.scales.X.domain(),
+      y: args.scales.Y.domain()
     }
-    // if range without this axis return true, else judge is data in range or not.
-    return d => ['x', 'y'].every(dim => !(dim in range) || is_data_in_range(d[args[`${dim}_accessor`]], range[dim]))
+    args.processed.rawData = rawData
   }
 
-  // the range here is the range of data
-  // range is an object with two optional attributes of x,y, respectively represent ranges on two axes
-  const zoom_to_data_domain = (args, range) => {
-    const raw_data = args.processed.raw_data || args.data
-    // store raw data and raw domain to in order to zoom back to the initial state
-    if (!('raw_data' in args.processed)) {
-      args.processed.raw_domain = {
-        x: args.scales.X.domain(),
-        y: args.scales.Y.domain()
-      }
-      args.processed.raw_data = raw_data
-    }
-    if (['x', 'y'].some(dim => range[dim][0] === range[dim][1])) return
-    // to avoid drawing outside the chart in the point chart, unnecessary in line chart.
-    if (args.chartType === 'point') {
-      if (is_arrayOfArrays(raw_data)) {
-        args.data = raw_data.map(function (d) {
-          return d.filter(filter_in_range_data(args, range))
-        })
-      } else {
-        args.data = raw_data.filter(filter_in_range_data(args, range))
-      }
-      if (mg_flatten_array(args.data).length === 0) return
-    }
-    ['x', 'y'].forEach(dim => {
-      if (dim in range) args.processed[`zoom_${dim}`] = range[dim]
-      else delete args.processed[`zoom_${dim}`]
-    })
-    if (args.processed.subplot) {
-      if (range !== args.processed.raw_domain) {
-        MG.create_brushing_pattern(args.processed.subplot, convert_domain_to_range(args.processed.subplot, range))
-      } else {
-        MG.remove_brushing_pattern(args.processed.subplot)
-      }
-    }
-    new MG.charts[args.chartType || defaults.chartType].descriptor(args)
+  if (['x', 'y'].some(dim => range[dim][0] === range[dim][1])) return
+
+  // to avoid drawing outside the chart in the point chart, unnecessary in line chart.
+  if (args.chartType === 'point') {
+    args.data = isArrayOfArrays(rawData)
+      ? rawData.map(d => d.filter(filterInRangeData(args, range)))
+      : rawData.filter(filterInRangeData(args, range))
+    if (args.data.flat().length === 0) return
   }
-
-  const zoom_to_raw_range = args => {
-    if (!('raw_domain' in args.processed)) return
-    zoom_to_data_domain(args, args.processed.raw_domain)
-    delete args.processed.raw_domain
-    delete args.processed.raw_data
+  ['x', 'y'].forEach(dim => {
+    if (dim in range) args.processed[`zoom_${dim}`] = range[dim]
+    else delete args.processed[`zoom_${dim}`]
+  })
+  if (args.processed.subplot) {
+    if (range !== args.processed.rawDomain) {
+      createBrushingPattern(args.processed.subplot, convertDomainToRange(args.processed.subplot, range))
+    } else {
+      removeBrushingPattern(args.processed.subplot)
+    }
   }
+  new charts[args.chartType || defaults.chartType].descriptor(args)
+}
 
-  // converts the range of selection into the range of data that we can use to
-  // zoom the chart to a particular region
-  const convert_range_to_domain = (args, range) =>
-    ['x', 'y'].reduce((domain, dim) => {
-      if (!(dim in range)) return domain
-      domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v))
-      if (dim === 'y') domain[dim].reverse()
-      return domain
-    }, {})
+export function zoomToRawRange (args) {
+  if (!('rawDomain' in args.processed)) return
+  zoomToDataDomain(args, args.processed.rawDomain)
+  delete args.processed.rawDomain
+  delete args.processed.rawData
+}
 
-  const convert_domain_to_range = (args, domain) =>
-    ['x', 'y'].reduce((range, dim) => {
-      if (!(dim in domain)) return range
-      range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v))
-      if (dim === 'y') range[dim].reverse()
-      return range
-    }, {})
+// converts the range of selection into the range of data that we can use to
+// zoom the chart to a particular region
+export function convertRangeToDomain (args, range) {
+  return ['x', 'y'].reduce((domain, dim) => {
+    if (!(dim in range)) return domain
+    domain[dim] = range[dim].map(v => +args.scales[dim.toUpperCase()].invert(v))
+    if (dim === 'y') domain[dim].reverse()
+    return domain
+  }, {})
+}
 
-  // the range here is the range of selection
-  const zoom_to_data_range = (args, range) => {
-    const domain = convert_range_to_domain(args, range)
-    zoom_to_data_domain(args, domain)
-  }
+export function convertDomainToRange (args, domain) {
+  return ['x', 'y'].reduce((range, dim) => {
+    if (!(dim in domain)) return range
+    range[dim] = domain[dim].map(v => +args.scales[dim.toUpperCase()](v))
+    if (dim === 'y') range[dim].reverse()
+    return range
+  }, {})
+}
 
-  MG.convert_range_to_domain = convert_range_to_domain
-  MG.zoom_to_data_domain = zoom_to_data_domain
-  MG.zoom_to_data_range = zoom_to_data_range
-  MG.zoom_to_raw_range = zoom_to_raw_range
+// the range here is the range of selection
+export function zoomToDataRange (args, range) {
+  const domain = convertRangeToDomain(args, range)
+  zoomToDataDomain(args, domain)
 }
