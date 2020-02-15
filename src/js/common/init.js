@@ -179,10 +179,10 @@ function selectXaxFormat (args) {
 function mg_categorical_count_number_of_groups (args, ns) {
   var accessor_string = ns + 'group_accessor'
   var accessor = args[accessor_string]
-  args.categorical_groups = []
+  args.categoricalGroups = []
   if (accessor) {
     var data = args.data[0]
-    args.categorical_groups = d3.set(data.map(function (d) {
+    args.categoricalGroups = d3.set(data.map(function (d) {
       return d[accessor]
     })).values()
   }
@@ -208,8 +208,8 @@ function mg_categorical_calculate_group_length (args, ns, which) {
   var groupHeight = ns + 'group_height'
   if (which) {
     var gh = ns === 'y'
-      ? (args.height - args.top - args.bottom - args.buffer * 2) / (args.categorical_groups.length || 1)
-      : (args.width - args.left - args.right - args.buffer * 2) / (args.categorical_groups.length || 1)
+      ? (args.height - args.top - args.bottom - args.buffer * 2) / (args.categoricalGroups.length || 1)
+      : (args.width - args.left - args.right - args.buffer * 2) / (args.categoricalGroups.length || 1)
 
     args[groupHeight] = gh
   } else {
@@ -225,14 +225,14 @@ function mg_categorical_calculate_bar_thickness (args, ns) {
 }
 
 function mg_categorical_calculate_height (args, ns) {
-  var groupContribution = (args[ns + 'group_height']) * (args.categorical_groups.length || 1)
+  var groupContribution = (args[ns + 'group_height']) * (args.categoricalGroups.length || 1)
 
   var marginContribution = ns === 'y'
     ? args.top + args.bottom + args.buffer * 2
     : args.left + args.right + args.buffer * 2
 
   return groupContribution + marginContribution +
-    (args.categorical_groups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']))
+    (args.categoricalGroups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']))
 }
 
 function mg_barchart_extrapolate_group_and_thickness_from_height (args) {

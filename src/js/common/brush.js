@@ -42,8 +42,8 @@
     const calculateSelectionRange = () => {
       const minX = args.left
       const maxX = args.width - args.right - args.buffer
-      const min_y = args.top
-      const max_y = args.height - args.bottom - args.buffer
+      const minY = args.top
+      const maxY = args.height - args.bottom - args.buffer
       const mouse = d3.mouse(container)
       const range = {}
       range.x = axis.x ? [
@@ -51,9 +51,9 @@
         Math.min(maxX, Math.max(origin[0], mouse[0]))
       ] : [minX, maxX]
       range.y = axis.y ? [
-        Math.max(min_y, Math.min(origin[1], mouse[1])),
-        Math.min(max_y, Math.max(origin[1], mouse[1]))
-      ] : [min_y, max_y]
+        Math.max(minY, Math.min(origin[1], mouse[1])),
+        Math.min(maxY, Math.max(origin[1], mouse[1]))
+      ] : [minY, maxY]
       return range
     }
 

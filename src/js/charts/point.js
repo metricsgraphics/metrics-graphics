@@ -24,13 +24,13 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
 
 {
   function mg_filter_out_plot_bounds (data, args) {
-    // maxX, minX, max_y, min_y;
+    // maxX, minX, maxY, minY;
     const x = args.xAccessor
     const y = args.yAccessor
     const new_data = data.filter(d => (args.minX === null || d[x] >= args.minX) &&
       (args.maxX === null || d[x] <= args.maxX) &&
-      (args.min_y === null || d[y] >= args.min_y) &&
-      (args.max_y === null || d[y] <= args.max_y))
+      (args.minY === null || d[y] >= args.minY) &&
+      (args.maxY === null || d[y] <= args.maxY))
     return new_data
   }
 
@@ -363,7 +363,7 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
     sizeRange: [null, 'array'], // the range of point sizes
     lowess: [false, 'boolean'], // specifies whether to show a lowess line of best-fit
     leastSquares: [false, 'boolean'], // specifies whether to show a least-squares line of best-fit
-    y_categorical_show_guides: [true, 'boolean'],
+    yCategoricalShowGuides: [true, 'boolean'],
     x_categorical_show_guides: [true, 'boolean'],
     buffer: [16, 'string'],
     label_accessor: [null, 'boolean'],

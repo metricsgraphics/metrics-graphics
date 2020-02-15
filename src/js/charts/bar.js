@@ -761,7 +761,7 @@
     xAccessor: ['value', 'string'],
     reference_accessor: [null, 'string'],
     comparison_accessor: [null, 'string'],
-    secondary_label_accessor: [null, 'string'],
+    secondaryLabel_accessor: [null, 'string'],
     colorAccessor: [null, 'string'],
     colorType: ['category', ['number', 'category']],
     colorDomain: [null, 'number[]'],
@@ -777,7 +777,7 @@
     showBarZero: [true, 'boolean'],
     binned: [true, 'boolean'],
     truncateXLabels: [true, 'boolean'],
-    truncate_y_labels: [true, 'boolean']
+    truncate_yLabels: [true, 'boolean']
   }
 
   MG.register('bar', barChart, options)

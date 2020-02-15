@@ -14,14 +14,14 @@ export function processScaleTicks (args, axis) {
   } else if (axis === 'y') {
     accessor = args.yAccessor
     scaleTicks = args.scales.Y.ticks(args.yax_count)
-    max = args.processed.max_y
+    max = args.processed.maxY
   }
 
   function log10 (val) {
     return val === 1000 ? 3 : val === 1000000 ? 7 : Math.log(val) / Math.LN10
   }
 
-  if ((axis === 'x' && args.x_scale_type === 'log') || (axis === 'y' && args.y_scale_type === 'log')) {
+  if ((axis === 'x' && args.x_scale_type === 'log') || (axis === 'y' && args.yScaleType === 'log')) {
     // get out only whole logs
     scaleTicks = scaleTicks.filter(d => Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6)
   }

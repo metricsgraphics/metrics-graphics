@@ -7,9 +7,9 @@ import { timeFormat as d3TimeFormat } from 'd3-time-format'
 import { defaultXaxFormat, getYFormatAndSecondaryTimeFunction } from './x_axis'
 
 export function processScaleTicks (args, axis) {
-  var accessor = args[axis + '_accessor']
-  var scaleTicks = args.scales[axis.toUpperCase()].ticks(args[axis + 'ax_count'])
-  var max = args.processed['max_' + axis]
+  var accessor = args[axis + 'Accessor']
+  var scaleTicks = args.scales[axis.toUpperCase()].ticks(args[axis + 'axCount'])
+  var max = args.processed[axis + 'Max']
 
   function log10 (val) {
     if (val === 1000) {
@@ -21,7 +21,7 @@ export function processScaleTicks (args, axis) {
     return Math.log(val) / Math.LN10
   }
 
-  if (args[axis + '_scale_type'] === 'log') {
+  if (args[axis + 'ScaleType'] === 'log') {
     // get out only whole logs
     scaleTicks = scaleTicks.filter(function (d) {
       return Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6
@@ -49,7 +49,7 @@ export function processScaleTicks (args, axis) {
     })
   }
 
-  args.processed[axis + '_ticks'] = scaleTicks
+  args.processed[axis + 'Ticks'] = scaleTicks
 }
 
 export function rugPlacement (args, axisArgs) {
@@ -86,8 +86,8 @@ export function rugPlacement (args, axisArgs) {
 export function rimPlacement (args, axisArgs) {
   var ns = axisArgs.namespace
   var position = axisArgs.position
-  var tickLength = args.processed[ns + '_ticks'].length
-  var ticks = args.processed[ns + '_ticks']
+  var tickLength = args.processed[ns + 'Ticks'].length
+  var ticks = args.processed[ns + 'Ticks']
   var scale = args.scales[ns.toUpperCase()]
   var coordinates = {}
 
@@ -132,7 +132,7 @@ export function rimPlacement (args, axisArgs) {
 export function labelPlacement (args, axisArgs) {
   var position = axisArgs.position
   var ns = axisArgs.namespace
-  var tickLength = args[ns + 'ax_tickLength']
+  var tickLength = args[ns + 'axTickLength']
   var scale = args.scales[ns.toUpperCase()]
   var coordinates = {}
 
@@ -261,7 +261,7 @@ export function yearMarkerText (args, axisArgs, g, years, yFormat) {
 export function addNumericalLabels (g, args, axisArgs) {
   var ns = axisArgs.namespace
   var coords = labelPlacement(args, axisArgs)
-  var ticks = args.processed[ns + '_ticks']
+  var ticks = args.processed[ns + 'Ticks']
 
   var labels = g.selectAll('.mg-yax-labels')
     .data(ticks).enter()
@@ -314,11 +314,11 @@ export function addTickLines (g, args, axisArgs) {
   var position = axisArgs.position
   var scale = args.scales[ns.toUpperCase()]
 
-  var ticks = args.processed[ns + '_ticks']
+  var ticks = args.processed[ns + 'Ticks']
   var ticksClass = 'mg-' + ns + 'ax-ticks'
   var extendedTicksClass = 'mg-extended-' + ns + 'ax-ticks'
-  var extendedTicks = args[ns + '_extended_ticks']
-  var tickLength = args[ns + 'ax_tickLength']
+  var extendedTicks = args[ns + 'ExtendedTicks']
+  var tickLength = args[ns + 'axTickLength']
 
   var x1, x2, y1, y2
 
@@ -375,11 +375,11 @@ export function addTickLines (g, args, axisArgs) {
 
 export function initializeAxisRim (g, args, axisArgs) {
   var namespace = axisArgs.namespace
-  var tickLength = args.processed[namespace + '_ticks'].length
+  var tickLength = args.processed[namespace + 'Ticks'].length
 
   var rim = rimPlacement(args, axisArgs)
 
-  if (!args[namespace + '_extended_ticks'] && !args[namespace + '_extended_ticks'] && tickLength) {
+  if (!args[namespace + 'ExtendedTicks'] && !args[namespace + 'ExtendedTicks'] && tickLength) {
     g.append('line')
       .attr('x1', rim.x1)
       .attr('x2', rim.x2)
@@ -824,8 +824,8 @@ export function barAddZeroLine (args) {
   var extents = args.scales.X.domain()
   if (extents[0] <= 0 && extents[1] >= 0) {
     var r = args.scales.Y.range()
-    var g = args.categorical_groups.length
-      ? args.scales.YGROUP(args.categorical_groups[args.categorical_groups.length - 1])
+    var g = args.categoricalGroups.length
+      ? args.scales.YGROUP(args.categoricalGroups[args.categoricalGroups.length - 1])
       : args.scales.YGROUP()
 
     svg.append('svg:line')
@@ -839,38 +839,38 @@ export function barAddZeroLine (args) {
 }
 
 export function yDomainRange (args, scale) {
-  scale.domain([args.processed.min_y, args.processed.max_y])
+  scale.domain([args.processed.minY, args.processed.maxY])
     .range([getPlotBottom(args), args.top])
   return scale
 }
 
 export function defineYScales (args) {
-  var scale = (typeof args.y_scale_type === 'function')
-    ? args.y_scale_type()
-    : (args.y_scale_type === 'log')
+  var scale = (typeof args.yScaleType === 'function')
+    ? args.yScaleType()
+    : (args.yScaleType === 'log')
       ? scaleLog()
       : scaleLinear()
 
-  if (args.y_scale_type === 'log') {
+  if (args.yScaleType === 'log') {
     if (args.chartType === 'histogram') {
       // log histogram plots should start just below 1
       // so that bins with single counts are visible
-      args.processed.min_y = 0.2
+      args.processed.minY = 0.2
     } else {
-      if (args.processed.min_y <= 0) {
-        args.processed.min_y = 1
+      if (args.processed.minY <= 0) {
+        args.processed.minY = 1
       }
     }
   }
   args.scales.Y = yDomainRange(args, scale)
-  args.scales.Y.clamp(args.y_scale_type === 'log')
+  args.scales.Y.clamp(args.yScaleType === 'log')
 
   // used for ticks and such, and designed to be paired with log or linear
   args.scales.yAxis = yDomainRange(args, scaleLinear())
 }
 
 export function addYLabel (g, args) {
-  if (args.y_label) {
+  if (args.yLabel) {
     g.append('text')
       .attr('class', 'label')
       .attr('x', function () {
@@ -883,7 +883,7 @@ export function addYLabel (g, args) {
       .attr('dy', '-1.2em')
       .attr('text-anchor', 'middle')
       .text(function (d) {
-        return args.y_label
+        return args.yLabel
       })
       .attr('transform', function (d) {
         return 'rotate(-90)'
@@ -893,7 +893,7 @@ export function addYLabel (g, args) {
 
 export function addYAxisRim (g, args) {
   var tickLength = args.processed.yTicks.length
-  if (!args.xExtendedTicks && !args.y_extended_ticks && tickLength) {
+  if (!args.xExtendedTicks && !args.yExtendedTicks && tickLength) {
     var y1scale, y2scale
 
     if (args.axesNotCompact && args.chartType !== 'bar') {
@@ -919,10 +919,10 @@ export function addYAxisTickLines (g, args) {
   g.selectAll('.mg-yax-ticks')
     .data(args.processed.yTicks).enter()
     .append('line')
-    .classed('mg-extended-yax-ticks', args.y_extended_ticks)
+    .classed('mg-extended-yax-ticks', args.yExtendedTicks)
     .attr('x1', args.left)
     .attr('x2', function () {
-      return (args.y_extended_ticks) ? args.width - args.right : args.left - args.yax_tickLength
+      return (args.yExtendedTicks) ? args.width - args.right : args.left - args.yaxTickLength
     })
     .attr('y1', function (d) {
       return args.scales.Y(d).toFixed(2)
@@ -937,7 +937,7 @@ export function addYAxisTickLabels (g, args) {
   g.selectAll('.mg-yax-labels')
     .data(args.processed.yTicks).enter()
     .append('text')
-    .attr('x', args.left - args.yax_tickLength * 3 / 2)
+    .attr('x', args.left - args.yaxTickLength * 3 / 2)
     .attr('dx', -3)
     .attr('y', function (d) {
       return args.scales.Y(d).toFixed(2)
@@ -957,7 +957,7 @@ export function yAxis (args) {
   }
 
   var svg = getSvgChildOf(args.target)
-  callHook('yAxis.process_min_max', args, args.processed.min_y, args.processed.max_y)
+  callHook('yAxis.processMinMax', args, args.processed.minY, args.processed.maxY)
   selectAllAndRemove(svg, '.mg-y-axis')
 
   if (!args.yAxis) {
@@ -982,14 +982,14 @@ export function addCategoricalLabels (args) {
   var svg = getSvgChildOf(args.target)
   selectAllAndRemove(svg, '.mg-y-axis')
   var g = addG(svg, 'mg-y-axis')
-  var groupG; (args.categorical_groups.length ? args.categorical_groups : ['1']).forEach(function (group) {
+  var groupG; (args.categoricalGroups.length ? args.categoricalGroups : ['1']).forEach(function (group) {
     groupG = addG(g, 'mg-group-' + normalize(group))
 
     if (args.yGroupAccessor !== null) {
       addGroupLabel(groupG, group, args)
     } else {
       var labels = addGraphicLabels(groupG, group, args)
-      rotateLabels(labels, args.rotate_y_labels)
+      rotateLabels(labels, args.rotateYLabels)
     }
   })
 }
@@ -1056,9 +1056,8 @@ export function yAxisCategorical (args) {
   }
 
   addCategoricalLabels(args)
-  // mg_draw_group_scaffold(args);
   if (args.showBarZero) barAddZeroLine(args)
   if (args.yGroupAccessor) drawGroupLines(args)
-  if (args.y_categorical_show_guides) yCategoricalShowGuides(args)
+  if (args.yCategoricalShowGuides) yCategoricalShowGuides(args)
   return this
 }

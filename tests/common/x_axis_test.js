@@ -77,7 +77,7 @@ test('args.labels (scatter plot)', function () {
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
     xLabel: 'foo bar',
-    y_label: 'bar foo',
+    yLabel: 'bar foo',
     chartType: 'point'
   }
 

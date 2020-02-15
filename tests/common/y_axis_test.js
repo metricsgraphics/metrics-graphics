@@ -51,12 +51,12 @@ test('Only one mg-category-guides group is added on multiple calls to the same t
   equal(document.querySelectorAll(params.target + ' .mg-category-guides').length, 1, 'We only have one mg-category-guides')
 })
 
-test('args.y_label', function () {
+test('args.yLabel', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_label: 'foo bar'
+    yLabel: 'foo bar'
   }
 
   MG.data_graphic(params)
@@ -109,7 +109,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
   equal(document.querySelectorAll('.mg-y-rug').length, 2, 'We only have one rugplot on the y-axis')
 })
 
-test('Default min_y is 0', function () {
+test('Default minY is 0', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
@@ -120,36 +120,36 @@ test('Default min_y is 0', function () {
   equal(document.querySelectorAll('.mg-y-axis text')[0].textContent, 0, 'Y-axis starts at 0')
 })
 
-test('args.min_y_from_data', function () {
+test('args.minY_from_data', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    min_y_from_data: true
+    minY_from_data: true
   }
 
   MG.data_graphic(params)
   equal(document.querySelectorAll('.mg-y-axis text')[0].textContent, 12, 'Y-axis starts at 12')
 })
 
-test('args.min_y set to arbitrary value', function () {
+test('args.minY set to arbitrary value', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    min_y: 5
+    minY: 5
   }
 
   MG.data_graphic(params)
   equal(document.querySelectorAll('.mg-y-axis text')[0].textContent, 5, 'Y-axis starts at 5')
 })
 
-test('args.y_extended_ticks', function () {
+test('args.yExtendedTicks', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_extended_ticks: true
+    yExtendedTicks: true
   }
 
   MG.data_graphic(params)
@@ -175,7 +175,7 @@ test('percentage args.format is correct', function () {
       { date: new Date('2014-03-01'), value: 1.20 }],
     format: 'percentage',
     height: 400,
-    min_y_from_data: true
+    minY_from_data: true
   }
 
   MG.data_graphic(params)
@@ -194,12 +194,12 @@ test('args.yaxUnits', function () {
   equal(document.querySelector('.mg-y-axis text').textContent[0], '$', 'Y-axis units are $')
 })
 
-test('When args.max_y is set, ignore inflator', function () {
+test('When args.maxY is set, ignore inflator', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    max_y: 60
+    maxY: 60
   }
 
   MG.data_graphic(params)

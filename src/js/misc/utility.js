@@ -48,8 +48,8 @@ export function getRolloverTimeFormat (args) {
 export function dataInPlotBounds (datum, args) {
   return datum[args.xAccessor] >= args.processed.minX &&
   datum[args.xAccessor] <= args.processed.maxX &&
-  datum[args.yAccessor] >= args.processed.min_y &&
-  datum[args.yAccessor] <= args.processed.max_y
+  datum[args.yAccessor] >= args.processed.minY &&
+  datum[args.yAccessor] <= args.processed.maxY
 }
 
 export function getBottom (args) { return args.height - args.bottom }

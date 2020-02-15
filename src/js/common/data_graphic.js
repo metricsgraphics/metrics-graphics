@@ -26,10 +26,10 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   xgroup_outer_padding_percentage: [0, 'number'], // for categorical scales
   yGroupAccessor: [null, 'string'],
   xgroup_accessor: [null, 'string'],
-  y_categorical_show_guides: [false, 'boolean'],
+  yCategoricalShowGuides: [false, 'boolean'],
   x_categorical_show_guide: [false, 'boolean'],
   rotateXLabels: [0, 'number'],
-  rotate_y_labels: [0, 'number'],
+  rotateYLabels: [0, 'number'],
   scales: [{}],
   scaleFunctions: [{}],
   // Data
@@ -44,12 +44,12 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   // Axes
   axesNotCompact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
   europeanClock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
-  inflator: [10 / 9, 'number'], // a multiplier for inflating maxX and max_y
+  inflator: [10 / 9, 'number'], // a multiplier for inflating maxX and maxY
   maxX: [null, ['number', Date]], // the maximum x-value
-  max_y: [null, ['number', Date]], // the maximum y-value
+  maxY: [null, ['number', Date]], // the maximum y-value
   minX: [null, ['number', Date]], // the minimum x-value
-  min_y: [null, ['number', Date]], // the minimum y-value
-  min_y_from_data: [false, 'boolean'], // starts y-axis at data's minimum value
+  minY: [null, ['number', Date]], // the minimum y-value
+  minY_from_data: [false, 'boolean'], // starts y-axis at data's minimum value
   showYearMarkers: [false, 'boolean'], // determines whether to show year markers along the x-axis
   showSecondaryXLabel: [true, 'boolean'], // determines whether to show years along the x-axis
   small_text: [false, 'boolean'],
@@ -64,12 +64,12 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   yAxis: [true, 'boolean'], // determines whether to display the y-axis
   xAxis_position: ['bottom'], // string
   yAxis_position: ['left'], // string
-  y_extended_ticks: [false, 'boolean'], // determines whether to extend the y-axis ticks across the chart
-  y_label: ['', 'string'], // the label to show beside the y-axis
-  y_scale_type: ['linear', ['linear', 'log']], // the y-axis scale type
+  yExtendedTicks: [false, 'boolean'], // determines whether to extend the y-axis ticks across the chart
+  yLabel: ['', 'string'], // the label to show beside the y-axis
+  yScaleType: ['linear', ['linear', 'log']], // the y-axis scale type
   yax_count: [3, 'number'], // the number of y-axis ticks
   yaxFormat: [null, 'function'], // a function that formats the y-axis' labels
-  yax_tickLength: [5, 'number'], // the y-axis' tick length in pixels
+  yaxTickLength: [5, 'number'], // the y-axis' tick length in pixels
   yaxUnits: ['', 'string'], // a prefix symbol to be shown alongside the y-axis' labels
   yaxUnitsAppend: [false, 'boolean'], // determines whether to append rather than prepend units
   // GraphicOptions

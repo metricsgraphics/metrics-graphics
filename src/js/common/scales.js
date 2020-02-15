@@ -89,7 +89,7 @@ function MGScale (args) {
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_timeSeries)
       ? time_scale
       : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
-        ? args.y_scale_type()
+        ? args.yScaleType()
         : (args[scaleArgs.namespace + '_scale_type'] === 'log')
           ? d3.scaleLog()
           : d3.scaleLinear()
@@ -275,8 +275,8 @@ function mg_min_max_numerical (args, scaleArgs, additional_data_arrays) {
     args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0]
     args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1]
   }
-  MG.callHook('xAxis.process_min_max', args, args.processed.minX, args.processed.maxX)
-  MG.callHook('yAxis.process_min_max', args, args.processed.min_y, args.processed.max_y)
+  MG.callHook('xAxis.processMinMax', args, args.processed.minX, args.processed.maxX)
+  MG.callHook('yAxis.processMinMax', args, args.processed.minY, args.processed.maxY)
 }
 
 function mg_categorical_group_color_scale (args) {

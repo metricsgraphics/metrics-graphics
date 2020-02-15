@@ -452,7 +452,7 @@ MG.data_graphic({
     bins: 50,
     bar_margin: 0,
     target: '#histogram1',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
@@ -476,7 +476,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         bar_margin: 0,
         bins: 150,
         target: '#ufos',
-        y_extended_ticks: true,
+        yExtendedTicks: true,
         mouseover: function(d, i) {
             var pf = d3.format(',.2f');
             d3.select('#ufos svg .mg-active-datapoint')
@@ -501,7 +501,7 @@ MG.data_graphic({
     height: 180,
     right: 10,
     target: '#histogram2',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'value',
     yAccessor: 'count',
     mouseover: function(d, i) {
@@ -524,7 +524,7 @@ MG.data_graphic({
     right: 10,
     target: '#histogram3',
     linked: true,
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
@@ -546,7 +546,7 @@ MG.data_graphic({
     height: 180,
     right: 10,
     target: '#histogram4',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
@@ -875,7 +875,7 @@ MG.data_graphic({
     bins: 50,
     bar_margin: 0,
     target: '#histogram1',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
         d3.select('#histogram1 svg .mg-active-datapoint')
@@ -899,7 +899,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         bar_margin: 0,
         bins: 150,
         target: '#ufos',
-        y_extended_ticks: true,
+        yExtendedTicks: true,
         mouseover: function(d, i) {
             var pf = d3.format(',.2f');
             d3.select('#ufos svg .mg-active-datapoint')
@@ -923,7 +923,7 @@ MG.data_graphic({
     width: 295,
     height: 180,
     target: '#histogram2',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'value',
     yAccessor: 'count',
     mouseover: function(d, i) {
@@ -945,7 +945,7 @@ MG.data_graphic({
     height: 180,
     target: '#histogram3',
     linked: true,
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
@@ -966,7 +966,7 @@ MG.data_graphic({
     width: 295,
     height: 180,
     target: '#histogram4',
-    y_extended_ticks: true,
+    yExtendedTicks: true,
     xAccessor: 'val1',
     mouseover: function(d, i) {
         var pf = d3.format(',.2f');
