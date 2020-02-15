@@ -801,7 +801,7 @@
       this.mainPlot()
       this.rollover()
       this.windowListeners()
-      if (args.brush) MG.add_brush_function(args)
+      if (args.brush) MG.addBrushFunction(args)
       MG.callHook('line.after_init', this)
 
       return this

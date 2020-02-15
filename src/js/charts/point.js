@@ -159,7 +159,7 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
       this.markers()
       this.rollover()
       this.windowListeners()
-      if (args.brush) MG.add_brush_function(args)
+      if (args.brush) MG.addBrushFunction(args)
       return this
     }
 
