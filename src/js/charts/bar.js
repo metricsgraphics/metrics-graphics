@@ -263,7 +263,7 @@
         .position(args.yAxis_position)
         .draw()
 
-      // mg_categorical_group_color_scale(args);
+      // categoricalGroupColorScale(args);
 
       this.mainPlot()
       this.markers()

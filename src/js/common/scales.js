@@ -1,11 +1,17 @@
-function addScaleFunction (args, scalefcn_name, scale, accessor, inflation) {
-  args.scaleFunctions[scalefcn_name] = function (di) {
+import { extent } from 'd3-array'
+import { scaleOrdinal, scaleUtc, scaleTime, scaleLog, scaleLinear, scaleBand } from 'd3-scale'
+import { schemeCategory20, schemeCategory10 } from 'd3-scale-chromatic'
+import { getPlotRight, getPlotLeft, getPlotBottom, getPlotTop, clone } from '../misc/utility'
+import { forceXaxCountToBeTwo } from './xAxis'
+
+export function addScaleFunction (args, scaleFunctionName, scale, accessor, inflation) {
+  args.scaleFunctions[scaleFunctionName] = function (di) {
     if (inflation === undefined) return args.scales[scale](di[accessor])
     else return args.scales[scale](di[accessor]) + inflation
   }
 }
 
-function mg_position (str, args) {
+export function mg_position (str, args) {
   if (str === 'bottom' || str === 'top') {
     return [getPlotLeft(args), getPlotRight(args)]
   }
@@ -15,7 +21,7 @@ function mg_position (str, args) {
   }
 }
 
-function mg_cat_position (str, args) {
+export function catPosition (str, args) {
   if (str === 'bottom' || str === 'top') {
     return [getPlotLeft(args), getPlotRight(args)]
   }
@@ -25,17 +31,17 @@ function mg_cat_position (str, args) {
   }
 }
 
-function MGScale (args) {
+export function MGScale (args) {
   // big wrapper around d3 scale that automatically formats & calculates scale bounds
   // according to the data, and handles other niceties.
   var scaleArgs = {}
-  scaleArgs.use_inflator = false
-  scaleArgs.zero_bottom = false
+  scaleArgs.useInflator = false
+  scaleArgs.zeroBottom = false
   scaleArgs.scaleType = 'numerical'
 
   this.namespace = function (_namespace) {
     scaleArgs.namespace = _namespace
-    scaleArgs.namespace_accessor_name = scaleArgs.namespace + '_accessor'
+    scaleArgs.namespaceAccessorName = scaleArgs.namespace + '_accessor'
     scaleArgs.scale_name = scaleArgs.namespace.toUpperCase()
     scaleArgs.scalefn_name = scaleArgs.namespace + 'f'
     return this
@@ -48,12 +54,12 @@ function MGScale (args) {
   }
 
   this.inflateDomain = function (tf) {
-    scaleArgs.use_inflator = tf
+    scaleArgs.useInflator = tf
     return this
   }
 
   this.zeroBottom = function (tf) {
-    scaleArgs.zero_bottom = tf
+    scaleArgs.zeroBottom = tf
     return this
   }
 
@@ -63,36 +69,34 @@ function MGScale (args) {
   // these functions automatically create the d3 scale function and place the domain.
 
   this.numericalDomainFromData = function () {
-    var other_flat_data_arrays = []
+    var otherFlatDataArrays = []
 
     if (arguments.length > 0) {
-      other_flat_data_arrays = arguments
+      otherFlatDataArrays = arguments
     }
 
     // pull out a non-empty array in args.data.
-    var illustrative_data
+    var illustrativeData
     for (var i = 0; i < args.data.length; i++) {
       if (args.data[i].length > 0) {
-        illustrative_data = args.data[i]
+        illustrativeData = args.data[i]
       }
     }
-    scaleArgs.is_timeSeries = !!mg_is_date(illustrative_data[0][args[scaleArgs.namespace_accessor_name]])
+    scaleArgs.is_timeSeries = !!(illustrativeData[0][args[scaleArgs.namespaceAccessorName]] instanceof Date)
 
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name])
+    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
 
-    mg_min_max_numerical(args, scaleArgs, other_flat_data_arrays, scaleArgs.use_inflator)
+    minMaxNumerical(args, scaleArgs, otherFlatDataArrays, scaleArgs.useInflator)
 
-    var time_scale = (args.utcTime)
-      ? d3.scaleUtc()
-      : d3.scaleTime()
+    var timeScale = args.utcTime ? scaleUtc() : scaleTime()
 
     args.scales[scaleArgs.scale_name] = (scaleArgs.is_timeSeries)
-      ? time_scale
-      : (mg_is_function(args[scaleArgs.namespace + '_scale_type']))
+      ? timeScale
+      : (typeof args[scaleArgs.namespace + 'ScaleType'] === 'function')
         ? args.yScaleType()
-        : (args[scaleArgs.namespace + '_scale_type'] === 'log')
-          ? d3.scaleLog()
-          : d3.scaleLinear()
+        : (args[scaleArgs.namespace + 'ScaleType'] === 'log')
+          ? scaleLog()
+          : scaleLinear()
 
     args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]])
     scaleArgs.scaleType = 'numerical'
@@ -101,20 +105,20 @@ function MGScale (args) {
   }
 
   this.categoricalDomain = function (domain) {
-    args.scales[scaleArgs.scale_name] = d3.scaleOrdinal().domain(domain)
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name])
+    args.scales[scaleArgs.scale_name] = scaleOrdinal().domain(domain)
+    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
     return this
   }
 
   this.categoricalDomainFromData = function () {
     // make args.categoricalVariables.
     // lets make the categorical variables.
-    var allData = mg_flatten_array(args.data)
+    var allData = args.data.flat()
     // d3.set(data.map(function(d){return d[args.group_accessor]})).values()
-    scaleArgs.categoricalVariables = d3.set(allData.map(function (d) {
-      return d[args[scaleArgs.namespace_accessor_name]]
-    })).values()
-    args.scales[scaleArgs.scale_name] = d3.scaleBand()
+    scaleArgs.categoricalVariables = Array.from(new Set(allData.map(function (d) {
+      return d[args[scaleArgs.namespaceAccessorName]]
+    })))
+    args.scales[scaleArgs.scale_name] = scaleBand()
       .domain(scaleArgs.categoricalVariables)
 
     scaleArgs.scaleType = 'categorical'
@@ -162,7 +166,7 @@ function MGScale (args) {
       args,
       scaleArgs.scalefn_name,
       scaleArgs.scale_name,
-      args[scaleArgs.namespace_accessor_name],
+      args[scaleArgs.namespaceAccessorName],
       halfway
         ? args.scales[scaleArgs.scale_name].bandwidth() / 2
         : 0
@@ -173,20 +177,20 @@ function MGScale (args) {
 
   this.categoricalRange = function (range) {
     args.scales[scaleArgs.scale_name].range(range)
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name])
+    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
     return this
   }
 
   this.categoricalColorRange = function () {
     args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
-      ? d3.scaleOrdinal(d3.schemeCategory20)
-      : d3.scaleOrdinal(d3.schemeCategory10)
+      ? scaleOrdinal(schemeCategory20)
+      : scaleOrdinal(schemeCategory10)
 
     args
       .scales[scaleArgs.scale_name]
       .domain(scaleArgs.categoricalVariables)
 
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespace_accessor_name])
+    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
     return this
   }
 
@@ -198,13 +202,11 @@ function MGScale (args) {
   return this
 }
 
-MG.scale_factory = MGScale
-
 /// //////////////////////////// x, xAccessor, markers, baselines, etc.
-function mg_min_max_numerical (args, scaleArgs, additional_data_arrays) {
+export function minMaxNumerical (args, scaleArgs, additionalDataArrays) {
   // A BIT OF EXPLANATION ABOUT THIS FUNCTION
   // This function pulls out all the accessor values in all the arrays in args.data.
-  // We also have this additional argument, additional_data_arrays, which is an array of arrays of raw data values.
+  // We also have this additional argument, additionalDataArrays, which is an array of arrays of raw data values.
   // These values also get concatenated to the data pulled from args.data, and the extents are calculate from that.
   // They are optional.
   //
@@ -212,74 +214,74 @@ function mg_min_max_numerical (args, scaleArgs, additional_data_arrays) {
   // the min and max for the y axis of a line chart, we're going to want to also factor in baselines (horizontal lines
   // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code
   // & scale creation to just flatten the args.baselines array, pull out hte values, and feed it in
-  // so it appears in additional_data_arrays.
+  // so it appears in additionalDataArrays.
   var namespace = scaleArgs.namespace
-  var namespace_accessor_name = scaleArgs.namespace_accessor_name
-  var use_inflator = scaleArgs.use_inflator
-  var zero_bottom = scaleArgs.zero_bottom
+  var namespaceAccessorName = scaleArgs.namespaceAccessorName
+  var useInflator = scaleArgs.useInflator
+  var zeroBottom = scaleArgs.zeroBottom
 
-  var accessor = args[namespace_accessor_name]
+  var accessor = args[namespaceAccessorName]
 
   // add together all relevant data arrays.
-  var allData = mg_flatten_array(args.data)
+  var allData = args.data.flat()
     .map(function (dp) {
       return dp[accessor]
     })
-    .concat(mg_flatten_array(additional_data_arrays))
+    .concat(additionalDataArrays.flat())
 
   // do processing for log
-  if (args[namespace + '_scale_type'] === 'log') {
+  if (args[namespace + 'ScaleType'] === 'log') {
     allData = allData.filter(function (d) {
       return d > 0
     })
   }
 
   // use inflator?
-  var extents = d3.extent(allData)
-  var min_val = extents[0]
-  var max_val = extents[1]
+  var extents = extent(allData)
+  var minVal = extents[0]
+  var maxVal = extents[1]
 
   // bolt scale domain to zero when the right conditions are met:
   // not pulling the bottom of the range from data
   // not zero-bottomed
   // not a time series
-  if (zero_bottom && !args['min_' + namespace + '_from_data'] && min_val > 0 && !scaleArgs.is_timeSeries) {
-    min_val = args[namespace + '_scale_type'] === 'log' ? 1 : 0
+  if (zeroBottom && !args['min_' + namespace + '_from_data'] && minVal > 0 && !scaleArgs.is_timeSeries) {
+    minVal = args[namespace + 'ScaleType'] === 'log' ? 1 : 0
   }
 
-  if (args[namespace + '_scale_type'] !== 'log' && min_val < 0 && !scaleArgs.is_timeSeries) {
-    min_val = min_val - (min_val - min_val * args.inflator) * use_inflator
+  if (args[namespace + 'ScaleType'] !== 'log' && minVal < 0 && !scaleArgs.is_timeSeries) {
+    minVal = minVal - (minVal - minVal * args.inflator) * useInflator
   }
 
   if (!scaleArgs.is_timeSeries) {
-    max_val = (max_val < 0) ? max_val + (max_val - max_val * args.inflator) * use_inflator : max_val * (use_inflator ? args.inflator : 1)
+    maxVal = (maxVal < 0) ? maxVal + (maxVal - maxVal * args.inflator) * useInflator : maxVal * (useInflator ? args.inflator : 1)
   }
 
-  min_val = args['min_' + namespace] != null ? args['min_' + namespace] : min_val
-  max_val = args['max_' + namespace] != null ? args['max_' + namespace] : max_val
+  minVal = args['min_' + namespace] != null ? args['min_' + namespace] : minVal
+  maxVal = args['max_' + namespace] != null ? args['max_' + namespace] : maxVal
   // if there's a single data point, we should custom-set the max values
   // so we're displaying some kind of range
-  if (min_val === max_val && args['min_' + namespace] == null &&
+  if (minVal === maxVal && args['min_' + namespace] == null &&
       args['max_' + namespace] == null) {
-    if (mg_is_date(min_val)) {
-      max_val = new Date(MG.clone(min_val).setDate(min_val.getDate() + 1))
-    } else if (typeof min_val === 'number') {
-      max_val = min_val + 1
+    if (minVal instanceof Date) {
+      maxVal = new Date(clone(minVal).setDate(minVal.getDate() + 1))
+    } else if (typeof minVal === 'number') {
+      maxVal = minVal + 1
       forceXaxCountToBeTwo(args)
     }
   }
 
-  args.processed['min_' + namespace] = min_val
-  args.processed['max_' + namespace] = max_val
+  args.processed['min_' + namespace] = minVal
+  args.processed['max_' + namespace] = maxVal
   if (args.processed['zoom_' + namespace]) {
     args.processed['min_' + namespace] = args.processed['zoom_' + namespace][0]
     args.processed['max_' + namespace] = args.processed['zoom_' + namespace][1]
   }
-  MG.callHook('xAxis.processMinMax', args, args.processed.minX, args.processed.maxX)
-  MG.callHook('yAxis.processMinMax', args, args.processed.minY, args.processed.maxY)
+  callHook('xAxis.processMinMax', args, args.processed.minX, args.processed.maxX)
+  callHook('yAxis.processMinMax', args, args.processed.minY, args.processed.maxY)
 }
 
-function mg_categorical_group_color_scale (args) {
+export function categoricalGroupColorScale (args) {
   if (args.colorAccessor !== false) {
     if (args.yGroupAccessor) {
       // add a custom accessor element.
@@ -288,7 +290,7 @@ function mg_categorical_group_color_scale (args) {
       } else {}
     }
     if (args.colorAccessor !== null) {
-      new MG.scale_factory(args)
+      new MGScale(args)
         .namespace('color')
         .categoricalDomainFromData()
         .categoricalColorRange()
@@ -296,29 +298,28 @@ function mg_categorical_group_color_scale (args) {
   }
 }
 
-function mg_add_color_categorical_scale (args, domain, accessor) {
-  args.scales.color = d3.scaleOrdinal(d3.schemeCategory20).domain(domain)
+export function addColorCategoricalScale (args, domain, accessor) {
+  args.scales.color = scaleOrdinal(schemeCategory20).domain(domain)
   args.scaleFunctions.color = function (d) {
     return args.scales.color(d[accessor])
   }
 }
 
-function mg_get_categorical_domain (data, accessor) {
-  return d3.set(data.map(function (d) {
+export function getCategoricalDomain (data, accessor) {
+  return Array.from(new Set(data.map(function (d) {
     return d[accessor]
-  }))
-    .values()
+  })))
 }
 
-function getColorDomain (args) {
+export function getColorDomain (args) {
   var colorDomain
   if (args.colorDomain === null) {
     if (args.colorType === 'number') {
-      colorDomain = d3.extent(args.data[0], function (d) {
+      colorDomain = extent(args.data[0], function (d) {
         return d[args.colorAccessor]
       })
     } else if (args.colorType === 'category') {
-      colorDomain = mg_get_categorical_domain(args.data[0], args.colorAccessor)
+      colorDomain = getCategoricalDomain(args.data[0], args.colorAccessor)
     }
   } else {
     colorDomain = args.colorDomain
@@ -326,7 +327,7 @@ function getColorDomain (args) {
   return colorDomain
 }
 
-function getColorRange (args) {
+export function getColorRange (args) {
   var colorRange
   if (args.colorRange === null) {
     if (args.colorType === 'number') {

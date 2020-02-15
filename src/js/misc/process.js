@@ -21,7 +21,7 @@ export function processScaleTicks (args, axis) {
     return val === 1000 ? 3 : val === 1000000 ? 7 : Math.log(val) / Math.LN10
   }
 
-  if ((axis === 'x' && args.x_scale_type === 'log') || (axis === 'y' && args.yScaleType === 'log')) {
+  if ((axis === 'x' && args.xScaleType === 'log') || (axis === 'y' && args.yScaleType === 'log')) {
     // get out only whole logs
     scaleTicks = scaleTicks.filter(d => Math.abs(log10(d)) % 1 < 1e-6 || Math.abs(log10(d)) % 1 > 1 - 1e-6)
   }

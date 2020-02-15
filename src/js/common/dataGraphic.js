@@ -60,7 +60,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   xaxFormat: [null, 'function'], // a function that formats the x-axis' labels
   xaxTickLength: [5, 'number'], // the x-axis' tick length in pixels
   xaxUnits: ['', 'string'], // a prefix symbol to be shown alongside the x-axis' labels
-  x_scale_type: ['linear', 'log'], // the x-axis scale type
+  xScaleType: ['linear', 'log'], // the x-axis scale type
   yAxis: [true, 'boolean'], // determines whether to display the y-axis
   xAxis_position: ['bottom'], // string
   yAxis_position: ['left'], // string
