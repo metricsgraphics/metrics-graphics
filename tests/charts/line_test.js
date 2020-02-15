@@ -8,7 +8,7 @@ test('Confidence band is added', function () {
     showConfidenceBand: ['l', 'u']
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-confidence-band'), 'Confidence band is added')
 })
 
@@ -21,8 +21,8 @@ test('Only one confidence is added on multiple calls to the same target element'
     title: 'confidence added multiple calls'
   }
   var params2 = MG.clone(params)
-  MG.data_graphic(params)
-  MG.data_graphic(params2)
+  MG.dataGraphic(params)
+  MG.dataGraphic(params2)
   equal(document.querySelectorAll(params.target + ' .mg-confidence-band').length, 1, 'We only have one confidence band')
 })
 
@@ -33,7 +33,7 @@ test('args.area set to true', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-main-area'), 'Path set for area')
 })
 
@@ -45,7 +45,7 @@ test('args.area set to false', function () {
     area: false
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelector('.mg-main-area'), null, 'No path for area')
 })
 
@@ -57,7 +57,7 @@ test('args.area set to false', function () {
 //                {'date': new Date('2014-03-01'), 'value': 18}]
 //     };
 
-//     MG.data_graphic(params);
+//     MG.dataGraphic(params);
 //     equal(document.querySelectorAll('.mg-active-datapoint').length, 1, 'One active datapoint exists');
 // });
 
@@ -68,7 +68,7 @@ test('A solitary rollover circle exists', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-line-rollover-circle').length, 1, 'One rollover circle exists')
 })
 
@@ -79,7 +79,7 @@ test('Rollovers work for single lines', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-rollover-rect'), 'Rollovers exist')
 })
 
@@ -92,7 +92,7 @@ test('Rollovers work for multiple lines', function () {
       { date: new Date('2014-03-01'), value: 180 }]]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-voronoi'), 'Rollovers exist')
 })
 
@@ -103,7 +103,7 @@ test('We have only one set of rollovers for single lines', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-rollover-rect').length, 1, 'One set of rollovers exists')
 })
 
@@ -116,7 +116,7 @@ test('We have only one set of rollovers for multiple lines', function () {
       { date: new Date('2014-03-01'), value: 180 }]]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists')
 })
 
@@ -130,7 +130,7 @@ test('We use the rect-style rollovers when `aggregateRolloveres == true`', funct
     aggregateRollover: true
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   // ensure rollover returns aggregated result data
   equal(document.querySelectorAll('.mg-voronoi').length, 0, 'Voronoi rollover is not generated')
@@ -144,7 +144,7 @@ test('There are as many lines as data series (one)', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-main-line').length, 1, 'One line exists')
 })
 
@@ -157,7 +157,7 @@ test('There are as many lines as data series (two)', function () {
       { date: new Date('2014-03-01'), value: 180 }]]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-main-line').length, 2, 'Two lines exist')
 })
 
@@ -170,8 +170,8 @@ test('There are as many lines as data series (two) on multiple calls to an exist
       { date: new Date('2014-03-01'), value: 180 }]]
   }
   var params2 = MG.clone(params)
-  MG.data_graphic(params)
-  MG.data_graphic(params2)
+  MG.dataGraphic(params)
+  MG.dataGraphic(params2)
 
   equal(document.querySelectorAll('.mg-main-line').length, 2, 'Two lines exist')
 })
@@ -191,8 +191,8 @@ test('No zombie lines when we update a chart with fewer lines', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(params2)
+  MG.dataGraphic(params)
+  MG.dataGraphic(params2)
 
   equal(document.querySelectorAll('.mg-main-line').length, 1, 'One line exists')
 })
@@ -201,7 +201,7 @@ test('Rollover circle is visible on load if the dataset is of length 1', functio
   var data = [{ date: '2014-02-01', value: 6 }]
   var data = MG.convert.date(data, 'date')
 
-  MG.data_graphic({
+  MG.dataGraphic({
     data: data,
     target: '#qunit-fixture'
   })
@@ -217,8 +217,8 @@ test('Rollover circle is visible on load if the dataset is of length 1', functio
 //                {'date': new Date('2014-03-01'), 'value': 18, 'l': 16, 'u': 20}]
 //     };
 
-//     MG.data_graphic(params);
-//     MG.data_graphic(MG.clone(params));
+//     MG.dataGraphic(params);
+//     MG.dataGraphic(MG.clone(params));
 
 //     equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one active data point container');
 // });
@@ -229,14 +229,14 @@ test('No zombie lines when customLineColorMap is set', function () {
   data[1] = [{ date: new Date('2015-03-06'), value: 35000 }]
   data[2] = [{ date: new Date('2015-03-07'), value: 23000 }, { date: new Date('2015-03-08'), value: 20000 }]
 
-  MG.data_graphic({
+  MG.dataGraphic({
     data: data,
     target: '#qunit-fixture',
     max_data_size: 5,
     customLineColorMap: [3, 4, 5]
   })
 
-  MG.data_graphic({
+  MG.dataGraphic({
     data: data,
     target: '#qunit-fixture',
     max_data_size: 5,
@@ -255,8 +255,8 @@ test('Only one line legend is added on multiple calls to the same target element
     line_legends: true
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-line-legend').length, 1, 'We only have one mg-line-legend')
 })
@@ -268,8 +268,8 @@ test('Only one active data point container added on multiple calls to the same t
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one mg-active-datapoint-container with lines')
 })
@@ -279,7 +279,7 @@ test('When 1 data series is empty (out of 2) and missingIsZero is true, remainin
   data[0] = []
   data[1] = [{ date: new Date('2015-03-07'), value: 23000 }, { date: new Date('2015-03-08'), value: 20000 }]
 
-  MG.data_graphic({
+  MG.dataGraphic({
     target: '#qunit-fixture',
     data: data,
     missingIsZero: true

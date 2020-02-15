@@ -8,7 +8,7 @@ test('args.missingIsZero doesn\'t throw a "args.data[0][0] is undefined" error',
         missingIsZero: true
     };
 
-    MG.data_graphic(params);
+    MG.dataGraphic(params);
 
     equal(params.data.length, 1, 'args.data is defined');
 });

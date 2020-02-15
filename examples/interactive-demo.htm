@@ -19,7 +19,7 @@
     <!-- dev start -->
     <script src='js/MG.js'></script>
     <script src='js/misc/utility.js'></script>
-    <script src='js/common/data_graphic.js'></script>
+    <script src='js/common/dataGraphic.js'></script>
     <script src='js/common/hooks.js'></script>
     <script src='js/common/register.js'></script>
     <script src='js/common/bootstrap_tooltip_popover.js'></script>
@@ -84,7 +84,7 @@
             <p>This demo allows you to play around with the library without having to
             download it. Try doubling the number of sightings in, say, 1995 and see
             how that affects the graphic. Or how about changing any of the options in
-            <i>MG.data_graphic</i>? Or perhaps change the chart type to a scatterplot by
+            <i>MG.dataGraphic</i>? Or perhaps change the chart type to a scatterplot by
             setting <code>chartType:'point'</code>, switching the <i>x</i> and <i>y</i>
             accessors and increasing the <i>height</i>? The data object is set to the
             contents of the <i>Data</i> text area. Errors are logged to the console.</p>
@@ -205,7 +205,7 @@
     </style>
     <script>
         var default_call = '//modify away!\n'
-            + 'MG.data_graphic({\n'
+            + 'MG.dataGraphic({\n'
             + '  title: "UFO Sightings",\n'
             + '  description: "Yearly UFO sightings from 1945 to 2010.",\n'
             + '  data: JSON.parse(document.querySelector(\'.data textarea\').value),\n'

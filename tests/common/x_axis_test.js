@@ -7,7 +7,7 @@ test('X-axis is added', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-axis'), 'X-axis is added')
 })
 
@@ -19,7 +19,7 @@ test('args.xAxis set to false', function () {
     xAxis: false
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelector('.mg-x-axis'), null, 'X-axis is not added')
 })
 
@@ -30,8 +30,8 @@ test('Only one x-axis is added on multiple calls to the same target element', fu
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll(params.target + ' .mg-x-axis').length, 1, 'We only have one x-axis')
 })
@@ -43,7 +43,7 @@ test('args.showSecondaryXLabel: true', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-year-marker'), 'Year marker exists')
 })
 
@@ -55,7 +55,7 @@ test('args.showSecondaryXLabel: false', function () {
     showSecondaryXLabel: false
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelector('.mg-year-marker'), null, 'Year marker not added')
 })
 
@@ -67,7 +67,7 @@ test('args.xLabel', function () {
     xLabel: 'foo bar'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-axis .label'), 'X-axis label exists')
 })
 
@@ -81,7 +81,7 @@ test('args.labels (scatter plot)', function () {
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-axis .label'), 'X-axis label exists')
   ok(document.querySelector('.mg-y-axis .label'), 'Y-axis label exists')
 })
@@ -92,7 +92,7 @@ test('X-axis doesn\'t break when data object is of length 1', function () {
     data: [{ date: new Date('2014-01-01'), value: 12 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-axis'), 'X-axis exists')
 })
 
@@ -104,7 +104,7 @@ test('args.xRug', function () {
     xRug: true
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-rug'), 'X-axis rugplot exists')
 })
 
@@ -116,8 +116,8 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     xRug: true
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot on the x-axis')
 })
@@ -130,7 +130,7 @@ test('args.xExtendedTicks', function () {
     xExtendedTicks: true
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-extended-xax-ticks'), 'X-axis extended ticks exist')
 })
 
@@ -149,7 +149,7 @@ test('Correctly calculates min and max values for line, point and histogram char
       ]
     ]
   }
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(params.processed.minX, 4, 'min is correct for single series')
   equal(params.processed.maxX, 7, 'max is correct for single series')
 
@@ -171,7 +171,7 @@ test('Correctly calculates min and max values for line, point and histogram char
       ]
     ]
   }
-  MG.data_graphic(params2)
+  MG.dataGraphic(params2)
   equal(params2.processed.minX, 1, 'min is correct for multiple series')
   equal(params2.processed.maxX, 7, 'max is correct for multiple series')
 })
@@ -195,7 +195,7 @@ test('Correctly calculates min and max values for line, point and histogram char
             ]
         ]
     };
-    MG.data_graphic(args);
+    MG.dataGraphic(args);
     equal(args.processed.minX, 0, 'min is correct');
     equal(args.processed.maxX, 12, 'max is correct');
 }); */
@@ -209,7 +209,7 @@ test('Ensure that custom xaxFormat isn\'t deleted', function () {
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(params.xaxFormat(), 'humbug', 'xaxFormat hasn\'t been overriden')
 })
 
@@ -222,6 +222,6 @@ test('Ensure that default null xaxFormat is respected; allow MG to recalculate t
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(params.xaxFormat, null, 'xaxFormat is still null')
 })

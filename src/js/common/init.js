@@ -2,6 +2,7 @@ import { getWidth, getHeight, getSvgChildOf, targetRef, arrayDiff, countArrayEle
 import { select } from 'd3-selection'
 import { defaultXaxFormat, defaultBarXaxFormat } from './xAxis'
 import { max } from 'd3-array'
+import { chartTitle } from './chartTitle'
 
 const deepmerge = require('deepmerge')
 
@@ -116,7 +117,7 @@ export function removeMissingClassesAndText (svg) {
 export function removeOutdatedLines (svg, args) {
   // if we're updating an existing chart and we have fewer lines than
   // before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
-  // data_graphic() on the same target with 2 lines, remove the 3rd line
+  // dataGraphic() on the same target with 2 lines, remove the 3rd line
 
   var i = 0
 

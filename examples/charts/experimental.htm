@@ -12,7 +12,7 @@
                     <div class='data-column'><a href='data/points1.json'>data</a></div>
 
 <pre><code class='javascript'>d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Simple Scatterplot",
         description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>yRug</i> option to true.",
         data: data,
@@ -27,7 +27,7 @@
         yRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Automatic Category Coloring",
         description: "By setting <i>colorType</i> to 'category' you can color the points according to another discrete value.",
         data: data,
@@ -43,7 +43,7 @@
         yRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Custom Category Color Mapping",
         description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
         data: data,
@@ -61,7 +61,7 @@
         xRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Simple Line of Best Fit",
         description: "For any scatterplot, set <i>leastSquares</i> to true to add.",
         data: data,
@@ -75,7 +75,7 @@
         yAccessor: 'y'
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Points Highlighting",
         description: "You can set <i>highlight</i> to filter the points you want to highlight.",
         data: data,
@@ -93,7 +93,7 @@
 
 d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');
-        MG.data_graphic({
+        MG.dataGraphic({
             title: "Another Least Squares Example",
             description: "Least squares effortlessly works with dates or times on axes.",
             data: data,
@@ -112,7 +112,7 @@ d3.json('data/fake_users1.json', function(data) {
 var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Scatterplot with Size and Color",
         description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
         data: data,
@@ -183,7 +183,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         return d.poll == 'PPP (D)';
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: X, points',
         data: trump,
         chartType: 'point',
@@ -194,7 +194,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: X, bars',
         data: trump,
         chartType: 'bar',
@@ -205,7 +205,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, points',
         data: trump,
         chartType: 'point',
@@ -216,7 +216,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical2',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, bars',
         data: trump,
         chartType: 'bar',
@@ -227,7 +227,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical2',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Y points, groups',
         data: polls,
         chartType: 'point',
@@ -244,7 +244,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical-group'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Y bars, groups',
         data: polls,
         chartType: 'bar',
@@ -259,7 +259,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical-group'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
         chartType: 'point',
@@ -274,7 +274,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical-group-horizontal'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
         chartType: 'bar',
@@ -317,7 +317,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         return d.poll == 'PPP (D)';
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: X, points',
         data: trump,
         chartType: 'point',
@@ -328,7 +328,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: X, bars',
         data: trump,
         chartType: 'bar',
@@ -339,7 +339,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, points',
         data: trump,
         chartType: 'point',
@@ -350,7 +350,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical2',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, bars',
         data: trump,
         chartType: 'bar',
@@ -361,7 +361,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical2',
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Y points, groups',
         data: polls,
         chartType: 'point',
@@ -378,7 +378,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical-group'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Y bars, groups',
         data: polls,
         chartType: 'bar',
@@ -392,7 +392,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#bar-categorical-group'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
         chartType: 'point',
@@ -407,7 +407,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         target: '#point-categorical-group-horizontal'
     })
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: 'Categorical Scale: Y, groups, horizontal',
         data: polls,
         chartType: 'bar',
@@ -441,7 +441,7 @@ d3.tsv('data/nh-gop.tsv', function(data) {
 
 <pre><code class='javascript'>var values = d3.range(10000).map(d3.randomBates(10));
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 1",
     description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
     data: values,
@@ -465,7 +465,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         return parseInt(d.value) / 30;
     });
     data.sort();
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
         description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
         data: data,
@@ -491,7 +491,7 @@ second = d3.histogram()(second)
         return {'count': d.y, 'value': d.x};
 });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 2",
     description: "Already binned data being fed in.",
     data: second,
@@ -514,7 +514,7 @@ MG.data_graphic({
 var third = d3.range(10000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 3",
     description: "Unbinned, but in same format as other line chart data.",
     data: third,
@@ -537,7 +537,7 @@ MG.data_graphic({
 var fourth = d3.range(10000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 4",
     description: "Sanity-checking negative data.",
     data: fourth,
@@ -560,7 +560,7 @@ var hist1 = fake_data(25, 60).map(function(d){
     return d;
 });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histograms can be time series as well",
     data: hist1,
     target: '#time-hist',
@@ -690,7 +690,7 @@ tooltipEl.addEventListener('mouseout', () => {
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Tooltip on line chart",
         description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
         data: data,
@@ -714,7 +714,7 @@ d3.json('data/fake_users1.json', function(data) {
 });
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Tooltip on point chart",
         description: "This technique also works for point charts.",
         data: data,
@@ -745,7 +745,7 @@ d3.json('data/points1.json', function(data) {
 <script>
 MG._hooks = {};
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Simple Scatterplot",
         description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>yRug</i> option to true.",
         data: data,
@@ -759,7 +759,7 @@ d3.json('data/points1.json', function(data) {
         yRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Automatic Category Coloring",
         description: "By setting <i>colorType</i> to 'category' you can color the points according to another discrete value.",
         data: data,
@@ -775,7 +775,7 @@ d3.json('data/points1.json', function(data) {
         yRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Custom Category Color Mapping",
         description: "You can specify the color domain and the corresponding color range to get custom mapping of categories to colors.",
         data: data,
@@ -793,7 +793,7 @@ d3.json('data/points1.json', function(data) {
         xRug: true
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Simple Line of Best Fit",
         description: "For any scatterplot, set <i>leastSquares</i> to true to add.",
         data: data,
@@ -807,7 +807,7 @@ d3.json('data/points1.json', function(data) {
         yAccessor: 'y'
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Points Highlighting",
         description: "You can set <i>highlight</i> to filter the points you want to highlight.",
         data: data,
@@ -825,7 +825,7 @@ d3.json('data/points1.json', function(data) {
 
 d3.json('data/fake_users1.json', function(data) {
         data = MG.convert.date(data, 'date');
-        MG.data_graphic({
+        MG.dataGraphic({
             title: "Another Least Squares Example",
             description: "Least squares effortlessly works with dates or times on axes.",
             data: data,
@@ -844,7 +844,7 @@ d3.json('data/fake_users1.json', function(data) {
 var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Scatterplot with Size and Color",
         description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
         data: data,
@@ -865,7 +865,7 @@ d3.json('data/points1.json', function(data) {
 
 var values = d3.range(10000).map(d3.randomBates(10));
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 1",
     description: "Raw data values being fed in. Here, we specify the number of bins to be 50 and have bar margins set to 0. The histogram graphic type includes the ability to <a href='http://en.wikipedia.org/wiki/Freedman%E2%80%93Diaconis_rule'>bin data</a>.",
     data: values,
@@ -888,7 +888,7 @@ d3.csv('data/ufo_dates.csv', function(ufos){
         return parseInt(d.value) / 30;
     });
     data.sort();
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Difference in UFO Sighting and Reporting Dates (in months)",
         description: "Semi-real data about the reported differences between the supposed sighting of a UFO and the date it was reported.",
         data: data,
@@ -914,7 +914,7 @@ second = d3.histogram()(second)
         return {'value': d.x0, 'count': d.length};
 });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 2",
     description: "Already binned data being fed in.",
     data: second,
@@ -936,7 +936,7 @@ MG.data_graphic({
 var third = d3.range(10000).map(d3.randomBates(10));
 third = third.map(function(d,i){ return {val1: d, val2: i}; });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 3",
     description: "Unbinned, but in same format as other line chart data.",
     data: third,
@@ -958,7 +958,7 @@ MG.data_graphic({
 var fourth = d3.range(10000).map(d3.randomBates(10));
 fourth = fourth.map(function(d,i){ return d - 0.5; });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histogram 4",
     description: "Sanity-checking negative data.",
     data: fourth,
@@ -980,7 +980,7 @@ var hist1 = fake_data(25, 60).map(function(d){
     return d;
 });
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Histograms can be time series as well",
     data: hist1,
     target: '#time-hist',
@@ -1050,9 +1050,9 @@ addScatterplotSizeAndColor(theme);
 function addScatterplotSizeAndColor(theme) {
     var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
-    // call data_graphic again since we need to use a different colorRange for the dark theme
+    // call dataGraphic again since we need to use a different colorRange for the dark theme
     d3.json('data/points1.json', function(data) {
-        MG.data_graphic({
+        MG.dataGraphic({
             title: "Scatterplot with Size and Color",
             description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
             data: data,
@@ -1109,7 +1109,7 @@ tooltipEl.addEventListener('mouseout', () => {
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Tooltip on line chart",
         description: "Using popper.js and the mouseover callback, you can easily create a tooltip when the user hovers over a particular datapoint.",
         data: data,
@@ -1133,7 +1133,7 @@ d3.json('data/fake_users1.json', function(data) {
 });
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Tooltip on point chart",
         description: "This technique also works for point charts.",
         data: data,

@@ -1,4 +1,4 @@
-import { getSvgChildOf, getPlotRight, getPlotLeft, getPlotTop, addG } from '../misc/utility'
+import { getSvgChildOf, getPlotRight, inferType, getPlotLeft, getPlotTop, addG } from '../misc/utility'
 import { select } from 'd3-selection'
 import { rawDataTransformation, processPoint } from '../misc/process'
 import { init } from '../common/init'
@@ -91,33 +91,76 @@ export function targetedLegend ({ legendTarget, orientation, scales }) {
   }
 }
 
-export default class BarChart {
-  constructor ({ data, xAccessor, yAccessor }) {
-    // infer axis types
-    this.xAxisType = data[0][0][xAccessor] === 'string' ? 'categorical' : 'numerical'
-    this.yAxisType = data[0][0][yAccessor] === 'string' ? 'categorical' : 'numerical'
+export function legendOnGraph (svg, args) {
+  // draw each element at the top right
+  // get labels
 
-    // set orientation
-    this.orientation = this.yAxisType === 'categorical' || (this.xAxisType !== 'categorical' && this.yAxisType !== 'categorical')
-      ? 'horizontal'
-      : 'vertical'
+  let labels
+  if (args.orientation === 'horizontal') labels = args.scales.Y.domain()
+  else labels = args.scales.X.domain()
+
+  let lineCount = 0
+  const lineHeight = 1.1
+  const g = svg.append('g').classed('mg-bar-legend', true)
+  const textContainer = g.append('text')
+
+  textContainer
+    .selectAll('*')
+    .remove()
+  textContainer
+    .attr('width', args.right)
+    .attr('height', 100)
+    .attr('text-anchor', 'start')
+
+  labels.forEach(label => {
+    const subContainer = textContainer.append('tspan')
+      .attr('x', getPlotRight(args))
+      .attr('y', args.height / 2)
+      .attr('dy', `${lineCount * lineHeight}em`)
+    subContainer.append('tspan')
+      .text('\u25a0 ')
+      .attr('fill', args.scales.COLOR(label))
+      .attr('font-size', 20)
+    subContainer.append('tspan')
+      .text(label)
+      .attr('font-weight', 300)
+      .attr('font-size', 10)
+    lineCount++
+  })
+}
+
+export function barChart (args) {
+  this.args = args
+
+  this.init = (args) => {
+    this.args = args
+    args.xAxis_type = inferType(args, 'x')
+    args.yAxis_type = inferType(args, 'y')
+
+    // this is specific to how rects work in svg, let's keep track of the bar orientation to
+    // plot appropriately.
+    if (args.xAxis_type === 'categorical') {
+      args.orientation = 'vertical'
+    } else if (args.yAxis_type === 'categorical') {
+      args.orientation = 'horizontal'
+    } else if (args.xAxis_type !== 'categorical' && args.yAxis_type !== 'categorical') {
+      // histogram.
+      args.orientation = 'vertical'
+    }
 
     rawDataTransformation(args)
 
     processPoint(args)
     init(args)
 
-    let xMaker
-    let yMaker
-
     if (args.xAxis_type === 'categorical') {
-      xMaker = MGScale(args)
+      MGScale(args)
         .namespace('x')
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null)
 
       if (args.xgroup_accessor) {
-        xMaker = MGScale(args)
+        MGScale(args)
           .namespace('xgroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('bottom')
@@ -128,7 +171,7 @@ export default class BarChart {
 
       args.scaleFunctions.xoutf = d => args.scaleFunctions.xf(d) + args.scaleFunctions.xgroupf(d)
     } else {
-      xMaker = MGScale(args)
+      MGScale(args)
         .namespace('x')
         .inflateDomain(true)
         .zeroBottom(args.yAxis_type === 'categorical')
@@ -140,7 +183,7 @@ export default class BarChart {
 
     // y-scale generation. This needs to get simplified.
     if (args.yAxis_type === 'categorical') {
-      yMaker = MGScale(args)
+      MGScale(args)
         .namespace('y')
         .zeroBottom(true)
         .categoricalDomainFromData()
@@ -159,7 +202,7 @@ export default class BarChart {
     } else {
       const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
-      yMaker = MGScale(args)
+      MGScale(args)
         .namespace('y')
         .inflateDomain(true)
         .zeroBottom(args.xAxis_type === 'categorical')
@@ -205,48 +248,10 @@ export default class BarChart {
     this.markers()
     this.rollover()
     this.windowListeners()
+
+    return this
   }
-}
 
-export function legendOnGraph (svg, args) {
-  // draw each element at the top right
-  // get labels
-
-  let labels
-  if (args.orientation === 'horizontal') labels = args.scales.Y.domain()
-  else labels = args.scales.X.domain()
-
-  let lineCount = 0
-  const lineHeight = 1.1
-  const g = svg.append('g').classed('mg-bar-legend', true)
-  const textContainer = g.append('text')
-
-  textContainer
-    .selectAll('*')
-    .remove()
-  textContainer
-    .attr('width', args.right)
-    .attr('height', 100)
-    .attr('text-anchor', 'start')
-
-  labels.forEach(label => {
-    const subContainer = textContainer.append('tspan')
-      .attr('x', getPlotRight(args))
-      .attr('y', args.height / 2)
-      .attr('dy', `${lineCount * lineHeight}em`)
-    subContainer.append('tspan')
-      .text('\u25a0 ')
-      .attr('fill', args.scales.COLOR(label))
-      .attr('font-size', 20)
-    subContainer.append('tspan')
-      .text(label)
-      .attr('font-weight', 300)
-      .attr('font-size', 10)
-    lineCount++
-  })
-}
-
-export function barChart (args) {
   this.mainPlot = () => {
     const svg = getSvgChildOf(args.target)
     const data = args.data[0]

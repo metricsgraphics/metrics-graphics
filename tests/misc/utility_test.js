@@ -65,7 +65,7 @@ test('Overlapping markers are taken care of', function () {
     target: '#qunit-fixture'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   equal(elementsAreOverlapping(d3.selectAll('.mg-marker-text').node(), d3.selectAll('.mg-marker-text').nodes()), false, 'Markers aren\'t overlapping')
 })

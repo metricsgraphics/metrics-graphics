@@ -8,7 +8,7 @@
     "src/js/misc/utility.js",
     "src/js/common/register.js",
     "src/js/common/hooks.js",
-    "src/js/common/data_graphic.js",
+    "src/js/common/dataGraphic.js",
     "src/js/common/bootstrap_tooltip_popover.js",
     "src/js/common/chartTitle.js",
     "src/js/common/yAxis.js",

@@ -3,7 +3,7 @@
 | Name | args | Description |
 |------|------|-------------|
 | `global.defaults` | `defaults` | Passes the global defaults prior to merging with args and chart-specific defaults |
-| `global.before_init` | `args` | Called before initializing a chart. Allows pre-processing of the arguments passed into `MG.data_graphic`. |
+| `global.before_init` | `args` | Called before initializing a chart. Allows pre-processing of the arguments passed into `MG.dataGraphic`. |
 | `xAxis.processMinMax` | `args`, `minX`, `maxX` | Called after calculating the min and max values for the X axis |
 | `yAxis.processMinMax` | `args`, `minY`, `maxY` | Called after calculating the min and max values for the Y axis |
 

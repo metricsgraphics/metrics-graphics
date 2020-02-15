@@ -1,4 +1,5 @@
-const deepmerge = require('deepmerge')
+import { curveCatmullRom, curveBasisClosed, curveBasisOpen, curveBasis, curveBundle, curveCardinalClosed, curveCardinalOpen, curveCardinal, curveCatmullRomClosed, curveCatmullRomOpen, curveLinearClosed, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore } from 'd3-shape'
+import { optionsToDefaults } from '../misc/utility'
 
 export const globals = {
   link: false,
@@ -79,7 +80,7 @@ export const options = { // <name>: [<defaultValue>, <availableType>]
   format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
   full_height: [false, 'boolean'], // sets height to that of the parent, adjusts dimensions on window resize
   fullWidth: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
-  interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
+  interpolate: [curveCatmullRom.alpha(0), [curveBasisClosed, curveBasisOpen, curveBasis, curveBundle, curveCardinalClosed, curveCardinalOpen, curveCardinal, curveCatmullRomClosed, curveCatmullRomOpen, curveLinearClosed, curveLinear, curveMonotoneX, curveMonotoneY, curveNatural, curveStep, curveStepAfter, curveStepBefore]], // the interpolation function to use for rendering lines
   legend: ['', 'string[]'], // an array of literals used to label lines
   legendTarget: ['', 'string'], // the DOM element to insert the legend in
   linked: [false, 'boolean'], // used to link multiple graphics together
@@ -87,7 +88,7 @@ export const options = { // <name>: [<defaultValue>, <availableType>]
   list: [false, 'boolean'], // automatically maps the data to x and y accessors
   markers: [null, 'object[]'], // vertical lines that indicate, say, milestones
   max_data_size: [null, 'number'], // for use with customLineColorMap
-  missing_text: [null, 'string'], // The text to display for missing graphics
+  missingText: [null, 'string'], // The text to display for missing graphics
   show_missing_background: [true, 'boolean'], // Displays a background for missing graphics
   mousemove_align: ['right', 'string'], // implemented in point.js
   xMouseover: [null, ['string', 'function']],
@@ -106,7 +107,10 @@ export const options = { // <name>: [<defaultValue>, <availableType>]
   show_rollover_text: [true, 'boolean'], // determines whether to show text for a data point on rollover
   show_tooltips: [true, 'boolean'], // determines whether to display descriptions in tooltips
   showActivePoint: [true, 'boolean'], // If enabled show active data point information in chart
-  target: ['#viz', ['string', HTMLElement]], // the DOM element to insert the graphic in
+
+  /** the DOM element to insert the graphic in */
+  target: ['#viz', ['string', HTMLElement]], // eslint-disable-line
+
   transitionOnUpdate: [true, 'boolean'], // gracefully transitions the lines on data change
   xRug: [false, 'boolean'], // show a rug plot along the x-axis
   yRug: [false, 'boolean'], // show a rug plot along the y-axis
@@ -126,64 +130,9 @@ export const options = { // <name>: [<defaultValue>, <availableType>]
   small_width_threshold: [160, 'number'], // maximum width for a small graphic
   top: [65, 'number'], // the size of the top margin
   width: [350, 'number'], // the graphic's width
-  title_yPosition: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
+  titleYPosition: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
   title: [null, 'string'],
   description: [null, 'string']
 }
 
-MG.charts = {}
-
-MG.defaults = optionsToDefaults(MG.options)
-
-MG.data_graphic = function (args) {
-  'use strict'
-
-  MG.callHook('global.defaults', MG.defaults)
-
-  if (!args) { args = {} }
-
-  var selected_chart = MG.charts[args.chartType || MG.defaults.chartType]
-  deepmerge(args, selected_chart.defaults, MG.defaults)
-
-  if (args.list) {
-    args.xAccessor = 0
-    args.yAccessor = 1
-  }
-
-  // check for deprecated parameters
-  for (var key in MG.deprecations) {
-    if (args.hasOwnProperty(key)) {
-      var deprecation = MG.deprecations[key]
-      var message = 'Use of `args.' + key + '` has been deprecated'
-      var replacement = deprecation.replacement
-      var version
-
-      // transparently alias the deprecated
-      if (replacement) {
-        if (args[replacement]) {
-          message += '. The replacement - `args.' + replacement + '` - has already been defined. This definition will be discarded.'
-        } else {
-          args[replacement] = args[key]
-        }
-      }
-
-      if (deprecation.warned) {
-        continue
-      }
-
-      deprecation.warned = true
-
-      if (replacement) {
-        message += ' in favor of `args.' + replacement + '`'
-      }
-
-      warnDeprecation(message, deprecation.version)
-    }
-  }
-
-  MG.callHook('global.before_init', args)
-
-  new selected_chart.descriptor(args)
-
-  return args.data
-}
+export const defaults = optionsToDefaults(options)

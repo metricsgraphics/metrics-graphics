@@ -30,11 +30,11 @@ test("Resize does not leak listeners", function () {
       {'date': new Date('2014-11-02'), 'value': 18}],
     height: 100
   };
-  MG.data_graphic(params);
+  MG.dataGraphic(params);
   var listenerCountAfterOne = resizeListeners.length;
   const REPEAT_CREATE = 20;  
   for (var i = 0; i < REPEAT_CREATE; i++) {
-    MG.data_graphic(params);
+    MG.dataGraphic(params);
   }
   equal(resizeListeners.length, listenerCountAfterOne, "Listener count constant after chart recreated " + REPEAT_CREATE + " times");
 

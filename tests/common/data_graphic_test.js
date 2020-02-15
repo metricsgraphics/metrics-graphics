@@ -1,4 +1,4 @@
-module('data_graphic');
+module('dataGraphic');
 
 test('Required arguments are set', function() {
     var params = {
@@ -7,7 +7,7 @@ test('Required arguments are set', function() {
                {'date': new Date('2014-11-02'), 'value': 18}]
     };
 
-    MG.data_graphic(params);
+    MG.dataGraphic(params);
 
     ok(params.width, 'args.width is set');
     ok(params.height, 'args.height is set');
@@ -22,7 +22,7 @@ test('Dom element works as target', function() {
                {'date': new Date('2014-11-02'), 'value': 18}]
     };
 
-    MG.data_graphic(params);
+    MG.dataGraphic(params);
 
     ok(document.querySelector('#qunit-fixture svg') != null, 'passing in dom element works properly');
 });
@@ -44,7 +44,7 @@ test('Correctly aliases callbacks when using 1.x-style method names', function()
       }
     };
 
-  MG.data_graphic(params);
+  MG.dataGraphic(params);
 
   var bar = document.getElementsByClassName('mg-bar-rollover')[0];
 

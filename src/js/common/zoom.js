@@ -1,5 +1,6 @@
 import { isArrayOfArrays } from '../misc/utility'
 import { min, max } from 'd3-array'
+import { createBrushingPattern, removeBrushingPattern } from './brush'
 
 export function filterInRangeData (args, range) {
   const isDataInRange = (data, range) => data > min(range) && data < max(range)
@@ -42,7 +43,7 @@ export function zoomToDataDomain (args, range) {
       removeBrushingPattern(args.processed.subplot)
     }
   }
-  new charts[args.chartType || defaults.chartType].descriptor(args)
+  // new charts[args.chartType || defaults.chartType].descriptor(args)
 }
 
 export function zoomToRawRange (args) {

@@ -21,7 +21,7 @@ _MetricsGraphics.js_ is a library optimized for visualizing and laying out time-
 A sample set of examples may be found on [the examples page](http://metricsgraphicsjs.org). The example below demonstrates how easy it is to produce a graphic. Our graphics function provides a robust layer of indirection, allowing one to more efficiently build, say, a dashboard of interactive graphics, each of which may be pulling data from a different data source. For the complete list of options, and for download instructions, [take a look at the sections below](https://github.com/metricsgraphics/metrics-graphics/wiki).
 
 ```js
-MG.data_graphic({
+MG.dataGraphic({
     title: 'Downloads',
     description: 'This graphics shows Firefox GA downloads for the past six months.',
     data: downloads_data, // an array of objects, such as [{value:100,date:...},...]
@@ -33,7 +33,7 @@ MG.data_graphic({
 })
 ```
 
-The API is simple. All that's needed to create a graphic is to specify a few default parameters and then, if desired, override one or more of the [optional parameters on offer](https://github.com/metricsgraphics/metrics-graphics/wiki/List-of-Options). We don't maintain state. In order to update a graphic, one would call _MG.data_graphic_ on the same target element.
+The API is simple. All that's needed to create a graphic is to specify a few default parameters and then, if desired, override one or more of the [optional parameters on offer](https://github.com/metricsgraphics/metrics-graphics/wiki/List-of-Options). We don't maintain state. In order to update a graphic, one would call _MG.dataGraphic_ on the same target element.
 
 The library is data-source agnostic. While it provides a number of convenience functions and options that allow for graphics to better handle things like missing observations, it doesn't care where the data comes from.
 
@@ -45,7 +45,7 @@ Though originally envisioned for Mozilla Metrics dashboard projects, we are maki
 The library now depends on D3 4.x. The impact on MG users is minimal, though if you do use D3 for other work, here is the [list of changes](https://github.com/d3/d3/blob/master/CHANGES.md) from 3.x to 4.x. Please refer to the [release notes](https://github.com/metricsgraphics/metrics-graphics/releases/tag/v2.10.0) for further details.
 
 ## Important changes in v2.0
-1. The library is now namespaced. ``data_graphic`` is now ``MG.data_graphic``, ``convert_dates`` is now ``MG.convert.date``, ``clone`` is now ``MG.clone``, ``button_layout`` is now ``MG.button_layout`` and ``data_table`` is now ``MG.data_table``. We added a new convenience function called ``MG.convert.number``.
+1. The library is now namespaced. ``dataGraphic`` is now ``MG.dataGraphic``, ``convert_dates`` is now ``MG.convert.date``, ``clone`` is now ``MG.clone``, ``button_layout`` is now ``MG.button_layout`` and ``data_table`` is now ``MG.data_table``. We added a new convenience function called ``MG.convert.number``.
 2. The ``rollover_callback`` option has been renamed ``mouseover`` and expanded in order to make it more consistent with other libraries. We now have three callback functions available: [mouseover](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mouseover), [mouseout](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mouseout) and [mousemove](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mousemove).
 3. CSS rules have been prefixed and in some cases updated for consistency. ``activeDatapoint`` for instance is now ``mg-active-datapoint``.
 

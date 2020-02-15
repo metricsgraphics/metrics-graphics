@@ -55,10 +55,10 @@ d3.json('data/split_by.json', function(data) {
     globals.data = data;
 
     split_by_params.data = data;
-    MG.data_graphic(split_by_params);
+    MG.dataGraphic(split_by_params);
 
     modify_time_period_params.data = data;
-    MG.data_graphic(modify_time_period_params);
+    MG.dataGraphic(modify_time_period_params);
 });
 
 $('.split-by-controls button').click(function() {
@@ -70,7 +70,7 @@ $('.split-by-controls button').click(function() {
 
     // update data
     delete split_by_params.xaxFormat;
-    MG.data_graphic(split_by_params);
+    MG.dataGraphic(split_by_params);
 });
 
 $('.modify-time-period-controls button').click(function() {
@@ -82,7 +82,7 @@ $('.modify-time-period-controls button').click(function() {
 
     delete modify_time_period_params.xaxFormat;
     modify_time_period_params.data = data;
-    MG.data_graphic(modify_time_period_params);
+    MG.dataGraphic(modify_time_period_params);
 });
 
 function modify_time_period(data, past_n_days) {
@@ -131,10 +131,10 @@ d3.json('data/split_by.json', function(data) {
     globals.data = data;
 
     split_by_params.data = data;
-    MG.data_graphic(split_by_params);
+    MG.dataGraphic(split_by_params);
 
     modify_time_period_params.data = data;
-    MG.data_graphic(modify_time_period_params);
+    MG.dataGraphic(modify_time_period_params);
 });
 
 $('.split-by-controls button').click(function() {
@@ -145,7 +145,7 @@ $('.split-by-controls button').click(function() {
     $(this).addClass('active').siblings().removeClass('active');
 
     // update data
-    MG.data_graphic(split_by_params);
+    MG.dataGraphic(split_by_params);
 });
 
 $('.modify-time-period-controls button').click(function() {
@@ -156,7 +156,7 @@ $('.modify-time-period-controls button').click(function() {
     $(this).addClass('active').siblings().removeClass('active');
 
     modify_time_period_params.data = data;
-    MG.data_graphic(modify_time_period_params);
+    MG.dataGraphic(modify_time_period_params);
 });
 
 function modify_time_period(data, past_n_days) {

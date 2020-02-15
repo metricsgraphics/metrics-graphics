@@ -12,7 +12,7 @@
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Basic Brushing &amp; Zooming",
         description: "This is a simple example of brushing and zooming. You can set 'brush' as 'xy', 'x', 'y' to specify the axis(es) that may be brushed.",
         data: data,
@@ -27,7 +27,7 @@
 });
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Point Chart Brushing",
         description: "Brushing and zooming also works for point charts.",
         data: data,
@@ -72,8 +72,8 @@ d3.json('data/points1.json', function(data) {
         target: '#main',
         brush: 'xy',
     }
-    MG.data_graphic(main);
-    MG.data_graphic({
+    MG.dataGraphic(main);
+    MG.dataGraphic({
         data: data,
         width: 600,
         height: 50,
@@ -98,7 +98,7 @@ d3.json('data/fake_users2.json', function(data) {
     for (var i = 0; i < data.length; i++) {
         data[i] = MG.convert.date(data[i], 'date');
     }
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Basic Brushing & Zooming",
         description: "This is a simple example of brushing and zooming. You can set 'brush' as 'xy', 'x', 'y' to specify the axis(es) that may be brushed.",
         data: data,
@@ -113,7 +113,7 @@ d3.json('data/fake_users2.json', function(data) {
 });
 
 d3.json('data/points1.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Point Chart Brushing",
         description: "Brushing and zooming also works for point charts.",
         data: data,
@@ -145,8 +145,8 @@ d3.json('data/fake_users2.json', function(data) {
         target: '#main',
         brush: 'xy',
     }
-    MG.data_graphic(main);
-    MG.data_graphic({
+    MG.dataGraphic(main);
+    MG.dataGraphic({
         data: data,
         width: 600,
         height: 50,

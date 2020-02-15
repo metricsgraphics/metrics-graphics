@@ -50,8 +50,8 @@ test("Chart's width is set correctly on subsequent calls to existing chart", fun
     height: 100
   }
 
-  MG.data_graphic(params_0)
-  MG.data_graphic(params)
+  MG.dataGraphic(params_0)
+  MG.dataGraphic(params)
 
   var width = document.querySelector(params.target + ' svg').clientWidth
   ok(width === 200, "SVG's width matches latest specified width")
@@ -65,7 +65,7 @@ test("Chart's width is set to parents if fullWidth: true", function () {
       { date: new Date('2014-11-02'), value: 18 }],
     height: 100
   }
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   var svgWidth = document.querySelector(params.target + ' svg').clientWidth
   var div_width = document.querySelector(params.target).clientWidth
@@ -83,7 +83,7 @@ test("Chart's height is set to parents if full_height: true", function () {
   }
 
   document.querySelector(params.target).style.height = '500px'
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   var svgHeight = document.querySelector(params.target + ' svg').clientHeight
   var div_height = document.querySelector(params.target).clientHeight
@@ -126,8 +126,8 @@ test("Chart's height is set correctly on subsequent calls to existing chart", fu
     height: 100
   }
 
-  MG.data_graphic(params_0)
-  MG.data_graphic(params)
+  MG.dataGraphic(params_0)
+  MG.dataGraphic(params)
 
   var height = document.querySelector(params.target + ' svg').clientHeight
   ok(height == params.height, "SVG's height matches latest specified height")
@@ -148,8 +148,8 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
     height: 100
   }
 
-  MG.data_graphic(params_0)
-  MG.data_graphic(params)
+  MG.dataGraphic(params_0)
+  MG.dataGraphic(params)
 
   // ensure chart types change appropriately
   var line = document.querySelector('.mg-main-line')
@@ -170,7 +170,7 @@ test('Charts are plotted correctly when MG is called multiple times on the same 
       height: 100
     }
 
-    MG.data_graphic(params)
+    MG.dataGraphic(params)
     ok(document.querySelector(chartTypes[i].domElement),
       'chartType switched to `' + chartTypes[i].id + '`, the correct chart type is plotted')
 
@@ -188,7 +188,7 @@ test('Missing chart has required class name set', function () {
     chartType: 'missing-data'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   var matches = document.querySelector(params.target + ' svg').getAttribute('class').match(/mg-missing/)
   ok(matches, 'Missing chart has class `missing` set')
@@ -202,7 +202,7 @@ test('Linked chart has the required class set', function () {
     linked: true
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
 
   var matches = document.querySelector(params.target + ' svg').getAttribute('class').match(/linked/)
   ok(matches, 'Linked chart has class `linked` set')
@@ -216,7 +216,7 @@ test('args.timeSeries is set to true when data is time-series', function () {
     xAccessor: 'foo'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(params.timeSeries, 'args.timeSeries is set to true when data is time-series')
 })
 
@@ -228,7 +228,7 @@ test('args.timeSeries is set to false when data is not time-series', function ()
     xAccessor: 'foo'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(params.timeSeries, false, 'args.timeSeries is set to false when data is not time-series')
 })
 
@@ -239,8 +239,8 @@ test('Only one clip path is added on multiple calls to the same target element',
       { date: new Date('2014-03-01'), value: 18, l: 16, u: 20 }]
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-clip-path').length, 1, 'We only have one clip path')
 })

@@ -11,7 +11,7 @@
 
 <pre><code class='javascript'>d3.json('data/missing-y.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Few Observations",
         description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>minX</i> and <i>maxX</i> options in order to expand the date range.",
         data: data,
@@ -44,7 +44,7 @@
 
 <pre><code class='javascript'>d3.json('data/missing-is-hidden.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Broken Lines",
         description: "Setting <i>missingIsHidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.",
         data: data,
@@ -68,7 +68,7 @@
 
 <pre><code class='javascript'>d3.json('data/missing-is-hidden-accessor.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Broken Lines (Missing Data Points)",
         description: "You can hide individual data points on a particular attribute by setting <i>missingIsHidden_accessor</i>. Data points whose y-accessor values are null are also hidden.",
         data: data,
@@ -92,12 +92,12 @@
                 </div>
                 <div class='col-lg-5'>
 
-<pre><code class='javascript'>MG.data_graphic({
+<pre><code class='javascript'>MG.dataGraphic({
     title: "Missing Data",
     description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
     chartType: 'missing-data',
-    missing_text: 'This is an example of a missing chart',
+    missingText: 'This is an example of a missing chart',
     target: '#missing-data',
     width: 600,
     height: 200
@@ -132,7 +132,7 @@
         }
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Handling Different Sized Lines in a Single Array",
         description: "How do you handle data with multiple implied time series lengths?",
         data: all_the_data,
@@ -168,7 +168,7 @@
 
     data = MG.convert.date(data, 'date');
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Show active points on line chart",
         description: "This line chart displays pre-defined active points",
         data: data,
@@ -212,7 +212,7 @@
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Show active points on multi-lines chart",
         description: "This multi-lines chart displays pre-defined active points for each lines",
         data: data,
@@ -235,7 +235,7 @@
 MG._hooks = {};
 d3.json('data/missing-y.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Few Observations",
         description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>minX</i> and <i>maxX</i> options in order to expand the date range.",
         data: data,
@@ -260,7 +260,7 @@ d3.json('data/missing-y.json', function(data) {
 
 d3.json('data/missing-is-hidden.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Broken Lines (Missing Data Range)",
         description: "Setting <i>missingIsHidden</i> to true will hide missing ranges rather than considering them to be zeros or interpolating between the two points on either side.",
         data: data,
@@ -276,7 +276,7 @@ d3.json('data/missing-is-hidden.json', function(data) {
 
 d3.json('data/missing-is-hidden-accessor.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Broken Lines (Missing Data Points)",
         description: "You can hide individual data points on a particular attribute by setting <i>missingIsHidden_accessor</i>. Data points whose y-accessor values are null are also hidden.",
         data: data,
@@ -290,12 +290,12 @@ d3.json('data/missing-is-hidden-accessor.json', function(data) {
 });
 
 
-MG.data_graphic({
+MG.dataGraphic({
     title: "Missing Data",
     chartType: 'missing-data',
     description: "This is an example of a graphic whose data is currently missing. We've also set the <i>error</i> option, which appends an error icon to the title and logs an error to the browser's console.",
     error: 'This data is blocked by Lorem Ipsum. Get your **** together, Ipsum.',
-    missing_text: 'This is an example of a missing chart',
+    missingText: 'This is an example of a missing chart',
     target: '#missing-data',
     width: 600,
     height: 200
@@ -316,7 +316,7 @@ d3.json('data/fake_users2.json', function(data) {
         }
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Handling Different Sized Lines in a Single Array",
         description: "How do you handle data with multiple implied time series lengths?",
         data: all_the_data,
@@ -338,7 +338,7 @@ d3.json('data/fake_users1.json', function(data) {
 
     data = MG.convert.date(data, 'date');
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Show active points on line chart",
         description: "This line chart displays pre-defined active points",
         data: data,
@@ -368,7 +368,7 @@ d3.json('data/fake_users2.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Show active points on multi-lines chart",
         description: "This multi-lines chart displays pre-defined active points for each lines",
         data: data,

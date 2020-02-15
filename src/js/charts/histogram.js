@@ -1,222 +1,228 @@
-{
-  function histogram (args) {
-    this.init = (args) => {
-      this.args = args
+import { rawDataTransformation, processHistogram } from '../misc/process'
+import { init } from '../common/init'
+import { MGScale } from '../common/scales'
+import { xAxis } from '../common/xAxis'
+import { yAxis } from '../common/yAxis'
+import { getSvgChildOf, addG } from '../misc/utility'
+import { markers } from '../common/markers'
+import { formatXMouseover, formatYMouseover } from '../misc/formatters'
+import { globals } from '../common/dataGraphic'
+import { selectAll, select } from 'd3-selection'
+import { mouseoverText, setupMouseoverContainer, clearMouseoverContainer } from '../common/rollover'
+import { windowListeners } from '../common/windowListeners'
 
-      rawDataTransformation(args)
-      processHistogram(args)
-      init(args)
+export function histogram (args) {
+  this.init = (args) => {
+    this.args = args
 
-      new MGScale(args)
-        .namespace('x')
-        .numericalDomainFromData()
-        .numericalRange('bottom')
+    rawDataTransformation(args)
+    processHistogram(args)
+    init(args)
 
-      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
+    new MGScale(args)
+      .namespace('x')
+      .numericalDomainFromData()
+      .numericalRange('bottom')
 
-      new MGScale(args)
-        .namespace('y')
-        .zeroBottom(true)
-        .inflateDomain(true)
-        .numericalDomainFromData(baselines)
-        .numericalRange('left')
+    const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
-      xAxis(args)
-      yAxis(args)
+    new MGScale(args)
+      .namespace('y')
+      .zeroBottom(true)
+      .inflateDomain(true)
+      .numericalDomainFromData(baselines)
+      .numericalRange('left')
 
-      this.mainPlot()
-      this.markers()
-      this.rollover()
-      this.windowListeners()
+    xAxis(args)
+    yAxis(args)
 
-      return this
-    }
+    this.mainPlot()
+    this.markers()
+    this.rollover()
+    this.windowListeners()
 
-    this.mainPlot = () => {
-      const svg = getSvgChildOf(args.target)
-
-      // remove the old histogram, add new one
-      svg.selectAll('.mg-histogram').remove()
-
-      const g = svg.append('g')
-        .attr('class', 'mg-histogram')
-
-      const bar = g.selectAll('.mg-bar')
-        .data(args.data[0])
-        .enter().append('g')
-        .attr('class', 'mg-bar')
-        .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor]).toFixed(2)},${args.scales.Y(d[args.yAccessor]).toFixed(2)})`)
-
-      // draw bars
-      bar.append('rect')
-        .attr('x', 1)
-        .attr('width', (d, i) => {
-          if (args.data[0].length === 1) {
-            return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
-          } else if (i !== args.data[0].length - 1) {
-            return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
-          } else {
-            return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
-          }
-        })
-        .attr('height', d => {
-          if (d[args.yAccessor] === 0) {
-            return 0
-          }
-
-          return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.yAccessor])).toFixed(2)
-        })
-
-      return this
-    }
-
-    this.markers = () => {
-      markers(args)
-      return this
-    }
-
-    this.rollover = () => {
-      const svg = getSvgChildOf(args.target)
-
-      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
-        addG(svg, 'mg-active-datapoint-container')
-      }
-
-      // remove the old rollovers if they already exist
-      svg.selectAll('.mg-rollover-rect').remove()
-      svg.selectAll('.mg-active-datapoint').remove()
-
-      const g = svg.append('g')
-        .attr('class', 'mg-rollover-rect')
-
-      // draw rollover bars
-      const bar = g.selectAll('.mg-bar')
-        .data(args.data[0])
-        .enter().append('g')
-        .attr('class', (d, i) => {
-          if (args.linked) {
-            return `mg-rollover-rects roll_${i}`
-          } else {
-            return 'mg-rollover-rects'
-          }
-        })
-        .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor])},${0})`)
-
-      bar.append('rect')
-        .attr('x', 1)
-        .attr('y', args.buffer + (args.title ? args.title_yPosition : 0))
-        .attr('width', (d, i) => {
-          // if data set is of length 1
-          if (args.data[0].length === 1) {
-            return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
-          } else if (i !== args.data[0].length - 1) {
-            return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
-          } else {
-            return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
-          }
-        })
-        .attr('height', d => args.height)
-        .attr('opacity', 0)
-        .on('mouseover', this.rolloverOn(args))
-        .on('mouseout', this.rolloverOff(args))
-        .on('mousemove', this.rolloverMove(args))
-
-      return this
-    }
-
-    this.rolloverOn = (args) => {
-      const svg = getSvgChildOf(args.target)
-
-      return (d, i) => {
-        svg.selectAll('text')
-          .filter((g, j) => d === g)
-          .attr('opacity', 0.3)
-
-        const fmt = args.processed.xaxFormat || MG.time_format(args.utcTime, '%b %e, %Y')
-        const num = formatRolloverNumber(args)
-
-        svg.selectAll('.mg-bar rect')
-          .filter((d, j) => j === i)
-          .classed('active', true)
-
-        // trigger mouseover on all matching bars
-        if (args.linked && !MG.globals.link) {
-          MG.globals.link = true
-
-          // trigger mouseover on matching bars in .linked charts
-          d3.selectAll(`.mg-rollover-rects.roll_${i} rect`)
-            .each(function (d) { // use existing i
-              d3.select(this).on('mouseover')(d, i)
-            })
-        }
-
-        // update rollover text
-        if (args.show_rollover_text) {
-          const mo = mouseoverText(args, { svg })
-          const row = mo.mouseover_row()
-          row.text('\u259F  ').elem
-            .classed('hist-symbol', true)
-
-          row.text(formatXMouseover(args, d)) // x
-          row.text(formatYMouseover(args, d, args.timeSeries === false))
-        }
-
-        if (args.mouseover) {
-          setupMouseoverContainer(svg, args)
-          args.mouseover(d, i)
-        }
-      }
-    }
-
-    this.rolloverOff = (args) => {
-      const svg = getSvgChildOf(args.target)
-
-      return (d, i) => {
-        if (args.linked && MG.globals.link) {
-          MG.globals.link = false
-
-          // trigger mouseout on matching bars in .linked charts
-          d3.selectAll(`.mg-rollover-rects.roll_${i} rect`)
-            .each(function (d) { // use existing i
-              d3.select(this).on('mouseout')(d, i)
-            })
-        }
-
-        // reset active bar
-        svg.selectAll('.mg-bar rect')
-          .classed('active', false)
-
-        // reset active data point text
-        clearMouseoverContainer(svg)
-
-        if (args.mouseout) {
-          args.mouseout(d, i)
-        }
-      }
-    }
-
-    this.rolloverMove = (args) => (d, i) => {
-      if (args.mousemove) {
-        args.mousemove(d, i)
-      }
-    }
-
-    this.windowListeners = () => {
-      windowListeners(this.args)
-      return this
-    }
-
-    this.init(args)
+    return this
   }
 
-  const options = {
-    bar_margin: [1, 'number'], // the margin between bars
-    binned: [false, 'boolean'], // determines whether the data is already binned
-    bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
-    processed_xAccessor: ['x', 'string'],
-    processed_yAccessor: ['y', 'string'],
-    processed_dxAccessor: ['dx', 'string']
+  this.mainPlot = () => {
+    const svg = getSvgChildOf(args.target)
+
+    // remove the old histogram, add new one
+    svg.selectAll('.mg-histogram').remove()
+
+    const g = svg.append('g')
+      .attr('class', 'mg-histogram')
+
+    const bar = g.selectAll('.mg-bar')
+      .data(args.data[0])
+      .enter().append('g')
+      .attr('class', 'mg-bar')
+      .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor]).toFixed(2)},${args.scales.Y(d[args.yAccessor]).toFixed(2)})`)
+
+    // draw bars
+    bar.append('rect')
+      .attr('x', 1)
+      .attr('width', (d, i) => {
+        if (args.data[0].length === 1) {
+          return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
+        } else if (i !== args.data[0].length - 1) {
+          return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
+        } else {
+          return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
+        }
+      })
+      .attr('height', d => {
+        if (d[args.yAccessor] === 0) {
+          return 0
+        }
+
+        return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.yAccessor])).toFixed(2)
+      })
+
+    return this
   }
 
-  MG.register('histogram', histogram, options)
+  this.markers = () => {
+    markers(args)
+    return this
+  }
+
+  this.rollover = () => {
+    const svg = getSvgChildOf(args.target)
+
+    if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+      addG(svg, 'mg-active-datapoint-container')
+    }
+
+    // remove the old rollovers if they already exist
+    svg.selectAll('.mg-rollover-rect').remove()
+    svg.selectAll('.mg-active-datapoint').remove()
+
+    const g = svg.append('g')
+      .attr('class', 'mg-rollover-rect')
+
+    // draw rollover bars
+    const bar = g.selectAll('.mg-bar')
+      .data(args.data[0])
+      .enter().append('g')
+      .attr('class', (d, i) => {
+        if (args.linked) {
+          return `mg-rollover-rects roll_${i}`
+        } else {
+          return 'mg-rollover-rects'
+        }
+      })
+      .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor])},${0})`)
+
+    bar.append('rect')
+      .attr('x', 1)
+      .attr('y', args.buffer + (args.title ? args.titleYPosition : 0))
+      .attr('width', (d, i) => {
+        // if data set is of length 1
+        if (args.data[0].length === 1) {
+          return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
+        } else if (i !== args.data[0].length - 1) {
+          return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
+        } else {
+          return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
+        }
+      })
+      .attr('height', d => args.height)
+      .attr('opacity', 0)
+      .on('mouseover', this.rolloverOn(args))
+      .on('mouseout', this.rolloverOff(args))
+      .on('mousemove', this.rolloverMove(args))
+
+    return this
+  }
+
+  this.rolloverOn = (args) => {
+    const svg = getSvgChildOf(args.target)
+
+    return (d, i) => {
+      svg.selectAll('text')
+        .filter((g, j) => d === g)
+        .attr('opacity', 0.3)
+
+      svg.selectAll('.mg-bar rect')
+        .filter((d, j) => j === i)
+        .classed('active', true)
+
+      // trigger mouseover on all matching bars
+      if (args.linked && !globals.link) {
+        globals.link = true
+
+        // trigger mouseover on matching bars in .linked charts
+        selectAll(`.mg-rollover-rects.roll_${i} rect`)
+          .each(function (d) { // use existing i
+            select(this).on('mouseover')(d, i)
+          })
+      }
+
+      // update rollover text
+      if (args.show_rollover_text) {
+        const mo = mouseoverText(args, { svg })
+        const row = mo.mouseover_row()
+        row.text('\u259F  ').elem
+          .classed('hist-symbol', true)
+
+        row.text(formatXMouseover(args, d)) // x
+        row.text(formatYMouseover(args, d, args.timeSeries === false))
+      }
+
+      if (args.mouseover) {
+        setupMouseoverContainer(svg, args)
+        args.mouseover(d, i)
+      }
+    }
+  }
+
+  this.rolloverOff = (args) => {
+    const svg = getSvgChildOf(args.target)
+
+    return (d, i) => {
+      if (args.linked && globals.link) {
+        globals.link = false
+
+        // trigger mouseout on matching bars in .linked charts
+        selectAll(`.mg-rollover-rects.roll_${i} rect`)
+          .each(function (d) { // use existing i
+            select(this).on('mouseout')(d, i)
+          })
+      }
+
+      // reset active bar
+      svg.selectAll('.mg-bar rect')
+        .classed('active', false)
+
+      // reset active data point text
+      clearMouseoverContainer(svg)
+
+      if (args.mouseout) {
+        args.mouseout(d, i)
+      }
+    }
+  }
+
+  this.rolloverMove = (args) => (d, i) => {
+    if (args.mousemove) {
+      args.mousemove(d, i)
+    }
+  }
+
+  this.windowListeners = () => {
+    windowListeners(this.args)
+    return this
+  }
+
+  this.init(args)
+}
+
+export const options = {
+  bar_margin: [1, 'number'], // the margin between bars
+  binned: [false, 'boolean'], // determines whether the data is already binned
+  bins: [null, ['number', 'number[]', 'function']], // the number of bins to use. type: {null, number | thresholds | threshold_function}
+  processed_xAccessor: ['x', 'string'],
+  processed_yAccessor: ['y', 'string'],
+  processed_dxAccessor: ['dx', 'string']
 }

@@ -4,7 +4,7 @@
                     <div class='data-column'><a href='data/xnotdate.json'>data</a></div>
 
 <pre><code class='javascript'>d3.json('data/xnotdate.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Axis Labels",
         description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load. We've also enabled extended ticks along the y-axis.",
         data: data,
@@ -37,7 +37,7 @@
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Some Percentages",
         description: "Here is an example that shows percentages.",
         data: data,
@@ -59,7 +59,7 @@
 
 <pre><code class='javascript'>d3.json('data/some_currency.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Some Currency",
         description: "Here is an example that uses custom units for currency.",
         data: data,
@@ -85,7 +85,7 @@
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Log Scale",
         description: "You can change the y-axis' scale to logarithmic by setting <i>yScaleType</i> to <i>log</i>.",
         data: data,
@@ -113,7 +113,7 @@
 
 <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "No X Axis",
         description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
@@ -130,7 +130,7 @@
 
 d3.json('data/brief-1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "No Y Axis",
         description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
@@ -155,7 +155,7 @@ d3.json('data/brief-1.json', function(data) {
 
 <pre><code class='javascript'>d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Rug Plots",
         description: "You can set rug plots either axis by setting <i>xRug</i> or <i>yRug</i> to true.",
         data: data,
@@ -205,7 +205,7 @@ d3.json('data/brief-1.json', function(data) {
         console.log(pos,i)
         var i = i+1;
         
-        MG.data_graphic({
+        MG.dataGraphic({
             title: "Axis Positions: " + pos[0] +', ' + pos[1],
             description: "Set <i>xAxis_position: " + pos[1] + "</i> and <i>xAxis_position: " + pos[0] +"</i>.",
             xAxis_position: pos[1],
@@ -233,7 +233,7 @@ d3.json('data/brief-1.json', function(data) {
     position.forEach(function(pos,i) {
         var i = i+1;
         
-        MG.data_graphic({
+        MG.dataGraphic({
             title: "Axis Positions: " + pos[0] +', ' + pos[1],
             description: "Set <i>xAxis_position: " + pos[1] + "</i> and <i>xAxis_position: " + pos[0] +"</i>.",
             xAxis_position: pos[1],
@@ -273,7 +273,7 @@ d3.json('data/brief-1.json', function(data) {
 
 <pre><code class='javascript'>d3.json('data/neg1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Negative Values 1",
         description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
         data: data,
@@ -288,7 +288,7 @@ d3.json('data/brief-1.json', function(data) {
         return d;
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Y-Axis Not Zero",
         data: data2,
         width: 295,
@@ -303,7 +303,7 @@ d3.json('data/brief-1.json', function(data) {
 });
 
 d3.json('data/neg2.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Negative Values 2",
         data: data,
         width: 295,
@@ -321,7 +321,7 @@ d3.json('data/neg2.json', function(data) {
 <script>
 MG._hooks = {};
 d3.json('data/xnotdate.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Axis Labels",
         description: "A graphic where we're not plotting dates on the x-axis and where the axes include labels and the line animates on load. We've also enabled extended ticks along the y-axis.",
         data: data,
@@ -346,7 +346,7 @@ d3.json('data/some_percentage.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Some Percentages",
         description: "Here is an example that shows percentages.",
         data: data,
@@ -360,7 +360,7 @@ d3.json('data/some_percentage.json', function(data) {
 
 d3.json('data/some_currency.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Some Currency",
         description: "Here is an example that uses custom units for currency.",
         data: data,
@@ -378,7 +378,7 @@ d3.json('data/log.json', function(data) {
         data[i] = MG.convert.date(data[i], 'date');
     }
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Log Scale",
         description: "You can change the y-axis' scale to logarithmic by setting <i>yScaleType</i> to <i>log</i>.",
         data: data,
@@ -392,7 +392,7 @@ d3.json('data/log.json', function(data) {
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "No X Axis",
         description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
@@ -409,7 +409,7 @@ d3.json('data/fake_users1.json', function(data) {
 
 d3.json('data/brief-1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "No Y Axis",
         description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
@@ -426,7 +426,7 @@ d3.json('data/brief-1.json', function(data) {
 
 d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Rug Plots",
         description: "You can set rug plots either axis by setting <i>xRug</i> or <i>yRug</i> to true.",
         data: data,
@@ -442,7 +442,7 @@ d3.json('data/fake_users1.json', function(data) {
 
 d3.json('data/neg1.json', function(data) {
     data = MG.convert.date(data, 'date');
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Negative Values 1",
         description: "MG defaults to 0 on the y-axis as min if there are no negative numbers. If there are negatives, should provide some buffer below.",
         data: data,
@@ -457,7 +457,7 @@ d3.json('data/neg1.json', function(data) {
         return d;
     });
 
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Y-Axis Not Zero",
         data: data2,
         width: 295,
@@ -472,7 +472,7 @@ d3.json('data/neg1.json', function(data) {
 });
 
 d3.json('data/neg2.json', function(data) {
-    MG.data_graphic({
+    MG.dataGraphic({
         title: "Negative Values 2",
         data: data,
         width: 295,

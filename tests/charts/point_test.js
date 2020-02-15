@@ -8,7 +8,7 @@ module('point')
 //         chartType: 'point'
 //     };
 
-//     MG.data_graphic(params);
+//     MG.dataGraphic(params);
 //     equal(document.querySelectorAll('.mg-active-datapoint').length, 1, 'One active datapoint exists');
 // });
 
@@ -22,7 +22,7 @@ test('Rollovers exist', function () {
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-voronoi'), 'Rollovers exist')
 })
 
@@ -36,7 +36,7 @@ test('We have only one set of rollovers', function () {
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists')
 })
 
@@ -49,7 +49,7 @@ test('args.xRug', function () {
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-x-rug'), 'X-axis rugplot exists')
 })
 
@@ -62,8 +62,8 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot (two ticks) on the x-axis')
 })
@@ -77,7 +77,7 @@ test('args.yRug', function () {
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-y-rug'), 'Y-axis rugplot exists')
 })
 
@@ -90,8 +90,8 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
   equal(document.querySelectorAll('.mg-y-rug').length, 2, 'We only have one rugplot (two ticks) on the y-axis')
 })
 
@@ -104,7 +104,7 @@ test('args.leastSquares', function () {
     leastSquares: true
   }
 
-  MG.data_graphic(params)
+  MG.dataGraphic(params)
   ok(document.querySelector('.mg-least-squares-line'), 'Least-squares line exists')
 })
 
@@ -117,8 +117,8 @@ test('Only one least-squares line is added on multiple calls to the same target 
     leastSquares: true
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
   equal(document.querySelectorAll('.mg-least-squares-line').length, 1, 'We only have one least-squares line')
 })
 
@@ -130,8 +130,8 @@ test('Only one active data point container added on multiple calls to the same t
     chartType: 'point'
   }
 
-  MG.data_graphic(params)
-  MG.data_graphic(MG.clone(params))
+  MG.dataGraphic(params)
+  MG.dataGraphic(MG.clone(params))
 
   equal(document.querySelectorAll('.mg-active-datapoint-container').length, 1, 'We only have one mg-active-datapoint-container with points')
 })

@@ -7,6 +7,7 @@ import { processScaleTicks } from '../misc/process'
 import { format } from 'd3-format'
 import { scaleLinear, scaleOrdinal } from 'd3-scale'
 import { schemeCategory10, schemeCategory20 } from 'd3-scale-chromatic'
+import { addScaleFunction, addColorCategoricalScale } from './scales'
 
 export function xRug (args) {
   if (!args.xRug) return
@@ -56,7 +57,7 @@ export function xAxisCategorical (args) {
     additionalBuffer = args.buffer + 5
   }
 
-  addCategoricalScale(args, 'X', args.categoricalVariables.reverse(), args.left, utility.getPlotRight(args) - additionalBuffer)
+  addColorCategoricalScale(args, 'X', args.categoricalVariables.reverse(), args.left, utility.getPlotRight(args) - additionalBuffer)
   addScaleFunction(args, 'xf', 'X', 'value')
   utility.selectAllAndRemove(svg, '.mg-x-axis')
 
