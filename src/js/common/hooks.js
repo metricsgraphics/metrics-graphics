@@ -1,63 +1,46 @@
-/**
-  Record of all registered hooks.
-  For internal use only.
-*/
-MG._hooks = {};
+const hookMap = new Map()
 
 /**
   Add a hook callthrough to the stack.
-
   Hooks are executed in the order that they were registered.
 */
-MG.add_hook = function(name, func, context) {
-  var hooks;
+export function addHook (name, func, context) {
+  const hooks = hookMap.get(name) || []
 
-  if (!MG._hooks[name]) {
-    MG._hooks[name] = [];
-  }
+  const alreadyRegistered = hooks.some(hook => hook.func === func)
 
-  hooks = MG._hooks[name];
-
-  var already_registered =
-    hooks.filter(function(hook) {
-      return hook.func === func;
-    })
-    .length > 0;
-
-  if (already_registered) {
-    throw 'That function is already registered.';
-  }
+  if (alreadyRegistered) throw new Error('That function is already registered.')
 
   hooks.push({
     func: func,
     context: context
-  });
+  })
+  hookMap.set(name, hooks)
 };
 
 /**
   Execute registered hooks.
-
   Optional arguments
 */
-MG.callHook = function(name) {
-  var hooks = MG._hooks[name],
-    result = [].slice.apply(arguments, [1]),
-    processed;
+export function callHook (name) {
+  const hooks = hookMap.get(name) || []
+  const result = [].slice.apply(arguments, [1])
+  let processed
 
   if (hooks) {
-    hooks.forEach(function(hook) {
+    hooks.forEach(function (hook) {
       if (hook.func) {
-        var params = processed || result;
+        let params = processed || result
 
         if (params && params.constructor !== Array) {
-          params = [params];
+          params = [params]
         }
 
-        params = [].concat.apply([], params);
-        processed = hook.func.apply(hook.context, params);
+        params = [].concat.apply([], params)
+        processed = hook.func.apply(hook.context, params)
       }
-    });
+    })
   }
 
-  return processed || result;
+  return processed || result
 };
