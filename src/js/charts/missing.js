@@ -83,7 +83,7 @@ function missingRemoveLegend ({ legendTarget }) {
   }
 }
 
-export function missingData (args) {
+export default function missingData (args) {
   this.init = (args) => {
     this.args = args
 

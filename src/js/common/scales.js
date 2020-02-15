@@ -1,6 +1,6 @@
 import { extent } from 'd3-array'
 import { scaleOrdinal, scaleUtc, scaleTime, scaleLog, scaleLinear, scaleBand } from 'd3-scale'
-import { schemeCategory20, schemeCategory10 } from 'd3-scale-chromatic'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 import { getPlotRight, getPlotLeft, getPlotBottom, getPlotTop, clone } from '../misc/utility'
 import { forceXaxCountToBeTwo } from './xAxis'
 import { callHook } from './hooks'
@@ -178,9 +178,7 @@ export function MGScale (args) {
   }
 
   this.categoricalColorRange = function () {
-    args.scales[scaleArgs.scale_name] = args.scales[scaleArgs.scale_name].domain().length > 10
-      ? scaleOrdinal(schemeCategory20)
-      : scaleOrdinal(schemeCategory10)
+    args.scales[scaleArgs.scale_name] = scaleOrdinal(schemeCategory10)
 
     args
       .scales[scaleArgs.scale_name]
@@ -295,7 +293,7 @@ export function categoricalGroupColorScale (args) {
 }
 
 export function addColorCategoricalScale (args, domain, accessor) {
-  args.scales.color = scaleOrdinal(schemeCategory20).domain(domain)
+  args.scales.color = scaleOrdinal(schemeCategory10).domain(domain)
   args.scaleFunctions.color = function (d) {
     return args.scales.color(d[accessor])
   }

@@ -49,7 +49,7 @@ function filterOutPlotBounds (data, args) {
   return newData
 }
 
-export function pointChart (args) {
+export default function pointChart (args) {
   this.init = function (args) {
     this.args = args
 

@@ -10,67 +10,7 @@ import { formatDataForMouseover, formatXMouseover } from '../misc/formatters'
 import { rgb } from 'd3-color'
 import { markers } from '../common/markers'
 
-// TODO add styles to stylesheet instead
-export function scaffold ({ target, width, height, top, left, bottom, right, buffer }) {
-  const svg = getSvgChildOf(target)
-  // main margins
-  svg.append('line')
-    .attr('x1', 0)
-    .attr('x2', width)
-    .attr('y1', top)
-    .attr('y2', top)
-    .attr('stroke', 'black')
-  svg.append('line')
-    .attr('x1', 0)
-    .attr('x2', width)
-    .attr('y1', height - bottom)
-    .attr('y2', height - bottom)
-    .attr('stroke', 'black')
-
-  svg.append('line')
-    .attr('x1', left)
-    .attr('x2', left)
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'black')
-
-  svg.append('line')
-    .attr('x1', width - right)
-    .attr('x2', width - right)
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'black')
-
-  // plot area margins
-  svg.append('line')
-    .attr('x1', 0)
-    .attr('x2', width)
-    .attr('y1', height - bottom - buffer)
-    .attr('y2', height - bottom - buffer)
-    .attr('stroke', 'gray')
-
-  svg.append('line')
-    .attr('x1', 0)
-    .attr('x2', width)
-    .attr('y1', top + buffer)
-    .attr('y2', top + buffer)
-    .attr('stroke', 'gray')
-
-  svg.append('line')
-    .attr('x1', left + buffer)
-    .attr('x2', left + buffer)
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'gray')
-  svg.append('line')
-    .attr('x1', width - right - buffer)
-    .attr('x2', width - right - buffer)
-    .attr('y1', 0)
-    .attr('y2', height)
-    .attr('stroke', 'gray')
-}
-
-export function targetedLegend ({ legendTarget, orientation, scales }) {
+function targetedLegend ({ legendTarget, orientation, scales }) {
   let labels
   if (legendTarget) {
     const div = select(legendTarget).append('div').classed('mg-bar-target-legend', true)
@@ -91,7 +31,7 @@ export function targetedLegend ({ legendTarget, orientation, scales }) {
   }
 }
 
-export function legendOnGraph (svg, args) {
+function legendOnGraph (svg, args) {
   // draw each element at the top right
   // get labels
 
@@ -129,7 +69,7 @@ export function legendOnGraph (svg, args) {
   })
 }
 
-export function barChart (args) {
+export default function barChart (args) {
   this.args = args
 
   this.init = (args) => {

@@ -1,1 +1,5 @@
-(typeof window === 'undefined' ? global : window).MG = { version: '2.11' }
+export { default as barChart } from './charts/bar'
+export { default as histogramChart } from './charts/histogram'
+export { default as lineChart } from './charts/line'
+export { default as missingChart } from './charts/missing'
+export { default as pointChart } from './charts/point'

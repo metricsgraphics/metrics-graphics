@@ -756,7 +756,7 @@ function removeActiveDatapointsForGenericRollover ({ customLineColorMap, data },
     })
 }
 
-export function lineChart (args) {
+export default function lineChart (args) {
   this.init = function (args) {
     this.args = args
 

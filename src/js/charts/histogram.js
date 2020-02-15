@@ -11,7 +11,7 @@ import { selectAll, select } from 'd3-selection'
 import { mouseoverText, setupMouseoverContainer, clearMouseoverContainer } from '../common/rollover'
 import { windowListeners } from '../common/windowListeners'
 
-export function histogram (args) {
+export default function histogram (args) {
   this.init = (args) => {
     this.args = args
 
