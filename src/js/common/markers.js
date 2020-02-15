@@ -26,7 +26,7 @@ function mg_x_position_fixed (args) {
   }
 }
 
-function mg_y_position_fixed (args) {
+function mg_yPosition_fixed (args) {
   var _mg_y_pos = args.scales.Y
   return function (d) {
     return _mg_y_pos(d.value).toFixed(2)
@@ -98,7 +98,7 @@ function mg_place_marker_text (gm, args) {
 }
 
 function mg_place_baseline_lines (gb, args) {
-  var y_pos = mg_y_position_fixed(args)
+  var y_pos = mg_yPosition_fixed(args)
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('line')
@@ -109,7 +109,7 @@ function mg_place_baseline_lines (gb, args) {
 }
 
 function mg_place_baseline_text (gb, args) {
-  var y_pos = mg_y_position_fixed(args)
+  var y_pos = mg_yPosition_fixed(args)
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('text')

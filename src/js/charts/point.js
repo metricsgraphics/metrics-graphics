@@ -1,5 +1,5 @@
 function point_mouseover (args, svg, d) {
-  const mouseover = mg_mouseover_text(args, { svg })
+  const mouseover = mouseoverText(args, { svg })
   const row = mouseover.mouseover_row()
 
   if (args.colorAccessor !== null && args.colorType === 'category') {
@@ -232,7 +232,7 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
         .x(args.scaleFunctions.xoutf)
         .y(args.scaleFunctions.youtf)
         .extent([
-          [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
+          [args.buffer, args.buffer + (args.title ? args.title_yPosition : 0)],
           [args.width - args.buffer, args.height - args.buffer]
         ])
 
@@ -328,7 +328,7 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
         }
 
         // reset active data point text
-        if (args.data[0].length > 1) mg_clear_mouseover_container(svg)
+        if (args.data[0].length > 1) clearMouseoverContainer(svg)
 
         if (args.mouseout) {
           args.mouseout(d, i)

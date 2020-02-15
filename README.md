@@ -46,7 +46,7 @@ The library now depends on D3 4.x. The impact on MG users is minimal, though if 
 ## Important changes in v2.0
 1. The library is now namespaced. ``data_graphic`` is now ``MG.data_graphic``, ``convert_dates`` is now ``MG.convert.date``, ``clone`` is now ``MG.clone``, ``button_layout`` is now ``MG.button_layout`` and ``data_table`` is now ``MG.data_table``. We added a new convenience function called ``MG.convert.number``.
 2. The ``rollover_callback`` option has been renamed ``mouseover`` and expanded in order to make it more consistent with other libraries. We now have three callback functions available: [mouseover](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mouseover), [mouseout](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mouseout) and [mousemove](https://github.com/metricsgraphics/metrics-graphics/wiki/Graphic#mousemove).
-3. CSS rules have been prefixed and in some cases updated for consistency. ``active_datapoint`` for instance is now ``mg-active-datapoint``.
+3. CSS rules have been prefixed and in some cases updated for consistency. ``activeDatapoint`` for instance is now ``mg-active-datapoint``.
 
 ## Quick-start guide
 1. Download the [latest release](https://github.com/metricsgraphics/metrics-graphics/releases).

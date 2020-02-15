@@ -696,7 +696,7 @@
 
         // update rollover text
         if (args.show_rollover_text) {
-          const mouseover = mg_mouseover_text(args, { svg })
+          const mouseover = mouseoverText(args, { svg })
           let row = mouseover.mouseover_row()
 
           if (args.yGroupAccessor) row.text(`${d[args.yGroupAccessor]}   `).bold()
@@ -733,7 +733,7 @@
         svg.select('.mg-active-datapoint')
           .text('')
 
-        mg_clear_mouseover_container(svg)
+        clearMouseoverContainer(svg)
 
         if (args.mouseout) {
           args.mouseout(d, i)

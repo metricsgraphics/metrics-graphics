@@ -134,7 +134,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   small_width_threshold: [160, 'number'], // maximum width for a small graphic
   top: [65, 'number'], // the size of the top margin
   width: [350, 'number'], // the graphic's width
-  title_y_position: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
+  title_yPosition: [10, 'number'], // how many pixels from the top edge (0) should we show the title at
   title: [null, 'string'],
   description: [null, 'string']
 }

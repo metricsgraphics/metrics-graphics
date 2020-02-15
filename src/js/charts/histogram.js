@@ -104,7 +104,7 @@
 
       bar.append('rect')
         .attr('x', 1)
-        .attr('y', args.buffer + (args.title ? args.title_y_position : 0))
+        .attr('y', args.buffer + (args.title ? args.title_yPosition : 0))
         .attr('width', (d, i) => {
           // if data set is of length 1
           if (args.data[0].length === 1) {
@@ -152,7 +152,7 @@
 
         // update rollover text
         if (args.show_rollover_text) {
-          const mo = mg_mouseover_text(args, { svg })
+          const mo = mouseoverText(args, { svg })
           const row = mo.mouseover_row()
           row.text('\u259F  ').elem
             .classed('hist-symbol', true)
@@ -162,7 +162,7 @@
         }
 
         if (args.mouseover) {
-          mg_setup_mouseover_container(svg, args)
+          setupMouseoverContainer(svg, args)
           args.mouseover(d, i)
         }
       }
@@ -187,7 +187,7 @@
           .classed('active', false)
 
         // reset active data point text
-        mg_clear_mouseover_container(svg)
+        clearMouseoverContainer(svg)
 
         if (args.mouseout) {
           args.mouseout(d, i)

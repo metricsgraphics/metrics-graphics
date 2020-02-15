@@ -329,7 +329,7 @@
       .x(d => args.scales.X(d[args.xAccessor]).toFixed(2))
       .y(d => args.scales.Y(d[args.yAccessor]).toFixed(2))
       .extent([
-        [args.buffer, args.buffer + (args.title ? args.title_y_position : 0)],
+        [args.buffer, args.buffer + (args.title ? args.title_yPosition : 0)],
         [args.width - args.buffer, args.height - args.buffer]
       ])
 
@@ -845,7 +845,7 @@
         if (args.show_rollover_text &&
             !((args.missingIsHidden && d._missing) || d[args.yAccessor] === null)
         ) {
-          const mouseover = mg_mouseover_text(args, { svg })
+          const mouseover = mouseoverText(args, { svg })
           let row = mouseover.mouseover_row()
           if (args.aggregateRollover) {
             row.text((args.aggregateRollover && args.data.length > 1
@@ -893,7 +893,7 @@
         }
 
         if (args.data[0].length > 1) {
-          mg_clear_mouseover_container(svg)
+          clearMouseoverContainer(svg)
         }
 
         if (args.mouseout) {

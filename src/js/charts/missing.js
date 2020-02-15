@@ -32,13 +32,13 @@
     args.data = data
   }
 
-  function mg_add_missing_background_rect (g, { title, buffer, title_y_position, width, height }) {
+  function mg_add_missing_background_rect (g, { title, buffer, title_yPosition, width, height }) {
     g.append('svg:rect')
       .classed('mg-missing-background', true)
       .attr('x', buffer)
-      .attr('y', buffer + (title ? title_y_position : 0) * 2)
+      .attr('y', buffer + (title ? title_yPosition : 0) * 2)
       .attr('width', width - buffer * 2)
-      .attr('height', height - buffer * 2 - (title ? title_y_position : 0) * 2)
+      .attr('height', height - buffer * 2 - (title ? title_yPosition : 0) * 2)
       .attr('rx', 15)
       .attr('ry', 15)
   }

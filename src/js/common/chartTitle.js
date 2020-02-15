@@ -10,7 +10,7 @@ function chart_title(args) {
     var chartTitle = svg.insert('text')
       .attr('class', 'mg-header')
       .attr('x', args.center_title_full_width ? args.width /2 : (args.width + args.left - args.right) / 2)
-      .attr('y', args.title_y_position)
+      .attr('y', args.title_yPosition)
       .attr('text-anchor', 'middle')
       .attr('dy', '0.55em');
 
