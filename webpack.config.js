@@ -17,9 +17,10 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    publicPath: '/',
-    filename: 'bundle.js',
-    library: 'metricsGraphics'
+    filename: 'metrics-graphics.js',
+    libraryTarget: 'umd',
+    library: 'metricsGraphics',
+    globalObject: 'this'
   },
   module: {
     rules: [

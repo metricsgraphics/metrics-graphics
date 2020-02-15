@@ -1,125 +1,124 @@
 var theme = 'light';
 
-(function() {
-    'use strict';
+(function () {
+  'use strict'
 
-    //set the active pill and section on first load
-    var section = (document.location.hash) ? document.location.hash.slice(1) : 'lines';
+  // set the active pill and section on first load
+  var section = (document.location.hash) ? document.location.hash.slice(1) : 'lines'
 
-    $('#trunk').load('charts/' + section + '.htm', function() {
-        $('pre code').each(function(i, block) {
-            hljs.highlightBlock(block);
-        });
-    });
+  $('#trunk').load('charts/' + section + '.html', function () {
+    $('pre code').each(function (i, block) {
+      hljs.highlightBlock(block)
+    })
+  })
 
-    $('.examples li a#goto-' + section).addClass('active');
+  $('.examples li a#goto-' + section).addClass('active')
 
-    //handle mouse clicks and so on
-    assignEventListeners();
+  // handle mouse clicks and so on
+  assignEventListeners()
 
-    function assignEventListeners() {
-        $('ul.examples li a.pill').on('click', function(event) {
-            event.preventDefault();
-            $('ul.examples li a.pill').removeClass('active');
-            $(this).addClass('active');
+  function assignEventListeners () {
+    $('ul.examples li a.pill').on('click', function (event) {
+      event.preventDefault()
+      $('ul.examples li a.pill').removeClass('active')
+      $(this).addClass('active')
 
-            var section = $(this).attr('id').slice(5);
-            $('#trunk').load('charts/' + section + '.htm', function() {
-                $('pre code').each(function(i, block) {
-                    hljs.highlightBlock(block);
-                });
-            });
-
-            document.location.hash = section;
-
-            return false;
+      var section = $(this).attr('id').slice(5)
+      $('#trunk').load('charts/' + section + '.html', function () {
+        $('pre code').each(function (i, block) {
+          hljs.highlightBlock(block)
         })
-    
-        $('#dark-css').on('click', function () {
-            theme = 'dark';
+      })
 
-            $('.missing')
-                .css('background-image', 'url(images/missing-data-dark.png)');
+      document.location.hash = section
 
-            $('.wip')
-                .css('background-color', '#3b3b3b');
+      return false
+    })
 
-            $('.trunk-section')
-                .css('border-top-color', '#5e5e5e');
+    $('#dark-css').on('click', function () {
+      theme = 'dark'
 
-            $('.mg-missing-background')
-                .css('stroke', '#ccc');
+      $('.missing')
+        .css('background-image', 'url(images/missing-data-dark.png)')
 
-            $('.head ul li a.pill').removeClass('active');
-            $(this).toggleClass('active');
-            $('#dark').attr({href : 'css/metricsgraphics-demo-dark.css'});
-            $('#dark-code').attr({href : 'css/railscasts.css'});
-            $('#accessible').attr({href : ''});
+      $('.wip')
+        .css('background-color', '#3b3b3b')
 
-            return false;
-        });
+      $('.trunk-section')
+        .css('border-top-color', '#5e5e5e')
 
-        $('#light-css').on('click', function () {
-            theme = 'light';
+      $('.mg-missing-background')
+        .css('stroke', '#ccc')
 
-            $('.missing')
-                .css('background-image', 'url(images/missing-data.png)');
+      $('.head ul li a.pill').removeClass('active')
+      $(this).toggleClass('active')
+      $('#dark').attr({ href: 'css/metricsgraphics-demo-dark.css' })
+      $('#dark-code').attr({ href: 'css/railscasts.css' })
+      $('#accessible').attr({ href: '' })
 
-            $('.wip')
-                .css('background-color', '#f1f1f1');
+      return false
+    })
 
-            $('.trunk-section')
-                .css('border-top-color', '#ccc');
+    $('#light-css').on('click', function () {
+      theme = 'light'
 
-            $('.mg-missing-background')
-                .css('stroke', 'blue');
+      $('.missing')
+        .css('background-image', 'url(images/missing-data.png)')
 
-            $('.head ul li a.pill').removeClass('active');
-            $(this).toggleClass('active');
-            $('#dark').attr({href : ''});
-            $('#dark-code').attr({href : ''});
-            $('#accessible').attr({href : ''});
+      $('.wip')
+        .css('background-color', '#f1f1f1')
 
-            return false;
-        });
+      $('.trunk-section')
+        .css('border-top-color', '#ccc')
 
-        $('#accessible-css').on('click', function () {
-            $('.head ul li a.pill').removeClass('active');
-            $(this).toggleClass('active');
-            $('#accessible').attr({href : 'css/metricsgraphics-demo-accessible.css'});
+      $('.mg-missing-background')
+        .css('stroke', 'blue')
 
-            return false;
-        });
-    }
+      $('.head ul li a.pill').removeClass('active')
+      $(this).toggleClass('active')
+      $('#dark').attr({ href: '' })
+      $('#dark-code').attr({ href: '' })
+      $('#accessible').attr({ href: '' })
 
-    // replace all SVG images with inline SVG
-    // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
-    // -image-using-css-jquery-svg-image-replacement
-    $('img.svg').each(function() {
-        var $img = jQuery(this);
-        var imgID = $img.attr('id');
-        var imgClass = $img.attr('class');
-        var imgURL = $img.attr('src');
+      return false
+    })
 
-        $.get(imgURL, function(data) {
-            // Get the SVG tag, ignore the rest
-            var $svg = jQuery(data).find('svg');
+    $('#accessible-css').on('click', function () {
+      $('.head ul li a.pill').removeClass('active')
+      $(this).toggleClass('active')
+      $('#accessible').attr({ href: 'css/metricsgraphics-demo-accessible.css' })
 
-            // Add replaced image's ID to the new SVG
-            if (typeof imgID !== 'undefined') {
-                $svg = $svg.attr('id', imgID);
-            }
-            // Add replaced image's classes to the new SVG
-            if (typeof imgClass !== 'undefined') {
-                $svg = $svg.attr('class', imgClass + ' replaced-svg');
-            }
+      return false
+    })
+  }
 
-            // Remove any invalid XML tags as per http://validator.w3.org
-            $svg = $svg.removeAttr('xmlns:a');
+  // replace all SVG images with inline SVG
+  // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg
+  // -image-using-css-jquery-svg-image-replacement
+  $('img.svg').each(function () {
+    var $img = jQuery(this)
+    var imgID = $img.attr('id')
+    var imgClass = $img.attr('class')
+    var imgURL = $img.attr('src')
 
-            // Replace image with new SVG
-            $img.replaceWith($svg);
+    $.get(imgURL, function (data) {
+      // Get the SVG tag, ignore the rest
+      var $svg = jQuery(data).find('svg')
 
-        }, 'xml');
-    });
-})();
+      // Add replaced image's ID to the new SVG
+      if (typeof imgID !== 'undefined') {
+        $svg = $svg.attr('id', imgID)
+      }
+      // Add replaced image's classes to the new SVG
+      if (typeof imgClass !== 'undefined') {
+        $svg = $svg.attr('class', imgClass + ' replaced-svg')
+      }
+
+      // Remove any invalid XML tags as per http://validator.w3.org
+      $svg = $svg.removeAttr('xmlns:a')
+
+      // Replace image with new SVG
+      $img.replaceWith($svg)
+    }, 'xml')
+  })
+})()

@@ -77,7 +77,7 @@ const compileSass = () => src(sassFiles)
   .pipe(dest(distFolder))
   .pipe(dest(exampleCssFolder))
 
-const roots = ['dist', 'src', 'examples']
+const roots = ['dist', 'examples']
 const watchables = roots.map(root => `${root}/**/*`)
 
 const devReload = () => src(watchables).pipe(reload())
