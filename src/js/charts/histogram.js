@@ -11,41 +11,39 @@ import { selectAll, select } from 'd3-selection'
 import { mouseoverText, setupMouseoverContainer, clearMouseoverContainer } from '../common/rollover'
 import { windowListeners } from '../common/windowListeners'
 
-export default function histogram (args) {
-  this.init = (args) => {
+export default class HistogramGraph {
+  constructor (args) {
     this.args = args
 
-    rawDataTransformation(args)
-    processHistogram(args)
-    init(args)
+    rawDataTransformation(this.args)
+    processHistogram(this.args)
+    init(this.args)
 
-    new MGScale(args)
+    new MGScale(this.args)
       .namespace('x')
       .numericalDomainFromData()
       .numericalRange('bottom')
 
-    const baselines = (args.baselines || []).map(d => d[args.yAccessor])
+    const baselines = (this.args.baselines || []).map(d => d[args.yAccessor])
 
-    new MGScale(args)
+    new MGScale(this.args)
       .namespace('y')
       .zeroBottom(true)
       .inflateDomain(true)
       .numericalDomainFromData(baselines)
       .numericalRange('left')
 
-    xAxis(args)
-    yAxis(args)
+    xAxis(this.args)
+    yAxis(this.args)
 
     this.mainPlot()
     this.markers()
     this.rollover()
     this.windowListeners()
-
-    return this
   }
 
-  this.mainPlot = () => {
-    const svg = getSvgChildOf(args.target)
+  mainPlot () {
+    const svg = getSvgChildOf(this.args.target)
 
     // remove the old histogram, add new one
     svg.selectAll('.mg-histogram').remove()
@@ -54,41 +52,36 @@ export default function histogram (args) {
       .attr('class', 'mg-histogram')
 
     const bar = g.selectAll('.mg-bar')
-      .data(args.data[0])
+      .data(this.args.data[0])
       .enter().append('g')
       .attr('class', 'mg-bar')
-      .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor]).toFixed(2)},${args.scales.Y(d[args.yAccessor]).toFixed(2)})`)
+      .attr('transform', d => `translate(${this.args.scales.X(d[this.args.xAccessor]).toFixed(2)},${this.args.scales.Y(d[this.args.yAccessor]).toFixed(2)})`)
 
     // draw bars
     bar.append('rect')
       .attr('x', 1)
       .attr('width', (d, i) => {
-        if (args.data[0].length === 1) {
-          return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
-        } else if (i !== args.data[0].length - 1) {
-          return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
+        if (this.args.data[0].length === 1) {
+          return (this.args.scaleFunctions.xf(this.args.data[0][0]) - this.args.bar_margin).toFixed(0)
+        } else if (i !== this.args.data[0].length - 1) {
+          return (this.args.scaleFunctions.xf(this.args.data[0][i + 1]) - this.args.scaleFunctions.xf(d)).toFixed(0)
         } else {
-          return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
+          return (this.args.scaleFunctions.xf(this.args.data[0][1]) - this.args.scaleFunctions.xf(this.args.data[0][0])).toFixed(0)
         }
       })
       .attr('height', d => {
-        if (d[args.yAccessor] === 0) {
+        if (d[this.args.yAccessor] === 0) {
           return 0
         }
 
-        return (args.height - args.bottom - args.buffer - args.scales.Y(d[args.yAccessor])).toFixed(2)
+        return (this.args.height - this.args.bottom - this.args.buffer - this.args.scales.Y(d[this.args.yAccessor])).toFixed(2)
       })
-
-    return this
   }
 
-  this.markers = () => {
-    markers(args)
-    return this
-  }
+  markers () { markers(this.args) }
 
-  this.rollover = () => {
-    const svg = getSvgChildOf(args.target)
+  rollover () {
+    const svg = getSvgChildOf(this.args.target)
 
     if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       addG(svg, 'mg-active-datapoint-container')
@@ -103,41 +96,39 @@ export default function histogram (args) {
 
     // draw rollover bars
     const bar = g.selectAll('.mg-bar')
-      .data(args.data[0])
+      .data(this.args.data[0])
       .enter().append('g')
       .attr('class', (d, i) => {
-        if (args.linked) {
+        if (this.args.linked) {
           return `mg-rollover-rects roll_${i}`
         } else {
           return 'mg-rollover-rects'
         }
       })
-      .attr('transform', d => `translate(${args.scales.X(d[args.xAccessor])},${0})`)
+      .attr('transform', d => `translate(${this.args.scales.X(d[this.args.xAccessor])},${0})`)
 
     bar.append('rect')
       .attr('x', 1)
-      .attr('y', args.buffer + (args.title ? args.titleYPosition : 0))
+      .attr('y', this.args.buffer + (this.args.title ? this.args.titleYPosition : 0))
       .attr('width', (d, i) => {
         // if data set is of length 1
-        if (args.data[0].length === 1) {
-          return (args.scaleFunctions.xf(args.data[0][0]) - args.bar_margin).toFixed(0)
-        } else if (i !== args.data[0].length - 1) {
-          return (args.scaleFunctions.xf(args.data[0][i + 1]) - args.scaleFunctions.xf(d)).toFixed(0)
+        if (this.args.data[0].length === 1) {
+          return (this.args.scaleFunctions.xf(this.args.data[0][0]) - this.args.bar_margin).toFixed(0)
+        } else if (i !== this.args.data[0].length - 1) {
+          return (this.args.scaleFunctions.xf(this.args.data[0][i + 1]) - this.args.scaleFunctions.xf(d)).toFixed(0)
         } else {
-          return (args.scaleFunctions.xf(args.data[0][1]) - args.scaleFunctions.xf(args.data[0][0])).toFixed(0)
+          return (this.args.scaleFunctions.xf(this.args.data[0][1]) - this.args.scaleFunctions.xf(this.args.data[0][0])).toFixed(0)
         }
       })
-      .attr('height', d => args.height)
+      .attr('height', () => this.args.height)
       .attr('opacity', 0)
-      .on('mouseover', this.rolloverOn(args))
-      .on('mouseout', this.rolloverOff(args))
-      .on('mousemove', this.rolloverMove(args))
-
-    return this
+      .on('mouseover', this.rolloverOn(this.args))
+      .on('mouseout', this.rolloverOff(this.args))
+      .on('mousemove', this.rolloverMove(this.args))
   }
 
-  this.rolloverOn = (args) => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOn () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
       svg.selectAll('text')
@@ -149,7 +140,7 @@ export default function histogram (args) {
         .classed('active', true)
 
       // trigger mouseover on all matching bars
-      if (args.linked && !globals.link) {
+      if (this.args.linked && !globals.link) {
         globals.link = true
 
         // trigger mouseover on matching bars in .linked charts
@@ -160,28 +151,28 @@ export default function histogram (args) {
       }
 
       // update rollover text
-      if (args.show_rollover_text) {
-        const mo = mouseoverText(args, { svg })
+      if (this.args.show_rollover_text) {
+        const mo = mouseoverText(this.args, { svg })
         const row = mo.mouseover_row()
         row.text('\u259F  ').elem
           .classed('hist-symbol', true)
 
-        row.text(formatXMouseover(args, d)) // x
-        row.text(formatYMouseover(args, d, args.timeSeries === false))
+        row.text(formatXMouseover(this.args, d)) // x
+        row.text(formatYMouseover(this.args, d, this.args.timeSeries === false))
       }
 
-      if (args.mouseover) {
-        setupMouseoverContainer(svg, args)
-        args.mouseover(d, i)
+      if (this.args.mouseover) {
+        setupMouseoverContainer(svg, this.args)
+        this.args.mouseover(d, i)
       }
     }
   }
 
-  this.rolloverOff = (args) => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOff () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
-      if (args.linked && globals.link) {
+      if (this.args.linked && globals.link) {
         globals.link = false
 
         // trigger mouseout on matching bars in .linked charts
@@ -198,24 +189,21 @@ export default function histogram (args) {
       // reset active data point text
       clearMouseoverContainer(svg)
 
-      if (args.mouseout) {
-        args.mouseout(d, i)
+      if (this.args.mouseout) {
+        this.args.mouseout(d, i)
       }
     }
   }
 
-  this.rolloverMove = (args) => (d, i) => {
-    if (args.mousemove) {
-      args.mousemove(d, i)
+  rolloverMove () {
+    return (d, i) => {
+      if (this.args.mousemove) {
+        this.args.mousemove(d, i)
+      }
     }
   }
 
-  this.windowListeners = () => {
-    windowListeners(this.args)
-    return this
-  }
-
-  this.init(args)
+  windowListeners () { windowListeners(this.args) }
 }
 
 export const options = {

@@ -36,6 +36,7 @@ export function catPosition (str, args) {
 // according to the data, and handles other niceties.
 export class MGScale {
   constructor (args) {
+    this.args = args
     this.scaleArgs = {
       useInflator: false,
       zeroBottom: false,

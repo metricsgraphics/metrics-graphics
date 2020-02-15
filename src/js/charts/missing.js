@@ -83,8 +83,8 @@ function missingRemoveLegend ({ legendTarget }) {
   }
 }
 
-export default function missingData (args) {
-  this.init = (args) => {
+export default class MissingDataChart {
+  constructor (args) {
     this.args = args
 
     initComputeWidth(args)
@@ -121,16 +121,9 @@ export default function missingData (args) {
     missingAddText(svg, args)
 
     this.windowListeners()
-
-    return this
   }
 
-  this.windowListeners = () => {
-    windowListeners(this.args)
-    return this
-  }
-
-  this.init(args)
+  windowListeners () { windowListeners(this.args) }
 }
 
 export const options = {

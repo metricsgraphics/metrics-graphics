@@ -756,8 +756,8 @@ function removeActiveDatapointsForGenericRollover ({ customLineColorMap, data },
     })
 }
 
-export default function lineChart (args) {
-  this.init = function (args) {
+export default class LineChart {
+  constructor (args) {
     this.args = args
 
     if (!args.data || args.data.length === 0) {
@@ -820,111 +820,99 @@ export default function lineChart (args) {
     return this
   }
 
-  this.mainPlot = function () {
-    lineMainPlot(args)
-    return this
+  mainPlot () { lineMainPlot(this.args) }
+  markers () { markers(this.args) }
+
+  rollover () {
+    lineRolloverSetup(this.args, this)
+    callHook('line.after_rollover', this.args)
   }
 
-  this.markers = function () {
-    markers(args)
-    return this
-  }
-
-  this.rollover = function () {
-    lineRolloverSetup(args, this)
-    callHook('line.after_rollover', args)
-
-    return this
-  }
-
-  this.rolloverClick = args => (d, i) => {
-    if (args.click) {
-      args.click(d, i)
+  rolloverClick () {
+    return (d, i) => {
+      if (this.args.click) {
+        this.args.click(d, i)
+      }
     }
   }
 
-  this.rolloverOn = args => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOn () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
-      updateRolloverCircle(args, svg, d)
-      triggerLinkedMouseovers(args, d, i)
+      updateRolloverCircle(this.args, svg, d)
+      triggerLinkedMouseovers(this.args, d, i)
 
       svg.selectAll('text')
         .filter((g, j) => d === g)
         .attr('opacity', 0.3)
 
       // update rollover text except for missing data points
-      if (args.show_rollover_text &&
-            !((args.missingIsHidden && d._missing) || d[args.yAccessor] === null)
+      if (this.args.show_rollover_text &&
+        !((this.args.missingIsHidden && d._missing) || d[this.args.yAccessor] === null)
       ) {
-        const mouseover = mouseoverText(args, { svg })
+        const mouseover = mouseoverText(this.args, { svg })
         let row = mouseover.mouseover_row()
-        if (args.aggregateRollover) {
-          row.text((args.aggregateRollover && args.data.length > 1
+        if (this.args.aggregateRollover) {
+          row.text((this.args.aggregateRollover && this.args.data.length > 1
             ? formatXAggregateMouseover
-            : formatXMouseover)(args, d))
+            : formatXMouseover)(this.args, d))
         }
 
-        const pts = args.aggregateRollover && args.data.length > 1
+        const pts = this.args.aggregateRollover && this.args.data.length > 1
           ? d.values
           : [d]
 
         pts.forEach(di => {
-          if (args.aggregateRollover) {
+          if (this.args.aggregateRollover) {
             row = mouseover.mouseover_row()
           }
 
-          if (args.legend) {
-            lineColorText(row.text(`${args.legend[di.__index__ - 1]}  `).bold(), di.__lineId__, args)
+          if (this.args.legend) {
+            lineColorText(row.text(`${this.args.legend[di.__index__ - 1]}  `).bold(), di.__lineId__, this.args)
           }
 
-          lineColorText(row.text('\u2014  ').elem, di.__lineId__, args)
-          if (!args.aggregateRollover) {
-            row.text(formatXMouseover(args, di))
+          lineColorText(row.text('\u2014  ').elem, di.__lineId__, this.args)
+          if (!this.args.aggregateRollover) {
+            row.text(formatXMouseover(this.args, di))
           }
 
-          row.text(formatYMouseover(args, di, args.timeSeries === false))
+          row.text(formatYMouseover(this.args, di, this.args.timeSeries === false))
         })
       }
 
-      if (args.mouseover) {
-        args.mouseover(d, i)
-      }
+      if (this.args.mouseover) this.args.mouseover(d, i)
     }
   }
 
-  this.rolloverOff = args => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOff () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
-      triggerLinkedMouseouts(args, d, i)
-      if (args.aggregateRollover) {
-        removeActiveDatapointsForAggregateRollover(args, svg)
+      triggerLinkedMouseouts(this.args, d, i)
+      if (this.args.aggregateRollover) {
+        removeActiveDatapointsForAggregateRollover(this.args, svg)
       } else {
-        removeActiveDatapointsForGenericRollover(args, svg, d.__lineId__)
+        removeActiveDatapointsForGenericRollover(this.args, svg, d.__lineId__)
       }
 
-      if (args.data[0].length > 1) {
+      if (this.args.data[0].length > 1) {
         clearMouseoverContainer(svg)
       }
 
-      if (args.mouseout) {
-        args.mouseout(d, i)
+      if (this.args.mouseout) {
+        this.args.mouseout(d, i)
       }
     }
   }
 
-  this.rolloverMove = args => (d, i) => {
-    if (args.mousemove) {
-      args.mousemove(d, i)
+  rolloverMove () {
+    return (d, i) => {
+      if (this.args.mousemove) {
+        this.args.mousemove(d, i)
+      }
     }
   }
 
-  this.windowListeners = function () {
-    windowListeners(this.args)
-    return this
-  }
-
-  this.init(args)
+  windowListeners () { return windowListeners(this.args) }
 }

@@ -15,18 +15,18 @@ import { globals } from '../common/dataGraphic'
 import { windowListeners } from '../common/windowListeners'
 
 function pointMouseover (args, svg, d) {
-  const mouseover = mouseoverText(args, { svg })
+  const mouseover = mouseoverText(this.args, { svg })
   const row = mouseover.mouseover_row()
 
-  if (args.colorAccessor !== null && args.colorType === 'category') {
+  if (this.args.colorAccessor !== null && args.colorType === 'category') {
     const label = d[args.colorAccessor]
     row.text(`${label}  `).bold().attr('fill', args.scaleFunctions.colorFunction(d))
   }
 
-  colorPointMouseover(args, row.text('\u25CF   ').elem, d) // point shape
+  colorPointMouseover(this.args, row.text('\u25CF   ').elem, d) // point shape
 
-  row.text(formatXMouseover(args, d)) // x
-  row.text(formatYMouseover(args, d, args.timeSeries === false))
+  row.text(formatXMouseover(this.args, d)) // x
+  row.text(formatYMouseover(this.args, d, args.timeSeries === false))
 }
 
 function colorPointMouseover ({ colorAccessor, scaleFunctions }, elem, d) {
@@ -42,78 +42,78 @@ function filterOutPlotBounds (data, args) {
   // maxX, minX, maxY, minY;
   const x = args.xAccessor
   const y = args.yAccessor
-  const newData = data.filter(d => (args.minX === null || d[x] >= args.minX) &&
-      (args.maxX === null || d[x] <= args.maxX) &&
-      (args.minY === null || d[y] >= args.minY) &&
-      (args.maxY === null || d[y] <= args.maxY))
+  const newData = data.filter(d => (this.args.minX === null || d[x] >= args.minX) &&
+      (this.args.maxX === null || d[x] <= args.maxX) &&
+      (this.args.minY === null || d[y] >= args.minY) &&
+      (this.args.maxY === null || d[y] <= args.maxY))
   return newData
 }
 
-export default function pointChart (args) {
-  this.init = function (args) {
+export default class PointChart {
+  constructor (args) {
     this.args = args
 
     // infer yAxis and xAxis type;
-    args.xAxis_type = inferType(args, 'x')
-    args.yAxis_type = inferType(args, 'y')
+    args.xAxis_type = inferType(this.args, 'x')
+    args.yAxis_type = inferType(this.args, 'y')
 
-    rawDataTransformation(args)
+    rawDataTransformation(this.args)
 
-    processPoint(args)
-    init(args)
+    processPoint(this.args)
+    init(this.args)
 
-    if (args.xAxis_type === 'categorical') {
-      MGScale(args)
+    if (this.args.xAxis_type === 'categorical') {
+      MGScale(this.args)
         .namespace('x')
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null)
 
-      if (args.xgroup_accessor) {
-        new MGScale(args)
+      if (this.args.xgroup_accessor) {
+        new MGScale(this.args)
           .namespace('xgroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('bottom')
       } else {
-        args.scales.XGROUP = () => getPlotLeft(args)
-        args.scaleFunctions.xgroupf = () => getPlotLeft(args)
+        args.scales.XGROUP = () => getPlotLeft(this.args)
+        args.scaleFunctions.xgroupf = () => getPlotLeft(this.args)
       }
 
       args.scaleFunctions.xoutf = d => args.scaleFunctions.xf(d) + args.scaleFunctions.xgroupf(d)
     } else {
-      MGScale(args)
+      MGScale(this.args)
         .namespace('x')
         .inflateDomain(true)
-        .zeroBottom(args.yAxis_type === 'categorical')
-        .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
+        .zeroBottom(this.args.yAxis_type === 'categorical')
+        .numericalDomainFromData((this.args.baselines || []).map(d => d[args.xAccessor]))
         .numericalRange('bottom')
 
       args.scaleFunctions.xoutf = args.scaleFunctions.xf
     }
 
     // y-scale generation. This needs to get simplified.
-    if (args.yAxis_type === 'categorical') {
-      MGScale(args)
+    if (this.args.yAxis_type === 'categorical') {
+      MGScale(this.args)
         .namespace('y')
         .zeroBottom(true)
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.yGroupHeight], true)
 
-      if (args.yGroupAccessor) {
-        new MGScale(args)
+      if (this.args.yGroupAccessor) {
+        new MGScale(this.args)
           .namespace('ygroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('left')
       } else {
-        args.scales.YGROUP = () => getPlotTop(args)
-        args.scaleFunctions.yGroupFunction = () => getPlotTop(args)
+        args.scales.YGROUP = () => getPlotTop(this.args)
+        args.scaleFunctions.yGroupFunction = () => getPlotTop(this.args)
       }
       args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
     } else {
-      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
-      MGScale(args)
+      const baselines = (this.args.baselines || []).map(d => d[args.yAccessor])
+      MGScale(this.args)
         .namespace('y')
         .inflateDomain(true)
-        .zeroBottom(args.xAxis_type === 'categorical')
+        .zeroBottom(this.args.xAxis_type === 'categorical')
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
@@ -121,20 +121,20 @@ export default function pointChart (args) {
     }
 
     /// //// COLOR accessor
-    if (args.colorAccessor !== null) {
-      const colorScale = MGScale(args).namespace('color')
-      if (args.colorType === 'number') {
+    if (this.args.colorAccessor !== null) {
+      const colorScale = MGScale(this.args).namespace('color')
+      if (this.args.colorType === 'number') {
         // do the color scale.
         // etiher get color range, or what.
         colorScale
-          .numericalDomainFromData(getColorDomain(args))
-          .numericalRange(getColorRange(args))
+          .numericalDomainFromData(getColorDomain(this.args))
+          .numericalRange(getColorRange(this.args))
           .clamp(true)
       } else {
-        if (args.colorDomain) {
+        if (this.args.colorDomain) {
           colorScale
-            .categoricalDomain(args.colorDomain)
-            .categoricalRange(args.colorRange)
+            .categoricalDomain(this.args.colorDomain)
+            .categoricalRange(this.args.colorRange)
         } else {
           colorScale
             .categoricalDomainFromData()
@@ -143,28 +143,28 @@ export default function pointChart (args) {
       }
     }
 
-    if (args.sizeAccessor) {
-      new MGScale(args).namespace('size')
+    if (this.args.sizeAccessor) {
+      new MGScale(this.args).namespace('size')
         .numericalDomainFromData()
-        .numericalRange(getSizeRange(args))
+        .numericalRange(getSizeRange(this.args))
         .clamp(true)
     }
 
-    axisFactory(args)
+    axisFactory(this.args)
       .namespace('x')
-      .type(args.xAxis_type)
-      .zeroLine(args.yAxis_type === 'categorical')
-      .position(args.xAxis_position)
-      .rug(xRug(args))
+      .type(this.args.xAxis_type)
+      .zeroLine(this.args.yAxis_type === 'categorical')
+      .position(this.args.xAxis_position)
+      .rug(xRug(this.args))
       .label(addXLabel)
       .draw()
 
-    axisFactory(args)
+    axisFactory(this.args)
       .namespace('y')
-      .type(args.yAxis_type)
-      .zeroLine(args.xAxis_type === 'categorical')
-      .position(args.yAxis_position)
-      .rug(yRug(args))
+      .type(this.args.yAxis_type)
+      .zeroLine(this.args.xAxis_type === 'categorical')
+      .position(this.args.yAxis_position)
+      .rug(yRug(this.args))
       .label(addYLabel)
       .draw()
 
@@ -172,23 +172,13 @@ export default function pointChart (args) {
     this.markers()
     this.rollover()
     this.windowListeners()
-    if (args.brush) addBrushFunction(args)
-    return this
+    if (this.args.brush) addBrushFunction(this.args)
   }
 
-  this.markers = function () {
-    markers(args)
-    if (args.leastSquares) {
-      addLs(args)
-    }
+  mainPlot () {
+    const svg = getSvgChildOf(this.args.target)
 
-    return this
-  }
-
-  this.mainPlot = function () {
-    const svg = getSvgChildOf(args.target)
-
-    const data = filterOutPlotBounds(args.data[0], args)
+    const data = filterOutPlotBounds(this.args.data[0], this.args)
     // remove the old points, add new one
     svg.selectAll('.mg-points').remove()
 
@@ -199,39 +189,44 @@ export default function pointChart (args) {
       .data(data)
       .enter().append('circle')
       .attr('class', (d, i) => `path-${i}`)
-      .attr('cx', args.scaleFunctions.xoutf)
-      .attr('cy', d => args.scaleFunctions.youtf(d))
+      .attr('cx', this.args.scaleFunctions.xoutf)
+      .attr('cy', d => this.args.scaleFunctions.youtf(d))
 
     let highlights
     svg.selectAll('.mg-highlight').remove()
-    if (args.highlight && typeof args.highlight === 'function') {
+    if (this.args.highlight && typeof this.args.highlight === 'function') {
       highlights = svg.append('g')
         .classed('mg-highlight', true)
         .selectAll('circle')
-        .data(data.filter(args.highlight))
+        .data(data.filter(this.args.highlight))
         .enter().append('circle')
-        .attr('cx', args.scaleFunctions.xoutf)
-        .attr('cy', d => args.scaleFunctions.youtf(d))
+        .attr('cx', this.args.scaleFunctions.xoutf)
+        .attr('cy', d => this.args.scaleFunctions.youtf(d))
     }
 
     const elements = [pts].concat(highlights ? [highlights] : [])
     // are we coloring our points, or just using the default color?
-    if (args.colorAccessor !== null) {
-      elements.forEach(e => e.attr('fill', args.scaleFunctions.colorFunction).attr('stroke', args.scaleFunctions.colorFunction))
+    if (this.args.colorAccessor !== null) {
+      elements.forEach(e => e.attr('fill', this.args.scaleFunctions.colorFunction).attr('stroke', this.args.scaleFunctions.colorFunction))
     } else {
       elements.forEach(e => e.classed('mg-points-mono', true))
     }
 
-    pts.attr('r', (args.sizeAccessor !== null) ? args.scaleFunctions.sizef : args.pointSize)
+    pts.attr('r', (this.args.sizeAccessor !== null) ? this.args.scaleFunctions.sizef : this.args.pointSize)
     if (highlights) {
-      highlights.attr('r', (args.sizeAccessor !== null) ? (d, i) => args.scaleFunctions.sizef(d, i) + 2 : args.pointSize + 2)
+      highlights.attr('r', (this.args.sizeAccessor !== null) ? (d, i) => this.args.scaleFunctions.sizef(d, i) + 2 : this.args.pointSize + 2)
     }
-
-    return this
   }
 
-  this.rollover = function () {
-    const svg = getSvgChildOf(args.target)
+  markers () {
+    markers(this.args)
+    if (this.args.leastSquares) {
+      addLs(this.args)
+    }
+  }
+
+  rollover () {
+    const svg = getSvgChildOf(this.args.target)
 
     if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       addG(svg, 'mg-active-datapoint-container')
@@ -242,44 +237,42 @@ export default function pointChart (args) {
 
     // add rollover paths
     const voronoi = d3voronoi()
-      .x(args.scaleFunctions.xoutf)
-      .y(args.scaleFunctions.youtf)
+      .x(this.args.scaleFunctions.xoutf)
+      .y(this.args.scaleFunctions.youtf)
       .extent([
-        [args.buffer, args.buffer + (args.title ? args.titleYPosition : 0)],
-        [args.width - args.buffer, args.height - args.buffer]
+        [this.args.buffer, this.args.buffer + (this.args.title ? this.args.titleYPosition : 0)],
+        [this.args.width - this.args.buffer, this.args.height - this.args.buffer]
       ])
 
     const paths = svg.append('g')
       .attr('class', 'mg-voronoi')
 
     paths.selectAll('path')
-      .data(voronoi.polygons(filterOutPlotBounds(args.data[0], args)))
+      .data(voronoi.polygons(filterOutPlotBounds(this.args.data[0], this.args)))
       .enter().append('path')
       .attr('d', d => d == null ? null : `M${d.join(',')}Z`)
       .attr('class', (d, i) => `path-${i}`)
       .style('fill-opacity', 0)
-      .on('click', this.rolloverClick(args))
-      .on('mouseover', this.rolloverOn(args))
-      .on('mouseout', this.rolloverOff(args))
-      .on('mousemove', this.rolloverMove(args))
+      .on('click', this.rolloverClick(this.args))
+      .on('mouseover', this.rolloverOn(this.args))
+      .on('mouseout', this.rolloverOff(this.args))
+      .on('mousemove', this.rolloverMove(this.args))
 
-    if (args.data[0].length === 1) {
-      pointMouseover(args, svg, args.data[0][0])
+    if (this.args.data[0].length === 1) {
+      pointMouseover(this.args, svg, this.args.data[0][0])
     }
-
-    return this
   }
 
-  this.rolloverClick = args => {
+  rolloverClick () {
     return (d, i) => {
-      if (args.click) {
-        args.click(d, i)
+      if (this.args.click) {
+        this.args.click(d, i)
       }
     }
   }
 
-  this.rolloverOn = args => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOn () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
       svg.selectAll('.mg-points circle')
@@ -289,14 +282,14 @@ export default function pointChart (args) {
       const pts = svg.selectAll(`.mg-points circle.path-${i}`)
         .classed('selected', true)
 
-      if (args.sizeAccessor) {
-        pts.attr('r', di => args.scaleFunctions.sizef(di) + args.active_pointSize_increase)
+      if (this.args.sizeAccessor) {
+        pts.attr('r', di => this.args.scaleFunctions.sizef(di) + this.args.active_pointSize_increase)
       } else {
-        pts.attr('r', args.pointSize + args.active_pointSize_increase)
+        pts.attr('r', this.args.pointSize + this.args.active_pointSize_increase)
       }
 
       // trigger mouseover on all points for this class name in .linked charts
-      if (args.linked && !globals.link) {
+      if (this.args.linked && !globals.link) {
         globals.link = true
 
         // trigger mouseover on matching point in .linked charts
@@ -306,21 +299,21 @@ export default function pointChart (args) {
           })
       }
 
-      if (args.show_rollover_text) {
-        pointMouseover(args, svg, d.data)
+      if (this.args.show_rollover_text) {
+        pointMouseover(this.args, svg, d.data)
       }
 
-      if (args.mouseover) {
-        args.mouseover(d, i)
+      if (this.args.mouseover) {
+        this.args.mouseover(d, i)
       }
     }
   }
 
-  this.rolloverOff = args => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOff () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
-      if (args.linked && globals.link) {
+      if (this.args.linked && globals.link) {
         globals.link = false
 
         selectAll(`.mg-voronoi .path-${i}`)
@@ -334,37 +327,30 @@ export default function pointChart (args) {
         .classed('unselected', false)
         .classed('selected', false)
 
-      if (args.sizeAccessor) {
-        pts.attr('r', args.scaleFunctions.sizef)
+      if (this.args.sizeAccessor) {
+        pts.attr('r', this.args.scaleFunctions.sizef)
       } else {
-        pts.attr('r', args.pointSize)
+        pts.attr('r', this.args.pointSize)
       }
 
       // reset active data point text
-      if (args.data[0].length > 1) clearMouseoverContainer(svg)
+      if (this.args.data[0].length > 1) clearMouseoverContainer(svg)
 
-      if (args.mouseout) {
-        args.mouseout(d, i)
+      if (this.args.mouseout) {
+        this.args.mouseout(d, i)
       }
     }
   }
 
-  this.rolloverMove = args => (d, i) => {
-    if (args.mousemove) {
-      args.mousemove(d, i)
+  rolloverMove () {
+    return (d, i) => {
+      if (this.args.mousemove) {
+        this.args.mousemove(d, i)
+      }
     }
   }
 
-  this.update = function (args) {
-    return this
-  }
-
-  this.windowListeners = function () {
-    windowListeners(this.args)
-    return this
-  }
-
-  this.init(args)
+  windowListeners () { windowListeners(this.args) }
 }
 
 export const options = {

@@ -36,7 +36,7 @@ function legendOnGraph (svg, args) {
   // get labels
 
   let labels
-  if (args.orientation === 'horizontal') labels = args.scales.Y.domain()
+  if (this.args.orientation === 'horizontal') labels = args.scales.Y.domain()
   else labels = args.scales.X.domain()
 
   let lineCount = 0
@@ -54,7 +54,7 @@ function legendOnGraph (svg, args) {
 
   labels.forEach(label => {
     const subContainer = textContainer.append('tspan')
-      .attr('x', getPlotRight(args))
+      .attr('x', getPlotRight(this.args))
       .attr('y', args.height / 2)
       .attr('dy', `${lineCount * lineHeight}em`)
     subContainer.append('tspan')
@@ -69,132 +69,129 @@ function legendOnGraph (svg, args) {
   })
 }
 
-export default function barChart (args) {
-  this.args = args
-
-  this.init = (args) => {
+export default class BarChart {
+  constructor (args) {
     this.args = args
-    args.xAxis_type = inferType(args, 'x')
-    args.yAxis_type = inferType(args, 'y')
+
+    args.xAxis_type = inferType(this.args, 'x')
+    args.yAxis_type = inferType(this.args, 'y')
 
     // this is specific to how rects work in svg, let's keep track of the bar orientation to
     // plot appropriately.
-    if (args.xAxis_type === 'categorical') {
+    if (this.args.xAxis_type === 'categorical') {
       args.orientation = 'vertical'
-    } else if (args.yAxis_type === 'categorical') {
+    } else if (this.args.yAxis_type === 'categorical') {
       args.orientation = 'horizontal'
-    } else if (args.xAxis_type !== 'categorical' && args.yAxis_type !== 'categorical') {
+    } else if (this.args.xAxis_type !== 'categorical' && args.yAxis_type !== 'categorical') {
       // histogram.
       args.orientation = 'vertical'
     }
 
-    rawDataTransformation(args)
+    rawDataTransformation(this.args)
 
-    processPoint(args)
-    init(args)
+    processPoint(this.args)
+    init(this.args)
 
-    if (args.xAxis_type === 'categorical') {
-      MGScale(args)
+    if (this.args.xAxis_type === 'categorical') {
+      MGScale(this.args)
         .namespace('x')
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null)
 
-      if (args.xgroup_accessor) {
-        MGScale(args)
+      if (this.args.xgroup_accessor) {
+        MGScale(this.args)
           .namespace('xgroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('bottom')
       } else {
-        args.scales.XGROUP = d => getPlotLeft(args)
-        args.scaleFunctions.xgroupf = d => getPlotLeft(args)
+        args.scales.XGROUP = d => getPlotLeft(this.args)
+        args.scaleFunctions.xgroupf = d => getPlotLeft(this.args)
       }
 
       args.scaleFunctions.xoutf = d => args.scaleFunctions.xf(d) + args.scaleFunctions.xgroupf(d)
     } else {
-      MGScale(args)
+      MGScale(this.args)
         .namespace('x')
         .inflateDomain(true)
-        .zeroBottom(args.yAxis_type === 'categorical')
-        .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
+        .zeroBottom(this.args.yAxis_type === 'categorical')
+        .numericalDomainFromData((this.args.baselines || []).map(d => d[args.xAccessor]))
         .numericalRange('bottom')
 
       args.scaleFunctions.xoutf = args.scaleFunctions.xf
     }
 
     // y-scale generation. This needs to get simplified.
-    if (args.yAxis_type === 'categorical') {
-      MGScale(args)
+    if (this.args.yAxis_type === 'categorical') {
+      MGScale(this.args)
         .namespace('y')
         .zeroBottom(true)
         .categoricalDomainFromData()
         .categoricalRangeBands([0, args.yGroupHeight], true)
 
-      if (args.yGroupAccessor) {
-        new MGScale(args)
+      if (this.args.yGroupAccessor) {
+        new MGScale(this.args)
           .namespace('ygroup')
           .categoricalDomainFromData()
           .categoricalRangeBands('left')
       } else {
-        args.scales.YGROUP = () => getPlotTop(args)
-        args.scaleFunctions.yGroupFunction = d => getPlotTop(args)
+        args.scales.YGROUP = () => getPlotTop(this.args)
+        args.scaleFunctions.yGroupFunction = d => getPlotTop(this.args)
       }
       args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
     } else {
-      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
+      const baselines = (this.args.baselines || []).map(d => d[args.yAccessor])
 
-      MGScale(args)
+      MGScale(this.args)
         .namespace('y')
         .inflateDomain(true)
-        .zeroBottom(args.xAxis_type === 'categorical')
+        .zeroBottom(this.args.xAxis_type === 'categorical')
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
       args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d)
     }
 
-    if (args.yGroupAccessor !== null) {
+    if (this.args.yGroupAccessor !== null) {
       args.ycolorAccessor = args.yAccessor
-      MGScale(args)
+      MGScale(this.args)
         .namespace('ycolor')
         .scaleName('color')
         .categoricalDomainFromData()
         .categoricalColorRange()
     }
 
-    if (args.xgroup_accessor !== null) {
+    if (this.args.xgroup_accessor !== null) {
       args.xcolorAccessor = args.xAccessor
-      MGScale(args)
+      MGScale(this.args)
         .namespace('xcolor')
         .scaleName('color')
         .categoricalDomainFromData()
         .categoricalColorRange()
     }
 
-    axisFactory(args)
+    axisFactory(this.args)
       .namespace('x')
-      .type(args.xAxis_type)
-      .zeroLine(args.yAxis_type === 'categorical')
-      .position(args.xAxis_position)
+      .type(this.args.xAxis_type)
+      .zeroLine(this.args.yAxis_type === 'categorical')
+      .position(this.args.xAxis_position)
       .draw()
 
-    axisFactory(args)
+    axisFactory(this.args)
       .namespace('y')
-      .type(args.yAxis_type)
-      .zeroLine(args.xAxis_type === 'categorical')
-      .position(args.yAxis_position)
+      .type(this.args.yAxis_type)
+      .zeroLine(this.args.xAxis_type === 'categorical')
+      .position(this.args.yAxis_position)
       .draw()
 
     this.mainPlot()
     this.markers()
     this.rollover()
     this.windowListeners()
-
-    return this
   }
 
-  this.mainPlot = () => {
-    const svg = getSvgChildOf(args.target)
-    const data = args.data[0]
+  mainPlot () {
+    const svg = getSvgChildOf(this.args.target)
+    const data = this.args.data[0]
     let barplot = svg.select('g.mg-barplot')
     const freshRender = barplot.empty()
 
@@ -209,7 +206,7 @@ export default function barChart (args) {
       .enter()
       .append('rect')
       .classed('mg-bar', true)
-      .classed('default-bar', !args.scales.COLOR)
+      .classed('default-bar', !this.args.scales.COLOR)
 
     // appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
     let length, width, lengthType, widthType, lengthCoord, widthCoord,
@@ -219,19 +216,19 @@ export default function barChart (args) {
 
     let referenceLengthMap, referenceLengthCoordFunction
 
-    if (args.orientation === 'vertical') {
+    if (this.args.orientation === 'vertical') {
       length = 'height'
       width = 'width'
-      lengthType = args.yAxis_type
-      widthType = args.xAxis_type
+      lengthType = this.args.yAxis_type
+      widthType = this.args.xAxis_type
       lengthCoord = 'y'
       widthCoord = 'x'
-      lengthScaleFunction = lengthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-      lengthScale = args.scales.Y
-      widthScale = args.scales.X
-      lengthAccessor = args.yAccessor
-      widthAccessor = args.xAccessor
+      lengthScaleFunction = lengthType === 'categorical' ? this.args.scaleFunctions.youtf : this.args.scaleFunctions.yf
+      widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.xoutf : this.args.scaleFunctions.xf
+      lengthScale = this.args.scales.Y
+      widthScale = this.args.scales.X
+      lengthAccessor = this.args.yAccessor
+      widthAccessor = this.args.xAccessor
 
       lengthCoordMap = d => {
         let l
@@ -244,30 +241,30 @@ export default function barChart (args) {
 
       lengthMap = d => Math.abs(lengthScaleFunction(d) - lengthScale(0))
 
-      referenceLengthMap = d => Math.abs(lengthScale(d[args.referenceAccessor]) - lengthScale(0))
+      referenceLengthMap = d => Math.abs(lengthScale(d[this.args.referenceAccessor]) - lengthScale(0))
 
-      referenceLengthCoordFunction = d => lengthScale(d[args.referenceAccessor])
+      referenceLengthCoordFunction = d => lengthScale(d[this.args.referenceAccessor])
     }
 
-    if (args.orientation === 'horizontal') {
+    if (this.args.orientation === 'horizontal') {
       length = 'width'
       width = 'height'
-      lengthType = args.xAxis_type
-      widthType = args.yAxis_type
+      lengthType = this.args.xAxis_type
+      widthType = this.args.yAxis_type
       lengthCoord = 'x'
       widthCoord = 'y'
-      lengthScaleFunction = lengthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-      lengthScale = args.scales.X
-      widthScale = args.scales.Y
-      lengthAccessor = args.xAccessor
-      widthAccessor = args.yAccessor
+      lengthScaleFunction = lengthType === 'categorical' ? this.args.scaleFunctions.xoutf : this.args.scaleFunctions.xf
+      widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.youtf : this.args.scaleFunctions.yf
+      lengthScale = this.args.scales.X
+      widthScale = this.args.scales.Y
+      lengthAccessor = this.args.xAccessor
+      widthAccessor = this.args.yAccessor
 
       lengthCoordMap = d => lengthScale(0)
 
       lengthMap = d => Math.abs(lengthScaleFunction(d) - lengthScale(0))
 
-      referenceLengthMap = d => Math.abs(lengthScale(d[args.referenceAccessor]) - lengthScale(0))
+      referenceLengthMap = d => Math.abs(lengthScale(d[this.args.referenceAccessor]) - lengthScale(0))
 
       referenceLengthCoordFunction = d => lengthScale(0)
     }
@@ -287,20 +284,20 @@ export default function barChart (args) {
           w = widthScaleFunction(d)
         }
       }
-      w = w - args.bar_thickness / 2
+      w = w - this.args.bar_thickness / 2
       return w
     })
 
-    if (args.scales.COLOR) {
-      bars.attr('fill', args.scaleFunctions.colorFunction)
+    if (this.args.scales.COLOR) {
+      bars.attr('fill', this.args.scaleFunctions.colorFunction)
     }
 
     bars
       .attr(length, lengthMap)
-      .attr(width, d => args.bar_thickness)
+      .attr(width, d => this.args.bar_thickness)
 
-    if (args.referenceAccessor !== null) {
-      const referenceData = data.filter(d => d[args.referenceAccessor])
+    if (this.args.referenceAccessor !== null) {
+      const referenceData = data.filter(d => d[this.args.referenceAccessor])
       const referenceBars = barplot.selectAll('.mg-categorical-reference')
         .data(referenceData)
         .enter()
@@ -308,48 +305,44 @@ export default function barChart (args) {
 
       referenceBars
         .attr(lengthCoord, referenceLengthCoordFunction)
-        .attr(widthCoord, d => widthScaleFunction(d) - args.referenceThickness / 2)
+        .attr(widthCoord, d => widthScaleFunction(d) - this.args.referenceThickness / 2)
         .attr(length, referenceLengthMap)
-        .attr(width, args.referenceThickness)
+        .attr(width, this.args.referenceThickness)
     }
 
-    if (args.comparisonAccessor !== null) {
+    if (this.args.comparisonAccessor !== null) {
       let comparisonThickness = null
-      if (args.comparisonThickness === null) {
-        comparisonThickness = args.bar_thickness / 2
+      if (this.args.comparisonThickness === null) {
+        comparisonThickness = this.args.bar_thickness / 2
       } else {
-        comparisonThickness = args.comparisonThickness
+        comparisonThickness = this.args.comparisonThickness
       }
 
-      const comparisonData = data.filter(d => d[args.comparison_accessor])
+      const comparisonData = data.filter(d => d[this.args.comparison_accessor])
       const comparisonMarks = barplot.selectAll('.mg-categorical-comparison')
         .data(comparisonData)
         .enter()
         .append('line')
 
       comparisonMarks
-        .attr(`${lengthCoord}1`, d => lengthScale(d[args.comparisonAccessor]))
-        .attr(`${lengthCoord}2`, d => lengthScale(d[args.comparisonAccessor]))
+        .attr(`${lengthCoord}1`, d => lengthScale(d[this.args.comparisonAccessor]))
+        .attr(`${lengthCoord}2`, d => lengthScale(d[this.args.comparisonAccessor]))
         .attr(`${widthCoord}1`, d => widthScaleFunction(d) - comparisonThickness / 2)
         .attr(`${widthCoord}2`, d => widthScaleFunction(d) + comparisonThickness / 2)
         .attr('stroke', 'black')
-        .attr('stroke-width', args.comparison_width)
+        .attr('stroke-width', this.args.comparison_width)
     }
 
-    if (args.legend || (args.colorAccessor !== null && args.yGroupAccessor !== args.colorAccessor)) {
-      if (!args.legendTarget) legendOnGraph(svg, args)
-      else targetedLegend(args)
+    if (this.args.legend || (this.args.colorAccessor !== null && this.args.yGroupAccessor !== this.args.colorAccessor)) {
+      if (!this.args.legendTarget) legendOnGraph(svg, this.args)
+      else targetedLegend(this.args)
     }
-    return this
   }
 
-  this.markers = () => {
-    markers(args)
-    return this
-  }
+  markers () { return markers(this.args) }
 
-  this.rollover = () => {
-    const svg = getSvgChildOf(args.target)
+  rollover () {
+    const svg = getSvgChildOf(this.args.target)
 
     if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
       addG(svg, 'mg-active-datapoint-container')
@@ -365,48 +358,48 @@ export default function barChart (args) {
 
     let lengthCoordMap
 
-    if (args.orientation === 'vertical') {
+    if (this.args.orientation === 'vertical') {
       length = 'height'
       width = 'width'
-      widthType = args.xAxis_type
+      widthType = this.args.xAxis_type
       lengthCoord = 'y'
       widthCoord = 'x'
-      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-      lengthScale = args.scales.Y
-      widthScale = args.scales.X
-      widthAccessor = args.xAccessor
+      widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.xoutf : this.args.scaleFunctions.xf
+      lengthScale = this.args.scales.Y
+      widthScale = this.args.scales.X
+      widthAccessor = this.args.xAccessor
 
-      lengthCoordMap = d => getPlotTop(args)
+      lengthCoordMap = d => getPlotTop(this.args)
 
-      lengthMap = d => args.height - args.top - args.bottom - args.buffer * 2
+      lengthMap = d => this.args.height - this.args.top - this.args.bottom - this.args.buffer * 2
     }
 
-    if (args.orientation === 'horizontal') {
+    if (this.args.orientation === 'horizontal') {
       length = 'width'
       width = 'height'
-      widthType = args.yAxis_type
+      widthType = this.args.yAxis_type
       lengthCoord = 'x'
       widthCoord = 'y'
-      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-      lengthScale = args.scales.X
-      widthScale = args.scales.Y
-      widthAccessor = args.yAccessor
+      widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.youtf : this.args.scaleFunctions.yf
+      lengthScale = this.args.scales.X
+      widthScale = this.args.scales.Y
+      widthAccessor = this.args.yAccessor
 
       lengthCoordMap = d => lengthScale(0)
 
-      lengthMap = d => args.width - args.left - args.right - args.buffer * 2
+      lengthMap = d => this.args.width - this.args.left - this.args.right - this.args.buffer * 2
     }
 
     // rollover text
     let rolloverX, rolloverAnchor
-    if (args.rollover_align === 'right') {
-      rolloverX = args.width - args.right
+    if (this.args.rollover_align === 'right') {
+      rolloverX = this.args.width - this.args.right
       rolloverAnchor = 'end'
-    } else if (args.rollover_align === 'left') {
-      rolloverX = args.left
+    } else if (this.args.rollover_align === 'left') {
+      rolloverX = this.args.left
       rolloverAnchor = 'start'
     } else {
-      rolloverX = (args.width - args.left - args.right) / 2 + args.left
+      rolloverX = (this.args.width - this.args.left - this.args.right) / 2 + this.args.left
       rolloverAnchor = 'middle'
     }
 
@@ -414,7 +407,7 @@ export default function barChart (args) {
       .attr('class', 'mg-active-datapoint')
       .attr('xml:space', 'preserve')
       .attr('x', rolloverX)
-      .attr('y', args.top * 0.75)
+      .attr('y', this.args.top * 0.75)
       .attr('dy', '.35em')
       .attr('text-anchor', rolloverAnchor)
 
@@ -423,7 +416,7 @@ export default function barChart (args) {
 
     // draw rollover bars
     const bars = g.selectAll('.mg-bar-rollover')
-      .data(args.data[0]).enter()
+      .data(this.args.data[0]).enter()
       .append('rect')
       .attr('class', 'mg-bar-rollover')
 
@@ -439,66 +432,64 @@ export default function barChart (args) {
             w = widthScaleFunction(d)
           }
         }
-        w = w - args.bar_thickness / 2
+        w = w - this.args.bar_thickness / 2
         return w
       })
 
     bars.attr(length, lengthMap)
-    bars.attr(width, d => args.bar_thickness)
+    bars.attr(width, d => this.args.bar_thickness)
 
     bars
-      .on('mouseover', this.rolloverOn(args))
-      .on('mouseout', this.rolloverOff(args))
-      .on('mousemove', this.rolloverMove(args))
-
-    return this
+      .on('mouseover', this.rolloverOn(this.args))
+      .on('mouseout', this.rolloverOff(this.args))
+      .on('mousemove', this.rolloverMove(this.args))
   }
 
-  this.rolloverOn = (args) => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOn () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
       // highlight active bar
       const bar = svg.selectAll('g.mg-barplot .mg-bar')
         .filter((d, j) => j === i).classed('active', true)
 
-      if (args.scales.COLOR) {
-        bar.attr('fill', rgb(args.scaleFunctions.colorFunction(d)).darker())
+      if (this.args.scales.COLOR) {
+        bar.attr('fill', rgb(this.args.scaleFunctions.colorFunction(d)).darker())
       } else {
         bar.classed('default-active', true)
       }
 
       // update rollover text
-      if (args.show_rollover_text) {
-        const mouseover = mouseoverText(args, { svg })
+      if (this.args.show_rollover_text) {
+        const mouseover = mouseoverText(this.args, { svg })
         let row = mouseover.mouseover_row()
 
-        if (args.yGroupAccessor) row.text(`${d[args.yGroupAccessor]}   `).bold()
+        if (this.args.yGroupAccessor) row.text(`${d[this.args.yGroupAccessor]}   `).bold()
 
-        row.text(formatXMouseover(args, d))
-        row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
-        if (args.predictorAccessor || args.baselineAccessor) {
+        row.text(formatXMouseover(this.args, d))
+        row.text(`${this.args.yAccessor}: ${d[this.args.yAccessor]}`)
+        if (this.args.predictorAccessor || this.args.baselineAccessor) {
           row = mouseover.mouseover_row()
 
-          if (args.predictorAccessor) row.text(formatDataForMouseover(args, d, null, args.predictorAccessor, false))
-          if (args.baselineAccessor) row.text(formatDataForMouseover(args, d, null, args.baselineAccessor, false))
+          if (this.args.predictorAccessor) row.text(formatDataForMouseover(this.args, d, null, this.args.predictorAccessor, false))
+          if (this.args.baselineAccessor) row.text(formatDataForMouseover(this.args, d, null, this.args.baselineAccessor, false))
         }
       }
-      if (args.mouseover) {
-        args.mouseover(d, i)
+      if (this.args.mouseover) {
+        this.args.mouseover(d, i)
       }
     }
   }
 
-  this.rolloverOff = (args) => {
-    const svg = getSvgChildOf(args.target)
+  rolloverOff () {
+    const svg = getSvgChildOf(this.args.target)
 
     return (d, i) => {
       // reset active bar
       const bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false)
 
-      if (args.scales.COLOR) {
-        bar.attr('fill', args.scaleFunctions.colorFunction(d))
+      if (this.args.scales.COLOR) {
+        bar.attr('fill', this.args.scaleFunctions.colorFunction(d))
       } else {
         bar.classed('default-active', false)
       }
@@ -509,24 +500,21 @@ export default function barChart (args) {
 
       clearMouseoverContainer(svg)
 
-      if (args.mouseout) {
-        args.mouseout(d, i)
+      if (this.args.mouseout) {
+        this.args.mouseout(d, i)
       }
     }
   }
 
-  this.rolloverMove = (args) => (d, i) => {
-    if (args.mousemove) {
-      args.mousemove(d, i)
+  rolloverMove () {
+    return (d, i) => {
+      if (this.args.mousemove) {
+        this.args.mousemove(d, i)
+      }
     }
   }
 
-  this.windowListeners = () => {
-    windowListeners(this.args)
-    return this
-  }
-
-  this.init(args)
+  windowListeners () { windowListeners(this.args) }
 }
 
 export const options = {
