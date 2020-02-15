@@ -206,7 +206,7 @@
       } else {
         let anchor_point, anchor_orientation, dx
 
-        if (args.y_axis_position === 'left') {
+        if (args.yAxis_position === 'left') {
           anchor_point = args.data[which_line][args.data[which_line].length - 1]
           anchor_orientation = 'start'
           dx = args.buffer
@@ -306,7 +306,7 @@
 
       if (args.linked) {
         const v = d[args.xAccessor]
-        const formatter = MG.time_format(args.utc_time, args.linked_format)
+        const formatter = MG.time_format(args.utcTime, args.linked_format)
 
         // only format when x-axis is date
         const id = (typeof v === 'number') ? (d.__line_id__ - 1) : formatter(v)
@@ -449,9 +449,9 @@
     return `roll_${id}`
   }
 
-  function mg_rollover_format_id (d, { xAccessor, utc_time, linked_format }) {
+  function mg_rollover_format_id (d, { xAccessor, utcTime, linked_format }) {
     const v = d[xAccessor]
-    const formatter = MG.time_format(utc_time, linked_format)
+    const formatter = MG.time_format(utcTime, linked_format)
     // only format when x-axis is date
     return (typeof v === 'number') ? v.toString().replace('.', '_') : formatter(v)
   }
@@ -536,7 +536,7 @@
       const this_data = args.data[i]
 
       // passing the data for the current line
-      MG.call_hook('line.before_each_series', [this_data, args])
+      MG.callHook('line.before_each_series', [this_data, args])
 
       // override increment if we have a custom increment series
       let line_id = i + 1
@@ -583,7 +583,7 @@
       mg_add_legend_element(args, plot, i, line_id)
 
       // passing the data for the current line
-      MG.call_hook('line.after_each_series', [this_data, existing_line, args])
+      MG.callHook('line.after_each_series', [this_data, existing_line, args])
     }
   }
 
@@ -609,7 +609,7 @@
     plot.existing_band = svg.selectAll('.mg-confidence-band').nodes()
 
     // should we continue with the default line render? A `line.all_series` hook should return false to prevent the default.
-    const continueWithDefault = MG.call_hook('line.before_all_series', [args])
+    const continueWithDefault = MG.callHook('line.before_all_series', [args])
     if (continueWithDefault !== false) {
       mg_draw_all_line_elements(args, plot, svg)
     }
@@ -696,11 +696,11 @@
     }
   }
 
-  function mg_trigger_linked_mouseouts ({ linked, utc_time, linked_format, xAccessor }, d, i) {
+  function mg_trigger_linked_mouseouts ({ linked, utcTime, linked_format, xAccessor }, d, i) {
     if (linked && MG.globals.link) {
       MG.globals.link = false
 
-      const formatter = MG.time_format(utc_time, linked_format)
+      const formatter = MG.time_format(utcTime, linked_format)
       const datums = d.values ? d.values : [d]
       datums.forEach(datum => {
         const v = datum[xAccessor]
@@ -758,7 +758,7 @@
       rawDataTransformation(args)
       processLine(args)
 
-      MG.call_hook('line.before_destroy', this)
+      MG.callHook('line.before_destroy', this)
 
       init(args)
 
@@ -777,23 +777,23 @@
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
-      if (args.x_axis) {
+      if (args.xAxis) {
         new MG.axis_factory(args)
           .namespace('x')
           .type('numerical')
-          .position(args.x_axis_position)
-          .rug(x_rug(args))
-          .label(mg_add_x_label)
+          .position(args.xAxis_position)
+          .rug(xRug(args))
+          .label(addXLabel)
           .draw()
       }
 
-      if (args.y_axis) {
+      if (args.yAxis) {
         new MG.axis_factory(args)
           .namespace('y')
           .type('numerical')
-          .position(args.y_axis_position)
-          .rug(y_rug(args))
-          .label(mg_add_y_label)
+          .position(args.yAxis_position)
+          .rug(yRug(args))
+          .label(addYLabel)
           .draw()
       }
 
@@ -802,7 +802,7 @@
       this.rollover()
       this.windowListeners()
       if (args.brush) MG.add_brush_function(args)
-      MG.call_hook('line.after_init', this)
+      MG.callHook('line.after_init', this)
 
       return this
     }
@@ -819,7 +819,7 @@
 
     this.rollover = function () {
       mg_line_rollover_setup(args, this)
-      MG.call_hook('line.after_rollover', args)
+      MG.callHook('line.after_rollover', args)
 
       return this
     }

@@ -20,8 +20,8 @@ function mg_merge_args_with_defaults (args) {
 }
 
 function mg_is_timeSeries (args) {
-  var first_elem = mg_flatten_array(args.processed.original_data || args.data)[0]
-  args.timeSeries = mg_is_date(first_elem[args.processed.original_xAccessor || args.xAccessor])
+  var first_elem = mg_flatten_array(args.processed.originalData || args.data)[0]
+  args.timeSeries = mg_is_date(first_elem[args.processed.originalXAccessor || args.xAccessor])
 }
 
 function mg_init_compute_width (args) {
@@ -29,7 +29,7 @@ function mg_init_compute_width (args) {
   if (args.full_width) {
     svg_width = getWidth(args.target)
   }
-  if (args.x_axis_type === 'categorical' && svg_width === null) {
+  if (args.xAxis_type === 'categorical' && svg_width === null) {
     svg_width = mg_categorical_calculate_height(args, 'x')
   }
 
@@ -41,7 +41,7 @@ function mg_init_compute_height (args) {
   if (args.full_height) {
     svg_height = getHeight(args.target)
   }
-  if (args.y_axis_type === 'categorical' && svg_height === null) {
+  if (args.yAxis_type === 'categorical' && svg_height === null) {
     svg_height = mg_categorical_calculate_height(args, 'y')
   }
 
@@ -163,14 +163,14 @@ function categoricalInitialization (args, ns) {
 
 function selectXaxFormat (args) {
   var c = args.chartType
-  if (!args.processed.xax_format) {
-    if (args.xax_format) {
-      args.processed.xax_format = args.xax_format
+  if (!args.processed.xaxFormat) {
+    if (args.xaxFormat) {
+      args.processed.xaxFormat = args.xaxFormat
     } else {
       if (c === 'line' || c === 'point' || c === 'histogram') {
-        args.processed.xax_format = mg_default_xax_format(args)
+        args.processed.xaxFormat = defaultXaxFormat(args)
       } else if (c === 'bar') {
-        args.processed.xax_format = mg_default_bar_xax_format(args)
+        args.processed.xaxFormat = defaultBarXaxFormat(args)
       }
     }
   }
@@ -214,7 +214,7 @@ function mg_categorical_calculate_group_length (args, ns, which) {
     args[groupHeight] = gh
   } else {
     var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness
-    args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step // args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.bar_outer_padding_percentage*2));
+    args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step // args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.barOuterPaddingPercentage*2));
   }
 }
 
@@ -251,8 +251,8 @@ function init (args) {
   var svg = container.selectAll('svg')
 
   // some things that will need to be calculated if we have a categorical axis.
-  if (args.y_axis_type === 'categorical') { categoricalInitialization(args, 'y') }
-  if (args.x_axis_type === 'categorical') { categoricalInitialization(args, 'x') }
+  if (args.yAxis_type === 'categorical') { categoricalInitialization(args, 'y') }
+  if (args.xAxis_type === 'categorical') { categoricalInitialization(args, 'x') }
 
   selectXaxFormat(args)
 

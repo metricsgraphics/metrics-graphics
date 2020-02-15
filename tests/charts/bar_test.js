@@ -73,8 +73,8 @@ test('Triggers callbacks when provided', function () {
 //         height: 100,
 //         width: 300,
 //         orientation: 'vertical',
-//         predictor_accessor: 'predictor',
-//         baseline_accessor: 'baseline',
+//         predictorAccessor: 'predictor',
+//         baselineAccessor: 'baseline',
 //         animate_on_load: false,
 //         transition_on_update: false
 //     });

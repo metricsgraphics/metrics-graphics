@@ -9,8 +9,8 @@ export function processScaleTicks (args, axis) {
 
   if (axis === 'x') {
     accessor = args.xAccessor
-    scaleTicks = args.scales.X.ticks(args.xax_count)
-    max = args.processed.max_x
+    scaleTicks = args.scales.X.ticks(args.xaxCount)
+    max = args.processed.maxX
   } else if (axis === 'y') {
     accessor = args.yAccessor
     scaleTicks = args.scales.Y.ticks(args.yax_count)
@@ -138,9 +138,9 @@ export function processLine (args) {
       // we'll be starting from the day after our first date
       const startDate = clone(first[args.xAccessor]).setDate(first[args.xAccessor].getDate() + 1)
 
-      // if we've set a max_x, add data points up to there
-      const from = (args.min_x) ? args.min_x : startDate
-      const upto = (args.max_x) ? args.max_x : last[args.xAccessor]
+      // if we've set a maxX, add data points up to there
+      const from = (args.minX) ? args.minX : startDate
+      const upto = (args.maxX) ? args.maxX : last[args.xAccessor]
 
       timeFrame = getTimeFrame((upto - from) / 1000)
 
@@ -257,8 +257,8 @@ export function processHistogram (args) {
   if (!args.processed) {
     args.processed = {}
   }
-  args.processed.original_data = args.data
-  args.processed.original_xAccessor = args.xAccessor
+  args.processed.originalData = args.data
+  args.processed.originalXAccessor = args.xAccessor
   args.processed.original_yAccessor = args.yAccessor
 
   args.data = [args.processedData]

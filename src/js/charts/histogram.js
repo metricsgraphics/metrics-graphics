@@ -21,8 +21,8 @@
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
-      x_axis(args)
-      y_axis(args)
+      xAxis(args)
+      yAxis(args)
 
       this.mainPlot()
       this.markers()
@@ -132,7 +132,7 @@
           .filter((g, j) => d === g)
           .attr('opacity', 0.3)
 
-        const fmt = args.processed.xax_format || MG.time_format(args.utc_time, '%b %e, %Y')
+        const fmt = args.processed.xaxFormat || MG.time_format(args.utcTime, '%b %e, %Y')
         const num = formatRolloverNumber(args)
 
         svg.selectAll('.mg-bar rect')

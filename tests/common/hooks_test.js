@@ -18,7 +18,7 @@ test('multiple hooks with the same name execute in order', function() {
     MG.add_hook('test', hookOne);
     MG.add_hook('test', hookTwo);
 
-    MG.call_hook('test');
+    MG.callHook('test');
 
     equal(result, 'onetwo', 'both hooks are called');
 });
@@ -32,7 +32,7 @@ test('hooks can have context', function() {
 
     MG.add_hook('test', contextedHook, result);
 
-    MG.call_hook('test');
+    MG.callHook('test');
 
     equal(result.foo, 'bar', 'exectued in the correct context');
 });
@@ -47,7 +47,7 @@ test('hooks accept single arguments', function() {
 
     MG.add_hook('test', singleArgHook, null);
 
-    MG.call_hook('test', 'one');
+    MG.callHook('test', 'one');
 
     equal(result, 'one', 'single argument is received');
 });
@@ -66,7 +66,7 @@ test('hooks accept multiple arguments', function() {
 
     MG.add_hook('test', multipleArgHook);
 
-    MG.call_hook('test', 'one', 'two', 'three');
+    MG.callHook('test', 'one', 'two', 'three');
 
     equal(result, 'one two three', 'multiple arguments are passed correctly');
 });
@@ -86,7 +86,7 @@ test('hooks are chained - result from one passed into the next', function() {
     MG.add_hook('test', hookOne);
     MG.add_hook('test', hookTwo);
 
-    result = MG.call_hook('test', initial);
+    result = MG.callHook('test', initial);
 
     equal(result, 3, 'result has been chained');
 });
@@ -105,7 +105,7 @@ test('hooks should return multiple inputs as an array', function() {
     MG.add_hook('test', hookOne);
     MG.add_hook('test', hookTwo);
 
-    result = MG.call_hook('test', [1,2,3]);
+    result = MG.callHook('test', [1,2,3]);
 
     equal(result.join('-'), '3-2-1', 'array is passed in the result')
 });
@@ -123,7 +123,7 @@ test('if the result from a chained hook is undefined', function() {
 
   MG.add_hook('test', hookOne);
   MG.add_hook('test', hookTwo);
-  result = MG.call_hook('test', initial);
+  result = MG.callHook('test', initial);
 
 
   delete MG._hooks.test;
@@ -142,7 +142,7 @@ test('if the result from a chained hook is undefined', function() {
 
   MG.add_hook('test', hookOne);
   MG.add_hook('test', hookTwo);
-  result = MG.call_hook('test', initial);
+  result = MG.callHook('test', initial);
 });
 
 test('a hook can only have one registered instance of any function', function() {

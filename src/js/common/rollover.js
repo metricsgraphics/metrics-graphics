@@ -27,7 +27,7 @@ function mg_setup_mouseover_container (svg, args) {
   // nudge up the rollover text a bit
   var active_datapoint_y_nudge = 0.75
 
-  var y_position = (args.x_axis_position === 'bottom')
+  var y_position = (args.xAxis_position === 'bottom')
     ? args.top * active_datapoint_y_nudge
     : getBottom(args) + args.buffer * 3
 

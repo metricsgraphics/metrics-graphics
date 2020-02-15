@@ -6,16 +6,16 @@ MG.deprecations = {
   rollout_callback: { replacement: 'mouseout', version: '2.0' },
   x_rollover_format: { replacement: 'xMouseover', version: '2.10' },
   y_rollover_format: { replacement: 'yMouseover', version: '2.10' },
-  show_years: { replacement: 'show_secondary_x_label', version: '2.1' },
-  xax_start_at_min: { replacement: 'axes_not_compact', version: '2.7' },
+  showYears: { replacement: 'showSecondaryXLabel', version: '2.1' },
+  xax_start_at_min: { replacement: 'axesNotCompact', version: '2.7' },
   interpolate_tension: { replacement: 'interpolate', version: '2.10' }
 }
 MG.globals.link = false
 MG.globals.version = '1.1'
 
 MG.options = { // <name>: [<defaultValue>, <availableType>]
-  x_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
-  y_axis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  xAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  yAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_padding_percentage: [0.05, 'number'], // for categorical scales
   y_outer_padding_percentage: [0.1, 'number'], // for categorical scales
   ygroup_padding_percentage: [0.25, 'number'], // for categorical scales
@@ -24,11 +24,11 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   x_outer_padding_percentage: [0.1, 'number'], // for categorical scales
   xgroup_padding_percentage: [0.25, 'number'], // for categorical scales
   xgroup_outer_padding_percentage: [0, 'number'], // for categorical scales
-  ygroup_accessor: [null, 'string'],
+  yGroupAccessor: [null, 'string'],
   xgroup_accessor: [null, 'string'],
   y_categorical_show_guides: [false, 'boolean'],
   x_categorical_show_guide: [false, 'boolean'],
-  rotate_x_labels: [0, 'number'],
+  rotateXLabels: [0, 'number'],
   rotate_y_labels: [0, 'number'],
   scales: [{}],
   scaleFunctions: [{}],
@@ -37,39 +37,39 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   missingIsZero: [false, 'boolean'], // assume missing observations are zero
   missingIsHidden: [false, 'boolean'], // show missing observations as missing line segments
   missingIsHidden_accessor: [null, 'string'], // the accessor for identifying observations as missing
-  utc_time: [false, 'boolean'], // determines whether to use a UTC or local time scale
+  utcTime: [false, 'boolean'], // determines whether to use a UTC or local time scale
   xAccessor: ['date', 'string'], // the data element that's the x-accessor
   xSort: [true, 'boolean'], // determines whether to sort the x-axis' values
   yAccessor: ['value', ['string', 'string[]']], // the data element that's the y-accessor
   // Axes
-  axes_not_compact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
-  european_clock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
-  inflator: [10 / 9, 'number'], // a multiplier for inflating max_x and max_y
-  max_x: [null, ['number', Date]], // the maximum x-value
+  axesNotCompact: [true, 'boolean'], // determines whether to draw compact or non-compact axes
+  europeanClock: [false, 'boolean'], // determines whether to show labels using a 24-hour clock
+  inflator: [10 / 9, 'number'], // a multiplier for inflating maxX and max_y
+  maxX: [null, ['number', Date]], // the maximum x-value
   max_y: [null, ['number', Date]], // the maximum y-value
-  min_x: [null, ['number', Date]], // the minimum x-value
+  minX: [null, ['number', Date]], // the minimum x-value
   min_y: [null, ['number', Date]], // the minimum y-value
   min_y_from_data: [false, 'boolean'], // starts y-axis at data's minimum value
-  show_year_markers: [false, 'boolean'], // determines whether to show year markers along the x-axis
-  show_secondary_x_label: [true, 'boolean'], // determines whether to show years along the x-axis
+  showYearMarkers: [false, 'boolean'], // determines whether to show year markers along the x-axis
+  showSecondaryXLabel: [true, 'boolean'], // determines whether to show years along the x-axis
   small_text: [false, 'boolean'],
-  x_extended_ticks: [false, 'boolean'], // determines whether to extend the x-axis ticks across the chart
-  x_axis: [true, 'boolean'], // determines whether to display the x-axis
-  x_label: ['', 'string'], // the label to show below the x-axis
-  xax_count: [6, 'number'], // the number of x-axis ticks
-  xax_format: [null, 'function'], // a function that formats the x-axis' labels
-  xax_tick_length: [5, 'number'], // the x-axis' tick length in pixels
-  xax_units: ['', 'string'], // a prefix symbol to be shown alongside the x-axis' labels
+  xExtendedTicks: [false, 'boolean'], // determines whether to extend the x-axis ticks across the chart
+  xAxis: [true, 'boolean'], // determines whether to display the x-axis
+  xLabel: ['', 'string'], // the label to show below the x-axis
+  xaxCount: [6, 'number'], // the number of x-axis ticks
+  xaxFormat: [null, 'function'], // a function that formats the x-axis' labels
+  xaxTickLength: [5, 'number'], // the x-axis' tick length in pixels
+  xaxUnits: ['', 'string'], // a prefix symbol to be shown alongside the x-axis' labels
   x_scale_type: ['linear', 'log'], // the x-axis scale type
-  y_axis: [true, 'boolean'], // determines whether to display the y-axis
-  x_axis_position: ['bottom'], // string
-  y_axis_position: ['left'], // string
+  yAxis: [true, 'boolean'], // determines whether to display the y-axis
+  xAxis_position: ['bottom'], // string
+  yAxis_position: ['left'], // string
   y_extended_ticks: [false, 'boolean'], // determines whether to extend the y-axis ticks across the chart
   y_label: ['', 'string'], // the label to show beside the y-axis
   y_scale_type: ['linear', ['linear', 'log']], // the y-axis scale type
   yax_count: [3, 'number'], // the number of y-axis ticks
-  yax_format: [null, 'function'], // a function that formats the y-axis' labels
-  yax_tick_length: [5, 'number'], // the y-axis' tick length in pixels
+  yaxFormat: [null, 'function'], // a function that formats the y-axis' labels
+  yax_tickLength: [5, 'number'], // the y-axis' tick length in pixels
   yaxUnits: ['', 'string'], // a prefix symbol to be shown alongside the y-axis' labels
   yaxUnitsAppend: [false, 'boolean'], // determines whether to append rather than prepend units
   // GraphicOptions
@@ -116,8 +116,8 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   showActivePoint: [true, 'boolean'], // If enabled show active data point information in chart
   target: ['#viz', ['string', HTMLElement]], // the DOM element to insert the graphic in
   transition_on_update: [true, 'boolean'], // gracefully transitions the lines on data change
-  x_rug: [false, 'boolean'], // show a rug plot along the x-axis
-  y_rug: [false, 'boolean'], // show a rug plot along the y-axis
+  xRug: [false, 'boolean'], // show a rug plot along the x-axis
+  yRug: [false, 'boolean'], // show a rug plot along the y-axis
   mouseover_align: ['right', ['right', 'left']],
   brush: [null, ['xy', 'x', 'y']], // add brush function
   brushing_selection_changed: [null, 'function'], // callback function on brushing. the first parameter are the arguments that correspond to this chart, the second parameter is the range of the selection
@@ -146,7 +146,7 @@ MG.defaults = optionsToDefaults(MG.options)
 MG.data_graphic = function (args) {
   'use strict'
 
-  MG.call_hook('global.defaults', MG.defaults)
+  MG.callHook('global.defaults', MG.defaults)
 
   if (!args) { args = {} }
 
@@ -189,7 +189,7 @@ MG.data_graphic = function (args) {
     }
   }
 
-  MG.call_hook('global.before_init', args)
+  MG.callHook('global.before_init', args)
 
   new selected_chart.descriptor(args)
 

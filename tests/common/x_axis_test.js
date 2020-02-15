@@ -1,4 +1,4 @@
-module('x_axis')
+module('xAxis')
 
 test('X-axis is added', function () {
   var params = {
@@ -11,12 +11,12 @@ test('X-axis is added', function () {
   ok(document.querySelector('.mg-x-axis'), 'X-axis is added')
 })
 
-test('args.x_axis set to false', function () {
+test('args.xAxis set to false', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_axis: false
+    xAxis: false
   }
 
   MG.data_graphic(params)
@@ -36,7 +36,7 @@ test('Only one x-axis is added on multiple calls to the same target element', fu
   equal(document.querySelectorAll(params.target + ' .mg-x-axis').length, 1, 'We only have one x-axis')
 })
 
-test('args.show_secondary_x_label: true', function () {
+test('args.showSecondaryXLabel: true', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
@@ -47,24 +47,24 @@ test('args.show_secondary_x_label: true', function () {
   ok(document.querySelector('.mg-year-marker'), 'Year marker exists')
 })
 
-test('args.show_secondary_x_label: false', function () {
+test('args.showSecondaryXLabel: false', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    show_secondary_x_label: false
+    showSecondaryXLabel: false
   }
 
   MG.data_graphic(params)
   equal(document.querySelector('.mg-year-marker'), null, 'Year marker not added')
 })
 
-test('args.x_label', function () {
+test('args.xLabel', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_label: 'foo bar'
+    xLabel: 'foo bar'
   }
 
   MG.data_graphic(params)
@@ -76,7 +76,7 @@ test('args.labels (scatter plot)', function () {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_label: 'foo bar',
+    xLabel: 'foo bar',
     y_label: 'bar foo',
     chartType: 'point'
   }
@@ -96,12 +96,12 @@ test('X-axis doesn\'t break when data object is of length 1', function () {
   ok(document.querySelector('.mg-x-axis'), 'X-axis exists')
 })
 
-test('args.x_rug', function () {
+test('args.xRug', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_rug: true
+    xRug: true
   }
 
   MG.data_graphic(params)
@@ -113,7 +113,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_rug: true
+    xRug: true
   }
 
   MG.data_graphic(params)
@@ -122,12 +122,12 @@ test('Only one rugplot is added on multiple calls to the same target element', f
   equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot on the x-axis')
 })
 
-test('args.x_extended_ticks', function () {
+test('args.xExtendedTicks', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_extended_ticks: true
+    xExtendedTicks: true
   }
 
   MG.data_graphic(params)
@@ -150,8 +150,8 @@ test('Correctly calculates min and max values for line, point and histogram char
     ]
   }
   MG.data_graphic(params)
-  equal(params.processed.min_x, 4, 'min is correct for single series')
-  equal(params.processed.max_x, 7, 'max is correct for single series')
+  equal(params.processed.minX, 4, 'min is correct for single series')
+  equal(params.processed.maxX, 7, 'max is correct for single series')
 
   // multiple series
   var params2 = {
@@ -172,8 +172,8 @@ test('Correctly calculates min and max values for line, point and histogram char
     ]
   }
   MG.data_graphic(params2)
-  equal(params2.processed.min_x, 1, 'min is correct for multiple series')
-  equal(params2.processed.max_x, 7, 'max is correct for multiple series')
+  equal(params2.processed.minX, 1, 'min is correct for multiple series')
+  equal(params2.processed.maxX, 7, 'max is correct for multiple series')
 })
 
 /* test('Correctly calculates min and max values for bar chart', function() {
@@ -182,8 +182,8 @@ test('Correctly calculates min and max values for line, point and histogram char
     // single series
     args = {
         xAccessor: 'x',
-        baseline_accessor: 'b',
-        predictor_accessor: 'p',
+        baselineAccessor: 'b',
+        predictorAccessor: 'p',
         chartType: 'bar',
         target: '#qunit-fixture',
         data: [
@@ -196,32 +196,32 @@ test('Correctly calculates min and max values for line, point and histogram char
         ]
     };
     MG.data_graphic(args);
-    equal(args.processed.min_x, 0, 'min is correct');
-    equal(args.processed.max_x, 12, 'max is correct');
+    equal(args.processed.minX, 0, 'min is correct');
+    equal(args.processed.maxX, 12, 'max is correct');
 }); */
 
-test('Ensure that custom xax_format isn\'t deleted', function () {
+test('Ensure that custom xaxFormat isn\'t deleted', function () {
   var params = {
     title: 'foo',
     target: '.result',
-    xax_format: function (d) { return 'humbug' },
+    xaxFormat: function (d) { return 'humbug' },
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
   MG.data_graphic(params)
-  equal(params.xax_format(), 'humbug', 'xax_format hasn\'t been overriden')
+  equal(params.xaxFormat(), 'humbug', 'xaxFormat hasn\'t been overriden')
 })
 
-test('Ensure that default null xax_format is respected; allow MG to recalculate the default on redraw', function () {
+test('Ensure that default null xaxFormat is respected; allow MG to recalculate the default on redraw', function () {
   var params = {
     title: 'foo',
     target: '.result',
-    xax_format: null,
+    xaxFormat: null,
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }]
   }
 
   MG.data_graphic(params)
-  equal(params.xax_format, null, 'xax_format is still null')
+  equal(params.xaxFormat, null, 'xaxFormat is still null')
 })

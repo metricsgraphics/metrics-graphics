@@ -14,7 +14,7 @@
 <pre><code class='javascript'>d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Simple Scatterplot",
-        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>yRug</i> option to true.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -24,12 +24,12 @@
         xAccessor: 'x',
         yAccessor: 'y',
         mouseover: function(d, i) { console.log(d,i); },
-        y_rug: true
+        yRug: true
     });
 
     MG.data_graphic({
         title: "Automatic Category Coloring",
-        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        description: "By setting <i>colorType</i> to 'category' you can color the points according to another discrete value.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -38,9 +38,9 @@
         target: '#categorical1',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor: 'v',
-        color_type:'category',
-        y_rug: true
+        colorAccessor: 'v',
+        colorType:'category',
+        yRug: true
     });
 
     MG.data_graphic({
@@ -54,11 +54,11 @@
         target: '#categorical2',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor: 'v',
-        color_domain: ['cat_0', 'cat_1', 'other'],
-        color_range: ['blue', 'gray', 'black'],
-        color_type: 'category',
-        x_rug: true
+        colorAccessor: 'v',
+        colorDomain: ['cat_0', 'cat_1', 'other'],
+        colorRange: ['blue', 'gray', 'black'],
+        colorType: 'category',
+        xRug: true
     });
 
     MG.data_graphic({
@@ -86,7 +86,7 @@
         target: '#highlight',
         xAccessor: 'x',
         yAccessor: 'y',
-        y_rug: true,
+        yRug: true,
         highlight: (d, i) => d.z > 2
     });
 });
@@ -109,12 +109,12 @@ d3.json('data/fake_users1.json', function(data) {
         });
 });
 
-var color_range = (theme === 'light') ? null : ['white','yellow'];
+var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Scatterplot with Size and Color",
-        description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -123,11 +123,11 @@ d3.json('data/points1.json', function(data) {
         target: '#scatter-size-and-color',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor:'z',
-        color_range: color_range,
-        size_accessor:'w',
-        x_rug: true,
-        y_rug: true
+        colorAccessor:'z',
+        colorRange: colorRange,
+        sizeAccessor:'w',
+        xRug: true,
+        yRug: true
     });
 });</code></pre>
 
@@ -231,13 +231,13 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Y points, groups',
         data: polls,
         chartType: 'point',
-        y_axis_type: 'categorical',
+        yAxis_type: 'categorical',
         xAccessor: 'number',
         yAccessor: 'candidate',
-        ygroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        yGroupAccessor: 'poll',
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:550,
         width:300,
         left:100,
@@ -248,10 +248,10 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Y bars, groups',
         data: polls,
         chartType: 'bar',
-        y_axis_type: 'categorical',
+        yAxis_type: 'categorical',
         xAccessor: 'number',
         yAccessor: 'candidate',
-        ygroup_accessor: 'poll',
+        yGroupAccessor: 'poll',
         height:550,
         width:300,
         left:100,
@@ -266,9 +266,9 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         yAccessor: 'number',
         xAccessor: 'candidate',
         xgroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:350,
         width:700,
         target: '#point-categorical-group-horizontal'
@@ -281,9 +281,9 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         yAccessor: 'number',
         xAccessor: 'candidate',
         xgroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:350,
         width:700,
         target: '#bar-categorical-group-horizontal'
@@ -365,13 +365,13 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Y points, groups',
         data: polls,
         chartType: 'point',
-        y_axis_type: 'categorical',
+        yAxis_type: 'categorical',
         xAccessor: 'number',
         yAccessor: 'candidate',
-        ygroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        yGroupAccessor: 'poll',
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:550,
         width:300,
         left:100,
@@ -382,10 +382,10 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         title: 'Y bars, groups',
         data: polls,
         chartType: 'bar',
-        y_axis_type: 'categorical',
+        yAxis_type: 'categorical',
         xAccessor: 'number',
         yAccessor: 'candidate',
-        ygroup_accessor: 'poll',
+        yGroupAccessor: 'poll',
         height:550,
         width:300,
         left:100,
@@ -399,9 +399,9 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         yAccessor: 'number',
         xAccessor: 'candidate',
         xgroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:300,
         width:650,
         target: '#point-categorical-group-horizontal'
@@ -414,9 +414,9 @@ d3.tsv('data/nh-gop.tsv', function(data) {
         yAccessor: 'number',
         xAccessor: 'candidate',
         xgroup_accessor: 'poll',
-        size_accessor: 'size',
-        size_domain: [0,1],
-        size_range: [3,6],
+        sizeAccessor: 'size',
+        sizeDomain: [0,1],
+        sizeRange: [3,6],
         height:300,
         width:650,
         target: '#bar-categorical-group-horizontal'
@@ -747,7 +747,7 @@ MG._hooks = {};
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Simple Scatterplot",
-        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>y_rug</i> option to true.",
+        description: "This is an example of a simple scatterplot, in which we have enabled rug plots on the y-axis by setting the <i>yRug</i> option to true.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -756,12 +756,12 @@ d3.json('data/points1.json', function(data) {
         target: '#scatter-simple',
         xAccessor: 'x',
         yAccessor: 'y',
-        y_rug: true
+        yRug: true
     });
 
     MG.data_graphic({
         title: "Automatic Category Coloring",
-        description: "By setting <i>color_type</i> to 'category' you can color the points according to another discrete value.",
+        description: "By setting <i>colorType</i> to 'category' you can color the points according to another discrete value.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -770,9 +770,9 @@ d3.json('data/points1.json', function(data) {
         target: '#categorical1',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor: 'v',
-        color_type: 'category',
-        y_rug: true
+        colorAccessor: 'v',
+        colorType: 'category',
+        yRug: true
     });
 
     MG.data_graphic({
@@ -786,11 +786,11 @@ d3.json('data/points1.json', function(data) {
         target: '#categorical2',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor: 'v',
-        color_domain: ['cat_0', 'cat_1', 'other'],
-        color_range: ['blue', 'gray', 'black'],
-        color_type: 'category',
-        x_rug: true
+        colorAccessor: 'v',
+        colorDomain: ['cat_0', 'cat_1', 'other'],
+        colorRange: ['blue', 'gray', 'black'],
+        colorType: 'category',
+        xRug: true
     });
 
     MG.data_graphic({
@@ -818,7 +818,7 @@ d3.json('data/points1.json', function(data) {
         target: '#highlight',
         xAccessor: 'x',
         yAccessor: 'y',
-        y_rug: true,
+        yRug: true,
         highlight: (d, i) => d.z > 2
     });
 });
@@ -841,12 +841,12 @@ d3.json('data/fake_users1.json', function(data) {
         });
 });
 
-var color_range = (theme === 'light') ? null : ['white','yellow'];
+var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
 d3.json('data/points1.json', function(data) {
     MG.data_graphic({
         title: "Scatterplot with Size and Color",
-        description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+        description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
         data: data,
         chartType: 'point',
         width: 295,
@@ -855,11 +855,11 @@ d3.json('data/points1.json', function(data) {
         target: '#scatter-size-and-color',
         xAccessor: 'x',
         yAccessor: 'y',
-        color_accessor: 'z',
-        color_range: color_range,
-        size_accessor: 'w',
-        x_rug: true,
-        y_rug: true
+        colorAccessor: 'z',
+        colorRange: colorRange,
+        sizeAccessor: 'w',
+        xRug: true,
+        yRug: true
     });
 });
 
@@ -1048,13 +1048,13 @@ var buttons = MG.button_layout('#buttons')
 addScatterplotSizeAndColor(theme);
 
 function addScatterplotSizeAndColor(theme) {
-    var color_range = (theme === 'light') ? null : ['white','yellow'];
+    var colorRange = (theme === 'light') ? null : ['white','yellow'];
 
-    // call data_graphic again since we need to use a different color_range for the dark theme
+    // call data_graphic again since we need to use a different colorRange for the dark theme
     d3.json('data/points1.json', function(data) {
         MG.data_graphic({
             title: "Scatterplot with Size and Color",
-            description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>size_accessor</i>, and <i>color_accessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>color_range</i>, as we've done in this example for the dark theme.",
+            description: "Scatterplots have <i>xAccessor</i>, <i>yAccessor</i>, <i>sizeAccessor</i>, and <i>colorAccessor</i>. For the last two you can also provide domain and range functions, to make it easy to change the color ranges. Colors default to red and blue, but can be overridden by passing an array of colors to <i>colorRange</i>, as we've done in this example for the dark theme.",
             data: data,
             chartType: 'point',
             width: 295,
@@ -1063,11 +1063,11 @@ function addScatterplotSizeAndColor(theme) {
             target: '#scatter-size-and-color',
             xAccessor: 'x',
             yAccessor: 'y',
-            color_accessor: 'z',
-            color_range: color_range,
-            size_accessor: 'w',
-            x_rug: true,
-            y_rug: true
+            colorAccessor: 'z',
+            colorRange: colorRange,
+            sizeAccessor: 'w',
+            xRug: true,
+            yRug: true
         });
     });
 }

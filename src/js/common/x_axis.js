@@ -1,369 +1,362 @@
-function x_rug (args) {
-  'use strict'
+import * as utility from '../misc/utility'
+import { max, min, extent } from 'd3-array'
+import { select } from 'd3-selection'
+import { timeDays, timeYears } from 'd3-time'
+import { timeFormat as d3TimeFormat } from 'd3-time-format'
+import { processScaleTicks } from '../misc/process'
+import { format } from 'd3-format'
+import { scaleLinear, scaleOrdinal } from 'd3-scale'
+import { schemeCategory10, schemeCategory20 } from 'd3-scale-chromatic'
 
-  if (!args.x_rug) {
-    return
-  }
+export function xRug (args) {
+  if (!args.xRug) return
 
-  args.rug_buffer_size = args.chartType === 'point'
+  args.rugBufferSize = args.chartType === 'point'
     ? args.buffer / 2
     : args.buffer
 
-  var rug = makeRug(args, 'mg-x-rug')
+  const rug = utility.makeRug(args, 'mg-x-rug')
 
   rug.attr('x1', args.scaleFunctions.xf)
     .attr('x2', args.scaleFunctions.xf)
-    .attr('y1', args.height - args.bottom - args.rug_buffer_size)
+    .attr('y1', args.height - args.bottom - args.rugBufferSize)
     .attr('y2', args.height - args.bottom)
 
-  addColorAccessorToRug(rug, args, 'mg-x-rug-mono')
+  utility.addColorAccessorToRug(rug, args, 'mg-x-rug-mono')
 }
 
-MG.x_rug = x_rug
-
-function mg_add_processed_object (args) {
-  if (!args.processed) {
-    args.processed = {}
-  }
-}
+export function addProcessedObject (args) { if (!args.processed) args.processed = {} }
 
 // TODO ought to be deprecated, only used by histogram
-function x_axis (args) {
-  'use strict'
+export function xAxis (args) {
+  const svg = utility.getSvgChildOf(args.target)
+  addProcessedObject(args)
 
-  var svg = getSvgChildOf(args.target)
-  mg_add_processed_object(args)
+  selectXaxFormat(args)
+  utility.selectAllAndRemove(svg, '.mg-x-axis')
 
-  mg_select_xax_format(args)
-  selectAllAndRemove(svg, '.mg-x-axis')
-
-  if (!args.x_axis) {
+  if (!args.xAxis) {
     return this
   }
 
-  var g = addG(svg, 'mg-x-axis')
+  const g = utility.addG(svg, 'mg-x-axis')
 
-  mg_add_xTicks(g, args)
-  mg_add_x_tick_labels(g, args)
-  if (args.x_label) { mg_add_x_label(g, args) }
-  if (args.x_rug) { x_rug(args) }
+  addXTicks(g, args)
+  addXTickLabels(g, args)
+  if (args.xLabel) { addXLabel(g, args) }
+  if (args.xRug) { xRug(args) }
 
   return this
 }
 
-MG.x_axis = x_axis
-
-function x_axis_categorical (args) {
-  var svg = getSvgChildOf(args.target)
-  var additional_buffer = 0
+export function xAxisCategorical (args) {
+  const svg = utility.getSvgChildOf(args.target)
+  let additionalBuffer = 0
   if (args.chartType === 'bar') {
-    additional_buffer = args.buffer + 5
+    additionalBuffer = args.buffer + 5
   }
 
-  mg_add_categorical_scale(args, 'X', args.categorical_variables.reverse(), args.left, getPlotRight(args) - additional_buffer)
-  mg_add_scale_function(args, 'xf', 'X', 'value')
-  selectAllAndRemove(svg, '.mg-x-axis')
+  addCategoricalScale(args, 'X', args.categoricalVariables.reverse(), args.left, utility.getPlotRight(args) - additionalBuffer)
+  addScaleFunction(args, 'xf', 'X', 'value')
+  utility.selectAllAndRemove(svg, '.mg-x-axis')
 
-  var g = addG(svg, 'mg-x-axis')
+  const g = utility.addG(svg, 'mg-x-axis')
 
-  if (!args.x_axis) {
+  if (!args.xAxis) {
     return this
   }
 
-  mg_add_x_axis_categorical_labels(g, args, additional_buffer)
+  addXAxisCategoricalLabels(g, args, additionalBuffer)
   return this
 }
 
-function mg_add_x_axis_categorical_labels (g, args, additional_buffer) {
-  var labels = g.selectAll('text')
-    .data(args.categorical_variables)
+export function addXAxisCategoricalLabels (g, args, additionalBuffer) {
+  const labels = g.selectAll('text')
+    .data(args.categoricalVariables)
     .enter()
     .append('text')
 
   labels
     .attr('x', function (d) {
-      return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.bar_outer_padding_percentage + (additional_buffer / 2)
+      return args.scales.X(d) + args.scales.X.bandwidth() / 2 + (args.buffer) * args.barOuterPaddingPercentage + (additionalBuffer / 2)
     })
-    .attr('y', getPlotBottom(args))
+    .attr('y', utility.getPlotBottom(args))
     .attr('dy', '.35em')
     .attr('text-anchor', 'middle')
     .text(String)
 
-  if (args.truncate_x_labels) {
+  if (args.truncateXLabels) {
     labels.each(function (d, idx) {
-      var elem = this; var width = args.scales.X.bandwidth()
-      truncateText(elem, d, width)
+      const elem = this; const width = args.scales.X.bandwidth()
+      utility.truncateText(elem, d, width)
     })
   }
-  rotateLabels(labels, args.rotate_x_labels)
+  utility.rotateLabels(labels, args.rotateXLabels)
 }
 
-MG.x_axis_categorical = x_axis_categorical
+export function pointAddColorScale (args) {
+  let colorDomain, colorRange
 
-function mg_point_add_color_scale (args) {
-  var color_domain, color_range
+  if (args.colorAccessor !== null) {
+    colorDomain = getColorDomain(args)
+    colorRange = getColorRange(args)
 
-  if (args.color_accessor !== null) {
-    color_domain = mg_get_color_domain(args)
-    color_range = mg_get_color_range(args)
-
-    if (args.color_type === 'number') {
-      args.scales.color = d3.scaleLinear()
-        .domain(color_domain)
-        .range(color_range)
+    if (args.colorType === 'number') {
+      args.scales.color = scaleLinear()
+        .domain(colorDomain)
+        .range(colorRange)
         .clamp(true)
     } else {
-      args.scales.color = args.color_range !== null
-        ? d3.scaleOrdinal().range(color_range)
-        : (color_domain.length > 10
-          ? d3.scaleOrdinal(d3.schemeCategory20)
-          : d3.scaleOrdinal(d3.schemeCategory10))
+      args.scales.color = args.colorRange !== null
+        ? scaleOrdinal().range(colorRange)
+        : (colorDomain.length > 10
+          ? scaleOrdinal(schemeCategory20)
+          : scaleOrdinal(schemeCategory10))
 
-      args.scales.color.domain(color_domain)
+      args.scales.color.domain(colorDomain)
     }
-    mg_add_scale_function(args, 'color', 'color', args.color_accessor)
+    addScaleFunction(args, 'color', 'color', args.colorAccessor)
   }
 }
 
-function mg_get_color_domain (args) {
-  var color_domain
-  if (args.color_domain === null) {
-    if (args.color_type === 'number') {
-      color_domain = d3.extent(args.data[0], function (d) {
-        return d[args.color_accessor]
+export function getColorDomain (args) {
+  let colorDomain
+  if (args.colorDomain === null) {
+    if (args.colorType === 'number') {
+      colorDomain = extent(args.data[0], function (d) {
+        return d[args.colorAccessor]
       })
-    } else if (args.color_type === 'category') {
-      color_domain = d3.set(args.data[0]
+    } else if (args.colorType === 'category') {
+      colorDomain = Array.from(new Set(args.data[0]
         .map(function (d) {
-          return d[args.color_accessor]
-        }))
-        .values()
+          return d[args.colorAccessor]
+        })))
 
-      color_domain.sort()
+      colorDomain.sort()
     }
   } else {
-    color_domain = args.color_domain
+    colorDomain = args.colorDomain
   }
-  return color_domain
+  return colorDomain
 }
 
-function mg_get_color_range (args) {
-  var color_range
-  if (args.color_range === null) {
-    if (args.color_type === 'number') {
-      color_range = ['blue', 'red']
+export function getColorRange (args) {
+  let colorRange
+  if (args.colorRange === null) {
+    if (args.colorType === 'number') {
+      colorRange = ['blue', 'red']
     } else {
-      color_range = null
+      colorRange = null
     }
   } else {
-    color_range = args.color_range
+    colorRange = args.colorRange
   }
-  return color_range
+  return colorRange
 }
 
-function mg_point_add_size_scale (args) {
-  var min_size, max_size, size_domain, size_range
-  if (args.size_accessor !== null) {
-    size_domain = mg_get_size_domain(args)
-    size_range = mg_get_size_range(args)
+export function pointAddSizeScale (args) {
+  let sizeDomain, sizeRange
+  if (args.sizeAccessor !== null) {
+    sizeDomain = getSizeDomain(args)
+    sizeRange = getSizeRange(args)
 
-    args.scales.size = d3.scaleLinear()
-      .domain(size_domain)
-      .range(size_range)
+    args.scales.size = scaleLinear()
+      .domain(sizeDomain)
+      .range(sizeRange)
       .clamp(true)
 
-    mg_add_scale_function(args, 'size', 'size', args.size_accessor)
+    addScaleFunction(args, 'size', 'size', args.sizeAccessor)
   }
 }
 
-function mg_get_size_domain (args) {
-  return (args.size_domain === null)
-    ? d3.extent(args.data[0], function (d) { return d[args.size_accessor] })
-    : args.size_domain
+export function getSizeDomain (args) {
+  return (args.sizeDomain === null)
+    ? extent(args.data[0], function (d) { return d[args.sizeAccessor] })
+    : args.sizeDomain
 }
 
-function mg_get_size_range (args) {
-  var size_range
-  if (args.size_range === null) {
-    size_range = [1, 5]
+export function getSizeRange (args) {
+  let sizeRange
+  if (args.sizeRange === null) {
+    sizeRange = [1, 5]
   } else {
-    size_range = args.size_range
+    sizeRange = args.sizeRange
   }
-  return size_range
+  return sizeRange
 }
 
-function mg_add_x_label (g, args) {
-  if (args.x_label) {
+export function addXLabel (g, args) {
+  if (args.xLabel) {
     g.append('text')
       .attr('class', 'label')
       .attr('x', function () {
-        return getPlotLeft(args) + (getPlotRight(args) - getPlotLeft(args)) / 2
+        return utility.getPlotLeft(args) + (utility.getPlotRight(args) - utility.getPlotLeft(args)) / 2
       })
-      .attr('dx', args.x_label_nudge_x != null ? args.x_label_nudge_x : 0)
+      .attr('dx', args.xLabelNudgeX != null ? args.xLabelNudgeX : 0)
       .attr('y', function () {
-        var xAxisTextElement = d3.select(args.target)
+        const xAxisTextElement = select(args.target)
           .select('.mg-x-axis text').node().getBoundingClientRect()
-        return getBottom(args) + args.xax_tick_length * (7 / 3) + xAxisTextElement.height * 0.8 + 10
+        return utility.getBottom(args) + args.xaxTickLength * (7 / 3) + xAxisTextElement.height * 0.8 + 10
       })
       .attr('dy', '.5em')
       .attr('text-anchor', 'middle')
       .text(function (d) {
-        return args.x_label
+        return args.xLabel
       })
   }
 }
 
-function mg_default_bar_xax_format (args) {
+export function defaultBarXaxFormat (args) {
   return function (d) {
     if (d < 1.0 && d > -1.0 && d !== 0) {
       // don't scale tiny values
-      return args.xax_units + d.toFixed(args.decimals)
+      return args.xaxUnits + d.toFixed(args.decimals)
     } else {
-      var pf = d3.format(',.0f')
-      return args.xax_units + pf(d)
+      const pf = format(',.0f')
+      return args.xaxUnits + pf(d)
     }
   }
 }
 
-function getTimeFrame (diff) {
-  // diff should be (max_x - min_x) / 1000, in other words, the difference in seconds.
-  var time_frame
-  if (mg_milisec_diff(diff)) {
-    time_frame = 'millis'
-  } else if (mg_sec_diff(diff)) {
-    time_frame = 'seconds'
-  } else if (mg_day_diff(diff)) {
-    time_frame = 'less-than-a-day'
-  } else if (mg_four_days(diff)) {
-    time_frame = 'four-days'
-  } else if (mg_many_days(diff)) { // a handful of months?
-    time_frame = 'many-days'
-  } else if (mg_many_months(diff)) {
-    time_frame = 'many-months'
-  } else if (mg_years(diff)) {
-    time_frame = 'years'
+export function getTimeFrame (diff) {
+  // diff should be (maxX - minX) / 1000, in other words, the difference in seconds.
+  let timeFrame
+  if (millisecondDiff(diff)) {
+    timeFrame = 'millis'
+  } else if (secondDiff(diff)) {
+    timeFrame = 'seconds'
+  } else if (dayDiff(diff)) {
+    timeFrame = 'less-than-a-day'
+  } else if (fourDaysDiff(diff)) {
+    timeFrame = 'four-days'
+  } else if (manyDaysDiff(diff)) { // a handful of months?
+    timeFrame = 'many-days'
+  } else if (manyMonthsDiff(diff)) {
+    timeFrame = 'many-months'
+  } else if (yearsDiff(diff)) {
+    timeFrame = 'years'
   } else {
-    time_frame = 'default'
+    timeFrame = 'default'
   }
-  return time_frame
+  return timeFrame
 }
 
-function mg_milisec_diff (diff) {
+export function millisecondDiff (diff) {
   return diff < 1
 }
 
-function mg_sec_diff (diff) {
+export function secondDiff (diff) {
   return diff < 60
 }
 
-function mg_day_diff (diff) {
+export function dayDiff (diff) {
   return diff / (60 * 60) < 24
 }
 
-function mg_four_days (diff) {
+export function fourDaysDiff (diff) {
   return diff / (60 * 60) < 24 * 4
 }
 
-function mg_many_days (diff) {
+export function manyDaysDiff (diff) {
   return diff / (60 * 60 * 24) < 60
 }
 
-function mg_many_months (diff) {
+export function manyMonthsDiff (diff) {
   return diff / (60 * 60 * 24) < 365
 }
 
-function mg_years (diff) {
+export function yearsDiff (diff) {
   return diff / (60 * 60 * 24) >= 365
 }
 
-function mg_get_time_format (utc, diff) {
-  var main_time_format
-  if (mg_milisec_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%M:%S.%L')
-  } else if (mg_sec_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%M:%S')
-  } else if (mg_day_diff(diff)) {
-    main_time_format = MG.time_format(utc, '%H:%M')
-  } else if (mg_four_days(diff) || mg_many_days(diff)) {
-    main_time_format = MG.time_format(utc, '%b %d')
-  } else if (mg_many_months(diff)) {
-    main_time_format = MG.time_format(utc, '%b')
+export function getTimeFormat (utc, diff) {
+  let mainTimeFormat
+  if (millisecondDiff(diff)) {
+    mainTimeFormat = utility.timeFormat(utc, '%M:%S.%L')
+  } else if (secondDiff(diff)) {
+    mainTimeFormat = utility.timeFormat(utc, '%M:%S')
+  } else if (dayDiff(diff)) {
+    mainTimeFormat = utility.timeFormat(utc, '%H:%M')
+  } else if (fourDaysDiff(diff) || manyDaysDiff(diff)) {
+    mainTimeFormat = utility.timeFormat(utc, '%b %d')
+  } else if (manyMonthsDiff(diff)) {
+    mainTimeFormat = utility.timeFormat(utc, '%b')
   } else {
-    main_time_format = MG.time_format(utc, '%Y')
+    mainTimeFormat = utility.timeFormat(utc, '%Y')
   }
-  return main_time_format
+  return mainTimeFormat
 }
 
-function mg_process_time_format (args) {
+export function processTimeFormat (args) {
   if (args.timeSeries) {
-    const diff = (args.processed.max_x - args.processed.min_x) / 1000
+    const diff = (args.processed.maxX - args.processed.minX) / 1000
     const tickDiff = (args.processed.xTicks[1] - args.processed.xTicks[0]) / 1000
-    args.processed.x_time_frame = getTimeFrame(diff)
-    args.processed.x_tick_diff_time_frame = getTimeFrame(tickDiff)
-    args.processed.main_x_time_format = mg_get_time_format(args.utc_time, tickDiff)
+    args.processed.xTimeFrame = getTimeFrame(diff)
+    args.processed.xTickDiffTimeFrame = getTimeFrame(tickDiff)
+    args.processed.mainXTimeFormat = getTimeFormat(args.utcTime, tickDiff)
   }
 }
 
-function mg_default_xax_format (args) {
-  if (args.xax_format) {
-    return args.xax_format
+export function defaultXaxFormat (args) {
+  if (args.xaxFormat) {
+    return args.xaxFormat
   }
 
-  var data = args.processed.original_data || args.data
-  var flattened = mg_flatten_array(data)[0]
-  var test_point_x = flattened[args.processed.original_xAccessor || args.xAccessor]
-  if (test_point_x === undefined) {
-    test_point_x = flattened
+  const data = args.processed.originalData || args.data
+  const flattened = data.flat()[0]
+  let textPointX = flattened[args.processed.originalXAccessor || args.xAccessor]
+  if (textPointX === undefined) {
+    textPointX = flattened
   }
 
   return function (d) {
-    mg_process_time_format(args)
+    processTimeFormat(args)
 
-    if (mg_is_date(test_point_x)) {
-      return args.processed.main_x_time_format(new Date(d))
-    } else if (typeof test_point_x === 'number') {
-      var is_float = d % 1 !== 0
-      var pf
+    if (textPointX instanceof Date) {
+      return args.processed.mainXTimeFormat(new Date(d))
+    } else if (typeof textPointX === 'number') {
+      const isFloat = d % 1 !== 0
+      let pf
 
-      if (is_float) {
-        pf = d3.format(',.' + args.decimals + 'f')
+      if (isFloat) {
+        pf = format(',.' + args.decimals + 'f')
       } else if (d < 1000) {
-        pf = d3.format(',.0f')
+        pf = format(',.0f')
       } else {
-        pf = d3.format(',.2s')
+        pf = format(',.2s')
       }
-      return args.xax_units + pf(d)
+      return args.xaxUnits + pf(d)
     } else {
-      return args.xax_units + d
+      return args.xaxUnits + d
     }
   }
 }
 
-function mg_add_xTicks (g, args) {
+export function addXTicks (g, args) {
   processScaleTicks(args, 'x')
-  mg_add_x_axis_rim(args, g)
-  mg_add_x_axis_tick_lines(args, g)
+  addXAxisRim(args, g)
+  addXAxisTickLines(args, g)
 }
 
-function mg_add_x_axis_rim (args, g) {
-  var last_i = args.scales.X.ticks(args.xax_count).length - 1
+export function addXAxisRim (args, g) {
+  const lastI = args.scales.X.ticks(args.xaxCount).length - 1
 
-  if (!args.x_extended_ticks) {
+  if (!args.xExtendedTicks) {
     g.append('line')
       .attr('x1', function () {
-        if (args.xax_count === 0) {
-          return getPlotLeft(args)
-        } else if (args.axes_not_compact && args.chartType !== 'bar') {
+        if (args.xaxCount === 0) {
+          return utility.getPlotLeft(args)
+        } else if (args.axesNotCompact && args.chartType !== 'bar') {
           return args.left
         } else {
-          return (args.scales.X(args.scales.X.ticks(args.xax_count)[0])).toFixed(2)
+          return (args.scales.X(args.scales.X.ticks(args.xaxCount)[0])).toFixed(2)
         }
       })
       .attr('x2', function () {
-        if (args.xax_count === 0 || (args.axes_not_compact && args.chartType !== 'bar')) {
-          return getRight(args)
+        if (args.xaxCount === 0 || (args.axesNotCompact && args.chartType !== 'bar')) {
+          return utility.getRight(args)
         } else {
-          return args.scales.X(args.scales.X.ticks(args.xax_count)[last_i]).toFixed(2)
+          return args.scales.X(args.scales.X.ticks(args.xaxCount)[lastI]).toFixed(2)
         }
       })
       .attr('y1', args.height - args.bottom)
@@ -371,7 +364,7 @@ function mg_add_x_axis_rim (args, g) {
   }
 }
 
-function mg_add_x_axis_tick_lines (args, g) {
+export function addXAxisTickLines (args, g) {
   g.selectAll('.mg-xax-ticks')
     .data(args.processed.xTicks).enter()
     .append('line')
@@ -383,57 +376,57 @@ function mg_add_x_axis_tick_lines (args, g) {
     })
     .attr('y1', args.height - args.bottom)
     .attr('y2', function () {
-      return (args.x_extended_ticks) ? args.top : args.height - args.bottom + args.xax_tick_length
+      return (args.xExtendedTicks) ? args.top : args.height - args.bottom + args.xaxTickLength
     })
     .attr('class', function () {
-      if (args.x_extended_ticks) {
+      if (args.xExtendedTicks) {
         return 'mg-extended-xax-ticks'
       }
     })
     .classed('mg-xax-ticks', true)
 }
 
-function mg_add_x_tick_labels (g, args) {
-  mg_add_primary_x_axis_label(args, g)
-  mg_add_secondary_x_axis_label(args, g)
+export function addXTickLabels (g, args) {
+  addPrimaryXAxisLabel(args, g)
+  addSecondaryXAxisLabel(args, g)
 }
 
-function mg_add_primary_x_axis_label (args, g) {
-  var labels = g.selectAll('.mg-xax-labels')
+export function addPrimaryXAxisLabel (args, g) {
+  const labels = g.selectAll('.mg-xax-labels')
     .data(args.processed.xTicks).enter()
     .append('text')
     .attr('x', function (d) {
       return args.scales.X(d).toFixed(2)
     })
-    .attr('y', (args.height - args.bottom + args.xax_tick_length * 7 / 3).toFixed(2))
+    .attr('y', (args.height - args.bottom + args.xaxTickLength * 7 / 3).toFixed(2))
     .attr('dy', '.50em')
     .attr('text-anchor', 'middle')
 
-  if (args.timeSeries && args.european_clock) {
+  if (args.timeSeries && args.europeanClock) {
     labels.append('tspan').classed('mg-european-hours', true).text(function (_d, i) {
-      var d = new Date(_d)
-      if (i === 0) return d3.timeFormat('%H')(d)
+      const d = new Date(_d)
+      if (i === 0) return d3TimeFormat('%H')(d)
       else return ''
     })
     labels.append('tspan').classed('mg-european-minutes-seconds', true).text(function (_d, i) {
-      var d = new Date(_d)
-      return ':' + args.processed.xax_format(d)
+      const d = new Date(_d)
+      return ':' + args.processed.xaxFormat(d)
     })
   } else {
     labels.text(function (d) {
-      return args.xax_units + args.processed.xax_format(d)
+      return args.xaxUnits + args.processed.xaxFormat(d)
     })
   }
 
   // CHECK TO SEE IF OVERLAP for labels. If so,
   // remove half of them. This is a dirty hack.
   // We will need to figure out a more principled way of doing this.
-  if (elementsAreOverlapping(labels)) {
+  if (utility.elementsAreOverlapping(labels)) {
     labels.filter(function (d, i) {
       return (i + 1) % 2 === 0
     }).remove()
 
-    var svg = getSvgChildOf(args.target)
+    const svg = utility.getSvgChildOf(args.target)
     svg.selectAll('.mg-xax-ticks')
       .filter(function (d, i) {
         return (i + 1) % 2 === 0
@@ -442,64 +435,64 @@ function mg_add_primary_x_axis_label (args, g) {
   }
 }
 
-function mg_add_secondary_x_axis_label (args, g) {
-  if (args.timeSeries && (args.show_years || args.show_secondary_x_label)) {
-    mg_add_secondary_x_axis_elements(args, g)
+export function addSecondaryXAxisLabel (args, g) {
+  if (args.timeSeries && (args.showYears || args.showSecondaryXLabel)) {
+    addSecondaryXAxisElements(args, g)
   }
 }
 
-function mg_get_yformat_and_secondary_time_function (args) {
+export function getYFormatAndSecondaryTimeFunction (args) {
   const tf = {
-    timeframe: args.processed.x_time_frame,
-    tick_diff_timeframe: args.processed.x_tick_diff_time_frame
+    timeframe: args.processed.xTimeFrame,
+    tickDiffTimeframe: args.processed.xTickDiffTimeFrame
   }
   switch (tf.timeframe) {
     case 'millis':
     case 'seconds':
-      tf.secondary = d3.timeDays
-      if (args.european_clock) tf.yformat = MG.time_format(args.utc_time, '%b %d')
-      else tf.yformat = MG.time_format(args.utc_time, '%I %p')
+      tf.secondary = timeDays
+      if (args.europeanClock) tf.yFormat = utility.timeFormat(args.utcTime, '%b %d')
+      else tf.yFormat = utility.timeFormat(args.utcTime, '%I %p')
       break
     case 'less-than-a-day':
-      tf.secondary = d3.timeDays
-      tf.yformat = MG.time_format(args.utc_time, '%b %d')
+      tf.secondary = timeDays
+      tf.yFormat = utility.timeFormat(args.utcTime, '%b %d')
       break
     case 'four-days':
-      tf.secondary = d3.timeDays
-      tf.yformat = MG.time_format(args.utc_time, '%b %d')
+      tf.secondary = timeDays
+      tf.yFormat = utility.timeFormat(args.utcTime, '%b %d')
       break
     case 'many-days':
-      tf.secondary = d3.timeYears
-      tf.yformat = MG.time_format(args.utc_time, '%Y')
+      tf.secondary = timeYears
+      tf.yFormat = utility.timeFormat(args.utcTime, '%Y')
       break
     case 'many-months':
-      tf.secondary = d3.timeYears
-      tf.yformat = MG.time_format(args.utc_time, '%Y')
+      tf.secondary = timeYears
+      tf.yFormat = utility.timeFormat(args.utcTime, '%Y')
       break
     default:
-      tf.secondary = d3.timeYears
-      tf.yformat = MG.time_format(args.utc_time, '%Y')
+      tf.secondary = timeYears
+      tf.yFormat = utility.timeFormat(args.utcTime, '%Y')
   }
   return tf
 }
 
-function mg_add_secondary_x_axis_elements (args, g) {
-  var tf = mg_get_yformat_and_secondary_time_function(args)
+export function addSecondaryXAxisElements (args, g) {
+  const tf = getYFormatAndSecondaryTimeFunction(args)
 
-  var years = tf.secondary(args.processed.min_x, args.processed.max_x)
+  let years = tf.secondary(args.processed.minX, args.processed.maxX)
   if (years.length === 0) {
-    var first_tick = args.scales.X.ticks(args.xax_count)[0]
-    years = [first_tick]
+    const firstTick = args.scales.X.ticks(args.xaxCount)[0]
+    years = [firstTick]
   }
 
-  var yg = addG(g, 'mg-year-marker')
-  if (tf.timeframe === 'default' && args.show_year_markers) {
-    mg_add_year_marker_line(args, yg, years, tf.yformat)
+  const yg = utility.addG(g, 'mg-year-marker')
+  if (tf.timeframe === 'default' && args.showYearMarkers) {
+    addYearMarkerLine(args, yg, years, tf.yFormat)
   }
-  if (tf.tick_diff_time_frame != 'years') mg_add_year_marker_text(args, yg, years, tf.yformat)
+  if (tf.tickDiffTimeFrame !== 'years') addYearMarkerText(args, yg, years, tf.yFormat)
 }
 
-function mg_add_year_marker_line (args, g, years, yformat) {
+export function addYearMarkerLine (args, g, years, yFormat) {
   g.selectAll('.mg-year-marker')
     .data(years).enter()
     .append('line')
@@ -510,10 +503,10 @@ function mg_add_year_marker_line (args, g, years, yformat) {
       return args.scales.X(d).toFixed(2)
     })
     .attr('y1', args.top)
-    .attr('y2', getBottom(args))
+    .attr('y2', utility.getBottom(args))
 }
 
-function mg_add_year_marker_text (args, g, years, yformat) {
+export function addYearMarkerText (args, g, years, yFormat) {
   g.selectAll('.mg-year-marker')
     .data(years).enter()
     .append('text')
@@ -521,81 +514,81 @@ function mg_add_year_marker_text (args, g, years, yformat) {
       return args.scales.X(d).toFixed(2)
     })
     .attr('y', function () {
-      var xAxisTextElement = d3.select(args.target)
+      const xAxisTextElement = select(args.target)
         .select('.mg-x-axis text').node().getBoundingClientRect()
-      return (getBottom(args) + args.xax_tick_length * 7 / 3) + (xAxisTextElement.height * 0.8)
+      return (utility.getBottom(args) + args.xaxTickLength * 7 / 3) + (xAxisTextElement.height * 0.8)
     })
     .attr('dy', '.50em')
     .attr('text-anchor', 'middle')
     .text(function (d) {
-      return yformat(new Date(d))
+      return yFormat(new Date(d))
     })
 }
 
-function mg_min_max_x_for_nonbars (mx, args, data) {
-  var extent_x = d3.extent(data, function (d) {
+export function minMaxXForNonBars (mx, args, data) {
+  const xExtent = extent(data, function (d) {
     return d[args.xAccessor]
   })
-  mx.min = extent_x[0]
-  mx.max = extent_x[1]
+  mx.min = xExtent[0]
+  mx.max = xExtent[1]
 }
 
-function mg_min_max_x_for_bars (mx, args, data) {
-  mx.min = d3.min(data, function (d) {
-    var trio = [
+export function minMaxXForBars (mx, args, data) {
+  mx.min = min(data, function (d) {
+    const trio = [
       d[args.xAccessor],
-      (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
-      (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
+      (d[args.baselineAccessor]) ? d[args.baselineAccessor] : 0,
+      (d[args.predictorAccessor]) ? d[args.predictorAccessor] : 0
     ]
     return Math.min.apply(null, trio)
   })
 
   if (mx.min > 0) mx.min = 0
 
-  mx.max = d3.max(data, function (d) {
-    var trio = [
+  mx.max = max(data, function (d) {
+    const trio = [
       d[args.xAccessor],
-      (d[args.baseline_accessor]) ? d[args.baseline_accessor] : 0,
-      (d[args.predictor_accessor]) ? d[args.predictor_accessor] : 0
+      (d[args.baselineAccessor]) ? d[args.baselineAccessor] : 0,
+      (d[args.predictorAccessor]) ? d[args.predictorAccessor] : 0
     ]
     return Math.max.apply(null, trio)
   })
   return mx
 }
 
-function mg_min_max_x_for_dates (mx) {
-  var yesterday = MG.clone(mx.min).setDate(mx.min.getDate() - 1)
-  var tomorrow = MG.clone(mx.min).setDate(mx.min.getDate() + 1)
+export function minMaxXForDates (mx) {
+  const yesterday = utility.clone(mx.min).setDate(mx.min.getDate() - 1)
+  const tomorrow = utility.clone(mx.min).setDate(mx.min.getDate() + 1)
   mx.min = yesterday
   mx.max = tomorrow
 }
 
-function mg_min_max_x_for_numbers (mx) {
+export function minMaxXForNumbers (mx) {
   // TODO do we want to rewrite this?
   mx.min = mx.min - 1
   mx.max = mx.max + 1
 }
 
-function mg_min_max_x_for_strings (mx) {
+export function minMaxXForStrings (mx) {
   // TODO shouldn't be allowing strings here to be coerced into numbers
   mx.min = Number(mx.min) - 1
   mx.max = Number(mx.max) + 1
 }
 
-function mg_force_xax_count_to_be_two (args) {
-  args.xax_count = 2
+export function forceXaxCountToBeTwo (args) {
+  args.xaxCount = 2
 }
 
-function mg_select_xax_format (args) {
-  var c = args.chartType
-  if (!args.processed.xax_format) {
-    if (args.xax_format) {
-      args.processed.xax_format = args.xax_format
+export function selectXaxFormat (args) {
+  const c = args.chartType
+  if (!args.processed.xaxFormat) {
+    if (args.xaxFormat) {
+      args.processed.xaxFormat = args.xaxFormat
     } else {
       if (c === 'line' || c === 'point' || c === 'histogram') {
-        args.processed.xax_format = mg_default_xax_format(args)
+        args.processed.xaxFormat = defaultXaxFormat(args)
       } else if (c === 'bar') {
-        args.processed.xax_format = mg_default_bar_xax_format(args)
+        args.processed.xaxFormat = defaultBarXaxFormat(args)
       }
     }
   }

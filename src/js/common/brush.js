@@ -40,16 +40,16 @@
     let origin = []
 
     const calculateSelectionRange = () => {
-      const min_x = args.left
-      const max_x = args.width - args.right - args.buffer
+      const minX = args.left
+      const maxX = args.width - args.right - args.buffer
       const min_y = args.top
       const max_y = args.height - args.bottom - args.buffer
       const mouse = d3.mouse(container)
       const range = {}
       range.x = axis.x ? [
-        Math.max(min_x, Math.min(origin[0], mouse[0])),
-        Math.min(max_x, Math.max(origin[0], mouse[0]))
-      ] : [min_x, max_x]
+        Math.max(minX, Math.min(origin[0], mouse[0])),
+        Math.min(maxX, Math.max(origin[0], mouse[0]))
+      ] : [minX, maxX]
       range.y = axis.y ? [
         Math.max(min_y, Math.min(origin[1], mouse[1])),
         Math.min(max_y, Math.max(origin[1], mouse[1]))
@@ -95,7 +95,7 @@
   }
 
   const add_brush_function = args => {
-    if (args.x_axis_type === 'categorical' || args.y_axis_type === 'categorical') { return console.warn('The option "brush" does not support axis type "categorical" currently.') }
+    if (args.xAxis_type === 'categorical' || args.yAxis_type === 'categorical') { return console.warn('The option "brush" does not support axis type "categorical" currently.') }
     if (!args.zoom_target) args.zoom_target = args
     if (args.zoom_target !== args) args.zoom_target.processed.subplot = args
     let brush_axis

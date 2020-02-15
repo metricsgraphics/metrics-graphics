@@ -2,8 +2,8 @@ function point_mouseover (args, svg, d) {
   const mouseover = mg_mouseover_text(args, { svg })
   const row = mouseover.mouseover_row()
 
-  if (args.color_accessor !== null && args.color_type === 'category') {
-    const label = d[args.color_accessor]
+  if (args.colorAccessor !== null && args.colorType === 'category') {
+    const label = d[args.colorAccessor]
     row.text(`${label}  `).bold().attr('fill', args.scaleFunctions.colorFunction(d))
   }
 
@@ -13,8 +13,8 @@ function point_mouseover (args, svg, d) {
   row.text(formatYMouseover(args, d, args.timeSeries === false))
 }
 
-function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) {
-  if (color_accessor !== null) {
+function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
+  if (colorAccessor !== null) {
     elem.attr('fill', scaleFunctions.colorFunction(d))
     elem.attr('stroke', scaleFunctions.colorFunction(d))
   } else {
@@ -24,11 +24,11 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
 
 {
   function mg_filter_out_plot_bounds (data, args) {
-    // max_x, min_x, max_y, min_y;
+    // maxX, minX, max_y, min_y;
     const x = args.xAccessor
     const y = args.yAccessor
-    const new_data = data.filter(d => (args.min_x === null || d[x] >= args.min_x) &&
-      (args.max_x === null || d[x] <= args.max_x) &&
+    const new_data = data.filter(d => (args.minX === null || d[x] >= args.minX) &&
+      (args.maxX === null || d[x] <= args.maxX) &&
       (args.min_y === null || d[y] >= args.min_y) &&
       (args.max_y === null || d[y] <= args.max_y))
     return new_data
@@ -38,9 +38,9 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
     this.init = function (args) {
       this.args = args
 
-      // infer y_axis and x_axis type;
-      args.x_axis_type = inferType(args, 'x')
-      args.y_axis_type = inferType(args, 'y')
+      // infer yAxis and xAxis type;
+      args.xAxis_type = inferType(args, 'x')
+      args.yAxis_type = inferType(args, 'y')
 
       rawDataTransformation(args)
 
@@ -49,7 +49,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
 
       let xMaker, yMaker
 
-      if (args.x_axis_type === 'categorical') {
+      if (args.xAxis_type === 'categorical') {
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .categoricalDomainFromData()
@@ -70,7 +70,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .inflateDomain(true)
-          .zeroBottom(args.y_axis_type === 'categorical')
+          .zeroBottom(args.yAxis_type === 'categorical')
           .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
           .numericalRange('bottom')
 
@@ -78,29 +78,29 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
       }
 
       // y-scale generation. This needs to get simplified.
-      if (args.y_axis_type === 'categorical') {
+      if (args.yAxis_type === 'categorical') {
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .zeroBottom(true)
           .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.ygroup_height], true)
+          .categoricalRangeBands([0, args.yGroupHeight], true)
 
-        if (args.ygroup_accessor) {
+        if (args.yGroupAccessor) {
           new MG.scale_factory(args)
             .namespace('ygroup')
             .categoricalDomainFromData()
             .categoricalRangeBands('left')
         } else {
           args.scales.YGROUP = () => getPlotTop(args)
-          args.scaleFunctions.ygroupf = () => getPlotTop(args)
+          args.scaleFunctions.yGroupFunction = () => getPlotTop(args)
         }
-        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.ygroupf(d)
+        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
       } else {
         const baselines = (args.baselines || []).map(d => d[args.yAccessor])
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .inflateDomain(true)
-          .zeroBottom(args.x_axis_type === 'categorical')
+          .zeroBottom(args.xAxis_type === 'categorical')
           .numericalDomainFromData(baselines)
           .numericalRange('left')
 
@@ -108,20 +108,20 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
       }
 
       /// //// COLOR accessor
-      if (args.color_accessor !== null) {
+      if (args.colorAccessor !== null) {
         const colorScale = MG.scale_factory(args).namespace('color')
-        if (args.color_type === 'number') {
+        if (args.colorType === 'number') {
           // do the color scale.
           // etiher get color range, or what.
           colorScale
-            .numericalDomainFromData(mg_get_color_domain(args))
-            .numericalRange(mg_get_color_range(args))
+            .numericalDomainFromData(getColorDomain(args))
+            .numericalRange(getColorRange(args))
             .clamp(true)
         } else {
-          if (args.color_domain) {
+          if (args.colorDomain) {
             colorScale
-              .categoricalDomain(args.color_domain)
-              .categoricalRange(args.color_range)
+              .categoricalDomain(args.colorDomain)
+              .categoricalRange(args.colorRange)
           } else {
             colorScale
               .categoricalDomainFromData()
@@ -130,29 +130,29 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
         }
       }
 
-      if (args.size_accessor) {
+      if (args.sizeAccessor) {
         new MG.scale_factory(args).namespace('size')
           .numericalDomainFromData()
-          .numericalRange(mg_get_size_range(args))
+          .numericalRange(getSizeRange(args))
           .clamp(true)
       }
 
       new MG.axis_factory(args)
         .namespace('x')
-        .type(args.x_axis_type)
-        .zeroLine(args.y_axis_type === 'categorical')
-        .position(args.x_axis_position)
-        .rug(x_rug(args))
-        .label(mg_add_x_label)
+        .type(args.xAxis_type)
+        .zeroLine(args.yAxis_type === 'categorical')
+        .position(args.xAxis_position)
+        .rug(xRug(args))
+        .label(addXLabel)
         .draw()
 
       new MG.axis_factory(args)
         .namespace('y')
-        .type(args.y_axis_type)
-        .zeroLine(args.x_axis_type === 'categorical')
-        .position(args.y_axis_position)
-        .rug(y_rug(args))
-        .label(mg_add_y_label)
+        .type(args.yAxis_type)
+        .zeroLine(args.xAxis_type === 'categorical')
+        .position(args.yAxis_position)
+        .rug(yRug(args))
+        .label(addYLabel)
         .draw()
 
       this.mainPlot()
@@ -203,15 +203,15 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
 
       const elements = [pts].concat(highlights ? [highlights] : [])
       // are we coloring our points, or just using the default color?
-      if (args.color_accessor !== null) {
+      if (args.colorAccessor !== null) {
         elements.forEach(e => e.attr('fill', args.scaleFunctions.colorFunction).attr('stroke', args.scaleFunctions.colorFunction))
       } else {
         elements.forEach(e => e.classed('mg-points-mono', true))
       }
 
-      pts.attr('r', (args.size_accessor !== null) ? args.scaleFunctions.sizef : args.point_size)
+      pts.attr('r', (args.sizeAccessor !== null) ? args.scaleFunctions.sizef : args.point_size)
       if (highlights) {
-        highlights.attr('r', (args.size_accessor !== null) ? (d, i) => args.scaleFunctions.sizef(d, i) + 2 : args.point_size + 2)
+        highlights.attr('r', (args.sizeAccessor !== null) ? (d, i) => args.scaleFunctions.sizef(d, i) + 2 : args.point_size + 2)
       }
 
       return this
@@ -276,7 +276,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
         const pts = svg.selectAll(`.mg-points circle.path-${i}`)
           .classed('selected', true)
 
-        if (args.size_accessor) {
+        if (args.sizeAccessor) {
           pts.attr('r', di => args.scaleFunctions.sizef(di) + args.active_point_size_increase)
         } else {
           pts.attr('r', args.point_size + args.active_point_size_increase)
@@ -321,7 +321,7 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
           .classed('unselected', false)
           .classed('selected', false)
 
-        if (args.size_accessor) {
+        if (args.sizeAccessor) {
           pts.attr('r', args.scaleFunctions.sizef)
         } else {
           pts.attr('r', args.point_size)
@@ -355,20 +355,20 @@ function mg_color_point_mouseover ({ color_accessor, scaleFunctions }, elem, d) 
   }
 
   const options = {
-    color_accessor: [null, 'string'], // the data element to use to map points to colors
-    color_range: [null, 'array'], // the range used to color different groups of points
-    color_type: ['number', ['number', 'category']], // specifies whether the color scale is quantitative or qualitative
+    colorAccessor: [null, 'string'], // the data element to use to map points to colors
+    colorRange: [null, 'array'], // the range used to color different groups of points
+    colorType: ['number', ['number', 'category']], // specifies whether the color scale is quantitative or qualitative
     point_size: [2.5, 'number'], // the radius of the dots in the scatterplot
-    size_accessor: [null, 'string'], // should point sizes be mapped to data
-    size_range: [null, 'array'], // the range of point sizes
+    sizeAccessor: [null, 'string'], // should point sizes be mapped to data
+    sizeRange: [null, 'array'], // the range of point sizes
     lowess: [false, 'boolean'], // specifies whether to show a lowess line of best-fit
     leastSquares: [false, 'boolean'], // specifies whether to show a least-squares line of best-fit
     y_categorical_show_guides: [true, 'boolean'],
     x_categorical_show_guides: [true, 'boolean'],
     buffer: [16, 'string'],
     label_accessor: [null, 'boolean'],
-    size_domain: [null, 'array'],
-    color_domain: [null, 'array'],
+    sizeDomain: [null, 'array'],
+    colorDomain: [null, 'array'],
     active_point_size_increase: [1, 'number'],
     highlight: [null, 'function'] // if this callback function returns true, the selected point will be highlighted
   }

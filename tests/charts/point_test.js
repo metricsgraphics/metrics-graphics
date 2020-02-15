@@ -40,12 +40,12 @@ test('We have only one set of rollovers', function () {
   equal(document.querySelectorAll('.mg-voronoi').length, 1, 'One set of rollovers exists')
 })
 
-test('args.x_rug', function () {
+test('args.xRug', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_rug: true,
+    xRug: true,
     chartType: 'point'
   }
 
@@ -58,7 +58,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    x_rug: true,
+    xRug: true,
     chartType: 'point'
   }
 
@@ -68,12 +68,12 @@ test('Only one rugplot is added on multiple calls to the same target element', f
   equal(document.querySelectorAll('.mg-x-rug').length, 2, 'We only have one rugplot (two ticks) on the x-axis')
 })
 
-test('args.y_rug', function () {
+test('args.yRug', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_rug: true,
+    yRug: true,
     chartType: 'point'
   }
 
@@ -86,7 +86,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_rug: true,
+    yRug: true,
     chartType: 'point'
   }
 

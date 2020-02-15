@@ -31,7 +31,7 @@ var split_by_params = {
     width: 600,
     height: 200,
     right: 40,
-    xax_count: 4,
+    xaxCount: 4,
     target: '#split_by',
     xAccessor: 'date',
     yAccessor: 'release'
@@ -43,8 +43,8 @@ var modify_time_period_params = {
     width: 600,
     height: 200,
     right: 40,
-    show_secondary_x_label: false,
-    xax_count: 4,
+    showSecondaryXLabel: false,
+    xaxCount: 4,
     target: '#modify_time_period',
     xAccessor: 'date',
     yAccessor: 'beta'
@@ -69,7 +69,7 @@ $('.split-by-controls button').click(function() {
     $(this).addClass('active').siblings().removeClass('active');
 
     // update data
-    delete split_by_params.xax_format;
+    delete split_by_params.xaxFormat;
     MG.data_graphic(split_by_params);
 });
 
@@ -80,7 +80,7 @@ $('.modify-time-period-controls button').click(function() {
     // change button state
     $(this).addClass('active').siblings().removeClass('active');
 
-    delete modify_time_period_params.xax_format;
+    delete modify_time_period_params.xaxFormat;
     modify_time_period_params.data = data;
     MG.data_graphic(modify_time_period_params);
 });
@@ -106,7 +106,7 @@ var split_by_params = {
     width: 600,
     height: 200,
     right: 40,
-    xax_count: 4,
+    xaxCount: 4,
     target: '#split_by',
     xAccessor: 'date',
     yAccessor: 'release'
@@ -118,8 +118,8 @@ var modify_time_period_params = {
     width: 600,
     height: 200,
     right: 40,
-    show_secondary_x_label: false,
-    xax_count: 4,
+    showSecondaryXLabel: false,
+    xaxCount: 4,
     transition_on_update: false,
     target: '#modify_time_period',
     xAccessor: 'date',

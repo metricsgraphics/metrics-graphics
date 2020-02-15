@@ -1,4 +1,4 @@
-module('y_axis')
+module('yAxis')
 
 test('Y-axis is added', function () {
   var params = {
@@ -11,12 +11,12 @@ test('Y-axis is added', function () {
   ok(document.querySelector('.mg-y-axis'), 'Y-axis is added')
 })
 
-test('args.y_axis set to false', function () {
+test('args.yAxis set to false', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_axis: false
+    yAxis: false
   }
 
   MG.data_graphic(params)
@@ -84,12 +84,12 @@ test('Y-axis doesn\'t break when data object is of length 1', function () {
 //     ok(document.querySelector('.mg-y-axis-small'), 'Small y-axis is set');
 // });
 
-test('args.y_rug', function () {
+test('args.yRug', function () {
   var params = {
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_rug: true
+    yRug: true
   }
 
   MG.data_graphic(params)
@@ -101,7 +101,7 @@ test('Only one rugplot is added on multiple calls to the same target element', f
     target: '#qunit-fixture',
     data: [{ date: new Date('2014-01-01'), value: 12 },
       { date: new Date('2014-03-01'), value: 18 }],
-    y_rug: true
+    yRug: true
   }
 
   MG.data_graphic(params)

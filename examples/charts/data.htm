@@ -13,15 +13,15 @@
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Few Observations",
-        description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+        description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>minX</i> and <i>maxX</i> options in order to expand the date range.",
         data: data,
         interpolate: d3.curveLinear,
         missingIsZero: true,
         width: 600,
         height: 200,
         right: 40,
-        min_x: new Date('2014-01-01'),
-        max_x: new Date('2014-06-01'),
+        minX: new Date('2014-01-01'),
+        maxX: new Date('2014-06-01'),
         target: '#missing-y',
         mouseover: function(d, i) {
             var df = d3.timeFormat('%b %d, %Y');
@@ -54,7 +54,7 @@
         right: 40,
         target: '#missingIsHidden',
         area: false,
-        show_secondary_x_label: false
+        showSecondaryXLabel: false
     });
 });</code></pre>
 
@@ -237,15 +237,15 @@ d3.json('data/missing-y.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Few Observations",
-        description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>min_x</i> and <i>max_x</i> options in order to expand the date range.",
+        description: "We sometimes have only a few observations. By setting <i>missingIsZero: true</i>, missing values for a time-series will be interpreted as zeros. In this example, we've overridden the rollover callback to show 'no data' for missing observations and have set the <i>minX</i> and <i>maxX</i> options in order to expand the date range.",
         data: data,
         interpolate: d3.curveLinear,
         missingIsZero: true,
         width: 600,
         height: 200,
         right: 40,
-        min_x: new Date('2014-01-01'),
-        max_x: new Date('2014-06-01'),
+        minX: new Date('2014-01-01'),
+        maxX: new Date('2014-06-01'),
         target: '#missing-y',
         mouseover: function(d, i) {
             var df = d3.timeFormat('%b %d, %Y');
@@ -270,7 +270,7 @@ d3.json('data/missing-is-hidden.json', function(data) {
         right: 40,
         target: '#missingIsHidden',
         area: false,
-        show_secondary_x_label: false
+        showSecondaryXLabel: false
     });
 });
 

@@ -19,7 +19,7 @@
         target: '#xnotdate',
         xAccessor: 'males',
         yAccessor: 'females',
-        x_label: 'males',
+        xLabel: 'males',
         y_label: 'females',
     });
 });</code></pre>
@@ -115,16 +115,16 @@
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "No X Axis",
-        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 40,
-        xax_count: 4,
+        xaxCount: 4,
         target: '#hidden1',
         area: false,
-        x_axis: false,
+        xAxis: false,
     });
 });
 
@@ -132,16 +132,16 @@ d3.json('data/brief-1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "No Y Axis",
-        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 20,
-        xax_count: 4,
+        xaxCount: 4,
         target: '#hidden2',
         area: false,
-        y_axis: false
+        yAxis: false
     });
 });</code></pre>
 
@@ -149,7 +149,7 @@ d3.json('data/brief-1.json', function(data) {
             </div>
 
             <div class='row trunk-section'>
-                <div class='col-lg-7 text-center' id='y_rug'></div>
+                <div class='col-lg-7 text-center' id='yRug'></div>
                 <div class='col-lg-5'>
                     <div class='data-column'><a href='data/fake_users1.json'>data</a></div>
 
@@ -157,15 +157,15 @@ d3.json('data/brief-1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Rug Plots",
-        description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+        description: "You can set rug plots either axis by setting <i>xRug</i> or <i>yRug</i> to true.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 40,
-        target: '#y_rug',
+        target: '#yRug',
         area: false,
-        y_rug: true
+        yRug: true
     });
 });</code></pre>
 
@@ -207,9 +207,9 @@ d3.json('data/brief-1.json', function(data) {
         
         MG.data_graphic({
             title: "Axis Positions: " + pos[0] +', ' + pos[1],
-            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
-            x_axis_position: pos[1],
-            y_axis_position: pos[0],
+            description: "Set <i>xAxis_position: " + pos[1] + "</i> and <i>xAxis_position: " + pos[0] +"</i>.",
+            xAxis_position: pos[1],
+            yAxis_position: pos[0],
             data: data,
             decimals: 0,
             left: pos[0] === 'right' ? 20 : 50,
@@ -235,9 +235,9 @@ d3.json('data/brief-1.json', function(data) {
         
         MG.data_graphic({
             title: "Axis Positions: " + pos[0] +', ' + pos[1],
-            description: "Set <i>x_axis_position: " + pos[1] + "</i> and <i>x_axis_position: " + pos[0] +"</i>.",
-            x_axis_position: pos[1],
-            y_axis_position: pos[0],
+            description: "Set <i>xAxis_position: " + pos[1] + "</i> and <i>xAxis_position: " + pos[0] +"</i>.",
+            xAxis_position: pos[1],
+            yAxis_position: pos[0],
             data: data,
             decimals: 0,
             left: pos[0] === 'right' ? 20 : 50,
@@ -336,7 +336,7 @@ d3.json('data/xnotdate.json', function(data) {
         target: '#xnotdate',
         xAccessor: 'males',
         yAccessor: 'females',
-        x_label: 'males',
+        xLabel: 'males',
         y_label: 'females',
     });
 });
@@ -394,16 +394,16 @@ d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "No X Axis",
-        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 40,
-        xax_count: 4,
+        xaxCount: 4,
         target: '#hidden1',
         area: false,
-        x_axis: false,
+        xAxis: false,
     });
 });
 
@@ -411,16 +411,16 @@ d3.json('data/brief-1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "No Y Axis",
-        description: "You can hide either axis by setting <i>x_axis</i> or <i>y_axis</i> to false.",
+        description: "You can hide either axis by setting <i>xAxis</i> or <i>yAxis</i> to false.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 20,
-        xax_count: 4,
+        xaxCount: 4,
         target: '#hidden2',
         area: false,
-        y_axis: false
+        yAxis: false
     });
 });
 
@@ -428,15 +428,15 @@ d3.json('data/fake_users1.json', function(data) {
     data = MG.convert.date(data, 'date');
     MG.data_graphic({
         title: "Rug Plots",
-        description: "You can set rug plots either axis by setting <i>x_rug</i> or <i>y_rug</i> to true.",
+        description: "You can set rug plots either axis by setting <i>xRug</i> or <i>yRug</i> to true.",
         data: data,
         decimals: 0,
         width: 600,
         height: 200,
         right: 40,
-        target: '#y_rug',
+        target: '#yRug',
         area: false,
-        y_rug: true
+        yRug: true
     });
 });
 

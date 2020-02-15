@@ -143,16 +143,16 @@
 
     this.init = (args) => {
       this.args = args
-      args.x_axis_type = inferType(args, 'x')
-      args.y_axis_type = inferType(args, 'y')
+      args.xAxis_type = inferType(args, 'x')
+      args.yAxis_type = inferType(args, 'y')
 
       // this is specific to how rects work in svg, let's keep track of the bar orientation to
       // plot appropriately.
-      if (args.x_axis_type == 'categorical') {
+      if (args.xAxis_type == 'categorical') {
         args.orientation = 'vertical'
-      } else if (args.y_axis_type == 'categorical') {
+      } else if (args.yAxis_type == 'categorical') {
         args.orientation = 'horizontal'
-      } else if (args.x_axis_type != 'categorical' && args.y_axis_type != 'categorical') {
+      } else if (args.xAxis_type != 'categorical' && args.yAxis_type != 'categorical') {
         // histogram.
         args.orientation = 'vertical'
       }
@@ -165,7 +165,7 @@
       let xMaker
       let yMaker
 
-      if (args.x_axis_type === 'categorical') {
+      if (args.xAxis_type === 'categorical') {
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .categoricalDomainFromData()
@@ -186,7 +186,7 @@
         xMaker = MG.scale_factory(args)
           .namespace('x')
           .inflateDomain(true)
-          .zeroBottom(args.y_axis_type === 'categorical')
+          .zeroBottom(args.yAxis_type === 'categorical')
           .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
           .numericalRange('bottom')
 
@@ -194,38 +194,38 @@
       }
 
       // y-scale generation. This needs to get simplified.
-      if (args.y_axis_type === 'categorical') {
+      if (args.yAxis_type === 'categorical') {
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .zeroBottom(true)
           .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.ygroup_height], true)
+          .categoricalRangeBands([0, args.yGroupHeight], true)
 
-        if (args.ygroup_accessor) {
+        if (args.yGroupAccessor) {
           new MG.scale_factory(args)
             .namespace('ygroup')
             .categoricalDomainFromData()
             .categoricalRangeBands('left')
         } else {
           args.scales.YGROUP = () => getPlotTop(args)
-          args.scaleFunctions.ygroupf = d => getPlotTop(args)
+          args.scaleFunctions.yGroupFunction = d => getPlotTop(args)
         }
-        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.ygroupf(d)
+        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
       } else {
         const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
         yMaker = MG.scale_factory(args)
           .namespace('y')
           .inflateDomain(true)
-          .zeroBottom(args.x_axis_type === 'categorical')
+          .zeroBottom(args.xAxis_type === 'categorical')
           .numericalDomainFromData(baselines)
           .numericalRange('left')
 
         args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d)
       }
 
-      if (args.ygroup_accessor !== null) {
-        args.ycolor_accessor = args.yAccessor
+      if (args.yGroupAccessor !== null) {
+        args.ycolorAccessor = args.yAccessor
         MG.scale_factory(args)
           .namespace('ycolor')
           .scaleName('color')
@@ -234,7 +234,7 @@
       }
 
       if (args.xgroup_accessor !== null) {
-        args.xcolor_accessor = args.xAccessor
+        args.xcolorAccessor = args.xAccessor
         MG.scale_factory(args)
           .namespace('xcolor')
           .scaleName('color')
@@ -242,7 +242,7 @@
           .categoricalColorRange()
       }
 
-      // if (args.ygroup_accessor !== null) {
+      // if (args.yGroupAccessor !== null) {
       //   MG.scale_factory(args)
       //     .namespace('ygroup')
       //     .categoricalDomainFromData()
@@ -251,16 +251,16 @@
 
       new MG.axis_factory(args)
         .namespace('x')
-        .type(args.x_axis_type)
-        .zeroLine(args.y_axis_type === 'categorical')
-        .position(args.x_axis_position)
+        .type(args.xAxis_type)
+        .zeroLine(args.yAxis_type === 'categorical')
+        .position(args.xAxis_position)
         .draw()
 
       new MG.axis_factory(args)
         .namespace('y')
-        .type(args.y_axis_type)
-        .zeroLine(args.x_axis_type === 'categorical')
-        .position(args.y_axis_position)
+        .type(args.yAxis_type)
+        .zeroLine(args.xAxis_type === 'categorical')
+        .position(args.yAxis_position)
         .draw()
 
       // mg_categorical_group_color_scale(args);
@@ -303,10 +303,10 @@
 
       // reference_accessor {}
 
-      // if (args.predictor_accessor) {
+      // if (args.predictorAccessor) {
       //   predictor_bars = barplot.selectAll('.mg-bar-prediction')
       //     .data(data.filter(function(d) {
-      //       return d.hasOwnProperty(args.predictor_accessor) }));
+      //       return d.hasOwnProperty(args.predictorAccessor) }));
 
       //   predictor_bars.exit().remove();
 
@@ -314,10 +314,10 @@
       //     .classed('mg-bar-prediction', true);
       // }
 
-      // if (args.baseline_accessor) {
+      // if (args.baselineAccessor) {
       //   baseline_marks = barplot.selectAll('.mg-bar-baseline')
       //     .data(data.filter(function(d) {
-      //       return d.hasOwnProperty(args.baseline_accessor) }));
+      //       return d.hasOwnProperty(args.baselineAccessor) }));
 
       //   baseline_marks.exit().remove();
 
@@ -354,8 +354,8 @@
       if (args.orientation == 'vertical') {
         length = 'height'
         width = 'width'
-        length_type = args.y_axis_type
-        width_type = args.x_axis_type
+        length_type = args.yAxis_type
+        width_type = args.xAxis_type
         length_coord = 'y'
         width_coord = 'x'
         length_scalefn = length_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
@@ -384,8 +384,8 @@
       if (args.orientation == 'horizontal') {
         length = 'width'
         width = 'height'
-        length_type = args.x_axis_type
-        width_type = args.y_axis_type
+        length_type = args.xAxis_type
+        width_type = args.yAxis_type
         length_coord = 'x'
         width_coord = 'y'
         length_scalefn = length_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
@@ -517,34 +517,34 @@
       //   return x;
       // })
       // TODO - reimplement.
-      // if (args.predictor_accessor) {
+      // if (args.predictorAccessor) {
       //   predictor_bars
       //     .attr('x', args.scales.X(0))
       //     .attr('y', function(d) {
-      //       return args.scaleFunctions.ygroupf(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
+      //       return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
       //     })
       //     .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
       //     .attr('width', function(d) {
-      //       return args.scales.X(d[args.predictor_accessor]) - args.scales.X(0);
+      //       return args.scales.X(d[args.predictorAccessor]) - args.scales.X(0);
       //     });
       // }
 
       // TODO - reimplement.
-      //   if (args.baseline_accessor) {
+      //   if (args.baselineAccessor) {
 
       //     baseline_marks
       //       .attr('x1', function(d) {
-      //         return args.scales.X(d[args.baseline_accessor]); })
+      //         return args.scales.X(d[args.baselineAccessor]); })
       //       .attr('x2', function(d) {
-      //         return args.scales.X(d[args.baseline_accessor]); })
+      //         return args.scales.X(d[args.baselineAccessor]); })
       //       .attr('y1', function(d) {
-      //         return args.scaleFunctions.ygroupf(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() / 4
+      //         return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() / 4
       //       })
       //       .attr('y2', function(d) {
-      //         return args.scaleFunctions.ygroupf(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * 3 / 4
+      //         return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * 3 / 4
       //       });
       //   }
-      if (args.legend || (args.color_accessor !== null && args.ygroup_accessor !== args.color_accessor)) {
+      if (args.legend || (args.colorAccessor !== null && args.yGroupAccessor !== args.colorAccessor)) {
         if (!args.legend_target) legend_on_graph(svg, args)
         else mg_targeted_legend(args)
       }
@@ -578,8 +578,8 @@
       if (args.orientation == 'vertical') {
         length = 'height'
         width = 'width'
-        length_type = args.y_axis_type
-        width_type = args.x_axis_type
+        length_type = args.yAxis_type
+        width_type = args.xAxis_type
         length_coord = 'y'
         width_coord = 'x'
         length_scalefn = length_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
@@ -597,8 +597,8 @@
       if (args.orientation == 'horizontal') {
         length = 'width'
         width = 'height'
-        length_type = args.x_axis_type
-        width_type = args.y_axis_type
+        length_type = args.xAxis_type
+        width_type = args.yAxis_type
         length_coord = 'x'
         width_coord = 'y'
         length_scalefn = length_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
@@ -678,10 +678,10 @@
       const svg = getSvgChildOf(args.target)
       const label_accessor = this.is_vertical ? args.xAccessor : args.yAccessor
       const data_accessor = this.is_vertical ? args.yAccessor : args.xAccessor
-      const label_units = this.is_vertical ? args.yaxUnits : args.xax_units
+      const label_units = this.is_vertical ? args.yaxUnits : args.xaxUnits
 
       return (d, i) => {
-        const fmt = MG.time_format(args.utc_time, '%b %e, %Y')
+        const fmt = MG.time_format(args.utcTime, '%b %e, %Y')
         const num = formatRolloverNumber(args)
 
         // highlight active bar
@@ -699,15 +699,15 @@
           const mouseover = mg_mouseover_text(args, { svg })
           let row = mouseover.mouseover_row()
 
-          if (args.ygroup_accessor) row.text(`${d[args.ygroup_accessor]}   `).bold()
+          if (args.yGroupAccessor) row.text(`${d[args.yGroupAccessor]}   `).bold()
 
           row.text(formatXMouseover(args, d))
           row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
-          if (args.predictor_accessor || args.baseline_accessor) {
+          if (args.predictorAccessor || args.baselineAccessor) {
             row = mouseover.mouseover_row()
 
-            if (args.predictor_accessor) row.text(formatDataForMouseover(args, d, null, args.predictor_accessor, false))
-            if (args.baseline_accessor) row.text(formatDataForMouseover(args, d, null, args.baseline_accessor, false))
+            if (args.predictorAccessor) row.text(formatDataForMouseover(args, d, null, args.predictorAccessor, false))
+            if (args.baselineAccessor) row.text(formatDataForMouseover(args, d, null, args.baselineAccessor, false))
           }
         }
         if (args.mouseover) {
@@ -762,21 +762,21 @@
     reference_accessor: [null, 'string'],
     comparison_accessor: [null, 'string'],
     secondary_label_accessor: [null, 'string'],
-    color_accessor: [null, 'string'],
-    color_type: ['category', ['number', 'category']],
-    color_domain: [null, 'number[]'],
+    colorAccessor: [null, 'string'],
+    colorType: ['category', ['number', 'category']],
+    colorDomain: [null, 'number[]'],
     reference_thickness: [1, 'number'],
     comparison_width: [3, 'number'],
     comparison_thickness: [null, 'number'],
     legend: [false, 'boolean'],
     legend_target: [null, 'string'],
     mouseover_align: ['right', ['right', 'left']],
-    baseline_accessor: [null, 'string'],
-    predictor_accessor: [null, 'string'],
+    baselineAccessor: [null, 'string'],
+    predictorAccessor: [null, 'string'],
     predictor_proportion: [5, 'number'],
-    show_bar_zero: [true, 'boolean'],
+    showBarZero: [true, 'boolean'],
     binned: [true, 'boolean'],
-    truncate_x_labels: [true, 'boolean'],
+    truncateXLabels: [true, 'boolean'],
     truncate_y_labels: [true, 'boolean']
   }
 

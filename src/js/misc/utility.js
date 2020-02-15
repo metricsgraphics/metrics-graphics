@@ -28,26 +28,26 @@ export function timeFormat (utc, specifier) {
 export function getRolloverTimeFormat (args) {
   // if a rollover time format is defined, use that
   if (args.rollover_time_format) {
-    return timeFormat(args.utc_time, args.rollover_time_format)
+    return timeFormat(args.utcTime, args.rollover_time_format)
   }
 
-  switch (args.processed.x_time_frame) {
+  switch (args.processed.xTimeFrame) {
     case 'millis':
-      return timeFormat(args.utc_time, '%b %e, %Y  %H:%M:%S.%L')
+      return timeFormat(args.utcTime, '%b %e, %Y  %H:%M:%S.%L')
     case 'seconds':
-      return timeFormat(args.utc_time, '%b %e, %Y  %H:%M:%S')
+      return timeFormat(args.utcTime, '%b %e, %Y  %H:%M:%S')
     case 'less-than-a-day':
-      return timeFormat(args.utc_time, '%b %e, %Y  %I:%M%p')
+      return timeFormat(args.utcTime, '%b %e, %Y  %I:%M%p')
     case 'four-days':
-      return timeFormat(args.utc_time, '%b %e, %Y  %I:%M%p')
+      return timeFormat(args.utcTime, '%b %e, %Y  %I:%M%p')
     default:
-      return timeFormat(args.utc_time, '%b %e, %Y')
+      return timeFormat(args.utcTime, '%b %e, %Y')
   }
 }
 
 export function dataInPlotBounds (datum, args) {
-  return datum[args.xAccessor] >= args.processed.min_x &&
-  datum[args.xAccessor] <= args.processed.max_x &&
+  return datum[args.xAccessor] >= args.processed.minX &&
+  datum[args.xAccessor] <= args.processed.maxX &&
   datum[args.yAccessor] >= args.processed.min_y &&
   datum[args.yAccessor] <= args.processed.max_y
 }
@@ -89,7 +89,7 @@ export function makeRug (args, rugClass) {
 }
 
 export function addColorAccessorToRug (rug, args, rugMonoClass) {
-  if (args.color_accessor) {
+  if (args.colorAccessor) {
     rug.attr('stroke', args.scaleFunctions.colorFunction).classed(rugMonoClass, false)
   } else {
     rug.attr('stroke', null).classed(rugMonoClass, true)

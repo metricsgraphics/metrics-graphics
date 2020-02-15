@@ -80,7 +80,7 @@ MG.data_table = function (args) {
     no title
     xmin, xmax
     format: percentage
-    xax_formatter
+    xaxFormatter
     */
     return this
   }

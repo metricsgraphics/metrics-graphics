@@ -39,7 +39,7 @@ MG.add_hook = function(name, func, context) {
 
   Optional arguments
 */
-MG.call_hook = function(name) {
+MG.callHook = function(name) {
   var hooks = MG._hooks[name],
     result = [].slice.apply(arguments, [1]),
     processed;
