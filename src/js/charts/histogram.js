@@ -202,7 +202,7 @@
     }
 
     this.windowListeners = () => {
-      mg_window_listeners(this.args)
+      windowListeners(this.args)
       return this
     }
 

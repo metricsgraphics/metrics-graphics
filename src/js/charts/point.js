@@ -347,7 +347,7 @@ function mg_color_point_mouseover ({ colorAccessor, scaleFunctions }, elem, d) {
     }
 
     this.windowListeners = function () {
-      mg_window_listeners(this.args)
+      windowListeners(this.args)
       return this
     }
 
