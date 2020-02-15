@@ -1,5 +1,6 @@
 import { timeFormat as d3TimeFormat, timeParse, utcFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
+import { interpolate } from 'd3-interpolate'
 
 let nextElementId = 0
 

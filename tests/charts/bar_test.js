@@ -8,7 +8,7 @@ module('bar', {
       chartType: 'bar',
       xAccessor: 'value',
       yAccessor: 'label',
-      transition_on_update: false,
+      transitionOnUpdate: false,
       data: [{
         label: 'Bar 1',
         value: 100
@@ -75,8 +75,8 @@ test('Triggers callbacks when provided', function () {
 //         orientation: 'vertical',
 //         predictorAccessor: 'predictor',
 //         baselineAccessor: 'baseline',
-//         animate_on_load: false,
-//         transition_on_update: false
+//         animateOnLoad: false,
+//         transitionOnUpdate: false
 //     });
 
 //     MG.data_graphic(params);

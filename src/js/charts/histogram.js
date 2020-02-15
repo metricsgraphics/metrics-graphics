@@ -7,14 +7,14 @@
       processHistogram(args)
       init(args)
 
-      new MG.scale_factory(args)
+      new MGScale(args)
         .namespace('x')
         .numericalDomainFromData()
         .numericalRange('bottom')
 
       const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
-      new MG.scale_factory(args)
+      new MGScale(args)
         .namespace('y')
         .zeroBottom(true)
         .inflateDomain(true)

@@ -39,7 +39,7 @@
         area: false,
         target: '#confidence_band',
         showSecondaryXLabel: false,
-        show_confidence_band: ['l', 'u'],
+        showConfidenceBand: ['l', 'u'],
         xExtendedTicks: true
     });
 });</code></pre>
@@ -183,7 +183,7 @@ d3.json('data/brief-2.json', function(data) {
         height: 200,
         right: 40,
         area: true,
-        flip_area_under_y_value: 0,
+        flipAreaUnderYValue: 0,
         target: document.getElementById('area_flipped_users_gain_loss'),
         xAccessor: 'date',
         yAccessor: 'value'
@@ -242,7 +242,7 @@ d3.json('data/confidence_band.json', function(data) {
         area: false,
         target: '#confidence_band',
         showSecondaryXLabel: false,
-        show_confidence_band: ['l', 'u'],
+        showConfidenceBand: ['l', 'u'],
         xExtendedTicks: true
     });
 });
@@ -326,7 +326,7 @@ d3.json('data/fake_users1.json', function(data) {
         height: 200,
         right: 40,
         area: true,
-        flip_area_under_y_value: 0,
+        flipAreaUnderYValue: 0,
         target: document.getElementById('area_flipped_users_gain_loss'),
         xAccessor: 'date',
         yAccessor: 'value'

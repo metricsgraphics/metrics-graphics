@@ -1,19 +1,11 @@
 const deepmerge = require('deepmerge')
 
-MG.globals = {}
-MG.deprecations = {
-  rollover_callback: { replacement: 'mouseover', version: '2.0' },
-  rollout_callback: { replacement: 'mouseout', version: '2.0' },
-  x_rollover_format: { replacement: 'xMouseover', version: '2.10' },
-  y_rollover_format: { replacement: 'yMouseover', version: '2.10' },
-  showYears: { replacement: 'showSecondaryXLabel', version: '2.1' },
-  xax_start_at_min: { replacement: 'axesNotCompact', version: '2.7' },
-  interpolate_tension: { replacement: 'interpolate', version: '2.10' }
+export const globals = {
+  link: false,
+  version: '2.0'
 }
-MG.globals.link = false
-MG.globals.version = '1.1'
 
-MG.options = { // <name>: [<defaultValue>, <availableType>]
+export const options = { // <name>: [<defaultValue>, <availableType>]
   xAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   yAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_padding_percentage: [0.05, 'number'], // for categorical scales
@@ -74,14 +66,14 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   yaxUnitsAppend: [false, 'boolean'], // determines whether to append rather than prepend units
   // GraphicOptions
   aggregateRollover: [false, 'boolean'], // links the lines in a multi-line graphic
-  animate_on_load: [false, 'boolean'], // determines whether lines are transitioned on first-load
+  animateOnLoad: [false, 'boolean'], // determines whether lines are transitioned on first-load
   area: [true, ['boolean', 'array']], // determines whether to fill the area below the line
-  flip_area_under_y_value: [null, 'number'], // Specify a Y baseline number value to flip area under it
+  flipAreaUnderYValue: [null, 'number'], // Specify a Y baseline number value to flip area under it
   baselines: [null, 'object[]'], // horizontal lines that indicate, say, goals.
   chartType: ['line', ['line', 'histogram', 'point', 'bar', 'missing-data']], // '{line, histogram, point, bar, missing-data}'],
   color: [null, ['string', 'string[]']],
   colors: [null, ['string', 'string[]']],
-  custom_line_color_map: [[], 'number[]'], // maps an arbitrary set of lines to colors
+  customLineColorMap: [[], 'number[]'], // maps an arbitrary set of lines to colors
   decimals: [2, 'number'], // the number of decimals to show in a rollover
   error: ['', 'string'], // does the graphic have an error that we want to communicate to users
   format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
@@ -89,12 +81,12 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   fullWidth: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
   interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
   legend: ['', 'string[]'], // an array of literals used to label lines
-  legend_target: ['', 'string'], // the DOM element to insert the legend in
+  legendTarget: ['', 'string'], // the DOM element to insert the legend in
   linked: [false, 'boolean'], // used to link multiple graphics together
-  linked_format: ['%Y-%m-%d', 'string'], // specifies the format of linked rollovers
+  linkedFormat: ['%Y-%m-%d', 'string'], // specifies the format of linked rollovers
   list: [false, 'boolean'], // automatically maps the data to x and y accessors
   markers: [null, 'object[]'], // vertical lines that indicate, say, milestones
-  max_data_size: [null, 'number'], // for use with custom_line_color_map
+  max_data_size: [null, 'number'], // for use with customLineColorMap
   missing_text: [null, 'string'], // The text to display for missing graphics
   show_missing_background: [true, 'boolean'], // Displays a background for missing graphics
   mousemove_align: ['right', 'string'], // implemented in point.js
@@ -104,18 +96,18 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   mousemove: [null, 'function'], // custom rollover function
   mouseout: [null, 'function'], // custom rollover function
   click: [null, 'function'],
-  point_size: [2.5, 'number'], // the radius of the dots in the scatterplot
+  pointSize: [2.5, 'number'], // the radius of the dots in the scatterplot
   active_point_on_lines: [false, 'boolean'], // if set, active dot on lines will be displayed.
   active_point_accessor: ['active', 'string'], // data accessor value to determine if a point is active or not
-  active_point_size: [2, 'number'], // the size of the dot that appears on a line when
+  active_pointSize: [2, 'number'], // the size of the dot that appears on a line when
   points_always_visible: [false, 'boolean'], //  whether to always display data points and not just on hover
   rollover_time_format: [null, 'string'], // custom time format for rollovers
-  show_confidence_band: [null, 'string[]'], // determines whether to show a confidence band
+  showConfidenceBand: [null, 'string[]'], // determines whether to show a confidence band
   show_rollover_text: [true, 'boolean'], // determines whether to show text for a data point on rollover
   show_tooltips: [true, 'boolean'], // determines whether to display descriptions in tooltips
   showActivePoint: [true, 'boolean'], // If enabled show active data point information in chart
   target: ['#viz', ['string', HTMLElement]], // the DOM element to insert the graphic in
-  transition_on_update: [true, 'boolean'], // gracefully transitions the lines on data change
+  transitionOnUpdate: [true, 'boolean'], // gracefully transitions the lines on data change
   xRug: [false, 'boolean'], // show a rug plot along the x-axis
   yRug: [false, 'boolean'], // show a rug plot along the y-axis
   mouseover_align: ['right', ['right', 'left']],

@@ -3,6 +3,7 @@ import { scaleOrdinal, scaleUtc, scaleTime, scaleLog, scaleLinear, scaleBand } f
 import { schemeCategory20, schemeCategory10 } from 'd3-scale-chromatic'
 import { getPlotRight, getPlotLeft, getPlotBottom, getPlotTop, clone } from '../misc/utility'
 import { forceXaxCountToBeTwo } from './xAxis'
+import { callHook } from './hooks'
 
 export function addScaleFunction (args, scaleFunctionName, scale, accessor, inflation) {
   args.scaleFunctions[scaleFunctionName] = function (di) {
@@ -11,7 +12,7 @@ export function addScaleFunction (args, scaleFunctionName, scale, accessor, infl
   }
 }
 
-export function mg_position (str, args) {
+export function position (str, args) {
   if (str === 'bottom' || str === 'top') {
     return [getPlotLeft(args), getPlotRight(args)]
   }
@@ -31,9 +32,9 @@ export function catPosition (str, args) {
   }
 }
 
+// big wrapper around d3 scale that automatically formats & calculates scale bounds
+// according to the data, and handles other niceties.
 export function MGScale (args) {
-  // big wrapper around d3 scale that automatically formats & calculates scale bounds
-  // according to the data, and handles other niceties.
   var scaleArgs = {}
   scaleArgs.useInflator = false
   scaleArgs.zeroBottom = false
@@ -62,11 +63,6 @@ export function MGScale (args) {
     scaleArgs.zeroBottom = tf
     return this
   }
-
-  /// //////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// all scale domains are either numerical (number, date, etc.) or categorical (factor, label, etc) /////
-  /// //////////////////////////////////////////////////////////////////////////////////////////////////////
-  // these functions automatically create the d3 scale function and place the domain.
 
   this.numericalDomainFromData = function () {
     var otherFlatDataArrays = []
@@ -133,7 +129,7 @@ export function MGScale (args) {
     if (typeof range === 'string') {
       args
         .scales[scaleArgs.scale_name]
-        .range(mg_position(range, args))
+        .range(position(range, args))
     } else {
       args
         .scales[scaleArgs.scale_name]
@@ -152,7 +148,7 @@ export function MGScale (args) {
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
       args.scales[scaleArgs.scale_name]
-        .range(mg_position(range, args))
+        .range(position(range, args))
         .paddingInner(paddingPercentage)
         .paddingOuter(outerPaddingPercentage)
     } else {

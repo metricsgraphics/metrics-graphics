@@ -70,9 +70,9 @@
     d3.select(target).selectAll('svg *').remove()
   }
 
-  function mg_missing_remove_legend ({ legend_target }) {
-    if (legend_target) {
-      d3.select(legend_target).html('')
+  function mg_missing_remove_legend ({ legendTarget }) {
+    if (legendTarget) {
+      d3.select(legendTarget).html('')
     }
   }
 
@@ -132,7 +132,7 @@
     right: [10, 'number'], // size of the right margin
     left: [0, 'number'], // size of the left margin
     buffer: [8, 'number'], // the buffer between the actual chart area and the margins
-    legend_target: ['', 'string'],
+    legendTarget: ['', 'string'],
     width: [350, 'number'],
     height: [220, 'number'],
     missing_text: ['Data currently missing or unavailable', 'string'],

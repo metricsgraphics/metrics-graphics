@@ -12,6 +12,7 @@ Changes on this fork:
 * modernized JavaScript
 * removed magic numbers
 * removed obsolete helper functions
+* reduced scope: removed tooltips, buttons and tables
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 

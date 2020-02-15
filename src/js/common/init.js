@@ -123,7 +123,7 @@ export function removeOutdatedLines (svg, args) {
   if (svg.selectAll('.mg-main-line').nodes().length >= args.data.length) {
     // now, the thing is we can't just remove, say, line3 if we have a custom
     // line-color map, instead, see which are the lines to be removed, and delete those
-    if (args.custom_line_color_map.length > 0) {
+    if (args.customLineColorMap.length > 0) {
       var arrayFullSeries = function (len) {
         var arr = new Array(len)
         for (var i = 0; i < arr.length; i++) { arr[i] = i + 1 }
@@ -133,7 +133,7 @@ export function removeOutdatedLines (svg, args) {
       // get an array of lines ids to remove
       var linesToRemove = arrayDiff(
         arrayFullSeries(args.max_data_size),
-        args.custom_line_color_map)
+        args.customLineColorMap)
 
       for (i = 0; i < linesToRemove.length; i++) {
         svg.selectAll('.mg-main-line.mg-line' + linesToRemove[i] + '-color')

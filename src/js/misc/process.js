@@ -1,6 +1,7 @@
 import { clone, isArrayOfArrays, isArrayOfObjectsOrEmpty, isArrayOfObjects } from './utility'
 import { leastSquares } from './smoothers'
-import { sum, histogram } from 'd3-array'
+import { histogram } from 'd3-array'
+import { getTimeFrame } from '../common/xAxis'
 
 export function processScaleTicks (args, axis) {
   let accessor
@@ -45,9 +46,6 @@ export function processScaleTicks (args, axis) {
 }
 
 export function rawDataTransformation (args) {
-  // dupe our data so we can modify it without adverse effect
-  args.data = clone(args.data)
-
   // we need to account for a few data format cases:
   // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
   // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays

@@ -1,784 +1,610 @@
-{
-  // TODO add styles to stylesheet instead
-  function scaffold ({ target, width, height, top, left, right, buffer }) {
-    const svg = getSvgChildOf(target)
-    // main margins
-    svg.append('line')
-      .attr('x1', 0)
-      .attr('x2', width)
-      .attr('y1', top)
-      .attr('y2', top)
-      .attr('stroke', 'black')
-    svg.append('line')
-      .attr('x1', 0)
-      .attr('x2', width)
-      .attr('y1', height - bottom)
-      .attr('y2', height - bottom)
-      .attr('stroke', 'black')
+import { getSvgChildOf, getPlotRight, getPlotLeft, getPlotTop, addG } from '../misc/utility'
+import { select } from 'd3-selection'
+import { rawDataTransformation, processPoint } from '../misc/process'
+import { init } from '../common/init'
+import { MGScale } from '../common/scales'
+import { axisFactory } from '../common/yAxis'
+import { windowListeners } from '../common/windowListeners'
+import { clearMouseoverContainer, mouseoverText } from '../common/rollover'
+import { formatDataForMouseover, formatXMouseover } from '../misc/formatters'
+import { rgb } from 'd3-color'
+import { markers } from '../common/markers'
 
-    svg.append('line')
-      .attr('x1', left)
-      .attr('x2', left)
-      .attr('y1', 0)
-      .attr('y2', height)
-      .attr('stroke', 'black')
+// TODO add styles to stylesheet instead
+export function scaffold ({ target, width, height, top, left, bottom, right, buffer }) {
+  const svg = getSvgChildOf(target)
+  // main margins
+  svg.append('line')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', top)
+    .attr('y2', top)
+    .attr('stroke', 'black')
+  svg.append('line')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', height - bottom)
+    .attr('y2', height - bottom)
+    .attr('stroke', 'black')
 
-    svg.append('line')
-      .attr('x1', width - right)
-      .attr('x2', width - right)
-      .attr('y1', 0)
-      .attr('y2', height)
-      .attr('stroke', 'black')
+  svg.append('line')
+    .attr('x1', left)
+    .attr('x2', left)
+    .attr('y1', 0)
+    .attr('y2', height)
+    .attr('stroke', 'black')
 
-    // plot area margins
-    svg.append('line')
-      .attr('x1', 0)
-      .attr('x2', width)
-      .attr('y1', height - bottom - buffer)
-      .attr('y2', height - bottom - buffer)
-      .attr('stroke', 'gray')
+  svg.append('line')
+    .attr('x1', width - right)
+    .attr('x2', width - right)
+    .attr('y1', 0)
+    .attr('y2', height)
+    .attr('stroke', 'black')
 
-    svg.append('line')
-      .attr('x1', 0)
-      .attr('x2', width)
-      .attr('y1', top + buffer)
-      .attr('y2', top + buffer)
-      .attr('stroke', 'gray')
+  // plot area margins
+  svg.append('line')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', height - bottom - buffer)
+    .attr('y2', height - bottom - buffer)
+    .attr('stroke', 'gray')
 
-    svg.append('line')
-      .attr('x1', left + buffer)
-      .attr('x2', left + buffer)
-      .attr('y1', 0)
-      .attr('y2', args.height)
-      .attr('stroke', 'gray')
-    svg.append('line')
-      .attr('x1', width - right - buffer)
-      .attr('x2', width - right - buffer)
-      .attr('y1', 0)
-      .attr('y2', height)
-      .attr('stroke', 'gray')
-  }
+  svg.append('line')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', top + buffer)
+    .attr('y2', top + buffer)
+    .attr('stroke', 'gray')
 
-  // barchart re-write.
-  function mg_targeted_legend ({ legend_target, orientation, scales }) {
-    let labels
-    const plot = ''
-    if (legend_target) {
-      const div = d3.select(legend_target).append('div').classed('mg-bar-target-legend', true)
+  svg.append('line')
+    .attr('x1', left + buffer)
+    .attr('x2', left + buffer)
+    .attr('y1', 0)
+    .attr('y2', height)
+    .attr('stroke', 'gray')
+  svg.append('line')
+    .attr('x1', width - right - buffer)
+    .attr('x2', width - right - buffer)
+    .attr('y1', 0)
+    .attr('y2', height)
+    .attr('stroke', 'gray')
+}
 
-      if (orientation == 'horizontal') labels = scales.Y.domain()
-      else labels = scales.X.domain()
+export function targetedLegend ({ legendTarget, orientation, scales }) {
+  let labels
+  if (legendTarget) {
+    const div = select(legendTarget).append('div').classed('mg-bar-target-legend', true)
 
-      labels.forEach(label => {
-        const outer_span = div.append('span').classed('mg-bar-target-element', true)
-        outer_span.append('span')
-          .classed('mg-bar-target-legend-shape', true)
-          .style('color', scales.COLOR(label))
-          .text('\u25FC ')
-        outer_span.append('span')
-          .classed('mg-bar-target-legend-text', true)
-          .text(label)
-      })
-    }
-  }
-
-  function legend_on_graph (svg, args) {
-    // draw each element at the top right
-    // get labels
-
-    let labels
-    if (args.orientation == 'horizontal') labels = args.scales.Y.domain()
-    else labels = args.scales.X.domain()
-
-    let lineCount = 0
-    const lineHeight = 1.1
-    const g = svg.append('g').classed('mg-bar-legend', true)
-    const textContainer = g.append('text')
-
-    textContainer
-      .selectAll('*')
-      .remove()
-    textContainer
-      .attr('width', args.right)
-      .attr('height', 100)
-      .attr('text-anchor', 'start')
+    if (orientation === 'horizontal') labels = scales.Y.domain()
+    else labels = scales.X.domain()
 
     labels.forEach(label => {
-      const sub_container = textContainer.append('tspan')
-        .attr('x', getPlotRight(args))
-        .attr('y', args.height / 2)
-        .attr('dy', `${lineCount * lineHeight}em`)
-      sub_container.append('tspan')
-        .text('\u25a0 ')
-        .attr('fill', args.scales.COLOR(label))
-        .attr('font-size', 20)
-      sub_container.append('tspan')
+      const outerSpan = div.append('span').classed('mg-bar-target-element', true)
+      outerSpan.append('span')
+        .classed('mg-bar-target-legend-shape', true)
+        .style('color', scales.COLOR(label))
+        .text('\u25FC ')
+      outerSpan.append('span')
+        .classed('mg-bar-target-legend-text', true)
         .text(label)
-        .attr('font-weight', 300)
-        .attr('font-size', 10)
-      lineCount++
     })
-
-    // d.values.forEach(function (datum) {
-    //   formattedY = formatYRollover(args, num, datum);
-
-    //   if (args.y_rollover_format !== null) {
-    //     formattedY = numberRolloverFormat(args.y_rollover_format, datum, args.yAccessor);
-    //   } else {
-    //     formattedY = args.yaxUnits + num(datum[args.yAccessor]);
-    //   }
-
-    //   sub_container = textContainer.append('tspan').attr('x', 0).attr('y', (lineCount * lineHeight) + 'em');
-    //   formattedY = formatYRollover(args, num, datum);
-    //   mouseover_tspan(sub_container, '\u2014  ')
-    //     .color(args, datum);
-    //   mouseover_tspan(sub_container, formattedX + ' ' + formattedY);
-
-    //   lineCount++;
-    // });
   }
+}
 
-  function barChart (args) {
-    this.args = args
+export default class BarChart {
+  constructor ({ data, xAccessor, yAccessor }) {
+    // infer axis types
+    this.xAxisType = data[0][0][xAccessor] === 'string' ? 'categorical' : 'numerical'
+    this.yAxisType = data[0][0][yAccessor] === 'string' ? 'categorical' : 'numerical'
 
-    this.init = (args) => {
-      this.args = args
-      args.xAxis_type = inferType(args, 'x')
-      args.yAxis_type = inferType(args, 'y')
+    // set orientation
+    this.orientation = this.yAxisType === 'categorical' || (this.xAxisType !== 'categorical' && this.yAxisType !== 'categorical')
+      ? 'horizontal'
+      : 'vertical'
 
-      // this is specific to how rects work in svg, let's keep track of the bar orientation to
-      // plot appropriately.
-      if (args.xAxis_type == 'categorical') {
-        args.orientation = 'vertical'
-      } else if (args.yAxis_type == 'categorical') {
-        args.orientation = 'horizontal'
-      } else if (args.xAxis_type != 'categorical' && args.yAxis_type != 'categorical') {
-        // histogram.
-        args.orientation = 'vertical'
-      }
+    rawDataTransformation(args)
 
-      rawDataTransformation(args)
+    processPoint(args)
+    init(args)
 
-      processPoint(args)
-      init(args)
+    let xMaker
+    let yMaker
 
-      let xMaker
-      let yMaker
-
-      if (args.xAxis_type === 'categorical') {
-        xMaker = MG.scale_factory(args)
-          .namespace('x')
-          .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null)
-
-        if (args.xgroup_accessor) {
-          new MG.scale_factory(args)
-            .namespace('xgroup')
-            .categoricalDomainFromData()
-            .categoricalRangeBands('bottom')
-        } else {
-          args.scales.XGROUP = d => getPlotLeft(args)
-          args.scaleFunctions.xgroupf = d => getPlotLeft(args)
-        }
-
-        args.scaleFunctions.xoutf = d => args.scaleFunctions.xf(d) + args.scaleFunctions.xgroupf(d)
-      } else {
-        xMaker = MG.scale_factory(args)
-          .namespace('x')
-          .inflateDomain(true)
-          .zeroBottom(args.yAxis_type === 'categorical')
-          .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
-          .numericalRange('bottom')
-
-        args.scaleFunctions.xoutf = args.scaleFunctions.xf
-      }
-
-      // y-scale generation. This needs to get simplified.
-      if (args.yAxis_type === 'categorical') {
-        yMaker = MG.scale_factory(args)
-          .namespace('y')
-          .zeroBottom(true)
-          .categoricalDomainFromData()
-          .categoricalRangeBands([0, args.yGroupHeight], true)
-
-        if (args.yGroupAccessor) {
-          new MG.scale_factory(args)
-            .namespace('ygroup')
-            .categoricalDomainFromData()
-            .categoricalRangeBands('left')
-        } else {
-          args.scales.YGROUP = () => getPlotTop(args)
-          args.scaleFunctions.yGroupFunction = d => getPlotTop(args)
-        }
-        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
-      } else {
-        const baselines = (args.baselines || []).map(d => d[args.yAccessor])
-
-        yMaker = MG.scale_factory(args)
-          .namespace('y')
-          .inflateDomain(true)
-          .zeroBottom(args.xAxis_type === 'categorical')
-          .numericalDomainFromData(baselines)
-          .numericalRange('left')
-
-        args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d)
-      }
-
-      if (args.yGroupAccessor !== null) {
-        args.ycolorAccessor = args.yAccessor
-        MG.scale_factory(args)
-          .namespace('ycolor')
-          .scaleName('color')
-          .categoricalDomainFromData()
-          .categoricalColorRange()
-      }
-
-      if (args.xgroup_accessor !== null) {
-        args.xcolorAccessor = args.xAccessor
-        MG.scale_factory(args)
-          .namespace('xcolor')
-          .scaleName('color')
-          .categoricalDomainFromData()
-          .categoricalColorRange()
-      }
-
-      // if (args.yGroupAccessor !== null) {
-      //   MG.scale_factory(args)
-      //     .namespace('ygroup')
-      //     .categoricalDomainFromData()
-      //     .categoricalColorRange();
-      // }
-
-      new MG.axis_factory(args)
+    if (args.xAxis_type === 'categorical') {
+      xMaker = MGScale(args)
         .namespace('x')
-        .type(args.xAxis_type)
-        .zeroLine(args.yAxis_type === 'categorical')
-        .position(args.xAxis_position)
-        .draw()
+        .categoricalDomainFromData()
+        .categoricalRangeBands([0, args.xgroup_height], args.xgroup_accessor === null)
 
-      new MG.axis_factory(args)
-        .namespace('y')
-        .type(args.yAxis_type)
-        .zeroLine(args.xAxis_type === 'categorical')
-        .position(args.yAxis_position)
-        .draw()
+      if (args.xgroup_accessor) {
+        xMaker = MGScale(args)
+          .namespace('xgroup')
+          .categoricalDomainFromData()
+          .categoricalRangeBands('bottom')
+      } else {
+        args.scales.XGROUP = d => getPlotLeft(args)
+        args.scaleFunctions.xgroupf = d => getPlotLeft(args)
+      }
 
-      // categoricalGroupColorScale(args);
+      args.scaleFunctions.xoutf = d => args.scaleFunctions.xf(d) + args.scaleFunctions.xgroupf(d)
+    } else {
+      xMaker = MGScale(args)
+        .namespace('x')
+        .inflateDomain(true)
+        .zeroBottom(args.yAxis_type === 'categorical')
+        .numericalDomainFromData((args.baselines || []).map(d => d[args.xAccessor]))
+        .numericalRange('bottom')
 
-      this.mainPlot()
-      this.markers()
-      this.rollover()
-      this.windowListeners()
-      // scaffold(args)
-
-      return this
+      args.scaleFunctions.xoutf = args.scaleFunctions.xf
     }
 
-    this.mainPlot = () => {
-      const svg = getSvgChildOf(args.target)
-      const data = args.data[0]
-      let barplot = svg.select('g.mg-barplot')
-      const fresh_render = barplot.empty()
+    // y-scale generation. This needs to get simplified.
+    if (args.yAxis_type === 'categorical') {
+      yMaker = MGScale(args)
+        .namespace('y')
+        .zeroBottom(true)
+        .categoricalDomainFromData()
+        .categoricalRangeBands([0, args.yGroupHeight], true)
 
-      let bars, predictor_bars, pp, pp0, baseline_marks
+      if (args.yGroupAccessor) {
+        new MGScale(args)
+          .namespace('ygroup')
+          .categoricalDomainFromData()
+          .categoricalRangeBands('left')
+      } else {
+        args.scales.YGROUP = () => getPlotTop(args)
+        args.scaleFunctions.yGroupFunction = d => getPlotTop(args)
+      }
+      args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d) + args.scaleFunctions.yGroupFunction(d)
+    } else {
+      const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
-      const perform_load_animation = fresh_render && args.animate_on_load
-      const should_transition = perform_load_animation || args.transition_on_update
-      const transition_duration = args.transition_duration || 1000
+      yMaker = MGScale(args)
+        .namespace('y')
+        .inflateDomain(true)
+        .zeroBottom(args.xAxis_type === 'categorical')
+        .numericalDomainFromData(baselines)
+        .numericalRange('left')
 
-      // draw the plot on first render
-      if (fresh_render) {
-        barplot = svg.append('g')
-          .classed('mg-barplot', true)
+      args.scaleFunctions.youtf = d => args.scaleFunctions.yf(d)
+    }
+
+    if (args.yGroupAccessor !== null) {
+      args.ycolorAccessor = args.yAccessor
+      MGScale(args)
+        .namespace('ycolor')
+        .scaleName('color')
+        .categoricalDomainFromData()
+        .categoricalColorRange()
+    }
+
+    if (args.xgroup_accessor !== null) {
+      args.xcolorAccessor = args.xAccessor
+      MGScale(args)
+        .namespace('xcolor')
+        .scaleName('color')
+        .categoricalDomainFromData()
+        .categoricalColorRange()
+    }
+
+    axisFactory(args)
+      .namespace('x')
+      .type(args.xAxis_type)
+      .zeroLine(args.yAxis_type === 'categorical')
+      .position(args.xAxis_position)
+      .draw()
+
+    axisFactory(args)
+      .namespace('y')
+      .type(args.yAxis_type)
+      .zeroLine(args.xAxis_type === 'categorical')
+      .position(args.yAxis_position)
+      .draw()
+
+    this.mainPlot()
+    this.markers()
+    this.rollover()
+    this.windowListeners()
+  }
+}
+
+export function legendOnGraph (svg, args) {
+  // draw each element at the top right
+  // get labels
+
+  let labels
+  if (args.orientation === 'horizontal') labels = args.scales.Y.domain()
+  else labels = args.scales.X.domain()
+
+  let lineCount = 0
+  const lineHeight = 1.1
+  const g = svg.append('g').classed('mg-bar-legend', true)
+  const textContainer = g.append('text')
+
+  textContainer
+    .selectAll('*')
+    .remove()
+  textContainer
+    .attr('width', args.right)
+    .attr('height', 100)
+    .attr('text-anchor', 'start')
+
+  labels.forEach(label => {
+    const subContainer = textContainer.append('tspan')
+      .attr('x', getPlotRight(args))
+      .attr('y', args.height / 2)
+      .attr('dy', `${lineCount * lineHeight}em`)
+    subContainer.append('tspan')
+      .text('\u25a0 ')
+      .attr('fill', args.scales.COLOR(label))
+      .attr('font-size', 20)
+    subContainer.append('tspan')
+      .text(label)
+      .attr('font-weight', 300)
+      .attr('font-size', 10)
+    lineCount++
+  })
+}
+
+export function barChart (args) {
+  this.mainPlot = () => {
+    const svg = getSvgChildOf(args.target)
+    const data = args.data[0]
+    let barplot = svg.select('g.mg-barplot')
+    const freshRender = barplot.empty()
+
+    // draw the plot on first render
+    if (freshRender) {
+      barplot = svg.append('g')
+        .classed('mg-barplot', true)
+    }
+
+    const bars = barplot.selectAll('.mg-bar')
+      .data(data)
+      .enter()
+      .append('rect')
+      .classed('mg-bar', true)
+      .classed('default-bar', !args.scales.COLOR)
+
+    // appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
+    let length, width, lengthType, widthType, lengthCoord, widthCoord,
+      lengthScaleFunction, widthScaleFunction, lengthScale, widthScale,
+      lengthAccessor, widthAccessor, lengthCoordMap,
+      lengthMap
+
+    let referenceLengthMap, referenceLengthCoordFunction
+
+    if (args.orientation === 'vertical') {
+      length = 'height'
+      width = 'width'
+      lengthType = args.yAxis_type
+      widthType = args.xAxis_type
+      lengthCoord = 'y'
+      widthCoord = 'x'
+      lengthScaleFunction = lengthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
+      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
+      lengthScale = args.scales.Y
+      widthScale = args.scales.X
+      lengthAccessor = args.yAccessor
+      widthAccessor = args.xAccessor
+
+      lengthCoordMap = d => {
+        let l
+        l = lengthScaleFunction(d)
+        if (d[lengthAccessor] < 0) {
+          l = lengthScale(0)
+        }
+        return l
       }
 
-      bars = barplot.selectAll('.mg-bar')
-        .data(data)
+      lengthMap = d => Math.abs(lengthScaleFunction(d) - lengthScale(0))
+
+      referenceLengthMap = d => Math.abs(lengthScale(d[args.referenceAccessor]) - lengthScale(0))
+
+      referenceLengthCoordFunction = d => lengthScale(d[args.referenceAccessor])
+    }
+
+    if (args.orientation === 'horizontal') {
+      length = 'width'
+      width = 'height'
+      lengthType = args.xAxis_type
+      widthType = args.yAxis_type
+      lengthCoord = 'x'
+      widthCoord = 'y'
+      lengthScaleFunction = lengthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
+      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
+      lengthScale = args.scales.X
+      widthScale = args.scales.Y
+      lengthAccessor = args.xAccessor
+      widthAccessor = args.yAccessor
+
+      lengthCoordMap = d => lengthScale(0)
+
+      lengthMap = d => Math.abs(lengthScaleFunction(d) - lengthScale(0))
+
+      referenceLengthMap = d => Math.abs(lengthScale(d[args.referenceAccessor]) - lengthScale(0))
+
+      referenceLengthCoordFunction = d => lengthScale(0)
+    }
+
+    bars.attr(lengthCoord, lengthCoordMap)
+
+    // bars.attr(lengthCoord, 40)
+    // bars.attr(widthCoord, 70)
+
+    bars.attr(widthCoord, d => {
+      let w
+      if (widthType === 'categorical') {
+        w = widthScaleFunction(d)
+      } else {
+        w = widthScale(0)
+        if (d[widthAccessor] < 0) {
+          w = widthScaleFunction(d)
+        }
+      }
+      w = w - args.bar_thickness / 2
+      return w
+    })
+
+    if (args.scales.COLOR) {
+      bars.attr('fill', args.scaleFunctions.colorFunction)
+    }
+
+    bars
+      .attr(length, lengthMap)
+      .attr(width, d => args.bar_thickness)
+
+    if (args.referenceAccessor !== null) {
+      const referenceData = data.filter(d => d[args.referenceAccessor])
+      const referenceBars = barplot.selectAll('.mg-categorical-reference')
+        .data(referenceData)
         .enter()
         .append('rect')
-        .classed('mg-bar', true)
-        .classed('default-bar', !args.scales.hasOwnProperty('COLOR'))
 
-      // TODO - reimplement
+      referenceBars
+        .attr(lengthCoord, referenceLengthCoordFunction)
+        .attr(widthCoord, d => widthScaleFunction(d) - args.referenceThickness / 2)
+        .attr(length, referenceLengthMap)
+        .attr(width, args.referenceThickness)
+    }
 
-      // reference_accessor {}
-
-      // if (args.predictorAccessor) {
-      //   predictor_bars = barplot.selectAll('.mg-bar-prediction')
-      //     .data(data.filter(function(d) {
-      //       return d.hasOwnProperty(args.predictorAccessor) }));
-
-      //   predictor_bars.exit().remove();
-
-      //   predictor_bars.enter().append('rect')
-      //     .classed('mg-bar-prediction', true);
-      // }
-
-      // if (args.baselineAccessor) {
-      //   baseline_marks = barplot.selectAll('.mg-bar-baseline')
-      //     .data(data.filter(function(d) {
-      //       return d.hasOwnProperty(args.baselineAccessor) }));
-
-      //   baseline_marks.exit().remove();
-
-      //   baseline_marks.enter().append('line')
-      //     .classed('mg-bar-baseline', true);
-      // }
-
-      let appropriate_size
-
-      // setup transitions
-      // if (should_transition) {
-      //   bars = bars.transition()
-      //     .duration(transition_duration);
-
-      //   if (predictor_bars) {
-      //     predictor_bars = predictor_bars.transition()
-      //       .duration(transition_duration);
-      //   }
-
-      //   if (baseline_marks) {
-      //     baseline_marks = baseline_marks.transition()
-      //       .duration(transition_duration);
-      //   }
-      // }
-
-      // appropriate_size = args.scales.Y_ingroup.rangeBand()/1.5;
-      let length, width, length_type, width_type, length_coord, width_coord,
-        length_scalefn, width_scalefn, length_scale, width_scale,
-        length_accessor, width_accessor, length_coord_map, width_coord_map,
-        length_map, width_map
-
-      let reference_length_map, reference_length_coord_fn
-
-      if (args.orientation == 'vertical') {
-        length = 'height'
-        width = 'width'
-        length_type = args.yAxis_type
-        width_type = args.xAxis_type
-        length_coord = 'y'
-        width_coord = 'x'
-        length_scalefn = length_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-        width_scalefn = width_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-        length_scale = args.scales.Y
-        width_scale = args.scales.X
-        length_accessor = args.yAccessor
-        width_accessor = args.xAccessor
-
-        length_coord_map = d => {
-          let l
-          l = length_scalefn(d)
-          if (d[length_accessor] < 0) {
-            l = length_scale(0)
-          }
-          return l
-        }
-
-        length_map = d => Math.abs(length_scalefn(d) - length_scale(0))
-
-        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0))
-
-        reference_length_coord_fn = d => length_scale(d[args.reference_accessor])
+    if (args.comparisonAccessor !== null) {
+      let comparisonThickness = null
+      if (args.comparisonThickness === null) {
+        comparisonThickness = args.bar_thickness / 2
+      } else {
+        comparisonThickness = args.comparisonThickness
       }
 
-      if (args.orientation == 'horizontal') {
-        length = 'width'
-        width = 'height'
-        length_type = args.xAxis_type
-        width_type = args.yAxis_type
-        length_coord = 'x'
-        width_coord = 'y'
-        length_scalefn = length_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-        width_scalefn = width_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-        length_scale = args.scales.X
-        width_scale = args.scales.Y
-        length_accessor = args.xAccessor
-        width_accessor = args.yAccessor
+      const comparisonData = data.filter(d => d[args.comparison_accessor])
+      const comparisonMarks = barplot.selectAll('.mg-categorical-comparison')
+        .data(comparisonData)
+        .enter()
+        .append('line')
 
-        length_coord_map = d => {
-          let l
-          l = length_scale(0)
-          return l
-        }
+      comparisonMarks
+        .attr(`${lengthCoord}1`, d => lengthScale(d[args.comparisonAccessor]))
+        .attr(`${lengthCoord}2`, d => lengthScale(d[args.comparisonAccessor]))
+        .attr(`${widthCoord}1`, d => widthScaleFunction(d) - comparisonThickness / 2)
+        .attr(`${widthCoord}2`, d => widthScaleFunction(d) + comparisonThickness / 2)
+        .attr('stroke', 'black')
+        .attr('stroke-width', args.comparison_width)
+    }
 
-        length_map = d => Math.abs(length_scalefn(d) - length_scale(0))
+    if (args.legend || (args.colorAccessor !== null && args.yGroupAccessor !== args.colorAccessor)) {
+      if (!args.legendTarget) legendOnGraph(svg, args)
+      else targetedLegend(args)
+    }
+    return this
+  }
 
-        reference_length_map = d => Math.abs(length_scale(d[args.reference_accessor]) - length_scale(0))
+  this.markers = () => {
+    markers(args)
+    return this
+  }
 
-        reference_length_coord_fn = d => length_scale(0)
-      }
+  this.rollover = () => {
+    const svg = getSvgChildOf(args.target)
 
-      // if (perform_load_animation) {
-      //   bars.attr(length, 0);
+    if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
+      addG(svg, 'mg-active-datapoint-container')
+    }
 
-      //   if (predictor_bars) {
-      //     predictor_bars.attr(length, 0);
-      //   }
+    // remove the old rollovers if they already exist
+    svg.selectAll('.mg-rollover-rect').remove()
+    svg.selectAll('.mg-active-datapoint').remove()
 
-      //   // if (baseline_marks) {
-      //   //   baseline_marks.attr({
-      //   //     x1: args.scales.X(0),
-      //   //     x2: args.scales.X(0)
-      //   //   });
-      //   // }
-      // }
+    // get orientation
+    let length, width, widthType, lengthCoord, widthCoord,
+      widthScaleFunction, lengthScale, widthScale, widthAccessor, lengthMap
 
-      bars.attr(length_coord, length_coord_map)
+    let lengthCoordMap
 
-      // bars.attr(length_coord, 40)
-      // bars.attr(width_coord, 70)
+    if (args.orientation === 'vertical') {
+      length = 'height'
+      width = 'width'
+      widthType = args.xAxis_type
+      lengthCoord = 'y'
+      widthCoord = 'x'
+      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
+      lengthScale = args.scales.Y
+      widthScale = args.scales.X
+      widthAccessor = args.xAccessor
 
-      bars.attr(width_coord, d => {
+      lengthCoordMap = d => getPlotTop(args)
+
+      lengthMap = d => args.height - args.top - args.bottom - args.buffer * 2
+    }
+
+    if (args.orientation === 'horizontal') {
+      length = 'width'
+      width = 'height'
+      widthType = args.yAxis_type
+      lengthCoord = 'x'
+      widthCoord = 'y'
+      widthScaleFunction = widthType === 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
+      lengthScale = args.scales.X
+      widthScale = args.scales.Y
+      widthAccessor = args.yAccessor
+
+      lengthCoordMap = d => lengthScale(0)
+
+      lengthMap = d => args.width - args.left - args.right - args.buffer * 2
+    }
+
+    // rollover text
+    let rolloverX, rolloverAnchor
+    if (args.rollover_align === 'right') {
+      rolloverX = args.width - args.right
+      rolloverAnchor = 'end'
+    } else if (args.rollover_align === 'left') {
+      rolloverX = args.left
+      rolloverAnchor = 'start'
+    } else {
+      rolloverX = (args.width - args.left - args.right) / 2 + args.left
+      rolloverAnchor = 'middle'
+    }
+
+    svg.append('text')
+      .attr('class', 'mg-active-datapoint')
+      .attr('xml:space', 'preserve')
+      .attr('x', rolloverX)
+      .attr('y', args.top * 0.75)
+      .attr('dy', '.35em')
+      .attr('text-anchor', rolloverAnchor)
+
+    const g = svg.append('g')
+      .attr('class', 'mg-rollover-rect')
+
+    // draw rollover bars
+    const bars = g.selectAll('.mg-bar-rollover')
+      .data(args.data[0]).enter()
+      .append('rect')
+      .attr('class', 'mg-bar-rollover')
+
+    bars.attr('opacity', 0)
+      .attr(lengthCoord, lengthCoordMap)
+      .attr(widthCoord, d => {
         let w
-        if (width_type == 'categorical') {
-          w = width_scalefn(d)
+        if (widthType === 'categorical') {
+          w = widthScaleFunction(d)
         } else {
-          w = width_scale(0)
-          if (d[width_accessor] < 0) {
-            w = width_scalefn(d)
+          w = widthScale(0)
+          if (d[widthAccessor] < 0) {
+            w = widthScaleFunction(d)
           }
         }
         w = w - args.bar_thickness / 2
         return w
       })
 
+    bars.attr(length, lengthMap)
+    bars.attr(width, d => args.bar_thickness)
+
+    bars
+      .on('mouseover', this.rolloverOn(args))
+      .on('mouseout', this.rolloverOff(args))
+      .on('mousemove', this.rolloverMove(args))
+
+    return this
+  }
+
+  this.rolloverOn = (args) => {
+    const svg = getSvgChildOf(args.target)
+
+    return (d, i) => {
+      // highlight active bar
+      const bar = svg.selectAll('g.mg-barplot .mg-bar')
+        .filter((d, j) => j === i).classed('active', true)
+
       if (args.scales.COLOR) {
-        bars.attr('fill', args.scaleFunctions.colorFunction)
-      }
-
-      bars
-        .attr(length, length_map)
-        .attr(width, d => args.bar_thickness)
-
-      if (args.reference_accessor !== null) {
-        const reference_data = data.filter(d => d.hasOwnProperty(args.reference_accessor))
-        const reference_bars = barplot.selectAll('.mg-categorical-reference')
-          .data(reference_data)
-          .enter()
-          .append('rect')
-
-        reference_bars
-          .attr(length_coord, reference_length_coord_fn)
-          .attr(width_coord, d => width_scalefn(d) - args.reference_thickness / 2)
-          .attr(length, reference_length_map)
-          .attr(width, args.reference_thickness)
-      }
-
-      if (args.comparison_accessor !== null) {
-        let comparison_thickness = null
-        if (args.comparison_thickness === null) {
-          comparison_thickness = args.bar_thickness / 2
-        } else {
-          comparison_thickness = args.comparison_thickness
-        }
-
-        const comparison_data = data.filter(d => d.hasOwnProperty(args.comparison_accessor))
-        const comparison_marks = barplot.selectAll('.mg-categorical-comparison')
-          .data(comparison_data)
-          .enter()
-          .append('line')
-
-        comparison_marks
-          .attr(`${length_coord}1`, d => length_scale(d[args.comparison_accessor]))
-          .attr(`${length_coord}2`, d => length_scale(d[args.comparison_accessor]))
-          .attr(`${width_coord}1`, d => width_scalefn(d) - comparison_thickness / 2)
-          .attr(`${width_coord}2`, d => width_scalefn(d) + comparison_thickness / 2)
-          .attr('stroke', 'black')
-          .attr('stroke-width', args.comparison_width)
-      }
-
-      // bars.attr(width_coord, );
-      // bars.attr('width', 50);
-      // bars.attr('height', 50);
-      // bars.attr('y', function(d){
-      //   var y = args.scales.Y(0);
-      //   if (d[args.yAccessor] < 0) {
-      //     y = args.scaleFunctions.yf(d);
-      //   }
-      //   return y;
-      // });
-
-      // bars.attr('x', function(d){
-      //   return 40;
-      // })
-
-      // bars.attr('width', function(d){
-      //   return 100;
-      // });
-
-      // bars.attr('height', 100);
-
-      // bars.attr('fill', 'black');
-      // bars.attr('x', function(d) {
-      //   var x = args.scales.X(0);
-      //   if (d[args.xAccessor] < 0) {
-      //     x = args.scaleFunctions.xf(d);
-      //   }
-      //   return x;
-      // })
-      // TODO - reimplement.
-      // if (args.predictorAccessor) {
-      //   predictor_bars
-      //     .attr('x', args.scales.X(0))
-      //     .attr('y', function(d) {
-      //       return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * (7 / 16) // + pp0 * appropriate_size/(pp*2) + appropriate_size / 2;
-      //     })
-      //     .attr('height', args.scales.Y.rangeBand() / 8) //appropriate_size / pp)
-      //     .attr('width', function(d) {
-      //       return args.scales.X(d[args.predictorAccessor]) - args.scales.X(0);
-      //     });
-      // }
-
-      // TODO - reimplement.
-      //   if (args.baselineAccessor) {
-
-      //     baseline_marks
-      //       .attr('x1', function(d) {
-      //         return args.scales.X(d[args.baselineAccessor]); })
-      //       .attr('x2', function(d) {
-      //         return args.scales.X(d[args.baselineAccessor]); })
-      //       .attr('y1', function(d) {
-      //         return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() / 4
-      //       })
-      //       .attr('y2', function(d) {
-      //         return args.scaleFunctions.yGroupFunction(d) + args.scaleFunctions.yf(d) + args.scales.Y.rangeBand() * 3 / 4
-      //       });
-      //   }
-      if (args.legend || (args.colorAccessor !== null && args.yGroupAccessor !== args.colorAccessor)) {
-        if (!args.legend_target) legend_on_graph(svg, args)
-        else mg_targeted_legend(args)
-      }
-      return this
-    }
-
-    this.markers = () => {
-      markers(args)
-      return this
-    }
-
-    this.rollover = () => {
-      const svg = getSvgChildOf(args.target)
-      let g
-
-      if (svg.selectAll('.mg-active-datapoint-container').nodes().length === 0) {
-        addG(svg, 'mg-active-datapoint-container')
-      }
-
-      // remove the old rollovers if they already exist
-      svg.selectAll('.mg-rollover-rect').remove()
-      svg.selectAll('.mg-active-datapoint').remove()
-
-      // get orientation
-      let length, width, length_type, width_type, length_coord, width_coord,
-        length_scalefn, width_scalefn, length_scale, width_scale,
-        length_accessor, width_accessor
-
-      let length_coord_map, width_coord_map, length_map, width_map
-
-      if (args.orientation == 'vertical') {
-        length = 'height'
-        width = 'width'
-        length_type = args.yAxis_type
-        width_type = args.xAxis_type
-        length_coord = 'y'
-        width_coord = 'x'
-        length_scalefn = length_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-        width_scalefn = width_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-        length_scale = args.scales.Y
-        width_scale = args.scales.X
-        length_accessor = args.yAccessor
-        width_accessor = args.xAccessor
-
-        length_coord_map = d => getPlotTop(args)
-
-        length_map = d => args.height - args.top - args.bottom - args.buffer * 2
-      }
-
-      if (args.orientation == 'horizontal') {
-        length = 'width'
-        width = 'height'
-        length_type = args.xAxis_type
-        width_type = args.yAxis_type
-        length_coord = 'x'
-        width_coord = 'y'
-        length_scalefn = length_type == 'categorical' ? args.scaleFunctions.xoutf : args.scaleFunctions.xf
-        width_scalefn = width_type == 'categorical' ? args.scaleFunctions.youtf : args.scaleFunctions.yf
-        length_scale = args.scales.X
-        width_scale = args.scales.Y
-        length_accessor = args.xAccessor
-        width_accessor = args.yAccessor
-
-        length_coord_map = d => {
-          let l
-          l = length_scale(0)
-          return l
-        }
-
-        length_map = d => args.width - args.left - args.right - args.buffer * 2
-      }
-
-      // rollover text
-      let rollover_x, rollover_anchor
-      if (args.rollover_align === 'right') {
-        rollover_x = args.width - args.right
-        rollover_anchor = 'end'
-      } else if (args.rollover_align === 'left') {
-        rollover_x = args.left
-        rollover_anchor = 'start'
+        bar.attr('fill', rgb(args.scaleFunctions.colorFunction(d)).darker())
       } else {
-        rollover_x = (args.width - args.left - args.right) / 2 + args.left
-        rollover_anchor = 'middle'
+        bar.classed('default-active', true)
       }
 
-      svg.append('text')
-        .attr('class', 'mg-active-datapoint')
-        .attr('xml:space', 'preserve')
-        .attr('x', rollover_x)
-        .attr('y', args.top * 0.75)
-        .attr('dy', '.35em')
-        .attr('text-anchor', rollover_anchor)
+      // update rollover text
+      if (args.show_rollover_text) {
+        const mouseover = mouseoverText(args, { svg })
+        let row = mouseover.mouseover_row()
 
-      g = svg.append('g')
-        .attr('class', 'mg-rollover-rect')
+        if (args.yGroupAccessor) row.text(`${d[args.yGroupAccessor]}   `).bold()
 
-      // draw rollover bars
-      const bars = g.selectAll('.mg-bar-rollover')
-        .data(args.data[0]).enter()
-        .append('rect')
-        .attr('class', 'mg-bar-rollover')
+        row.text(formatXMouseover(args, d))
+        row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
+        if (args.predictorAccessor || args.baselineAccessor) {
+          row = mouseover.mouseover_row()
 
-      bars.attr('opacity', 0)
-        .attr(length_coord, length_coord_map)
-        .attr(width_coord, d => {
-          let w
-          if (width_type == 'categorical') {
-            w = width_scalefn(d)
-          } else {
-            w = width_scale(0)
-            if (d[width_accessor] < 0) {
-              w = width_scalefn(d)
-            }
-          }
-          w = w - args.bar_thickness / 2
-          return w
-        })
-
-      bars.attr(length, length_map)
-      bars.attr(width, d => args.bar_thickness)
-
-      bars
-        .on('mouseover', this.rolloverOn(args))
-        .on('mouseout', this.rolloverOff(args))
-        .on('mousemove', this.rolloverMove(args))
-
-      return this
-    }
-
-    this.rolloverOn = (args) => {
-      const svg = getSvgChildOf(args.target)
-      const label_accessor = this.is_vertical ? args.xAccessor : args.yAccessor
-      const data_accessor = this.is_vertical ? args.yAccessor : args.xAccessor
-      const label_units = this.is_vertical ? args.yaxUnits : args.xaxUnits
-
-      return (d, i) => {
-        const fmt = MG.time_format(args.utcTime, '%b %e, %Y')
-        const num = formatRolloverNumber(args)
-
-        // highlight active bar
-        const bar = svg.selectAll('g.mg-barplot .mg-bar')
-          .filter((d, j) => j === i).classed('active', true)
-
-        if (args.scales.hasOwnProperty('COLOR')) {
-          bar.attr('fill', d3.rgb(args.scaleFunctions.colorFunction(d)).darker())
-        } else {
-          bar.classed('default-active', true)
-        }
-
-        // update rollover text
-        if (args.show_rollover_text) {
-          const mouseover = mouseoverText(args, { svg })
-          let row = mouseover.mouseover_row()
-
-          if (args.yGroupAccessor) row.text(`${d[args.yGroupAccessor]}   `).bold()
-
-          row.text(formatXMouseover(args, d))
-          row.text(`${args.yAccessor}: ${d[args.yAccessor]}`)
-          if (args.predictorAccessor || args.baselineAccessor) {
-            row = mouseover.mouseover_row()
-
-            if (args.predictorAccessor) row.text(formatDataForMouseover(args, d, null, args.predictorAccessor, false))
-            if (args.baselineAccessor) row.text(formatDataForMouseover(args, d, null, args.baselineAccessor, false))
-          }
-        }
-        if (args.mouseover) {
-          args.mouseover(d, i)
+          if (args.predictorAccessor) row.text(formatDataForMouseover(args, d, null, args.predictorAccessor, false))
+          if (args.baselineAccessor) row.text(formatDataForMouseover(args, d, null, args.baselineAccessor, false))
         }
       }
-    }
-
-    this.rolloverOff = (args) => {
-      const svg = getSvgChildOf(args.target)
-
-      return (d, i) => {
-        // reset active bar
-        const bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false)
-
-        if (args.scales.hasOwnProperty('COLOR')) {
-          bar.attr('fill', args.scaleFunctions.colorFunction(d))
-        } else {
-          bar.classed('default-active', false)
-        }
-
-        // reset active data point text
-        svg.select('.mg-active-datapoint')
-          .text('')
-
-        clearMouseoverContainer(svg)
-
-        if (args.mouseout) {
-          args.mouseout(d, i)
-        }
+      if (args.mouseover) {
+        args.mouseover(d, i)
       }
     }
-
-    this.rolloverMove = (args) => (d, i) => {
-      if (args.mousemove) {
-        args.mousemove(d, i)
-      }
-    }
-
-    this.windowListeners = () => {
-      windowListeners(this.args)
-      return this
-    }
-
-    this.init(args)
   }
 
-  const options = {
-    buffer: [16, 'number'],
-    yAccessor: ['factor', 'string'],
-    xAccessor: ['value', 'string'],
-    reference_accessor: [null, 'string'],
-    comparison_accessor: [null, 'string'],
-    secondaryLabel_accessor: [null, 'string'],
-    colorAccessor: [null, 'string'],
-    colorType: ['category', ['number', 'category']],
-    colorDomain: [null, 'number[]'],
-    reference_thickness: [1, 'number'],
-    comparison_width: [3, 'number'],
-    comparison_thickness: [null, 'number'],
-    legend: [false, 'boolean'],
-    legend_target: [null, 'string'],
-    mouseover_align: ['right', ['right', 'left']],
-    baselineAccessor: [null, 'string'],
-    predictorAccessor: [null, 'string'],
-    predictor_proportion: [5, 'number'],
-    showBarZero: [true, 'boolean'],
-    binned: [true, 'boolean'],
-    truncateXLabels: [true, 'boolean'],
-    truncate_yLabels: [true, 'boolean']
+  this.rolloverOff = (args) => {
+    const svg = getSvgChildOf(args.target)
+
+    return (d, i) => {
+      // reset active bar
+      const bar = svg.selectAll('g.mg-barplot .mg-bar.active').classed('active', false)
+
+      if (args.scales.COLOR) {
+        bar.attr('fill', args.scaleFunctions.colorFunction(d))
+      } else {
+        bar.classed('default-active', false)
+      }
+
+      // reset active data point text
+      svg.select('.mg-active-datapoint')
+        .text('')
+
+      clearMouseoverContainer(svg)
+
+      if (args.mouseout) {
+        args.mouseout(d, i)
+      }
+    }
   }
 
-  MG.register('bar', barChart, options)
+  this.rolloverMove = (args) => (d, i) => {
+    if (args.mousemove) {
+      args.mousemove(d, i)
+    }
+  }
+
+  this.windowListeners = () => {
+    windowListeners(this.args)
+    return this
+  }
+
+  this.init(args)
+}
+
+export const options = {
+  buffer: [16, 'number'],
+  yAccessor: ['factor', 'string'],
+  xAccessor: ['value', 'string'],
+  referenceAccessor: [null, 'string'],
+  comparisonAccessor: [null, 'string'],
+  secondaryLabel_accessor: [null, 'string'],
+  colorAccessor: [null, 'string'],
+  colorType: ['category', ['number', 'category']],
+  colorDomain: [null, 'number[]'],
+  referenceThickness: [1, 'number'],
+  comparison_width: [3, 'number'],
+  comparisonThickness: [null, 'number'],
+  legend: [false, 'boolean'],
+  legendTarget: [null, 'string'],
+  mouseover_align: ['right', ['right', 'left']],
+  baselineAccessor: [null, 'string'],
+  predictorAccessor: [null, 'string'],
+  predictor_proportion: [5, 'number'],
+  showBarZero: [true, 'boolean'],
+  binned: [true, 'boolean'],
+  truncateXLabels: [true, 'boolean'],
+  truncate_yLabels: [true, 'boolean']
 }
