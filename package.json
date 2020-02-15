@@ -2,7 +2,8 @@
   "name": "metrics-graphics",
   "version": "3.0.0-alpha3",
   "description": "A library optimized for concise, principled data graphics and layouts",
-  "main": "dist/metricsgraphics.js",
+  "main": "dist/bundle.js",
+  "module": "src/js/MG.js",
   "scripts": {
     "webpack": "webpack",
     "build": "gulp",
@@ -77,6 +78,7 @@
     "gulp-uglify": "3.0.2",
     "gulp-umd": "^2.0.0",
     "gulp-util": "^3.0.8",
+    "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.1",
     "qunitjs": "^2.4.1",
     "require-dir": "^1.2.0",

@@ -6,7 +6,7 @@ import { timeFormat as d3TimeFormat } from 'd3-time-format'
 import { processScaleTicks } from '../misc/process'
 import { format } from 'd3-format'
 import { scaleLinear, scaleOrdinal } from 'd3-scale'
-import { schemeCategory10, schemeCategory20 } from 'd3-scale-chromatic'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 import { addScaleFunction, addColorCategoricalScale } from './scales'
 
 export function xRug (args) {
@@ -110,9 +110,7 @@ export function pointAddColorScale (args) {
     } else {
       args.scales.color = args.colorRange !== null
         ? scaleOrdinal().range(colorRange)
-        : (colorDomain.length > 10
-          ? scaleOrdinal(schemeCategory20)
-          : scaleOrdinal(schemeCategory10))
+        : scaleOrdinal(schemeCategory10)
 
       args.scales.color.domain(colorDomain)
     }
