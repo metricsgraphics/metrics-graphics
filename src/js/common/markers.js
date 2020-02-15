@@ -1,95 +1,88 @@
-function mg_return_label (d) {
-  return d.label
-}
+import { getPlotLeft, getPlotRight, getPlotBottom, getBottom, preventHorizontalOverlap, getSvgChildOf } from '../misc/utility'
+import { select } from 'selection'
 
-function mg_remove_existing_markers (svg) {
+export function returnLabel (d) { return d.label }
+
+export function removeExistingMarkers (svg) {
   svg.selectAll('.mg-markers').remove()
   svg.selectAll('.mg-baselines').remove()
 }
 
-function mg_in_range (args) {
+export function inRange (args) {
   return function (d) {
     return (args.scales.X(d[args.xAccessor]) >= getPlotLeft(args)) && (args.scales.X(d[args.xAccessor]) <= getPlotRight(args))
   }
 }
 
-function mg_x_position (args) {
+export function xPosition (args) {
   return function (d) {
     return args.scales.X(d[args.xAccessor])
   }
 }
 
-function mg_x_position_fixed (args) {
-  var _mg_x_pos = mg_x_position(args)
-  return function (d) {
-    return _mg_x_pos(d).toFixed(2)
-  }
+export function xPositionFixed (args) {
+  return d => xPosition(args).toFixed(2)
 }
 
-function mg_yPosition_fixed (args) {
-  var _mg_y_pos = args.scales.Y
-  return function (d) {
-    return _mg_y_pos(d.value).toFixed(2)
-  }
+export function yPositionFixed (args) {
+  return d => args.scales.Y(d.value).toFixed(2)
 }
 
-function mg_place_annotations (checker, class_name, args, svg, line_fcn, text_fcn) {
-  var g
-  if (checker) {
-    g = svg.append('g').attr('class', class_name)
-    line_fcn(g, args)
-    text_fcn(g, args)
-  }
+export function placeAnnotations (checker, className, args, svg, lineFunction, textFunction) {
+  if (!checker) return
+  const g = svg.append('g').attr('class', className)
+  lineFunction(g, args)
+  textFunction(g, args)
 }
 
-function mg_place_markers (args, svg) {
-  mg_place_annotations(args.markers, 'mg-markers', args, svg, mg_place_marker_lines, mg_place_marker_text)
+export function placeMarkers (args, svg) {
+  placeAnnotations(args.markers, 'mg-markers', args, svg, placeMarkerLines, placeMarkerText)
 }
 
-function mg_place_baselines (args, svg) {
-  mg_place_annotations(args.baselines, 'mg-baselines', args, svg, mg_place_baseline_lines, mg_place_baseline_text)
+export function placeBaselines (args, svg) {
+  placeAnnotations(args.baselines, 'mg-baselines', args, svg, placeBaselineLines, placeBaselineText)
 }
 
-function mg_place_marker_lines (gm, args) {
-  var x_pos_fixed = mg_x_position_fixed(args)
+export function placeMarkerLines (gm, args) {
+  var xPosFixed = xPositionFixed(args)
   gm.selectAll('.mg-markers')
-    .data(args.markers.filter(mg_in_range(args)))
+    .data(args.markers.filter(inRange(args)))
     .enter()
     .append('line')
-    .attr('x1', x_pos_fixed)
-    .attr('x2', x_pos_fixed)
+    .attr('x1', xPosFixed)
+    .attr('x2', xPosFixed)
     .attr('y1', args.top)
     .attr('y2', getPlotBottom(args))
     .attr('class', function (d) {
-      return d.lineclass
+      return d.lineClass
     })
     .attr('stroke-dasharray', '3,1')
 }
 
-function mg_place_marker_text (gm, args) {
+export function placeMarkerText (gm, args) {
   gm.selectAll('.mg-markers')
-    .data(args.markers.filter(mg_in_range(args)))
+    .data(args.markers.filter(inRange(args)))
     .enter()
     .append('text')
     .attr('class', function (d) {
-      return d.textclass || ''
+      return d.textClass || ''
     })
     .classed('mg-marker-text', true)
-    .attr('x', mg_x_position(args))
+    .attr('x', xPosition(args))
     .attr('y', args.xAxis_position === 'bottom' ? args.top * 0.95 : getBottom(args) + args.buffer)
     .attr('text-anchor', 'middle')
-    .text(mg_return_label)
+    .text(returnLabel)
     .each(function (d) {
       if (d.click) {
-        d3.select(this).style('cursor', 'pointer')
+        select(this).style('cursor', 'pointer')
           .on('click', d.click)
       }
       if (d.mouseover) {
-        d3.select(this).style('cursor', 'pointer')
+        select(this).style('cursor', 'pointer')
           .on('mouseover', d.mouseover)
       }
       if (d.mouseout) {
-        d3.select(this).style('cursor', 'pointer')
+        select(this).style('cursor', 'pointer')
           .on('mouseout', d.mouseout)
       }
     })
@@ -97,37 +90,35 @@ function mg_place_marker_text (gm, args) {
   preventHorizontalOverlap(gm.selectAll('.mg-marker-text').nodes(), args)
 }
 
-function mg_place_baseline_lines (gb, args) {
-  var y_pos = mg_yPosition_fixed(args)
+export function placeBaselineLines (gb, args) {
+  var yPos = yPositionFixed(args)
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('line')
     .attr('x1', getPlotLeft(args))
     .attr('x2', getPlotRight(args))
-    .attr('y1', y_pos)
-    .attr('y2', y_pos)
+    .attr('y1', yPos)
+    .attr('y2', yPos)
 }
 
-function mg_place_baseline_text (gb, args) {
-  var y_pos = mg_yPosition_fixed(args)
+export function placeBaselineText (gb, args) {
+  var yPos = yPositionFixed(args)
   gb.selectAll('.mg-baselines')
     .data(args.baselines)
     .enter().append('text')
     .attr('x', getPlotRight(args))
-    .attr('y', y_pos)
+    .attr('y', yPos)
     .attr('dy', -3)
     .attr('text-anchor', 'end')
-    .text(mg_return_label)
+    .text(returnLabel)
 }
 
-function markers (args) {
+export function markers (args) {
   'use strict'
 
   var svg = getSvgChildOf(args.target)
-  mg_remove_existing_markers(svg)
-  mg_place_markers(args, svg)
-  mg_place_baselines(args, svg)
+  removeExistingMarkers(svg)
+  placeMarkers(args, svg)
+  placeBaselines(args, svg)
   return this
 }
-
-MG.markers = markers
