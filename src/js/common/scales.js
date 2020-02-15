@@ -34,166 +34,135 @@ export function catPosition (str, args) {
 
 // big wrapper around d3 scale that automatically formats & calculates scale bounds
 // according to the data, and handles other niceties.
-export function MGScale (args) {
-  var scaleArgs = {}
-  scaleArgs.useInflator = false
-  scaleArgs.zeroBottom = false
-  scaleArgs.scaleType = 'numerical'
-
-  this.namespace = function (_namespace) {
-    scaleArgs.namespace = _namespace
-    scaleArgs.namespaceAccessorName = scaleArgs.namespace + '_accessor'
-    scaleArgs.scale_name = scaleArgs.namespace.toUpperCase()
-    scaleArgs.scalefn_name = scaleArgs.namespace + 'f'
-    return this
-  }
-
-  this.scaleName = function (scaleName) {
-    scaleArgs.scale_name = scaleName.toUpperCase()
-    scaleArgs.scalefn_name = scaleName + 'f'
-    return this
-  }
-
-  this.inflateDomain = function (tf) {
-    scaleArgs.useInflator = tf
-    return this
-  }
-
-  this.zeroBottom = function (tf) {
-    scaleArgs.zeroBottom = tf
-    return this
-  }
-
-  this.numericalDomainFromData = function () {
-    var otherFlatDataArrays = []
-
-    if (arguments.length > 0) {
-      otherFlatDataArrays = arguments
+export class MGScale {
+  constructor (args) {
+    this.scaleArgs = {
+      useInflator: false,
+      zeroBottom: false,
+      scaleType: 'numerical'
     }
+  }
+
+  namespace (namespace) {
+    this.scaleArgs.namespace = namespace
+    this.scaleArgs.namespaceAccessorName = this.scaleArgs.namespace + 'Accessor'
+    this.scaleArgs.scaleName = this.scaleArgs.namespace.toUpperCase()
+    this.scaleArgs.scaleFunctionName = this.scaleArgs.namespace + 'f'
+  }
+
+  scaleName (scaleName) {
+    this.scaleArgs.scaleName = scaleName.toUpperCase()
+    this.scaleArgs.scaleFunctionName = scaleName + 'f'
+  }
+
+  inflateDomain (tf) { this.scaleArgs.useInflator = tf }
+  zeroBottom (tf) { this.scaleArgs.zeroBottom = tf }
+
+  numericalDomainFromData () {
+    let otherFlatDataArrays = []
+
+    if (arguments.length > 0) otherFlatDataArrays = arguments
 
     // pull out a non-empty array in args.data.
-    var illustrativeData
-    for (var i = 0; i < args.data.length; i++) {
-      if (args.data[i].length > 0) {
-        illustrativeData = args.data[i]
-      }
-    }
-    scaleArgs.is_timeSeries = !!(illustrativeData[0][args[scaleArgs.namespaceAccessorName]] instanceof Date)
+    const illustrativeData = this.args.data.find(d => d.length > 0)
 
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
+    this.scaleArgs.isTimeSeries = !!(illustrativeData[0][this.args[this.scaleArgs.namespaceAccessorName]] instanceof Date)
 
-    minMaxNumerical(args, scaleArgs, otherFlatDataArrays, scaleArgs.useInflator)
+    addScaleFunction(this.args, this.scaleArgs.scaleFunctionName, this.scaleArgs.scaleName, this.args[this.scaleArgs.namespaceAccessorName])
 
-    var timeScale = args.utcTime ? scaleUtc() : scaleTime()
+    minMaxNumerical(this.args, this.scaleArgs, otherFlatDataArrays, this.scaleArgs.useInflator)
 
-    args.scales[scaleArgs.scale_name] = (scaleArgs.is_timeSeries)
+    const timeScale = this.args.utcTime ? scaleUtc() : scaleTime()
+
+    this.args.scales[this.scaleArgs.scaleName] = (this.scaleArgs.isTimeSeries)
       ? timeScale
-      : (typeof args[scaleArgs.namespace + 'ScaleType'] === 'function')
-        ? args.yScaleType()
-        : (args[scaleArgs.namespace + 'ScaleType'] === 'log')
+      : (typeof this.args[this.scaleArgs.namespace + 'ScaleType'] === 'function')
+        ? this.args.yScaleType()
+        : (this.args[this.scaleArgs.namespace + 'ScaleType'] === 'log')
           ? scaleLog()
           : scaleLinear()
 
-    args.scales[scaleArgs.scale_name].domain([args.processed['min_' + scaleArgs.namespace], args.processed['max_' + scaleArgs.namespace]])
-    scaleArgs.scaleType = 'numerical'
-
-    return this
+    this.args.scales[this.scaleArgs.scaleName].domain([this.args.processed['min_' + this.scaleArgs.namespace], this.args.processed['max_' + this.scaleArgs.namespace]])
+    this.scaleArgs.scaleType = 'numerical'
   }
 
-  this.categoricalDomain = function (domain) {
-    args.scales[scaleArgs.scale_name] = scaleOrdinal().domain(domain)
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
-    return this
+  categoricalDomain (domain) {
+    this.args.scales[this.scaleArgs.scaleName] = scaleOrdinal().domain(domain)
+    addScaleFunction(this.args, this.scaleArgs.scaleFunctionName, this.scaleArgs.scaleName, this.args[this.scaleArgs.namespaceAccessorName])
   }
 
-  this.categoricalDomainFromData = function () {
+  categoricalDomainFromData () {
     // make args.categoricalVariables.
-    // lets make the categorical variables.
-    var allData = args.data.flat()
+    // lets make the categoricallet iables.
+    const allData = this.args.data.flat()
     // d3.set(data.map(function(d){return d[args.group_accessor]})).values()
-    scaleArgs.categoricalVariables = Array.from(new Set(allData.map(function (d) {
-      return d[args[scaleArgs.namespaceAccessorName]]
+    this.scaleArgs.categoricalVariables = Array.from(new Set(allData.map(function (d) {
+      return d[this.args[this.scaleArgs.namespaceAccessorName]]
     })))
-    args.scales[scaleArgs.scale_name] = scaleBand()
-      .domain(scaleArgs.categoricalVariables)
+    this.args.scales[this.scaleArgs.scaleName] = scaleBand()
+      .domain(this.scaleArgs.categoricalVariables)
 
-    scaleArgs.scaleType = 'categorical'
-    return this
+    this.scaleArgs.scaleType = 'categorical'
   }
 
-  /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// /////// all scale ranges are either positional (for axes, etc) or arbitrary (colors, size, etc) //////////
-  /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  this.numericalRange = function (range) {
+  numericalRange (range) {
     if (typeof range === 'string') {
-      args
-        .scales[scaleArgs.scale_name]
-        .range(position(range, args))
+      this.args
+        .scales[this.scaleArgs.scaleName]
+        .range(position(range, this.args))
     } else {
-      args
-        .scales[scaleArgs.scale_name]
+      this.args
+        .scales[this.scaleArgs.scaleName]
         .range(range)
     }
-
-    return this
   }
 
-  this.categoricalRangeBands = function (range, halfway) {
+  categoricalRangeBands (range, halfway) {
     if (halfway === undefined) halfway = false
 
-    var namespace = scaleArgs.namespace
-    var paddingPercentage = args[namespace + '_padding_percentage']
-    var outerPaddingPercentage = args[namespace + '_outer_padding_percentage']
+    const namespace = this.scaleArgs.namespace
+    const paddingPercentage = this.args[namespace + '_padding_percentage']
+    const outerPaddingPercentage = this.args[namespace + '_outer_padding_percentage']
     if (typeof range === 'string') {
       // if string, it's a location. Place it accordingly.
-      args.scales[scaleArgs.scale_name]
-        .range(position(range, args))
+      this.args.scales[this.scaleArgs.scaleName]
+        .range(position(range, this.args))
         .paddingInner(paddingPercentage)
         .paddingOuter(outerPaddingPercentage)
     } else {
-      args.scales[scaleArgs.scale_name]
+      this.args.scales[this.scaleArgs.scaleName]
         .range(range)
         .paddingInner(paddingPercentage)
         .paddingOuter(outerPaddingPercentage)
     }
 
     addScaleFunction(
-      args,
-      scaleArgs.scalefn_name,
-      scaleArgs.scale_name,
-      args[scaleArgs.namespaceAccessorName],
+      this.args,
+      this.scaleArgs.scaleFunctionName,
+      this.scaleArgs.scaleName,
+      this.args[this.scaleArgs.namespaceAccessorName],
       halfway
-        ? args.scales[scaleArgs.scale_name].bandwidth() / 2
+        ? this.args.scales[this.scaleArgs.scaleName].bandwidth() / 2
         : 0
     )
-
-    return this
   }
 
-  this.categoricalRange = function (range) {
-    args.scales[scaleArgs.scale_name].range(range)
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
-    return this
+  categoricalRange (range) {
+    this.args.scales[this.scaleArgs.scaleName].range(range)
+    addScaleFunction(this.args, this.scaleArgs.scaleFunctionName, this.scaleArgs.scaleName, this.args[this.scaleArgs.namespaceAccessorName])
   }
 
-  this.categoricalColorRange = function () {
-    args.scales[scaleArgs.scale_name] = scaleOrdinal(schemeCategory10)
+  categoricalColorRange () {
+    this.args.scales[this.scaleArgs.scaleName] = scaleOrdinal(schemeCategory10)
 
-    args
-      .scales[scaleArgs.scale_name]
-      .domain(scaleArgs.categoricalVariables)
+    this.args
+      .scales[this.scaleArgs.scaleName]
+      .domain(this.scaleArgs.categoricalVariables)
 
-    addScaleFunction(args, scaleArgs.scalefn_name, scaleArgs.scale_name, args[scaleArgs.namespaceAccessorName])
-    return this
+    addScaleFunction(this.args, this.scaleArgs.scaleFunctionName, this.scaleArgs.scaleName, this.args[this.scaleArgs.namespaceAccessorName])
   }
 
-  this.clamp = function (yn) {
-    args.scales[scaleArgs.scale_name].clamp(yn)
-    return this
-  }
-
-  return this
+  clamp (yn) { this.args.scales[this.scaleArgs.scaleName].clamp(yn) }
 }
 
 /// //////////////////////////// x, xAccessor, markers, baselines, etc.
@@ -209,15 +178,15 @@ export function minMaxNumerical (args, scaleArgs, additionalDataArrays) {
   // that might potentially be outside of the y value bounds). The easiest way to do this is in the line.js code
   // & scale creation to just flatten the args.baselines array, pull out hte values, and feed it in
   // so it appears in additionalDataArrays.
-  var namespace = scaleArgs.namespace
-  var namespaceAccessorName = scaleArgs.namespaceAccessorName
-  var useInflator = scaleArgs.useInflator
-  var zeroBottom = scaleArgs.zeroBottom
+  const namespace = scaleArgs.namespace
+  const namespaceAccessorName = scaleArgs.namespaceAccessorName
+  const useInflator = scaleArgs.useInflator
+  const zeroBottom = scaleArgs.zeroBottom
 
-  var accessor = args[namespaceAccessorName]
+  const accessor = args[namespaceAccessorName]
 
   // add together all relevant data arrays.
-  var allData = args.data.flat()
+  let allData = args.data.flat()
     .map(function (dp) {
       return dp[accessor]
     })
@@ -231,23 +200,23 @@ export function minMaxNumerical (args, scaleArgs, additionalDataArrays) {
   }
 
   // use inflator?
-  var extents = extent(allData)
-  var minVal = extents[0]
-  var maxVal = extents[1]
+  const extents = extent(allData)
+  let minVal = extents[0]
+  let maxVal = extents[1]
 
   // bolt scale domain to zero when the right conditions are met:
   // not pulling the bottom of the range from data
   // not zero-bottomed
   // not a time series
-  if (zeroBottom && !args['min_' + namespace + '_from_data'] && minVal > 0 && !scaleArgs.is_timeSeries) {
+  if (zeroBottom && !args['min_' + namespace + '_from_data'] && minVal > 0 && !scaleArgs.isTimeSeries) {
     minVal = args[namespace + 'ScaleType'] === 'log' ? 1 : 0
   }
 
-  if (args[namespace + 'ScaleType'] !== 'log' && minVal < 0 && !scaleArgs.is_timeSeries) {
+  if (args[namespace + 'ScaleType'] !== 'log' && minVal < 0 && !scaleArgs.isTimeSeries) {
     minVal = minVal - (minVal - minVal * args.inflator) * useInflator
   }
 
-  if (!scaleArgs.is_timeSeries) {
+  if (!scaleArgs.isTimeSeries) {
     maxVal = (maxVal < 0) ? maxVal + (maxVal - maxVal * args.inflator) * useInflator : maxVal * (useInflator ? args.inflator : 1)
   }
 
@@ -306,7 +275,7 @@ export function getCategoricalDomain (data, accessor) {
 }
 
 export function getColorDomain (args) {
-  var colorDomain
+  let colorDomain
   if (args.colorDomain === null) {
     if (args.colorType === 'number') {
       colorDomain = extent(args.data[0], function (d) {
@@ -322,7 +291,7 @@ export function getColorDomain (args) {
 }
 
 export function getColorRange (args) {
-  var colorRange
+  let colorRange
   if (args.colorRange === null) {
     if (args.colorType === 'number') {
       colorRange = ['blue', 'red']
