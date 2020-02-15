@@ -23,12 +23,12 @@ test('MG properly detects time series vs. not.', function () {
       { date: new Date('2014-11-02'), value: 43 }]],
     xAccessor: 'date'
   }
-  mg_merge_args_with_defaults(params1)
-  mg_merge_args_with_defaults(params2)
-  mg_merge_args_with_defaults(params3)
-  mg_is_timeSeries(params1)
-  mg_is_timeSeries(params2)
-  mg_is_timeSeries(params3)
+  mergeArgsWithDefaults(params1)
+  mergeArgsWithDefaults(params2)
+  mergeArgsWithDefaults(params3)
+  isTimeSeries(params1)
+  isTimeSeries(params2)
+  isTimeSeries(params3)
 
   ok(params1.timeSeries === true, 'Date-accessed data set is a time series.')
   ok(params2.timeSeries === false, 'Number-accessed data set is not a time series.')
@@ -57,20 +57,20 @@ test("Chart's width is set correctly on subsequent calls to existing chart", fun
   ok(width === 200, "SVG's width matches latest specified width")
 })
 
-test("Chart's width is set to parents if full_width: true", function () {
+test("Chart's width is set to parents if fullWidth: true", function () {
   var params = {
     target: '#qunit-fixture',
-    full_width: true,
+    fullWidth: true,
     data: [{ date: new Date('2014-11-01'), value: 12 },
       { date: new Date('2014-11-02'), value: 18 }],
     height: 100
   }
   MG.data_graphic(params)
 
-  var svg_width = document.querySelector(params.target + ' svg').clientWidth
+  var svgWidth = document.querySelector(params.target + ' svg').clientWidth
   var div_width = document.querySelector(params.target).clientWidth
 
-  equal(div_width, svg_width, "SVG's width matches parent upon using full_width: true")
+  equal(div_width, svgWidth, "SVG's width matches parent upon using fullWidth: true")
 })
 
 test("Chart's height is set to parents if full_height: true", function () {
@@ -85,10 +85,10 @@ test("Chart's height is set to parents if full_height: true", function () {
   document.querySelector(params.target).style.height = '500px'
   MG.data_graphic(params)
 
-  var svg_height = document.querySelector(params.target + ' svg').clientHeight
+  var svgHeight = document.querySelector(params.target + ' svg').clientHeight
   var div_height = document.querySelector(params.target).clientHeight
 
-  equal(div_height, svg_height, "SVG's height matches parent upon using full_height: true")
+  equal(div_height, svgHeight, "SVG's height matches parent upon using full_height: true")
 })
 
 test("Won't add SVG element if an SVG element already exists in parent.", function () {
@@ -106,7 +106,7 @@ test("Won't add SVG element if an SVG element already exists in parent.", functi
   div.appendChild(document.createElement('svg'))
   qunit.appendChild(div)
   var first_number = document.querySelectorAll('svg').length
-  mg_add_svg_if_it_doesnt_exist('', args1)
+  addSvgIfItDoesntExist('', args1)
   var second_number = document.querySelectorAll('svg').length
   equal(first_number, second_number, 'SVG element not added if it already exists.')
 })

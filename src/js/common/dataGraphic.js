@@ -86,7 +86,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   error: ['', 'string'], // does the graphic have an error that we want to communicate to users
   format: ['count', ['count', 'percentage']], // the format of the data object (count or percentage)
   full_height: [false, 'boolean'], // sets height to that of the parent, adjusts dimensions on window resize
-  full_width: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
+  fullWidth: [false, 'boolean'], // sets width to that of the parent, adjusts dimensions on window resize
   interpolate: [d3.curveCatmullRom.alpha(0), [d3.curveBasisClosed, d3.curveBasisOpen, d3.curveBasis, d3.curveBundle, d3.curveCardinalClosed, d3.curveCardinalOpen, d3.curveCardinal, d3.curveCatmullRomClosed, d3.curveCatmullRomOpen, d3.curveLinearClosed, d3.curveLinear, d3.curveMonotoneX, d3.curveMonotoneY, d3.curveNatural, d3.curveStep, d3.curveStepAfter, d3.curveStepBefore]], // the interpolation function to use for rendering lines
   legend: ['', 'string[]'], // an array of literals used to label lines
   legend_target: ['', 'string'], // the DOM element to insert the legend in
@@ -126,7 +126,7 @@ MG.options = { // <name>: [<defaultValue>, <availableType>]
   // Layout
   buffer: [8, 'number'], // the padding around the graphic
   bottom: [45, 'number'], // the size of the bottom margin
-  center_title_full_width: [false, 'boolean'], // center title over entire graph
+  center_title_fullWidth: [false, 'boolean'], // center title over entire graph
   height: [220, 'number'], // the graphic's height
   left: [50, 'number'], // the size of the left margin
   right: [10, 'number'], // the size of the right margin

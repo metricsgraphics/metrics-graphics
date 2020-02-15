@@ -10,7 +10,7 @@
     "src/js/common/hooks.js",
     "src/js/common/data_graphic.js",
     "src/js/common/bootstrap_tooltip_popover.js",
-    "src/js/common/chart_title.js",
+    "src/js/common/chartTitle.js",
     "src/js/common/yAxis.js",
     "src/js/common/xAxis.js",
     "src/js/common/init.js",

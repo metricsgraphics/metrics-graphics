@@ -39,11 +39,11 @@ test('Only one mg-missing-text on multiple calls to the same target element', fu
     equal(document.querySelectorAll(params.target + ' .mg-missing-text').length, 1, 'We only have one mg-missing-text');
 });
 
-test('missing chart obeys full_width: true', function() {
+test('missing chart obeys fullWidth: true', function() {
     var params = {
         target: '#qunit-fixture',
         chartType: 'missing-data',
-        full_width: true,
+        fullWidth: true,
         missing_text: 'In an astral plane that was never meant to fly...'
     };
     document.querySelector('#qunit-fixture').style.width='700px';

@@ -80,24 +80,24 @@
     this.init = (args) => {
       this.args = args
 
-      mg_init_compute_width(args)
-      mg_init_compute_height(args)
+      initComputeWidth(args)
+      initComputeHeight(args)
 
       // create svg if one doesn't exist
 
       const container = d3.select(args.target)
-      mg_raise_container_error(container, args)
+      raiseContainerError(container, args)
       let svg = container.selectAll('svg')
-      mg_remove_svg_if_chartType_has_changed(svg, args)
-      svg = mg_add_svg_if_it_doesnt_exist(svg, args)
-      mg_adjust_width_and_height_if_changed(svg, args)
-      mg_set_viewbox_for_scaling(svg, args)
+      removeSvgIfChartTypeHasChanged(svg, args)
+      svg = addSvgIfItDoesntExist(svg, args)
+      adjustWidthAndHeightIfChanged(svg, args)
+      setViewboxForScaling(svg, args)
       mg_remove_all_children(args)
 
       svg.classed('mg-missing', true)
       mg_missing_remove_legend(args)
 
-      chart_title(args)
+      chartTitle(args)
 
       // are we adding a background placeholder
       if (args.show_missing_background) {

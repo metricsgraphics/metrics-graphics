@@ -1,4 +1,4 @@
-module('chart_title');
+module('chartTitle');
 
 test('Chart title is updated', function() {
     var params = {

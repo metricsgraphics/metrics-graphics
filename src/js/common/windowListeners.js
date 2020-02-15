@@ -74,7 +74,7 @@ export function windowListeners (args) {
 
 export function ifAspectRatioResizeSvg (args) {
   // have we asked the svg to fill a div, if so resize with div
-  if (args.full_width || args.full_height) {
+  if (args.fullWidth || args.full_height) {
     windowResizeTracker.add_target(args.target)
   }
 }

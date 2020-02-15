@@ -97,7 +97,7 @@ MG.data_table = function (args) {
   this.display = function () {
     var args = this.args
 
-    chart_title(args)
+    chartTitle(args)
 
     var target = args.target
     var table = d3.select(target).append('table').classed('mg-data-table', true)

@@ -233,6 +233,13 @@ export function clone (obj) { return JSON.parse(JSON.stringify(obj)) }
 
 export function arrayDiff (a1, a2) { return a1.filter(el => !a2.includes(el)) }
 
+export function countArrayElements (arr) {
+  return arr.reduce((a, b) => {
+    a[b] = a[b] + 1 || 1
+    return a
+  }, {})
+}
+
 export function warnDeprecation (message, untilVersion) {
   console.warn('Deprecation: ' + message + (untilVersion ? '. This feature will be removed in ' + untilVersion + '.' : ' the near future.'))
   console.trace()

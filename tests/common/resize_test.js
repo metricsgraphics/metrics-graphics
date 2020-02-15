@@ -25,7 +25,7 @@ test("Resize does not leak listeners", function () {
     
   var params = {
     target: '#qunit-fixture',
-    full_width: true,
+    fullWidth: true,
     data: [{'date': new Date('2014-11-01'), 'value': 12},
       {'date': new Date('2014-11-02'), 'value': 18}],
     height: 100
