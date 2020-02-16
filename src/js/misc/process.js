@@ -1,4 +1,4 @@
-import { clone, isArrayOfArrays, isArrayOfObjectsOrEmpty, isArrayOfObjects } from './utility'
+import { clone } from './utility'
 import { leastSquares } from './smoothers'
 import { histogram } from 'd3-array'
 import { getTimeFrame } from '../common/xAxis'
@@ -46,27 +46,6 @@ export function processScaleTicks (args, axis) {
 }
 
 export function rawDataTransformation (args) {
-  // we need to account for a few data format cases:
-  // #0 {bar1:___, bar2:___}                                    // single object (for, say, bar charts)
-  // #1 [{key:__, value:__}, ...]                               // unnested obj-arrays
-  // #2 [[{key:__, value:__}, ...], [{key:__, value:__}, ...]]  // nested obj-arrays
-  // #3 [[4323, 2343],..]                                       // unnested 2d array
-  // #4 [[[4323, 2343],..] , [[4323, 2343],..]]                 // nested 2d array
-  args.singleObject = false // for bar charts.
-  args.arrayOfObjects = false
-  args.arrayOfArrays = false
-  args.nestedArrayOfArrays = false
-  args.nestedArrayOfObjects = false
-
-  // is the data object a nested array?
-  if (isArrayOfArrays(args.data)) {
-    args.nestedArrayOfObjects = args.data.map(d => isArrayOfObjectsOrEmpty(d)) // Case #2
-    args.nestedArrayOfArrays = args.data.map(d => isArrayOfArrays(d)) // Case #4
-  } else {
-    args.arrayOfObjects = isArrayOfObjects(args.data) // Case #1
-    args.arrayOfArrays = isArrayOfArrays(args.data) // Case #3
-  }
-
   if (args.chartType === 'line' && (args.arrayOfObjects || args.arrayOfArrays)) {
     args.data = [args.data]
   } else if (!Array.isArray(args.data[0])) {
@@ -83,25 +62,20 @@ export function rawDataTransformation (args) {
   // if user has supplied args.colors, and that value is a string, turn it into an array.
   if (args.colors !== null && typeof args.colors === 'string') args.colors = [args.colors]
 
-  // sort x-axis data
-  if (args.chartType === 'line' && args.xSort === true) {
-    args.data.forEach(arg => arg.sort((a, b) => a[args.xAccessor] - b[args.xAccessor]))
-  }
-
   return args
 }
 
 export function processMultipleAccessors (args, whichAccessor) {
   // turns an array of accessors into ...
   if (!Array.isArray(args[whichAccessor])) return
-  args.data = args.data.map(_d => args[whichAccessor].map(ya => _d.map(di => {
-    di = clone(di)
+  args.data = args.data.map(data => args[whichAccessor].map(accessor => data.map(dataEntry => {
+    dataEntry = clone(dataEntry)
 
-    if (di[ya] === undefined) return undefined
+    if (dataEntry[accessor] === undefined) return undefined
 
-    di[`multiline_${whichAccessor}`] = di[ya]
-    return di
-  }).filter(di => di !== undefined)))[0]
+    dataEntry[`multiline_${whichAccessor}`] = dataEntry[accessor]
+    return dataEntry
+  }).filter(d => d !== undefined)))[0]
   args[whichAccessor] = `multiline_${whichAccessor}`
 }
 
@@ -111,90 +85,6 @@ export function processMultipleXAccessors (args) {
 
 export function processMultipleYAccessors (args) {
   processMultipleAccessors(args, 'yAccessor')
-}
-
-export function processLine (args) {
-  let timeFrame
-
-  // do we have a time-series?
-  const isTimeSeries = args.data.some(series => series.length > 0 && series[0][args.xAccessor] instanceof Date)
-
-  // are we replacing missing y values with zeros?
-  if ((args.missingIsZero || args.missingIsHidden) && args.chartType === 'line' && isTimeSeries) {
-    for (let i = 0; i < args.data.length; i++) {
-      // we need to have a dataset of length > 2, so if it's less than that, skip
-      if (args.data[i].length <= 1) {
-        continue
-      }
-
-      const first = args.data[i][0]
-      const last = args.data[i][args.data[i].length - 1]
-
-      // initialize our new array for storing the processed data
-      const processedData = []
-
-      // we'll be starting from the day after our first date
-      const startDate = clone(first[args.xAccessor]).setDate(first[args.xAccessor].getDate() + 1)
-
-      // if we've set a maxX, add data points up to there
-      const from = (args.minX) ? args.minX : startDate
-      const upto = (args.maxX) ? args.maxX : last[args.xAccessor]
-
-      timeFrame = getTimeFrame((upto - from) / 1000)
-
-      if (['four-days', 'many-days', 'many-months', 'years', 'default'].indexOf(timeFrame) !== -1 && args.missingIsHidden_accessor === null) {
-        // changing the date via setDate doesn't properly register as a change within the loop
-        for (let d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) { // eslint-disable-line
-          const o = {}
-          d.setHours(0, 0, 0, 0)
-
-          // add the first date item, we'll be starting from the day after our first date
-          if (Date.parse(d) === Date.parse(new Date(startDate))) {
-            processedData.push(clone(args.data[i][0]))
-          }
-
-          // check to see if we already have this date in our data object
-          let existingO = null
-          args.data[i].forEach(function (val, i) {
-            if (Date.parse(val[args.xAccessor]) === Date.parse(new Date(d))) {
-              existingO = val
-
-              return false
-            }
-          })
-
-          // if we don't have this date in our data object, add it and set it to zero
-          if (!existingO) {
-            o[args.xAccessor] = new Date(d)
-            o[args.yAccessor] = 0
-            o._missing = true // we want to distinguish between zero-value and missing observations
-            processedData.push(o)
-
-          // if the data point has, say, a 'missing' attribute set or if its
-          // y-value is null identify it internally as missing
-          } else if (existingO[args.missingIsHidden_accessor] || existingO[args.yAccessor] === null) {
-            existingO._missing = true
-            processedData.push(existingO)
-
-          // otherwise, use the existing object for that date
-          } else {
-            processedData.push(existingO)
-          }
-        }
-      } else {
-        for (let j = 0; j < args.data[i].length; j += 1) {
-          const obj = clone(args.data[i][j])
-          obj._missing = args.data[i][j][args.missingIsHidden_accessor]
-          processedData.push(obj)
-        }
-      }
-
-      // update our date object
-      args.data[i] = processedData
-    }
-  }
-
-  return this
 }
 
 export function processHistogram (args) {

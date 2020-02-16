@@ -1,22 +1,21 @@
 import { area, line } from 'd3-shape'
-import { targetRef, preventVerticalOverlap, addG, selectAllAndRemove, timeFormat, getPlotLeft, getPlotRight, getSvgChildOf, dataInPlotBounds } from '../misc/utility'
+import { targetRef, preventVerticalOverlap, addG, selectAllAndRemove, timeFormat, getPlotLeft, getPlotRight, getSvgChildOf, dataInPlotBounds, clone } from '../misc/utility'
 import { median, merge, group } from 'd3-array'
 import { pathTween } from '../misc/transitions'
 import { voronoi as d3voronoi } from 'd3-voronoi'
 import { select, selectAll } from 'd3-selection'
 import { callHook } from '../common/hooks'
 import { globals } from '../common/dataGraphic'
-import { internalError } from '../misc/error'
-import { rawDataTransformation, processLine } from '../misc/process'
 import { init } from '../common/init'
 import { MGScale } from '../common/scales'
 import { axisFactory, yRug, addYLabel } from '../common/yAxis'
-import { xRug, addXLabel } from '../common/xAxis'
+import { xRug, addXLabel, getTimeFrame } from '../common/xAxis'
 import { addBrushFunction } from '../common/brush'
 import { markers } from '../common/markers'
 import { mouseoverText, clearMouseoverContainer } from '../common/rollover'
 import { formatXAggregateMouseover, formatXMouseover, formatYMouseover } from '../misc/formatters'
 import { windowListeners } from '../common/windowListeners'
+import AbstractChart from './abstractChart'
 
 function lineColorText (elem, lineId, { color, colors }) {
   elem.classed('mg-hover-line-color', color === null)
@@ -756,22 +755,17 @@ function removeActiveDatapointsForGenericRollover ({ customLineColorMap, data },
     })
 }
 
-export default class LineChart {
+export default class LineChart extends AbstractChart {
   constructor (args) {
-    this.args = args
+    console.log('line chart with args: ', clone(args))
+    super(args)
 
-    if (!args.data || args.data.length === 0) {
-      args.internalError = 'No data was supplied'
-      internalError(args)
-      return this
-    } else {
-      args.internalError = undefined
+    // sort data
+    if (args.xSort) {
+      this.data.forEach(d => d.sort((a, b) => a[args.xAccessor] - b[args.xAccessor]))
     }
 
-    rawDataTransformation(args)
-    processLine(args)
-
-    callHook('line.before_destroy', this)
+    this.processLine()
 
     init(args)
 
@@ -818,6 +812,86 @@ export default class LineChart {
     callHook('line.after_init', this)
 
     return this
+  }
+
+  processLine () {
+    let timeFrame
+
+    // do we have a time-series?
+    const isTimeSeries = this.data.some(series => series.length > 0 && series[0][this.xAccessor] instanceof Date)
+
+    // are we replacing missing y values with zeros?
+    if ((this.missingIsZero || this.missingIsHidden) && isTimeSeries) {
+      for (let i = 0; i < this.data.length; i++) {
+        // we need to have a dataset of length > 2, so if it's less than that, skip
+        if (this.data[i].length <= 1) continue
+
+        const first = this.data[i][0]
+        const last = this.data[i][this.data[i].length - 1]
+
+        // initialize our new array for storing the processed data
+        const processedData = []
+
+        // we'll be starting from the day after our first date
+        const startDate = clone(first[this.xAccessor]).setDate(first[this.xAccessor].getDate() + 1)
+
+        // if we've set a maxX, add data points up to there
+        const from = (this.minX) ? this.minX : startDate
+        const upto = (this.maxX) ? this.maxX : last[this.xAccessor]
+
+        timeFrame = getTimeFrame((upto - from) / 1000)
+
+        if (['four-days', 'many-days', 'many-months', 'years', 'default'].indexOf(timeFrame) !== -1 && this.missingIsHidden_accessor === null) {
+          // changing the date via setDate doesn't properly register as a change within the loop
+          for (let d = new Date(from); d <= upto; d.setDate(d.getDate() + 1)) { // eslint-disable-line
+            const o = {}
+            d.setHours(0, 0, 0, 0)
+
+            // add the first date item, we'll be starting from the day after our first date
+            if (Date.parse(d) === Date.parse(new Date(startDate))) {
+              processedData.push(clone(this.data[i][0]))
+            }
+
+            // check to see if we already have this date in our data object
+            let existingO = null
+            this.data[i].forEach(function (val, i) {
+              if (Date.parse(val[this.xAccessor]) === Date.parse(new Date(d))) {
+                existingO = val
+
+                return false
+              }
+            })
+
+            // if we don't have this date in our data object, add it and set it to zero
+            if (!existingO) {
+              o[this.xAccessor] = new Date(d)
+              o[this.yAccessor] = 0
+              o._missing = true // we want to distinguish between zero-value and missing observations
+              processedData.push(o)
+
+            // if the data point has, say, a 'missing' attribute set or if its
+            // y-value is null identify it internally as missing
+            } else if (existingO[this.missingIsHidden_accessor] || existingO[this.yAccessor] === null) {
+              existingO._missing = true
+              processedData.push(existingO)
+
+            // otherwise, use the existing object for that date
+            } else {
+              processedData.push(existingO)
+            }
+          }
+        } else {
+          for (let j = 0; j < this.data[i].length; j += 1) {
+            const obj = clone(this.data[i][j])
+            obj._missing = this.data[i][j][this.missingIsHidden_accessor]
+            processedData.push(obj)
+          }
+        }
+
+        // update our date object
+        this.data[i] = processedData
+      }
+    }
   }
 
   mainPlot () { lineMainPlot(this.args) }

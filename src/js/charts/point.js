@@ -54,15 +54,15 @@ export default class PointChart {
     this.args = args
 
     // infer yAxis and xAxis type;
-    args.xAxis_type = inferType(this.args, 'x')
-    args.yAxis_type = inferType(this.args, 'y')
+    args.xAxisType = inferType(this.args, 'x')
+    args.yAxisType = inferType(this.args, 'y')
 
     rawDataTransformation(this.args)
 
     processPoint(this.args)
     init(this.args)
 
-    if (this.args.xAxis_type === 'categorical') {
+    if (this.args.xAxisType === 'categorical') {
       MGScale(this.args)
         .namespace('x')
         .categoricalDomainFromData()
@@ -83,7 +83,7 @@ export default class PointChart {
       MGScale(this.args)
         .namespace('x')
         .inflateDomain(true)
-        .zeroBottom(this.args.yAxis_type === 'categorical')
+        .zeroBottom(this.args.yAxisType === 'categorical')
         .numericalDomainFromData((this.args.baselines || []).map(d => d[args.xAccessor]))
         .numericalRange('bottom')
 
@@ -91,7 +91,7 @@ export default class PointChart {
     }
 
     // y-scale generation. This needs to get simplified.
-    if (this.args.yAxis_type === 'categorical') {
+    if (this.args.yAxisType === 'categorical') {
       MGScale(this.args)
         .namespace('y')
         .zeroBottom(true)
@@ -113,7 +113,7 @@ export default class PointChart {
       MGScale(this.args)
         .namespace('y')
         .inflateDomain(true)
-        .zeroBottom(this.args.xAxis_type === 'categorical')
+        .zeroBottom(this.args.xAxisType === 'categorical')
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
@@ -152,8 +152,8 @@ export default class PointChart {
 
     axisFactory(this.args)
       .namespace('x')
-      .type(this.args.xAxis_type)
-      .zeroLine(this.args.yAxis_type === 'categorical')
+      .type(this.args.xAxisType)
+      .zeroLine(this.args.yAxisType === 'categorical')
       .position(this.args.xAxis_position)
       .rug(xRug(this.args))
       .label(addXLabel)
@@ -161,8 +161,8 @@ export default class PointChart {
 
     axisFactory(this.args)
       .namespace('y')
-      .type(this.args.yAxis_type)
-      .zeroLine(this.args.xAxis_type === 'categorical')
+      .type(this.args.yAxisType)
+      .zeroLine(this.args.xAxisType === 'categorical')
       .position(this.args.yAxis_position)
       .rug(yRug(this.args))
       .label(addYLabel)

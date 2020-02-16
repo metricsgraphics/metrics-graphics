@@ -7,8 +7,8 @@ export const globals = {
 }
 
 export const options = { // <name>: [<defaultValue>, <availableType>]
-  xAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
-  yAxis_type: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  xAxisType: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
+  yAxisType: [null, ['categorical']], // TO BE INTRODUCED IN 2.10
   y_padding_percentage: [0.05, 'number'], // for categorical scales
   y_outer_padding_percentage: [0.1, 'number'], // for categorical scales
   ygroup_padding_percentage: [0.25, 'number'], // for categorical scales

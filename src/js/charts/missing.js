@@ -93,7 +93,7 @@ export default class MissingDataChart {
     // create svg if one doesn't exist
 
     const container = select(args.target)
-    raiseContainerError(container, args)
+    raiseContainerError(container, args.target)
     let svg = container.selectAll('svg')
     removeSvgIfChartTypeHasChanged(svg, args)
     svg = addSvgIfItDoesntExist(svg, args)

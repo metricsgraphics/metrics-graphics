@@ -98,7 +98,7 @@ export function addEventHandlerForBrush (args, target, axis) {
 }
 
 export function addBrushFunction (args) {
-  if (args.xAxis_type === 'categorical' || args.yAxis_type === 'categorical') { return console.warn('The option "brush" does not support axis type "categorical" currently.') }
+  if (args.xAxisType === 'categorical' || args.yAxisType === 'categorical') { return console.warn('The option "brush" does not support axis type "categorical" currently.') }
   if (!args.zoom_target) args.zoom_target = args
   if (args.zoom_target !== args) args.zoom_target.processed.subplot = args
   let brushAxis

@@ -7,7 +7,7 @@ import { chartTitle } from './chartTitle'
 const deepmerge = require('deepmerge')
 
 export function mergeArgsWithDefaults (args) {
-  var defaults = {
+  const defaults = {
     target: null,
     title: null,
     description: null
@@ -26,16 +26,16 @@ export function mergeArgsWithDefaults (args) {
 }
 
 export function isTimeSeries (args) {
-  var firstElement = (args.processed.originalData || args.data).flat()[0]
+  const firstElement = (args.processed.originalData || args.data).flat()[0]
   args.timeSeries = (firstElement[args.processed.originalXAccessor || args.xAccessor]) instanceof Date
 }
 
 export function initComputeWidth (args) {
-  var svgWidth = parseInt(args.width)
+  let svgWidth = parseInt(args.width)
   if (args.fullWidth) {
     svgWidth = getWidth(args.target)
   }
-  if (args.xAxis_type === 'categorical' && svgWidth === null) {
+  if (args.xAxisType === 'categorical' && svgWidth === null) {
     svgWidth = categoricalCalculateHeight(args, 'x')
   }
 
@@ -43,11 +43,11 @@ export function initComputeWidth (args) {
 }
 
 export function initComputeHeight (args) {
-  var svgHeight = parseInt(args.height)
+  let svgHeight = parseInt(args.height)
   if (args.full_height) {
     svgHeight = getHeight(args.target)
   }
-  if (args.yAxis_type === 'categorical' && svgHeight === null) {
+  if (args.yAxisType === 'categorical' && svgHeight === null) {
     svgHeight = categoricalCalculateHeight(args, 'y')
   }
 
@@ -119,20 +119,20 @@ export function removeOutdatedLines (svg, args) {
   // before, remove the outdated lines, e.g. if we had 3 lines, and we're calling
   // dataGraphic() on the same target with 2 lines, remove the 3rd line
 
-  var i = 0
+  let i = 0
 
   if (svg.selectAll('.mg-main-line').nodes().length >= args.data.length) {
     // now, the thing is we can't just remove, say, line3 if we have a custom
     // line-color map, instead, see which are the lines to be removed, and delete those
     if (args.customLineColorMap.length > 0) {
-      var arrayFullSeries = function (len) {
-        var arr = new Array(len)
-        for (var i = 0; i < arr.length; i++) { arr[i] = i + 1 }
+      const arrayFullSeries = function (len) {
+        const arr = new Array(len)
+        for (let i = 0; i < arr.length; i++) { arr[i] = i + 1 }
         return arr
       }
 
       // get an array of lines ids to remove
-      var linesToRemove = arrayDiff(
+      const linesToRemove = arrayDiff(
         arrayFullSeries(args.max_data_size),
         args.customLineColorMap)
 
@@ -142,8 +142,8 @@ export function removeOutdatedLines (svg, args) {
       }
     } else {
       // if we don't have a custom line-color map, just remove the lines from the end
-      var newCount = args.data.length
-      var existingCount = (svg.selectAll('.mg-main-line').nodes()) ? svg.selectAll('.mg-main-line').nodes().length : 0
+      const newCount = args.data.length
+      const existingCount = (svg.selectAll('.mg-main-line').nodes()) ? svg.selectAll('.mg-main-line').nodes().length : 0
 
       for (i = existingCount; i > newCount; i--) {
         svg.selectAll('.mg-main-line.mg-line' + i + '-color')
@@ -153,14 +153,14 @@ export function removeOutdatedLines (svg, args) {
   }
 }
 
-export function raiseContainerError (container, args) {
+export function raiseContainerError (container, target) {
   if (container.empty()) {
-    console.warn('The specified target element "' + args.target + '" could not be found in the page. The chart will not be rendered.')
+    console.warn('The specified target element "' + target + '" could not be found in the page. The chart will not be rendered.')
   }
 }
 
 export function categoricalInitialization (args, ns) {
-  var which = ns === 'x' ? args.width : args.height
+  const which = ns === 'x' ? args.width : args.height
   categoricalCountNumberOfGroups(args, ns)
   categoricalCountNumberOfLanes(args, ns)
   categoricalCalculateGroupLength(args, ns, which)
@@ -168,7 +168,7 @@ export function categoricalInitialization (args, ns) {
 }
 
 export function selectXaxFormat (args) {
-  var c = args.chartType
+  const c = args.chartType
   if (!args.processed.xaxFormat) {
     if (args.xaxFormat) {
       args.processed.xaxFormat = args.xaxFormat
@@ -183,11 +183,11 @@ export function selectXaxFormat (args) {
 }
 
 export function categoricalCountNumberOfGroups (args, ns) {
-  var accessorString = ns + 'group_accessor'
-  var accessor = args[accessorString]
+  const accessorString = ns + 'group_accessor'
+  const accessor = args[accessorString]
   args.categoricalGroups = []
   if (accessor) {
-    var data = args.data[0]
+    const data = args.data[0]
     args.categoricalGroups = Array.from(new Set(data.map(function (d) {
       return d[accessor]
     })))
@@ -195,12 +195,12 @@ export function categoricalCountNumberOfGroups (args, ns) {
 }
 
 export function categoricalCountNumberOfLanes (args, ns) {
-  var accessorString = ns + 'group_accessor'
-  var groupAccessor = args[accessorString]
+  const accessorString = ns + 'group_accessor'
+  const groupAccessor = args[accessorString]
 
   args.total_bars = args.data[0].length
   if (groupAccessor) {
-    var groupBars = countArrayElements(args.data[0].map(groupAccessor))
+    let groupBars = countArrayElements(args.data[0].map(groupAccessor))
     groupBars = max(Object.keys(groupBars).map(function (d) {
       return groupBars[d]
     }))
@@ -211,29 +211,29 @@ export function categoricalCountNumberOfLanes (args, ns) {
 }
 
 export function categoricalCalculateGroupLength (args, ns, which) {
-  var groupHeight = ns + 'group_height'
+  const groupHeight = ns + 'group_height'
   if (which) {
-    var gh = ns === 'y'
+    const gh = ns === 'y'
       ? (args.height - args.top - args.bottom - args.buffer * 2) / (args.categoricalGroups.length || 1)
       : (args.width - args.left - args.right - args.buffer * 2) / (args.categoricalGroups.length || 1)
 
     args[groupHeight] = gh
   } else {
-    var step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness
+    const step = (1 + args[ns + '_padding_percentage']) * args.bar_thickness
     args[groupHeight] = args.bars_per_group * step + args[ns + '_outer_padding_percentage'] * 2 * step // args.bar_thickness + (((args.bars_per_group-1) * args.bar_thickness) * (args.bar_padding_percentage + args.barOuterPaddingPercentage*2));
   }
 }
 
 export function categoricalCalculateBarThickness (args, ns) {
   // take one group height.
-  var step = (args[ns + 'group_height']) / (args.bars_per_group + args[ns + '_outer_padding_percentage'])
+  const step = (args[ns + 'group_height']) / (args.bars_per_group + args[ns + '_outer_padding_percentage'])
   args.bar_thickness = step - (step * args[ns + '_padding_percentage'])
 }
 
 export function categoricalCalculateHeight (args, ns) {
-  var groupContribution = (args[ns + 'group_height']) * (args.categoricalGroups.length || 1)
+  const groupContribution = (args[ns + 'group_height']) * (args.categoricalGroups.length || 1)
 
-  var marginContribution = ns === 'y'
+  const marginContribution = ns === 'y'
     ? args.top + args.bottom + args.buffer * 2
     : args.left + args.right + args.buffer * 2
 
@@ -246,19 +246,17 @@ export function barchartExtrapolateGroupAndThicknessFromHeight (args) {
 }
 
 export function init (args) {
-  'use strict'
-  args = arguments[0]
   args = mergeArgsWithDefaults(args)
   // If you pass in a dom element for args.target, the expectation
   // of a string elsewhere will break.
-  var container = select(args.target)
-  raiseContainerError(container, args)
+  const container = select(args.target)
+  raiseContainerError(container, args.target)
 
-  var svg = container.selectAll('svg')
+  let svg = container.selectAll('svg')
 
   // some things that will need to be calculated if we have a categorical axis.
-  if (args.yAxis_type === 'categorical') { categoricalInitialization(args, 'y') }
-  if (args.xAxis_type === 'categorical') { categoricalInitialization(args, 'x') }
+  if (args.yAxisType === 'categorical') { categoricalInitialization(args, 'y') }
+  if (args.xAxisType === 'categorical') { categoricalInitialization(args, 'x') }
 
   selectXaxFormat(args)
 

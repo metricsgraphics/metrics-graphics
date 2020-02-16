@@ -73,16 +73,16 @@ export default class BarChart {
   constructor (args) {
     this.args = args
 
-    args.xAxis_type = inferType(this.args, 'x')
-    args.yAxis_type = inferType(this.args, 'y')
+    args.xAxisType = inferType(this.args, 'x')
+    args.yAxisType = inferType(this.args, 'y')
 
     // this is specific to how rects work in svg, let's keep track of the bar orientation to
     // plot appropriately.
-    if (this.args.xAxis_type === 'categorical') {
+    if (this.args.xAxisType === 'categorical') {
       args.orientation = 'vertical'
-    } else if (this.args.yAxis_type === 'categorical') {
+    } else if (this.args.yAxisType === 'categorical') {
       args.orientation = 'horizontal'
-    } else if (this.args.xAxis_type !== 'categorical' && args.yAxis_type !== 'categorical') {
+    } else if (this.args.xAxisType !== 'categorical' && args.yAxisType !== 'categorical') {
       // histogram.
       args.orientation = 'vertical'
     }
@@ -92,7 +92,7 @@ export default class BarChart {
     processPoint(this.args)
     init(this.args)
 
-    if (this.args.xAxis_type === 'categorical') {
+    if (this.args.xAxisType === 'categorical') {
       MGScale(this.args)
         .namespace('x')
         .categoricalDomainFromData()
@@ -113,7 +113,7 @@ export default class BarChart {
       MGScale(this.args)
         .namespace('x')
         .inflateDomain(true)
-        .zeroBottom(this.args.yAxis_type === 'categorical')
+        .zeroBottom(this.args.yAxisType === 'categorical')
         .numericalDomainFromData((this.args.baselines || []).map(d => d[args.xAccessor]))
         .numericalRange('bottom')
 
@@ -121,7 +121,7 @@ export default class BarChart {
     }
 
     // y-scale generation. This needs to get simplified.
-    if (this.args.yAxis_type === 'categorical') {
+    if (this.args.yAxisType === 'categorical') {
       MGScale(this.args)
         .namespace('y')
         .zeroBottom(true)
@@ -144,7 +144,7 @@ export default class BarChart {
       MGScale(this.args)
         .namespace('y')
         .inflateDomain(true)
-        .zeroBottom(this.args.xAxis_type === 'categorical')
+        .zeroBottom(this.args.xAxisType === 'categorical')
         .numericalDomainFromData(baselines)
         .numericalRange('left')
 
@@ -171,15 +171,15 @@ export default class BarChart {
 
     axisFactory(this.args)
       .namespace('x')
-      .type(this.args.xAxis_type)
-      .zeroLine(this.args.yAxis_type === 'categorical')
+      .type(this.args.xAxisType)
+      .zeroLine(this.args.yAxisType === 'categorical')
       .position(this.args.xAxis_position)
       .draw()
 
     axisFactory(this.args)
       .namespace('y')
-      .type(this.args.yAxis_type)
-      .zeroLine(this.args.xAxis_type === 'categorical')
+      .type(this.args.yAxisType)
+      .zeroLine(this.args.xAxisType === 'categorical')
       .position(this.args.yAxis_position)
       .draw()
 
@@ -219,8 +219,8 @@ export default class BarChart {
     if (this.args.orientation === 'vertical') {
       length = 'height'
       width = 'width'
-      lengthType = this.args.yAxis_type
-      widthType = this.args.xAxis_type
+      lengthType = this.args.yAxisType
+      widthType = this.args.xAxisType
       lengthCoord = 'y'
       widthCoord = 'x'
       lengthScaleFunction = lengthType === 'categorical' ? this.args.scaleFunctions.youtf : this.args.scaleFunctions.yf
@@ -249,8 +249,8 @@ export default class BarChart {
     if (this.args.orientation === 'horizontal') {
       length = 'width'
       width = 'height'
-      lengthType = this.args.xAxis_type
-      widthType = this.args.yAxis_type
+      lengthType = this.args.xAxisType
+      widthType = this.args.yAxisType
       lengthCoord = 'x'
       widthCoord = 'y'
       lengthScaleFunction = lengthType === 'categorical' ? this.args.scaleFunctions.xoutf : this.args.scaleFunctions.xf
@@ -361,7 +361,7 @@ export default class BarChart {
     if (this.args.orientation === 'vertical') {
       length = 'height'
       width = 'width'
-      widthType = this.args.xAxis_type
+      widthType = this.args.xAxisType
       lengthCoord = 'y'
       widthCoord = 'x'
       widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.xoutf : this.args.scaleFunctions.xf
@@ -377,7 +377,7 @@ export default class BarChart {
     if (this.args.orientation === 'horizontal') {
       length = 'width'
       width = 'height'
-      widthType = this.args.yAxis_type
+      widthType = this.args.yAxisType
       lengthCoord = 'x'
       widthCoord = 'y'
       widthScaleFunction = widthType === 'categorical' ? this.args.scaleFunctions.youtf : this.args.scaleFunctions.yf
