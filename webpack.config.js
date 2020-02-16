@@ -1,7 +1,8 @@
 const path = require('path')
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
+  devtool: 'source-map',
   entry: './src/js/MG.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
