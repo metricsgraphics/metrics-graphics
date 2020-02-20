@@ -25,41 +25,30 @@ export function timeFormat (utc, specifier) {
   return utc ? utcFormat(specifier) : d3TimeFormat(specifier)
 }
 
-export function getRolloverTimeFormat (args) {
+export function getRolloverTimeFormat ({ rolloverTimeFormat, utcTime, timeFrame }) {
   // if a rollover time format is defined, use that
-  if (args.rollover_time_format) {
-    return timeFormat(args.utcTime, args.rollover_time_format)
-  }
+  if (rolloverTimeFormat) return timeFormat(utcTime, rolloverTimeFormat)
 
-  switch (args.processed.xTimeFrame) {
+  switch (timeFrame) {
     case 'millis':
-      return timeFormat(args.utcTime, '%b %e, %Y  %H:%M:%S.%L')
+      return timeFormat(utcTime, '%b %e, %Y  %H:%M:%S.%L')
     case 'seconds':
-      return timeFormat(args.utcTime, '%b %e, %Y  %H:%M:%S')
+      return timeFormat(utcTime, '%b %e, %Y  %H:%M:%S')
     case 'less-than-a-day':
-      return timeFormat(args.utcTime, '%b %e, %Y  %I:%M%p')
+      return timeFormat(utcTime, '%b %e, %Y  %I:%M%p')
     case 'four-days':
-      return timeFormat(args.utcTime, '%b %e, %Y  %I:%M%p')
+      return timeFormat(utcTime, '%b %e, %Y  %I:%M%p')
     default:
-      return timeFormat(args.utcTime, '%b %e, %Y')
+      return timeFormat(utcTime, '%b %e, %Y')
   }
 }
 
-export function dataInPlotBounds (datum, args) {
-  return datum[args.xAccessor] >= args.processed.minX &&
-  datum[args.xAccessor] <= args.processed.maxX &&
-  datum[args.yAccessor] >= args.processed.minY &&
-  datum[args.yAccessor] <= args.processed.maxY
+export function dataInPlotBounds ({ datum, xAccessor, yAccessor, minX, maxX, minY, maxY }) {
+  return datum[xAccessor] >= minX &&
+  datum[xAccessor] <= maxX &&
+  datum[yAccessor] >= minY &&
+  datum[yAccessor] <= maxY
 }
-
-export function getBottom (args) { return args.height - args.bottom }
-export function getRight (args) { return args.width - args.right }
-
-// returns the pixel location of the respective side of the plot area.
-export function getPlotBottom (args) { return getBottom(args) - args.buffer }
-export function getPlotTop (args) { return args.top + args.buffer }
-export function getPlotLeft (args) { return args.left + args.buffer }
-export function getPlotRight (args) { return getRight(args) - args.buffer }
 
 /**
  * adding and removing elements
@@ -67,14 +56,13 @@ export function getPlotRight (args) { return getRight(args) - args.buffer }
 export function exitAndRemove (el) { return el.exit().remove() }
 export function selectAllAndRemove (svg, cl) { return svg.selectAll(cl).remove() }
 export function addG (svg, cl) { return svg.append('g').classed(cl, true) }
-export function getSvgChildOf (selectorOrNode) { select(selectorOrNode).select('svg') }
 
 /**
  * axis helpers
  */
-export function makeRug (args, rugClass) {
-  const svg = getSvgChildOf(args.target)
-  const allData = args.data.flat(Infinity)
+export function makeRug ({ target, data, rugClass }) {
+  const svg = getSvgChildOf(target)
+  const allData = data.flat(Infinity)
   const rug = svg.selectAll(`line.${rugClass}`).data(allData)
 
   rug.enter()
@@ -88,9 +76,9 @@ export function makeRug (args, rugClass) {
   return rug
 }
 
-export function addColorAccessorToRug (rug, args, rugMonoClass) {
-  if (args.colorAccessor) {
-    rug.attr('stroke', args.scaleFunctions.colorFunction).classed(rugMonoClass, false)
+export function addColorAccessorToRug ({ rug, rugMonoClass, colorAccessor, colorFunction }) {
+  if (colorAccessor) {
+    rug.attr('stroke', colorFunction).classed(rugMonoClass, false)
   } else {
     rug.attr('stroke', null).classed(rugMonoClass, true)
   }
@@ -138,7 +126,7 @@ export function isHorizontallyOverlapping (element, sibling) {
   return false
 }
 
-export function preventHorizontalOverlap (labels, args) {
+export function preventHorizontalOverlap ({ labels, marginTop }) {
   if (!labels || labels.length === 1) return
 
   // see if each of our labels overlaps any of the other labels
@@ -147,13 +135,13 @@ export function preventHorizontalOverlap (labels, args) {
     if (labels.some(sibling => isHorizontallyOverlapping(label, sibling))) {
       const node = select(label)
       let newY = +node.attr('y')
-      if (newY + 8 >= args.top) newY = args.top - 16
+      if (newY + 8 >= marginTop) newY = marginTop - 16
       node.attr('y', newY)
     }
   })
 }
 
-export function preventVerticalOverlap (labels, args) {
+export function preventVerticalOverlap (labels) {
   if (!labels || labels.length === 1) return
 
   labels.sort((b, a) => select(a).attr('y') - select(b).attr('y'))
@@ -189,11 +177,11 @@ export function preventVerticalOverlap (labels, args) {
 export function isArrayOfArrays (arr) { return arr.every(el => Array.isArray(el)) }
 export function isArrayOfObjects (arr) { return arr.every(el => typeof el === 'object' && el !== null) }
 export function isArrayOfObjectsOrEmpty (arr) { return arr.every(el => typeof el === 'object') }
-export function inferType (args, ns) {
+export function inferType ({ data, accessor }) {
   // must return categorical or numerical.
-  let testPoint = args.data.flat()
+  let testPoint = data.flat()
 
-  testPoint = testPoint[0][args[ns + '_accessor']]
+  testPoint = accessor(testPoint[0])
   return typeof testPoint === 'string' ? 'categorical' : 'numerical'
 }
 
@@ -248,6 +236,12 @@ export function warnDeprecation (message, untilVersion) {
 export function getPixelDimension (target, dimension) { return Number(select(target).style(dimension).replace(/px/g, '')) }
 export function getWidth (target) { return getPixelDimension(target, 'width') }
 export function getHeight (target) { return getPixelDimension(target, 'height') }
+
+export function raiseContainerError (container, target) {
+  if (container.empty()) {
+    console.warn('The specified target element "' + target + '" could not be found in the page. The chart will not be rendered.')
+  }
+}
 
 /**
  * Text functions

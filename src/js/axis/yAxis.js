@@ -5,7 +5,7 @@ import { format } from 'd3-format'
 import { max } from 'd3-array'
 import { timeFormat as d3TimeFormat } from 'd3-time-format'
 import { defaultXaxFormat, getYFormatAndSecondaryTimeFunction } from './xAxis'
-import { callHook } from './hooks'
+import { callHook } from '../common/hooks'
 
 export function processScaleTicks (args, axis) {
   const accessor = args[axis + 'Accessor']

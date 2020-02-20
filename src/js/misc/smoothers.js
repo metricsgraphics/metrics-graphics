@@ -3,30 +3,30 @@ import { max, min, mean, zip, quantile, sum, range } from 'd3-array'
 import { line } from 'd3-shape'
 import { getSvgChildOf } from './utility'
 
-export function addLs (args) {
-  const svg = getSvgChildOf(args.target)
-  const data = args.data[0]
-  const minX = min(data, d => d[args.xAccessor])
-  const maxX = max(data, d => d[args.xAccessor])
+export function addLs ({ target, data, accessor, xScale, yScale, lsLine }) {
+  const svg = getSvgChildOf(target)
+  data = data[0]
+  const minX = min(data, accessor)
+  const maxX = max(data, accessor)
 
-  select(args.target).selectAll('.mg-least-squares-line').remove()
+  select(target).selectAll('.mg-least-squares-line').remove()
 
   svg.append('svg:line')
-    .attr('x1', args.scales.X(minX))
-    .attr('x2', args.scales.X(maxX))
-    .attr('y1', args.scales.Y(args.lsLine.fit(minX)))
-    .attr('y2', args.scales.Y(args.lsLine.fit(maxX)))
+    .attr('x1', xScale(minX))
+    .attr('x2', xScale(maxX))
+    .attr('y1', yScale(lsLine.fit(minX)))
+    .attr('y2', yScale(lsLine.fit(maxX)))
     .attr('class', 'mg-least-squares-line')
 }
 
-export function addLowess (args) {
-  const svg = getSvgChildOf(args.target)
-  const lowess = args.lowessLine
+export function addLowess ({ target, lowessLine, xScale, yScale, interpolate }) {
+  const svg = getSvgChildOf(target)
+  const lowess = lowessLine
 
   const lineGenerator = line()
-    .x(d => args.scales.X(d.x))
-    .y(d => args.scales.Y(d.y))
-    .interpolate(args.interpolate)
+    .x(xScale)
+    .y(yScale)
+    .interpolate(interpolate)
 
   svg.append('path')
     .attr('d', lineGenerator(lowess))

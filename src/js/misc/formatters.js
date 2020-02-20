@@ -1,17 +1,18 @@
 import { format } from 'd3-format'
 import { getRolloverTimeFormat, timeFormat } from './utility'
+import constants from './constants'
 
-export function formatRolloverNumber (args) {
-  if (args.format === 'count') {
+export function formatRolloverNumber ({ format, decimals, yaxUnitsAppend, yaxUnits }) {
+  if (format === constants.format.count) {
     return d => {
-      const pf = d % 1 !== 0 ? format(',.' + args.decimals + 'f') : format(',.0f')
+      const pf = d % 1 !== 0 ? format(`,.${decimals}f`) : format(',.0f')
 
       // are we adding units after the value or before?
-      return args.yaxUnitsAppend ? pf(d) + args.yaxUnits : args.yaxUnits + pf(d)
+      return yaxUnitsAppend ? pf(d) + yaxUnits : yaxUnits + pf(d)
     }
   } else {
     return d => {
-      const fmtString = (Number.isInteger(args.decimals) ? '.' + args.decimals : '') + '%'
+      const fmtString = Number.isInteger(decimals) ? `.${decimals}%` : '%'
       const pf = format(fmtString)
       return pf(d)
     }
@@ -37,66 +38,66 @@ export function numberRolloverFormat (f, d, accessor) {
   return d[accessor]
 }
 
-export function formatYRollover (args, num, d) {
+export function formatYRollover ({ num, d, mouseover, accessor, isTimeSeries, aggregateRollover, units, name }) {
   let formattedY
-  if (args.yMouseover !== null) {
-    formattedY = numberRolloverFormat(args.yMouseover, d, args.yAccessor)
+  if (mouseover !== null) {
+    formattedY = numberRolloverFormat(mouseover, d, accessor)
   } else {
-    if (args.timeSeries) {
-      formattedY = args.aggregateRollover
-        ? num(d[args.yAccessor])
-        : args.yaxUnits + num(d[args.yAccessor])
+    if (isTimeSeries) {
+      formattedY = aggregateRollover
+        ? num(accessor(d))
+        : units + num(accessor(d))
     } else {
-      formattedY = args.yAccessor + ': ' + args.yaxUnits + num(d[args.yAccessor])
+      formattedY = name + ': ' + units + num(accessor(d))
     }
   }
   return formattedY
 }
 
-export function formatXRollover (args, fmt, d) {
+export function formatXRollover ({ data, fmt, d, mouseover, isTimeSeries, utc, accessor, aggregateRollover, name }) {
   let formattedX
-  if (args.xMouseover !== null) {
-    if (args.timeSeries) {
-      formattedX = args.aggregateRollover
-        ? timeRolloverFormat(args.xMouseover, d, 'key', args.utc)
-        : timeRolloverFormat(args.xMouseover, d, args.xAccessor, args.utc)
+  if (mouseover !== null) {
+    if (isTimeSeries) {
+      formattedX = aggregateRollover
+        ? timeRolloverFormat(mouseover, d, 'key', utc)
+        : timeRolloverFormat(mouseover, d, accessor, utc)
     } else {
-      formattedX = numberRolloverFormat(args.xMouseover, d, args.xAccessor)
+      formattedX = numberRolloverFormat(mouseover, d, accessor)
     }
   } else {
-    if (args.timeSeries) {
+    if (isTimeSeries) {
       let date
 
-      if (args.aggregateRollover && args.data.length > 1) {
+      if (aggregateRollover && data.length > 1) {
         date = new Date(d.key)
       } else {
-        date = new Date(+d[args.xAccessor])
+        date = new Date(+accessor(d))
         date.setDate(date.getDate())
       }
 
       formattedX = fmt(date) + '  '
     } else {
-      formattedX = args.xAccessor + ': ' + d[args.xAccessor] + '   '
+      formattedX = name + ': ' + accessor(d) + '   '
     }
   }
   return formattedX
 }
 
-export function formatDataForMouseover (args, d, mouseoverFunction, accessor, checkTime) {
-  const timeFmt = getRolloverTimeFormat(args)
-  const formatter = typeof d[accessor] === 'string'
+export function formatDataForMouseover ({ rolloverTimeFormat, utcTime, timeFrame, d, mouseoverFunction, accessor, checkTime, decimals, yaxUnitsAppend, yaxUnits, isTimeSeries }) {
+  const timeFmt = getRolloverTimeFormat({ rolloverTimeFormat, utcTime, timeFrame })
+  const formatter = typeof accessor(d) === 'string'
     ? d => d
-    : formatRolloverNumber(args)
+    : formatRolloverNumber({ format, decimals, yaxUnitsAppend, yaxUnits })
 
   let formattedData
   if (mouseoverFunction !== null) {
     formattedData = checkTime
-      ? timeRolloverFormat(mouseoverFunction, d, accessor, args.utc)
+      ? timeRolloverFormat(mouseoverFunction, d, accessor, utcTime)
       : numberRolloverFormat(mouseoverFunction, d, accessor)
   } else {
     formattedData = checkTime
       ? timeFmt(new Date(+d[accessor])) + '  '
-      : (args.timeSeries ? '' : accessor + ': ') + formatter(d[accessor]) + '   '
+      : (isTimeSeries ? '' : accessor + ': ') + formatter(d[accessor]) + '   '
   }
   return formattedData
 }

@@ -8,8 +8,8 @@ import { callHook } from '../common/hooks'
 import { globals } from '../common/dataGraphic'
 import { init } from '../common/init'
 import { MGScale } from '../common/scales'
-import { axisFactory, yRug, addYLabel } from '../common/yAxis'
-import { xRug, addXLabel, getTimeFrame } from '../common/xAxis'
+import { axisFactory, yRug, addYLabel } from '../axis/yAxis'
+import { xRug, addXLabel, getTimeFrame, defaultXaxFormat } from '../axis/xAxis'
 import { addBrushFunction } from '../common/brush'
 import { markers } from '../common/markers'
 import { mouseoverText, clearMouseoverContainer } from '../common/rollover'
@@ -767,22 +767,25 @@ export default class LineChart extends AbstractChart {
 
     this.processLine()
 
+    // set x axis format to default if not specified
+    // if (!this.xAxisFormat) this.xAxisFormat = defaultXaxFormat(args)
+
     init(args)
 
     // TODO incorporate markers into calculation of x scales
-    new MGScale(args)
-      .namespace('x')
-      .numericalDomainFromData()
-      .numericalRange('bottom')
+    const xScale = new MGScale(args)
+    xScale.namespace('x')
+    xScale.numericalDomainFromData()
+    xScale.numericalRange('bottom')
 
     const baselines = (args.baselines || []).map(d => d[args.yAccessor])
 
-    new MGScale(args)
-      .namespace('y')
-      .zeroBottom(true)
-      .inflateDomain(true)
-      .numericalDomainFromData(baselines)
-      .numericalRange('left')
+    const yScale = new MGScale(args)
+    yScale.namespace('y')
+    yScale.zeroBottom(true)
+    yScale.inflateDomain(true)
+    yScale.numericalDomainFromData(baselines)
+    yScale.numericalRange('left')
 
     if (args.xAxis) {
       axisFactory(args)
@@ -817,11 +820,8 @@ export default class LineChart extends AbstractChart {
   processLine () {
     let timeFrame
 
-    // do we have a time-series?
-    const isTimeSeries = this.data.some(series => series.length > 0 && series[0][this.xAccessor] instanceof Date)
-
     // are we replacing missing y values with zeros?
-    if ((this.missingIsZero || this.missingIsHidden) && isTimeSeries) {
+    if ((this.missingIsZero || this.missingIsHidden) && this.isTimeSeries) {
       for (let i = 0; i < this.data.length; i++) {
         // we need to have a dataset of length > 2, so if it's less than that, skip
         if (this.data[i].length <= 1) continue

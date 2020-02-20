@@ -222,7 +222,12 @@ d3.json('data/fake_users1.json', function(data) {
         data,
         width: 600,
         height: 200,
-        right: 40,
+        margin: {
+            right: 40
+        },
+        title: {
+            text: 'UFO Sightings'
+        },
         target: document.getElementById('fake_users1'),
         xAccessor: 'date',
         yAccessor: 'value'

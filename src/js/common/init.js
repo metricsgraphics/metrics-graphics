@@ -1,58 +1,8 @@
-import { getWidth, getHeight, getSvgChildOf, targetRef, arrayDiff, countArrayElements } from '../misc/utility'
+import { getSvgChildOf, targetRef, arrayDiff, countArrayElements } from '../misc/utility'
 import { select } from 'd3-selection'
-import { defaultXaxFormat, defaultBarXaxFormat } from './xAxis'
+import { defaultXaxFormat, defaultBarXaxFormat } from '../axis/xAxis'
 import { max } from 'd3-array'
 import { chartTitle } from './chartTitle'
-
-const deepmerge = require('deepmerge')
-
-export function mergeArgsWithDefaults (args) {
-  const defaults = {
-    target: null,
-    title: null,
-    description: null
-  }
-
-  if (!args) {
-    args = {}
-  }
-
-  if (!args.processed) {
-    args.processed = {}
-  }
-
-  args = deepmerge(args, defaults)
-  return args
-}
-
-export function isTimeSeries (args) {
-  const firstElement = (args.processed.originalData || args.data).flat()[0]
-  args.timeSeries = (firstElement[args.processed.originalXAccessor || args.xAccessor]) instanceof Date
-}
-
-export function initComputeWidth (args) {
-  let svgWidth = parseInt(args.width)
-  if (args.fullWidth) {
-    svgWidth = getWidth(args.target)
-  }
-  if (args.xAxisType === 'categorical' && svgWidth === null) {
-    svgWidth = categoricalCalculateHeight(args, 'x')
-  }
-
-  args.width = svgWidth
-}
-
-export function initComputeHeight (args) {
-  let svgHeight = parseInt(args.height)
-  if (args.full_height) {
-    svgHeight = getHeight(args.target)
-  }
-  if (args.yAxisType === 'categorical' && svgHeight === null) {
-    svgHeight = categoricalCalculateHeight(args, 'y')
-  }
-
-  args.height = svgHeight
-}
 
 export function removeSvgIfChartTypeHasChanged (svg, args) {
   if ((!svg.selectAll('.mg-main-line').empty() && args.chartType !== 'line') ||
@@ -241,12 +191,7 @@ export function categoricalCalculateHeight (args, ns) {
     (args.categoricalGroups.length * args[ns + 'group_height'] * (args[ns + 'group_padding_percentage'] + args[ns + 'group_outer_padding_percentage']))
 }
 
-export function barchartExtrapolateGroupAndThicknessFromHeight (args) {
-  // we need to set args.bar_thickness, group_height
-}
-
 export function init (args) {
-  args = mergeArgsWithDefaults(args)
   // If you pass in a dom element for args.target, the expectation
   // of a string elsewhere will break.
   const container = select(args.target)
@@ -259,10 +204,6 @@ export function init (args) {
   if (args.xAxisType === 'categorical') { categoricalInitialization(args, 'x') }
 
   selectXaxFormat(args)
-
-  isTimeSeries(args)
-  initComputeWidth(args)
-  initComputeHeight(args)
 
   removeSvgIfChartTypeHasChanged(svg, args)
   svg = addSvgIfItDoesntExist(svg, args)
