@@ -14,15 +14,16 @@ export default class Axis {
   orientation = 'bottom'
   axisObject = null
 
-  constructor ({ type, label, left, top, scale, rangeLength, domain, orientation }) {
-    this.type = type ?? this.type
-    this.label = label ?? this.label
-    this.top = top ?? this.top
-    this.left = left ?? this.left
-    this.scale = scale ?? this.scale
-    this.rangeLength = rangeLength ?? this.rangeLength
-    this.domain = domain ?? this.domain
-    this.orientation = orientation ?? this.orientation
+  constructor (args) {
+    console.log('setting up axis: ', args)
+    this.type = args.type ?? this.type
+    this.label = args.label ?? this.label
+    this.top = args.top ?? this.top
+    this.left = args.left ?? this.left
+    this.scale = args.scale ?? this.scale
+    this.rangeLength = args.rangeLength ?? this.rangeLength
+    this.domain = args.domain ?? this.domain
+    this.orientation = args.orientation ?? this.orientation
 
     // set up scale if necessary
     if (!this.scale) this.setupScale()

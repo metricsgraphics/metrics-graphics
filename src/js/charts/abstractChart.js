@@ -1,5 +1,7 @@
 import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseContainerError, targetRef } from '../misc/utility'
 import { select } from 'd3-selection'
+import XScale from '../scale/xScale'
+import YScale from '../scale/yScale'
 
 export default class AbstractChart {
   // base chart fields
@@ -12,6 +14,14 @@ export default class AbstractChart {
   xAccessor = null
   yAccessor = null
   colors = []
+
+  // scales
+  xScale = null
+  yScale = null
+
+  // axes
+  xAxis = null
+  yAxis = null
 
   // dimensions
   width = 0
@@ -30,32 +40,34 @@ export default class AbstractChart {
   isNestedArrayOfArrays = false
   isNestedArrayOfObjects = false
 
-  constructor ({ data, markers, width, height, target, xAccessor, yAccessor, color, colors, margin, buffer = 0 }) {
+  constructor (args) {
     // check that at least some data was specified
-    if (!data || !data.length) return console.error('no data specified')
+    if (!args.data || !args.data.length) return console.error('no data specified')
 
     // check that the target is defined
-    if (!target || target === '') return console.error('no target specified')
+    if (!args.target || args.target === '') return console.error('no target specified')
 
     // set parameters
-    this.data = data
-    this.markers = markers
-    this.target = target
+    this.data = args.data
+    this.target = args.target
+    this.markers = args.markers ?? this.markers
 
     // convert string accessors to functions if necessary
-    this.xAccessor = typeof xAccessor === 'string' ? d => d[xAccessor] : xAccessor
-    this.yAccessor = typeof yAccessor === 'string' ? d => d[yAccessor] : yAccessor
-    if (margin) this.margin = margin
-    this.buffer = buffer
+    this.xAccessor = typeof xAccessor === 'string'
+      ? d => d[args.xAccessor] : args.xAccessor
+    this.yAccessor = typeof yAccessor === 'string'
+      ? d => d[args.yAccessor] : args.yAccessor
+    if (args.margin) this.margin = args.margin
+    this.buffer = args.buffer ?? this.buffer
 
     // compute dimensions
-    this.width = this.isFullWidth ? getWidth(this.target) : parseInt(width)
-    this.height = this.isFullHeight ? getHeight(this.target) : parseInt(height)
+    this.width = this.isFullWidth ? getWidth(this.target) : parseInt(args.width)
+    this.height = this.isFullHeight ? getHeight(this.target) : parseInt(args.height)
 
     // normalize color and colors arguments
-    this.colors = color
-      ? Array.isArray(color) ? color : [color]
-      : Array.isArray(colors) ? colors : [colors]
+    this.colors = args.color
+      ? Array.isArray(args.color) ? args.color : [args.color]
+      : Array.isArray(args.colors) ? args.colors : [args.colors]
 
     this.setDataTypeFlags()
 
@@ -63,6 +75,10 @@ export default class AbstractChart {
     this.addSvgIfItDoesntExist()
     this.addClipPathForPlotArea()
     this.setViewboxForScaling()
+
+    // set up scale functions
+    this.xScale = args.xScale ?? new XScale(args)
+    this.yScale = args.yScale ?? new YScale(args)
   }
 
   setDataTypeFlags () {
