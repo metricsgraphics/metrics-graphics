@@ -1,7 +1,6 @@
 import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseContainerError, targetRef } from '../misc/utility'
 import { select } from 'd3-selection'
-import XScale from '../scale/xScale'
-import YScale from '../scale/yScale'
+import Scale from '../components/scale'
 
 export default class AbstractChart {
   // base chart fields
@@ -9,6 +8,7 @@ export default class AbstractChart {
   markers = []
   target = null
   svg = null
+  container = null
 
   // accessors
   xAccessor = null
@@ -31,7 +31,7 @@ export default class AbstractChart {
 
   // margins
   margin = { top: 10, left: 60, right: 20, bottom: 30 }
-  buffer = 0
+  buffer = 10
 
   // data type flags
   isSingleObject = false
@@ -91,35 +91,43 @@ export default class AbstractChart {
     this.setViewboxForScaling()
 
     // set up scales
-    this.xScale = new XScale(xScale ?? {})
-    this.yScale = new YScale(yScale ?? {})
+    this.xScale = new Scale({
+      range: [0, this.innerWidth],
+      ...xScale
+    })
+    this.yScale = new Scale({
+      range: [this.innerHeight, 0],
+      ...yScale
+    })
 
-    // set ranges
-    this.xScale.range = [0, this.innerWidth]
-    this.yScale.range = [this.innerHeight, 0]
+    // set up main container
+    this.container = this.svg
+      .append('g')
+      .attr('transform', `translate(${this.plotLeft},${this.plotTop})`)
   }
 
   setDataTypeFlags () {
+    console.log('computing data type flags: ', JSON.parse(JSON.stringify(this.data)))
     // case 1: data is just one object, e.g. for bar chart
     if (!Array.isArray(this.data)) {
-      this.singleObject = true
+      this.isSingleObject = true
       return
     }
 
     // case 2: data is array of objects
     if (!isArrayOfArrays(this.data)) {
-      this.arrayOfObjects = true
+      this.isArrayOfObjects = true
       return
     }
 
     // case 3: data is at least array of arrays
-    this.arrayOfArrays = true
+    this.isArrayOfArrays = true
 
     // case 4: nested array of objects
-    this.nestedArrayOfObjects = this.data.every(da => isArrayOfObjectsOrEmpty(da))
+    this.isNestedArrayOfObjects = this.data.every(da => isArrayOfObjectsOrEmpty(da))
 
     // case 5: nested array of arrays
-    this.nestedArrayOfArrays = this.data.every(da => isArrayOfArrays(da))
+    this.isNestedArrayOfArrays = this.data.every(da => isArrayOfArrays(da))
   }
 
   addSvgIfItDoesntExist () {
@@ -129,6 +137,7 @@ export default class AbstractChart {
     this.svg = (!svg || svg.empty())
       ? select(this.target)
         .append('svg')
+        .classed('mg-graph', true)
         .attr('width', this.width)
         .attr('height', this.height)
       : svg
@@ -162,8 +171,8 @@ export default class AbstractChart {
 
   // returns the pixel location of the respective side of the plot area.
   get plotBottom () { return this.bottom - this.buffer }
-  get plotTop () { return this.margin.top + this.buffer }
-  get plotLeft () { return this.margin.left + this.buffer }
+  get plotTop () { return this.top + this.buffer }
+  get plotLeft () { return this.left + this.buffer }
   get plotRight () { return this.right - this.buffer }
 
   get innerWidth () { return this.width - this.margin.left - this.margin.right - 2 * this.buffer }

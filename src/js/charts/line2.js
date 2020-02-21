@@ -1,6 +1,7 @@
 import AbstractChart from './abstractChart'
-import Axis from '../axis/axis'
+import Axis from '../components/axis'
 import { extent } from 'd3-array'
+import Line from '../components/line'
 
 /**
  * Sets up a new line chart.
@@ -26,6 +27,8 @@ import { extent } from 'd3-array'
   }
  */
 export default class LineChart extends AbstractChart {
+  lines = []
+
   constructor (args) {
     super(args)
     console.log('instantiating new line chart: ', args)
@@ -39,6 +42,7 @@ export default class LineChart extends AbstractChart {
       orientation: 'bottom',
       top: this.bottom,
       left: this.left,
+      buffer: this.buffer,
       ...args.xAxis
     })
     this.yAxis = new Axis({
@@ -46,10 +50,23 @@ export default class LineChart extends AbstractChart {
       orientation: 'left',
       top: this.top,
       left: this.left,
+      buffer: this.buffer,
       ...args.yAxis
     })
     this.xAxis.mountTo(this.svg)
     this.yAxis.mountTo(this.svg)
+
+    // compute lines
+    this.lines = this.data.map(lineData => new Line({
+      data: lineData,
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      xScale: this.xScale,
+      yScale: this.yScale
+    }))
+
+    // mount lines
+    this.lines.forEach(line => line.mountTo(this.container))
   }
 
   /**
@@ -66,7 +83,10 @@ export default class LineChart extends AbstractChart {
       throw new Error('error: line chart needs data in array format')
     }
 
-    if (this.isArrayOfObjects) this.data = [this.data]
+    console.log('is array of objects: ', this)
+    if (this.isArrayOfObjects) {
+      this.data = [this.data]
+    }
   }
 
   computeDomains () {

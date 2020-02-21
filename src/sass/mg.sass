@@ -1,3 +1,21 @@
+$axes-color: #b3b2b2
+$line-color-1: #4040e8
+
+.mg-graph
+  .domain
+    stroke: $axes-color
+  .tick
+    line
+      stroke: $axes-color
+    text
+      font-size: 0.9rem
+      fill: black
+      opacity: 0.6
+
+.mg-line
+  fill: none
+  stroke: $line-color-1
+
 .mg-active-datapoint
   fill: black
   font-size: 0.9rem
@@ -382,8 +400,6 @@ circle.mg-points-mono, tspan.mg-points-mono
 
 .mg-x-axis-small .label, .mg-y-axis-small .label
   font-size: 0.65rem
-
-.mg-european-hours
 
 .mg-year-marker
   text

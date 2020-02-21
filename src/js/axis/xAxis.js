@@ -9,15 +9,12 @@ import { scaleLinear, scaleOrdinal } from 'd3-scale'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import { addScaleFunction, addColorCategoricalScale } from '../common/scales'
 import constants from '../misc/constants'
-import Axis from './axis'
 
-export default class XAxis extends Axis {
+export default class XAxis {
   format = null
   isTimeSeries = false
 
   constructor ({ type, label, chartType, format, data, accessor }) {
-    super({ type, label })
-
     // determine if the data is a time series
     this.isTimeSeries = data.some(series => series.length > 0 && series[0][accessor] instanceof Date)
 

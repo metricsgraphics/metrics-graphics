@@ -1,3 +1,18 @@
+.mg-graph .domain {
+  stroke: #b3b2b2; }
+
+.mg-graph .tick line {
+  stroke: #b3b2b2; }
+
+.mg-graph .tick text {
+  font-size: 0.9rem;
+  fill: black;
+  opacity: 0.6; }
+
+.mg-line {
+  fill: none;
+  stroke: #4040e8; }
+
 .mg-active-datapoint {
   fill: black;
   font-size: 0.9rem;

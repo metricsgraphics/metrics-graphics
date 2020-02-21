@@ -4,6 +4,7 @@ export default class Scale {
   name = null
   type = null
   scaleObject = null
+  formatSpecifier = null
 
   constructor ({ name, scaleObject, type, range, domain }) {
     console.log('instantiating scale: ', arguments)
