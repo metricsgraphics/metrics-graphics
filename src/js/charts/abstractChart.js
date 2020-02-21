@@ -30,7 +30,7 @@ export default class AbstractChart {
   isFullHeight = false
 
   // margins
-  margin = { top: 0, left: 0, right: 0, bottom: 0 }
+  margin = { top: 10, left: 60, right: 20, bottom: 30 }
   buffer = 0
 
   // data type flags
@@ -40,34 +40,48 @@ export default class AbstractChart {
   isNestedArrayOfArrays = false
   isNestedArrayOfObjects = false
 
-  constructor (args) {
+  constructor ({
+    data,
+    target,
+    markers,
+    xAccessor,
+    yAccessor,
+    margin,
+    buffer,
+    width,
+    height,
+    color,
+    colors,
+    xScale,
+    yScale
+  }) {
     // check that at least some data was specified
-    if (!args.data || !args.data.length) return console.error('no data specified')
+    if (!data || !data.length) return console.error('no data specified')
 
     // check that the target is defined
-    if (!args.target || args.target === '') return console.error('no target specified')
+    if (!target || target === '') return console.error('no target specified')
 
     // set parameters
-    this.data = args.data
-    this.target = args.target
-    this.markers = args.markers ?? this.markers
+    this.data = data
+    this.target = target
+    this.markers = markers ?? this.markers
 
     // convert string accessors to functions if necessary
     this.xAccessor = typeof xAccessor === 'string'
-      ? d => d[args.xAccessor] : args.xAccessor
+      ? d => d[xAccessor] : xAccessor
     this.yAccessor = typeof yAccessor === 'string'
-      ? d => d[args.yAccessor] : args.yAccessor
-    if (args.margin) this.margin = args.margin
-    this.buffer = args.buffer ?? this.buffer
+      ? d => d[yAccessor] : yAccessor
+    if (margin) this.margin = margin
+    this.buffer = buffer ?? this.buffer
 
     // compute dimensions
-    this.width = this.isFullWidth ? getWidth(this.target) : parseInt(args.width)
-    this.height = this.isFullHeight ? getHeight(this.target) : parseInt(args.height)
+    this.width = this.isFullWidth ? getWidth(this.target) : parseInt(width)
+    this.height = this.isFullHeight ? getHeight(this.target) : parseInt(height)
 
     // normalize color and colors arguments
-    this.colors = args.color
-      ? Array.isArray(args.color) ? args.color : [args.color]
-      : Array.isArray(args.colors) ? args.colors : [args.colors]
+    this.colors = color
+      ? Array.isArray(color) ? color : [color]
+      : Array.isArray(colors) ? colors : [colors]
 
     this.setDataTypeFlags()
 
@@ -76,9 +90,13 @@ export default class AbstractChart {
     this.addClipPathForPlotArea()
     this.setViewboxForScaling()
 
-    // set up scale functions
-    this.xScale = args.xScale ?? new XScale(args)
-    this.yScale = args.yScale ?? new YScale(args)
+    // set up scales
+    this.xScale = new XScale(xScale ?? {})
+    this.yScale = new YScale(yScale ?? {})
+
+    // set ranges
+    this.xScale.range = [0, this.innerWidth]
+    this.yScale.range = [this.innerHeight, 0]
   }
 
   setDataTypeFlags () {
@@ -137,12 +155,17 @@ export default class AbstractChart {
     }
   }
 
-  getBottom () { return this.height - this.margin.bottom }
-  getRight () { return this.width - this.margin.right }
+  get top () { return this.margin.top }
+  get left () { return this.margin.left }
+  get bottom () { return this.height - this.margin.bottom }
+  get right () { return this.width - this.margin.right }
 
   // returns the pixel location of the respective side of the plot area.
-  getPlotBottom () { return this.getBottom() - this.buffer }
-  getPlotTop () { return this.margin.top + this.buffer }
-  getPlotLeft () { return this.margin.left + this.buffer }
-  getPlotRight () { return this.getRight() - this.buffer }
+  get plotBottom () { return this.bottom - this.buffer }
+  get plotTop () { return this.margin.top + this.buffer }
+  get plotLeft () { return this.margin.left + this.buffer }
+  get plotRight () { return this.right - this.buffer }
+
+  get innerWidth () { return this.width - this.margin.left - this.margin.right - 2 * this.buffer }
+  get innerHeight () { return this.height - this.margin.top - this.margin.bottom - 2 * this.buffer }
 }

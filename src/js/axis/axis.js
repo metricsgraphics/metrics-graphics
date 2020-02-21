@@ -1,5 +1,4 @@
 import constants from '../misc/constants'
-import { scaleLinear, scaleLog } from 'd3-scale'
 import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
 
 export default class Axis {
@@ -8,54 +7,46 @@ export default class Axis {
   label = ''
   top = 0
   left = 0
-  rangeLength = 0
-  domain = [0, 1]
   scale = null
   orientation = 'bottom'
   axisObject = null
 
-  constructor (args) {
-    console.log('setting up axis: ', args)
-    this.type = args.type ?? this.type
-    this.label = args.label ?? this.label
-    this.top = args.top ?? this.top
-    this.left = args.left ?? this.left
-    this.scale = args.scale ?? this.scale
-    this.rangeLength = args.rangeLength ?? this.rangeLength
-    this.domain = args.domain ?? this.domain
-    this.orientation = args.orientation ?? this.orientation
+  constructor ({
+    type,
+    orientation,
+    label,
+    top,
+    left,
+    scale
+  }) {
+    console.log('setting up axis: ', arguments)
 
-    // set up scale if necessary
-    if (!this.scale) this.setupScale()
+    // cry if no scale is set
+    if (!scale) throw new Error('an axis needs a scale')
+
+    this.scale = scale
+    this.type = type ?? this.type
+    this.label = label ?? this.label
+    this.top = top ?? this.top
+    this.left = left ?? this.left
+    this.orientation = orientation ?? this.orientation
 
     this.setupAxisObject()
-  }
-
-  setupScale () {
-    // set type
-    this.scale = this.type === constants.scaleType.linear
-      ? scaleLinear()
-      : scaleLog()
-
-    // set range and domain
-    this.scale
-      .range([this.left, this.rangeLength])
-      .domain(this.domain)
   }
 
   setupAxisObject () {
     switch (this.orientation) {
       case constants.axisOrientation.top:
-        this.axisObject = axisTop(this.scale)
+        this.axisObject = axisTop(this.scale.scaleObject)
         break
       case constants.axisOrientation.left:
-        this.axisObject = axisLeft(this.scale)
+        this.axisObject = axisLeft(this.scale.scaleObject)
         break
       case constants.axisOrientation.right:
-        this.axisObject = axisRight(this.scale)
+        this.axisObject = axisRight(this.scale.scaleObject)
         break
       default:
-        this.axisObject = axisBottom(this.scale)
+        this.axisObject = axisBottom(this.scale.scaleObject)
         break
     }
   }
