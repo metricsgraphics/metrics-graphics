@@ -3,8 +3,6 @@ import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
 import { format } from 'd3-format'
 
 export default class Axis {
-  type = constants.scaleType.linear
-  orientation
   label = ''
   top = 0
   left = 0
@@ -16,7 +14,6 @@ export default class Axis {
   isVertical = false
 
   constructor ({
-    type,
     orientation,
     label,
     top,
@@ -32,7 +29,6 @@ export default class Axis {
     if (!scale) throw new Error('an axis needs a scale')
 
     this.scale = scale
-    this.type = type ?? this.type
     this.label = label ?? this.label
     this.buffer = buffer ?? this.buffer
     this.top = top ?? this.top
