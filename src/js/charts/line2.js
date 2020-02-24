@@ -31,7 +31,6 @@ export default class LineChart extends AbstractChart {
 
   constructor (args) {
     super(args)
-    console.log('instantiating new line chart: ', args)
 
     this.normalizeData()
     this.computeDomains(args)
@@ -83,10 +82,7 @@ export default class LineChart extends AbstractChart {
       throw new Error('error: line chart needs data in array format')
     }
 
-    console.log('is array of objects: ', this)
-    if (this.isArrayOfObjects) {
-      this.data = [this.data]
-    }
+    if (this.isArrayOfObjects) this.data = [this.data]
   }
 
   computeDomains () {

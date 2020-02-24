@@ -12,8 +12,6 @@ export default class Line {
     yScale,
     curve
   }) {
-    console.log('instantiating new line: ', arguments[0])
-
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data

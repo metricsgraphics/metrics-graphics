@@ -757,7 +757,6 @@ function removeActiveDatapointsForGenericRollover ({ customLineColorMap, data },
 
 export default class LineChart extends AbstractChart {
   constructor (args) {
-    console.log('line chart with args: ', clone(args))
     super(args)
 
     // sort data

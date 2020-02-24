@@ -107,7 +107,6 @@ export default class AbstractChart {
   }
 
   setDataTypeFlags () {
-    console.log('computing data type flags: ', JSON.parse(JSON.stringify(this.data)))
     // case 1: data is just one object, e.g. for bar chart
     if (!Array.isArray(this.data)) {
       this.isSingleObject = true

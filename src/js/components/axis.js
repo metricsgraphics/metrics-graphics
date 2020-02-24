@@ -24,8 +24,6 @@ export default class Axis {
     compact,
     buffer
   }) {
-    console.log('setting up axis: ', arguments)
-
     // cry if no scale is set
     if (!scale) throw new Error('an axis needs a scale')
 
