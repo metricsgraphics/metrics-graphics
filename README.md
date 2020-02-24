@@ -1,5 +1,3 @@
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status][travis-badge]][travis-badge-url] [![CDNJS](https://img.shields.io/cdnjs/v/metrics-graphics.svg)](https://cdnjs.com/libraries/metrics-graphics)
-
 **Note**: As heavy rework is underway, this fork is currently broken. Please come back later.
 
 Changes on this fork:
@@ -13,6 +11,68 @@ Changes on this fork:
 * removed magic numbers
 * removed obsolete helper functions
 * reduced scope: removed tooltips, buttons and tables
+
+### Current development progress
+
+Currently, the parts out of which the charts are built (e.g. axes) are being reworked.
+
+The following gives an overview over which options are already finished.
+
+**Axes**: `const axis = new Axis(args)`
+
+This is semi-user-facing: When instantiating a new chart, a configuration object can be passed to the respective axis:
+
+```javascript
+new LineChart({
+  /// stuff
+  xAxis: {
+    // x axis configuration
+  }
+})
+```
+
+The configuration passed by the user will overwrite set defaults and computed properties, e.g. the scale function, which is computed by the graph.****
+
+- [x] `axes_not_compact` -> `reduce` to [avoid negated conditionals](https://github.com/ryanmcdermott/clean-code-javascript#avoid-negative-conditionals)
+- [ ] `european_clock` -> `useEuropeanHours`
+- [ ] `inflator`
+- [ ] `max_x` -> `maxValue`
+- [ ] `max_y` -> `maxValue`
+- [ ] `min_x` -> `minValue`
+- [ ] `min_y` -> `minValue`
+- [x] (`min_y_from_data`) domains are calculated based on the passed data by default, can be overwritten by `minValue` and `maxValue`
+- [x] (`missing_text`) that's not something an axis should need to worry about
+- [x] (`missing_background`) that's not something an axis should need to worry about
+- [ ] `show_year_markers` -> `showYearMarkers`
+- [ ] `xax_count` -> `tickCount`
+- [ ] `yax_count` -> `tickCount`
+- [ ] `xax_format` -> `tickFormat`
+- [ ] `yax_format` -> `tickFormat`
+- [ ] `x_axis` -> `show`
+- [ ] `y_axis` -> `show`
+- [ ] `x_extended_ticks` -> `extendedTicks`
+- [ ] `y_extended_ticks` -> `extendedTicks`
+- [ ] `x_label` -> `label`
+- [ ] `y_label` -> `label`
+- [x] (`x_scale_type`) scale specified through passed `scale`
+- [x] (`y_scale_type`) scale specified through passed `scale`
+- [ ] `xax_tick_length` -> `tickLength`
+- [ ] `yax_tick_length` -> `tickLength`
+- [ ] `xax_units` -> `prefix` and `suffix`
+- [ ] `yax_units` -> `prefix` and `suffix`
+- [ ] `yax_units_append` -> `prefix` and `suffix`
+
+
+New parameters:
+
+These are set by the chart using the axis instance, but can be overwritten by the user if necessary.
+
+* `orientation`: axis orientation
+* `top`: top margin
+* `left`: left margin
+* `scale`: scale used by the axis
+
+# Main Readme
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
