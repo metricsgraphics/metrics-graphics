@@ -31,7 +31,7 @@ new LineChart({
 })
 ```
 
-The configuration passed by the user will overwrite set defaults and computed properties, e.g. the scale function, which is computed by the graph.****
+The configuration passed by the user will overwrite set defaults and computed properties, e.g. the scale function, which is computed by the graph.
 
 - [x] `axes_not_compact` -> `reduce` to [avoid negated conditionals](https://github.com/ryanmcdermott/clean-code-javascript#avoid-negative-conditionals)
 - [ ] `european_clock` -> `useEuropeanHours`
