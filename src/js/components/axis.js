@@ -9,7 +9,7 @@ export default class Axis {
   scale = null
   orientation = 'bottom'
   axisObject = null
-  reduce = false
+  compact = false
   buffer = 0
   isVertical = false
 
@@ -20,7 +20,7 @@ export default class Axis {
     left,
     scale,
     tickFormat,
-    reduce,
+    compact,
     buffer
   }) {
     console.log('setting up axis: ', arguments)
@@ -34,7 +34,7 @@ export default class Axis {
     this.top = top ?? this.top
     this.left = left ?? this.left
     this.orientation = orientation ?? this.orientation
-    this.reduce = reduce ?? this.reduce
+    this.compact = compact ?? this.compact
     this.isVertical = [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
 
     this.setupAxisObject()
@@ -68,13 +68,13 @@ export default class Axis {
     if (this.isVertical) {
       x1 = 0.5
       x2 = 0.5
-      y1 = this.reduce ? this.top + 0.5 : 0.5
-      y2 = this.reduce
+      y1 = this.compact ? this.top + 0.5 : 0.5
+      y2 = this.compact
         ? this.scale.range[0] + 0.5
         : this.scale.range[0] + 2 * this.buffer + 0.5
     } else {
-      x1 = this.reduce ? this.buffer : 0
-      x2 = this.reduce
+      x1 = this.compact ? this.buffer : 0
+      x2 = this.compact
         ? this.scale.range[1]
         : this.scale.range[1] + 2 * this.buffer
     }
