@@ -44,8 +44,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] (`missing_text`) that's not something an axis should need to worry about
 - [x] (`missing_background`) that's not something an axis should need to worry about
 - [ ] `show_year_markers` -> `showYearMarkers`
-- [ ] `xax_count` -> `tickCount`
-- [ ] `yax_count` -> `tickCount`
+- [x] `xax_count` -> `tickCount`
+- [x] `yax_count` -> `tickCount`
 - [ ] `xax_format` -> `tickFormat`
 - [ ] `yax_format` -> `tickFormat`
 - [ ] `x_axis` -> `show`

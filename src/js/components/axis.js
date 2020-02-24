@@ -20,6 +20,7 @@ export default class Axis {
     left,
     scale,
     tickFormat,
+    tickCount,
     compact,
     buffer
   }) {
@@ -41,6 +42,7 @@ export default class Axis {
 
     // set or compute tickFormat
     this.tickFormat = tickFormat ?? format('.0f') // TODO
+    this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
   }
 
   setupAxisObject () {
@@ -102,4 +104,5 @@ export default class Axis {
   }
 
   set tickFormat (tickFormat) { this.axisObject.tickFormat(tickFormat) }
+  set tickCount (tickCount) { this.axisObject.ticks(tickCount) }
 }
