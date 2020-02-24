@@ -263,7 +263,10 @@
                 height: 180,
                 target: '#ufo-sightings',
                 xAccessor: 'year',
-                yAccessor: 'sightings'
+                yAccessor: 'sightings',
+                yScale: {
+                    minValue: 0
+                }
             })
         })
     </script>

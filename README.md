@@ -36,11 +36,11 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] `axes_not_compact` -> `compact` to [avoid negated conditionals](https://github.com/ryanmcdermott/clean-code-javascript#avoid-negative-conditionals)
 - [ ] `european_clock` -> `useEuropeanHours`
 - [ ] `inflator`
-- [ ] `max_x` -> `maxValue`
-- [ ] `max_y` -> `maxValue`
-- [ ] `min_x` -> `minValue`
-- [ ] `min_y` -> `minValue`
-- [x] (`min_y_from_data`) domains are calculated based on the passed data by default, can be overwritten by `minValue` and `maxValue`
+- [x] `max_x` -> `scale`
+- [x] `max_y` -> `scale`
+- [x] `min_x` -> `scale`
+- [x] `min_y` -> `scale`
+- [x] (`min_y_from_data`) domains are calculated based on the passed data by default, can be overwritten by `minValue` and `maxValue` in the passed `scale`
 - [x] (`missing_text`) that's not something an axis should need to worry about
 - [x] (`missing_background`) that's not something an axis should need to worry about
 - [ ] `show_year_markers` -> `showYearMarkers`
