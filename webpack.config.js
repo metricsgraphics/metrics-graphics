@@ -1,14 +1,17 @@
 const path = require('path')
 
-module.exports = {
-  mode: 'development',
-  devtool: 'source-map',
+module.exports = ({ mode }) => ({
+  mode,
+  devtool: mode !== 'production' ? 'source-map' : '',
   entry: './src/js/MG.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'metrics-graphics.js',
     library: 'MG',
     libraryTarget: 'umd2'
+  },
+  externals: {
+    d3: 'd3'
   },
   module: {
     rules: [
@@ -19,4 +22,4 @@ module.exports = {
       }
     ]
   }
-}
+})
