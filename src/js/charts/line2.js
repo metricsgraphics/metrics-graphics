@@ -32,29 +32,6 @@ export default class LineChart extends AbstractChart {
   constructor (args) {
     super(args)
 
-    this.normalizeData()
-    this.computeDomains(args)
-
-    // set up axes
-    this.xAxis = new Axis({
-      scale: this.xScale,
-      orientation: 'bottom',
-      top: this.bottom,
-      left: this.left,
-      buffer: this.buffer,
-      ...args.xAxis
-    })
-    this.yAxis = new Axis({
-      scale: this.yScale,
-      orientation: 'left',
-      top: this.top,
-      left: this.left,
-      buffer: this.buffer,
-      ...args.yAxis
-    })
-    this.xAxis.mountTo(this.svg)
-    this.yAxis.mountTo(this.svg)
-
     // compute lines
     this.lines = this.data.map(lineData => new Line({
       data: lineData,

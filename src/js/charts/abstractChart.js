@@ -1,6 +1,7 @@
 import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseContainerError, targetRef } from '../misc/utility'
 import { select } from 'd3-selection'
 import Scale from '../components/scale'
+import Axis from '../components/axis'
 
 export default class AbstractChart {
   // base chart fields
@@ -53,7 +54,9 @@ export default class AbstractChart {
     color,
     colors,
     xScale,
-    yScale
+    yScale,
+    xAxis,
+    yAxis
   }) {
     // check that at least some data was specified
     if (!data || !data.length) return console.error('no data specified')
@@ -100,12 +103,44 @@ export default class AbstractChart {
       ...yScale
     })
 
+    // normalize data if necessary
+    this.normalizeData()
+    this.computeDomains()
+
+    // set up axes if not disabled
+    const hideX = xAxis && typeof xAxis.show !== 'undefined' && !xAxis.show
+    const hideY = yAxis && typeof yAxis.show !== 'undefined' && !yAxis.show
+    this.xAxis = !hideX ? new Axis({
+      scale: this.xScale,
+      orientation: 'bottom',
+      top: this.bottom,
+      left: this.left,
+      buffer: this.buffer,
+      ...xAxis
+    }) : null
+    this.yAxis = !hideY ? new Axis({
+      scale: this.yScale,
+      orientation: 'left',
+      top: this.top,
+      left: this.left,
+      buffer: this.buffer,
+      ...yAxis
+    }) : null
+
     // set up main container
     this.container = this.svg
       .append('g')
       .attr('transform', `translate(${this.plotLeft},${this.plotTop})`)
+
+    // attach axes
+    if (this.xAxis) this.xAxis.mountTo(this.svg)
+    if (this.yAxis) this.yAxis.mountTo(this.svg)
   }
 
+  /**
+   * This method is called by the abstract chart constructor.
+   * In order to simplify parsing of passed data, set flags specifying what types of data we're dealing with.
+   */
   setDataTypeFlags () {
     // case 1: data is just one object, e.g. for bar chart
     if (!Array.isArray(this.data)) {
@@ -129,6 +164,11 @@ export default class AbstractChart {
     this.isNestedArrayOfArrays = this.data.every(da => isArrayOfArrays(da))
   }
 
+  /**
+   * This method is called by the abstract chart constructor.
+   * Append the local svg node to the specified target, if necessary.
+   * Return existing svg node if it's already present.
+   */
   addSvgIfItDoesntExist () {
     const container = select(this.target)
     raiseContainerError(container, this.target)
@@ -142,6 +182,10 @@ export default class AbstractChart {
       : svg
   }
 
+  /**
+   * This method is called by the abstract chart constructor.
+   * Set up the clipping path to allow zooming later.
+   */
   addClipPathForPlotArea () {
     this.svg.selectAll('.mg-clip-path').remove()
     this.svg.append('defs')
@@ -155,12 +199,29 @@ export default class AbstractChart {
       .attr('height', this.height - this.margin.top - this.margin.bottom - this.buffer + 1)
   }
 
+  /**
+   * This method is called by the abstract chart constructor.
+   * Set up the svg's viewbox to allow making the chart responsive.
+   */
   setViewboxForScaling () {
     // we need to reconsider how we handle automatic scaling
     this.svg.attr('viewBox', `0 0 ${this.width} ${this.height}`)
     if (this.isFullWidth || this.isFullHeight) {
       this.svg.attr('preserveAspectRatio', 'xMinYMin meet')
     }
+  }
+
+  /**
+   * If needed, charts can implement data normalizations, which are applied when instantiating a new chart.
+   */
+  normalizeData () {}
+
+  /**
+   * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
+   */
+  computeDomains () {
+    this.xScale.domain = [0, 1]
+    this.yScale.domain = [0, 1]
   }
 
   get top () { return this.margin.top }

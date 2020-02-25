@@ -48,8 +48,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] `yax_count` -> `tickCount`
 - [ ] `xax_format` -> `tickFormat`
 - [ ] `yax_format` -> `tickFormat`
-- [ ] `x_axis` -> `show`
-- [ ] `y_axis` -> `show`
+- [x] `x_axis` -> `xAxis.show` (parsed by chart)
+- [x] `y_axis` -> `yAxis.show` (parsed by chart)
 - [ ] `x_extended_ticks` -> `extendedTicks`
 - [ ] `y_extended_ticks` -> `extendedTicks`
 - [ ] `x_label` -> `label`
