@@ -7,7 +7,6 @@ const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const rename = require('gulp-rename')
 const eslint = require('gulp-eslint')
-const testem = require('gulp-testem')
 const { reload, server } = require('gulp-connect')
 const babel = require('gulp-babel')
 
@@ -65,13 +64,6 @@ const lint = () => {
     .pipe(eslint.failAfterError())
 }
 
-const test = () => {
-  return src([''])
-    .pipe(testem({
-      configFile: 'testem.json'
-    }))
-}
-
 const compileSass = () => src(sassFiles)
   .pipe(sass().on('error', sass.logError))
   .pipe(dest(distFolder))
@@ -90,6 +82,6 @@ const devServe = () => server({
 })
 
 exports.clean = clean
-exports.default = series(lint, test, buildJs, compileSass)
+exports.default = series(lint, buildJs, compileSass)
 exports.serve = series(compileSass, devServe, devWatch)
 exports.lint = lint
