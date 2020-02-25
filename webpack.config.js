@@ -10,9 +10,6 @@ module.exports = ({ mode }) => ({
     library: 'MG',
     libraryTarget: 'umd2'
   },
-  externals: {
-    d3: 'd3'
-  },
   module: {
     rules: [
       {
