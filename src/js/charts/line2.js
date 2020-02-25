@@ -1,5 +1,4 @@
 import AbstractChart from './abstractChart'
-import Axis from '../components/axis'
 import { extent } from 'd3-array'
 import Line from '../components/line'
 
