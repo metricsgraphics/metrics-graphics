@@ -31,7 +31,7 @@ export default class AbstractChart {
   isFullHeight = false
 
   // margins
-  margin = { top: 10, left: 60, right: 20, bottom: 30 }
+  margin = { top: 10, left: 60, right: 20, bottom: 40 }
   buffer = 10
 
   // data type flags

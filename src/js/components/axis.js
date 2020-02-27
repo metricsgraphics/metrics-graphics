@@ -2,8 +2,12 @@ import constants from '../misc/constants'
 import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
 import { format } from 'd3-format'
 
+const DEFAULT_VERTICAL_OFFSET = 35
+const DEFAULT_HORIZONTAL_OFFSET = 50
+
 export default class Axis {
   label = ''
+  labelOffset = null
   top = 0
   left = 0
   scale = null
@@ -19,6 +23,7 @@ export default class Axis {
   constructor ({
     orientation,
     label,
+    labelOffset,
     top,
     left,
     height,
@@ -47,6 +52,11 @@ export default class Axis {
     this.suffix = suffix ?? this.suffix
     this.isVertical = [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
     this.extendedTicks = extendedTicks
+    this.labelOffset = typeof labelOffset !== 'undefined'
+      ? labelOffset
+      : this.isVertical
+        ? DEFAULT_HORIZONTAL_OFFSET
+        : DEFAULT_VERTICAL_OFFSET
 
     this.setupAxisObject()
 
@@ -102,6 +112,20 @@ export default class Axis {
       .attr('y2', y2)
   }
 
+  labelObject () {
+    const value = Math.abs(this.scale.range[0] - this.scale.range[1]) / 2
+    const xValue = this.isVertical ? -this.labelOffset : value
+    const yValue = this.isVertical ? value : this.labelOffset
+    return g => g
+      .append('text')
+      .attr('x', xValue)
+      .attr('y', yValue)
+      .attr('text-anchor', 'middle')
+      .classed('label', true)
+      .attr('transform', this.isVertical ? `rotate(${-90} ${xValue},${yValue})` : undefined)
+      .text(this.label)
+  }
+
   mountTo (svg) {
     const innerLeft = this.isVertical ? 0 : this.buffer
     const innerTop = this.isVertical ? this.buffer : 0
@@ -128,6 +152,9 @@ export default class Axis {
         .attr('opacity', 0.3)
       )
     }
+
+    // if necessary, add label
+    if (this.label !== '') axisContainer.call(this.labelObject())
   }
 
   set tickFormat (tickFormat) {

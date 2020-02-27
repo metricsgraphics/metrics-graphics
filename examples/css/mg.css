@@ -9,6 +9,11 @@
   fill: black;
   opacity: 0.6; }
 
+.mg-graph .label {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8; }
+
 .mg-line {
   fill: none;
   stroke: #4040e8; }

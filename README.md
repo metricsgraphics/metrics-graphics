@@ -52,8 +52,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] `y_axis` -> `yAxis.show` (parsed by chart)
 - [x] `x_extended_ticks` -> `extendedTicks`
 - [x] `y_extended_ticks` -> `extendedTicks`
-- [ ] `x_label` -> `label`
-- [ ] `y_label` -> `label`
+- [x] `x_label` -> `label`
+- [x] `y_label` -> `label`
 - [x] (`x_scale_type`) scale specified through passed `scale`
 - [x] (`y_scale_type`) scale specified through passed `scale`
 - [x] `xax_tick_length` -> `tickLength`
@@ -71,6 +71,10 @@ These are set by the chart using the axis instance, but can be overwritten by th
 * `top`: top margin
 * `left`: left margin
 * `scale`: scale used by the axis
+
+New user-facing parameters:
+
+* `labelOffset`: offset vertical to the axis. Provides a "sane" default, but can be overwritten.
 
 # Main Readme
 
