@@ -1,6 +1,7 @@
 import AbstractChart from './abstractChart'
 import { extent } from 'd3-array'
 import Line from '../components/line'
+import Area from '../components/area'
 
 /**
  * Sets up a new line chart.
@@ -28,7 +29,7 @@ import Line from '../components/line'
 export default class LineChart extends AbstractChart {
   lines = []
 
-  constructor (args) {
+  constructor ({ area, ...args }) {
     super(args)
 
     // compute lines
@@ -42,6 +43,30 @@ export default class LineChart extends AbstractChart {
 
     // mount lines
     this.lines.forEach(line => line.mountTo(this.container))
+
+    // generate areas if necessary
+    if (typeof area !== 'undefined') {
+      let areas
+      const areaGenerator = lineData => new Area({
+        data: lineData,
+        xAccessor: this.xAccessor,
+        yAccessor: this.yAccessor,
+        xScale: this.xScale,
+        yScale: this.yScale
+      })
+
+      // if area is boolean and truthy, generate areas for each line
+      if (typeof area === 'boolean' && area) {
+        areas = this.data.map(areaGenerator)
+
+      // if area is array, only show areas for the truthy lines
+      } else if (Array.isArray(area)) {
+        areas = this.data.filter((lineData, index) => area[index]).map(areaGenerator)
+      }
+
+      // mount areas
+      areas.forEach(area => area.mountTo(this.container))
+    }
   }
 
   /**
