@@ -1,8 +1,10 @@
 import { line, curveBasis } from 'd3-shape'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Line {
   lineObject = null
   data = null
+  index = 0
 
   constructor ({
     data,
@@ -10,11 +12,13 @@ export default class Line {
     yAccessor,
     xScale,
     yScale,
-    curve
+    curve,
+    index
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
+    this.index = index ?? this.index
 
     // set up line object
     this.lineObject = line()
@@ -27,6 +31,7 @@ export default class Line {
     svg
       .append('path')
       .classed('mg-line', true)
+      .attr('fill', schemeCategory10[this.index])
       .datum(this.data)
       .attr('d', this.lineObject)
   }
