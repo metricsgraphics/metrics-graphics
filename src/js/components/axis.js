@@ -1,5 +1,6 @@
 import constants from '../misc/constants'
 import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
+import { format } from 'd3-format'
 
 export default class Axis {
   label = ''
@@ -11,6 +12,8 @@ export default class Axis {
   compact = false
   buffer = 0
   isVertical = false
+  prefix = ''
+  suffix = ''
 
   constructor ({
     orientation,
@@ -21,7 +24,9 @@ export default class Axis {
     tickFormat,
     tickCount,
     compact,
-    buffer
+    buffer,
+    prefix,
+    suffix
   }) {
     // cry if no scale is set
     if (!scale) throw new Error('an axis needs a scale')
@@ -33,12 +38,14 @@ export default class Axis {
     this.left = left ?? this.left
     this.orientation = orientation ?? this.orientation
     this.compact = compact ?? this.compact
+    this.prefix = prefix ?? this.prefix
+    this.suffix = suffix ?? this.suffix
     this.isVertical = [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
 
     this.setupAxisObject()
 
     // set or compute tickFormat
-    if (tickFormat) this.tickFormat = tickFormat
+    this.tickFormat = tickFormat ?? format('')
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
   }
 
@@ -100,6 +107,9 @@ export default class Axis {
       .call(g => g.select('.domain').remove())
   }
 
-  set tickFormat (tickFormat) { this.axisObject.tickFormat(tickFormat) }
+  set tickFormat (tickFormat) {
+    this.axisObject.tickFormat(d => `${this.prefix}${tickFormat(d)}${this.suffix}`)
+  }
+
   set tickCount (tickCount) { this.axisObject.ticks(tickCount) }
 }

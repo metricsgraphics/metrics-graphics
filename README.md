@@ -58,9 +58,9 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] (`y_scale_type`) scale specified through passed `scale`
 - [ ] `xax_tick_length` -> `tickLength`
 - [ ] `yax_tick_length` -> `tickLength`
-- [ ] `xax_units` -> `prefix` and `suffix`
-- [ ] `yax_units` -> `prefix` and `suffix`
-- [ ] `yax_units_append` -> `prefix` and `suffix`
+- [x] `xax_units` -> `prefix` and `suffix`
+- [x] `yax_units` -> `prefix` and `suffix`
+- [x] `yax_units_append` -> `prefix` and `suffix`
 
 
 New parameters:
