@@ -3,8 +3,5 @@ module.exports = {
   extends: 'standard',
   rules: {
     'valid-jsdoc': 1
-  },
-  globals: {
-    d3: false
   }
 }
