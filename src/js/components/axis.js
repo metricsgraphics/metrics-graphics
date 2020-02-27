@@ -1,6 +1,5 @@
 import constants from '../misc/constants'
 import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
-import { format } from 'd3-format'
 
 export default class Axis {
   label = ''
@@ -39,7 +38,7 @@ export default class Axis {
     this.setupAxisObject()
 
     // set or compute tickFormat
-    this.tickFormat = tickFormat ?? format('.0f') // TODO
+    if (tickFormat) this.tickFormat = tickFormat
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
   }
 
