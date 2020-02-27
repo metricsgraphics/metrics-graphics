@@ -46,8 +46,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [ ] `show_year_markers` -> `showYearMarkers`
 - [x] `xax_count` -> `tickCount`
 - [x] `yax_count` -> `tickCount`
-- [ ] `xax_format` -> `tickFormat`
-- [ ] `yax_format` -> `tickFormat`
+- [x] `xax_format` -> `tickFormat`
+- [x] `yax_format` -> `tickFormat`
 - [x] `x_axis` -> `xAxis.show` (parsed by chart)
 - [x] `y_axis` -> `yAxis.show` (parsed by chart)
 - [ ] `x_extended_ticks` -> `extendedTicks`
@@ -56,8 +56,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [ ] `y_label` -> `label`
 - [x] (`x_scale_type`) scale specified through passed `scale`
 - [x] (`y_scale_type`) scale specified through passed `scale`
-- [ ] `xax_tick_length` -> `tickLength`
-- [ ] `yax_tick_length` -> `tickLength`
+- [x] `xax_tick_length` -> `tickLength`
+- [x] `yax_tick_length` -> `tickLength`
 - [x] `xax_units` -> `prefix` and `suffix`
 - [x] `yax_units` -> `prefix` and `suffix`
 - [x] `yax_units_append` -> `prefix` and `suffix`

@@ -26,7 +26,8 @@ export default class Axis {
     compact,
     buffer,
     prefix,
-    suffix
+    suffix,
+    tickLength
   }) {
     // cry if no scale is set
     if (!scale) throw new Error('an axis needs a scale')
@@ -47,6 +48,9 @@ export default class Axis {
     // set or compute tickFormat
     this.tickFormat = tickFormat ?? format('')
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
+
+    // set tick length if necessary
+    if (tickLength) this.tickLength = tickLength
   }
 
   setupAxisObject () {
@@ -112,4 +116,5 @@ export default class Axis {
   }
 
   set tickCount (tickCount) { this.axisObject.ticks(tickCount) }
+  set tickLength (length) { this.axisObject.tickSize(length) }
 }
