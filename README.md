@@ -50,8 +50,8 @@ The configuration passed by the user will overwrite set defaults and computed pr
 - [x] `yax_format` -> `tickFormat`
 - [x] `x_axis` -> `xAxis.show` (parsed by chart)
 - [x] `y_axis` -> `yAxis.show` (parsed by chart)
-- [ ] `x_extended_ticks` -> `extendedTicks`
-- [ ] `y_extended_ticks` -> `extendedTicks`
+- [x] `x_extended_ticks` -> `extendedTicks`
+- [x] `y_extended_ticks` -> `extendedTicks`
 - [ ] `x_label` -> `label`
 - [ ] `y_label` -> `label`
 - [x] (`x_scale_type`) scale specified through passed `scale`

@@ -115,6 +115,7 @@ export default class AbstractChart {
       orientation: 'bottom',
       top: this.bottom,
       left: this.left,
+      height: this.innerHeight,
       buffer: this.buffer,
       ...xAxis
     }) : null
@@ -123,6 +124,7 @@ export default class AbstractChart {
       orientation: 'left',
       top: this.top,
       left: this.left,
+      height: this.innerWidth,
       buffer: this.buffer,
       ...yAxis
     }) : null

@@ -11,6 +11,7 @@ export default class Axis {
   axisObject = null
   compact = false
   buffer = 0
+  height = 0
   isVertical = false
   prefix = ''
   suffix = ''
@@ -20,6 +21,7 @@ export default class Axis {
     label,
     top,
     left,
+    height,
     scale,
     tickFormat,
     tickCount,
@@ -27,7 +29,8 @@ export default class Axis {
     buffer,
     prefix,
     suffix,
-    tickLength
+    tickLength,
+    extendedTicks
   }) {
     // cry if no scale is set
     if (!scale) throw new Error('an axis needs a scale')
@@ -37,11 +40,13 @@ export default class Axis {
     this.buffer = buffer ?? this.buffer
     this.top = top ?? this.top
     this.left = left ?? this.left
+    this.height = height ?? this.height
     this.orientation = orientation ?? this.orientation
     this.compact = compact ?? this.compact
     this.prefix = prefix ?? this.prefix
     this.suffix = suffix ?? this.suffix
     this.isVertical = [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
+    this.extendedTicks = extendedTicks
 
     this.setupAxisObject()
 
@@ -103,12 +108,26 @@ export default class Axis {
     const axisContainer = svg.append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
       .classed('mg-axis', true)
-      .call(this.domainObject())
+    if (!this.extendedTicks) {
+      axisContainer.call(this.domainObject())
+    }
     axisContainer
       .append('g')
       .attr('transform', `translate(${innerLeft},${innerTop})`)
       .call(this.axisObject)
       .call(g => g.select('.domain').remove())
+
+    // if necessary, make ticks longer
+    if (this.extendedTicks) {
+      // compute attribute
+      const attribute = this.isVertical ? 'x1' : 'y1'
+      const factor = this.isVertical ? 1 : -1
+      axisContainer.call(g => g
+        .selectAll('.tick line')
+        .attr(attribute, factor * (this.height + 2 * this.buffer))
+        .attr('opacity', 0.3)
+      )
+    }
   }
 
   set tickFormat (tickFormat) {
