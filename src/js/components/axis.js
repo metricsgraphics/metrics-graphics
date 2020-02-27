@@ -50,7 +50,7 @@ export default class Axis {
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
 
     // set tick length if necessary
-    if (tickLength) this.tickLength = tickLength
+    if (typeof tickLength !== 'undefined') this.tickLength = tickLength
   }
 
   setupAxisObject () {
