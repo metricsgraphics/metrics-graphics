@@ -1,7 +1,11 @@
 {
   "name": "mg-lerna",
   "version": "0.0.1",
-  "scripts": {},
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "dev:examples": "lerna run --scope mg-examples start:development --stream",
+    "dev:lib": "lerna run --scope metrics-graphics dev --stream"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/metricsgraphics/metrics-graphics.git"
@@ -22,6 +26,12 @@
   "homepage": "http://metricsgraphicsjs.org",
   "dependencies": {},
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-preact": "^1.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "lerna": "^3.20.2"
   }
 }

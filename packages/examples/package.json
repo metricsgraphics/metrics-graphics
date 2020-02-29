@@ -22,8 +22,6 @@
   "devDependencies": {
     "enzyme": "^3.10.0",
     "enzyme-adapter-preact-pure": "^2.0.0",
-    "eslint": "^6.0.1",
-    "eslint-config-preact": "^1.1.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
@@ -33,6 +31,7 @@
     "sirv-cli": "^0.4.5"
   },
   "dependencies": {
+    "mg2": "^3.0.0-alpha3",
     "preact": "^10.3.2",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1"
