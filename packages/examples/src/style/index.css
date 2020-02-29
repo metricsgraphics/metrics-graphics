@@ -1,20 +1,14 @@
-html, body {
-	height: 100%;
-	width: 100%;
-	padding: 0;
-	margin: 0;
-	background: #FAFAFA;
-	font-family: 'Helvetica Neue', arial, sans-serif;
-	font-weight: 400;
-	color: #444;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1 {
+  @apply text-lg font-bold;
 }
 
-* {
-	box-sizing: border-box;
+nav > a {
+  @apply inline-block p-1 mx-2 rounded;
 }
-
-#app {
-	height: 100%;
+nav > a:last-child {
+  @apply mr-0;
 }

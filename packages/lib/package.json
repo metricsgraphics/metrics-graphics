@@ -9,7 +9,7 @@
       "build": "gulp",
       "lint": "gulp lint",
       "test": "gulp test",
-      "dev": "webpack --env.mode development --watch",
+      "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\"",
       "test-ci": "./node_modules/testem/testem.js ci testem.json",
       "version": "npm run build && git add ."
     },

@@ -17,7 +17,6 @@ sass.compiler = require('node-sass')
 const distFolder = 'dist'
 const jsFiles = 'src/js/**/*'
 const sassFiles = 'src/sass/**/*'
-const exampleCssFolder = 'examples/css'
 
 const clean = () => {
   return src(join(distFolder, '*'), { read: false })
@@ -67,7 +66,8 @@ const lint = () => {
 const compileSass = () => src(sassFiles)
   .pipe(sass().on('error', sass.logError))
   .pipe(dest(distFolder))
-  .pipe(dest(exampleCssFolder))
+
+const watchSass = () => watch(sassFiles, compileSass)
 
 const roots = ['dist', 'examples']
 const watchables = roots.map(root => `${root}/**/*`)
@@ -85,3 +85,4 @@ exports.clean = clean
 exports.default = series(lint, buildJs, compileSass)
 exports.serve = series(compileSass, devServe, devWatch)
 exports.lint = lint
+exports.watchSass = watchSass

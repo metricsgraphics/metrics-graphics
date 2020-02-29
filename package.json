@@ -4,7 +4,9 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "dev:examples": "lerna run --scope mg-examples start:development --stream",
-    "dev:lib": "lerna run --scope metrics-graphics dev --stream"
+    "dev:lib": "lerna run --scope mg2 dev --stream",
+    "build:examples": "lerna run --scope mg-examples build --stream",
+    "build:lib": "lerna run --scope mg2 webpack"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-preact": "^1.1.0",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",

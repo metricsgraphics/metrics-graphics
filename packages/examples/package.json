@@ -20,6 +20,7 @@
     ]
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^2.1.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-preact-pure": "^2.0.0",
     "identity-obj-proxy": "^3.0.0",
@@ -28,7 +29,8 @@
     "per-env": "^1.0.2",
     "preact-cli": "^3.0.0-rc.6",
     "preact-render-spy": "^1.2.1",
-    "sirv-cli": "^0.4.5"
+    "sirv-cli": "^0.4.5",
+    "tailwindcss": "^1.2.0"
   },
   "dependencies": {
     "mg2": "^3.0.0-alpha3",
