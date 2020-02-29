@@ -85,4 +85,5 @@ exports.clean = clean
 exports.default = series(lint, buildJs, compileSass)
 exports.serve = series(compileSass, devServe, devWatch)
 exports.lint = lint
+exports.compileSass = compileSass
 exports.watchSass = watchSass

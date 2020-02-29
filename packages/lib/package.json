@@ -5,7 +5,7 @@
   "main": "dist/metrics-graphics.js",
   "module": "src/js/MG.js",
   "scripts": {
-    "build": "webpack --env.mode production",
+    "build": "concurrently \"webpack --env.mode production\" \"gulp compileSass\"",
     "lint": "gulp lint",
     "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\""
   },
