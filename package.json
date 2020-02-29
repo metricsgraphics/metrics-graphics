@@ -6,7 +6,7 @@
     "dev:examples": "lerna run --scope mg-examples start:development --stream",
     "dev:lib": "lerna run --scope mg2 dev --stream",
     "build:examples": "lerna run --scope mg-examples build --stream",
-    "build:lib": "lerna run --scope mg2 webpack"
+    "build:lib": "lerna run --scope mg2 build --stream"
   },
   "repository": {
     "type": "git",
