@@ -16,7 +16,7 @@ module.exports = (config, env, helpers, params) => {
     plugins.unshift(require('tailwindcss'))
 
     // Add PurgeCSS only in production.
-    if (env.production) {
+    if (false /* env.production */) { // eslint-disable-line
       plugins.push(purgecss)
     }
   })
