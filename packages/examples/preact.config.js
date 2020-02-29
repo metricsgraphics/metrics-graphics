@@ -3,7 +3,8 @@ module.exports = (config, env, helpers, params) => {
   const purgecss = require('@fullhuman/postcss-purgecss')({
     // Specify the paths to all of the template files in your project
     content: ['./build/**/*.js', './build/**/*.html'],
-    css: ['./build/**/*.css']
+    css: ['./build/**/*.css'],
+    whitelist: ['body']
   })
 
   const postCssLoaders = helpers.getLoadersByName(config, 'postcss-loader')
