@@ -7,10 +7,7 @@
     "scripts": {
       "build": "webpack --env.mode production",
       "lint": "gulp lint",
-      "test": "gulp test",
-      "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\"",
-      "test-ci": "./node_modules/testem/testem.js ci testem.json",
-      "version": "npm run build && git add ."
+      "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\""
     },
     "repository": {
       "type": "git",
