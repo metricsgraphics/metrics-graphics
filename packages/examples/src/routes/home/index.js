@@ -1,7 +1,7 @@
 import { Component } from 'preact'
 import { LineChart } from 'mg2'
 
-import sightings from '../../assets/data/ufo-sightings'
+import sightings from '../../assets/data/ufoSightings'
 
 class Home extends Component {
   lineChart = null
@@ -36,7 +36,7 @@ class Home extends Component {
       </p>
       <div class="my-12 mx-auto max-w-2xl">
         <p className="font-bold">UFO Sightings</p>
-        <p className="text-xs italic text-gray-600 mb-2">
+        <p className="text-xs italic text-gray-700 mb-2">
           Yearly UFO sightings from the year 1945 to 2010.
         </p>
         <div id="ufo-sightings" />
