@@ -1,6 +1,7 @@
 import constants from '../misc/constants'
 import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
 import { format } from 'd3-format'
+import { timeFormat } from 'd3-time-format'
 
 const DEFAULT_VERTICAL_OFFSET = 35
 const DEFAULT_HORIZONTAL_OFFSET = 50
@@ -61,7 +62,7 @@ export default class Axis {
     this.setupAxisObject()
 
     // set or compute tickFormat
-    this.tickFormat = tickFormat ?? format('')
+    if (tickFormat) this.tickFormat = tickFormat
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
 
     // set tick length if necessary
@@ -157,8 +158,40 @@ export default class Axis {
     if (this.label !== '') axisContainer.call(this.labelObject())
   }
 
+  // computation functions for time-based axis formats
+  diffToTimeFormat () {
+    const diff = Math.abs(this.scale.domain[1] - this.scale.domain[0]) / 1000
+
+    const millisecondDiff = diff < 1
+    const secondDiff = diff < 60
+    const dayDiff = diff / (60 * 60) < 24
+    const fourDaysDiff = diff / (60 * 60) < 24 * 4
+    const manyDaysDiff = diff / (60 * 60 * 24) < 60
+    const manyMonthsDiff = diff / (60 * 60 * 24) < 365
+
+    if (millisecondDiff) return timeFormat('%M:%S.%L')
+    else if (secondDiff) return timeFormat('%M:%S')
+    else if (dayDiff) return timeFormat('%H:%M')
+    else if (fourDaysDiff || manyDaysDiff) return timeFormat('%b %d')
+    else if (manyMonthsDiff) return timeFormat('%b')
+    else return timeFormat('%Y')
+  }
+
+  stringToFormat (formatType) {
+    switch (formatType) {
+      case constants.axisFormat.number: return this.isVertical ? format('~s') : format('')
+      case constants.axisFormat.date: return this.diffToTimeFormat()
+      default: return format('')
+    }
+  }
+
   set tickFormat (tickFormat) {
-    this.axisObject.tickFormat(d => `${this.prefix}${tickFormat(d)}${this.suffix}`)
+    // if tickFormat is a function, apply it directly
+    const formatFunction = typeof tickFormat === 'function'
+      ? tickFormat
+      : this.stringToFormat(tickFormat)
+
+    this.axisObject.tickFormat(d => `${this.prefix}${formatFunction(d)}${this.suffix}`)
   }
 
   set tickCount (tickCount) { this.axisObject.ticks(tickCount) }

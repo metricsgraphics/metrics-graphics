@@ -128,6 +128,7 @@ export default class AbstractChart {
       buffer: this.buffer,
       ...yAxis
     }) : null
+    this.computeAxisTypes()
 
     // set up main container
     this.container = this.svg
@@ -142,6 +143,7 @@ export default class AbstractChart {
   /**
    * This method is called by the abstract chart constructor.
    * In order to simplify parsing of passed data, set flags specifying what types of data we're dealing with.
+   * @returns {void}
    */
   setDataTypeFlags () {
     // case 1: data is just one object, e.g. for bar chart
@@ -170,6 +172,7 @@ export default class AbstractChart {
    * This method is called by the abstract chart constructor.
    * Append the local svg node to the specified target, if necessary.
    * Return existing svg node if it's already present.
+   * @returns {void}
    */
   addSvgIfItDoesntExist () {
     const container = select(this.target)
@@ -187,6 +190,7 @@ export default class AbstractChart {
   /**
    * This method is called by the abstract chart constructor.
    * Set up the clipping path to allow zooming later.
+   * @returns {void}
    */
   addClipPathForPlotArea () {
     this.svg.selectAll('.mg-clip-path').remove()
@@ -204,6 +208,7 @@ export default class AbstractChart {
   /**
    * This method is called by the abstract chart constructor.
    * Set up the svg's viewbox to allow making the chart responsive.
+   * @returns {void}
    */
   setViewboxForScaling () {
     // we need to reconsider how we handle automatic scaling
@@ -215,16 +220,25 @@ export default class AbstractChart {
 
   /**
    * If needed, charts can implement data normalizations, which are applied when instantiating a new chart.
+   * @returns {void}
    */
   normalizeData () {}
 
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
+   * @returns {void}
    */
   computeDomains () {
     this.xScale.domain = [0, 1]
     this.yScale.domain = [0, 1]
   }
+
+  /**
+   * Meant to be overwritten by chart implementations.
+   * Set the axis types x- and y-axis based on data.
+   * @returns {void}
+   */
+  computeAxisTypes () {}
 
   get top () { return this.margin.top }
   get left () { return this.margin.left }

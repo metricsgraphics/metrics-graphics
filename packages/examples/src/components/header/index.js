@@ -9,7 +9,7 @@ const Header = () => (
         <Logo />
         <h1 class="mr-8">MetricsGraphics</h1>
         <Link activeClassName="link-active" href="/">Home</Link>
-        <Link activeClassName="link-active" href="/profile">Lines</Link>
+        <Link activeClassName="link-active" href="/lines">Lines</Link>
         <Link activeClassName="link-active" href="/profile/john">Axes</Link>
       </nav>
       <ExternalLink text="GitHub" link="https://github.com/jens-ox/metrics-graphics" />

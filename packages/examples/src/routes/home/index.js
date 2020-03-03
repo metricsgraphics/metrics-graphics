@@ -8,10 +8,6 @@ class Home extends Component {
 
   componentDidMount () {
     this.lineChart = new LineChart({
-      title: {
-        text: 'UFO Sightings'
-      },
-      description: 'Yearly UFO sightings from the year 1945 to 2010.',
       data: sightings,
       markers: [{ year: 1964, label: '"The Creeping Terror" released' }],
       width: 650,

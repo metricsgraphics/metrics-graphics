@@ -5,7 +5,7 @@ import Header from './header'
 
 // Code-splitting is automated for routes
 import Home from '../routes/home'
-import Profile from '../routes/profile'
+import Lines from '../routes/lines'
 
 export default class App extends Component {
   /** Gets fired when the route changes.
@@ -23,8 +23,7 @@ export default class App extends Component {
         <div class="container mx-auto mt-8">
           <Router onChange={this.handleRoute}>
             <Home path="/" />
-            <Profile path="/profile/" user="me" />
-            <Profile path="/profile/:user" />
+            <Lines path="/lines/" />
           </Router>
         </div>
       </div>

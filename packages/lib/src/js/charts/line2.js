@@ -2,6 +2,7 @@ import AbstractChart from './abstractChart'
 import { extent } from 'd3-array'
 import Line from '../components/line'
 import Area from '../components/area'
+import constants from '../misc/constants'
 
 /**
  * Sets up a new line chart.
@@ -77,6 +78,7 @@ export default class LineChart extends AbstractChart {
    * isArrayOfArrays: do nothing
    * isNestedArrayOfArrays: do nothing, assume index-based accessor
    * isNestedArrayOfObjects: do nothing
+   * @returns {void}
    */
   normalizeData () {
     if (this.isSingleObject) {
@@ -92,5 +94,26 @@ export default class LineChart extends AbstractChart {
     const yExtent = extent(flatData, this.yAccessor)
     this.xScale.domain = xExtent
     this.yScale.domain = yExtent
+  }
+
+  computeAxisTypes () {
+    const flatData = this.data.flat()
+
+    const xValue = this.xAccessor(flatData[0])
+    const yValue = this.yAccessor(flatData[0])
+
+    // set x
+    if (xValue instanceof Date) {
+      this.xAxis.tickFormat = 'date'
+    } else if (Number(xValue) === xValue) {
+      this.xAxis.tickFormat = 'number'
+    }
+
+    // set y
+    if (yValue instanceof Date) {
+      this.yAxis.tickFormat = constants.axisFormat.date
+    } else if (Number(yValue) === yValue) {
+      this.yAxis.tickFormat = constants.axisFormat.number
+    }
   }
 }

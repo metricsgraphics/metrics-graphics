@@ -16,8 +16,9 @@ const constants = {
     linear: 'linear',
     log: 'log'
   },
-  format: {
-    count: 'count'
+  axisFormat: {
+    date: 'date',
+    number: 'number'
   }
 }
 
