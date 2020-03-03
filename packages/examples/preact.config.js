@@ -1,5 +1,8 @@
 // copied from https://dev.to/boywithsilverwings/configuring-preact-cli-with-tailwind-css-3ckj
 module.exports = (config, env, helpers, params) => {
+  const plug = helpers.getPluginsByName(config, 'HtmlWebpackPlugin')[0]
+  plug.plugin.options.title = 'MetricsGraphics'
+  plug.plugin.options.meta.description = 'Library for concise and principled graphics'
   const purgecss = require('@fullhuman/postcss-purgecss')({
     // Specify the paths to all of the template files in your project
     content: ['./build/**/*.js', './build/**/*.html'],
