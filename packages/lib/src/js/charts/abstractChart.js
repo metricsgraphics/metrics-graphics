@@ -45,8 +45,8 @@ export default class AbstractChart {
     data,
     target,
     markers,
-    xAccessor,
-    yAccessor,
+    xAccessor = 'date',
+    yAccessor = 'value',
     margin,
     buffer,
     width,
@@ -128,12 +128,14 @@ export default class AbstractChart {
       buffer: this.buffer,
       ...yAxis
     }) : null
-    this.computeAxisTypes()
+    if (!xAxis?.tickFormat) this.computeXAxisType()
+    if (!yAxis?.tickFormat) this.computeYAxisType()
 
     // set up main container
     this.container = this.svg
       .append('g')
       .attr('transform', `translate(${this.plotLeft},${this.plotTop})`)
+      .attr('clip-path', `url(#mg-plot-window-${targetRef(this.target)})`)
 
     // attach axes
     if (this.xAxis) this.xAxis.mountTo(this.svg)
@@ -199,8 +201,6 @@ export default class AbstractChart {
       .append('clipPath')
       .attr('id', 'mg-plot-window-' + targetRef(this.target))
       .append('svg:rect')
-      .attr('x', this.margin.left)
-      .attr('y', this.margin.top)
       .attr('width', this.width - this.margin.left - this.margin.right - this.buffer)
       .attr('height', this.height - this.margin.top - this.margin.bottom - this.buffer + 1)
   }
@@ -235,10 +235,17 @@ export default class AbstractChart {
 
   /**
    * Meant to be overwritten by chart implementations.
-   * Set the axis types x- and y-axis based on data.
+   * Set tick format of the x axis.
    * @returns {void}
    */
-  computeAxisTypes () {}
+  computeXAxisType () {}
+
+  /**
+   * Meant to be overwritten by chart implementations.
+   * Set tick format of the y axis.
+   * @returns {void}
+   */
+  computeYAxisType () {}
 
   get top () { return this.margin.top }
   get left () { return this.margin.left }
