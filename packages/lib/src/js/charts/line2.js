@@ -30,7 +30,7 @@ import constants from '../misc/constants'
 export default class LineChart extends AbstractChart {
   lines = []
 
-  constructor ({ area, ...args }) {
+  constructor ({ area, confidenceBand, ...args }) {
     super(args)
 
     // compute lines
@@ -68,6 +68,20 @@ export default class LineChart extends AbstractChart {
       // mount areas
       areas.forEach(area => area.mountTo(this.container))
     }
+
+    // generate confidence band if necessary
+    if (typeof confidenceBand !== 'undefined') {
+      const confidenceBandGenerator = new Area({
+        data: this.data[0], // confidence band only makes sense for one line
+        xAccessor: this.xAccessor,
+        y0Accessor: d => d[confidenceBand[0]],
+        y1Accessor: d => d[confidenceBand[1]],
+        xScale: this.xScale,
+        yScale: this.yScale,
+        color: '#aaa'
+      })
+      confidenceBandGenerator.mountTo(this.container)
+    }
   }
 
   /**
@@ -96,20 +110,21 @@ export default class LineChart extends AbstractChart {
     this.yScale.domain = yExtent
   }
 
-  computeAxisTypes () {
+  computeXAxisType () {
     const flatData = this.data.flat()
-
     const xValue = this.xAccessor(flatData[0])
-    const yValue = this.yAccessor(flatData[0])
 
-    // set x
     if (xValue instanceof Date) {
       this.xAxis.tickFormat = 'date'
     } else if (Number(xValue) === xValue) {
       this.xAxis.tickFormat = 'number'
     }
+  }
 
-    // set y
+  computeYAxisType () {
+    const flatData = this.data.flat()
+    const yValue = this.yAccessor(flatData[0])
+
     if (yValue instanceof Date) {
       this.yAxis.tickFormat = constants.axisFormat.date
     } else if (Number(yValue) === yValue) {
