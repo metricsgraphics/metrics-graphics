@@ -173,7 +173,7 @@ export default class Axis {
     else if (secondDiff) return timeFormat('%M:%S')
     else if (dayDiff) return timeFormat('%H:%M')
     else if (fourDaysDiff || manyDaysDiff) return timeFormat('%b %d')
-    else if (manyMonthsDiff) return timeFormat('%b')
+    else if (manyMonthsDiff) return timeFormat('%b %d')
     else return timeFormat('%Y')
   }
 
@@ -181,6 +181,7 @@ export default class Axis {
     switch (formatType) {
       case constants.axisFormat.number: return this.isVertical ? format('~s') : format('')
       case constants.axisFormat.date: return this.diffToTimeFormat()
+      case constants.axisFormat.percentage: return format('.0%')
       default: return format('')
     }
   }

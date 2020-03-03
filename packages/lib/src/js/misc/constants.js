@@ -18,7 +18,8 @@ const constants = {
   },
   axisFormat: {
     date: 'date',
-    number: 'number'
+    number: 'number',
+    percentage: 'percentage'
   }
 }
 
