@@ -4,6 +4,8 @@ import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
+import Point from '../components/point'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 
 /**
  * Sets up a new line chart.
@@ -31,6 +33,7 @@ import Delaunay from '../components/delaunay'
 export default class LineChart extends AbstractChart {
   lines = []
   delaunay = null
+  delaunayPoint = null
 
   constructor ({ area, confidenceBand, ...args }) {
     super(args)
@@ -93,7 +96,19 @@ export default class LineChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: (point) => {
-        console.log('got point: ', point)
+        // delete point if exists and re-mount
+        if (this.delaunayPoint) this.delaunayPoint.dismount()
+        this.delaunayPoint = new Point({
+          point,
+          xAccessor: this.xAccessor,
+          yAccessor: this.yAccessor,
+          xScale: this.xScale,
+          yScale: this.yScale,
+          color: schemeCategory10,
+          index: point.arrayIndex ?? 0,
+          radius: 3
+        })
+        this.delaunayPoint.mountTo(this.container)
       }
     })
     this.delaunay.mountTo(this.container)

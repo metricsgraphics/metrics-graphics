@@ -8,51 +8,51 @@ export default class Delaunay {
   xScale = null
   yScale = null
   onPoint = d => null
+  rect = null
 
   constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint }) {
-    // if the points are one-dimensional, treat them like that
+    // Case 1: There is only one dimension of points (e.g. one line).
+    // In this case, only use the x-distance by setting all y values to zero.
+    // if the points are one-dimensional, treat them like that.
+    const isNested = Array.isArray(points[0]) && points.length > 1
+
     this.points = points.length
-      ? Array.isArray(points[0])
+      ? isNested
         ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
           ...point,
           arrayIndex
         }))).flat()
-        : points
+        : points.flat()
       : []
     this.xScale = xScale
     this.yScale = yScale
     this.points = points
     this.delaunay = DelaunayObject.from(
-      points.map(point => ([xAccessor(point), yAccessor(point)]))
+      points.map(point => ([xAccessor(point), isNested ? yAccessor(point) : 0]))
     )
     this.onPoint = onPoint ?? this.onPoint
   }
 
-  moveHandler () {
-    const xScale = this.xScale
-    const yScale = this.yScale
-    const delaunay = this.delaunay
-    const points = this.points
-    const onPoint = this.onPoint
-    return function () {
-      const rawCoords = mouse(this)
-      const x = xScale.scaleObject.invert(rawCoords[0])
-      const y = yScale.scaleObject.invert(rawCoords[1])
+  gotPoint (rawX, rawY) {
+    const x = this.xScale.scaleObject.invert(rawX)
+    const y = this.yScale.scaleObject.invert(rawY)
 
-      // find nearest point
-      const index = delaunay.find(x, y)
-      onPoint(points[index])
-    }
+    // find nearest point
+    const index = this.delaunay.find(x, y)
+    this.onPoint(this.points[index])
   }
 
   mountTo (svg) {
-    svg
+    this.rect = svg
       .append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('opacity', 0)
       .attr('width', max(this.xScale.range))
       .attr('height', max(this.yScale.range))
-      .on('mousemove', this.moveHandler(this.xScale, this.yScale, this.delaunay))
+    this.rect.on('mousemove', () => {
+      const rawCoords = mouse(this.rect.node())
+      this.gotPoint(rawCoords[0], rawCoords[1])
+    })
   }
 }
