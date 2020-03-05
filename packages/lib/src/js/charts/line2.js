@@ -3,6 +3,7 @@ import { extent } from 'd3-array'
 import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
+import Delaunay from '../components/delaunay'
 
 /**
  * Sets up a new line chart.
@@ -29,6 +30,7 @@ import constants from '../misc/constants'
  */
 export default class LineChart extends AbstractChart {
   lines = []
+  delaunay = null
 
   constructor ({ area, confidenceBand, ...args }) {
     super(args)
@@ -82,6 +84,19 @@ export default class LineChart extends AbstractChart {
       })
       confidenceBandGenerator.mountTo(this.container)
     }
+
+    // WIP delaunay
+    this.delaunay = new Delaunay({
+      points: this.data.flat(Infinity),
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      xScale: this.xScale,
+      yScale: this.yScale,
+      onPoint: (point) => {
+        console.log('got point: ', point)
+      }
+    })
+    this.delaunay.mountTo(this.container)
   }
 
   /**

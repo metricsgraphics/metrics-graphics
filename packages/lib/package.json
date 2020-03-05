@@ -61,6 +61,7 @@
     "concurrently": "^5.1.0",
     "css-loader": "^3.4.2",
     "d3-axis": "^1.0.12",
+    "d3-delaunay": "^5.2.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
