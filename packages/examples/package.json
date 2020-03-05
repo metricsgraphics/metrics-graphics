@@ -7,7 +7,7 @@
     "start": "per-env",
     "start:production": "npm run -s serve",
     "start:development": "npm run -s dev",
-    "build": "preact build --no-esm",
+    "build": "preact build --no-esm --prerenderUrls src/prerender-urls.json",
     "serve": "preact build && sirv build --cors --single",
     "dev": "preact watch",
     "lint": "eslint src",
