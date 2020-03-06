@@ -1,4 +1,4 @@
-import { area, curveBasis } from 'd3-shape'
+import { area, curveCatmullRom } from 'd3-shape'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Area {
@@ -33,7 +33,7 @@ export default class Area {
       .x(d => xScale.scaleObject(xAccessor(d)))
       .y1(d => yScale.scaleObject(y1(d)))
       .y0(d => yScale.scaleObject(y0(d)))
-      .curve(curve ?? curveBasis)
+      .curve(curve ?? curveCatmullRom)
   }
 
   mountTo (svg) {

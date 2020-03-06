@@ -1,4 +1,4 @@
-import { line, curveBasis } from 'd3-shape'
+import { line, curveCatmullRom } from 'd3-shape'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Line {
@@ -24,7 +24,7 @@ export default class Line {
     this.lineObject = line()
       .x(d => xScale.scaleObject(xAccessor(d)))
       .y(d => yScale.scaleObject(yAccessor(d)))
-      .curve(curve ?? curveBasis)
+      .curve(curve ?? curveCatmullRom)
   }
 
   mountTo (svg) {
