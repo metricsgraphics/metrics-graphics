@@ -25,6 +25,7 @@ export default class Point {
     this.pointObject = svg
       .append('circle')
       .attr('cx', this.cx)
+      .attr('pointer-events', 'none')
       .attr('cy', this.cy)
       .attr('r', this.radius)
       .attr('fill', this.color)
