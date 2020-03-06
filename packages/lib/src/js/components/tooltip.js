@@ -51,9 +51,7 @@ export default class Tooltip {
       .attr('transform', `translate(${this.left},${this.top})`)
       .attr('text-anchor', 'end')
       .attr('opacity', 0)
-    const symbol = this.legendObject === constants.legendObject.circle
-      ? '•'
-      : '—'
+    const symbol = constants.symbol[this.legendObject]
     this.categoryNode = this.node
       .append('tspan')
       .classed('text-category', true)

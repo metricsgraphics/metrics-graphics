@@ -55,7 +55,8 @@ export default class Lines extends Component {
       target: '#fakeUsers2',
       xAccessor: 'date',
       yAccessor: 'value',
-      legend: ['Line 1', 'Line 2', 'Line 3']
+      legend: ['Line 1', 'Line 2', 'Line 3'],
+      legendTarget: '#fakeUsers2Legend'
     })
   }
 
@@ -126,6 +127,10 @@ export default class Lines extends Component {
               This line chart contains multiple lines.
             </small>
             <div id="fakeUsers2" />
+            <p className="text-center" id="fakeUsers2Legend" />
+          </div>
+          <div>
+            <code><pre /></code>
           </div>
         </div>
       </div>

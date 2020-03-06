@@ -6,6 +6,8 @@ import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
 import { schemeCategory10 } from 'd3-scale-chromatic'
+import Legend from '../components/legend'
+import { select } from 'd3-selection'
 
 /**
  * Sets up a new line chart.
@@ -146,6 +148,16 @@ export default class LineChart extends AbstractChart {
       }
     })
     this.delaunay.mountTo(this.container)
+
+    // mount legend if any
+    if (this.legend && this.legend.length > 0 && this.legendTarget) {
+      const legend = new Legend({
+        legend: this.legend,
+        colorScheme: schemeCategory10,
+        symbolType: constants.legendObject.line
+      })
+      legend.mountTo(select(this.legendTarget))
+    }
   }
 
   /**

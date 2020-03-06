@@ -24,6 +24,10 @@ const constants = {
   legendObject: {
     circle: 'circle',
     line: 'line'
+  },
+  symbol: {
+    line: '—',
+    dot: '•'
   }
 }
 
