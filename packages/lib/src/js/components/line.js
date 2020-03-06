@@ -31,7 +31,7 @@ export default class Line {
     svg
       .append('path')
       .classed('mg-line', true)
-      .attr('fill', schemeCategory10[this.index])
+      .attr('stroke', schemeCategory10[this.index])
       .datum(this.data)
       .attr('d', this.lineObject)
   }

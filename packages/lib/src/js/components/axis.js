@@ -64,7 +64,7 @@ export default class Axis {
     // set or compute tickFormat
     if (tickFormat) {
       this.tickFormat = typeof tickFormat === 'string'
-        ? format(tickFormat)
+        ? this.stringToFormat(tickFormat)
         : tickFormat
     }
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
@@ -186,7 +186,7 @@ export default class Axis {
       case constants.axisFormat.number: return this.isVertical ? format('~s') : format('')
       case constants.axisFormat.date: return this.diffToTimeFormat()
       case constants.axisFormat.percentage: return format('.0%')
-      default: return format('')
+      default: return format(formatType)
     }
   }
 

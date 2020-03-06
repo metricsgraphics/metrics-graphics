@@ -8,6 +8,7 @@ export default class Tooltip {
   color = '#000000'
   text = ''
   node = null
+  categoryNode = null
   symbolNode = null
   textNode = null
   textFunction = d => d
@@ -29,9 +30,14 @@ export default class Tooltip {
   }
 
   update ({ color, data, legendCategory }) {
+    console.log('updating tooltip: ')
     this.node.attr('opacity', 1)
-    this.symbolNode.attr('fill', color)
-    this.textNode.text(this.textFunction(data))
+    if (color) {
+      this.symbolNode.attr('fill', color)
+      this.categoryNode.attr('fill', color)
+    }
+    if (data) this.textNode.text(this.textFunction(data))
+    if (legendCategory) this.categoryNode.text(legendCategory)
   }
 
   hide () {
@@ -47,11 +53,15 @@ export default class Tooltip {
       .attr('opacity', 0)
     const symbol = this.legendObject === constants.legendObject.circle
       ? '•'
-      : '–'
+      : '—'
+    this.categoryNode = this.node
+      .append('tspan')
+      .classed('text-category', true)
+      .text(this.categoryNode)
     this.symbolNode = this.node
       .append('tspan')
+      .attr('dx', '0.5rem')
       .text(symbol)
-    // TODO add category node
     this.textNode = this.node
       .append('tspan')
       .attr('dx', '0.5rem')

@@ -16,20 +16,18 @@ export default class Delaunay {
     // In this case, only use the x-distance by setting all y values to zero.
     // if the points are one-dimensional, treat them like that.
     const isNested = Array.isArray(points[0]) && points.length > 1
-
     this.points = points.length
       ? isNested
         ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
           ...point,
           arrayIndex
-        }))).flat()
-        : points.flat()
+        }))).flat(Infinity)
+        : points.flat(Infinity)
       : []
     this.xScale = xScale
     this.yScale = yScale
-    this.points = points
     this.delaunay = DelaunayObject.from(
-      points.map(point => ([xAccessor(point), isNested ? yAccessor(point) : 0]))
+      this.points.map(point => ([xAccessor(point), isNested ? yAccessor(point) : 0]))
     )
     this.onPoint = onPoint ?? this.onPoint
     this.onLeave = onLeave ?? this.onLeave

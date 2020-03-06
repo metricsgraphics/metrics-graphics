@@ -2,11 +2,13 @@ import { Component } from 'preact'
 import { LineChart } from 'mg2'
 
 import fakeUsers1 from '../../assets/data/fakeUsers1'
+import fakeUsers2 from '../../assets/data/fakeUsers2'
 import confidence from '../../assets/data/confidenceBand'
 
 export default class Lines extends Component {
   lineChart1 = null
   confidenceBand = null
+  multilineChart = null
 
   componentDidMount () {
     this.lineChart1 = new LineChart({
@@ -41,6 +43,19 @@ export default class Lines extends Component {
       height: 200,
       target: '#confidenceBand',
       confidenceBand: ['l', 'u']
+    })
+
+    this.multilineChart = new LineChart({
+      data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+        ...fakeEntry,
+        date: new Date(fakeEntry.date)
+      }))),
+      width: 600,
+      height: 200,
+      target: '#fakeUsers2',
+      xAccessor: 'date',
+      yAccessor: 'value',
+      legend: ['Line 1', 'Line 2', 'Line 3']
     })
   }
 
@@ -101,6 +116,16 @@ export default class Lines extends Component {
   target: '#confidenceBand',
   confidenceBand: ['l', 'u']
 })`}</pre></code>
+          </div>
+        </div>
+
+        <div className="example-container">
+          <div>
+            <p>Multiple Lines</p>
+            <small>
+              This line chart contains multiple lines.
+            </small>
+            <div id="fakeUsers2" />
           </div>
         </div>
       </div>

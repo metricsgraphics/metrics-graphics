@@ -27,6 +27,7 @@ export default class AbstractChart {
 
   // tooltip and legend stuff
   tooltip = null
+  legend = null
 
   // dimensions
   width = 0
@@ -62,7 +63,8 @@ export default class AbstractChart {
     xAxis,
     yAxis,
     showTooltip,
-    tooltipFunction
+    tooltipFunction,
+    legend
   }) {
     // check that at least some data was specified
     if (!data || !data.length) return console.error('no data specified')
@@ -74,6 +76,7 @@ export default class AbstractChart {
     this.data = data
     this.target = target
     this.markers = markers ?? this.markers
+    this.legend = legend ?? this.legend
 
     // convert string accessors to functions if necessary
     this.xAccessor = typeof xAccessor === 'string'

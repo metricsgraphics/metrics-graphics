@@ -39,12 +39,13 @@ export default class LineChart extends AbstractChart {
     super(args)
 
     // compute lines
-    this.lines = this.data.map(lineData => new Line({
+    this.lines = this.data.map((lineData, index) => new Line({
       data: lineData,
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
       xScale: this.xScale,
-      yScale: this.yScale
+      yScale: this.yScale,
+      index
     }))
 
     // mount lines
@@ -91,7 +92,6 @@ export default class LineChart extends AbstractChart {
     // add markers
     const markerContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.markers.forEach(marker => {
-      console.log('mounting marker: ', marker)
       const x = this.xScale.scaleObject(this.xAccessor(marker))
       markerContainer
         .append('line')
@@ -117,13 +117,13 @@ export default class LineChart extends AbstractChart {
       radius: 3
     })
     this.delaunay = new Delaunay({
-      points: this.data.flat(Infinity),
+      points: this.data,
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: (point) => {
-        const color = point.arrayIndex ? schemeCategory10(point.arrayIndex) : schemeCategory10[0]
+        const color = point.arrayIndex ? schemeCategory10[point.arrayIndex] : schemeCategory10[0]
 
         // set hover point
         this.delaunayPoint.update({ point, color })
@@ -133,7 +133,10 @@ export default class LineChart extends AbstractChart {
         if (this.tooltip) {
           this.tooltip.update({
             color,
-            data: point
+            data: point,
+            legendCategory: this.legend && typeof point.arrayIndex !== 'undefined'
+              ? this.legend[point.arrayIndex]
+              : undefined
           })
         }
       },
