@@ -88,7 +88,27 @@ export default class LineChart extends AbstractChart {
       confidenceBandGenerator.mountTo(this.container)
     }
 
-    // WIP delaunay
+    // add markers
+    const markerContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    this.markers.forEach(marker => {
+      console.log('mounting marker: ', marker)
+      const x = this.xScale.scaleObject(this.xAccessor(marker))
+      markerContainer
+        .append('line')
+        .classed('line-marker', true)
+        .attr('x1', x)
+        .attr('x2', x)
+        .attr('y1', this.yScale.range[0] + this.buffer)
+        .attr('y2', this.yScale.range[1] + this.buffer)
+      markerContainer
+        .append('text')
+        .classed('text-marker', true)
+        .attr('x', x)
+        .attr('y', 8)
+        .text(marker.label)
+    })
+
+    // generate delaunator
     this.delaunayPoint = new Point({
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
