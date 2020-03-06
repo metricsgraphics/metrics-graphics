@@ -62,7 +62,11 @@ export default class Axis {
     this.setupAxisObject()
 
     // set or compute tickFormat
-    if (tickFormat) this.tickFormat = tickFormat
+    if (tickFormat) {
+      this.tickFormat = typeof tickFormat === 'string'
+        ? format(tickFormat)
+        : tickFormat
+    }
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
 
     // set tick length if necessary

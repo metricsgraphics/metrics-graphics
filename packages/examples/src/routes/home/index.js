@@ -21,7 +21,8 @@ class Home extends Component {
       },
       xAxis: {
         extendedTicks: true,
-        label: 'Year'
+        label: 'Year',
+        tickFormat: '.4r'
       },
       yAxis: {
         label: 'Count'
