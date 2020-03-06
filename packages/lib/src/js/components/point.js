@@ -1,23 +1,28 @@
 export default class Point {
   point = null
-  cx = 0
-  cy = 0
+  pointObject = null
+  xAccessor = null
+  yAccessor = null
+  xScale = null
+  yScale = null
   radius = 1
   color = null
 
-  constructor ({ point, xAccessor, yAccessor, xScale, yScale, color, index, radius }) {
-    this.cx = xScale.scaleObject(xAccessor(point))
-    this.cy = yScale.scaleObject(yAccessor(point))
-    this.color = typeof color === 'function'
-      ? color(index)
-      : Array.isArray(color)
-        ? color[index]
-        : color
+  constructor ({ point, xAccessor, yAccessor, xScale, yScale, color, radius }) {
+    this.point = point
+    this.xAccessor = xAccessor
+    this.yAccessor = yAccessor
+    this.xScale = xScale
+    this.yScale = yScale
+    this.color = color
     this.radius = radius ?? this.radius
   }
 
+  get cx () { return this.xScale.scaleObject(this.xAccessor(this.point)) }
+  get cy () { return this.yScale.scaleObject(this.yAccessor(this.point)) }
+
   mountTo (svg) {
-    this.point = svg
+    this.pointObject = svg
       .append('circle')
       .attr('cx', this.cx)
       .attr('cy', this.cy)
@@ -25,7 +30,21 @@ export default class Point {
       .attr('fill', this.color)
   }
 
+  setPoint (point) {
+    this.point = point
+    if (!this.pointObject) return
+    this.pointObject
+      .attr('cx', this.cx)
+      .attr('cy', this.cy)
+      .attr('opacity', 1)
+  }
+
+  setColor (color) {
+    this.color = color
+    if (this.pointObject) this.pointObject.attr('fill', this.color)
+  }
+
   dismount () {
-    this.point.remove()
+    this.pointObject.remove()
   }
 }

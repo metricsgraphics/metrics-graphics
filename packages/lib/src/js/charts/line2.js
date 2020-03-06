@@ -89,6 +89,13 @@ export default class LineChart extends AbstractChart {
     }
 
     // WIP delaunay
+    this.delaunayPoint = new Point({
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      xScale: this.xScale,
+      yScale: this.yScale,
+      radius: 3
+    })
     this.delaunay = new Delaunay({
       points: this.data.flat(Infinity),
       xAccessor: this.xAccessor,
@@ -96,19 +103,13 @@ export default class LineChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: (point) => {
-        // delete point if exists and re-mount
-        if (this.delaunayPoint) this.delaunayPoint.dismount()
-        this.delaunayPoint = new Point({
-          point,
-          xAccessor: this.xAccessor,
-          yAccessor: this.yAccessor,
-          xScale: this.xScale,
-          yScale: this.yScale,
-          color: schemeCategory10,
-          index: point.arrayIndex ?? 0,
-          radius: 3
-        })
-        this.delaunayPoint.mountTo(this.container)
+        this.delaunayPoint.setPoint(point)
+        this.delaunayPoint.setColor(point.arrayIndex ? schemeCategory10(point.arrayIndex) : schemeCategory10[0])
+        // mount if necessary
+        if (!this.delaunayPoint.pointObject) this.delaunayPoint.mountTo(this.container)
+      },
+      onLeave: () => {
+        this.delaunayPoint.pointObject.attr('opacity', 0)
       }
     })
     this.delaunay.mountTo(this.container)

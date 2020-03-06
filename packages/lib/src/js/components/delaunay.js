@@ -8,9 +8,10 @@ export default class Delaunay {
   xScale = null
   yScale = null
   onPoint = d => null
+  onLeave = () => null
   rect = null
 
-  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint }) {
+  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave }) {
     // Case 1: There is only one dimension of points (e.g. one line).
     // In this case, only use the x-distance by setting all y values to zero.
     // if the points are one-dimensional, treat them like that.
@@ -31,6 +32,7 @@ export default class Delaunay {
       points.map(point => ([xAccessor(point), isNested ? yAccessor(point) : 0]))
     )
     this.onPoint = onPoint ?? this.onPoint
+    this.onLeave = onLeave ?? this.onLeave
   }
 
   gotPoint (rawX, rawY) {
@@ -48,11 +50,15 @@ export default class Delaunay {
       .attr('x', 0)
       .attr('y', 0)
       .attr('opacity', 0)
+      .attr('pointer-events', 'all')
       .attr('width', max(this.xScale.range))
       .attr('height', max(this.yScale.range))
     this.rect.on('mousemove', () => {
-      const rawCoords = mouse(this.rect.node())
+      const rawCoords = mouse(svg.node())
       this.gotPoint(rawCoords[0], rawCoords[1])
+    })
+    this.rect.on('mouseleave', () => {
+      this.onLeave()
     })
   }
 }
