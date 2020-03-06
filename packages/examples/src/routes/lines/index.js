@@ -130,7 +130,19 @@ export default class Lines extends Component {
             <p className="text-center" id="fakeUsers2Legend" />
           </div>
           <div>
-            <code><pre /></code>
+            <code><pre>{`new LineChart({
+  data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+    ...fakeEntry,
+    date: new Date(fakeEntry.date)
+  }))),
+  width: 600,
+  height: 200,
+  target: '#fakeUsers2',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  legendTarget: '#fakeUsers2Legend'
+})`}</pre></code>
           </div>
         </div>
       </div>
