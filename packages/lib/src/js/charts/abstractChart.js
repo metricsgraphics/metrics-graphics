@@ -131,15 +131,15 @@ export default class AbstractChart {
     if (!xAxis?.tickFormat) this.computeXAxisType()
     if (!yAxis?.tickFormat) this.computeYAxisType()
 
+    // attach axes
+    if (this.xAxis) this.xAxis.mountTo(this.svg)
+    if (this.yAxis) this.yAxis.mountTo(this.svg)
+
     // set up main container
     this.container = this.svg
       .append('g')
       .attr('transform', `translate(${this.plotLeft},${this.plotTop})`)
       .attr('clip-path', `url(#mg-plot-window-${targetRef(this.target)})`)
-
-    // attach axes
-    if (this.xAxis) this.xAxis.mountTo(this.svg)
-    if (this.yAxis) this.yAxis.mountTo(this.svg)
   }
 
   /**
@@ -201,8 +201,8 @@ export default class AbstractChart {
       .append('clipPath')
       .attr('id', 'mg-plot-window-' + targetRef(this.target))
       .append('svg:rect')
-      .attr('width', this.width - this.margin.left - this.margin.right - this.buffer)
-      .attr('height', this.height - this.margin.top - this.margin.bottom - this.buffer + 1)
+      .attr('width', this.width - this.margin.left - this.margin.right)
+      .attr('height', this.height - this.margin.top - this.margin.bottom)
   }
 
   /**
