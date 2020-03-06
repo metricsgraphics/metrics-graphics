@@ -2,6 +2,7 @@ import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseCon
 import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
+import Tooltip from '../components/tooltip'
 
 export default class AbstractChart {
   // base chart fields
@@ -23,6 +24,9 @@ export default class AbstractChart {
   // axes
   xAxis = null
   yAxis = null
+
+  // tooltip and legend stuff
+  tooltip = null
 
   // dimensions
   width = 0
@@ -56,7 +60,9 @@ export default class AbstractChart {
     xScale,
     yScale,
     xAxis,
-    yAxis
+    yAxis,
+    showTooltip,
+    tooltipFunction
   }) {
     // check that at least some data was specified
     if (!data || !data.length) return console.error('no data specified')
@@ -134,6 +140,18 @@ export default class AbstractChart {
     // attach axes
     if (this.xAxis) this.xAxis.mountTo(this.svg)
     if (this.yAxis) this.yAxis.mountTo(this.svg)
+
+    // pre-attach tooltip text container
+    if (typeof showTooltip === 'undefined' || showTooltip) {
+      this.tooltip = new Tooltip({
+        top: this.buffer,
+        left: this.width - 2 * this.buffer,
+        xAccessor: this.xAccessor,
+        yAccessor: this.yAccessor,
+        textFunction: tooltipFunction
+      })
+      this.tooltip.mountTo(this.svg)
+    }
 
     // set up main container
     this.container = this.svg

@@ -22,7 +22,8 @@ export default class Lines extends Component {
       target: '#fakeUsers1',
       area: true,
       xAccessor: 'date',
-      yAccessor: 'value'
+      yAccessor: 'value',
+      tooltipFunction: point => `date: ${point.date.getDate()}.${point.date.getMonth() + 1}.${point.date.getFullYear()}, value: ${point.value}`
     })
 
     this.confidenceBand = new LineChart({

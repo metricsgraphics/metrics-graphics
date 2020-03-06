@@ -20,6 +20,10 @@ const constants = {
     date: 'date',
     number: 'number',
     percentage: 'percentage'
+  },
+  legendObject: {
+    circle: 'circle',
+    line: 'line'
   }
 }
 

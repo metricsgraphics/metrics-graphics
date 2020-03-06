@@ -103,13 +103,23 @@ export default class LineChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: (point) => {
-        this.delaunayPoint.setPoint(point)
-        this.delaunayPoint.setColor(point.arrayIndex ? schemeCategory10(point.arrayIndex) : schemeCategory10[0])
-        // mount if necessary
+        const color = point.arrayIndex ? schemeCategory10(point.arrayIndex) : schemeCategory10[0]
+
+        // set hover point
+        this.delaunayPoint.update({ point, color })
         if (!this.delaunayPoint.pointObject) this.delaunayPoint.mountTo(this.container)
+
+        // set tooltip
+        if (this.tooltip) {
+          this.tooltip.update({
+            color,
+            data: point
+          })
+        }
       },
       onLeave: () => {
-        this.delaunayPoint.pointObject.attr('opacity', 0)
+        this.delaunayPoint.hide()
+        if (this.tooltip) this.tooltip.hide()
       }
     })
     this.delaunay.mountTo(this.container)

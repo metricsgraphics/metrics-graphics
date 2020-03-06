@@ -30,18 +30,23 @@ export default class Point {
       .attr('fill', this.color)
   }
 
-  setPoint (point) {
-    this.point = point
-    if (!this.pointObject) return
-    this.pointObject
-      .attr('cx', this.cx)
-      .attr('cy', this.cy)
-      .attr('opacity', 1)
+  hide () {
+    this.pointObject.attr('opacity', 0)
   }
 
-  setColor (color) {
-    this.color = color
-    if (this.pointObject) this.pointObject.attr('fill', this.color)
+  update ({ point, color }) {
+    if (point) {
+      this.point = point
+      if (!this.pointObject) return
+      this.pointObject
+        .attr('cx', this.cx)
+        .attr('cy', this.cy)
+        .attr('opacity', 1)
+    }
+    if (color) {
+      this.color = color
+      if (this.pointObject) this.pointObject.attr('fill', this.color)
+    }
   }
 
   dismount () {
