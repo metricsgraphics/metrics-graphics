@@ -1,10 +1,9 @@
 import { line, curveCatmullRom } from 'd3-shape'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Line {
   lineObject = null
   data = null
-  index = 0
+  color = null
 
   constructor ({
     data,
@@ -13,12 +12,15 @@ export default class Line {
     xScale,
     yScale,
     curve,
+    color,
+    colors,
     index
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
     this.index = index ?? this.index
+    this.color = color || (colors && index ? colors[index] : 'none')
 
     // set up line object
     this.lineObject = line()
@@ -31,7 +33,7 @@ export default class Line {
     svg
       .append('path')
       .classed('mg-line', true)
-      .attr('stroke', schemeCategory10[this.index])
+      .attr('stroke', this.color)
       .datum(this.data)
       .attr('d', this.lineObject)
   }

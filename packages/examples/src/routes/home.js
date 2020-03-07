@@ -1,7 +1,7 @@
 import { Component } from 'preact'
 import { LineChart } from 'mg2'
 
-import sightings from '../../assets/data/ufoSightings'
+import sightings from '../assets/data/ufoSightings'
 
 class Home extends Component {
   lineChart = null

@@ -30,7 +30,6 @@ export default class Tooltip {
   }
 
   update ({ color, data, legendCategory }) {
-    console.log('updating tooltip: ')
     this.node.attr('opacity', 1)
     if (color) {
       this.symbolNode.attr('fill', color)

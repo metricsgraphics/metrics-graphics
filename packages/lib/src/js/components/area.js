@@ -1,5 +1,4 @@
 import { area, curveCatmullRom } from 'd3-shape'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Area {
   areaObject = null
@@ -17,13 +16,14 @@ export default class Area {
     yScale,
     curve,
     index,
-    color
+    color,
+    colors
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
     this.index = index ?? this.index
-    this.color = color ?? schemeCategory10[this.index]
+    this.color = color || (colors && index ? colors[index] : 'none')
 
     const y0 = y0Accessor ?? (d => 0)
     const y1 = y1Accessor ?? yAccessor

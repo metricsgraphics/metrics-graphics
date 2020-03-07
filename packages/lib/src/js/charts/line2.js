@@ -5,35 +5,10 @@ import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 import Legend from '../components/legend'
 import { select } from 'd3-selection'
 
-/**
- * Sets up a new line chart.
- * Example parameterization:
-  {
-    data: [
-      {
-        "year": "1945",
-        "sightings": 6
-      },
-      {
-        "year": "1946",
-        "sightings": 8
-      },
-      ...
-    ],
-    width: 650,
-    height: 150,
-    target: '#ufo-sightings',
-    x_accessor: 'year',
-    y_accessor: 'sightings',
-    markers: [{'year': 1964, 'label': '"The Creeping Terror" released'}]
-  }
- */
 export default class LineChart extends AbstractChart {
-  lines = []
   delaunay = null
   delaunayPoint = null
 
@@ -41,17 +16,17 @@ export default class LineChart extends AbstractChart {
     super(args)
 
     // compute lines
-    this.lines = this.data.map((lineData, index) => new Line({
-      data: lineData,
-      xAccessor: this.xAccessor,
-      yAccessor: this.yAccessor,
-      xScale: this.xScale,
-      yScale: this.yScale,
-      index
-    }))
-
-    // mount lines
-    this.lines.forEach(line => line.mountTo(this.container))
+    this.data.forEach((lineData, index) => {
+      const line = new Line({
+        data: lineData,
+        xAccessor: this.xAccessor,
+        yAccessor: this.yAccessor,
+        xScale: this.xScale,
+        yScale: this.yScale,
+        color: this.colors[index]
+      })
+      line.mountTo(this.container)
+    })
 
     // generate areas if necessary
     if (typeof area !== 'undefined') {
@@ -125,7 +100,7 @@ export default class LineChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: (point) => {
-        const color = point.arrayIndex ? schemeCategory10[point.arrayIndex] : schemeCategory10[0]
+        const color = point.arrayIndex ? this.colors[point.arrayIndex] : this.colors[0]
 
         // set hover point
         this.delaunayPoint.update({ point, color })
@@ -153,7 +128,7 @@ export default class LineChart extends AbstractChart {
     if (this.legend && this.legend.length > 0 && this.legendTarget) {
       const legend = new Legend({
         legend: this.legend,
-        colorScheme: schemeCategory10,
+        colorScheme: this.colors,
         symbolType: constants.legendObject.line
       })
       legend.mountTo(select(this.legendTarget))

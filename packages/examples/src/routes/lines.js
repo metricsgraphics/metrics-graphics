@@ -1,9 +1,9 @@
 import { Component } from 'preact'
 import { LineChart } from 'mg2'
 
-import fakeUsers1 from '../../assets/data/fakeUsers1'
-import fakeUsers2 from '../../assets/data/fakeUsers2'
-import confidence from '../../assets/data/confidenceBand'
+import fakeUsers1 from '../assets/data/fakeUsers1'
+import fakeUsers2 from '../assets/data/fakeUsers2'
+import confidence from '../assets/data/confidenceBand'
 
 export default class Lines extends Component {
   lineChart1 = null
@@ -60,11 +60,9 @@ export default class Lines extends Component {
     })
   }
 
-  // Note: `user` comes from the URL, courtesy of our router
   render () {
     return (
       <div>
-
         <div className="example-container">
           <div>
             <p>Line Chart</p>

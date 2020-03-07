@@ -3,6 +3,7 @@ import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class AbstractChart {
   // base chart fields
@@ -96,7 +97,9 @@ export default class AbstractChart {
     // normalize color and colors arguments
     this.colors = color
       ? Array.isArray(color) ? color : [color]
-      : Array.isArray(colors) ? colors : [colors]
+      : colors
+        ? Array.isArray(colors) ? colors : [colors]
+        : schemeCategory10
 
     this.setDataTypeFlags()
 
@@ -162,8 +165,10 @@ export default class AbstractChart {
     // set up main container
     this.container = this.svg
       .append('g')
-      .attr('transform', `translate(${this.plotLeft},${this.plotTop})`)
+      .attr('transform', `translate(${this.left},${this.top})`)
       .attr('clip-path', `url(#mg-plot-window-${targetRef(this.target)})`)
+      .append('g')
+      .attr('transform', `translate(${this.buffer},${this.buffer})`)
   }
 
   /**
