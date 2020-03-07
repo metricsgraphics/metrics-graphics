@@ -11,11 +11,11 @@ export default class Delaunay {
   onLeave = () => null
   rect = null
 
-  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave }) {
+  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, nested }) {
     // Case 1: There is only one dimension of points (e.g. one line).
     // In this case, only use the x-distance by setting all y values to zero.
     // if the points are one-dimensional, treat them like that.
-    const isNested = Array.isArray(points[0]) && points.length > 1
+    const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
     this.points = points.length
       ? isNested
         ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
@@ -39,7 +39,7 @@ export default class Delaunay {
 
     // find nearest point
     const index = this.delaunay.find(x, y)
-    this.onPoint(this.points[index])
+    this.onPoint({ ...this.points[index], index })
   }
 
   mountTo (svg) {

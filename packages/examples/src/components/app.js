@@ -6,6 +6,7 @@ import Header from './header'
 // Code-splitting is automated for routes
 import Home from '../routes/home'
 import Lines from '../routes/lines'
+import Scatter from '../routes/scatter'
 
 export default class App extends Component {
   /** Gets fired when the route changes.
@@ -24,6 +25,7 @@ export default class App extends Component {
           <Router onChange={this.handleRoute}>
             <Home path="/" />
             <Lines path="/lines/" />
+            <Scatter path="/scatter/" />
           </Router>
         </div>
       </div>
