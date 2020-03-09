@@ -29,7 +29,7 @@ export default class Tooltip {
     return point => `${xAccessor(point)}: ${yAccessor(point)}`
   }
 
-  update ({ color, data, legendCategory }) {
+  update ({ color, data, legendObject, legendCategory }) {
     this.node.attr('opacity', 1)
     if (color) {
       this.symbolNode.attr('fill', color)
@@ -37,6 +37,7 @@ export default class Tooltip {
     }
     if (data) this.textNode.text(this.textFunction(data))
     if (legendCategory) this.categoryNode.text(legendCategory)
+    if (legendObject) this.symbolNode.text(legendObject)
   }
 
   hide () {

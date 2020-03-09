@@ -31,12 +31,13 @@ export default class LineChart extends AbstractChart {
     // generate areas if necessary
     if (typeof area !== 'undefined') {
       let areas
-      const areaGenerator = lineData => new Area({
+      const areaGenerator = (lineData, index) => new Area({
         data: lineData,
         xAccessor: this.xAccessor,
         yAccessor: this.yAccessor,
         xScale: this.xScale,
-        yScale: this.yScale
+        yScale: this.yScale,
+        color: this.colors[index]
       })
 
       // if area is boolean and truthy, generate areas for each line

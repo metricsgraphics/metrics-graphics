@@ -2,6 +2,7 @@ import AbstractChart from './abstractChart'
 import { extent } from 'd3-array'
 import Point from '../components/point'
 import Delaunay from '../components/delaunay'
+import constants from '../misc/constants'
 
 export default class ScatterChart extends AbstractChart {
   points = []
@@ -13,6 +14,12 @@ export default class ScatterChart extends AbstractChart {
   constructor ({ sizeAccessor, ...args }) {
     console.log('init new scatter chart: ', args)
     super(args)
+
+    // set tooltip type
+    if (this.tooltip) {
+      this.tooltip.update({ legendObject: constants.symbol.dot })
+      this.tooltip.hide()
+    }
 
     this.sizeAccessor = sizeAccessor
       ? typeof sizeAccessor === 'function'
