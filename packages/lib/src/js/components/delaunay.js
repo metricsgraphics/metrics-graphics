@@ -9,6 +9,7 @@ export default class Delaunay {
   yScale = null
   onPoint = d => null
   onLeave = () => null
+  onClick = () => null
   rect = null
 
   constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested }) {
@@ -31,6 +32,7 @@ export default class Delaunay {
     )
     this.onPoint = onPoint ?? this.onPoint
     this.onLeave = onLeave ?? this.onLeave
+    this.onClick = onClick ?? this.onClick
   }
 
   gotPoint (rawX, rawY) {
