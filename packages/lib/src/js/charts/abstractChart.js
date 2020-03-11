@@ -1,9 +1,8 @@
 import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseContainerError, targetRef } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select, schemeCategory10 } from 'd3'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class AbstractChart {
   // base chart fields

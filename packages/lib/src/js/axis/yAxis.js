@@ -1,9 +1,5 @@
 import { addG, getRight, getBottom, getPlotLeft, getPlotRight, getSvgChildOf, normalize, selectAllAndRemove, getPlotTop, getPlotBottom, addColorAccessorToRug, makeRug, exitAndRemove, elementsAreOverlapping } from '../misc/utility'
-import { select } from 'd3-selection'
-import { scaleLinear, scaleLog } from 'd3-scale'
-import { format } from 'd3-format'
-import { max } from 'd3-array'
-import { timeFormat as d3TimeFormat } from 'd3-time-format'
+import { select, scaleLinear, scaleLog, format, max, timeFormat as d3TimeFormat } from 'd3'
 import { defaultXaxFormat, getYFormatAndSecondaryTimeFunction } from './xAxis'
 import { callHook } from '../common/hooks'
 

@@ -1,5 +1,5 @@
 import { getPlotLeft, getPlotRight, getPlotBottom, getBottom, preventHorizontalOverlap, getSvgChildOf } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select } from 'd3'
 
 export function returnLabel (d) { return d.label }
 

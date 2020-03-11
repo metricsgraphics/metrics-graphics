@@ -1,5 +1,5 @@
 import { leastSquares } from './smoothers'
-import { histogram } from 'd3-array'
+import { histogram } from 'd3'
 import constants from './constants'
 
 export function processScaleTicks ({ data, axis, xAccessor, yAccessor, xScale, yScale, xaxCount, yaxCount, maxX, maxY, xScaleType, yScaleType, format }) {

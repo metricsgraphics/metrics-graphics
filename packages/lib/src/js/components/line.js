@@ -1,4 +1,4 @@
-import { line, curveCatmullRom } from 'd3-shape'
+import { line, curveCatmullRom } from 'd3'
 
 export default class Line {
   lineObject = null

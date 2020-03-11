@@ -1,5 +1,5 @@
 import { isArrayOfArrays } from '../misc/utility'
-import { min, max } from 'd3-array'
+import { min, max } from 'd3'
 import { createBrushingPattern, removeBrushingPattern } from './brush'
 
 export function filterInRangeData (args, range) {

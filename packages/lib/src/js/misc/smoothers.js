@@ -1,6 +1,4 @@
-import { select } from 'd3-selection'
-import { max, min, mean, zip, quantile, sum, range } from 'd3-array'
-import { line } from 'd3-shape'
+import { select, max, min, mean, zip, quantile, sum, range, line } from 'd3'
 import { getSvgChildOf } from './utility'
 
 export function addLs ({ target, data, accessor, xScale, yScale, lsLine }) {

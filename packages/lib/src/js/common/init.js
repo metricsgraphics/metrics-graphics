@@ -1,7 +1,6 @@
 import { getSvgChildOf, targetRef, arrayDiff, countArrayElements } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select, max } from 'd3'
 import { defaultXaxFormat, defaultBarXaxFormat } from '../axis/xAxis'
-import { max } from 'd3-array'
 import { chartTitle } from './chartTitle'
 
 export function removeSvgIfChartTypeHasChanged (svg, args) {

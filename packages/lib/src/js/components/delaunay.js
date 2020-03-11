@@ -1,6 +1,5 @@
+import { max, mouse } from 'd3'
 import { Delaunay as DelaunayObject } from 'd3-delaunay'
-import { max } from 'd3-array'
-import { mouse } from 'd3-selection'
 
 export default class Delaunay {
   points = []

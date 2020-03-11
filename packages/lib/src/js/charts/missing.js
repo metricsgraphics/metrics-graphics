@@ -1,7 +1,5 @@
-import { scaleLinear } from 'd3-scale'
+import { scaleLinear, line as d3line, area as d3area, select } from 'd3'
 import { getPlotLeft, getPlotRight, addG } from '../misc/utility'
-import { line as d3line, area as d3area } from 'd3-shape'
-import { select } from 'd3-selection'
 import { initComputeWidth, initComputeHeight, raiseContainerError, removeSvgIfChartTypeHasChanged, addSvgIfItDoesntExist, adjustWidthAndHeightIfChanged, setViewboxForScaling } from '../common/init'
 import { chartTitle } from '../common/chartTitle'
 import { windowListeners } from '../common/windowListeners'

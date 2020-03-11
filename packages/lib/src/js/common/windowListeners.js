@@ -1,4 +1,4 @@
-import { select } from 'd3-selection'
+import { select } from 'd3'
 import { getWidth } from '../misc/utility'
 
 export function WindowResizeTracker () {

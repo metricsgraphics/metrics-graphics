@@ -1,5 +1,5 @@
 import { getPlotRight, getPlotLeft, getBottom } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select } from 'd3'
 
 export function clearMouseoverContainer (svg) {
   svg.selectAll('.mg-active-datapoint-container').selectAll('*').remove()

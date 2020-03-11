@@ -1,5 +1,5 @@
 import AbstractChart from './abstractChart'
-import { extent } from 'd3-array'
+import { extent } from 'd3'
 import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
