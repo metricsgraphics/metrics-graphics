@@ -1,5 +1,5 @@
 import { getSvgChildOf, getPlotRight, inferType, getPlotLeft, getPlotTop, addG } from '../misc/utility'
-import { select, rgb } from 'd3'
+import { select } from 'd3-selection'
 import { rawDataTransformation, processPoint } from '../misc/process'
 import { init } from '../common/init'
 import { MGScale } from '../common/scales'
@@ -7,7 +7,7 @@ import { axisFactory } from '../axis/yAxis'
 import { windowListeners } from '../common/windowListeners'
 import { clearMouseoverContainer, mouseoverText } from '../common/rollover'
 import { formatDataForMouseover, formatXMouseover } from '../misc/formatters'
-
+import { rgb } from 'd3-color'
 import { markers } from '../common/markers'
 
 function targetedLegend ({ legendTarget, orientation, scales }) {

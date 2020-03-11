@@ -1,4 +1,4 @@
-import { scaleLinear } from 'd3'
+import { scaleLinear } from 'd3-scale'
 
 export default class Scale {
   name = null

@@ -1,5 +1,5 @@
 import { zoomToRawRange, zoomToDataDomain, convertRangeToDomain, zoomToDataRange } from './zoom'
-import { select, mouse as d3mouse } from 'd3'
+import { select, mouse as d3mouse } from 'd3-selection'
 import { targetRef } from '../misc/utility'
 
 export function getExtentRect (args) {

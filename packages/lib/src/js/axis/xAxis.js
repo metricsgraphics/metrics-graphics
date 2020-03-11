@@ -1,6 +1,12 @@
 import * as utility from '../misc/utility'
-import { max, min, extent, select, timeDays, timeYears, timeFormat as d3TimeFormat, format, scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3'
+import { max, min, extent } from 'd3-array'
+import { select } from 'd3-selection'
+import { timeDays, timeYears } from 'd3-time'
+import { timeFormat as d3TimeFormat } from 'd3-time-format'
 import { processScaleTicks } from '../misc/process'
+import { format } from 'd3-format'
+import { scaleLinear, scaleOrdinal } from 'd3-scale'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 import { addScaleFunction, addColorCategoricalScale } from '../common/scales'
 import constants from '../misc/constants'
 

@@ -1,4 +1,4 @@
-import { interpolate } from 'd3'
+import { interpolate } from 'd3-interpolate'
 
 export function pathTween (d1, precision) {
   return () => {

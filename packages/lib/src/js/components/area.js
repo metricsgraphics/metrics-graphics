@@ -1,4 +1,4 @@
-import { area, curveCatmullRom } from 'd3'
+import { area, curveCatmullRom } from 'd3-shape'
 
 export default class Area {
   areaObject = null

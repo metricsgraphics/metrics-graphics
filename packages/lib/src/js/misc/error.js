@@ -1,4 +1,4 @@
-import { select } from 'd3'
+import { select } from 'd3-selection'
 
 // call this to add a warning icon to a graph and log an error to the console
 export function error ({ target, error }) {

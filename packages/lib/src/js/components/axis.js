@@ -1,5 +1,7 @@
 import constants from '../misc/constants'
-import { axisTop, axisLeft, axisRight, axisBottom, format, timeFormat } from 'd3'
+import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
+import { format } from 'd3-format'
+import { timeFormat } from 'd3-time-format'
 
 const DEFAULT_VERTICAL_OFFSET = 35
 const DEFAULT_HORIZONTAL_OFFSET = 50

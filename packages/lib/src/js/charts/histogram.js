@@ -7,7 +7,7 @@ import { getSvgChildOf, addG } from '../misc/utility'
 import { markers } from '../common/markers'
 import { formatXMouseover, formatYMouseover } from '../misc/formatters'
 import { globals } from '../common/dataGraphic'
-import { selectAll, select } from 'd3'
+import { selectAll, select } from 'd3-selection'
 import { mouseoverText, setupMouseoverContainer, clearMouseoverContainer } from '../common/rollover'
 import { windowListeners } from '../common/windowListeners'
 

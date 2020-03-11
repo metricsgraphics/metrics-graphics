@@ -1,4 +1,5 @@
-import { timeFormat as d3TimeFormat, timeParse, utcFormat, select } from 'd3'
+import { timeFormat as d3TimeFormat, timeParse, utcFormat } from 'd3-time-format'
+import { select } from 'd3-selection'
 
 let nextElementId = 0
 

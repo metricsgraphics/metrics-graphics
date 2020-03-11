@@ -1,4 +1,6 @@
-import { extent, scaleOrdinal, scaleUtc, scaleTime, scaleLog, scaleLinear, scaleBand, schemeCategory10 } from 'd3'
+import { extent } from 'd3-array'
+import { scaleOrdinal, scaleUtc, scaleTime, scaleLog, scaleLinear, scaleBand } from 'd3-scale'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 import { getPlotRight, getPlotLeft, getPlotBottom, getPlotTop, clone } from '../misc/utility'
 import { forceXaxCountToBeTwo } from '../axis/xAxis'
 import { callHook } from './hooks'

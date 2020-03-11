@@ -4,9 +4,6 @@ module.exports = ({ mode }) => ({
   mode,
   devtool: mode !== 'production' ? 'source-map' : '',
   entry: './src/js/MG.js',
-  externals: {
-    d3: 'd3'
-  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'metrics-graphics.js',

@@ -1,4 +1,4 @@
-import { format } from 'd3'
+import { format } from 'd3-format'
 import { getRolloverTimeFormat, timeFormat } from './utility'
 import constants from './constants'
 

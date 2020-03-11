@@ -1,11 +1,12 @@
 import AbstractChart from './abstractChart'
-import { extent, select } from 'd3'
+import { extent } from 'd3-array'
 import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
 import Legend from '../components/legend'
+import { select } from 'd3-selection'
 
 export default class LineChart extends AbstractChart {
   delaunay = null

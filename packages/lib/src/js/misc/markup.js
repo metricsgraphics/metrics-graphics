@@ -1,6 +1,6 @@
 // influenced by https://bl.ocks.org/tomgp/c99a699587b5c5465228
 
-import { select } from 'd3'
+import { select } from 'd3-selection'
 
 let virtualWindow
 
