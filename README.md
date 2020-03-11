@@ -1,7 +1,7 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Build Status][travis-badge]][travis-badge-url] [![CDNJS](https://img.shields.io/cdnjs/v/metrics-graphics.svg)](https://cdnjs.com/libraries/metrics-graphics)
 
 
-***this project is presently unmaintained by its original maintainersm see this blog post: https://wlach.github.io/blog/2019/09/metrics-graphics-stepping-back-for-a-while/ -- however, work continues in a fork! See: https://github.com/jens-ox/metrics-graphics for current status***
+***this project is presently unmaintained -- see this blog post: https://wlach.github.io/blog/2019/09/metrics-graphics-stepping-back-for-a-while/ -- however, work continues in a fork! See: https://github.com/jens-ox/metrics-graphics for current status***
 
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
