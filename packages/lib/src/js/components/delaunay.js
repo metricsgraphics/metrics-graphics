@@ -11,7 +11,7 @@ export default class Delaunay {
   onLeave = () => null
   rect = null
 
-  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, nested }) {
+  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested }) {
     // Case 1: There is only one dimension of points (e.g. one line).
     // In this case, only use the x-distance by setting all y values to zero.
     // if the points are one-dimensional, treat them like that.
@@ -42,6 +42,15 @@ export default class Delaunay {
     this.onPoint({ ...this.points[index], index })
   }
 
+  clickedPoint (rawX, rawY) {
+    const x = this.xScale.scaleObject.invert(rawX)
+    const y = this.yScale.scaleObject.invert(rawY)
+
+    // find nearest point
+    const index = this.delaunay.find(x, y)
+    this.onClick({ ...this.points[index], index })
+  }
+
   mountTo (svg) {
     this.rect = svg
       .append('rect')
@@ -57,6 +66,10 @@ export default class Delaunay {
     })
     this.rect.on('mouseleave', () => {
       this.onLeave()
+    })
+    this.rect.on('click', () => {
+      const rawCoords = mouse(svg.node())
+      this.clickedPoint(rawCoords[0], rawCoords[1])
     })
   }
 }

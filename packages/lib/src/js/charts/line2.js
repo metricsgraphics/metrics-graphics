@@ -12,7 +12,7 @@ export default class LineChart extends AbstractChart {
   delaunay = null
   delaunayPoint = null
 
-  constructor ({ area, confidenceBand, ...args }) {
+  constructor ({ area, confidenceBand, voronoi, ...args }) {
     super(args)
 
     // compute lines
@@ -121,7 +121,8 @@ export default class LineChart extends AbstractChart {
       onLeave: () => {
         this.delaunayPoint.hide()
         if (this.tooltip) this.tooltip.hide()
-      }
+      },
+      ...voronoi
     })
     this.delaunay.mountTo(this.container)
 
