@@ -1,26 +1,23 @@
 import constants from '../misc/constants'
 
 export default class Tooltip {
+  legendObject = 'line'
+  legend = []
+  colors = ['#000000']
+  textFunction = d => d
+  data = []
   left = 0
   top = 0
-  legendObject = 'line'
-  legendCategory = ''
-  color = '#000000'
-  text = ''
   node = null
-  categoryNode = null
-  symbolNode = null
-  textNode = null
-  textFunction = d => d
 
-  constructor ({ legendObject, legendCategory, color, textFunction, data, left, top, xAccessor, yAccessor } = {}) {
+  constructor ({ legendObject, legend, colors, textFunction, data, left, top, xAccessor, yAccessor } = {}) {
     this.legendObject = legendObject ?? this.legendObject
-    this.legendCategory = legendCategory ?? this.legendCategory
-    this.color = color ?? this.color
+    this.legend = legend ?? this.legend
+    this.colors = colors ?? this.colors
     this.textFunction = textFunction || ((xAccessor && yAccessor)
       ? this.baseTextFunction({ xAccessor, yAccessor })
       : this.textFunction)
-    this.text = data ? this.textFunction(data) : ''
+    this.data = data ?? this.data
     this.left = left ?? this.left
     this.top = top ?? this.top
   }
@@ -29,15 +26,12 @@ export default class Tooltip {
     return point => `${xAccessor(point)}: ${yAccessor(point)}`
   }
 
-  update ({ color, data, legendObject, legendCategory }) {
-    this.node.attr('opacity', 1)
-    if (color) {
-      this.symbolNode.attr('fill', color)
-      this.categoryNode.attr('fill', color)
-    }
-    if (data) this.textNode.text(this.textFunction(data))
-    if (legendCategory) this.categoryNode.text(legendCategory)
-    if (legendObject) this.symbolNode.text(legendObject)
+  update ({ colors, data, legendObject, legend }) {
+    this.colors = colors ?? this.colors
+    this.data = data ?? this.data
+    this.legendObject = legendObject ?? this.legendObject
+    this.legend = legend ?? this.legend
+    this.addText()
   }
 
   hide () {
@@ -46,23 +40,45 @@ export default class Tooltip {
 
   mountTo (svg) {
     this.node = svg
-      .append('text')
+      .append('g')
       .style('font-size', '0.7rem')
       .attr('transform', `translate(${this.left},${this.top})`)
-      .attr('text-anchor', 'end')
       .attr('opacity', 0)
-    const symbol = constants.symbol[this.legendObject]
-    this.categoryNode = this.node
-      .append('tspan')
-      .classed('text-category', true)
-      .text(this.categoryNode)
-    this.symbolNode = this.node
-      .append('tspan')
-      .attr('dx', '0.5rem')
-      .text(symbol)
-    this.textNode = this.node
-      .append('tspan')
-      .attr('dx', '0.5rem')
-      .text(this.text)
+    this.addText()
+  }
+
+  addText () {
+    // first, clear existing content
+    this.node.selectAll('*').remove()
+
+    // second, add one line per data entry
+    this.node.attr('opacity', 1)
+    this.data.forEach((datum, index) => {
+      const symbol = constants.symbol[this.legendObject]
+      const node = this.node
+        .append('text')
+        .attr('text-anchor', 'end')
+        .attr('y', index * 12)
+        
+      // category
+      node
+        .append('tspan')
+        .classed('text-category', true)
+        .attr('fill', this.colors[index])
+        .text(this.legend[index])
+
+      // symbol
+      node
+        .append('tspan')
+        .attr('dx', '0.5rem')
+        .attr('fill', this.colors[index])
+        .text(symbol)
+
+      // text
+      node
+        .append('tspan')
+        .attr('dx', '0.5rem')
+        .text(this.textFunction(datum))
+    })
   }
 }

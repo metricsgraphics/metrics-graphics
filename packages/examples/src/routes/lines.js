@@ -9,6 +9,7 @@ export default class Lines extends Component {
   lineChart1 = null
   confidenceBand = null
   multilineChart = null
+  aggregatedChart = null
 
   componentDidMount () {
     this.lineChart1 = new LineChart({
@@ -57,6 +58,23 @@ export default class Lines extends Component {
       yAccessor: 'value',
       legend: ['Line 1', 'Line 2', 'Line 3'],
       legendTarget: '#fakeUsers2Legend'
+    })
+
+    this.aggregatedChart = new LineChart({
+      data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+        ...fakeEntry,
+        date: new Date(fakeEntry.date)
+      }))),
+      width: 600,
+      height: 200,
+      target: '#aggregate',
+      xAccessor: 'date',
+      yAccessor: 'value',
+      legend: ['Line 1', 'Line 2', 'Line 3'],
+      legendTarget: '#aggregateLegend',
+      voronoi: {
+        aggregate: true
+      }
     })
   }
 
@@ -140,6 +158,35 @@ export default class Lines extends Component {
   yAccessor: 'value',
   legend: ['Line 1', 'Line 2', 'Line 3'],
   legendTarget: '#fakeUsers2Legend'
+})`}</pre></code>
+          </div>
+        </div>
+
+        <div className="example-container">
+          <div>
+            <p>Aggregate Rollover</p>
+            <small>
+              One rollover for all lines.
+            </small>
+            <div id="aggregate" />
+            <p className="text-center" id="aggregateLegend" />
+          </div>
+          <div>
+            <code><pre>{`new LineChart({
+  data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+    ...fakeEntry,
+    date: new Date(fakeEntry.date)
+  }))),
+  width: 600,
+  height: 200,
+  target: '#aggregate',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  legendTarget: '#aggregateLegend',
+  voronoi: {
+    aggregate: true
+  }
 })`}</pre></code>
           </div>
         </div>

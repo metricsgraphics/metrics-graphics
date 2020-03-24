@@ -4,35 +4,52 @@ import { mouse } from 'd3-selection'
 
 export default class Delaunay {
   points = []
+  aggregatedPoints = null
   delaunay = null
   xScale = null
   yScale = null
+  xAccessor = null
   onPoint = d => null
   onLeave = () => null
   onClick = () => null
   rect = null
+  aggregate = false
 
-  constructor ({ points, xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested }) {
+  constructor ({ points = [], xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested, aggregate }) {
     // Case 1: There is only one dimension of points (e.g. one line).
     // In this case, only use the x-distance by setting all y values to zero.
     // if the points are one-dimensional, treat them like that.
     const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
-    this.points = points.length
-      ? isNested
-        ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
+    this.points = isNested
+      ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
           ...point,
           arrayIndex
         }))).flat(Infinity)
-        : points.flat(Infinity)
-      : []
+      : points.flat(Infinity)
+
+    // if points should be aggregated, hash-map them based on their x accessor value
+    if (aggregate) {
+      this.aggregatedPoints = this.points.reduce((acc, val) => {
+        const key = JSON.stringify(xAccessor(val))
+        if (!acc.has(key)) {
+          acc.set(key, [val])
+        } else {
+          acc.set(key, [val, ...acc.get(key)])
+        }
+        return acc
+      }, new Map())
+    }
+
     this.xScale = xScale
     this.yScale = yScale
     this.delaunay = DelaunayObject.from(
-      this.points.map(point => ([xAccessor(point), isNested ? yAccessor(point) : 0]))
+      this.points.map(point => ([xAccessor(point), isNested && !aggregate ? yAccessor(point) : 0]))
     )
     this.onPoint = onPoint ?? this.onPoint
     this.onLeave = onLeave ?? this.onLeave
     this.onClick = onClick ?? this.onClick
+    this.xAccessor = xAccessor
+    this.aggregate = aggregate ?? this.aggregate
   }
 
   gotPoint (rawX, rawY) {
@@ -41,7 +58,13 @@ export default class Delaunay {
 
     // find nearest point
     const index = this.delaunay.find(x, y)
-    this.onPoint({ ...this.points[index], index })
+
+    // if points should be aggregated, get all points with the same x value
+    if (this.aggregate) {
+      this.onPoint(this.aggregatedPoints.get(JSON.stringify(this.xAccessor(this.points[index]))))
+    } else {
+      this.onPoint([this.points[index]])
+    }
   }
 
   clickedPoint (rawX, rawY) {

@@ -10,12 +10,14 @@ import { select } from 'd3-selection'
 
 export default class LineChart extends AbstractChart {
   delaunay = null
-  delaunayPoint = null
+
+  // one delaunay point per line
+  delaunayPoints = []
 
   constructor ({ area, confidenceBand, voronoi, ...args }) {
     super(args)
 
-    // compute lines
+    // compute lines and delaunay points
     this.data.forEach((lineData, index) => {
       const line = new Line({
         data: lineData,
@@ -24,6 +26,13 @@ export default class LineChart extends AbstractChart {
         xScale: this.xScale,
         yScale: this.yScale,
         color: this.colors[index]
+      })
+      this.delaunayPoints[index] = new Point({
+        xAccessor: this.xAccessor,
+        yAccessor: this.yAccessor,
+        xScale: this.xScale,
+        yScale: this.yScale,
+        radius: 3
       })
       line.mountTo(this.container)
     })
@@ -87,39 +96,41 @@ export default class LineChart extends AbstractChart {
     })
 
     // generate delaunator
-    this.delaunayPoint = new Point({
-      xAccessor: this.xAccessor,
-      yAccessor: this.yAccessor,
-      xScale: this.xScale,
-      yScale: this.yScale,
-      radius: 3
-    })
     this.delaunay = new Delaunay({
       points: this.data,
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
       xScale: this.xScale,
       yScale: this.yScale,
-      onPoint: (point) => {
-        const color = point.arrayIndex ? this.colors[point.arrayIndex] : this.colors[0]
+      onPoint: (points) => {
+        // pre-hide all points
+        this.delaunayPoints.forEach(dp => {
+          if (dp.pointObject) dp.hide()
+        })
+        
+        points.forEach(point => {
+          const index = point.arrayIndex || 0
+          const color = this.colors[index]
+  
+          // set hover point
+          this.delaunayPoints[index].update({ point, color })
+          if (!this.delaunayPoints[index].pointObject) {
+            this.delaunayPoints[index].mountTo(this.container)
+          }
+        })
 
-        // set hover point
-        this.delaunayPoint.update({ point, color })
-        if (!this.delaunayPoint.pointObject) this.delaunayPoint.mountTo(this.container)
 
         // set tooltip
         if (this.tooltip) {
           this.tooltip.update({
-            color,
-            data: point,
-            legendCategory: this.legend && typeof point.arrayIndex !== 'undefined'
-              ? this.legend[point.arrayIndex]
-              : undefined
+            colors: this.colors,
+            data: points,
+            legend: this.legend
           })
         }
       },
       onLeave: () => {
-        this.delaunayPoint.hide()
+        this.delaunayPoints.forEach(dp => dp.hide())
         if (this.tooltip) this.tooltip.hide()
       },
       ...voronoi
