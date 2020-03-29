@@ -123,6 +123,7 @@ export default class LineChart extends AbstractChart {
         // set tooltip
         if (this.tooltip) {
           this.tooltip.update({
+            legendObject: constants.legendObject.line,
             colors: this.colors,
             data: points,
             legend: this.legend

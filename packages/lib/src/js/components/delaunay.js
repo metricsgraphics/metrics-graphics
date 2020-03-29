@@ -63,7 +63,7 @@ export default class Delaunay {
     if (this.aggregate) {
       this.onPoint(this.aggregatedPoints.get(JSON.stringify(this.xAccessor(this.points[index]))))
     } else {
-      this.onPoint([this.points[index]])
+      this.onPoint([{ ...this.points[index], index }])
     }
   }
 

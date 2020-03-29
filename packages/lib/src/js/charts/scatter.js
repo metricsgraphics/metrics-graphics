@@ -12,7 +12,6 @@ export default class ScatterChart extends AbstractChart {
   _activePoint = { i: -1, j: -1 }
 
   constructor ({ sizeAccessor, ...args }) {
-    console.log('init new scatter chart: ', args)
     super(args)
 
     // set tooltip type
@@ -59,17 +58,17 @@ export default class ScatterChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       nested: true,
-      onPoint: (point) => {
+      onPoint: (points) => {
+        const point = points[0]
         this.activePoint = { i: point.arrayIndex ?? 0, j: point.index }
 
         // set tooltip
         if (this.tooltip) {
           this.tooltip.update({
-            color: point.arrayIndex ? this.colors[point.arrayIndex] : this.colors[0],
-            data: point,
-            legendCategory: this.legend && typeof point.arrayIndex !== 'undefined'
-              ? this.legend[point.arrayIndex]
-              : undefined
+            legendObject: constants.legendObject.circle,
+            colors: this.colors,
+            data: points,
+            legend: this.legend
           })
         }
       },

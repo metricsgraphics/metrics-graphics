@@ -27,7 +27,7 @@ const constants = {
   },
   symbol: {
     line: '—',
-    dot: '•'
+    circle: '•'
   }
 }
 
