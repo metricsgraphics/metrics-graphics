@@ -1,4 +1,5 @@
 import constants from '../misc/constants'
+import { select } from 'd3-selection'
 
 export default class Legend {
   legend = []
@@ -42,6 +43,9 @@ export default class Legend {
 
   mountTo (node) {
     const symbol = constants.symbol[this.symbolType]
+
+    // create d3 selection if necessary
+    if (typeof node === 'string') node = select(node)
 
     this.legend.forEach((item, index) => {
       node
