@@ -55,6 +55,8 @@ export default class Tooltip {
     this.node.attr('opacity', 1)
     this.data.forEach((datum, index) => {
       const symbol = constants.symbol[this.legendObject]
+      const realIndex = datum.arrayIndex ?? index
+      const color = this.colors[realIndex]
       const node = this.node
         .append('text')
         .attr('text-anchor', 'end')
@@ -64,14 +66,14 @@ export default class Tooltip {
       node
         .append('tspan')
         .classed('text-category', true)
-        .attr('fill', this.colors[index])
-        .text(this.legend[index])
+        .attr('fill', color)
+        .text(this.legend[realIndex])
 
       // symbol
       node
         .append('tspan')
         .attr('dx', '0.5rem')
-        .attr('fill', this.colors[index])
+        .attr('fill', color)
         .text(symbol)
 
       // text

@@ -21,11 +21,12 @@ export default class Delaunay {
     // if the points are one-dimensional, treat them like that.
     const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
     this.points = isNested
-      ? points.map((pointArray, arrayIndex) => pointArray.map(point => ({
+      ? points.map((pointArray, arrayIndex) => pointArray.map((point, index) => ({
           ...point,
+          index,
           arrayIndex
         }))).flat(Infinity)
-      : points.flat(Infinity)
+      : points.flat(Infinity).map((p, index) => ({ ...p, index }))
 
     // if points should be aggregated, hash-map them based on their x accessor value
     if (aggregate) {
@@ -63,7 +64,7 @@ export default class Delaunay {
     if (this.aggregate) {
       this.onPoint(this.aggregatedPoints.get(JSON.stringify(this.xAccessor(this.points[index]))))
     } else {
-      this.onPoint([{ ...this.points[index], index }])
+      this.onPoint([this.points[index]])
     }
   }
 
