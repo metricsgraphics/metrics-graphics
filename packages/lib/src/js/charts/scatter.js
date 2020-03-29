@@ -3,6 +3,7 @@ import { extent } from 'd3-array'
 import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
+import Legend from '../components/legend'
 
 export default class ScatterChart extends AbstractChart {
   points = []
@@ -66,9 +67,7 @@ export default class ScatterChart extends AbstractChart {
         if (this.tooltip) {
           this.tooltip.update({
             legendObject: constants.legendObject.circle,
-            colors: this.colors,
-            data: points,
-            legend: this.legend
+            data: points
           })
         }
       },
@@ -78,6 +77,16 @@ export default class ScatterChart extends AbstractChart {
       }
     })
     this.delaunay.mountTo(this.container)
+
+    // mount legend if any
+    if (this.legend && this.legend.length > 0 && this.legendTarget) {
+      const legend = new Legend({
+        legend: this.legend,
+        colorScheme: this.colors,
+        symbolType: constants.legendObject.line
+      })
+      legend.mountTo(this.legendTarget)
+    }
   }
 
   set activePoint ({ i, j }) {

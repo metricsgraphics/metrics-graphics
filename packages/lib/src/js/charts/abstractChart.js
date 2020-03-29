@@ -157,7 +157,9 @@ export default class AbstractChart {
         left: this.width - 2 * this.buffer,
         xAccessor: this.xAccessor,
         yAccessor: this.yAccessor,
-        textFunction: tooltipFunction
+        textFunction: tooltipFunction,
+        colors: this.colors,
+        legend: this.legend
       })
       this.tooltip.mountTo(this.svg)
     }

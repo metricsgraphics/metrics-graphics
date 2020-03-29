@@ -6,7 +6,6 @@ import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
 import Legend from '../components/legend'
-import { select } from 'd3-selection'
 
 export default class LineChart extends AbstractChart {
   delaunay = null
@@ -124,9 +123,7 @@ export default class LineChart extends AbstractChart {
         if (this.tooltip) {
           this.tooltip.update({
             legendObject: constants.legendObject.line,
-            colors: this.colors,
-            data: points,
-            legend: this.legend
+            data: points
           })
         }
       },
@@ -145,7 +142,7 @@ export default class LineChart extends AbstractChart {
         colorScheme: this.colors,
         symbolType: constants.legendObject.line
       })
-      legend.mountTo(select(this.legendTarget))
+      legend.mountTo(this.legendTarget)
     }
   }
 
