@@ -28,6 +28,10 @@ const constants = {
   symbol: {
     line: '—',
     circle: '•'
+  },
+  orientation: {
+    vertical: 'vertical',
+    horizontal: 'horizontal'
   }
 }
 

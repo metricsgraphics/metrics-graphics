@@ -4,16 +4,45 @@ import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
 import Legend from '../components/legend'
+import Rug from '../components/rug'
 
 export default class ScatterChart extends AbstractChart {
   points = []
   delaunay = null
   delaunayPoint = null
   sizeAccessor = null
+  xRug = null
+  yRug = null
   _activePoint = { i: -1, j: -1 }
 
-  constructor ({ sizeAccessor, ...args }) {
+  constructor ({ sizeAccessor, xRug, yRug, ...args }) {
     super(args)
+
+    // set up rugs if necessary
+    if (xRug) {
+      this.xRug = new Rug({
+        accessor: this.xAccessor,
+        scale: this.xScale,
+        colors: this.colors,
+        data: this.data,
+        left: this.plotLeft,
+        top: this.innerHeight + this.plotTop + this.buffer,
+        orientation: constants.orientation.horizontal // TODO how to pass tickLength etc?
+      })
+      this.xRug.mountTo(this.svg)
+    }
+    if (yRug) {
+      this.yRug = new Rug({
+        accessor: this.yAccessor,
+        scale: this.yScale,
+        colors: this.colors,
+        data: this.data,
+        left: this.left,
+        top: this.plotTop,
+        orientation: constants.orientation.vertical
+      })
+      this.yRug.mountTo(this.svg)
+    }
 
     // set tooltip type
     if (this.tooltip) {

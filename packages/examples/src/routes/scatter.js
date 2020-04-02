@@ -29,6 +29,7 @@ export default class Lines extends Component {
       target: '#scatterChart1',
       xAccessor: 'x',
       yAccessor: 'y',
+      xRug: true,
       tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`
     })
     this.scatterChart2 = new ScatterChart({
@@ -39,6 +40,7 @@ export default class Lines extends Component {
       target: '#scatterChart2',
       xAccessor: 'x',
       yAccessor: 'y',
+      yRug: true,
       tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
       legendTarget: '#scatterChart2Legend'
     })
