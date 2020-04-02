@@ -50,7 +50,7 @@ export default class Lines extends Component {
       target: '#scatterChart3',
       xAccessor: 'x',
       yAccessor: 'y',
-      sizeAccessor: x => x.w * 3,
+      sizeAccessor: x => Math.abs(x.w) * 3,
       tooltipFunction: point => `x: ${Num.format(point.x)} y: ${Num.format(point.y)} size: ${Num.format(point.w)}`,
       legendTarget: '#scatterChart3Legend'
     })
