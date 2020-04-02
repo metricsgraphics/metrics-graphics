@@ -19,6 +19,7 @@ const Num = new Intl.NumberFormat('en', {
 export default class Lines extends Component {
   scatterChart1 = null
   scatterChart2 = null
+  scatterChart3 = null
 
   componentDidMount () {
     this.scatterChart1 = new ScatterChart({
@@ -40,6 +41,18 @@ export default class Lines extends Component {
       yAccessor: 'y',
       tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
       legendTarget: '#scatterChart2Legend'
+    })
+    this.scatterChart3 = new ScatterChart({
+      data: points2.map(x => x.values),
+      legend: points2.map(x => x.key),
+      width: 500,
+      height: 200,
+      target: '#scatterChart3',
+      xAccessor: 'x',
+      yAccessor: 'y',
+      sizeAccessor: x => x.w * 3,
+      tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
+      legendTarget: '#scatterChart3Legend'
     })
   }
 
@@ -67,6 +80,20 @@ export default class Lines extends Component {
             </small>
             <div id="scatterChart2" />
             <p className="text-center" id="scatterChart2Legend" />
+          </div>
+          <div>
+            <code><pre /></code>
+          </div>
+        </div>
+
+        <div className="example-container">
+          <div>
+            <p>Scatterplot with Size and Color</p>
+            <small>
+            Scatterplots have xAccessor, yAccessor and sizeAccessor.
+            </small>
+            <div id="scatterChart3" />
+            <p className="text-center" id="scatterChart3Legend" />
           </div>
           <div>
             <code><pre /></code>
