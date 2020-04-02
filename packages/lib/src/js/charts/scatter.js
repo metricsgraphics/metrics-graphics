@@ -83,7 +83,7 @@ export default class ScatterChart extends AbstractChart {
       const legend = new Legend({
         legend: this.legend,
         colorScheme: this.colors,
-        symbolType: constants.legendObject.line
+        symbolType: constants.legendObject.circle
       })
       legend.mountTo(this.legendTarget)
     }
