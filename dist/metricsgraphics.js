@@ -524,7 +524,7 @@ MG.warn_deprecation = warn_deprecation;
 
 /**
   Truncate a string to fit within an SVG text node
-  CSS text-overlow doesn't apply to SVG <= 1.2
+  CSS text-overflow doesn't apply to SVG <= 1.2
 
   @author Dan de Havilland (github.com/dandehavilland)
   @date 2014-12-02
