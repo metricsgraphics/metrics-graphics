@@ -16,7 +16,7 @@ const Num = new Intl.NumberFormat('en', {
   maximumFractionDigits: 2
 })
 
-export default class Lines extends Component {
+export default class Scatter extends Component {
   scatterChart1 = null
   scatterChart2 = null
   scatterChart3 = null
@@ -70,7 +70,16 @@ export default class Lines extends Component {
             <div id="scatterChart1" />
           </div>
           <div>
-            <code><pre /></code>
+            <code><pre>{`new ScatterChart({
+  data: points1,
+  width: 500,
+  height: 200,
+  target: '#scatterChart1',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  xRug: true,
+  tooltipFunction: point => \`\${point.x} \${point.y}\`
+})`}</pre></code>
           </div>
         </div>
 
@@ -84,7 +93,18 @@ export default class Lines extends Component {
             <p className="text-center" id="scatterChart2Legend" />
           </div>
           <div>
-            <code><pre /></code>
+            <code><pre>{`new ScatterChart({
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart2',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  yRug: true,
+  tooltipFunction: point => \`\${point.x} \${point.y}\`,
+  legendTarget: '#scatterChart2Legend'
+})`}</pre></code>
           </div>
         </div>
 
@@ -98,7 +118,18 @@ export default class Lines extends Component {
             <p className="text-center" id="scatterChart3Legend" />
           </div>
           <div>
-            <code><pre /></code>
+            <code><pre>{`new ScatterChart({
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart3',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  sizeAccessor: x => Math.abs(x.w) * 3,
+  tooltipFunction: point => \`x: \${point.x} y: \${point.y} size: \${point.w}\`,
+  legendTarget: '#scatterChart3Legend'
+})`}</pre></code>
           </div>
         </div>
       </div>

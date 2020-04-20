@@ -10,7 +10,7 @@ export default class Lines extends Component {
     this.histogramChart1 = new HistogramChart({
       data: ufoDates.map(date => (parseInt(date, 10) / 30)).sort(),
       width: 600,
-      height: 300,
+      height: 200,
       right: 40,
       binCount: 150,
       target: '#histogramChart1',
@@ -33,7 +33,18 @@ export default class Lines extends Component {
             <div id="histogramChart1" />
           </div>
           <div>
-            <code><pre /></code>
+            <code><pre>{`new HistogramChart({
+  data: ufoDates.map(date => (parseInt(date, 10) / 30)).sort(),
+  width: 600,
+  height: 200,
+  right: 40,
+  binCount: 150,
+  target: '#histogramChart1',
+  yAxis: {
+    extendedTicks: true
+  },
+  tooltipFunction: bar => \`\${bar.time} months, volume \${bar.count}\`
+})`}</pre></code>
           </div>
         </div>
       </div>
