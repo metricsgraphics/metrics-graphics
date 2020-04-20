@@ -59,7 +59,7 @@ export default class ScatterChart extends AbstractChart {
     // set up points
     this.points = this.data.map((pointSet, i) => pointSet.map(data => {
       const point = new Point({
-        point: data,
+        data,
         xAccessor: this.xAccessor,
         yAccessor: this.yAccessor,
         xScale: this.xScale,

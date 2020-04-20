@@ -104,7 +104,7 @@ export default class LineChart extends AbstractChart {
       onPoint: (points) => {
         // pre-hide all points
         this.delaunayPoints.forEach(dp => {
-          if (dp.pointObject) dp.hide()
+          dp.hide()
         })
 
         points.forEach(point => {
@@ -112,8 +112,8 @@ export default class LineChart extends AbstractChart {
           const color = this.colors[index]
 
           // set hover point
-          this.delaunayPoints[index].update({ point, color })
-          if (!this.delaunayPoints[index].pointObject) {
+          this.delaunayPoints[index].update({ data: point, color })
+          if (!this.delaunayPoints[index].shapeObject) {
             this.delaunayPoints[index].mountTo(this.container)
           }
         })
