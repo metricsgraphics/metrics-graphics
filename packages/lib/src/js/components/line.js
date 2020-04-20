@@ -13,7 +13,7 @@ export default class Line {
    * @param {Function} yAccessor function to access the y value for a given data point.
    * @param {Scale} xScale scale used to compute x values.
    * @param {Scale} yScale scale used to compute y values.
-   * @param {Function} [curve=catmullRom] curving function used to draw the line. See {@tutorial https://github.com/d3/d3-shape#curves} for curves available in d3.
+   * @param {Function} [curve=catmullRom] curving function used to draw the line. See {@link https://github.com/d3/d3-shape#curves} for curves available in d3.
    * @param {String} color color of the line.
    */
   constructor ({

@@ -17,7 +17,7 @@ export default class Area {
    * @param {Function} y1Accessor alternative to yAccessor.
    * @param {Scale} xScale scale used to scale elements in x direction.
    * @param {Scale} yScale scale used to scale elements in y direction.
-   * @param {Function} curve curving function. See {@tutorial https://github.com/d3/d3-shape#curves} for available curves in d3.
+   * @param {Function} curve curving function. See {@link https://github.com/d3/d3-shape#curves} for available curves in d3.
    * @param {String} [color='none'] color of the area.
    */
   constructor ({
