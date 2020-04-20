@@ -22,10 +22,10 @@ export default class Delaunay {
     const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
     this.points = isNested
       ? points.map((pointArray, arrayIndex) => pointArray.map((point, index) => ({
-          ...point,
-          index,
-          arrayIndex
-        }))).flat(Infinity)
+        ...point,
+        index,
+        arrayIndex
+      }))).flat(Infinity)
       : points.flat(Infinity).map((p, index) => ({ ...p, index }))
 
     // if points should be aggregated, hash-map them based on their x accessor value
