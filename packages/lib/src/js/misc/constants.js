@@ -23,11 +23,13 @@ const constants = {
   },
   legendObject: {
     circle: 'circle',
-    line: 'line'
+    line: 'line',
+    square: 'square'
   },
   symbol: {
     line: '—',
-    circle: '•'
+    circle: '•',
+    square: '■'
   },
   orientation: {
     vertical: 'vertical',

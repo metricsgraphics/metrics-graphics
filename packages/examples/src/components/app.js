@@ -7,6 +7,7 @@ import Header from './header'
 import Home from '../routes/home'
 import Lines from '../routes/lines'
 import Scatter from '../routes/scatter'
+import Histogram from '../routes/histogram'
 
 export default class App extends Component {
   /** Gets fired when the route changes.
@@ -26,6 +27,7 @@ export default class App extends Component {
             <Home path="/" />
             <Lines path="/lines/" />
             <Scatter path="/scatter/" />
+            <Histogram path="/histogram/" />
           </Router>
         </div>
       </div>
