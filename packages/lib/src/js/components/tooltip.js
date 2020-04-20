@@ -61,7 +61,7 @@ export default class Tooltip {
         .append('text')
         .attr('text-anchor', 'end')
         .attr('y', index * 12)
-        
+
       // category
       node
         .append('tspan')
