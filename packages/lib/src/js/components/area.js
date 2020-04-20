@@ -6,6 +6,20 @@ export default class Area {
   index = 0
   color = null
 
+  /**
+   * Create a new area shape.
+   * Meant to be used together with a {@link Line}.
+   *
+   * @param {Array} data data for which the shape should be created.
+   * @param {Function} xAccessor x accessor function.
+   * @param {Function} yAccessor y accessor function.
+   * @param {Function} y0Accessor y base accessor function. Defaults to static 0.
+   * @param {Function} y1Accessor alternative to yAccessor.
+   * @param {Scale} xScale scale used to scale elements in x direction.
+   * @param {Scale} yScale scale used to scale elements in y direction.
+   * @param {Function} curve curving function. See {@tutorial https://github.com/d3/d3-shape#curves} for available curves in d3.
+   * @param {String} [color='none'] color of the area.
+   */
   constructor ({
     data,
     xAccessor,
@@ -15,15 +29,12 @@ export default class Area {
     xScale,
     yScale,
     curve,
-    index,
-    color,
-    colors
+    color
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
-    this.index = index ?? this.index
-    this.color = color || (colors && index ? colors[index] : 'none')
+    this.color = color
 
     const y0 = y0Accessor ?? (d => 0)
     const y1 = y1Accessor ?? yAccessor
@@ -36,6 +47,12 @@ export default class Area {
       .curve(curve ?? curveCatmullRom)
   }
 
+  /**
+   * Mount the area to a given d3 node.
+   *
+   * @param {Object} svg d3 node to mount the area to.
+   * @returns {void}
+   */
   mountTo (svg) {
     svg
       .append('path')

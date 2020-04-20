@@ -1,15 +1,29 @@
 import constants from '../misc/constants'
+import { schemeCategory10 } from 'd3-scale-chromatic'
 
 export default class Tooltip {
   legendObject = 'line'
   legend = []
-  colors = ['#000000']
+  colors = schemeCategory10
   textFunction = d => d
   data = []
   left = 0
   top = 0
   node = null
 
+  /**
+   * Set up a new tooltip.
+   *
+   * @param {String} [legendObject='line'] symbol to show in the tooltip (circle, line, square).
+   * @param {Array} [legend=[]] legend used to correctly describe data in multi-dimensional cases.
+   * @param {Array} [colors=schemeCategory10] color scheme for multi-dimensional cases.
+   * @param {Function} [textFunction] custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
+   * @param {Array} [data=[]] entries to show in the tooltip. This is usually empty when first instantiating the tooltip.
+   * @param {Number} [left=0] margin to the left of the tooltip.
+   * @param {Number} [top=0] margin to the top of the tooltip.
+   * @param {Function} [xAccessor] if no custom text function is specified, this function specifies how to get the x value from a specific data point.
+   * @param {Function} [yAccessor] if no custom text function is specified, this function specifies how to get the y value from a specific data point.
+   */
   constructor ({ legendObject, legend, colors, textFunction, data, left, top, xAccessor, yAccessor } = {}) {
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? this.legend
@@ -22,22 +36,46 @@ export default class Tooltip {
     this.top = top ?? this.top
   }
 
+  /**
+   * If no textFunction was specified when creating the tooltip instance, this method generates a text function based on the xAccessor and yAccessor.
+   *
+   * @param {Function} xAccessor returns the x value of a given data point.
+   * @param {Function} yAccessor returns the y value of a given data point.
+   * @returns {Function} base text function used to render the tooltip for a given datapoint.
+   */
   baseTextFunction ({ xAccessor, yAccessor }) {
     return point => `${xAccessor(point)}: ${yAccessor(point)}`
   }
 
-  update ({ colors, data, legendObject, legend }) {
-    this.colors = colors ?? this.colors
+  /**
+   * Update the tooltip.
+   *
+   * @param {Array} data array of data points to be shown in the tooltip.
+   * @param {String} legendObject update the type of legend object to be shown in the tooltip (line, circle, square).
+   * @param {Array} legend legend used by the graph.
+   * @returns {void}
+   */
+  update ({ data, legendObject, legend }) {
     this.data = data ?? this.data
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? this.legend
     this.addText()
   }
 
+  /**
+   * Hide the tooltip (without destroying it).
+   * @returns {void}
+   */
   hide () {
     this.node.attr('opacity', 0)
   }
 
+  /**
+   * Mount the tooltip to the given d3 node.
+   *
+   * @param {Object} svg d3 node to mount the tooltip to.
+   * @returns {void}
+   */
   mountTo (svg) {
     this.node = svg
       .append('g')
@@ -47,6 +85,12 @@ export default class Tooltip {
     this.addText()
   }
 
+  /**
+   * Adds the text to the tooltip.
+   * For each datapoint in the data array, one line is added to the tooltip.
+   *
+   * @returns {void}
+   */
   addText () {
     // first, clear existing content
     this.node.selectAll('*').remove()

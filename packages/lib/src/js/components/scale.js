@@ -1,14 +1,21 @@
 import { scaleLinear } from 'd3-scale'
 
 export default class Scale {
-  name = null
   type = null
   scaleObject = null
   minValue = null
   maxValue = null
 
-  constructor ({ name, scaleObject, type, range, domain, minValue, maxValue }) {
-    this.name = name ?? this.name
+  /**
+   * Set up a new scale.
+   *
+   * @param {String} [type='linear'] type of scale. Can currently only be linear.
+   * @param {Array} [range] range of the scale.
+   * @param {Array} [domain] domain of the scale.
+   * @param {Number} [minValue] overwrites the lower bound of the domain.
+   * @param {Number} [maxValue] overwrites the upper bound of the domain.
+   */
+  constructor ({ scaleObject, type, range, domain, minValue, maxValue }) {
     this.scaleObject = scaleObject ?? this.getScaleObject(type)
 
     // set optional custom ranges and domains
@@ -20,6 +27,12 @@ export default class Scale {
     this.maxValue = maxValue ?? this.maxValue
   }
 
+  /**
+   * Get the d3 scale object for a given scale type.
+   *
+   * @param {String} type scale type
+   * @returns {Object} d3 scale type
+   */
   getScaleObject (type) {
     switch (type) {
       default: return scaleLinear()

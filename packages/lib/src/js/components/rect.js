@@ -6,6 +6,14 @@ export default class Rect extends AbstractShape {
   widthAccessor = null
   heightAccessor = null
 
+  /**
+   * Create a new rectangle.
+   *
+   * @param {Function} xAccessor function to access the x value of the rectangle.
+   * @param {Function} yAccessor function to access the y value of the rectangle.
+   * @param {Function} widthAccessor function to access the width of the rectangle.
+   * @param {Function} heightAccessor function to access the height of the rectangle.
+   */
   constructor ({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }) {
     super(args)
     this.xAccessor = xAccessor
@@ -19,6 +27,12 @@ export default class Rect extends AbstractShape {
   get width () { return Math.max(0, this.xScale.scaleObject(this.widthAccessor(this.data))) }
   get height () { return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data))) }
 
+  /**
+   * Mount the rectangle to the given node.
+   *
+   * @param {Object} svg d3 node to mount the rectangle to.
+   * @returns {void}
+   */
   mountTo (svg) {
     this.shapeObject = svg
       .append('rect')
@@ -33,6 +47,12 @@ export default class Rect extends AbstractShape {
       .attr('stroke-width', this.strokeWidth)
   }
 
+  /**
+   * Update the rectangle.
+   *
+   * @param {Object} data updated data object.
+   * @returns {void}
+   */
   update ({ data, ...args }) {
     this.updateGeneric(args)
     if (data) {

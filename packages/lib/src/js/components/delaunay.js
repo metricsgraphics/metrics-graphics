@@ -15,6 +15,20 @@ export default class Delaunay {
   rect = null
   aggregate = false
 
+  /**
+   * Instantiate a new delaunay computation instance.
+   *
+   * @param {Array} points raw data basis for delaunay computations. Can be nested.
+   * @param {Function} xAccessor function to access the x value for a given data point.
+   * @param {Function} yAccessor function to access the y value for a given data point.
+   * @param {Scale} xScale scale used to scale elements in x direction.
+   * @param {Scale} yScale scale used to scale elements in y direction.
+   * @param {Function} [onPoint] function called with the array of nearest points on mouse movement. If aggregate is false, the array will contain at most one element.
+   * @param {Function} [onLeave] function called when the delaunay area is left.
+   * @param {Function} [onClick] function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
+   * @param {Boolean} [nested=false] whether or not the points array contains sub-arrays.
+   * @param {Boolean} [aggregate=false] if multiple points have the same x value and should be shown together, aggregate can be set to true.
+   */
   constructor ({ points = [], xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested, aggregate }) {
     // Case 1: There is only one dimension of points (e.g. one line).
     // In this case, only use the x-distance by setting all y values to zero.
@@ -53,6 +67,14 @@ export default class Delaunay {
     this.aggregate = aggregate ?? this.aggregate
   }
 
+  /**
+   * Handle raw mouse movement inside the delaunay rect.
+   * Finds the nearest data point(s) and calls onPoint.
+   *
+   * @param {Number} rawX raw x coordinate of the cursor.
+   * @param {Number} rawY raw y coordinate of the cursor.
+   * @returns {void}
+   */
   gotPoint (rawX, rawY) {
     const x = this.xScale.scaleObject.invert(rawX)
     const y = this.yScale.scaleObject.invert(rawY)
@@ -68,6 +90,14 @@ export default class Delaunay {
     }
   }
 
+  /**
+   * Handle raw mouse clicks inside the delaunay rect.
+   * Finds the nearest data point(s) and calls onClick.
+   *
+   * @param {Number} rawX raw x coordinate of the cursor.
+   * @param {Number} rawY raw y coordinate of the cursor.
+   * @returns {void}
+   */
   clickedPoint (rawX, rawY) {
     const x = this.xScale.scaleObject.invert(rawX)
     const y = this.yScale.scaleObject.invert(rawY)
@@ -77,6 +107,12 @@ export default class Delaunay {
     this.onClick({ ...this.points[index], index })
   }
 
+  /**
+   * Mount the delaunator to a given d3 node.
+   *
+   * @param {Object} svg d3 selection to mount the delaunay elements to.
+   * @returns {void}
+   */
   mountTo (svg) {
     this.rect = svg
       .append('rect')

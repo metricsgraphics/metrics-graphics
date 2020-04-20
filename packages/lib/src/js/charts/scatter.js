@@ -15,6 +15,12 @@ export default class ScatterChart extends AbstractChart {
   yRug = null
   _activePoint = { i: -1, j: -1 }
 
+  /**
+   *
+   * @param {String | Function} [sizeAccessor=d=>3] accesor specifying the size of a data point. Can be either a string (name of the size field) or a function (receiving a data point and returning its size).
+   * @param {Boolean} [xRug=false] whether or not to generate a rug for the x axis.
+   * @param {Boolean} [yRug=false] whether or not to generate a rug for the y axis.
+   */
   constructor ({ sizeAccessor, xRug, yRug, ...args }) {
     super(args)
 

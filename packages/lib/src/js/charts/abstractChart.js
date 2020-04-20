@@ -1,11 +1,20 @@
-import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, raiseContainerError, targetRef } from '../misc/utility'
+import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, randomId } from '../misc/utility'
 import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 
+/**
+ * This class implements all behavior shared by all chart types.
+ *
+ * Most importantly, it sets up all containers used by the charts to render elements.
+ *
+ * Also, general elements like axes, legends and tooltips are set up.
+ */
 export default class AbstractChart {
+  id = null
+
   // base chart fields
   data = null
   markers = []
@@ -48,6 +57,30 @@ export default class AbstractChart {
   isNestedArrayOfArrays = false
   isNestedArrayOfObjects = false
 
+  /**
+   * Instantiate a new abstract chart.
+   * This isn't meant to be called directly, it is called by the chart implementations.
+   *
+   * @param {Array} data data that needs to be visualized.
+   * @param {String | Object} target DOM node to which the graph should be mounted. Either D3 selection or D3 selection specifier.
+   * @param {Number} width total width of the graph.
+   * @param {Number} height total height of the graph.
+   * @param {Array} [markers=[]] markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field.
+   * @param {String | Function} [xAccessor=d=>d] either name of the field that contains the x value or function that receives a data object and returns its x value.
+   * @param {String | Function} [yAccessor=d=>d] either name of the field that contains the y value or function that receives a data object and returns its y value.
+   * @param {Object} [margin={ top: 10, left: 60, right: 20, bottom: 40 }] margin object specifying top, bottom, left and right margin.
+   * @param {Number} [buffer=10] amount of buffer between the axes and the graph.
+   * @param {String | Array} [color] custom color scheme for the graph.
+   * @param {String | Array} [colors=schemeCategory10] alternative to color.
+   * @param {Object} [xScale] object that can be used to overwrite parameters of the auto-generated x {@link Scale}.
+   * @param {Object} [yScale] object that can be used to overwrite parameters of the auto-generated y {@link Scale}.
+   * @param {Object} [xAxis] object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
+   * @param {Object} [yAxis] object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
+   * @param {Boolean} [showTooltip] whether or not to show a tooltip.
+   * @param {Function} [tooltipFunction] function that receives a data object and returns the string displayed as tooltip.
+   * @param {Array} [legend] names of the sub-arrays of data, used as legend labels.
+   * @param {String | Object} [legendTarget] DOM node to which the legend should be mounted.
+   */
   constructor ({
     data,
     target,
@@ -90,6 +123,9 @@ export default class AbstractChart {
       ? d => d[yAccessor] : yAccessor
     if (margin) this.margin = margin
     this.buffer = buffer ?? this.buffer
+
+    // set unique id for chart
+    this.id = randomId()
 
     // compute dimensions
     this.width = this.isFullWidth ? getWidth(this.target) : parseInt(width)
@@ -169,7 +205,7 @@ export default class AbstractChart {
     this.container = this.svg
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
-      .attr('clip-path', `url(#mg-plot-window-${targetRef(this.target)})`)
+      .attr('clip-path', `url(#mg-plot-window-${this.id})`)
       .append('g')
       .attr('transform', `translate(${this.buffer},${this.buffer})`)
   }
@@ -209,8 +245,6 @@ export default class AbstractChart {
    * @returns {void}
    */
   addSvgIfItDoesntExist () {
-    const container = select(this.target)
-    raiseContainerError(container, this.target)
     const svg = select(this.target).select('svg')
     this.svg = (!svg || svg.empty())
       ? select(this.target)
@@ -231,7 +265,7 @@ export default class AbstractChart {
     this.svg.append('defs')
       .attr('class', 'mg-clip-path')
       .append('clipPath')
-      .attr('id', 'mg-plot-window-' + targetRef(this.target))
+      .attr('id', `mg-plot-window-${this.id}`)
       .append('svg:rect')
       .attr('width', this.width - this.margin.left - this.margin.right)
       .attr('height', this.height - this.margin.top - this.margin.bottom)

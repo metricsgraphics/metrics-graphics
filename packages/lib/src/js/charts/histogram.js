@@ -12,6 +12,10 @@ export default class HistogramChart extends AbstractChart {
   delaunayBar = null
   _activeBar = -1
 
+  /**
+   * Creates a new histogram graph.
+   * @param {Number} [binCount] approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
+   */
   constructor ({ binCount, ...args }) {
     super({ binCount, ...args })
 

@@ -6,13 +6,27 @@ export default class Legend {
   colorScheme = []
   symbolType = ''
 
+  /**
+   * Set up a new legend.
+   *
+   * @param {Array} legend array of descriptive legend strings.
+   * @param {Array} colorScheme colors used for the legend. Will be darkened for better visibility.
+   * @param {String} symbol used in the legend (line, circle, square).
+   */
   constructor ({ legend, colorScheme, symbolType }) {
     this.legend = legend
     this.colorScheme = colorScheme
     this.symbolType = symbolType
   }
 
-  // see https://css-tricks.com/snippets/javascript/lighten-darken-color/
+  /**
+   * Darken a given color by a given amount.
+   *
+   * @see https://css-tricks.com/snippets/javascript/lighten-darken-color/
+   * @param {String} color hex color specifier
+   * @param {Number} amount how much to darken the color.
+   * @returns {String} darkened color in hex representation.
+   */
   darkenColor (color, amount) {
     let usePound = false
 
@@ -41,6 +55,12 @@ export default class Legend {
     return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16)
   }
 
+  /**
+   * Mount the legend to the given node.
+   *
+   * @param {String | Object} node d3 specifier or d3 node to mount the legend to.
+   * @returns {void}
+   */
   mountTo (node) {
     const symbol = constants.symbol[this.symbolType]
 

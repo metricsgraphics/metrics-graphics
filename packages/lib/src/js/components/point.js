@@ -5,6 +5,13 @@ export default class Point extends AbstractShape {
   yAccessor = null
   radius = 1
 
+  /**
+   * Create a new point.
+   *
+   * @param {Function} xAccessor function to access the x value of the point.
+   * @param {Function} yAccessor function to access the y value of the point.
+   * @param {Number} [radius=1] radius of the point.
+   */
   constructor ({ xAccessor, yAccessor, radius, ...args }) {
     super(args)
     this.xAccessor = xAccessor
@@ -15,6 +22,12 @@ export default class Point extends AbstractShape {
   get cx () { return this.xScale.scaleObject(this.xAccessor(this.data)) }
   get cy () { return this.yScale.scaleObject(this.yAccessor(this.data)) }
 
+  /**
+   * Mount the point to the given node.
+   *
+   * @param {Object} svg d3 node to mount the point to.
+   * @returns {void}
+   */
   mountTo (svg) {
     this.shapeObject = svg
       .append('circle')
@@ -28,6 +41,12 @@ export default class Point extends AbstractShape {
       .attr('stroke-width', this.strokeWidth)
   }
 
+  /**
+   * Update the point.
+   *
+   * @param {Object} data point object
+   * @returns {void}
+   */
   update ({ data, ...args }) {
     this.updateGeneric(args)
     if (data) {

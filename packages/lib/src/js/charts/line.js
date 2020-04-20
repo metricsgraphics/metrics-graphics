@@ -13,6 +13,12 @@ export default class LineChart extends AbstractChart {
   // one delaunay point per line
   delaunayPoints = []
 
+  /**
+   * Creates a new line graph.
+   * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
+   * @param {Array} [confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
+   * @param {Object} [voronoi] custom parameters passed to the voronoi generator.
+   */
   constructor ({ area, confidenceBand, voronoi, ...args }) {
     super(args)
 
@@ -66,8 +72,8 @@ export default class LineChart extends AbstractChart {
       const confidenceBandGenerator = new Area({
         data: this.data[0], // confidence band only makes sense for one line
         xAccessor: this.xAccessor,
-        y0Accessor: d => d[confidenceBand[0]],
-        y1Accessor: d => d[confidenceBand[1]],
+        y0Accessor: typeof confidenceBand[0] === 'function' ? confidenceBand[0] : d => d[confidenceBand[0]],
+        y1Accessor: typeof confidenceBand[1] === 'function' ? confidenceBand[1] : d => d[confidenceBand[1]],
         xScale: this.xScale,
         yScale: this.yScale,
         color: '#aaa'
