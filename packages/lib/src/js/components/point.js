@@ -1,32 +1,22 @@
-export default class Point {
-  point = null
-  pointObject = null
+import AbstractShape from './abstractShape'
+
+export default class Point extends AbstractShape {
   xAccessor = null
   yAccessor = null
-  xScale = null
-  yScale = null
   radius = 1
-  color = null
-  fillOpacity = 1
-  strokeWidth = 0
 
-  constructor ({ point, xAccessor, yAccessor, xScale, yScale, color, radius, fillOpacity, strokeWidth }) {
-    this.point = point
+  constructor ({ xAccessor, yAccessor, radius, ...args }) {
+    super(args)
     this.xAccessor = xAccessor
     this.yAccessor = yAccessor
-    this.xScale = xScale
-    this.yScale = yScale
-    this.color = color
     this.radius = radius ?? this.radius
-    this.fillOpacity = fillOpacity ?? this.fillOpacity
-    this.strokeWidth = strokeWidth ?? this.strokeWidth
   }
 
-  get cx () { return this.xScale.scaleObject(this.xAccessor(this.point)) }
-  get cy () { return this.yScale.scaleObject(this.yAccessor(this.point)) }
+  get cx () { return this.xScale.scaleObject(this.xAccessor(this.data)) }
+  get cy () { return this.yScale.scaleObject(this.yAccessor(this.data)) }
 
   mountTo (svg) {
-    this.pointObject = svg
+    this.shapeObject = svg
       .append('circle')
       .attr('cx', this.cx)
       .attr('pointer-events', 'none')
@@ -38,34 +28,15 @@ export default class Point {
       .attr('stroke-width', this.strokeWidth)
   }
 
-  hide () {
-    this.pointObject.attr('opacity', 0)
-  }
-
-  update ({ point, color, fillOpacity, strokeWidth }) {
-    if (point) {
-      this.point = point
-      if (!this.pointObject) return
-      this.pointObject
+  update ({ data, ...args }) {
+    this.updateGeneric(args)
+    if (data) {
+      this.data = data
+      if (!this.shapeObject) return
+      this.shapeObject
         .attr('cx', this.cx)
         .attr('cy', this.cy)
         .attr('opacity', 1)
     }
-    if (color) {
-      this.color = color
-      if (this.pointObject) this.pointObject.attr('fill', this.color)
-    }
-    if (fillOpacity) {
-      this.fillOpacity = fillOpacity
-      this.pointObject.attr('fill-opacity', this.fillOpacity)
-    }
-    if (strokeWidth) {
-      this.strokeWidth = strokeWidth
-      this.pointObject.attr('stroke-width', this.strokeWidth)
-    }
-  }
-
-  dismount () {
-    this.pointObject.remove()
   }
 }
