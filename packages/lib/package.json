@@ -1,6 +1,6 @@
 {
   "name": "mg2",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/metrics-graphics.js",
   "module": "src/js/MG.js",
