@@ -67,7 +67,8 @@ export default class AbstractChart {
     showTooltip,
     tooltipFunction,
     legend,
-    legendTarget
+    legendTarget,
+    ...custom
   }) {
     // check that at least some data was specified
     if (!data || !data.length) return console.error('no data specified')
@@ -120,7 +121,7 @@ export default class AbstractChart {
 
     // normalize data if necessary
     this.normalizeData()
-    this.computeDomains()
+    this.computeDomains(custom)
 
     // set up axes if not disabled
     const hideX = xAxis && typeof xAxis.show !== 'undefined' && !xAxis.show
@@ -257,9 +258,10 @@ export default class AbstractChart {
 
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
+   * @param {Object} params object of custom parameters for the specific chart type
    * @returns {void}
    */
-  computeDomains () {
+  computeDomains (params) {
     this.xScale.domain = [0, 1]
     this.yScale.domain = [0, 1]
   }

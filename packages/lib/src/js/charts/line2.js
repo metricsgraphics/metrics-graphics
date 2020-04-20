@@ -106,18 +106,17 @@ export default class LineChart extends AbstractChart {
         this.delaunayPoints.forEach(dp => {
           if (dp.pointObject) dp.hide()
         })
-        
+
         points.forEach(point => {
           const index = point.arrayIndex || 0
           const color = this.colors[index]
-  
+
           // set hover point
           this.delaunayPoints[index].update({ point, color })
           if (!this.delaunayPoints[index].pointObject) {
             this.delaunayPoints[index].mountTo(this.container)
           }
         })
-
 
         // set tooltip
         if (this.tooltip) {

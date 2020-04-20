@@ -4,8 +4,8 @@ import ScatterChart from 'mg2/src/js/charts/scatter'
 import points1 from '../assets/data/points1'
 
 const groupByArray = (xs, key) => xs.reduce((rv, x) => {
-  let v = key instanceof Function ? key(x) : x[key]
-  let el = rv.find((r) => r && r.key === v)
+  const v = key instanceof Function ? key(x) : x[key]
+  const el = rv.find((r) => r && r.key === v)
   if (el) el.values.push(x)
   else rv.push({ key: v, values: [x] })
   return rv
