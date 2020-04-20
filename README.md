@@ -1,5 +1,7 @@
 <a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
 
+![BundlePhobia](https://badgen.net/bundlephobia/minzip/mg2)
+
 *MetricsGraphics* is a library built for visualizing and laying out time-series data. At around 15kB (gzipped), it provides a simple way to produce common types of graphics in a principled and consistent way. The library currently supports line charts, scatterplots and histograms, as well as features like rug plots.
 
 ## Example
