@@ -169,9 +169,7 @@ export default class AbstractChart {
    * @returns {void}
    */
   mountAxes (xAxis, yAxis) {
-    const hideX = typeof xAxis?.show !== 'undefined' && !xAxis.show
-    const hideY = typeof yAxis?.show !== 'undefined' && !yAxis.show
-    if (!hideX) {
+    if (typeof xAxis?.show === 'undefined' || xAxis.show) {
       this.xAxis = new Axis({
         scale: this.xScale,
         orientation: 'bottom',
@@ -182,7 +180,7 @@ export default class AbstractChart {
         ...xAxis
       })
     }
-    if (!hideY) {
+    if (typeof yAxis?.show === 'undefined' || yAxis.show) {
       this.yAxis = new Axis({
         scale: this.yScale,
         orientation: 'left',
