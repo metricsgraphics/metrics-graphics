@@ -1,6 +1,6 @@
 import { Component } from 'preact'
 import ScatterChart from 'mg2/src/js/charts/scatter'
-import ExampleContainer from '../components/exampleContainer'
+import ExampleList from '../components/exampleList'
 
 import points1 from '../assets/data/points1'
 
@@ -16,6 +16,8 @@ const points2 = groupByArray(points1, 'v')
 const Num = new Intl.NumberFormat('en', {
   maximumFractionDigits: 2
 })
+
+const baseFormatFunction = point => `${Num.format(point.x)} ${Num.format(point.y)}`
 
 const charts = [{
   title: 'Simple Scatterplot',
@@ -39,7 +41,7 @@ const charts = [{
     xAccessor: 'x',
     yAccessor: 'y',
     xRug: true,
-    tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`
+    tooltipFunction: baseFormatFunction
   }
 }, {
   title: 'Multi-Category Scatterplot',
@@ -66,7 +68,7 @@ const charts = [{
     xAccessor: 'x',
     yAccessor: 'y',
     yRug: true,
-    tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
+    tooltipFunction: baseFormatFunction,
     legendTarget: '#scatterChart2Legend'
   }
 }, {
@@ -107,15 +109,5 @@ export default class Scatter extends Component {
     this.chartInstances = charts.map(chart => new ScatterChart(chart.object))
   }
 
-  render = () => (<div className="container mx-auto mt-8">
-    {charts.map(chart => (
-      <ExampleContainer
-        title={chart.title}
-        description={chart.description}
-        id={chart.id}
-        legendId={chart.legendId}
-        code={chart.code}
-      />
-    ))}
-  </div>)
+  render = () => (<ExampleList charts={charts} />)
 }

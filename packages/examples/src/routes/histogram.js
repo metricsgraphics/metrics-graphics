@@ -2,7 +2,7 @@ import { Component } from 'preact'
 
 import ufoDates from '../assets/data/ufoDates'
 import HistogramChart from 'mg2/src/js/charts/histogram'
-import ExampleContainer from '../components/exampleContainer'
+import ExampleList from '../components/exampleList'
 
 const charts = [{
   title: 'Difference in UFO Sighting and Reporting Dates (in months)',
@@ -41,15 +41,5 @@ export default class Histogram extends Component {
     this.chartInstances = charts.map(chart => new HistogramChart(chart.object))
   }
 
-  render = () => (<div className="container mx-auto mt-8">
-    {charts.map(chart => (
-      <ExampleContainer
-        title={chart.title}
-        description={chart.description}
-        id={chart.id}
-        legendId={chart.legendId}
-        code={chart.code}
-      />
-    ))}
-  </div>)
+  render = () => (<ExampleList charts={charts} />)
 }

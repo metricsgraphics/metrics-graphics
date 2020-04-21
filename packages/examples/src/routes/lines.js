@@ -5,7 +5,7 @@ import fakeUsers1 from '../assets/data/fakeUsers1'
 import fakeUsers2 from '../assets/data/fakeUsers2'
 import confidence from '../assets/data/confidenceBand'
 
-import ExampleContainer from '../components/exampleContainer'
+import ExampleList from '../components/exampleList'
 
 const charts = [{
   title: 'Line Chart',
@@ -155,15 +155,5 @@ export default class Lines extends Component {
     this.chartInstances = charts.map(chart => new LineChart(chart.object))
   }
 
-  render = () => (<div className="container mx-auto mt-8">
-    {charts.map(chart => (
-      <ExampleContainer
-        title={chart.title}
-        description={chart.description}
-        id={chart.id}
-        legendId={chart.legendId}
-        code={chart.code}
-      />
-    ))}
-  </div>)
+  render = () => (<ExampleList charts={charts} />)
 }
