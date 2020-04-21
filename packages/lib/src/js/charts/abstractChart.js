@@ -6,6 +6,7 @@ import Tooltip from '../components/tooltip'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import Legend from '../components/legend'
 import { extent } from 'd3-array'
+import Point from '../components/point'
 
 /**
  * This class implements all behavior shared by all chart types.
@@ -126,11 +127,7 @@ export default class AbstractChart {
     this.height = this.isFullHeight ? getHeight(this.target) : parseInt(height)
 
     // normalize color and colors arguments
-    this.colors = color
-      ? [color]
-      : colors
-        ? [colors]
-        : schemeCategory10
+    this.colors = color ? [color] : colors ? [colors] : schemeCategory10
 
     this.setDataTypeFlags()
 
@@ -178,8 +175,8 @@ export default class AbstractChart {
    * @returns {void}
    */
   mountAxes (xAxis, yAxis) {
-    const hideX = xAxis && typeof xAxis.show !== 'undefined' && !xAxis.show
-    const hideY = yAxis && typeof yAxis.show !== 'undefined' && !yAxis.show
+    const hideX = typeof xAxis?.show !== 'undefined' && !xAxis.show
+    const hideY = typeof yAxis?.show !== 'undefined' && !yAxis.show
     this.xAxis = !hideX ? new Axis({
       scale: this.xScale,
       orientation: 'bottom',
@@ -333,6 +330,16 @@ export default class AbstractChart {
    * @returns {void}
    */
   computeYAxisType () {}
+
+  generatePoint (args) {
+    return new Point({
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      xScale: this.xScale,
+      yScale: this.yScale,
+      ...args
+    })
+  }
 
   get top () { return this.margin.top }
   get left () { return this.margin.left }
