@@ -28,12 +28,24 @@ export default class Tooltip {
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? this.legend
     this.colors = colors ?? this.colors
-    this.textFunction = textFunction || ((xAccessor && yAccessor)
-      ? this.baseTextFunction({ xAccessor, yAccessor })
-      : this.textFunction)
+    this.setTextFunction(textFunction, xAccessor, yAccessor)
     this.data = data ?? this.data
     this.left = left ?? this.left
     this.top = top ?? this.top
+  }
+
+  /**
+   * Sets the text function for the tooltip.
+   *
+   * @param {Function} [textFunction] custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
+   * @param {Function} [xAccessor] if no custom text function is specified, this function specifies how to get the x value from a specific data point.
+   * @param {Function} [yAccessor] if no custom text function is specified, this function specifies how to get the y value from a specific data point.
+   * @returns {void}
+   */
+  setTextFunction (textFunction, xAccessor, yAccessor) {
+    this.textFunction = textFunction || (xAccessor && yAccessor
+      ? this.baseTextFunction({ xAccessor, yAccessor })
+      : this.textFunction)
   }
 
   /**

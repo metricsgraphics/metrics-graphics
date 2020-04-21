@@ -192,12 +192,15 @@ export default class Axis {
     const manyDaysDiff = diff / (60 * 60 * 24) < 60
     const manyMonthsDiff = diff / (60 * 60 * 24) < 365
 
-    if (millisecondDiff) return timeFormat('%M:%S.%L')
-    else if (secondDiff) return timeFormat('%M:%S')
-    else if (dayDiff) return timeFormat('%H:%M')
-    else if (fourDaysDiff || manyDaysDiff) return timeFormat('%b %d')
-    else if (manyMonthsDiff) return timeFormat('%b %d')
-    else return timeFormat('%Y')
+    return millisecondDiff
+      ? timeFormat('%M:%S.%L')
+      : secondDiff
+        ? timeFormat('%M:%S')
+        : dayDiff
+          ? timeFormat('%H:%M')
+          : fourDaysDiff || manyDaysDiff || manyMonthsDiff
+            ? timeFormat('%b %d')
+            : timeFormat('%Y')
   }
 
   stringToFormat (formatType) {
