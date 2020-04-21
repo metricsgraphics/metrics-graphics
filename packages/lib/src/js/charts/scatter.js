@@ -1,5 +1,4 @@
 import AbstractChart from './abstractChart'
-import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
 import Rug from '../components/rug'
