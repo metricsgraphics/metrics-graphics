@@ -77,14 +77,14 @@ export default class Axis {
     this.setupAxisObject()
 
     // set or compute tickFormat
-    if (tickFormat) {
-      this.tickFormat = typeof tickFormat === 'string'
-        ? this.stringToFormat(tickFormat)
-        : tickFormat
-    }
+    if (tickFormat) this.tickFormat = tickFormat
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
   }
 
+  /**
+   * Set up the main axis object.
+   * @returns {void}
+   */
   setupAxisObject () {
     switch (this.orientation) {
       case constants.axisOrientation.top:
@@ -102,33 +102,24 @@ export default class Axis {
     }
   }
 
+  /**
+   * Get the domain object call function.
+   * @returns {Function} that mounts the domain when called.
+   */
   domainObject () {
-    let x1 = 0
-    let y1 = 0
-    let x2 = 0
-    let y2 = 0
-    if (this.isVertical) {
-      x1 = 0.5
-      x2 = 0.5
-      y1 = this.compact ? this.top + 0.5 : 0.5
-      y2 = this.compact
-        ? this.scale.range[0] + 0.5
-        : this.scale.range[0] + 2 * this.buffer + 0.5
-    } else {
-      x1 = this.compact ? this.buffer : 0
-      x2 = this.compact
-        ? this.scale.range[1]
-        : this.scale.range[1] + 2 * this.buffer
-    }
     return g => g
       .append('line')
       .classed('domain', true)
-      .attr('x1', x1)
-      .attr('x2', x2)
-      .attr('y1', y1)
-      .attr('y2', y2)
+      .attr('x1', this.isVertical ? 0.5 : this.compact ? this.buffer : 0)
+      .attr('x2', this.isVertical ? 0.5 : this.compact ? this.scale.range[1] : this.scale.range[1] + 2 * this.buffer)
+      .attr('y1', this.isVertical ? this.compact ? this.top + 0.5 : 0.5 : 0)
+      .attr('y2', this.isVertical ? this.compact ? this.scale.range[0] + 0.5 : this.scale.range[0] + 2 * this.buffer + 0.5 : 0)
   }
 
+  /**
+   * Get the label object call function.
+   * @returns {Function} that mounts the label when called.
+   */
   labelObject () {
     const value = Math.abs(this.scale.range[0] - this.scale.range[1]) / 2
     const xValue = this.isVertical ? -this.labelOffset : value
@@ -152,6 +143,11 @@ export default class Axis {
     return factor * (this.height + 2 * this.buffer)
   }
 
+  /**
+   * Mount the axis to the given d3 node.
+   * @param {Object} svg d3 node.
+   * @returns {void}
+   */
   mountTo (svg) {
     // set up axis container
     const axisContainer = svg.append('g')
@@ -181,7 +177,10 @@ export default class Axis {
     if (this.label !== '') axisContainer.call(this.labelObject())
   }
 
-  // computation functions for time-based axis formats
+  /**
+   * Compute the time formatting function based on the time domain.
+   * @returns {Function} d3 function for formatting time.
+   */
   diffToTimeFormat () {
     const diff = Math.abs(this.scale.domain[1] - this.scale.domain[0]) / 1000
 
@@ -203,6 +202,12 @@ export default class Axis {
             : timeFormat('%Y')
   }
 
+  /**
+   * Get the d3 number formatting function for an abstract number type.
+   *
+   * @param {String} formatType abstract format to be converted (number, date, percentage)
+   * @returns {Function} d3 formatting function for the given abstract number type.
+   */
   stringToFormat (formatType) {
     switch (formatType) {
       case constants.axisFormat.number: return this.isVertical ? format('~s') : format('')
