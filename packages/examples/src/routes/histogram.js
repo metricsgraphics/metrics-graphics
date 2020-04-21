@@ -35,8 +35,6 @@ const charts = [{
 }]
 
 export default class Histogram extends Component {
-  chartInstances = []
-
   componentDidMount () {
     this.chartInstances = charts.map(chart => new HistogramChart(chart.object))
   }

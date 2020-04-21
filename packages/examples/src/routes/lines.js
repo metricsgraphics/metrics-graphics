@@ -149,8 +149,6 @@ const charts = [{
 }]
 
 export default class Lines extends Component {
-  chartInstances = []
-
   componentDidMount () {
     this.chartInstances = charts.map(chart => new LineChart(chart.object))
   }

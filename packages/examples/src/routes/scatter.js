@@ -103,8 +103,6 @@ const charts = [{
 }]
 
 export default class Scatter extends Component {
-  chartInstances = []
-
   componentDidMount () {
     this.chartInstances = charts.map(chart => new ScatterChart(chart.object))
   }
