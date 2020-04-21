@@ -121,17 +121,12 @@ export default class ScatterChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       nested: true,
-      onPoint: (points) => {
-        const point = points[0]
+      onPoint: ([point]) => {
         this.activePoint = { i: point.arrayIndex ?? 0, j: point.index }
 
-        // set tooltip
-        if (this.tooltip) {
-          this.tooltip.update({
-            legendObject: constants.legendObject.circle,
-            data: points
-          })
-        }
+        // set tooltip if necessary
+        if (!this.tooltip) return
+        this.tooltip.update({ data: [point] })
       },
       onLeave: () => {
         this.activePoint = { i: -1, j: -1 }
