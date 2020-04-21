@@ -22,6 +22,34 @@ export default class LineChart extends AbstractChart {
   constructor ({ area, confidenceBand, voronoi, ...args }) {
     super(args)
 
+    this.mountLines()
+
+    // generate areas if necessary
+    this.mountAreas(area)
+
+    // generate confidence band if necessary
+    if (typeof confidenceBand !== 'undefined') {
+      this.mountConfidenceBand({
+        lowerAccessor: confidenceBand[0],
+        upperAccessor: confidenceBand[1]
+      })
+    }
+
+    // add markers
+    this.mountMarkers()
+
+    // set up delaunay triangulation
+    this.mountDelaunay(voronoi)
+
+    // mount legend if any
+    this.mountLegend()
+  }
+
+  /**
+   * Mount lines for each array of data points.
+   * @returns {void}
+   */
+  mountLines () {
     // compute lines and delaunay points
     this.data.forEach((lineData, index) => {
       const line = new Line({
@@ -41,47 +69,65 @@ export default class LineChart extends AbstractChart {
       })
       line.mountTo(this.container)
     })
+  }
 
-    // generate areas if necessary
-    if (typeof area !== 'undefined') {
-      let areas
-      const areaGenerator = (lineData, index) => new Area({
-        data: lineData,
-        xAccessor: this.xAccessor,
-        yAccessor: this.yAccessor,
-        xScale: this.xScale,
-        yScale: this.yScale,
-        color: this.colors[index]
-      })
+  /**
+   * Mount all specified areas.
+   *
+   * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
+   * @returns {void}
+   */
+  mountAreas (area) {
+    if (typeof area === 'undefined') return
 
-      // if area is boolean and truthy, generate areas for each line
-      if (typeof area === 'boolean' && area) {
-        areas = this.data.map(areaGenerator)
+    let areas
+    const areaGenerator = (lineData, index) => new Area({
+      data: lineData,
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      xScale: this.xScale,
+      yScale: this.yScale,
+      color: this.colors[index]
+    })
+
+    // if area is boolean and truthy, generate areas for each line
+    if (typeof area === 'boolean' && area) {
+      areas = this.data.map(areaGenerator)
 
       // if area is array, only show areas for the truthy lines
-      } else if (Array.isArray(area)) {
-        areas = this.data.filter((lineData, index) => area[index]).map(areaGenerator)
-      }
-
-      // mount areas
-      areas.forEach(area => area.mountTo(this.container))
+    } else if (Array.isArray(area)) {
+      areas = this.data.filter((lineData, index) => area[index]).map(areaGenerator)
     }
 
-    // generate confidence band if necessary
-    if (typeof confidenceBand !== 'undefined') {
-      const confidenceBandGenerator = new Area({
-        data: this.data[0], // confidence band only makes sense for one line
-        xAccessor: this.xAccessor,
-        y0Accessor: typeof confidenceBand[0] === 'function' ? confidenceBand[0] : d => d[confidenceBand[0]],
-        y1Accessor: typeof confidenceBand[1] === 'function' ? confidenceBand[1] : d => d[confidenceBand[1]],
-        xScale: this.xScale,
-        yScale: this.yScale,
-        color: '#aaa'
-      })
-      confidenceBandGenerator.mountTo(this.container)
-    }
+    // mount areas
+    areas.forEach(area => area.mountTo(this.container))
+  }
 
-    // add markers
+  /**
+   * Mount the confidence band specified by two accessors.
+   *
+   * @param {Function | String} lowerAccessor for the lower confidence bound. Either a string (specifying the property of the object representing the lower bound) or a function (returning the lower bound when given a data point).
+   * @param {Function | String} upperAccessor for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
+   * @returns {void}
+   */
+  mountConfidenceBand ({ lowerAccessor, upperAccessor }) {
+    const confidenceBandGenerator = new Area({
+      data: this.data[0], // confidence band only makes sense for one line
+      xAccessor: this.xAccessor,
+      y0Accessor: typeof lowerAccessor === 'function' ? lowerAccessor : d => d[lowerAccessor],
+      y1Accessor: typeof upperAccessor === 'function' ? upperAccessor : d => d[upperAccessor],
+      xScale: this.xScale,
+      yScale: this.yScale,
+      color: '#aaa'
+    })
+    confidenceBandGenerator.mountTo(this.container)
+  }
+
+  /**
+   * Mount markers, if any.
+   * @returns {void}
+   */
+  mountMarkers () {
     const markerContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.markers.forEach(marker => {
       const x = this.xScale.scaleObject(this.xAccessor(marker))
@@ -99,7 +145,15 @@ export default class LineChart extends AbstractChart {
         .attr('y', 8)
         .text(marker.label)
     })
+  }
 
+  /**
+   * Mount a new delaunay triangulation instance.
+   *
+   * @param {Object} customParameters custom parameters for {@link Delaunay}.
+   * @returns {void}
+   */
+  mountDelaunay (customParameters) {
     // generate delaunator
     this.delaunay = new Delaunay({
       points: this.data,
@@ -136,19 +190,23 @@ export default class LineChart extends AbstractChart {
         this.delaunayPoints.forEach(dp => dp.hide())
         if (this.tooltip) this.tooltip.hide()
       },
-      ...voronoi
+      ...customParameters
     })
     this.delaunay.mountTo(this.container)
+  }
 
-    // mount legend if any
-    if (this.legend && this.legend.length > 0 && this.legendTarget) {
-      const legend = new Legend({
-        legend: this.legend,
-        colorScheme: this.colors,
-        symbolType: constants.legendObject.line
-      })
-      legend.mountTo(this.legendTarget)
-    }
+  /**
+   * Mount a legend, if any.
+   * @returns {void}
+   */
+  mountLegend () {
+    if (!this.legend || !this.legend.length || !this.legendTarget) return
+    const legend = new Legend({
+      legend: this.legend,
+      colorScheme: this.colors,
+      symbolType: constants.legendObject.line
+    })
+    legend.mountTo(this.legendTarget)
   }
 
   /**
