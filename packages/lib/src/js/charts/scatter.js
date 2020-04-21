@@ -25,6 +25,38 @@ export default class ScatterChart extends AbstractChart {
     super(args)
 
     // set up rugs if necessary
+    this.mountRugs(xRug, yRug)
+
+    // set tooltip type
+    if (this.tooltip) {
+      this.tooltip.update({ legendObject: constants.symbol.dot })
+      this.tooltip.hide()
+    }
+
+    this.sizeAccessor = sizeAccessor
+      ? typeof sizeAccessor === 'function'
+        ? sizeAccessor
+        : d => d[sizeAccessor]
+      : d => 3
+
+    // set up points
+    this.mountPoints()
+
+    // generate delaunator
+    this.mountDelaunay()
+
+    // mount legend if any
+    this.mountLegend()
+  }
+
+  /**
+   * Mount new rugs.
+   *
+   * @param {Boolean} [xRug=false] whether or not to generate a rug for the x axis.
+   * @param {Boolean} [yRug=false] whether or not to generate a rug for the y axis.
+   * @returns {void}
+   */
+  mountRugs (xRug, yRug) {
     if (xRug) {
       this.xRug = new Rug({
         accessor: this.xAccessor,
@@ -49,20 +81,13 @@ export default class ScatterChart extends AbstractChart {
       })
       this.yRug.mountTo(this.svg)
     }
+  }
 
-    // set tooltip type
-    if (this.tooltip) {
-      this.tooltip.update({ legendObject: constants.symbol.dot })
-      this.tooltip.hide()
-    }
-
-    this.sizeAccessor = sizeAccessor
-      ? typeof sizeAccessor === 'function'
-        ? sizeAccessor
-        : d => d[sizeAccessor]
-      : d => 3
-
-    // set up points
+  /**
+   * Mount scatter points.
+   * @returns {void}
+   */
+  mountPoints () {
     this.points = this.data.map((pointSet, i) => pointSet.map(data => {
       const point = new Point({
         data,
@@ -78,8 +103,13 @@ export default class ScatterChart extends AbstractChart {
       point.mountTo(this.container)
       return point
     }))
+  }
 
-    // generate delaunator
+  /**
+   * Mount new delaunay triangulation instance.
+   * @returns {void}
+   */
+  mountDelaunay () {
     this.delaunayPoint = new Point({
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
@@ -112,16 +142,20 @@ export default class ScatterChart extends AbstractChart {
       }
     })
     this.delaunay.mountTo(this.container)
+  }
 
-    // mount legend if any
-    if (this.legend && this.legend.length > 0 && this.legendTarget) {
-      const legend = new Legend({
-        legend: this.legend,
-        colorScheme: this.colors,
-        symbolType: constants.legendObject.circle
-      })
-      legend.mountTo(this.legendTarget)
-    }
+  /**
+   * Mount legend if necessary.
+   * @returns {void}
+   */
+  mountLegend () {
+    if (!this.legend || !this.legend.length || !this.legendTarget) return
+    const legend = new Legend({
+      legend: this.legend,
+      colorScheme: this.colors,
+      symbolType: constants.legendObject.circle
+    })
+    legend.mountTo(this.legendTarget)
   }
 
   set activePoint ({ i, j }) {
