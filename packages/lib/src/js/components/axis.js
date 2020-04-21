@@ -69,17 +69,27 @@ export default class Axis {
     this.suffix = suffix ?? this.suffix
     if (typeof tickLength !== 'undefined') this.tickLength = tickLength
     this.extendedTicks = extendedTicks
-    this.labelOffset = typeof labelOffset !== 'undefined'
-      ? labelOffset
-      : this.isVertical
-        ? DEFAULT_HORIZONTAL_OFFSET
-        : DEFAULT_VERTICAL_OFFSET
+    this.setLabelOffset(labelOffset)
 
     this.setupAxisObject()
 
     // set or compute tickFormat
     if (tickFormat) this.tickFormat = tickFormat
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
+  }
+
+  /**
+   * Set the label offset.
+   *
+   * @param {Number} [labelOffset] offset of the label.
+   * @returns {void}
+   */
+  setLabelOffset (labelOffset) {
+    this.labelOffset = typeof labelOffset !== 'undefined'
+      ? labelOffset
+      : this.isVertical
+        ? DEFAULT_HORIZONTAL_OFFSET
+        : DEFAULT_VERTICAL_OFFSET
   }
 
   /**
