@@ -103,12 +103,6 @@ export default class AbstractChart {
     legendTarget,
     ...custom
   }) {
-    // check that at least some data was specified
-    if (!data || !data.length) return console.error('no data specified')
-
-    // check that the target is defined
-    if (!target || target === '') return console.error('no target specified')
-
     // set parameters
     this.data = data
     this.target = target
@@ -146,6 +140,30 @@ export default class AbstractChart {
     this.setViewboxForScaling()
 
     // set up scales
+    this.initScales(xScale, yScale)
+
+    // normalize data if necessary
+    this.normalizeData()
+    this.computeDomains(custom)
+
+    // set up axes if not disabled
+    this.mountAxes(xAxis, yAxis)
+
+    // pre-attach tooltip text container
+    this.mountTooltip(showTooltip, tooltipFunction)
+
+    // set up main container
+    this.mountContainer()
+  }
+
+  /**
+   * Instantiate new x and y scales.
+   *
+   * @param {Object} [xScale] object that can be used to overwrite parameters of the auto-generated x {@link Scale}.
+   * @param {Object} [yScale] object that can be used to overwrite parameters of the auto-generated y {@link Scale}.
+   * @returns {void}
+   */
+  initScales (xScale, yScale) {
     this.xScale = new Scale({
       range: [0, this.innerWidth],
       ...xScale
@@ -154,12 +172,16 @@ export default class AbstractChart {
       range: [this.innerHeight, 0],
       ...yScale
     })
+  }
 
-    // normalize data if necessary
-    this.normalizeData()
-    this.computeDomains(custom)
-
-    // set up axes if not disabled
+  /**
+   * Mount new x and y axes.
+   *
+   * @param {Object} [xAxis] object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
+   * @param {Object} [yAxis] object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
+   * @returns {void}
+   */
+  mountAxes (xAxis, yAxis) {
     const hideX = xAxis && typeof xAxis.show !== 'undefined' && !xAxis.show
     const hideY = yAxis && typeof yAxis.show !== 'undefined' && !yAxis.show
     this.xAxis = !hideX ? new Axis({
@@ -186,22 +208,34 @@ export default class AbstractChart {
     // attach axes
     if (this.xAxis) this.xAxis.mountTo(this.svg)
     if (this.yAxis) this.yAxis.mountTo(this.svg)
+  }
 
-    // pre-attach tooltip text container
-    if (typeof showTooltip === 'undefined' || showTooltip) {
-      this.tooltip = new Tooltip({
-        top: this.buffer,
-        left: this.width - 2 * this.buffer,
-        xAccessor: this.xAccessor,
-        yAccessor: this.yAccessor,
-        textFunction: tooltipFunction,
-        colors: this.colors,
-        legend: this.legend
-      })
-      this.tooltip.mountTo(this.svg)
-    }
+  /**
+   * Mount a new tooltip if necessary.
+   *
+   * @param {Boolean} [showTooltip] whether or not to show a tooltip.
+   * @param {Function} [tooltipFunction] function that receives a data object and returns the string displayed as tooltip.
+   * @returns {void}
+   */
+  mountTooltip (showTooltip, tooltipFunction) {
+    if (typeof showTooltip !== 'undefined' && !showTooltip) return
+    this.tooltip = new Tooltip({
+      top: this.buffer,
+      left: this.width - 2 * this.buffer,
+      xAccessor: this.xAccessor,
+      yAccessor: this.yAccessor,
+      textFunction: tooltipFunction,
+      colors: this.colors,
+      legend: this.legend
+    })
+    this.tooltip.mountTo(this.svg)
+  }
 
-    // set up main container
+  /**
+   * Mount the main container.
+   * @returns {void}
+   */
+  mountContainer () {
     this.container = this.svg
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
