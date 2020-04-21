@@ -99,6 +99,33 @@ export default class ScatterChart extends AbstractChart {
   }
 
   /**
+   * Handle incoming points from the delaunay triangulation.
+   *
+   * @returns {Function} handler function
+   */
+  onPointHandler () {
+    return ([point]) => {
+      this.activePoint = { i: point.arrayIndex ?? 0, j: point.index }
+
+      // set tooltip if necessary
+      if (!this.tooltip) return
+      this.tooltip.update({ data: [point] })
+    }
+  }
+
+  /**
+   * Handle leaving the delaunay area.
+   *
+   * @returns {Function} handler function
+   */
+  onLeaveHandler () {
+    return () => {
+      this.activePoint = { i: -1, j: -1 }
+      if (this.tooltip) this.tooltip.hide()
+    }
+  }
+
+  /**
    * Mount new delaunay triangulation instance.
    * @returns {void}
    */
@@ -111,17 +138,8 @@ export default class ScatterChart extends AbstractChart {
       xScale: this.xScale,
       yScale: this.yScale,
       nested: true,
-      onPoint: ([point]) => {
-        this.activePoint = { i: point.arrayIndex ?? 0, j: point.index }
-
-        // set tooltip if necessary
-        if (!this.tooltip) return
-        this.tooltip.update({ data: [point] })
-      },
-      onLeave: () => {
-        this.activePoint = { i: -1, j: -1 }
-        if (this.tooltip) this.tooltip.hide()
-      }
+      onPoint: this.onPointHandler(),
+      onLeave: this.onLeaveHandler()
     })
     this.delaunay.mountTo(this.container)
   }

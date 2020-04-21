@@ -3,7 +3,6 @@ import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
-import Point from '../components/point'
 import { makeAccessorFunction } from '../misc/utility'
 
 export default class LineChart extends AbstractChart {
@@ -147,6 +146,42 @@ export default class LineChart extends AbstractChart {
   }
 
   /**
+   * Handle incoming points from the delaunay move handler.
+   *
+   * @returns {Function} handler function.
+   */
+  onPointHandler () {
+    return points => {
+      // pre-hide all points
+      this.delaunayPoints.forEach(dp => dp.dismount())
+
+      points.forEach(point => {
+        const index = point.arrayIndex || 0
+
+        // set hover point
+        this.delaunayPoints[index].update({ data: point, color: this.colors[index] })
+        this.delaunayPoints[index].mountTo(this.container)
+      })
+
+      // set tooltip if necessary
+      if (!this.tooltip) return
+      this.tooltip.update({ data: points })
+    }
+  }
+
+  /**
+   * Handles leaving the delaunay area.
+   *
+   * @returns {Function} handler function.
+   */
+  onLeaveHandler () {
+    return () => {
+      this.delaunayPoints.forEach(dp => dp.dismount())
+      if (this.tooltip) this.tooltip.hide()
+    }
+  }
+
+  /**
    * Mount a new delaunay triangulation instance.
    *
    * @param {Object} customParameters custom parameters for {@link Delaunay}.
@@ -159,28 +194,8 @@ export default class LineChart extends AbstractChart {
       yAccessor: this.yAccessor,
       xScale: this.xScale,
       yScale: this.yScale,
-      onPoint: (points) => {
-        // pre-hide all points
-        this.delaunayPoints.forEach(dp => { dp.hide() })
-
-        points.forEach(point => {
-          const index = point.arrayIndex || 0
-
-          // set hover point
-          this.delaunayPoints[index].update({ data: point, color: this.colors[index] })
-          if (!this.delaunayPoints[index].shapeObject) {
-            this.delaunayPoints[index].mountTo(this.container)
-          }
-        })
-
-        // set tooltip if necessary
-        if (!this.tooltip) return
-        this.tooltip.update({ data: points })
-      },
-      onLeave: () => {
-        this.delaunayPoints.forEach(dp => dp.hide())
-        if (this.tooltip) this.tooltip.hide()
-      },
+      onPoint: this.onPointHandler(),
+      onLeave: this.onLeaveHandler(),
       ...customParameters
     })
     this.delaunay.mountTo(this.container)

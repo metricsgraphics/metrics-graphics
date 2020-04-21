@@ -63,6 +63,33 @@ export default class HistogramChart extends AbstractChart {
   }
 
   /**
+   * Handle move events from the delaunay triangulation.
+   *
+   * @returns {Function} handler function.
+   */
+  onPointHandler () {
+    return ([point]) => {
+      this.activeBar = point.index
+
+      // set tooltip if necessary
+      if (!this.tooltip) return
+      this.tooltip.update({ data: [point] })
+    }
+  }
+
+  /**
+   * Handle leaving the delaunay triangulation area.
+   *
+   * @returns {Function} handler function.
+   */
+  onLeaveHandler () {
+    return () => {
+      this.activeBar = -1
+      if (this.tooltip) this.tooltip.hide()
+    }
+  }
+
+  /**
    * Mount new delaunay triangulation.
    * @returns {void}
    */
@@ -86,17 +113,8 @@ export default class HistogramChart extends AbstractChart {
       yAccessor: d => d.y,
       xScale: this.xScale,
       yScale: this.yScale,
-      onPoint: ([point]) => {
-        this.activeBar = point.index
-
-        // set tooltip if necessary
-        if (!this.tooltip) return
-        this.tooltip.update({ data: [point] })
-      },
-      onLeave: () => {
-        this.activeBar = -1
-        if (this.tooltip) this.tooltip.hide()
-      }
+      onPoint: this.onPointHandler(),
+      onLeave: this.onLeaveHandler()
     })
     this.delaunay.mountTo(this.container)
   }
