@@ -347,7 +347,6 @@ export default class AbstractChart {
   get top () { return this.margin.top }
   get left () { return this.margin.left }
   get bottom () { return this.height - this.margin.bottom }
-  get right () { return this.width - this.margin.right }
 
   // returns the pixel location of the respective side of the plot area.
   get plotTop () { return this.top + this.buffer }
