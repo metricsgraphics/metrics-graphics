@@ -76,7 +76,7 @@ export default class AbstractShape {
    */
   updateColor (color) {
     this.color = color
-    if (this.shapeObject) this.shapeObject.attr('fill', this.color)
+    this.updateProp('fill', color)
   }
 
   /**
@@ -87,7 +87,7 @@ export default class AbstractShape {
    */
   updateOpacity (fillOpacity) {
     this.fillOpacity = fillOpacity
-    if (this.shapeObject) this.shapeObject.attr('fill-opacity', this.fillOpacity)
+    this.updateProp('fill-opacity', fillOpacity)
   }
 
   /**
@@ -98,7 +98,18 @@ export default class AbstractShape {
    */
   updateStroke (strokeWidth) {
     this.strokeWidth = strokeWidth
-    if (this.shapeObject) this.shapeObject.attr('stroke-width', this.strokeWidth)
+    this.updateProp('stroke-width', strokeWidth)
+  }
+
+  /**
+   * Update an attribute of the raw shape node.
+   *
+   * @param {String} name attribute name
+   * @param {*} value new value
+   * @returns {void}
+   */
+  updateProp (name, value) {
+    if (this.shapeObject) this.shapeObject.attr(name, value)
   }
 
   /**
