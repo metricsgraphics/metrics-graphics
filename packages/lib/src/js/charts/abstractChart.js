@@ -136,9 +136,7 @@ export default class AbstractChart {
     this.setDataTypeFlags()
 
     // attach base elements to svg
-    this.addSvgIfItDoesntExist()
-    this.addClipPathForPlotArea()
-    this.setViewboxForScaling()
+    this.mountSvg()
 
     // set up scales
     this.initScales(xScale, yScale)
@@ -294,7 +292,7 @@ export default class AbstractChart {
    * Return existing svg node if it's already present.
    * @returns {void}
    */
-  addSvgIfItDoesntExist () {
+  mountSvg () {
     const svg = select(this.target).select('svg')
     this.svg = (!svg || svg.empty())
       ? select(this.target)
@@ -303,14 +301,8 @@ export default class AbstractChart {
         .attr('width', this.width)
         .attr('height', this.height)
       : svg
-  }
 
-  /**
-   * This method is called by the abstract chart constructor.
-   * Set up the clipping path to allow zooming later.
-   * @returns {void}
-   */
-  addClipPathForPlotArea () {
+    // prepare clip path
     this.svg.selectAll('.mg-clip-path').remove()
     this.svg.append('defs')
       .attr('class', 'mg-clip-path')
@@ -319,15 +311,8 @@ export default class AbstractChart {
       .append('svg:rect')
       .attr('width', this.width - this.margin.left - this.margin.right)
       .attr('height', this.height - this.margin.top - this.margin.bottom)
-  }
 
-  /**
-   * This method is called by the abstract chart constructor.
-   * Set up the svg's viewbox to allow making the chart responsive.
-   * @returns {void}
-   */
-  setViewboxForScaling () {
-    // we need to reconsider how we handle automatic scaling
+    // set viewbox
     this.svg.attr('viewBox', `0 0 ${this.width} ${this.height}`)
     if (this.isFullWidth || this.isFullHeight) {
       this.svg.attr('preserveAspectRatio', 'xMinYMin meet')
