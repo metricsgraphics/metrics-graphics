@@ -159,12 +159,4 @@ export default class ScatterChart extends AbstractChart {
   normalizeData () {
     if (this.isArrayOfObjects) this.data = [this.data]
   }
-
-  computeDomains () {
-    const flatData = this.data.flat()
-    const xExtent = extent(flatData, this.xAccessor)
-    const yExtent = extent(flatData, this.yAccessor)
-    this.xScale.domain = xExtent
-    this.yScale.domain = yExtent
-  }
 }

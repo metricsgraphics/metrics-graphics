@@ -5,6 +5,7 @@ import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import Legend from '../components/legend'
+import { extent } from 'd3-array'
 
 /**
  * This class implements all behavior shared by all chart types.
@@ -139,7 +140,8 @@ export default class AbstractChart {
     this.mountSvg()
 
     // set up scales
-    this.initScales(xScale, yScale)
+    this.xScale = new Scale({ range: [0, this.innerWidth], ...xScale })
+    this.yScale = new Scale({ range: [this.innerHeight, 0], ...yScale })
 
     // normalize data if necessary
     this.normalizeData()
@@ -168,24 +170,6 @@ export default class AbstractChart {
       symbolType
     })
     legend.mountTo(this.legendTarget)
-  }
-
-  /**
-   * Instantiate new x and y scales.
-   *
-   * @param {Object} [xScale] object that can be used to overwrite parameters of the auto-generated x {@link Scale}.
-   * @param {Object} [yScale] object that can be used to overwrite parameters of the auto-generated y {@link Scale}.
-   * @returns {void}
-   */
-  initScales (xScale, yScale) {
-    this.xScale = new Scale({
-      range: [0, this.innerWidth],
-      ...xScale
-    })
-    this.yScale = new Scale({
-      range: [this.innerHeight, 0],
-      ...yScale
-    })
   }
 
   /**
@@ -331,8 +315,11 @@ export default class AbstractChart {
    * @returns {void}
    */
   computeDomains (params) {
-    this.xScale.domain = [0, 1]
-    this.yScale.domain = [0, 1]
+    const flatData = this.data.flat()
+    const xExtent = extent(flatData, this.xAccessor)
+    const yExtent = extent(flatData, this.yAccessor)
+    this.xScale.domain = xExtent
+    this.yScale.domain = yExtent
   }
 
   /**

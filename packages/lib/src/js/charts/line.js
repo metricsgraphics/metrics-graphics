@@ -212,14 +212,6 @@ export default class LineChart extends AbstractChart {
     if (this.isArrayOfObjects) this.data = [this.data]
   }
 
-  computeDomains () {
-    const flatData = this.data.flat()
-    const xExtent = extent(flatData, this.xAccessor)
-    const yExtent = extent(flatData, this.yAccessor)
-    this.xScale.domain = xExtent
-    this.yScale.domain = yExtent
-  }
-
   computeXAxisType () {
     const flatData = this.data.flat()
     const xValue = this.xAccessor(flatData[0])
