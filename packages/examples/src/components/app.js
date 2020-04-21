@@ -22,7 +22,7 @@ export default class App extends Component {
     return (
       <div id="app">
         <Header />
-        <div class="container mx-auto mt-8">
+        <div>
           <Router onChange={this.handleRoute}>
             <Home path="/" />
             <Lines path="/lines/" />

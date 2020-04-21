@@ -31,7 +31,7 @@ class Home extends Component {
   }
 
   render () {
-    return <div class="w-full">
+    return <div class="w-full mt-8">
       <p className="text-lg italic max-w-2xl mx-auto">
         MetricsGraphics is a library built on top of <a href="https://d3js.org">D3</a> that is optimized for visualizing and laying out time-series data. It provides a simple way to produce common types of graphics in a principled, consistent and responsive way.
       </p>

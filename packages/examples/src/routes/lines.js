@@ -80,7 +80,7 @@ export default class Lines extends Component {
 
   render () {
     return (
-      <div>
+      <div className="container mx-auto mt-8">
         <div className="example-container">
           <div>
             <p>Line Chart</p>

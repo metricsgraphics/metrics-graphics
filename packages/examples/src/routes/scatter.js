@@ -60,7 +60,7 @@ export default class Scatter extends Component {
 
   render () {
     return (
-      <div>
+      <div className="container mx-auto mt-8">
         <div className="example-container">
           <div>
             <p>Simple Scatterplot</p>
