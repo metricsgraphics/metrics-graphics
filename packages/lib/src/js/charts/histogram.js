@@ -28,7 +28,7 @@ export default class HistogramChart extends AbstractChart {
 
     // set tooltip type
     if (this.tooltip) {
-      this.tooltip.update({ legendObject: 'square' })
+      this.tooltip.update({ legendObject: constants.legendObject.square })
       this.tooltip.hide()
     }
 

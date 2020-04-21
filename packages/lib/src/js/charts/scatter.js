@@ -28,7 +28,7 @@ export default class ScatterChart extends AbstractChart {
 
     // set tooltip type
     if (this.tooltip) {
-      this.tooltip.update({ legendObject: constants.symbol.dot })
+      this.tooltip.update({ legendObject: constants.legendObject.circle })
       this.tooltip.hide()
     }
 
@@ -86,12 +86,8 @@ export default class ScatterChart extends AbstractChart {
    */
   mountPoints () {
     this.points = this.data.map((pointSet, i) => pointSet.map(data => {
-      const point = new Point({
+      const point = this.generatePoint({
         data,
-        xAccessor: this.xAccessor,
-        yAccessor: this.yAccessor,
-        xScale: this.xScale,
-        yScale: this.yScale,
         color: this.colors[i],
         radius: this.sizeAccessor(data),
         fillOpacity: 0.3,
@@ -107,13 +103,7 @@ export default class ScatterChart extends AbstractChart {
    * @returns {void}
    */
   mountDelaunay () {
-    this.delaunayPoint = new Point({
-      xAccessor: this.xAccessor,
-      yAccessor: this.yAccessor,
-      xScale: this.xScale,
-      yScale: this.yScale,
-      radius: 3
-    })
+    this.delaunayPoint = this.generatePoint({ radius: 3 })
     this.delaunay = new Delaunay({
       points: this.data,
       xAccessor: this.xAccessor,

@@ -28,7 +28,7 @@ export default class LineChart extends AbstractChart {
 
     // set tooltip type
     if (this.tooltip) {
-      this.tooltip.update({ legendObject: constants.symbol.line })
+      this.tooltip.update({ legendObject: constants.legendObject.line })
       this.tooltip.hide()
     }
 
@@ -65,13 +65,7 @@ export default class LineChart extends AbstractChart {
         yScale: this.yScale,
         color: this.colors[index]
       })
-      this.delaunayPoints[index] = new Point({
-        xAccessor: this.xAccessor,
-        yAccessor: this.yAccessor,
-        xScale: this.xScale,
-        yScale: this.yScale,
-        radius: 3
-      })
+      this.delaunayPoints[index] = this.generatePoint({ radius: 3 })
       line.mountTo(this.container)
     })
   }
