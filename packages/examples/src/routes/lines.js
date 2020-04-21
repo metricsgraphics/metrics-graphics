@@ -22,6 +22,22 @@ const codeChart1 = `new LineChart({
   xAccessor: 'date',
   yAccessor: 'value'
 })`
+const objectChart1 = {
+  data: fakeUsers1.map(entry => ({
+    date: new Date(entry.date),
+    value: entry.value
+  })),
+  width: 600,
+  height: 200,
+  yScale: {
+    minValue: 0
+  },
+  target: '#fakeUsers1',
+  area: true,
+  xAccessor: 'date',
+  yAccessor: 'value',
+  tooltipFunction: point => `date: ${point.date.getDate()}.${point.date.getMonth() + 1}.${point.date.getFullYear()}, value: ${point.value}`
+}
 
 const codeConfidence = `new LineChart({
   data: confidence.map(entry => ({
@@ -39,6 +55,22 @@ const codeConfidence = `new LineChart({
   target: '#confidenceBand',
   confidenceBand: ['l', 'u']
 })`
+const objectConfidence = {
+  data: confidence.map(entry => ({
+    ...entry,
+    date: new Date(entry.date)
+  })),
+  xAxis: {
+    extendedTicks: true
+  },
+  yAxis: {
+    tickFormat: 'percentage'
+  },
+  width: 600,
+  height: 200,
+  target: '#confidenceBand',
+  confidenceBand: ['l', 'u']
+}
 
 const codeMultiline = `new LineChart({
   data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
@@ -53,6 +85,19 @@ const codeMultiline = `new LineChart({
   legend: ['Line 1', 'Line 2', 'Line 3'],
   legendTarget: '#fakeUsers2Legend'
 })`
+const objectMultiline = {
+  data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+    ...fakeEntry,
+    date: new Date(fakeEntry.date)
+  }))),
+  width: 600,
+  height: 200,
+  target: '#fakeUsers2',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  legendTarget: '#fakeUsers2Legend'
+}
 
 const codeAggregate = `new LineChart({
   data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
@@ -70,6 +115,22 @@ const codeAggregate = `new LineChart({
     aggregate: true
   }
 })`
+const objectAggregate = {
+  data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
+    ...fakeEntry,
+    date: new Date(fakeEntry.date)
+  }))),
+  width: 600,
+  height: 200,
+  target: '#aggregate',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  legendTarget: '#aggregateLegend',
+  voronoi: {
+    aggregate: true
+  }
+}
 
 export default class Lines extends Component {
   lineChart1 = null
@@ -78,70 +139,10 @@ export default class Lines extends Component {
   aggregatedChart = null
 
   componentDidMount () {
-    this.lineChart1 = new LineChart({
-      data: fakeUsers1.map(entry => ({
-        date: new Date(entry.date),
-        value: entry.value
-      })),
-      width: 600,
-      height: 200,
-      yScale: {
-        minValue: 0
-      },
-      target: '#fakeUsers1',
-      area: true,
-      xAccessor: 'date',
-      yAccessor: 'value',
-      tooltipFunction: point => `date: ${point.date.getDate()}.${point.date.getMonth() + 1}.${point.date.getFullYear()}, value: ${point.value}`
-    })
-
-    this.confidenceBand = new LineChart({
-      data: confidence.map(entry => ({
-        ...entry,
-        date: new Date(entry.date)
-      })),
-      xAxis: {
-        extendedTicks: true
-      },
-      yAxis: {
-        tickFormat: 'percentage'
-      },
-      width: 600,
-      height: 200,
-      target: '#confidenceBand',
-      confidenceBand: ['l', 'u']
-    })
-
-    this.multilineChart = new LineChart({
-      data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
-        ...fakeEntry,
-        date: new Date(fakeEntry.date)
-      }))),
-      width: 600,
-      height: 200,
-      target: '#fakeUsers2',
-      xAccessor: 'date',
-      yAccessor: 'value',
-      legend: ['Line 1', 'Line 2', 'Line 3'],
-      legendTarget: '#fakeUsers2Legend'
-    })
-
-    this.aggregatedChart = new LineChart({
-      data: fakeUsers2.map(fakeArray => fakeArray.map(fakeEntry => ({
-        ...fakeEntry,
-        date: new Date(fakeEntry.date)
-      }))),
-      width: 600,
-      height: 200,
-      target: '#aggregate',
-      xAccessor: 'date',
-      yAccessor: 'value',
-      legend: ['Line 1', 'Line 2', 'Line 3'],
-      legendTarget: '#aggregateLegend',
-      voronoi: {
-        aggregate: true
-      }
-    })
+    this.lineChart1 = new LineChart(objectChart1)
+    this.confidenceBand = new LineChart(objectConfidence)
+    this.multilineChart = new LineChart(objectMultiline)
+    this.aggregatedChart = new LineChart(objectAggregate)
   }
 
   render () {

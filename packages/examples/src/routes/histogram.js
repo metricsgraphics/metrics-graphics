@@ -16,23 +16,24 @@ const codeChart1 = `new HistogramChart({
   },
   tooltipFunction: bar => \`\${bar.time} months, volume \${bar.count}\`
 })`
+const objectChart1 = {
+  data: ufoDates.map(date => (parseInt(date, 10) / 30)).sort(),
+  width: 600,
+  height: 200,
+  right: 40,
+  binCount: 150,
+  target: '#histogramChart1',
+  yAxis: {
+    extendedTicks: true
+  },
+  tooltipFunction: bar => `${bar.time} months, volume ${bar.count}`
+}
 
 export default class Lines extends Component {
   histogramChart1 = null
 
   componentDidMount () {
-    this.histogramChart1 = new HistogramChart({
-      data: ufoDates.map(date => (parseInt(date, 10) / 30)).sort(),
-      width: 600,
-      height: 200,
-      right: 40,
-      binCount: 150,
-      target: '#histogramChart1',
-      yAxis: {
-        extendedTicks: true
-      },
-      tooltipFunction: bar => `${bar.time} months, volume ${bar.count}`
-    })
+    this.histogramChart1 = new HistogramChart(objectChart1)
   }
 
   render () {

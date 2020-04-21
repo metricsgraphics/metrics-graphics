@@ -27,6 +27,16 @@ const codeScatter1 = `new ScatterChart({
   xRug: true,
   tooltipFunction: point => \`\${point.x} \${point.y}\`
 })`
+const objectScatter1 = {
+  data: points1,
+  width: 500,
+  height: 200,
+  target: '#scatterChart1',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  xRug: true,
+  tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`
+}
 
 const codeScatter2 = `new ScatterChart({
   data: points2.map(x => x.values),
@@ -40,6 +50,18 @@ const codeScatter2 = `new ScatterChart({
   tooltipFunction: point => \`\${point.x} \${point.y}\`,
   legendTarget: '#scatterChart2Legend'
 })`
+const objectScatter2 = {
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart2',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  yRug: true,
+  tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
+  legendTarget: '#scatterChart2Legend'
+}
 
 const codeScatter3 = `new ScatterChart({
   data: points2.map(x => x.values),
@@ -53,6 +75,18 @@ const codeScatter3 = `new ScatterChart({
   tooltipFunction: point => \`x: \${point.x} y: \${point.y} size: \${point.w}\`,
   legendTarget: '#scatterChart3Legend'
 })`
+const objectScatter3 = {
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart3',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  sizeAccessor: x => Math.abs(x.w) * 3,
+  tooltipFunction: point => `x: ${Num.format(point.x)} y: ${Num.format(point.y)} size: ${Num.format(point.w)}`,
+  legendTarget: '#scatterChart3Legend'
+}
 
 export default class Scatter extends Component {
   scatterChart1 = null
@@ -60,40 +94,9 @@ export default class Scatter extends Component {
   scatterChart3 = null
 
   componentDidMount () {
-    this.scatterChart1 = new ScatterChart({
-      data: points1,
-      width: 500,
-      height: 200,
-      target: '#scatterChart1',
-      xAccessor: 'x',
-      yAccessor: 'y',
-      xRug: true,
-      tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`
-    })
-    this.scatterChart2 = new ScatterChart({
-      data: points2.map(x => x.values),
-      legend: points2.map(x => x.key),
-      width: 500,
-      height: 200,
-      target: '#scatterChart2',
-      xAccessor: 'x',
-      yAccessor: 'y',
-      yRug: true,
-      tooltipFunction: point => `${Num.format(point.x)} ${Num.format(point.y)}`,
-      legendTarget: '#scatterChart2Legend'
-    })
-    this.scatterChart3 = new ScatterChart({
-      data: points2.map(x => x.values),
-      legend: points2.map(x => x.key),
-      width: 500,
-      height: 200,
-      target: '#scatterChart3',
-      xAccessor: 'x',
-      yAccessor: 'y',
-      sizeAccessor: x => Math.abs(x.w) * 3,
-      tooltipFunction: point => `x: ${Num.format(point.x)} y: ${Num.format(point.y)} size: ${Num.format(point.w)}`,
-      legendTarget: '#scatterChart3Legend'
-    })
+    this.scatterChart1 = new ScatterChart(objectScatter1)
+    this.scatterChart2 = new ScatterChart(objectScatter2)
+    this.scatterChart3 = new ScatterChart(objectScatter3)
   }
 
   render () {
