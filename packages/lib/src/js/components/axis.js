@@ -17,7 +17,6 @@ export default class Axis {
   compact = false
   buffer = 0
   height = 0
-  isVertical = false
   prefix = ''
   suffix = ''
 
@@ -57,9 +56,6 @@ export default class Axis {
     tickLength,
     extendedTicks
   }) {
-    // cry if no scale is set
-    if (!scale) throw new Error('an axis needs a scale')
-
     this.scale = scale
     this.label = label ?? this.label
     this.buffer = buffer ?? this.buffer
@@ -70,7 +66,7 @@ export default class Axis {
     this.compact = compact ?? this.compact
     this.prefix = prefix ?? this.prefix
     this.suffix = suffix ?? this.suffix
-    this.isVertical = [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
+    if (typeof tickLength !== 'undefined') this.tickLength = tickLength
     this.extendedTicks = extendedTicks
     this.labelOffset = typeof labelOffset !== 'undefined'
       ? labelOffset
@@ -87,9 +83,6 @@ export default class Axis {
         : tickFormat
     }
     this.tickCount = tickCount ?? (this.isVertical ? 3 : 6)
-
-    // set tick length if necessary
-    if (typeof tickLength !== 'undefined') this.tickLength = tickLength
   }
 
   setupAxisObject () {
@@ -150,29 +143,36 @@ export default class Axis {
       .text(this.label)
   }
 
+  get isVertical () { return [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation) }
+  get innerLeft () { return this.isVertical ? 0 : this.buffer }
+  get innerTop () { return this.isVertical ? this.buffer : 0 }
+  get tickAttribute () { return this.isVertical ? 'x1' : 'y1' }
+  get extendedTickLength () {
+    const factor = this.isVertical ? 1 : -1
+    return factor * (this.height + 2 * this.buffer)
+  }
+
   mountTo (svg) {
-    const innerLeft = this.isVertical ? 0 : this.buffer
-    const innerTop = this.isVertical ? this.buffer : 0
+    // set up axis container
     const axisContainer = svg.append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
       .classed('mg-axis', true)
-    if (!this.extendedTicks) {
-      axisContainer.call(this.domainObject())
-    }
+
+    // if no extended ticks are used, draw the domain line
+    if (!this.extendedTicks) axisContainer.call(this.domainObject())
+
+    // mount axis but remove default-generated domain
     axisContainer
       .append('g')
-      .attr('transform', `translate(${innerLeft},${innerTop})`)
+      .attr('transform', `translate(${this.innerLeft},${this.innerTop})`)
       .call(this.axisObject)
       .call(g => g.select('.domain').remove())
 
     // if necessary, make ticks longer
     if (this.extendedTicks) {
-      // compute attribute
-      const attribute = this.isVertical ? 'x1' : 'y1'
-      const factor = this.isVertical ? 1 : -1
       axisContainer.call(g => g
         .selectAll('.tick line')
-        .attr(attribute, factor * (this.height + 2 * this.buffer))
+        .attr(this.tickAttribute, this.extendedTickLength)
         .attr('opacity', 0.3)
       )
     }

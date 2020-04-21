@@ -1,5 +1,6 @@
 import { Component } from 'preact'
 import ScatterChart from 'mg2/src/js/charts/scatter'
+import ExampleContainer from '../components/exampleContainer'
 
 import points1 from '../assets/data/points1'
 
@@ -15,6 +16,43 @@ const points2 = groupByArray(points1, 'v')
 const Num = new Intl.NumberFormat('en', {
   maximumFractionDigits: 2
 })
+
+const codeScatter1 = `new ScatterChart({
+  data: points1,
+  width: 500,
+  height: 200,
+  target: '#scatterChart1',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  xRug: true,
+  tooltipFunction: point => \`\${point.x} \${point.y}\`
+})`
+
+const codeScatter2 = `new ScatterChart({
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart2',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  yRug: true,
+  tooltipFunction: point => \`\${point.x} \${point.y}\`,
+  legendTarget: '#scatterChart2Legend'
+})`
+
+const codeScatter3 = `new ScatterChart({
+  data: points2.map(x => x.values),
+  legend: points2.map(x => x.key),
+  width: 500,
+  height: 200,
+  target: '#scatterChart3',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  sizeAccessor: x => Math.abs(x.w) * 3,
+  tooltipFunction: point => \`x: \${point.x} y: \${point.y} size: \${point.w}\`,
+  legendTarget: '#scatterChart3Legend'
+})`
 
 export default class Scatter extends Component {
   scatterChart1 = null
@@ -61,77 +99,28 @@ export default class Scatter extends Component {
   render () {
     return (
       <div className="container mx-auto mt-8">
-        <div className="example-container">
-          <div>
-            <p>Simple Scatterplot</p>
-            <small>
-            This is an example scatterplot, in which we have enabled rug plots on the y-axis by setting the rug option to true.
-            </small>
-            <div id="scatterChart1" />
-          </div>
-          <div>
-            <code><pre>{`new ScatterChart({
-  data: points1,
-  width: 500,
-  height: 200,
-  target: '#scatterChart1',
-  xAccessor: 'x',
-  yAccessor: 'y',
-  xRug: true,
-  tooltipFunction: point => \`\${point.x} \${point.y}\`
-})`}</pre></code>
-          </div>
-        </div>
 
-        <div className="example-container">
-          <div>
-            <p>Multi-Category Scatterplot</p>
-            <small>
-            This scatterplot contains data of multiple categories.
-            </small>
-            <div id="scatterChart2" />
-            <p className="text-center" id="scatterChart2Legend" />
-          </div>
-          <div>
-            <code><pre>{`new ScatterChart({
-  data: points2.map(x => x.values),
-  legend: points2.map(x => x.key),
-  width: 500,
-  height: 200,
-  target: '#scatterChart2',
-  xAccessor: 'x',
-  yAccessor: 'y',
-  yRug: true,
-  tooltipFunction: point => \`\${point.x} \${point.y}\`,
-  legendTarget: '#scatterChart2Legend'
-})`}</pre></code>
-          </div>
-        </div>
+        <ExampleContainer
+          title="Simple Scatterplot"
+          description="This is an example scatterplot, in which we have enabled rug plots on the y-axis by setting the rug option to true."
+          id="scatterChart1"
+          code={codeScatter1}
+        />
 
-        <div className="example-container">
-          <div>
-            <p>Scatterplot with Size and Color</p>
-            <small>
-            Scatterplots have xAccessor, yAccessor and sizeAccessor.
-            </small>
-            <div id="scatterChart3" />
-            <p className="text-center" id="scatterChart3Legend" />
-          </div>
-          <div>
-            <code><pre>{`new ScatterChart({
-  data: points2.map(x => x.values),
-  legend: points2.map(x => x.key),
-  width: 500,
-  height: 200,
-  target: '#scatterChart3',
-  xAccessor: 'x',
-  yAccessor: 'y',
-  sizeAccessor: x => Math.abs(x.w) * 3,
-  tooltipFunction: point => \`x: \${point.x} y: \${point.y} size: \${point.w}\`,
-  legendTarget: '#scatterChart3Legend'
-})`}</pre></code>
-          </div>
-        </div>
+        <ExampleContainer
+          title="Multi-Category Scatterplot"
+          description="This scatterplot contains data of multiple categories."
+          id="scatterChart2"
+          code={codeScatter2}
+        />
+
+        <ExampleContainer
+          title="Scatterplot with Size and Color"
+          description="Scatterplots have xAccessor, yAccessor and sizeAccessor."
+          id="scatterChart3"
+          legendId="scatterChart3Legend"
+          code={codeScatter3}
+        />
       </div>
     )
   }

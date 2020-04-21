@@ -63,18 +63,42 @@ export default class AbstractShape {
    * @returns {void}
    */
   updateGeneric ({ color, fillOpacity, strokeWidth }) {
-    if (color) {
-      this.color = color
-      if (this.shapeObject) this.shapeObject.attr('fill', this.color)
-    }
-    if (fillOpacity) {
-      this.fillOpacity = fillOpacity
-      if (this.shapeObject) this.shapeObject.attr('fill-opacity', this.fillOpacity)
-    }
-    if (strokeWidth) {
-      this.strokeWidth = strokeWidth
-      if (this.shapeObject) this.shapeObject.attr('stroke-width', this.strokeWidth)
-    }
+    if (color) this.updateColor(color)
+    if (fillOpacity) this.updateOpacity(fillOpacity)
+    if (strokeWidth) this.updateStroke(strokeWidth)
+  }
+
+  /**
+   * Update the color of the shape.
+   *
+   * @param {String} color new color of the shape.
+   * @returns {void}
+   */
+  updateColor (color) {
+    this.color = color
+    if (this.shapeObject) this.shapeObject.attr('fill', this.color)
+  }
+
+  /**
+   * Update the fill opacity of the shape.
+   *
+   * @param {Number} fillOpacity new fill opacity of the shape.
+   * @returns {void}
+   */
+  updateOpacity (fillOpacity) {
+    this.fillOpacity = fillOpacity
+    if (this.shapeObject) this.shapeObject.attr('fill-opacity', this.fillOpacity)
+  }
+
+  /**
+   * Update the stroke width of the shape.
+   *
+   * @param {Number} strokeWidth new stroke width of the shape.
+   * @returns {void}
+   */
+  updateStroke (strokeWidth) {
+    this.strokeWidth = strokeWidth
+    if (this.shapeObject) this.shapeObject.attr('stroke-width', this.strokeWidth)
   }
 
   /**

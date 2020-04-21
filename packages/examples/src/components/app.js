@@ -22,7 +22,7 @@ export default class App extends Component {
     return (
       <div id="app">
         <Header />
-        <div>
+        <div className="pb-12">
           <Router onChange={this.handleRoute}>
             <Home path="/" />
             <Lines path="/lines/" />
