@@ -1,5 +1,4 @@
 import AbstractChart from './abstractChart'
-import { extent } from 'd3-array'
 import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
