@@ -9,6 +9,7 @@ export default class Delaunay {
   xScale = null
   yScale = null
   xAccessor = null
+  yAccessor = null
   onPoint = d => null
   onLeave = () => null
   onClick = () => null
@@ -30,10 +31,45 @@ export default class Delaunay {
    * @param {Boolean} [aggregate=false] if multiple points have the same x value and should be shown together, aggregate can be set to true.
    */
   constructor ({ points = [], xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested, aggregate }) {
-    // Case 1: There is only one dimension of points (e.g. one line).
-    // In this case, only use the x-distance by setting all y values to zero.
-    // if the points are one-dimensional, treat them like that.
+    this.xScale = xScale
+    this.yScale = yScale
+    this.onPoint = onPoint ?? this.onPoint
+    this.onLeave = onLeave ?? this.onLeave
+    this.onClick = onClick ?? this.onClick
+    this.xAccessor = xAccessor
+    this.yAccessor = yAccessor
+    this.aggregate = aggregate ?? this.aggregate
+
+    // normalize passed points
     const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
+    this.normalizePoints(points, isNested, aggregate)
+
+    // set up delaunay
+    this.mountDelaunay(isNested, aggregate)
+  }
+
+  /**
+   * Create a new delaunay triangulation.
+   *
+   * @param {Boolean} isNested whether or not the data is nested
+   * @param {Boolean} aggregate whether or not to aggregate points based on their x value
+   * @returns {void}
+   */
+  mountDelaunay (isNested, aggregate) {
+    this.delaunay = DelaunayObject.from(
+      this.points.map(point => ([this.xAccessor(point), isNested && !aggregate ? this.yAccessor(point) : 0]))
+    )
+  }
+
+  /**
+   * Normalize the passed data points.
+   *
+   * @param {Array} points raw data array
+   * @param {Boolean} isNested whether or not the points are nested
+   * @param {Boolean} aggregate whether or not to aggregate points based on their x value
+   * @returns {void}
+   */
+  normalizePoints (points, isNested, aggregate) {
     this.points = isNested
       ? points.map((pointArray, arrayIndex) => pointArray.map((point, index) => ({
         ...point,
@@ -43,28 +79,16 @@ export default class Delaunay {
       : points.flat(Infinity).map((p, index) => ({ ...p, index }))
 
     // if points should be aggregated, hash-map them based on their x accessor value
-    if (aggregate) {
-      this.aggregatedPoints = this.points.reduce((acc, val) => {
-        const key = JSON.stringify(xAccessor(val))
-        if (!acc.has(key)) {
-          acc.set(key, [val])
-        } else {
-          acc.set(key, [val, ...acc.get(key)])
-        }
-        return acc
-      }, new Map())
-    }
-
-    this.xScale = xScale
-    this.yScale = yScale
-    this.delaunay = DelaunayObject.from(
-      this.points.map(point => ([xAccessor(point), isNested && !aggregate ? yAccessor(point) : 0]))
-    )
-    this.onPoint = onPoint ?? this.onPoint
-    this.onLeave = onLeave ?? this.onLeave
-    this.onClick = onClick ?? this.onClick
-    this.xAccessor = xAccessor
-    this.aggregate = aggregate ?? this.aggregate
+    if (!aggregate) return
+    this.aggregatedPoints = this.points.reduce((acc, val) => {
+      const key = JSON.stringify(this.xAccessor(val))
+      if (!acc.has(key)) {
+        acc.set(key, [val])
+      } else {
+        acc.set(key, [val, ...acc.get(key)])
+      }
+      return acc
+    }, new Map())
   }
 
   /**
