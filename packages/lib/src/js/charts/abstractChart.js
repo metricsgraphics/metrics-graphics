@@ -171,24 +171,28 @@ export default class AbstractChart {
   mountAxes (xAxis, yAxis) {
     const hideX = typeof xAxis?.show !== 'undefined' && !xAxis.show
     const hideY = typeof yAxis?.show !== 'undefined' && !yAxis.show
-    this.xAxis = !hideX ? new Axis({
-      scale: this.xScale,
-      orientation: 'bottom',
-      top: this.bottom,
-      left: this.left,
-      height: this.innerHeight,
-      buffer: this.buffer,
-      ...xAxis
-    }) : null
-    this.yAxis = !hideY ? new Axis({
-      scale: this.yScale,
-      orientation: 'left',
-      top: this.top,
-      left: this.left,
-      height: this.innerWidth,
-      buffer: this.buffer,
-      ...yAxis
-    }) : null
+    if (!hideX) {
+      this.xAxis = new Axis({
+        scale: this.xScale,
+        orientation: 'bottom',
+        top: this.bottom,
+        left: this.left,
+        height: this.innerHeight,
+        buffer: this.buffer,
+        ...xAxis
+      })
+    }
+    if (!hideY) {
+      this.yAxis = new Axis({
+        scale: this.yScale,
+        orientation: 'left',
+        top: this.top,
+        left: this.left,
+        height: this.innerWidth,
+        buffer: this.buffer,
+        ...yAxis
+      })
+    }
     if (!xAxis?.tickFormat) this.computeXAxisType()
     if (!yAxis?.tickFormat) this.computeYAxisType()
 
