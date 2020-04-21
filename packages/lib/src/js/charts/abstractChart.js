@@ -137,7 +137,8 @@ export default class AbstractChart {
     this.computeDomains(custom)
 
     // set up axes if not disabled
-    this.mountAxes(xAxis, yAxis)
+    this.mountXAxis(xAxis)
+    this.mountYAxis(yAxis)
 
     // pre-attach tooltip text container
     this.mountTooltip(showTooltip, tooltipFunction)
@@ -162,40 +163,46 @@ export default class AbstractChart {
   }
 
   /**
-   * Mount new x and y axes.
+   * Mount new x axis.
    *
    * @param {Object} [xAxis] object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
+   * @returns {void}
+   */
+  mountXAxis (xAxis) {
+    if (typeof xAxis?.show !== 'undefined' && !xAxis.show) return
+    this.xAxis = new Axis({
+      scale: this.xScale,
+      orientation: 'bottom',
+      top: this.bottom,
+      left: this.left,
+      height: this.innerHeight,
+      buffer: this.buffer,
+      ...xAxis
+    })
+    if (!xAxis?.tickFormat) this.computeXAxisType()
+
+    // attach axis
+    if (this.xAxis) this.xAxis.mountTo(this.svg)
+  }
+
+  /**
+   * Mount new y axis.
+   *
    * @param {Object} [yAxis] object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
    * @returns {void}
    */
-  mountAxes (xAxis, yAxis) {
-    if (typeof xAxis?.show === 'undefined' || xAxis.show) {
-      this.xAxis = new Axis({
-        scale: this.xScale,
-        orientation: 'bottom',
-        top: this.bottom,
-        left: this.left,
-        height: this.innerHeight,
-        buffer: this.buffer,
-        ...xAxis
-      })
-    }
-    if (typeof yAxis?.show === 'undefined' || yAxis.show) {
-      this.yAxis = new Axis({
-        scale: this.yScale,
-        orientation: 'left',
-        top: this.top,
-        left: this.left,
-        height: this.innerWidth,
-        buffer: this.buffer,
-        ...yAxis
-      })
-    }
-    if (!xAxis?.tickFormat) this.computeXAxisType()
+  mountYAxis (yAxis) {
+    if (typeof yAxis?.show !== 'undefined' && !Axis.show) return
+    this.yAxis = new Axis({
+      scale: this.yScale,
+      orientation: 'left',
+      top: this.top,
+      left: this.left,
+      height: this.innerWidth,
+      buffer: this.buffer,
+      ...yAxis
+    })
     if (!yAxis?.tickFormat) this.computeYAxisType()
-
-    // attach axes
-    if (this.xAxis) this.xAxis.mountTo(this.svg)
     if (this.yAxis) this.yAxis.mountTo(this.svg)
   }
 
