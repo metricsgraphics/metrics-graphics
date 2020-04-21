@@ -3,6 +3,7 @@ import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
 import Rug from '../components/rug'
+import { makeAccessorFunction } from '../misc/utility'
 
 export default class ScatterChart extends AbstractChart {
   points = []
@@ -32,10 +33,8 @@ export default class ScatterChart extends AbstractChart {
     }
 
     this.sizeAccessor = sizeAccessor
-      ? typeof sizeAccessor === 'function'
-        ? sizeAccessor
-        : d => d[sizeAccessor]
-      : d => 3
+      ? makeAccessorFunction(sizeAccessor)
+      : () => 3
 
     // set up points
     this.mountPoints()

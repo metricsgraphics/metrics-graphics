@@ -1,4 +1,4 @@
-import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, randomId } from '../misc/utility'
+import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, randomId, makeAccessorFunction } from '../misc/utility'
 import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
@@ -113,11 +113,9 @@ export default class AbstractChart {
     this.legendTarget = legendTarget ?? this.legendTarget
 
     // convert string accessors to functions if necessary
-    this.xAccessor = typeof xAccessor === 'string'
-      ? d => d[xAccessor] : xAccessor
-    this.yAccessor = typeof yAccessor === 'string'
-      ? d => d[yAccessor] : yAccessor
-    if (margin) this.margin = margin
+    this.xAccessor = makeAccessorFunction(xAccessor)
+    this.yAccessor = makeAccessorFunction(yAccessor)
+    this.margin = margin ?? this.margin
     this.buffer = buffer ?? this.buffer
 
     // set unique id for chart
@@ -129,9 +127,9 @@ export default class AbstractChart {
 
     // normalize color and colors arguments
     this.colors = color
-      ? Array.isArray(color) ? color : [color]
+      ? [color]
       : colors
-        ? Array.isArray(colors) ? colors : [colors]
+        ? [colors]
         : schemeCategory10
 
     this.setDataTypeFlags()

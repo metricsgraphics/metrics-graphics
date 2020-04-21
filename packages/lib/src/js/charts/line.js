@@ -4,6 +4,7 @@ import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
+import { makeAccessorFunction } from '../misc/utility'
 
 export default class LineChart extends AbstractChart {
   delaunay = null
@@ -112,8 +113,8 @@ export default class LineChart extends AbstractChart {
     const confidenceBandGenerator = new Area({
       data: this.data[0], // confidence band only makes sense for one line
       xAccessor: this.xAccessor,
-      y0Accessor: typeof lowerAccessor === 'function' ? lowerAccessor : d => d[lowerAccessor],
-      y1Accessor: typeof upperAccessor === 'function' ? upperAccessor : d => d[upperAccessor],
+      y0Accessor: makeAccessorFunction(lowerAccessor),
+      y1Accessor: makeAccessorFunction(upperAccessor),
       xScale: this.xScale,
       yScale: this.yScale,
       color: '#aaa'

@@ -1,6 +1,18 @@
 import { select } from 'd3-selection'
 
 /**
+ * Handle cases where the user specifies an accessor string instead of an accessor function.
+ *
+ * @param {Function | String} functionOrString accessor string/function to be made an accessor function
+ * @returns {Function} accessor function
+ */
+export function makeAccessorFunction (functionOrString) {
+  return typeof functionOrString === 'string'
+    ? d => d[functionOrString]
+    : functionOrString
+}
+
+/**
  * Check if an array is an array of arrays.
  *
  * @param {Array} arr array to be checked.
