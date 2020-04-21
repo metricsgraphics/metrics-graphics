@@ -3,7 +3,6 @@ import { extent } from 'd3-array'
 import Point from '../components/point'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
-import Legend from '../components/legend'
 import Rug from '../components/rug'
 
 export default class ScatterChart extends AbstractChart {
@@ -46,7 +45,7 @@ export default class ScatterChart extends AbstractChart {
     this.mountDelaunay()
 
     // mount legend if any
-    this.mountLegend()
+    this.mountLegend(constants.legendObject.circle)
   }
 
   /**
@@ -142,20 +141,6 @@ export default class ScatterChart extends AbstractChart {
       }
     })
     this.delaunay.mountTo(this.container)
-  }
-
-  /**
-   * Mount legend if necessary.
-   * @returns {void}
-   */
-  mountLegend () {
-    if (!this.legend || !this.legend.length || !this.legendTarget) return
-    const legend = new Legend({
-      legend: this.legend,
-      colorScheme: this.colors,
-      symbolType: constants.legendObject.circle
-    })
-    legend.mountTo(this.legendTarget)
   }
 
   set activePoint ({ i, j }) {

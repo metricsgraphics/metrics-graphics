@@ -4,6 +4,7 @@ import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
 import { schemeCategory10 } from 'd3-scale-chromatic'
+import Legend from '../components/legend'
 
 /**
  * This class implements all behavior shared by all chart types.
@@ -154,6 +155,21 @@ export default class AbstractChart {
 
     // set up main container
     this.mountContainer()
+  }
+
+  /**
+   * Mount a new legend if necessary
+   * @param {String} symbolType symbol type (circle, square, line)
+   * @returns {void}
+   */
+  mountLegend (symbolType) {
+    if (!this.legend || !this.legend.length || !this.legendTarget) return
+    const legend = new Legend({
+      legend: this.legend,
+      colorScheme: this.colors,
+      symbolType
+    })
+    legend.mountTo(this.legendTarget)
   }
 
   /**

@@ -2,7 +2,6 @@ import AbstractChart from './abstractChart'
 import { bin, max } from 'd3-array'
 import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
-import Legend from '../components/legend'
 import Rect from '../components/rect'
 
 export default class HistogramChart extends AbstractChart {
@@ -25,6 +24,26 @@ export default class HistogramChart extends AbstractChart {
     this.bins = dataBin(this.data)
 
     // set up histogram rects
+    this.mountRects()
+
+    // set tooltip type
+    if (this.tooltip) {
+      this.tooltip.update({ legendObject: 'square' })
+      this.tooltip.hide()
+    }
+
+    // generate delaunator
+    this.mountDelaunay()
+
+    // mount legend if any
+    this.mountLegend(constants.legendObject.square)
+  }
+
+  /**
+   * Mount the histogram rectangles.
+   * @returns {void}
+   */
+  mountRects () {
     this.rects = this.bins.map(bin => {
       const rect = new Rect({
         data: bin,
@@ -41,14 +60,13 @@ export default class HistogramChart extends AbstractChart {
       rect.mountTo(this.container)
       return rect
     })
+  }
 
-    // set tooltip type
-    if (this.tooltip) {
-      this.tooltip.update({ legendObject: 'square' })
-      this.tooltip.hide()
-    }
-
-    // generate delaunator
+  /**
+   * Mount new delaunay triangulation.
+   * @returns {void}
+   */
+  mountDelaunay () {
     this.delaunayBar = new Rect({
       xScale: this.xScale,
       yScale: this.yScale,
@@ -85,16 +103,6 @@ export default class HistogramChart extends AbstractChart {
       }
     })
     this.delaunay.mountTo(this.container)
-
-    // mount legend if any
-    if (this.legend && this.legend.length > 0 && this.legendTarget) {
-      const legend = new Legend({
-        legend: this.legend,
-        colorScheme: this.colors,
-        symbolType: constants.legendObject.square
-      })
-      legend.mountTo(this.legendTarget)
-    }
   }
 
   computeDomains ({ binCount }) {

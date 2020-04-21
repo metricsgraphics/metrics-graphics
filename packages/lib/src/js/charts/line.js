@@ -5,7 +5,6 @@ import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import Point from '../components/point'
-import Legend from '../components/legend'
 
 export default class LineChart extends AbstractChart {
   delaunay = null
@@ -42,7 +41,7 @@ export default class LineChart extends AbstractChart {
     this.mountDelaunay(voronoi)
 
     // mount legend if any
-    this.mountLegend()
+    this.mountLegend(constants.legendObject.line)
   }
 
   /**
@@ -193,20 +192,6 @@ export default class LineChart extends AbstractChart {
       ...customParameters
     })
     this.delaunay.mountTo(this.container)
-  }
-
-  /**
-   * Mount a legend, if any.
-   * @returns {void}
-   */
-  mountLegend () {
-    if (!this.legend || !this.legend.length || !this.legendTarget) return
-    const legend = new Legend({
-      legend: this.legend,
-      colorScheme: this.colors,
-      symbolType: constants.legendObject.line
-    })
-    legend.mountTo(this.legendTarget)
   }
 
   /**
