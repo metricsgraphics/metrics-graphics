@@ -12,84 +12,86 @@
     -   [Parameters][8]
     -   [darkenColor][9]
         -   [Parameters][10]
-    -   [mountTo][11]
+    -   [clamp][11]
         -   [Parameters][12]
--   [Rect][13]
-    -   [Parameters][14]
-    -   [mountTo][15]
-        -   [Parameters][16]
-    -   [update][17]
+    -   [mountTo][13]
+        -   [Parameters][14]
+-   [Rect][15]
+    -   [Parameters][16]
+    -   [mountTo][17]
         -   [Parameters][18]
--   [AbstractShape][19]
-    -   [Parameters][20]
-    -   [mountTo][21]
-        -   [Parameters][22]
-    -   [hide][23]
-    -   [update][24]
-        -   [Parameters][25]
-    -   [updateGeneric][26]
+    -   [update][19]
+        -   [Parameters][20]
+-   [AbstractShape][21]
+    -   [Parameters][22]
+    -   [mountTo][23]
+        -   [Parameters][24]
+    -   [hide][25]
+    -   [update][26]
         -   [Parameters][27]
-    -   [updateColor][28]
+    -   [updateGeneric][28]
         -   [Parameters][29]
-    -   [updateOpacity][30]
+    -   [updateColor][30]
         -   [Parameters][31]
-    -   [updateStroke][32]
+    -   [updateOpacity][32]
         -   [Parameters][33]
-    -   [updateProp][34]
+    -   [updateStroke][34]
         -   [Parameters][35]
-    -   [dismount][36]
--   [Scale][37]
-    -   [Parameters][38]
-    -   [getScaleObject][39]
-        -   [Parameters][40]
--   [Line][41]
-    -   [Parameters][42]
-    -   [mountTo][43]
-        -   [Parameters][44]
--   [Rug][45]
-    -   [Parameters][46]
-    -   [mountTo][47]
-        -   [Parameters][48]
--   [Area][49]
-    -   [Parameters][50]
-    -   [mountTo][51]
-        -   [Parameters][52]
--   [Tooltip][53]
-    -   [Parameters][54]
-    -   [setTextFunction][55]
-        -   [Parameters][56]
-    -   [baseTextFunction][57]
+    -   [updateProp][36]
+        -   [Parameters][37]
+    -   [dismount][38]
+-   [Scale][39]
+    -   [Parameters][40]
+    -   [getScaleObject][41]
+        -   [Parameters][42]
+-   [Line][43]
+    -   [Parameters][44]
+    -   [mountTo][45]
+        -   [Parameters][46]
+-   [Rug][47]
+    -   [Parameters][48]
+    -   [mountTo][49]
+        -   [Parameters][50]
+-   [Area][51]
+    -   [Parameters][52]
+    -   [mountTo][53]
+        -   [Parameters][54]
+-   [Tooltip][55]
+    -   [Parameters][56]
+    -   [setTextFunction][57]
         -   [Parameters][58]
-    -   [update][59]
+    -   [baseTextFunction][59]
         -   [Parameters][60]
-    -   [hide][61]
-    -   [mountTo][62]
-        -   [Parameters][63]
-    -   [addText][64]
--   [Delaunay][65]
-    -   [Parameters][66]
-    -   [mountDelaunay][67]
-        -   [Parameters][68]
-    -   [normalizePoints][69]
+    -   [update][61]
+        -   [Parameters][62]
+    -   [hide][63]
+    -   [mountTo][64]
+        -   [Parameters][65]
+    -   [addText][66]
+-   [Delaunay][67]
+    -   [Parameters][68]
+    -   [mountDelaunay][69]
         -   [Parameters][70]
-    -   [gotPoint][71]
+    -   [normalizePoints][71]
         -   [Parameters][72]
-    -   [clickedPoint][73]
+    -   [gotPoint][73]
         -   [Parameters][74]
-    -   [mountTo][75]
+    -   [clickedPoint][75]
         -   [Parameters][76]
--   [Axis][77]
-    -   [Parameters][78]
-    -   [setLabelOffset][79]
-        -   [Parameters][80]
-    -   [setupAxisObject][81]
-    -   [domainObject][82]
-    -   [labelObject][83]
-    -   [mountTo][84]
-        -   [Parameters][85]
-    -   [diffToTimeFormat][86]
-    -   [stringToFormat][87]
-        -   [Parameters][88]
+    -   [mountTo][77]
+        -   [Parameters][78]
+-   [Axis][79]
+    -   [Parameters][80]
+    -   [setLabelOffset][81]
+        -   [Parameters][82]
+    -   [setupAxisObject][83]
+    -   [domainObject][84]
+    -   [labelObject][85]
+    -   [mountTo][86]
+        -   [Parameters][87]
+    -   [diffToTimeFormat][88]
+    -   [stringToFormat][89]
+        -   [Parameters][90]
 
 ## Point
 
@@ -99,10 +101,10 @@ Create a new point.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object. See [AbstractShape][19] for general parameters.
-    -   `args.xAccessor` **[Function][90]** function to access the x value of the point.
-    -   `args.yAccessor` **[Function][90]** function to access the y value of the point.
-    -   `args.radius` **[Number][91]** radius of the point. (optional, default `1`)
+-   `args` **[Object][91]** argument object. See [AbstractShape][21] for general parameters.
+    -   `args.xAccessor` **[Function][92]** function to access the x value of the point.
+    -   `args.yAccessor` **[Function][92]** function to access the y value of the point.
+    -   `args.radius` **[Number][93]** radius of the point. (optional, default `1`)
     -   `args.args` **...any** 
 
 ### mountTo
@@ -111,7 +113,7 @@ Mount the point to the given node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the point to.
+-   `svg` **[Object][91]** d3 node to mount the point to.
 
 Returns **void** 
 
@@ -121,7 +123,7 @@ Update the point.
 
 #### Parameters
 
--   `data` **[Object][89]** point object
+-   `data` **[Object][91]** point object
     -   `data.data`  
     -   `data.args` **...any** 
 
@@ -133,25 +135,35 @@ Set up a new legend.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.legend` **[Array][92]** array of descriptive legend strings.
-    -   `args.colorScheme` **[Array][92]** colors used for the legend. Will be darkened for better visibility.
-    -   `args.symbol` **[String][93]** used in the legend (line, circle, square).
+-   `args` **[Object][91]** argument object.
+    -   `args.legend` **[Array][94]** array of descriptive legend strings.
+    -   `args.colorScheme` **[Array][94]** colors used for the legend. Will be darkened for better visibility.
+    -   `args.symbol` **[String][95]** used in the legend (line, circle, square).
     -   `args.symbolType`  
 
 ### darkenColor
 
--   **See: [https://css-tricks.com/snippets/javascript/lighten-darken-color/][94]
+-   **See: [https://css-tricks.com/snippets/javascript/lighten-darken-color/][96]
     **
 
 Darken a given color by a given amount.
 
 #### Parameters
 
--   `color` **[String][93]** hex color specifier
--   `amount` **[Number][91]** how much to darken the color.
+-   `color` **[String][95]** hex color specifier
+-   `amount` **[Number][93]** how much to darken the color.
 
-Returns **[String][93]** darkened color in hex representation.
+Returns **[String][95]** darkened color in hex representation.
+
+### clamp
+
+Clamp a number between 0 and 255.
+
+#### Parameters
+
+-   `number` **[Number][93]** number to be clamped.
+
+Returns **[Number][93]** clamped number.
 
 ### mountTo
 
@@ -159,7 +171,7 @@ Mount the legend to the given node.
 
 #### Parameters
 
--   `node` **([String][93] \| [Object][89])** d3 specifier or d3 node to mount the legend to.
+-   `node` **([String][95] \| [Object][91])** d3 specifier or d3 node to mount the legend to.
 
 Returns **void** 
 
@@ -171,11 +183,11 @@ Create a new rectangle.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object. See [AbstractShape][19] for general parameters.
-    -   `args.xAccessor` **[Function][90]** function to access the x value of the rectangle.
-    -   `args.yAccessor` **[Function][90]** function to access the y value of the rectangle.
-    -   `args.widthAccessor` **[Function][90]** function to access the width of the rectangle.
-    -   `args.heightAccessor` **[Function][90]** function to access the height of the rectangle.
+-   `args` **[Object][91]** argument object. See [AbstractShape][21] for general parameters.
+    -   `args.xAccessor` **[Function][92]** function to access the x value of the rectangle.
+    -   `args.yAccessor` **[Function][92]** function to access the y value of the rectangle.
+    -   `args.widthAccessor` **[Function][92]** function to access the width of the rectangle.
+    -   `args.heightAccessor` **[Function][92]** function to access the height of the rectangle.
     -   `args.args` **...any** 
 
 ### mountTo
@@ -184,7 +196,7 @@ Mount the rectangle to the given node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the rectangle to.
+-   `svg` **[Object][91]** d3 node to mount the rectangle to.
 
 Returns **void** 
 
@@ -194,7 +206,7 @@ Update the rectangle.
 
 #### Parameters
 
--   `data` **[Object][89]** updated data object.
+-   `data` **[Object][91]** updated data object.
     -   `data.data`  
     -   `data.args` **...any** 
 
@@ -207,13 +219,13 @@ This is an abstract class and not meant to be directly instantiated.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.data` **[Object][89]** data point used to generate the shape.
-    -   `args.xScale` **[Scale][95]** scale used to compute x values.
-    -   `args.yScale` **[Scale][95]** scale used to compute y values.
-    -   `args.color` **[String][93]** color used for fill and stroke.
-    -   `args.fillOpacity` **[Number][91]** opacity of the shape fill. (optional, default `1`)
-    -   `args.strokeWidth` **[Number][91]** width of the stroke around the shape. (optional, default `0`)
+-   `args` **[Object][91]** argument object.
+    -   `args.data` **[Object][91]** data point used to generate the shape.
+    -   `args.xScale` **[Scale][97]** scale used to compute x values.
+    -   `args.yScale` **[Scale][97]** scale used to compute y values.
+    -   `args.color` **[String][95]** color used for fill and stroke.
+    -   `args.fillOpacity` **[Number][93]** opacity of the shape fill. (optional, default `1`)
+    -   `args.strokeWidth` **[Number][93]** width of the stroke around the shape. (optional, default `0`)
 
 ### mountTo
 
@@ -222,7 +234,7 @@ Implemented by classes extending AbstractShape.
 
 #### Parameters
 
--   `svg` **[Object][89]** D3 node to mount the shape to
+-   `svg` **[Object][91]** D3 node to mount the shape to
 
 Returns **void** 
 
@@ -239,24 +251,24 @@ Implemented by classes extending AbstractShape.
 
 #### Parameters
 
--   `args` **[Object][89]** parameters to be updated
+-   `args` **[Object][91]** parameters to be updated
 
 Returns **void** 
 
 ### updateGeneric
 
 Update generic properties of the shape.
-This method can be used in the implementations of [AbstractShape#update][96].
+This method can be used in the implementations of [AbstractShape#update][98].
 
 #### Parameters
 
--   `$0` **[Object][89]** 
+-   `$0` **[Object][91]** 
     -   `$0.color`  
     -   `$0.fillOpacity`  
     -   `$0.strokeWidth`  
--   `color` **[String][93]** new color of the shape.
--   `fillOpacity` **[Number][91]** new fill opacity of the shape.
--   `strokeWidth` **[Number][91]** new stroke width of the shape.
+-   `color` **[String][95]** new color of the shape.
+-   `fillOpacity` **[Number][93]** new fill opacity of the shape.
+-   `strokeWidth` **[Number][93]** new stroke width of the shape.
 
 Returns **void** 
 
@@ -266,7 +278,7 @@ Update the color of the shape.
 
 #### Parameters
 
--   `color` **[String][93]** new color of the shape.
+-   `color` **[String][95]** new color of the shape.
 
 Returns **void** 
 
@@ -276,7 +288,7 @@ Update the fill opacity of the shape.
 
 #### Parameters
 
--   `fillOpacity` **[Number][91]** new fill opacity of the shape.
+-   `fillOpacity` **[Number][93]** new fill opacity of the shape.
 
 Returns **void** 
 
@@ -286,7 +298,7 @@ Update the stroke width of the shape.
 
 #### Parameters
 
--   `strokeWidth` **[Number][91]** new stroke width of the shape.
+-   `strokeWidth` **[Number][93]** new stroke width of the shape.
 
 Returns **void** 
 
@@ -296,7 +308,7 @@ Update an attribute of the raw shape node.
 
 #### Parameters
 
--   `name` **[String][93]** attribute name
+-   `name` **[String][95]** attribute name
 -   `value` **any** new value
 
 Returns **void** 
@@ -313,12 +325,12 @@ Set up a new scale.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.type` **[String][93]** type of scale. Can currently only be linear. (optional, default `'linear'`)
-    -   `args.range` **[Array][92]?** range of the scale.
-    -   `args.domain` **[Array][92]?** domain of the scale.
-    -   `args.minValue` **[Number][91]?** overwrites the lower bound of the domain.
-    -   `args.maxValue` **[Number][91]?** overwrites the upper bound of the domain.
+-   `args` **[Object][91]** argument object.
+    -   `args.type` **[String][95]** type of scale. Can currently only be linear. (optional, default `'linear'`)
+    -   `args.range` **[Array][94]?** range of the scale.
+    -   `args.domain` **[Array][94]?** domain of the scale.
+    -   `args.minValue` **[Number][93]?** overwrites the lower bound of the domain.
+    -   `args.maxValue` **[Number][93]?** overwrites the upper bound of the domain.
     -   `args.scaleObject`  
 
 ### getScaleObject
@@ -327,9 +339,9 @@ Get the d3 scale object for a given scale type.
 
 #### Parameters
 
--   `type` **[String][93]** scale type
+-   `type` **[String][95]** scale type
 
-Returns **[Object][89]** d3 scale type
+Returns **[Object][91]** d3 scale type
 
 ## Line
 
@@ -337,14 +349,14 @@ Create a new line.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.data` **[Array][92]** array of data points used to create the line.
-    -   `args.xAccessor` **[Function][90]** function to access the x value for a given data point.
-    -   `args.yAccessor` **[Function][90]** function to access the y value for a given data point.
-    -   `args.xScale` **[Scale][95]** scale used to compute x values.
-    -   `args.yScale` **[Scale][95]** scale used to compute y values.
-    -   `args.curve` **[Function][90]** curving function used to draw the line. See [https://github.com/d3/d3-shape#curves][97] for curves available in d3. (optional, default `catmullRom`)
-    -   `args.color` **[String][93]** color of the line.
+-   `args` **[Object][91]** argument object.
+    -   `args.data` **[Array][94]** array of data points used to create the line.
+    -   `args.xAccessor` **[Function][92]** function to access the x value for a given data point.
+    -   `args.yAccessor` **[Function][92]** function to access the y value for a given data point.
+    -   `args.xScale` **[Scale][97]** scale used to compute x values.
+    -   `args.yScale` **[Scale][97]** scale used to compute y values.
+    -   `args.curve` **[Function][92]** curving function used to draw the line. See [https://github.com/d3/d3-shape#curves][99] for curves available in d3. (optional, default `catmullRom`)
+    -   `args.color` **[String][95]** color of the line.
 
 ### mountTo
 
@@ -352,7 +364,7 @@ Mount the line to the given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the line to.
+-   `svg` **[Object][91]** d3 node to mount the line to.
 
 Returns **void** 
 
@@ -362,14 +374,14 @@ Set up a new rug.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.accessor` **[Function][90]** accessor used to get the rug value for a given data point.
-    -   `args.scale` **[Scale][95]** scale function of the rug.
-    -   `args.tickLength` **[Number][91]** length of the rug's ticks. (optional, default `5`)
-    -   `args.colors` **[Array][92]** color scheme of the rug ticks. (optional, default `schemeCategory10`)
-    -   `args.orientation` **[String][93]** orientation of the rug, either vertical or horizontal. (optional, default `'horizontal'`)
-    -   `args.left` **[Number][91]** left margin of the rug. (optional, default `0`)
-    -   `args.top` **[Number][91]** top margin of the rug. (optional, default `0`)
+-   `args` **[Object][91]** argument object.
+    -   `args.accessor` **[Function][92]** accessor used to get the rug value for a given data point.
+    -   `args.scale` **[Scale][97]** scale function of the rug.
+    -   `args.tickLength` **[Number][93]** length of the rug's ticks. (optional, default `5`)
+    -   `args.colors` **[Array][94]** color scheme of the rug ticks. (optional, default `schemeCategory10`)
+    -   `args.orientation` **[String][95]** orientation of the rug, either vertical or horizontal. (optional, default `'horizontal'`)
+    -   `args.left` **[Number][93]** left margin of the rug. (optional, default `0`)
+    -   `args.top` **[Number][93]** top margin of the rug. (optional, default `0`)
     -   `args.data`  
 
 ### mountTo
@@ -378,27 +390,27 @@ Mount the rug to the given node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the rug to.
+-   `svg` **[Object][91]** d3 node to mount the rug to.
 
 Returns **void** 
 
 ## Area
 
 Create a new area shape.
-Meant to be used together with a [Line][41].
+Meant to be used together with a [Line][43].
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.data` **[Array][92]** data for which the shape should be created.
-    -   `args.xAccessor` **[Function][90]** x accessor function.
-    -   `args.yAccessor` **[Function][90]** y accessor function.
-    -   `args.y0Accessor` **[Function][90]** y base accessor function. Defaults to static 0.
-    -   `args.y1Accessor` **[Function][90]** alternative to yAccessor.
-    -   `args.xScale` **[Scale][95]** scale used to scale elements in x direction.
-    -   `args.yScale` **[Scale][95]** scale used to scale elements in y direction.
-    -   `args.curve` **[Function][90]** curving function. See [https://github.com/d3/d3-shape#curves][97] for available curves in d3.
-    -   `args.color` **[String][93]** color of the area. (optional, default `'none'`)
+-   `args` **[Object][91]** argument object.
+    -   `args.data` **[Array][94]** data for which the shape should be created.
+    -   `args.xAccessor` **[Function][92]** x accessor function.
+    -   `args.yAccessor` **[Function][92]** y accessor function.
+    -   `args.y0Accessor` **[Function][92]** y base accessor function. Defaults to static 0.
+    -   `args.y1Accessor` **[Function][92]** alternative to yAccessor.
+    -   `args.xScale` **[Scale][97]** scale used to scale elements in x direction.
+    -   `args.yScale` **[Scale][97]** scale used to scale elements in y direction.
+    -   `args.curve` **[Function][92]** curving function. See [https://github.com/d3/d3-shape#curves][99] for available curves in d3.
+    -   `args.color` **[String][95]** color of the area. (optional, default `'none'`)
 
 ### mountTo
 
@@ -406,7 +418,7 @@ Mount the area to a given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the area to.
+-   `svg` **[Object][91]** d3 node to mount the area to.
 
 Returns **void** 
 
@@ -416,16 +428,16 @@ Set up a new tooltip.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object. (optional, default `{}`)
-    -   `args.legendObject` **[String][93]** symbol to show in the tooltip (circle, line, square). (optional, default `'line'`)
-    -   `args.legend` **[Array][92]** legend used to correctly describe data in multi-dimensional cases. (optional, default `[]`)
-    -   `args.colors` **[Array][92]** color scheme for multi-dimensional cases. (optional, default `schemeCategory10`)
-    -   `args.textFunction` **[Function][90]?** custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
-    -   `args.data` **[Array][92]** entries to show in the tooltip. This is usually empty when first instantiating the tooltip. (optional, default `[]`)
-    -   `args.left` **[Number][91]** margin to the left of the tooltip. (optional, default `0`)
-    -   `args.top` **[Number][91]** margin to the top of the tooltip. (optional, default `0`)
-    -   `args.xAccessor` **[Function][90]?** if no custom text function is specified, this function specifies how to get the x value from a specific data point.
-    -   `args.yAccessor` **[Function][90]?** if no custom text function is specified, this function specifies how to get the y value from a specific data point.
+-   `args` **[Object][91]** argument object. (optional, default `{}`)
+    -   `args.legendObject` **[String][95]** symbol to show in the tooltip (circle, line, square). (optional, default `'line'`)
+    -   `args.legend` **[Array][94]** legend used to correctly describe data in multi-dimensional cases. (optional, default `[]`)
+    -   `args.colors` **[Array][94]** color scheme for multi-dimensional cases. (optional, default `schemeCategory10`)
+    -   `args.textFunction` **[Function][92]?** custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
+    -   `args.data` **[Array][94]** entries to show in the tooltip. This is usually empty when first instantiating the tooltip. (optional, default `[]`)
+    -   `args.left` **[Number][93]** margin to the left of the tooltip. (optional, default `0`)
+    -   `args.top` **[Number][93]** margin to the top of the tooltip. (optional, default `0`)
+    -   `args.xAccessor` **[Function][92]?** if no custom text function is specified, this function specifies how to get the x value from a specific data point.
+    -   `args.yAccessor` **[Function][92]?** if no custom text function is specified, this function specifies how to get the y value from a specific data point.
 
 ### setTextFunction
 
@@ -433,9 +445,9 @@ Sets the text function for the tooltip.
 
 #### Parameters
 
--   `textFunction` **[Function][90]?** custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
--   `xAccessor` **[Function][90]?** if no custom text function is specified, this function specifies how to get the x value from a specific data point.
--   `yAccessor` **[Function][90]?** if no custom text function is specified, this function specifies how to get the y value from a specific data point.
+-   `textFunction` **[Function][92]?** custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
+-   `xAccessor` **[Function][92]?** if no custom text function is specified, this function specifies how to get the x value from a specific data point.
+-   `yAccessor` **[Function][92]?** if no custom text function is specified, this function specifies how to get the y value from a specific data point.
 
 Returns **void** 
 
@@ -445,13 +457,13 @@ If no textFunction was specified when creating the tooltip instance, this method
 
 #### Parameters
 
--   `$0` **[Object][89]** 
+-   `$0` **[Object][91]** 
     -   `$0.xAccessor`  
     -   `$0.yAccessor`  
--   `xAccessor` **[Function][90]** returns the x value of a given data point.
--   `yAccessor` **[Function][90]** returns the y value of a given data point.
+-   `xAccessor` **[Function][92]** returns the x value of a given data point.
+-   `yAccessor` **[Function][92]** returns the y value of a given data point.
 
-Returns **[Function][90]** base text function used to render the tooltip for a given datapoint.
+Returns **[Function][92]** base text function used to render the tooltip for a given datapoint.
 
 ### update
 
@@ -459,13 +471,13 @@ Update the tooltip.
 
 #### Parameters
 
--   `$0` **[Object][89]** 
+-   `$0` **[Object][91]** 
     -   `$0.data`  
     -   `$0.legendObject`  
     -   `$0.legend`  
--   `data` **[Array][92]** array of data points to be shown in the tooltip.
--   `legendObject` **[String][93]** update the type of legend object to be shown in the tooltip (line, circle, square).
--   `legend` **[Array][92]** legend used by the graph.
+-   `data` **[Array][94]** array of data points to be shown in the tooltip.
+-   `legendObject` **[String][95]** update the type of legend object to be shown in the tooltip (line, circle, square).
+-   `legend` **[Array][94]** legend used by the graph.
 
 Returns **void** 
 
@@ -481,7 +493,7 @@ Mount the tooltip to the given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node to mount the tooltip to.
+-   `svg` **[Object][91]** d3 node to mount the tooltip to.
 
 Returns **void** 
 
@@ -498,17 +510,17 @@ Instantiate a new delaunay computation instance.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.points` **[Array][92]** raw data basis for delaunay computations. Can be nested. (optional, default `[]`)
-    -   `args.xAccessor` **[Function][90]** function to access the x value for a given data point.
-    -   `args.yAccessor` **[Function][90]** function to access the y value for a given data point.
-    -   `args.xScale` **[Scale][95]** scale used to scale elements in x direction.
-    -   `args.yScale` **[Scale][95]** scale used to scale elements in y direction.
-    -   `args.onPoint` **[Function][90]?** function called with the array of nearest points on mouse movement. If aggregate is false, the array will contain at most one element.
-    -   `args.onLeave` **[Function][90]?** function called when the delaunay area is left.
-    -   `args.onClick` **[Function][90]?** function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
-    -   `args.nested` **[Boolean][98]** whether or not the points array contains sub-arrays. (optional, default `false`)
-    -   `args.aggregate` **[Boolean][98]** if multiple points have the same x value and should be shown together, aggregate can be set to true. (optional, default `false`)
+-   `args` **[Object][91]** argument object.
+    -   `args.points` **[Array][94]** raw data basis for delaunay computations. Can be nested. (optional, default `[]`)
+    -   `args.xAccessor` **[Function][92]** function to access the x value for a given data point.
+    -   `args.yAccessor` **[Function][92]** function to access the y value for a given data point.
+    -   `args.xScale` **[Scale][97]** scale used to scale elements in x direction.
+    -   `args.yScale` **[Scale][97]** scale used to scale elements in y direction.
+    -   `args.onPoint` **[Function][92]?** function called with the array of nearest points on mouse movement. If aggregate is false, the array will contain at most one element.
+    -   `args.onLeave` **[Function][92]?** function called when the delaunay area is left.
+    -   `args.onClick` **[Function][92]?** function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
+    -   `args.nested` **[Boolean][100]** whether or not the points array contains sub-arrays. (optional, default `false`)
+    -   `args.aggregate` **[Boolean][100]** if multiple points have the same x value and should be shown together, aggregate can be set to true. (optional, default `false`)
 
 ### mountDelaunay
 
@@ -516,8 +528,8 @@ Create a new delaunay triangulation.
 
 #### Parameters
 
--   `isNested` **[Boolean][98]** whether or not the data is nested
--   `aggregate` **[Boolean][98]** whether or not to aggregate points based on their x value
+-   `isNested` **[Boolean][100]** whether or not the data is nested
+-   `aggregate` **[Boolean][100]** whether or not to aggregate points based on their x value
 
 Returns **void** 
 
@@ -527,9 +539,9 @@ Normalize the passed data points.
 
 #### Parameters
 
--   `points` **[Array][92]** raw data array
--   `isNested` **[Boolean][98]** whether or not the points are nested
--   `aggregate` **[Boolean][98]** whether or not to aggregate points based on their x value
+-   `points` **[Array][94]** raw data array
+-   `isNested` **[Boolean][100]** whether or not the points are nested
+-   `aggregate` **[Boolean][100]** whether or not to aggregate points based on their x value
 
 Returns **void** 
 
@@ -540,8 +552,8 @@ Finds the nearest data point(s) and calls onPoint.
 
 #### Parameters
 
--   `rawX` **[Number][91]** raw x coordinate of the cursor.
--   `rawY` **[Number][91]** raw y coordinate of the cursor.
+-   `rawX` **[Number][93]** raw x coordinate of the cursor.
+-   `rawY` **[Number][93]** raw y coordinate of the cursor.
 
 Returns **void** 
 
@@ -552,8 +564,8 @@ Finds the nearest data point(s) and calls onClick.
 
 #### Parameters
 
--   `rawX` **[Number][91]** raw x coordinate of the cursor.
--   `rawY` **[Number][91]** raw y coordinate of the cursor.
+-   `rawX` **[Number][93]** raw x coordinate of the cursor.
+-   `rawY` **[Number][93]** raw y coordinate of the cursor.
 
 Returns **void** 
 
@@ -563,7 +575,7 @@ Mount the delaunator to a given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 selection to mount the delaunay elements to.
+-   `svg` **[Object][91]** d3 selection to mount the delaunay elements to.
 
 Returns **void** 
 
@@ -573,22 +585,22 @@ Instantiate a new axis.
 
 ### Parameters
 
--   `args` **[Object][89]** argument object.
-    -   `args.orientation` **[String][93]** orientation of the axis. Can be top, bottom, left, right. (optional, default `'bottom'`)
-    -   `args.label` **[String][93]?** optional label to place beside the axis.
-    -   `args.labelOffset` **[Number][91]?** offset between label and axis.
-    -   `args.top` **[Number][91]** translation from the top of the chart's box to render the axis. (optional, default `0`)
-    -   `args.left` **[Number][91]** translation from the left of the chart's to render the axis. (optional, default `0`)
-    -   `args.height` **[Number][91]** if extended ticks are used, this parameter specifies the inner length of ticks. (optional, default `0`)
-    -   `args.scale` **[Scale][95]** scale of the axis.
-    -   `args.tickFormat` **([String][93] \| [Function][90])?** can be 1) a function to format a given tick or a specifier, or 2) one of the available standard formatting types (date, number, percentage) or a string for d3-format.
-    -   `args.tickCount` **[Number][91]?** number of ticks to render. Defaults to 3 for vertical and 6 for horizontal axes.
-    -   `args.compact` **[Boolean][98]** whether or not to render a compact version of the axis (clamps the main axis line at the outermost ticks). (optional, default `false`)
-    -   `args.buffer` **[Number][91]** buffer used by the chart. Necessary to compute margins.
-    -   `args.prefix` **[String][93]** prefix for tick labels. (optional, default `''`)
-    -   `args.suffix` **[String][93]** suffix for tick labels. (optional, default `''`)
-    -   `args.tickLength` **[Number][91]?** overwrite d3's default tick lengths.
-    -   `args.extendedTicks` **[Boolean][98]** draw extended ticks into the graph (used to make a grid). (optional, default `false`)
+-   `args` **[Object][91]** argument object.
+    -   `args.orientation` **[String][95]** orientation of the axis. Can be top, bottom, left, right. (optional, default `'bottom'`)
+    -   `args.label` **[String][95]?** optional label to place beside the axis.
+    -   `args.labelOffset` **[Number][93]?** offset between label and axis.
+    -   `args.top` **[Number][93]** translation from the top of the chart's box to render the axis. (optional, default `0`)
+    -   `args.left` **[Number][93]** translation from the left of the chart's to render the axis. (optional, default `0`)
+    -   `args.height` **[Number][93]** if extended ticks are used, this parameter specifies the inner length of ticks. (optional, default `0`)
+    -   `args.scale` **[Scale][97]** scale of the axis.
+    -   `args.tickFormat` **([String][95] \| [Function][92])?** can be 1) a function to format a given tick or a specifier, or 2) one of the available standard formatting types (date, number, percentage) or a string for d3-format.
+    -   `args.tickCount` **[Number][93]?** number of ticks to render. Defaults to 3 for vertical and 6 for horizontal axes.
+    -   `args.compact` **[Boolean][100]** whether or not to render a compact version of the axis (clamps the main axis line at the outermost ticks). (optional, default `false`)
+    -   `args.buffer` **[Number][93]** buffer used by the chart. Necessary to compute margins.
+    -   `args.prefix` **[String][95]** prefix for tick labels. (optional, default `''`)
+    -   `args.suffix` **[String][95]** suffix for tick labels. (optional, default `''`)
+    -   `args.tickLength` **[Number][93]?** overwrite d3's default tick lengths.
+    -   `args.extendedTicks` **[Boolean][100]** draw extended ticks into the graph (used to make a grid). (optional, default `false`)
 
 ### setLabelOffset
 
@@ -596,7 +608,7 @@ Set the label offset.
 
 #### Parameters
 
--   `labelOffset` **[Number][91]?** offset of the label.
+-   `labelOffset` **[Number][93]?** offset of the label.
 
 Returns **void** 
 
@@ -610,13 +622,13 @@ Returns **void**
 
 Get the domain object call function.
 
-Returns **[Function][90]** that mounts the domain when called.
+Returns **[Function][92]** that mounts the domain when called.
 
 ### labelObject
 
 Get the label object call function.
 
-Returns **[Function][90]** that mounts the label when called.
+Returns **[Function][92]** that mounts the label when called.
 
 ### mountTo
 
@@ -624,7 +636,7 @@ Mount the axis to the given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][89]** d3 node.
+-   `svg` **[Object][91]** d3 node.
 
 Returns **void** 
 
@@ -632,7 +644,7 @@ Returns **void**
 
 Compute the time formatting function based on the time domain.
 
-Returns **[Function][90]** d3 function for formatting time.
+Returns **[Function][92]** d3 function for formatting time.
 
 ### stringToFormat
 
@@ -640,9 +652,9 @@ Get the d3 number formatting function for an abstract number type.
 
 #### Parameters
 
--   `formatType` **[String][93]** abstract format to be converted (number, date, percentage)
+-   `formatType` **[String][95]** abstract format to be converted (number, date, percentage)
 
-Returns **[Function][90]** d3 formatting function for the given abstract number type.
+Returns **[Function][92]** d3 formatting function for the given abstract number type.
 
 [1]: #point
 
@@ -664,178 +676,182 @@ Returns **[Function][90]** d3 formatting function for the given abstract number 
 
 [10]: #parameters-4
 
-[11]: #mountto-1
+[11]: #clamp
 
 [12]: #parameters-5
 
-[13]: #rect
+[13]: #mountto-1
 
 [14]: #parameters-6
 
-[15]: #mountto-2
+[15]: #rect
 
 [16]: #parameters-7
 
-[17]: #update-1
+[17]: #mountto-2
 
 [18]: #parameters-8
 
-[19]: #abstractshape
+[19]: #update-1
 
 [20]: #parameters-9
 
-[21]: #mountto-3
+[21]: #abstractshape
 
 [22]: #parameters-10
 
-[23]: #hide
+[23]: #mountto-3
 
-[24]: #update-2
+[24]: #parameters-11
 
-[25]: #parameters-11
+[25]: #hide
 
-[26]: #updategeneric
+[26]: #update-2
 
 [27]: #parameters-12
 
-[28]: #updatecolor
+[28]: #updategeneric
 
 [29]: #parameters-13
 
-[30]: #updateopacity
+[30]: #updatecolor
 
 [31]: #parameters-14
 
-[32]: #updatestroke
+[32]: #updateopacity
 
 [33]: #parameters-15
 
-[34]: #updateprop
+[34]: #updatestroke
 
 [35]: #parameters-16
 
-[36]: #dismount
+[36]: #updateprop
 
-[37]: #scale
+[37]: #parameters-17
 
-[38]: #parameters-17
+[38]: #dismount
 
-[39]: #getscaleobject
+[39]: #scale
 
 [40]: #parameters-18
 
-[41]: #line
+[41]: #getscaleobject
 
 [42]: #parameters-19
 
-[43]: #mountto-4
+[43]: #line
 
 [44]: #parameters-20
 
-[45]: #rug
+[45]: #mountto-4
 
 [46]: #parameters-21
 
-[47]: #mountto-5
+[47]: #rug
 
 [48]: #parameters-22
 
-[49]: #area
+[49]: #mountto-5
 
 [50]: #parameters-23
 
-[51]: #mountto-6
+[51]: #area
 
 [52]: #parameters-24
 
-[53]: #tooltip
+[53]: #mountto-6
 
 [54]: #parameters-25
 
-[55]: #settextfunction
+[55]: #tooltip
 
 [56]: #parameters-26
 
-[57]: #basetextfunction
+[57]: #settextfunction
 
 [58]: #parameters-27
 
-[59]: #update-3
+[59]: #basetextfunction
 
 [60]: #parameters-28
 
-[61]: #hide-1
+[61]: #update-3
 
-[62]: #mountto-7
+[62]: #parameters-29
 
-[63]: #parameters-29
+[63]: #hide-1
 
-[64]: #addtext
+[64]: #mountto-7
 
-[65]: #delaunay
+[65]: #parameters-30
 
-[66]: #parameters-30
+[66]: #addtext
 
-[67]: #mountdelaunay
+[67]: #delaunay
 
 [68]: #parameters-31
 
-[69]: #normalizepoints
+[69]: #mountdelaunay
 
 [70]: #parameters-32
 
-[71]: #gotpoint
+[71]: #normalizepoints
 
 [72]: #parameters-33
 
-[73]: #clickedpoint
+[73]: #gotpoint
 
 [74]: #parameters-34
 
-[75]: #mountto-8
+[75]: #clickedpoint
 
 [76]: #parameters-35
 
-[77]: #axis
+[77]: #mountto-8
 
 [78]: #parameters-36
 
-[79]: #setlabeloffset
+[79]: #axis
 
 [80]: #parameters-37
 
-[81]: #setupaxisobject
+[81]: #setlabeloffset
 
-[82]: #domainobject
+[82]: #parameters-38
 
-[83]: #labelobject
+[83]: #setupaxisobject
 
-[84]: #mountto-9
+[84]: #domainobject
 
-[85]: #parameters-38
+[85]: #labelobject
 
-[86]: #difftotimeformat
+[86]: #mountto-9
 
-[87]: #stringtoformat
+[87]: #parameters-39
 
-[88]: #parameters-39
+[88]: #difftotimeformat
 
-[89]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[89]: #stringtoformat
 
-[90]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[90]: #parameters-40
 
-[91]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[91]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[92]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[92]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[93]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[93]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[94]: https://css-tricks.com/snippets/javascript/lighten-darken-color/
+[94]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[95]: #scale
+[95]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[96]: #abstractshapeupdate
+[96]: https://css-tricks.com/snippets/javascript/lighten-darken-color/
 
-[97]: https://github.com/d3/d3-shape#curves
+[97]: #scale
 
-[98]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[98]: #abstractshapeupdate
+
+[99]: https://github.com/d3/d3-shape#curves
+
+[100]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean

@@ -34,22 +34,25 @@ export default class Legend {
 
     const num = parseInt(color, 16)
 
-    let r = (num >> 16) + amount
-
-    if (r > 255) r = 255
-    else if (r < 0) r = 0
-
-    let b = ((num >> 8) & 0x00FF) + amount
-
-    if (b > 255) b = 255
-    else if (b < 0) b = 0
-
-    let g = (num & 0x0000FF) + amount
-
-    if (g > 255) g = 255
-    else if (g < 0) g = 0
+    const r = this.clamp((num >> 16) + amount)
+    const b = this.clamp(((num >> 8) & 0x00FF) + amount)
+    const g = this.clamp((num & 0x0000FF) + amount)
 
     return '#' + (g | (b << 8) | (r << 16)).toString(16)
+  }
+
+  /**
+   * Clamp a number between 0 and 255.
+   *
+   * @param {Number} number number to be clamped.
+   * @returns {Number} clamped number.
+   */
+  clamp (number) {
+    return number > 255
+      ? 255
+      : number < 0
+        ? 0
+        : number
   }
 
   /**
