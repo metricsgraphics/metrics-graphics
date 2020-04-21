@@ -117,8 +117,8 @@ export default class AbstractChart {
     this.id = randomId()
 
     // compute dimensions
-    this.width = this.isFullWidth ? getWidth(this.target) : parseInt(width)
-    this.height = this.isFullHeight ? getHeight(this.target) : parseInt(height)
+    this.width = getWidth(this.isFullWidth, width, this.target)
+    this.height = getHeight(this.isFullHeight, height, this.target)
 
     // normalize color and colors arguments
     this.colors = color ? [color] : colors ? [colors] : schemeCategory10

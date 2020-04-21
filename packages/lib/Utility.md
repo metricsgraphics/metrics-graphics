@@ -82,6 +82,8 @@ Get width of element.
 
 ### Parameters
 
+-   `isFullWidth` **[Boolean][19]** whether or not to stretch the element to full width.
+-   `width` **[Number][20]** custom width if applicable.
 -   `target` **[String][17]** d3 select specifier.
 
 Returns **[Number][20]** width of element.
@@ -92,6 +94,8 @@ Get height of element.
 
 ### Parameters
 
+-   `isFullHeight` **[Boolean][19]** whether or not to stretch the element to full height.
+-   `height` **[Number][20]** custom height if applicable.
 -   `target` **[String][17]** d3 select specifier.
 
 Returns **[Number][20]** height of element.

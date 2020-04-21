@@ -56,15 +56,27 @@ export function getPixelDimension (target, dimension) { return Number(select(tar
 /**
  * Get width of element.
  *
+ * @param {Boolean} isFullWidth whether or not to stretch the element to full width.
+ * @param {Number} width custom width if applicable.
  * @param {String} target d3 select specifier.
  * @returns {Number} width of element.
  */
-export function getWidth (target) { return getPixelDimension(target, 'width') }
+export function getWidth (isFullWidth, width, target) {
+  return isFullWidth
+    ? getPixelDimension(target, 'width')
+    : parseInt(width)
+}
 
 /**
  * Get height of element.
  *
+ * @param {Boolean} isFullHeight whether or not to stretch the element to full height.
+ * @param {Number} height custom height if applicable.
  * @param {String} target d3 select specifier.
  * @returns {Number} height of element.
  */
-export function getHeight (target) { return getPixelDimension(target, 'height') }
+export function getHeight (isFullHeight, height, target) {
+  return isFullHeight
+    ? getPixelDimension(target, 'height')
+    : parseInt(height)
+}
