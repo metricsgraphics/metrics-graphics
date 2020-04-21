@@ -159,7 +159,6 @@ export default class LineChart extends AbstractChart {
    * @returns {void}
    */
   mountDelaunay (customParameters) {
-    // generate delaunator
     this.delaunay = new Delaunay({
       points: this.data,
       xAccessor: this.xAccessor,
@@ -172,10 +171,9 @@ export default class LineChart extends AbstractChart {
 
         points.forEach(point => {
           const index = point.arrayIndex || 0
-          const color = this.colors[index]
 
           // set hover point
-          this.delaunayPoints[index].update({ data: point, color })
+          this.delaunayPoints[index].update({ data: point, color: this.colors[index] })
           if (!this.delaunayPoints[index].shapeObject) {
             this.delaunayPoints[index].mountTo(this.container)
           }
