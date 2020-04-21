@@ -26,6 +26,12 @@ export default class LineChart extends AbstractChart {
     // generate areas if necessary
     this.mountAreas(area)
 
+    // set tooltip type
+    if (this.tooltip) {
+      this.tooltip.update({ legendObject: constants.symbol.line })
+      this.tooltip.hide()
+    }
+
     // generate confidence band if necessary
     if (typeof confidenceBand !== 'undefined') {
       this.mountConfidenceBand({
@@ -162,9 +168,7 @@ export default class LineChart extends AbstractChart {
       yScale: this.yScale,
       onPoint: (points) => {
         // pre-hide all points
-        this.delaunayPoints.forEach(dp => {
-          dp.hide()
-        })
+        this.delaunayPoints.forEach(dp => { dp.hide() })
 
         points.forEach(point => {
           const index = point.arrayIndex || 0
@@ -177,13 +181,9 @@ export default class LineChart extends AbstractChart {
           }
         })
 
-        // set tooltip
-        if (this.tooltip) {
-          this.tooltip.update({
-            legendObject: constants.legendObject.line,
-            data: points
-          })
-        }
+        // set tooltip if necessary
+        if (!this.tooltip) return
+        this.tooltip.update({ data: points })
       },
       onLeave: () => {
         this.delaunayPoints.forEach(dp => dp.hide())

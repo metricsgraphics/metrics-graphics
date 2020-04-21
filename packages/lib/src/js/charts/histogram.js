@@ -86,16 +86,12 @@ export default class HistogramChart extends AbstractChart {
       yAccessor: d => d.y,
       xScale: this.xScale,
       yScale: this.yScale,
-      onPoint: (points) => {
-        const point = points[0]
+      onPoint: ([point]) => {
         this.activeBar = point.index
 
-        // set tooltip
-        if (this.tooltip) {
-          this.tooltip.update({
-            data: points
-          })
-        }
+        // set tooltip if necessary
+        if (!this.tooltip) return
+        this.tooltip.update({ data: [point] })
       },
       onLeave: () => {
         this.activeBar = -1
