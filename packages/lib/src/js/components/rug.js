@@ -1,10 +1,20 @@
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import constants from '../misc/constants'
 
+/**
+ * Set up a new rug.
+ *
+ * @param {Object} args argument object.
+ * @param {Function} args.accessor accessor used to get the rug value for a given data point.
+ * @param {Scale} args.scale scale function of the rug.
+ * @param {Number} [args.tickLength=5] length of the rug's ticks.
+ * @param {Array} [args.colors=schemeCategory10] color scheme of the rug ticks.
+ * @param {String} [args.orientation='horizontal'] orientation of the rug, either vertical or horizontal.
+ * @param {Number} [args.left=0] left margin of the rug.
+ * @param {Number} [args.top=0] top margin of the rug.
+ */
 export default class Rug {
   rugObject = null
-  accessor = d => d
-  scale = d => d
   data = []
   left = 0
   top = 0
@@ -12,16 +22,6 @@ export default class Rug {
   colors = schemeCategory10
   orientation = constants.orientation.horizontal
 
-  /**
-   * Set up a new rug.
-   * @param {Function} accessor accessor used to get the rug value for a given data point.
-   * @param {Scale} scale scale function of the rug.
-   * @param {Number} [tickLength=5] length of the rug's ticks.
-   * @param {Array} [colors=schemeCategory10] color scheme of the rug ticks.
-   * @param {String} [orientation='horizontal'] orientation of the rug, either vertical or horizontal.
-   * @param {Number} [left=0] left margin of the rug.
-   * @param {Number} [top=0] top margin of the rug.
-   */
   constructor ({ accessor, scale, data, tickLength, colors, orientation, left, top }) {
     this.accessor = accessor ?? this.accessor
     this.scale = scale ?? this.scale

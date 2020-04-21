@@ -7,7 +7,11 @@
   "scripts": {
     "build": "concurrently \"webpack --env.mode production\" \"gulp compileSass\"",
     "lint": "gulp lint",
-    "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\""
+    "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\"",
+    "documentation": "yarn documentation:base && yarn documentation:components && yarn documentation:utility",
+    "documentation:base": "documentation build src/js/charts/** -f md -o API.md --shallow",
+    "documentation:components": "documentation build src/js/components/** -f md -o Components.md --shallow",
+    "documentation:utility": "documentation build src/js/misc/utility.js -f md -o Utility.md --shallow"
   },
   "repository": {
     "type": "git",
@@ -62,6 +66,7 @@
     "css-loader": "^3.4.2",
     "d3-axis": "^1.0.12",
     "d3-delaunay": "^5.2.1",
+    "documentation": "^12.3.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",

@@ -1,17 +1,18 @@
 import AbstractShape from './abstractShape'
 
+/**
+ * Create a new point.
+ *
+ * @param {Object} args argument object. See {@link AbstractShape} for general parameters.
+ * @param {Function} args.xAccessor function to access the x value of the point.
+ * @param {Function} args.yAccessor function to access the y value of the point.
+ * @param {Number} [args.radius=1] radius of the point.
+ */
 export default class Point extends AbstractShape {
   xAccessor = null
   yAccessor = null
   radius = 1
 
-  /**
-   * Create a new point.
-   *
-   * @param {Function} xAccessor function to access the x value of the point.
-   * @param {Function} yAccessor function to access the y value of the point.
-   * @param {Number} [radius=1] radius of the point.
-   */
   constructor ({ xAccessor, yAccessor, radius, ...args }) {
     super(args)
     this.xAccessor = xAccessor

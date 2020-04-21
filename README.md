@@ -32,4 +32,6 @@ That's it!
 
 ## Documentation
 
-The documentation will be linked here.
+If you want to use *MetricsGraphics*, you can find the public API [here]('./packages/lib/API.md').
+
+If you want to extend *MetricsGraphics*, you can read up on the [components]('./packages/lib/Components.md') and [utilities]('./packages/lib/Utility.md).

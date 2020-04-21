@@ -6,6 +6,26 @@ import { timeFormat } from 'd3-time-format'
 const DEFAULT_VERTICAL_OFFSET = 35
 const DEFAULT_HORIZONTAL_OFFSET = 50
 
+/**
+ * Instantiate a new axis.
+ *
+ * @param {Object} args argument object.
+ * @param {Scale} args.scale scale of the axis.
+ * @param {Number} args.buffer buffer used by the chart. Necessary to compute margins.
+ * @param {String} [args.orientation='bottom'] orientation of the axis. Can be top, bottom, left, right.
+ * @param {String} [args.label] optional label to place beside the axis.
+ * @param {Number} [args.labelOffset] offset between label and axis.
+ * @param {Number} [args.top=0] translation from the top of the chart's box to render the axis.
+ * @param {Number} [args.left=0] translation from the left of the chart's to render the axis.
+ * @param {String | Function} [args.tickFormat] can be 1) a function to format a given tick or a specifier, or 2) one of the available standard formatting types (date, number, percentage) or a string for d3-format.
+ * @param {Number} [args.tickCount] number of ticks to render. Defaults to 3 for vertical and 6 for horizontal axes.
+ * @param {Boolean} [args.compact=false] whether or not to render a compact version of the axis (clamps the main axis line at the outermost ticks).
+ * @param {String} [args.prefix=''] prefix for tick labels.
+ * @param {String} [args.suffix=''] suffix for tick labels.
+ * @param {Number} [args.tickLength] overwrite d3's default tick lengths.
+ * @param {Boolean} [args.extendedTicks=false] draw extended ticks into the graph (used to make a grid).
+ * @param {Number} [args.height=0] if extended ticks are used, this parameter specifies the inner length of ticks.
+ */
 export default class Axis {
   label = ''
   labelOffset = null
@@ -20,25 +40,6 @@ export default class Axis {
   prefix = ''
   suffix = ''
 
-  /**
-   * Instantiate a new axis.
-   *
-   * @param {Scale} scale scale of the axis.
-   * @param {Number} buffer buffer used by the chart. Necessary to compute margins.
-   * @param {String} [orientation='bottom'] orientation of the axis. Can be top, bottom, left, right.
-   * @param {String} [label] optional label to place beside the axis.
-   * @param {Number} [labelOffset] offset between label and axis.
-   * @param {Number} [top=0] translation from the top of the chart's box to render the axis.
-   * @param {Number} [left=0] translation from the left of the chart's to render the axis.
-   * @param {String | Function} [tickFormat] can be 1) a function to format a given tick or a specifier, or 2) one of the available standard formatting types (date, number, percentage) or a string for d3-format.
-   * @param {Number} [tickCount] number of ticks to render. Defaults to 3 for vertical and 6 for horizontal axes.
-   * @param {Boolean} [compact=false] whether or not to render a compact version of the axis (clamps the main axis line at the outermost ticks).
-   * @param {String} [prefix=''] prefix for tick labels.
-   * @param {String} [suffix=''] suffix for tick labels.
-   * @param {Number} [tickLength] overwrite d3's default tick lengths.
-   * @param {Boolean} [extendedTicks=false] draw extended ticks into the graph (used to make a grid).
-   * @param {Number} [height=0] if extended ticks are used, this parameter specifies the inner length of ticks.
-   */
   constructor ({
     orientation,
     label,

@@ -5,18 +5,20 @@ import constants from '../misc/constants'
 import Delaunay from '../components/delaunay'
 import { makeAccessorFunction } from '../misc/utility'
 
+/**
+ * Creates a new line graph.
+ *
+ * @param {Object} args argument object. See {@link AbstractChart} for general parameters.
+ * @param {Boolean | Array} [args.area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
+ * @param {Array} [args.confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
+ * @param {Object} [args.voronoi] custom parameters passed to the voronoi generator.
+ */
 export default class LineChart extends AbstractChart {
   delaunay = null
 
   // one delaunay point per line
   delaunayPoints = []
 
-  /**
-   * Creates a new line graph.
-   * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
-   * @param {Array} [confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
-   * @param {Object} [voronoi] custom parameters passed to the voronoi generator.
-   */
   constructor ({ area, confidenceBand, voronoi, ...args }) {
     super(args)
 

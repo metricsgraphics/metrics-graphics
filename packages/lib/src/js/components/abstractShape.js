@@ -1,3 +1,15 @@
+/**
+ * Create a new abstract shape.
+ * This is an abstract class and not meant to be directly instantiated.
+ *
+ * @param {Object} args argument object.
+ * @param {Object} args.data data point used to generate the shape.
+ * @param {Scale} args.xScale scale used to compute x values.
+ * @param {Scale} args.yScale scale used to compute y values.
+ * @param {String} args.color color used for fill and stroke.
+ * @param {Number} [args.fillOpacity=1] opacity of the shape fill.
+ * @param {Number} [args.strokeWidth=0] width of the stroke around the shape.
+ */
 export default class AbstractShape {
   data = null
   shapeObject = null
@@ -7,17 +19,6 @@ export default class AbstractShape {
   fillOpacity = 1
   strokeWidth = 0
 
-  /**
-   * Create a new abstract shape.
-   * This is an abstract class and not meant to be directly instantiated.
-   *
-   * @param {Object} data data point used to generate the shape.
-   * @param {Scale} xScale scale used to compute x values.
-   * @param {Scale} yScale scale used to compute y values.
-   * @param {String} color color used for fill and stroke.
-   * @param {Number} [fillOpacity=1] opacity of the shape fill.
-   * @param {Number} [strokeWidth=0] width of the stroke around the shape.
-   */
   constructor ({ data, xScale, yScale, color, fillOpacity, strokeWidth }) {
     this.data = data
     this.xScale = xScale

@@ -1,25 +1,26 @@
 import { area, curveCatmullRom } from 'd3-shape'
 
+/**
+ * Create a new area shape.
+ * Meant to be used together with a {@link Line}.
+ *
+ * @param {Object} args argument object.
+ * @param {Array} args.data data for which the shape should be created.
+ * @param {Function} args.xAccessor x accessor function.
+ * @param {Function} args.yAccessor y accessor function.
+ * @param {Function} args.y0Accessor y base accessor function. Defaults to static 0.
+ * @param {Function} args.y1Accessor alternative to yAccessor.
+ * @param {Scale} args.xScale scale used to scale elements in x direction.
+ * @param {Scale} args.yScale scale used to scale elements in y direction.
+ * @param {Function} args.curve curving function. See {@link https://github.com/d3/d3-shape#curves} for available curves in d3.
+ * @param {String} [args.color='none'] color of the area.
+ */
 export default class Area {
   areaObject = null
   data = null
   index = 0
   color = null
 
-  /**
-   * Create a new area shape.
-   * Meant to be used together with a {@link Line}.
-   *
-   * @param {Array} data data for which the shape should be created.
-   * @param {Function} xAccessor x accessor function.
-   * @param {Function} yAccessor y accessor function.
-   * @param {Function} y0Accessor y base accessor function. Defaults to static 0.
-   * @param {Function} y1Accessor alternative to yAccessor.
-   * @param {Scale} xScale scale used to scale elements in x direction.
-   * @param {Scale} yScale scale used to scale elements in y direction.
-   * @param {Function} curve curving function. See {@link https://github.com/d3/d3-shape#curves} for available curves in d3.
-   * @param {String} [color='none'] color of the area.
-   */
   constructor ({
     data,
     xAccessor,

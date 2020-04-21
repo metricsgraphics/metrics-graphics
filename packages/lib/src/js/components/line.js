@@ -1,21 +1,22 @@
 import { line, curveCatmullRom } from 'd3-shape'
 
+/**
+ * Create a new line.
+ *
+ * @param {Object} args argument object.
+ * @param {Array} args.data array of data points used to create the line.
+ * @param {Function} args.xAccessor function to access the x value for a given data point.
+ * @param {Function} args.yAccessor function to access the y value for a given data point.
+ * @param {Scale} args.xScale scale used to compute x values.
+ * @param {Scale} args.yScale scale used to compute y values.
+ * @param {Function} [args.curve=catmullRom] curving function used to draw the line. See {@link https://github.com/d3/d3-shape#curves} for curves available in d3.
+ * @param {String} args.color color of the line.
+ */
 export default class Line {
   lineObject = null
   data = null
   color = null
 
-  /**
-   * Create a new line.
-   *
-   * @param {Array} data array of data points used to create the line.
-   * @param {Function} xAccessor function to access the x value for a given data point.
-   * @param {Function} yAccessor function to access the y value for a given data point.
-   * @param {Scale} xScale scale used to compute x values.
-   * @param {Scale} yScale scale used to compute y values.
-   * @param {Function} [curve=catmullRom] curving function used to draw the line. See {@link https://github.com/d3/d3-shape#curves} for curves available in d3.
-   * @param {String} color color of the line.
-   */
   constructor ({
     data,
     xAccessor,
@@ -37,6 +38,12 @@ export default class Line {
       .curve(curve ?? curveCatmullRom)
   }
 
+  /**
+   * Mount the line to the given d3 node.
+   *
+   * @param {Object} svg d3 node to mount the line to.
+   * @returns {void}
+   */
   mountTo (svg) {
     svg
       .append('path')

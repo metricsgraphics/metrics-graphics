@@ -4,6 +4,12 @@ import Delaunay from '../components/delaunay'
 import constants from '../misc/constants'
 import Rect from '../components/rect'
 
+/**
+ * Creates a new histogram graph.
+ *
+ * @param {Object} args argument object. See {@link AbstractChart} for general parameters.
+ * @param {Number} [args.binCount] approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
+ */
 export default class HistogramChart extends AbstractChart {
   bins = []
   rects = []
@@ -11,10 +17,6 @@ export default class HistogramChart extends AbstractChart {
   delaunayBar = null
   _activeBar = -1
 
-  /**
-   * Creates a new histogram graph.
-   * @param {Number} [binCount] approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
-   */
   constructor ({ binCount, ...args }) {
     super({ binCount, ...args })
 

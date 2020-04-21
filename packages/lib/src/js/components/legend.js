@@ -1,18 +1,19 @@
 import constants from '../misc/constants'
 import { select } from 'd3-selection'
 
+/**
+ * Set up a new legend.
+ *
+ * @param {Object} args argument object.
+ * @param {Array} args.legend array of descriptive legend strings.
+ * @param {Array} args.colorScheme colors used for the legend. Will be darkened for better visibility.
+ * @param {String} args.symbol used in the legend (line, circle, square).
+ */
 export default class Legend {
   legend = []
   colorScheme = []
   symbolType = ''
 
-  /**
-   * Set up a new legend.
-   *
-   * @param {Array} legend array of descriptive legend strings.
-   * @param {Array} colorScheme colors used for the legend. Will be darkened for better visibility.
-   * @param {String} symbol used in the legend (line, circle, square).
-   */
   constructor ({ legend, colorScheme, symbolType }) {
     this.legend = legend
     this.colorScheme = colorScheme
@@ -28,12 +29,8 @@ export default class Legend {
    * @returns {String} darkened color in hex representation.
    */
   darkenColor (color, amount) {
-    let usePound = false
-
-    if (color[0] === '#') {
-      color = color.slice(1)
-      usePound = true
-    }
+    // remove hash
+    color = color.slice(1)
 
     const num = parseInt(color, 16)
 
@@ -52,7 +49,7 @@ export default class Legend {
     if (g > 255) g = 255
     else if (g < 0) g = 0
 
-    return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16)
+    return '#' + (g | (b << 8) | (r << 16)).toString(16)
   }
 
   /**

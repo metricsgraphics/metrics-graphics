@@ -1,19 +1,20 @@
 import AbstractShape from './abstractShape'
 
+/**
+ * Create a new rectangle.
+ *
+ * @param {Object} args argument object. See {@link AbstractShape} for general parameters.
+ * @param {Function} args.xAccessor function to access the x value of the rectangle.
+ * @param {Function} args.yAccessor function to access the y value of the rectangle.
+ * @param {Function} args.widthAccessor function to access the width of the rectangle.
+ * @param {Function} args.heightAccessor function to access the height of the rectangle.
+ */
 export default class Rect extends AbstractShape {
   xAccessor = null
   yAccessor = null
   widthAccessor = null
   heightAccessor = null
 
-  /**
-   * Create a new rectangle.
-   *
-   * @param {Function} xAccessor function to access the x value of the rectangle.
-   * @param {Function} yAccessor function to access the y value of the rectangle.
-   * @param {Function} widthAccessor function to access the width of the rectangle.
-   * @param {Function} heightAccessor function to access the height of the rectangle.
-   */
   constructor ({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }) {
     super(args)
     this.xAccessor = xAccessor

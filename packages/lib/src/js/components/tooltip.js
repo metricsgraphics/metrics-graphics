@@ -1,29 +1,29 @@
 import constants from '../misc/constants'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 
+/**
+ * Set up a new tooltip.
+ *
+ * @param {Object} args argument object.
+ * @param {String} [args.legendObject='line'] symbol to show in the tooltip (circle, line, square).
+ * @param {Array} [args.legend=[]] legend used to correctly describe data in multi-dimensional cases.
+ * @param {Array} [args.colors=schemeCategory10] color scheme for multi-dimensional cases.
+ * @param {Function} [args.textFunction] custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
+ * @param {Array} [args.data=[]] entries to show in the tooltip. This is usually empty when first instantiating the tooltip.
+ * @param {Number} [args.left=0] margin to the left of the tooltip.
+ * @param {Number} [args.top=0] margin to the top of the tooltip.
+ * @param {Function} [args.xAccessor] if no custom text function is specified, this function specifies how to get the x value from a specific data point.
+ * @param {Function} [args.yAccessor] if no custom text function is specified, this function specifies how to get the y value from a specific data point.
+ */
 export default class Tooltip {
   legendObject = 'line'
   legend = []
   colors = schemeCategory10
-  textFunction = d => d
   data = []
   left = 0
   top = 0
   node = null
 
-  /**
-   * Set up a new tooltip.
-   *
-   * @param {String} [legendObject='line'] symbol to show in the tooltip (circle, line, square).
-   * @param {Array} [legend=[]] legend used to correctly describe data in multi-dimensional cases.
-   * @param {Array} [colors=schemeCategory10] color scheme for multi-dimensional cases.
-   * @param {Function} [textFunction] custom text function for the tooltip text. Generated from xAccessor and yAccessor if not
-   * @param {Array} [data=[]] entries to show in the tooltip. This is usually empty when first instantiating the tooltip.
-   * @param {Number} [left=0] margin to the left of the tooltip.
-   * @param {Number} [top=0] margin to the top of the tooltip.
-   * @param {Function} [xAccessor] if no custom text function is specified, this function specifies how to get the x value from a specific data point.
-   * @param {Function} [yAccessor] if no custom text function is specified, this function specifies how to get the y value from a specific data point.
-   */
   constructor ({ legendObject, legend, colors, textFunction, data, left, top, xAccessor, yAccessor } = {}) {
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? this.legend

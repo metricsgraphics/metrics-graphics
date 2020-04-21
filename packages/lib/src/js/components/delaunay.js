@@ -2,6 +2,21 @@ import { Delaunay as DelaunayObject } from 'd3-delaunay'
 import { max } from 'd3-array'
 import { mouse } from 'd3-selection'
 
+/**
+ * Instantiate a new delaunay computation instance.
+ *
+ * @param {Object} args argument object.
+ * @param {Array} args.points raw data basis for delaunay computations. Can be nested.
+ * @param {Function} args.xAccessor function to access the x value for a given data point.
+ * @param {Function} args.yAccessor function to access the y value for a given data point.
+ * @param {Scale} args.xScale scale used to scale elements in x direction.
+ * @param {Scale} args.yScale scale used to scale elements in y direction.
+ * @param {Function} [args.onPoint] function called with the array of nearest points on mouse movement. If aggregate is false, the array will contain at most one element.
+ * @param {Function} [args.onLeave] function called when the delaunay area is left.
+ * @param {Function} [args.onClick] function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
+ * @param {Boolean} [args.nested=false] whether or not the points array contains sub-arrays.
+ * @param {Boolean} [args.aggregate=false] if multiple points have the same x value and should be shown together, aggregate can be set to true.
+ */
 export default class Delaunay {
   points = []
   aggregatedPoints = null
@@ -10,26 +25,9 @@ export default class Delaunay {
   yScale = null
   xAccessor = null
   yAccessor = null
-  onPoint = d => null
-  onLeave = () => null
-  onClick = () => null
   rect = null
   aggregate = false
 
-  /**
-   * Instantiate a new delaunay computation instance.
-   *
-   * @param {Array} points raw data basis for delaunay computations. Can be nested.
-   * @param {Function} xAccessor function to access the x value for a given data point.
-   * @param {Function} yAccessor function to access the y value for a given data point.
-   * @param {Scale} xScale scale used to scale elements in x direction.
-   * @param {Scale} yScale scale used to scale elements in y direction.
-   * @param {Function} [onPoint] function called with the array of nearest points on mouse movement. If aggregate is false, the array will contain at most one element.
-   * @param {Function} [onLeave] function called when the delaunay area is left.
-   * @param {Function} [onClick] function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
-   * @param {Boolean} [nested=false] whether or not the points array contains sub-arrays.
-   * @param {Boolean} [aggregate=false] if multiple points have the same x value and should be shown together, aggregate can be set to true.
-   */
   constructor ({ points = [], xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested, aggregate }) {
     this.xScale = xScale
     this.yScale = yScale
