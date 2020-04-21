@@ -31,21 +31,8 @@ const buildJsRaw = () => {
     }))
     .pipe(umd(
       {
-        dependencies: function () {
-          return [{
-            name: 'd3',
-            amd: 'd3',
-            cjs: 'd3',
-            global: 'd3',
-            param: 'd3'
-          }]
-        },
-        exports: function () {
-          return 'MG'
-        },
-        namespace: function () {
-          return 'MG'
-        }
+        exports: () => 'MG',
+        namespace: () => 'MG'
       }
     ))
     .pipe(dest(distFolder))
