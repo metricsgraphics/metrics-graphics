@@ -32,6 +32,6 @@ That's it!
 
 ## Documentation
 
-If you want to use *MetricsGraphics*, you can find the public API [here]('https://github.com/jens-ox/metrics-graphics/blob/master/packages/lib/API.md').
+If you want to use *MetricsGraphics*, you can find the public API [here]('packages/lib/API.md').
 
 If you want to extend *MetricsGraphics*, you can read up on the [components]('packages/lib/Components.md') and [utilities]('packages/lib/Utility.md).
