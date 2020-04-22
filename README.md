@@ -30,6 +30,8 @@ new LineChart({
 
 That's it!
 
+![Sample Screenshot](.img/screenshot.png)
+
 ## Documentation
 
 If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/API.md).
