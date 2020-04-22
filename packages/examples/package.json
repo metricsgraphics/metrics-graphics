@@ -36,7 +36,7 @@
     "tailwindcss": "^1.2.0"
   },
   "dependencies": {
-    "mg2": "^0.1.2",
+    "mg2": "^0.2.2",
     "preact": "^10.3.4",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1"
