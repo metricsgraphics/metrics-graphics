@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/metricsgraphics/metrics-graphics.git"
+    "url": "git://github.com/jens-ox/metrics-graphics.git"
   },
   "files": [
     "dist"
@@ -35,7 +35,7 @@
   ],
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/metricsgraphics/metrics-graphics/issues"
+    "url": "https://github.com/jens-ox/metrics-graphics/issues"
   },
   "engines": {
     "node": ">=0.8.0"
