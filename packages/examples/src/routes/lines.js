@@ -4,6 +4,7 @@ import { LineChart } from 'mg2'
 import fakeUsers1 from '../assets/data/fakeUsers1'
 import fakeUsers2 from '../assets/data/fakeUsers2'
 import confidence from '../assets/data/confidenceBand'
+import missing from '../assets/data/missing'
 
 import ExampleList from '../components/exampleList'
 
@@ -145,6 +146,32 @@ const charts = [{
     voronoi: {
       aggregate: true
     }
+  }
+}, {
+  title: 'Broken Lines (Missing Data Points)',
+  description: 'You can hide individual data points on a particular attribute by setting the defined accessor (which has to return true for visible points). Data points whose y-accessor values are null are also hidden.',
+  id: 'missing',
+  code: `new LineChart({
+    data: missing.map(entry => ({
+      date: new Date(entry.date),
+      value: entry.value
+    })),
+    width: 600,
+    height: 200,
+    target: '#missing',
+    defined: d => !d.dead,
+    area: true
+  })`,
+  object: {
+    data: missing.map(entry => ({
+      ...entry,
+      date: new Date(entry.date)
+    })),
+    width: 600,
+    height: 200,
+    target: '#missing',
+    defined: d => !d.dead,
+    area: true
   }
 }]
 

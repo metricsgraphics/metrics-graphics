@@ -16,6 +16,7 @@ import { mouse } from 'd3-selection'
  * @param {Function} [args.onClick] function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
  * @param {Boolean} [args.nested=false] whether or not the points array contains sub-arrays.
  * @param {Boolean} [args.aggregate=false] if multiple points have the same x value and should be shown together, aggregate can be set to true.
+ * @param {Function} [args.defined] optional function specifying whether or not to show a given datapoint.
  */
 export default class Delaunay {
   points = []
@@ -28,7 +29,19 @@ export default class Delaunay {
   rect = null
   aggregate = false
 
-  constructor ({ points = [], xAccessor, yAccessor, xScale, yScale, onPoint, onLeave, onClick, nested, aggregate }) {
+  constructor ({
+    points = [],
+    xAccessor,
+    yAccessor,
+    xScale,
+    yScale,
+    onPoint,
+    onLeave,
+    onClick,
+    nested,
+    aggregate,
+    defined = null
+  }) {
     this.xScale = xScale
     this.yScale = yScale
     this.onPoint = onPoint ?? this.onPoint
@@ -40,7 +53,7 @@ export default class Delaunay {
 
     // normalize passed points
     const isNested = nested ?? (Array.isArray(points[0]) && points.length > 1)
-    this.normalizePoints(points, isNested, aggregate)
+    this.normalizePoints({ points, isNested, aggregate, defined })
 
     // set up delaunay
     this.mountDelaunay(isNested, aggregate)
@@ -62,19 +75,25 @@ export default class Delaunay {
   /**
    * Normalize the passed data points.
    *
-   * @param {Array} points raw data array
-   * @param {Boolean} isNested whether or not the points are nested
-   * @param {Boolean} aggregate whether or not to aggregate points based on their x value
+   * @param {Object} args argument object
+   * @param {Array} args.points raw data array
+   * @param {Boolean} args.isNested whether or not the points are nested
+   * @param {Boolean} args.aggregate whether or not to aggregate points based on their x value
+   * @param {Function} [args.defined] optional function specifying whether or not to show a given datapoint.
    * @returns {void}
    */
-  normalizePoints (points, isNested, aggregate) {
+  normalizePoints ({ points, isNested, aggregate, defined = null }) {
     this.points = isNested
-      ? points.map((pointArray, arrayIndex) => pointArray.map((point, index) => ({
-        ...point,
-        index,
-        arrayIndex
-      }))).flat(Infinity)
-      : points.flat(Infinity).map((p, index) => ({ ...p, index }))
+      ? points.map((pointArray, arrayIndex) => pointArray
+        .filter(p => !defined || defined(p))
+        .map((point, index) => ({
+          ...point,
+          index,
+          arrayIndex
+        }))).flat(Infinity)
+      : points.flat(Infinity)
+        .filter(p => !defined || defined(p))
+        .map((p, index) => ({ ...p, index }))
 
     // if points should be aggregated, hash-map them based on their x accessor value
     if (!aggregate) return

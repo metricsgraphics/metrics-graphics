@@ -11,6 +11,7 @@ import { line, curveCatmullRom } from 'd3-shape'
  * @param {Scale} args.yScale scale used to compute y values.
  * @param {Function} [args.curve=catmullRom] curving function used to draw the line. See {@link https://github.com/d3/d3-shape#curves} for curves available in d3.
  * @param {String} args.color color of the line.
+ * @param {Function} [args.defined] optional function specifying whether or not to show a given datapoint.
  */
 export default class Line {
   lineObject = null
@@ -24,7 +25,8 @@ export default class Line {
     xScale,
     yScale,
     curve,
-    color
+    color,
+    defined
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
@@ -33,6 +35,11 @@ export default class Line {
 
     // set up line object
     this.lineObject = line()
+      .defined(d => {
+        if (yAccessor(d) === null) return false
+        if (defined === null) return true
+        return defined(d)
+      })
       .x(d => xScale.scaleObject(xAccessor(d)))
       .y(d => yScale.scaleObject(yAccessor(d)))
       .curve(curve ?? curveCatmullRom)

@@ -12,15 +12,18 @@ import { makeAccessorFunction } from '../misc/utility'
  * @param {Boolean | Array} [args.area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
  * @param {Array} [args.confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
  * @param {Object} [args.voronoi] custom parameters passed to the voronoi generator.
+ * @param {Function} [args.defined] optional function specifying whether or not to show a given data point.
  */
 export default class LineChart extends AbstractChart {
   delaunay = null
+  defined = null
 
   // one delaunay point per line
   delaunayPoints = []
 
-  constructor ({ area, confidenceBand, voronoi, ...args }) {
+  constructor ({ area, confidenceBand, voronoi, defined = null, ...args }) {
     super(args)
+    this.defined = defined ?? this.defined
 
     this.mountLines()
 
@@ -64,7 +67,8 @@ export default class LineChart extends AbstractChart {
         yAccessor: this.yAccessor,
         xScale: this.xScale,
         yScale: this.yScale,
-        color: this.colors[index]
+        color: this.colors[index],
+        defined: this.defined
       })
       this.delaunayPoints[index] = this.generatePoint({ radius: 3 })
       line.mountTo(this.container)
@@ -87,7 +91,8 @@ export default class LineChart extends AbstractChart {
       yAccessor: this.yAccessor,
       xScale: this.xScale,
       yScale: this.yScale,
-      color: this.colors[index]
+      color: this.colors[index],
+      defined: this.defined
     })
 
     // if area is boolean and truthy, generate areas for each line
@@ -198,6 +203,7 @@ export default class LineChart extends AbstractChart {
       yScale: this.yScale,
       onPoint: this.onPointHandler(),
       onLeave: this.onLeaveHandler(),
+      defined: this.defined,
       ...customParameters
     })
     this.delaunay.mountTo(this.container)

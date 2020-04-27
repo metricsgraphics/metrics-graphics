@@ -14,6 +14,7 @@ import { area, curveCatmullRom } from 'd3-shape'
  * @param {Scale} args.yScale scale used to scale elements in y direction.
  * @param {Function} args.curve curving function. See {@link https://github.com/d3/d3-shape#curves} for available curves in d3.
  * @param {String} [args.color='none'] color of the area.
+ * @param {Function} [args.defined] optional function specifying whether or not to show a given datapoint.
  */
 export default class Area {
   areaObject = null
@@ -30,7 +31,8 @@ export default class Area {
     xScale,
     yScale,
     curve,
-    color
+    color,
+    defined = null
   }) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
@@ -42,6 +44,11 @@ export default class Area {
 
     // set up line object
     this.areaObject = area()
+      .defined(d => {
+        if (y0(d) === null || y1(d) === null) return false
+        if (defined === null) return true
+        return defined(d)
+      })
       .x(d => xScale.scaleObject(xAccessor(d)))
       .y1(d => yScale.scaleObject(y1(d)))
       .y0(d => yScale.scaleObject(y0(d)))
