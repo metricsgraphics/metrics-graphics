@@ -32,6 +32,8 @@ That's it!
 
 ![Sample Screenshot](.img/screenshot.png)
 
+The raw data for this example can be found [here](packages/examples/src/assets/data/ufoSightings.js)
+
 ## Documentation
 
 If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/API.md).
