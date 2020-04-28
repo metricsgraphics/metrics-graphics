@@ -28,6 +28,7 @@ const charts = [{
     yScale: {
       minValue: 0
     },
+    brush: true,
     target: '#fakeUsers1',
     area: true,
     xAccessor: 'date',
@@ -40,6 +41,7 @@ const charts = [{
     yScale: {
       minValue: 0
     },
+    brush: true,
     target: '#fakeUsers1',
     area: true,
     xAccessor: 'date',

@@ -15,6 +15,7 @@ const charts = [{
     right: 40,
     binCount: 150,
     target: '#histogramChart1',
+    brush: 'x',
     yAxis: {
       extendedTicks: true
     },
@@ -27,6 +28,7 @@ const charts = [{
     right: 40,
     binCount: 150,
     target: '#histogramChart1',
+    brush: 'x',
     yAxis: {
       extendedTicks: true
     },

@@ -30,6 +30,7 @@ const charts = [{
     target: '#scatterChart1',
     xAccessor: 'x',
     yAccessor: 'y',
+    brush: true,
     xRug: true,
     tooltipFunction: point => \`\${point.x} \${point.y}\`
   })`,
@@ -40,6 +41,7 @@ const charts = [{
     target: '#scatterChart1',
     xAccessor: 'x',
     yAccessor: 'y',
+    brush: true,
     xRug: true,
     tooltipFunction: baseFormatFunction
   }
