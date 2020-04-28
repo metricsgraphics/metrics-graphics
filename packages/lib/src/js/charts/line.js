@@ -49,8 +49,9 @@ export default class LineChart extends AbstractChart {
       })
     }
 
-    // add markers
+    // add markers and baselines
     this.mountMarkers()
+    this.mountBaselines()
 
     // set up delaunay triangulation
     this.mountDelaunay(voronoi)
@@ -174,6 +175,26 @@ export default class LineChart extends AbstractChart {
         .attr('x', x)
         .attr('y', 8)
         .text(marker.label)
+    })
+  }
+
+  mountBaselines () {
+    const baselineContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    this.baselines.forEach(baseline => {
+      const y = this.yScale.scaleObject(this.yAccessor(baseline))
+      baselineContainer
+        .append('line')
+        .classed('line-baseline', true)
+        .attr('x1', this.xScale.range[0] + this.buffer)
+        .attr('x2', this.xScale.range[1] + this.buffer)
+        .attr('y1', y)
+        .attr('y2', y)
+      baselineContainer
+        .append('text')
+        .classed('text-baseline', true)
+        .attr('x', this.xScale.range[1] + this.buffer)
+        .attr('y', y - 2)
+        .text(baseline.label)
     })
   }
 

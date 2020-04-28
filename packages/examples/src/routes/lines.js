@@ -8,12 +8,18 @@ import missing from '../assets/data/missing'
 
 import ExampleList from '../components/exampleList'
 
+// pre-normalize fakeUsers1 dates
+const fakeUsers = fakeUsers1.map(entry => ({
+  ...entry,
+  date: new Date(entry.date)
+}))
+
 const charts = [{
   title: 'Line Chart',
   description: 'This is a simple line chart. You can remove the area portion by adding area: false to the arguments list.',
   id: 'fakeUsers1',
   code: `new LineChart({
-    data: data.map(entry => ({
+    data: fakeUsers1.map(entry => ({
       date: new Date(entry.date),
       value: entry.value
     })),
@@ -28,10 +34,7 @@ const charts = [{
     yAccessor: 'value'
   })`,
   object: {
-    data: fakeUsers1.map(entry => ({
-      date: new Date(entry.date),
-      value: entry.value
-    })),
+    data: fakeUsers,
     width: 600,
     height: 200,
     yScale: {
@@ -192,10 +195,9 @@ const charts = [{
     }
   })`,
   object: {
-    data: fakeUsers1.map((entry, i) => ({
+    data: fakeUsers.map((entry, i) => ({
       ...entry,
-      active: (i % 5 === 0),
-      date: new Date(entry.date)
+      active: (i % 5 === 0)
     })),
     width: 600,
     height: 200,
@@ -204,6 +206,27 @@ const charts = [{
     activePoint: {
       radius: 2
     }
+  }
+}, {
+  title: 'Baselines',
+  description: 'Baselines are horizontal lines that can added at arbitrary points.',
+  id: 'baselines',
+  code: `new LineChart({
+    data: fakeUsers1.map(entry => ({
+      date: new Date(entry.date),
+      value: entry.value
+    })),
+    baselines: [{value: 160000000, label: 'a baseline'}],
+    width: 600,
+    height: 200,
+    target: '#baselines'
+  })`,
+  object: {
+    data: fakeUsers,
+    baselines: [{ value: 160000000, label: 'a baseline' }],
+    width: 600,
+    height: 200,
+    target: '#baselines'
   }
 }]
 

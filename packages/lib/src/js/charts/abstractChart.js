@@ -18,6 +18,7 @@ import Point from '../components/point'
  * @param {Number} args.width total width of the graph.
  * @param {Number} args.height total height of the graph.
  * @param {Array} [args.markers=[]] markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field.
+ * @param {Array} [args.baselines=[]] baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field.
  * @param {String | Function} [args.xAccessor=d=>d] either name of the field that contains the x value or function that receives a data object and returns its x value.
  * @param {String | Function} [args.yAccessor=d=>d] either name of the field that contains the y value or function that receives a data object and returns its y value.
  * @param {Object} [args.margin={ top: 10, left: 60, right: 20, bottom: 40 }] margin object specifying top, bottom, left and right margin.
@@ -39,6 +40,7 @@ export default class AbstractChart {
   // base chart fields
   data = null
   markers = []
+  baselines = []
   target = null
   svg = null
   container = null
@@ -82,6 +84,7 @@ export default class AbstractChart {
     data,
     target,
     markers,
+    baselines,
     xAccessor = 'date',
     yAccessor = 'value',
     margin,
@@ -104,6 +107,7 @@ export default class AbstractChart {
     this.data = data
     this.target = target
     this.markers = markers ?? this.markers
+    this.baselines = baselines ?? this.baselines
     this.legend = legend ?? this.legend
     this.legendTarget = legendTarget ?? this.legendTarget
 
