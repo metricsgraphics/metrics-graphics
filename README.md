@@ -36,6 +36,6 @@ The raw data for this example can be found [here](packages/examples/src/assets/d
 
 ## Documentation
 
-If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/API.md).
+If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/docs/API.md).
 
-If you want to extend *MetricsGraphics*, you can read up on the [components](packages/lib/Components.md) and [utilities](packages/lib/Utility.md).
+If you want to extend *MetricsGraphics*, you can read up on the [components](packages/lib/docs/Components.md) and [utilities](packages/lib/docs/Utility.md).
