@@ -1,0 +1,22 @@
+[
+	{
+		"url": "/",
+		"title": "MetricsGraphics",
+    "description": "Library for concise and principled graphics"
+	},
+	{
+		"url": "/lines",
+    "title": "MG - Lines",
+    "description": "Library for concise and principled graphics"
+	},
+	{
+		"url": "/scatter",
+		"title": "MG - Scatterplots",
+		"description": "Library for concise and principled graphics"
+	},
+	{
+		"url": "/histogram",
+		"title": "MG - Histogram",
+		"description": "Library for concise and principled graphics"
+	}
+]

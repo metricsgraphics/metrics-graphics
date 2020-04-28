@@ -1,0 +1,25 @@
+# Dependencies
+bower_components
+node_modules
+
+# Logs
+npm-debug.log
+
+# IDE
+.idea
+
+# FS
+.DS_Store
+
+# Others
+other/divider.psd
+other/htaccess.txt
+bare.html
+yarn.lock
+yarn-error.log
+
+# Dist files
+dist
+
+# Generated CSS
+examples/css/metricsgraphics.css

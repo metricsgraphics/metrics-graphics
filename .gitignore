@@ -1,17 +1,4 @@
-# Dependencies
-bower_components
+yarn.lock
 node_modules
-
-# Logs
-npm-debug.log
-
-# IDE
-.idea
-
-# FS
-.DS_Store
-
-# Others
-other/divider.psd
-other/htaccess.txt
-bare.html
+lerna-debug.log
+package-lock.json
