@@ -37,10 +37,10 @@ export default class LineChart extends AbstractChart {
     this.confidenceBand = confidenceBand ?? this.confidenceBand
     this.delaunayParams = voronoi ?? this.delaunayParams
 
-    this.draw()
+    this.redraw()
   }
 
-  draw () {
+  redraw () {
     this.mountLines()
     this.mountActivePoints(this.activePoint)
 

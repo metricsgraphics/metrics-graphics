@@ -169,6 +169,10 @@ export default class AbstractChart {
     this.abstractRedraw()
   }
 
+  /**
+   * Draw the abstract chart.
+   * @returns {void}
+   */
   abstractRedraw () {
     // clear
     this.content.selectAll('*').remove()
@@ -183,6 +187,13 @@ export default class AbstractChart {
     // set up main container
     this.mountContainer()
   }
+
+  /**
+   * Draw the actual chart.
+   * This is meant to be overridden by chart implementations.
+   * @returns {void}
+   */
+  redraw () {}
 
   mountBrush (whichBrush) {
     if (!whichBrush) return

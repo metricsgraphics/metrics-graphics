@@ -25,10 +25,10 @@ export default class HistogramChart extends AbstractChart {
     if (binCount) dataBin.thresholds(binCount)
     this.bins = dataBin(this.data)
 
-    this.draw()
+    this.redraw()
   }
 
-  draw () {
+  redraw () {
     // set up histogram rects
     this.mountRects()
 

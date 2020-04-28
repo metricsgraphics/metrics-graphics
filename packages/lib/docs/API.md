@@ -33,22 +33,24 @@
     -   [normalizeData][29]
 -   [AbstractChart][30]
     -   [Parameters][31]
-    -   [mountLegend][32]
-        -   [Parameters][33]
-    -   [mountXAxis][34]
+    -   [abstractRedraw][32]
+    -   [redraw][33]
+    -   [mountLegend][34]
         -   [Parameters][35]
-    -   [mountYAxis][36]
+    -   [mountXAxis][36]
         -   [Parameters][37]
-    -   [mountTooltip][38]
+    -   [mountYAxis][38]
         -   [Parameters][39]
-    -   [mountContainer][40]
-    -   [setDataTypeFlags][41]
-    -   [mountSvg][42]
-    -   [normalizeData][43]
-    -   [computeDomains][44]
-        -   [Parameters][45]
-    -   [computeXAxisType][46]
-    -   [computeYAxisType][47]
+    -   [mountTooltip][40]
+        -   [Parameters][41]
+    -   [mountContainer][42]
+    -   [setDataTypeFlags][43]
+    -   [mountSvg][44]
+    -   [normalizeData][45]
+    -   [computeDomains][46]
+        -   [Parameters][47]
+    -   [computeXAxisType][48]
+    -   [computeYAxisType][49]
 
 ## HistogramChart
 
@@ -58,8 +60,8 @@ Creates a new histogram graph.
 
 ### Parameters
 
--   `args` **[Object][48]** argument object. See [AbstractChart][30] for general parameters.
-    -   `args.binCount` **[Number][49]?** approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
+-   `args` **[Object][50]** argument object. See [AbstractChart][30] for general parameters.
+    -   `args.binCount` **[Number][51]?** approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
     -   `args.args` **...any** 
 
 ### mountRects
@@ -72,13 +74,13 @@ Returns **void**
 
 Handle move events from the delaunay triangulation.
 
-Returns **[Function][50]** handler function.
+Returns **[Function][52]** handler function.
 
 ### onLeaveHandler
 
 Handle leaving the delaunay triangulation area.
 
-Returns **[Function][50]** handler function.
+Returns **[Function][52]** handler function.
 
 ### mountDelaunay
 
@@ -94,10 +96,10 @@ Creates a new scatter graph.
 
 ### Parameters
 
--   `args` **[Object][48]** argument object. See [AbstractChart][30] for general parameters.
-    -   `args.sizeAccessor` **([String][51] \| [Function][50])** accesor specifying the size of a data point. Can be either a string (name of the size field) or a function (receiving a data point and returning its size). (optional, default `d=>3`)
-    -   `args.xRug` **[Boolean][52]** whether or not to generate a rug for the x axis. (optional, default `false`)
-    -   `args.yRug` **[Boolean][52]** whether or not to generate a rug for the y axis. (optional, default `false`)
+-   `args` **[Object][50]** argument object. See [AbstractChart][30] for general parameters.
+    -   `args.sizeAccessor` **([String][53] \| [Function][52])** accesor specifying the size of a data point. Can be either a string (name of the size field) or a function (receiving a data point and returning its size). (optional, default `d=>3`)
+    -   `args.xRug` **[Boolean][54]** whether or not to generate a rug for the x axis. (optional, default `false`)
+    -   `args.yRug` **[Boolean][54]** whether or not to generate a rug for the y axis. (optional, default `false`)
     -   `args.args` **...any** 
 
 ### mountRugs
@@ -106,8 +108,8 @@ Mount new rugs.
 
 #### Parameters
 
--   `xRug` **[Boolean][52]** whether or not to generate a rug for the x axis. (optional, default `false`)
--   `yRug` **[Boolean][52]** whether or not to generate a rug for the y axis. (optional, default `false`)
+-   `xRug` **[Boolean][54]** whether or not to generate a rug for the x axis. (optional, default `false`)
+-   `yRug` **[Boolean][54]** whether or not to generate a rug for the y axis. (optional, default `false`)
 
 Returns **void** 
 
@@ -121,13 +123,13 @@ Returns **void**
 
 Handle incoming points from the delaunay triangulation.
 
-Returns **[Function][50]** handler function
+Returns **[Function][52]** handler function
 
 ### onLeaveHandler
 
 Handle leaving the delaunay area.
 
-Returns **[Function][50]** handler function
+Returns **[Function][52]** handler function
 
 ### mountDelaunay
 
@@ -143,7 +145,7 @@ Creates a new line graph.
 
 ### Parameters
 
--   `$0` **[Object][48]** 
+-   `$0` **[Object][50]** 
     -   `$0.area`  
     -   `$0.confidenceBand`  
     -   `$0.voronoi`  
@@ -151,13 +153,13 @@ Creates a new line graph.
     -   `$0.activeAccessor`   (optional, default `null`)
     -   `$0.activePoint`  
     -   `$0.args` **...any** 
--   `args` **[Object][48]** argument object. See [AbstractChart][30] for general parameters.
-    -   `args.area` **([Boolean][52] \| [Array][53])** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array. (optional, default `[]`)
-    -   `args.confidenceBand` **[Array][53]?** array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
-    -   `args.voronoi` **[Object][48]?** custom parameters passed to the voronoi generator.
-    -   `args.defined` **[Function][50]?** optional function specifying whether or not to show a given data point.
-    -   `args.activeAccessor` **([String][51] \| [Function][50])?** accessor specifying for a given data point whether or not to show it as active.
--   `activePoint` **[Object][48]?** custom parameters passed to the active point generator. See {@see Point} for a list of parameters.
+-   `args` **[Object][50]** argument object. See [AbstractChart][30] for general parameters.
+    -   `args.area` **([Boolean][54] \| [Array][55])** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array. (optional, default `[]`)
+    -   `args.confidenceBand` **[Array][55]?** array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
+    -   `args.voronoi` **[Object][50]?** custom parameters passed to the voronoi generator.
+    -   `args.defined` **[Function][52]?** optional function specifying whether or not to show a given data point.
+    -   `args.activeAccessor` **([String][53] \| [Function][52])?** accessor specifying for a given data point whether or not to show it as active.
+-   `activePoint` **[Object][50]?** custom parameters passed to the active point generator. See {@see Point} for a list of parameters.
 
 ### mountLines
 
@@ -171,7 +173,7 @@ If an active accessor is specified, mount active points.
 
 #### Parameters
 
--   `params` **[Object][48]?** custom parameters for point generation. See {@see Point} for a list of options.
+-   `params` **[Object][50]?** custom parameters for point generation. See {@see Point} for a list of options.
 
 Returns **void** 
 
@@ -181,7 +183,7 @@ Mount all specified areas.
 
 #### Parameters
 
--   `area` **([Boolean][52] \| [Array][53])** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array. (optional, default `[]`)
+-   `area` **([Boolean][54] \| [Array][55])** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array. (optional, default `[]`)
 
 Returns **void** 
 
@@ -191,11 +193,11 @@ Mount the confidence band specified by two accessors.
 
 #### Parameters
 
--   `$0` **[Object][48]** 
+-   `$0` **[Object][50]** 
     -   `$0.lowerAccessor`  
     -   `$0.upperAccessor`  
--   `lowerAccessor` **([Function][50] \| [String][51])** for the lower confidence bound. Either a string (specifying the property of the object representing the lower bound) or a function (returning the lower bound when given a data point).
--   `upperAccessor` **([Function][50] \| [String][51])** for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
+-   `lowerAccessor` **([Function][52] \| [String][53])** for the lower confidence bound. Either a string (specifying the property of the object representing the lower bound) or a function (returning the lower bound when given a data point).
+-   `upperAccessor` **([Function][52] \| [String][53])** for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
 
 Returns **void** 
 
@@ -209,13 +211,13 @@ Returns **void**
 
 Handle incoming points from the delaunay move handler.
 
-Returns **[Function][50]** handler function.
+Returns **[Function][52]** handler function.
 
 ### onLeaveHandler
 
 Handles leaving the delaunay area.
 
-Returns **[Function][50]** handler function.
+Returns **[Function][52]** handler function.
 
 ### mountDelaunay
 
@@ -223,7 +225,7 @@ Mount a new delaunay triangulation instance.
 
 #### Parameters
 
--   `customParameters` **[Object][48]** custom parameters for [Delaunay][54].
+-   `customParameters` **[Object][50]** custom parameters for [Delaunay][56].
 
 Returns **void** 
 
@@ -246,28 +248,64 @@ This is not meant to be directly instantiated.
 
 ### Parameters
 
--   `args` **[Object][48]** argument object.
-    -   `args.data` **[Array][53]** data that needs to be visualized.
-    -   `args.target` **([String][51] \| [Object][48])** DOM node to which the graph should be mounted. Either D3 selection or D3 selection specifier.
-    -   `args.markers` **[Array][53]** markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field. (optional, default `[]`)
-    -   `args.baselines` **[Array][53]** baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field. (optional, default `[]`)
-    -   `args.xAccessor` **([String][51] \| [Function][50])** either name of the field that contains the x value or function that receives a data object and returns its x value. (optional, default `d=>d`)
-    -   `args.yAccessor` **([String][51] \| [Function][50])** either name of the field that contains the y value or function that receives a data object and returns its y value. (optional, default `d=>d`)
-    -   `args.margin` **[Object][48]** margin object specifying top, bottom, left and right margin. (optional, default `{top:10,left:60,right:20,bottom:40}`)
-    -   `args.buffer` **[Number][49]** amount of buffer between the axes and the graph. (optional, default `10`)
-    -   `args.width` **[Number][49]** total width of the graph.
-    -   `args.height` **[Number][49]** total height of the graph.
-    -   `args.color` **([String][51] \| [Array][53])?** custom color scheme for the graph.
-    -   `args.colors` **([String][51] \| [Array][53])** alternative to color. (optional, default `schemeCategory10`)
-    -   `args.xScale` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated x [Scale][55].
-    -   `args.yScale` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated y [Scale][55].
-    -   `args.xAxis` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated x [Axis][56].
-    -   `args.yAxis` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated y [Axis][56].
-    -   `args.showTooltip` **[Boolean][52]?** whether or not to show a tooltip.
-    -   `args.tooltipFunction` **[Function][50]?** function that receives a data object and returns the string displayed as tooltip.
-    -   `args.legend` **[Array][53]?** names of the sub-arrays of data, used as legend labels.
-    -   `args.legendTarget` **([String][51] \| [Object][48])?** DOM node to which the legend should be mounted.
-    -   `args.custom` **...any** 
+-   `$0` **[Object][50]** 
+    -   `$0.data`  
+    -   `$0.target`  
+    -   `$0.markers`  
+    -   `$0.baselines`  
+    -   `$0.xAccessor`   (optional, default `'date'`)
+    -   `$0.yAccessor`   (optional, default `'value'`)
+    -   `$0.margin`  
+    -   `$0.buffer`  
+    -   `$0.width`  
+    -   `$0.height`  
+    -   `$0.color`  
+    -   `$0.colors`  
+    -   `$0.xScale`  
+    -   `$0.yScale`  
+    -   `$0.xAxis`  
+    -   `$0.yAxis`  
+    -   `$0.showTooltip`  
+    -   `$0.tooltipFunction`  
+    -   `$0.legend`  
+    -   `$0.legendTarget`  
+    -   `$0.brush`  
+    -   `$0.custom` **...any** 
+-   `args` **[Object][50]** argument object.
+    -   `args.data` **[Array][55]** data that needs to be visualized.
+    -   `args.target` **([String][53] \| [Object][50])** DOM node to which the graph should be mounted. Either D3 selection or D3 selection specifier.
+    -   `args.width` **[Number][51]** total width of the graph.
+    -   `args.height` **[Number][51]** total height of the graph.
+    -   `args.markers` **[Array][55]** markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field. (optional, default `[]`)
+    -   `args.baselines` **[Array][55]** baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field. (optional, default `[]`)
+    -   `args.xAccessor` **([String][53] \| [Function][52])** either name of the field that contains the x value or function that receives a data object and returns its x value. (optional, default `d=>d`)
+    -   `args.yAccessor` **([String][53] \| [Function][52])** either name of the field that contains the y value or function that receives a data object and returns its y value. (optional, default `d=>d`)
+    -   `args.margin` **[Object][50]** margin object specifying top, bottom, left and right margin. (optional, default `{top:10,left:60,right:20,bottom:40}`)
+    -   `args.buffer` **[Number][51]** amount of buffer between the axes and the graph. (optional, default `10`)
+    -   `args.color` **([String][53] \| [Array][55])?** custom color scheme for the graph.
+    -   `args.colors` **([String][53] \| [Array][55])** alternative to color. (optional, default `schemeCategory10`)
+    -   `args.xScale` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated x [Scale][57].
+    -   `args.yScale` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated y [Scale][57].
+    -   `args.xAxis` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated x [Axis][58].
+    -   `args.yAxis` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated y [Axis][58].
+    -   `args.showTooltip` **[Boolean][54]?** whether or not to show a tooltip.
+    -   `args.tooltipFunction` **[Function][52]?** function that receives a data object and returns the string displayed as tooltip.
+    -   `args.legend` **[Array][55]?** names of the sub-arrays of data, used as legend labels.
+    -   `args.legendTarget` **([String][53] \| [Object][50])?** DOM node to which the legend should be mounted.
+-   `brush` **([Boolean][54] \| [String][53])?** if truthy, add a bidirectional brush. If `x` or `y`, add one-directional brush.
+
+### abstractRedraw
+
+Draw the abstract chart.
+
+Returns **void** 
+
+### redraw
+
+Draw the actual chart.
+This is meant to be overridden by chart implementations.
+
+Returns **void** 
 
 ### mountLegend
 
@@ -275,7 +313,7 @@ Mount a new legend if necessary
 
 #### Parameters
 
--   `symbolType` **[String][51]** symbol type (circle, square, line)
+-   `symbolType` **[String][53]** symbol type (circle, square, line)
 
 Returns **void** 
 
@@ -285,7 +323,7 @@ Mount new x axis.
 
 #### Parameters
 
--   `xAxis` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated x [Axis][56].
+-   `xAxis` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated x [Axis][58].
 
 Returns **void** 
 
@@ -295,7 +333,7 @@ Mount new y axis.
 
 #### Parameters
 
--   `yAxis` **[Object][48]?** object that can be used to overwrite parameters of the auto-generated y [Axis][56].
+-   `yAxis` **[Object][50]?** object that can be used to overwrite parameters of the auto-generated y [Axis][58].
 
 Returns **void** 
 
@@ -305,8 +343,8 @@ Mount a new tooltip if necessary.
 
 #### Parameters
 
--   `showTooltip` **[Boolean][52]?** whether or not to show a tooltip.
--   `tooltipFunction` **[Function][50]?** function that receives a data object and returns the string displayed as tooltip.
+-   `showTooltip` **[Boolean][54]?** whether or not to show a tooltip.
+-   `tooltipFunction` **[Function][52]?** function that receives a data object and returns the string displayed as tooltip.
 
 Returns **void** 
 
@@ -343,9 +381,9 @@ Usually, the domains of the chart's scales depend on the chart type and the pass
 
 #### Parameters
 
--   `params` **[Object][48]** object of custom parameters for the specific chart type
+-   `params` **[Object][50]** object of custom parameters for the specific chart type
 
-Returns **void** 
+Returns **[Object][50]** specifying the domain for x and y axis as separate properties.
 
 ### computeXAxisType
 
@@ -423,52 +461,56 @@ Returns **void**
 
 [31]: #parameters-8
 
-[32]: #mountlegend
+[32]: #abstractredraw
 
-[33]: #parameters-9
+[33]: #redraw
 
-[34]: #mountxaxis
+[34]: #mountlegend
 
-[35]: #parameters-10
+[35]: #parameters-9
 
-[36]: #mountyaxis
+[36]: #mountxaxis
 
-[37]: #parameters-11
+[37]: #parameters-10
 
-[38]: #mounttooltip
+[38]: #mountyaxis
 
-[39]: #parameters-12
+[39]: #parameters-11
 
-[40]: #mountcontainer
+[40]: #mounttooltip
 
-[41]: #setdatatypeflags
+[41]: #parameters-12
 
-[42]: #mountsvg
+[42]: #mountcontainer
 
-[43]: #normalizedata-1
+[43]: #setdatatypeflags
 
-[44]: #computedomains
+[44]: #mountsvg
 
-[45]: #parameters-13
+[45]: #normalizedata-1
 
-[46]: #computexaxistype
+[46]: #computedomains
 
-[47]: #computeyaxistype
+[47]: #parameters-13
 
-[48]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[48]: #computexaxistype
 
-[49]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[49]: #computeyaxistype
 
-[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[54]: Delaunay
+[54]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[55]: Scale
+[55]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[56]: Axis
+[56]: Delaunay
+
+[57]: Scale
+
+[58]: Axis

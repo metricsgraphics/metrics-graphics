@@ -32,10 +32,10 @@ export default class ScatterChart extends AbstractChart {
       ? makeAccessorFunction(sizeAccessor)
       : () => 3
 
-    this.draw()
+    this.redraw()
   }
 
-  draw () {
+  redraw () {
     // set up rugs if necessary
     this.mountRugs(this.xRugParams, this.yRugParams)
 
