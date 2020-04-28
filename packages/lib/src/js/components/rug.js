@@ -1,4 +1,3 @@
-import { schemeCategory10 } from 'd3-scale-chromatic'
 import constants from '../misc/constants'
 
 /**
@@ -19,7 +18,7 @@ export default class Rug {
   left = 0
   top = 0
   tickLength = 5
-  colors = schemeCategory10
+  colors = constants.defaultColors
   orientation = constants.orientation.horizontal
 
   constructor ({ accessor, scale, data, tickLength, colors, orientation, left, top }) {

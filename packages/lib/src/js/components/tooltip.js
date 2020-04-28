@@ -1,5 +1,4 @@
 import constants from '../misc/constants'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 
 /**
  * Set up a new tooltip.
@@ -18,7 +17,7 @@ import { schemeCategory10 } from 'd3-scale-chromatic'
 export default class Tooltip {
   legendObject = 'line'
   legend = []
-  colors = schemeCategory10
+  colors = constants.defaultColors
   data = []
   left = 0
   top = 0

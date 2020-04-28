@@ -3,9 +3,9 @@ import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
-import { schemeCategory10 } from 'd3-scale-chromatic'
 import Legend from '../components/legend'
 import { extent } from 'd3-array'
+import constants from '../misc/constants'
 import Point from '../components/point'
 
 /**
@@ -125,7 +125,7 @@ export default class AbstractChart {
     this.height = getHeight(this.isFullHeight, height, this.target)
 
     // normalize color and colors arguments
-    this.colors = color ? [color] : colors ? [colors] : schemeCategory10
+    this.colors = color ? [color] : colors ? [colors] : constants.defaultColors
 
     this.setDataTypeFlags()
 
