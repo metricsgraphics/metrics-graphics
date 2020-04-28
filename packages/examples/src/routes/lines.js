@@ -173,6 +173,38 @@ const charts = [{
     defined: d => !d.dead,
     area: true
   }
+}, {
+  title: 'Show active points on line chart',
+  description: 'This line chart displays pre-defined active points',
+  id: 'active',
+  code: `new LineChart({
+    data: fakeUsers1.map((entry, i) => ({
+      ...entry,
+      active: (i % 5 === 0),
+      date: new Date(entry.date)
+    })),
+    width: 600,
+    height: 200,
+    target: '#active',
+    activeAccessor: 'active',
+    activePoint: {
+      radius: 2
+    }
+  })`,
+  object: {
+    data: fakeUsers1.map((entry, i) => ({
+      ...entry,
+      active: (i % 5 === 0),
+      date: new Date(entry.date)
+    })),
+    width: 600,
+    height: 200,
+    target: '#active',
+    activeAccessor: 'active',
+    activePoint: {
+      radius: 2
+    }
+  }
 }]
 
 export default class Lines extends Component {

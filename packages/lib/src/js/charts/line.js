@@ -13,19 +13,24 @@ import { makeAccessorFunction } from '../misc/utility'
  * @param {Array} [args.confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
  * @param {Object} [args.voronoi] custom parameters passed to the voronoi generator.
  * @param {Function} [args.defined] optional function specifying whether or not to show a given data point.
+ * @param {String | Function} [args.activeAccessor] accessor specifying for a given data point whether or not to show it as active.
+ * @param {Object} [activePoint] custom parameters passed to the active point generator. See {@see Point} for a list of parameters.
  */
 export default class LineChart extends AbstractChart {
   delaunay = null
   defined = null
+  activeAccessor = null
 
   // one delaunay point per line
   delaunayPoints = []
 
-  constructor ({ area, confidenceBand, voronoi, defined = null, ...args }) {
+  constructor ({ area, confidenceBand, voronoi, defined = null, activeAccessor = null, activePoint, ...args }) {
     super(args)
     this.defined = defined ?? this.defined
+    this.activeAccessor = activeAccessor ? makeAccessorFunction(activeAccessor) : this.activeAccessor
 
     this.mountLines()
+    this.mountActivePoints(activePoint)
 
     // generate areas if necessary
     this.mountAreas(area)
@@ -72,6 +77,26 @@ export default class LineChart extends AbstractChart {
       })
       this.delaunayPoints[index] = this.generatePoint({ radius: 3 })
       line.mountTo(this.container)
+    })
+  }
+
+  /**
+   * If an active accessor is specified, mount active points.
+   * @param {Object} [params] custom parameters for point generation. See {@see Point} for a list of options.
+   * @returns {void}
+   */
+  mountActivePoints (params) {
+    if (this.activeAccessor === null) return
+    this.data.forEach((pointArray, index) => {
+      pointArray.filter(this.activeAccessor).forEach(data => {
+        const point = this.generatePoint({
+          data,
+          color: this.colors[index],
+          radius: 3,
+          ...params
+        })
+        point.mountTo(this.container)
+      })
     })
   }
 
