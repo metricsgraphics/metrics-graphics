@@ -4,10 +4,10 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "dev:examples": "lerna run --scope mg-examples start:development --stream",
-    "dev:lib": "lerna run --scope mg2 dev --stream",
+    "dev:lib": "lerna run --scope metrics-graphics dev --stream",
     "build:examples": "lerna run --scope mg-examples build --stream",
-    "build:lib": "lerna run --scope mg2 build --stream",
-    "documentation": "lerna run --scope mg2 documentation --stream"
+    "build:lib": "lerna run --scope metrics-graphics build --stream",
+    "documentation": "lerna run --scope metrics-graphics documentation --stream"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,8 @@
   "contributors": [
     "Ali Almossawi",
     "Hamilton Ulmer",
-    "William Lachance"
+    "William Lachance",
+    "Jens Ochsenmeier"
   ],
   "license": "MPL-2.0",
   "bugs": {

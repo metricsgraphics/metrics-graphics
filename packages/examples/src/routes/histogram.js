@@ -1,7 +1,7 @@
 import { Component } from 'preact'
 
 import ufoDates from '../assets/data/ufoDates'
-import HistogramChart from 'mg2/src/js/charts/histogram'
+import { HistogramChart } from 'metrics-graphics'
 import ExampleList from '../components/exampleList'
 
 const charts = [{

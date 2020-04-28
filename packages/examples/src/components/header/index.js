@@ -15,7 +15,7 @@ const Header = () => (
         <Link activeClassName="link-active" href="/scatter">Scatterplots</Link>
         <Link activeClassName="link-active" href="/histogram">Histograms</Link>
       </nav>
-      <ExternalLink text="GitHub" link="https://github.com/jens-ox/metrics-graphics" />
+      <ExternalLink text="GitHub" link="https://github.com/metricsgraphics/metrics-graphics" />
     </div>
   </header>
 )

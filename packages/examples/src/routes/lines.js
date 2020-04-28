@@ -1,5 +1,5 @@
 import { Component } from 'preact'
-import { LineChart } from 'mg2'
+import { LineChart } from 'metrics-graphics'
 
 import fakeUsers1 from '../assets/data/fakeUsers1'
 import fakeUsers2 from '../assets/data/fakeUsers2'

@@ -1,5 +1,5 @@
 import { Component } from 'preact'
-import ScatterChart from 'mg2/src/js/charts/scatter'
+import { ScatterChart } from 'metrics-graphics'
 import ExampleList from '../components/exampleList'
 
 import points1 from '../assets/data/points1'

@@ -15,7 +15,7 @@ All you need to do is add an entry node to your document:
 Then, use the id to mount the chart:
 
 ```js
-import LineChart from 'mg2'
+import LineChart from 'metrics-graphics'
 
 new LineChart({
   data, // some array of data objects

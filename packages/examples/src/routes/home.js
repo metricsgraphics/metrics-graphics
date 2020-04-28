@@ -1,5 +1,5 @@
 import { Component } from 'preact'
-import { LineChart } from 'mg2'
+import { LineChart } from 'metrics-graphics'
 
 import sightings from '../assets/data/ufoSightings'
 
