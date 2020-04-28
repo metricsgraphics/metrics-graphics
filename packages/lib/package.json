@@ -9,9 +9,9 @@
     "lint": "gulp lint",
     "dev": "concurrently \"webpack --env.mode development --watch \" \"gulp watchSass\"",
     "documentation": "yarn documentation:base && yarn documentation:components && yarn documentation:utility",
-    "documentation:base": "documentation build src/js/charts/** -f md -o API.md --shallow",
-    "documentation:components": "documentation build src/js/components/** -f md -o Components.md --shallow",
-    "documentation:utility": "documentation build src/js/misc/utility.js -f md -o Utility.md --shallow"
+    "documentation:base": "documentation build src/js/charts/** -f md -o docs/API.md --shallow",
+    "documentation:components": "documentation build src/js/components/** -f md -o docs/Components.md --shallow",
+    "documentation:utility": "documentation build src/js/misc/utility.js -f md -o docs/Utility.md --shallow"
   },
   "repository": {
     "type": "git",

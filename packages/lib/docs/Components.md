@@ -44,30 +44,30 @@
     -   [Parameters][40]
     -   [getScaleObject][41]
         -   [Parameters][42]
--   [Line][43]
+-   [Rug][43]
     -   [Parameters][44]
     -   [mountTo][45]
         -   [Parameters][46]
--   [Rug][47]
+-   [Line][47]
     -   [Parameters][48]
     -   [mountTo][49]
         -   [Parameters][50]
--   [Area][51]
+-   [Tooltip][51]
     -   [Parameters][52]
-    -   [mountTo][53]
+    -   [setTextFunction][53]
         -   [Parameters][54]
--   [Tooltip][55]
-    -   [Parameters][56]
-    -   [setTextFunction][57]
+    -   [baseTextFunction][55]
+        -   [Parameters][56]
+    -   [update][57]
         -   [Parameters][58]
-    -   [baseTextFunction][59]
-        -   [Parameters][60]
-    -   [update][61]
-        -   [Parameters][62]
-    -   [hide][63]
-    -   [mountTo][64]
-        -   [Parameters][65]
-    -   [addText][66]
+    -   [hide][59]
+    -   [mountTo][60]
+        -   [Parameters][61]
+    -   [addText][62]
+-   [Area][63]
+    -   [Parameters][64]
+    -   [mountTo][65]
+        -   [Parameters][66]
 -   [Delaunay][67]
     -   [Parameters][68]
     -   [mountDelaunay][69]
@@ -343,31 +343,6 @@ Get the d3 scale object for a given scale type.
 
 Returns **[Object][91]** d3 scale type
 
-## Line
-
-Create a new line.
-
-### Parameters
-
--   `args` **[Object][91]** argument object.
-    -   `args.data` **[Array][94]** array of data points used to create the line.
-    -   `args.xAccessor` **[Function][92]** function to access the x value for a given data point.
-    -   `args.yAccessor` **[Function][92]** function to access the y value for a given data point.
-    -   `args.xScale` **[Scale][97]** scale used to compute x values.
-    -   `args.yScale` **[Scale][97]** scale used to compute y values.
-    -   `args.curve` **[Function][92]** curving function used to draw the line. See [https://github.com/d3/d3-shape#curves][99] for curves available in d3. (optional, default `catmullRom`)
-    -   `args.color` **[String][95]** color of the line.
-
-### mountTo
-
-Mount the line to the given d3 node.
-
-#### Parameters
-
--   `svg` **[Object][91]** d3 node to mount the line to.
-
-Returns **void** 
-
 ## Rug
 
 Set up a new rug.
@@ -394,31 +369,29 @@ Mount the rug to the given node.
 
 Returns **void** 
 
-## Area
+## Line
 
-Create a new area shape.
-Meant to be used together with a [Line][43].
+Create a new line.
 
 ### Parameters
 
 -   `args` **[Object][91]** argument object.
-    -   `args.data` **[Array][94]** data for which the shape should be created.
-    -   `args.xAccessor` **[Function][92]** x accessor function.
-    -   `args.yAccessor` **[Function][92]** y accessor function.
-    -   `args.y0Accessor` **[Function][92]** y base accessor function. Defaults to static 0.
-    -   `args.y1Accessor` **[Function][92]** alternative to yAccessor.
-    -   `args.xScale` **[Scale][97]** scale used to scale elements in x direction.
-    -   `args.yScale` **[Scale][97]** scale used to scale elements in y direction.
-    -   `args.curve` **[Function][92]** curving function. See [https://github.com/d3/d3-shape#curves][99] for available curves in d3.
-    -   `args.color` **[String][95]** color of the area. (optional, default `'none'`)
+    -   `args.data` **[Array][94]** array of data points used to create the line.
+    -   `args.xAccessor` **[Function][92]** function to access the x value for a given data point.
+    -   `args.yAccessor` **[Function][92]** function to access the y value for a given data point.
+    -   `args.xScale` **[Scale][97]** scale used to compute x values.
+    -   `args.yScale` **[Scale][97]** scale used to compute y values.
+    -   `args.curve` **[Function][92]** curving function used to draw the line. See [https://github.com/d3/d3-shape#curves][99] for curves available in d3. (optional, default `catmullRom`)
+    -   `args.color` **[String][95]** color of the line.
+    -   `args.defined` **[Function][92]?** optional function specifying whether or not to show a given datapoint.
 
 ### mountTo
 
-Mount the area to a given d3 node.
+Mount the line to the given d3 node.
 
 #### Parameters
 
--   `svg` **[Object][91]** d3 node to mount the area to.
+-   `svg` **[Object][91]** d3 node to mount the line to.
 
 Returns **void** 
 
@@ -504,6 +477,35 @@ For each datapoint in the data array, one line is added to the tooltip.
 
 Returns **void** 
 
+## Area
+
+Create a new area shape.
+Meant to be used together with a [Line][47].
+
+### Parameters
+
+-   `args` **[Object][91]** argument object.
+    -   `args.data` **[Array][94]** data for which the shape should be created.
+    -   `args.xAccessor` **[Function][92]** x accessor function.
+    -   `args.yAccessor` **[Function][92]** y accessor function.
+    -   `args.y0Accessor` **[Function][92]** y base accessor function. Defaults to static 0.
+    -   `args.y1Accessor` **[Function][92]** alternative to yAccessor.
+    -   `args.xScale` **[Scale][97]** scale used to scale elements in x direction.
+    -   `args.yScale` **[Scale][97]** scale used to scale elements in y direction.
+    -   `args.curve` **[Function][92]** curving function. See [https://github.com/d3/d3-shape#curves][99] for available curves in d3.
+    -   `args.color` **[String][95]** color of the area. (optional, default `'none'`)
+    -   `args.defined` **[Function][92]?** optional function specifying whether or not to show a given datapoint. (optional, default `null`)
+
+### mountTo
+
+Mount the area to a given d3 node.
+
+#### Parameters
+
+-   `svg` **[Object][91]** d3 node to mount the area to.
+
+Returns **void** 
+
 ## Delaunay
 
 Instantiate a new delaunay computation instance.
@@ -521,6 +523,7 @@ Instantiate a new delaunay computation instance.
     -   `args.onClick` **[Function][92]?** function called with the array of nearest points on mouse click in the delaunay area. If aggregate is false, the array will contain at most one element.
     -   `args.nested` **[Boolean][100]** whether or not the points array contains sub-arrays. (optional, default `false`)
     -   `args.aggregate` **[Boolean][100]** if multiple points have the same x value and should be shown together, aggregate can be set to true. (optional, default `false`)
+    -   `args.defined` **[Function][92]?** optional function specifying whether or not to show a given datapoint. (optional, default `null`)
 
 ### mountDelaunay
 
@@ -539,9 +542,11 @@ Normalize the passed data points.
 
 #### Parameters
 
--   `points` **[Array][94]** raw data array
--   `isNested` **[Boolean][100]** whether or not the points are nested
--   `aggregate` **[Boolean][100]** whether or not to aggregate points based on their x value
+-   `args` **[Object][91]** argument object
+    -   `args.points` **[Array][94]** raw data array
+    -   `args.isNested` **[Boolean][100]** whether or not the points are nested
+    -   `args.aggregate` **[Boolean][100]** whether or not to aggregate points based on their x value
+    -   `args.defined` **[Function][92]?** optional function specifying whether or not to show a given datapoint. (optional, default `null`)
 
 Returns **void** 
 
@@ -740,7 +745,7 @@ Returns **[Function][92]** d3 formatting function for the given abstract number 
 
 [42]: #parameters-19
 
-[43]: #line
+[43]: #rug
 
 [44]: #parameters-20
 
@@ -748,7 +753,7 @@ Returns **[Function][92]** d3 formatting function for the given abstract number 
 
 [46]: #parameters-21
 
-[47]: #rug
+[47]: #line
 
 [48]: #parameters-22
 
@@ -756,37 +761,37 @@ Returns **[Function][92]** d3 formatting function for the given abstract number 
 
 [50]: #parameters-23
 
-[51]: #area
+[51]: #tooltip
 
 [52]: #parameters-24
 
-[53]: #mountto-6
+[53]: #settextfunction
 
 [54]: #parameters-25
 
-[55]: #tooltip
+[55]: #basetextfunction
 
 [56]: #parameters-26
 
-[57]: #settextfunction
+[57]: #update-3
 
 [58]: #parameters-27
 
-[59]: #basetextfunction
+[59]: #hide-1
 
-[60]: #parameters-28
+[60]: #mountto-6
 
-[61]: #update-3
+[61]: #parameters-28
 
-[62]: #parameters-29
+[62]: #addtext
 
-[63]: #hide-1
+[63]: #area
 
-[64]: #mountto-7
+[64]: #parameters-29
 
-[65]: #parameters-30
+[65]: #mountto-7
 
-[66]: #addtext
+[66]: #parameters-30
 
 [67]: #delaunay
 
