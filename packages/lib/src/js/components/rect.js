@@ -25,7 +25,7 @@ export default class Rect extends AbstractShape {
 
   get x () { return this.xScale.scaleObject(this.xAccessor(this.data)) }
   get y () { return this.yScale.scaleObject(this.yAccessor(this.data)) }
-  get width () { return Math.max(0, this.xScale.scaleObject(this.widthAccessor(this.data))) }
+  get width () { return Math.max(0, Math.abs(this.widthAccessor(this.data))) }
   get height () { return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data))) }
 
   /**
