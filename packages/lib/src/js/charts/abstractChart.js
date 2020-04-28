@@ -228,7 +228,7 @@ export default class AbstractChart {
       this.abstractRedraw()
 
       // re-draw specific chart
-      this.draw()
+      this.redraw()
     })
     this.container.append('g')
       .classed('brush', true)
