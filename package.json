@@ -2,7 +2,7 @@
   "name": "mg-lerna",
   "version": "0.0.2",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --no-ci",
     "dev:examples": "lerna run --scope mg-examples start:development --stream",
     "dev:lib": "lerna run --scope metrics-graphics dev --stream",
     "build:examples": "lerna run --scope mg-examples build --stream",
