@@ -20,6 +20,10 @@ export default class LineChart extends AbstractChart {
   delaunay = null
   defined = null
   activeAccessor = null
+  activePoint = null
+  area = []
+  confidenceBand = null
+  delaunayParams = null
 
   // one delaunay point per line
   delaunayPoints = []
@@ -28,12 +32,20 @@ export default class LineChart extends AbstractChart {
     super(args)
     this.defined = defined ?? this.defined
     this.activeAccessor = activeAccessor ? makeAccessorFunction(activeAccessor) : this.activeAccessor
+    this.activePoint = activePoint ?? this.activePoint
+    this.area = area ?? this.area
+    this.confidenceBand = confidenceBand ?? this.confidenceBand
+    this.delaunayParams = voronoi ?? this.delaunayParams
 
+    this.draw()
+  }
+
+  draw () {
     this.mountLines()
-    this.mountActivePoints(activePoint)
+    this.mountActivePoints(this.activePoint)
 
     // generate areas if necessary
-    this.mountAreas(area)
+    this.mountAreas(this.area)
 
     // set tooltip type
     if (this.tooltip) {
@@ -42,10 +54,10 @@ export default class LineChart extends AbstractChart {
     }
 
     // generate confidence band if necessary
-    if (typeof confidenceBand !== 'undefined') {
+    if (this.confidenceBand) {
       this.mountConfidenceBand({
-        lowerAccessor: confidenceBand[0],
-        upperAccessor: confidenceBand[1]
+        lowerAccessor: this.confidenceBand[0],
+        upperAccessor: this.confidenceBand[1]
       })
     }
 
@@ -54,10 +66,13 @@ export default class LineChart extends AbstractChart {
     this.mountBaselines()
 
     // set up delaunay triangulation
-    this.mountDelaunay(voronoi)
+    this.mountDelaunay(this.delaunayParams)
 
     // mount legend if any
     this.mountLegend(constants.legendObject.line)
+
+    // mount brush if necessary
+    this.mountBrush(this.brush)
   }
 
   /**
@@ -159,7 +174,7 @@ export default class LineChart extends AbstractChart {
    * @returns {void}
    */
   mountMarkers () {
-    const markerContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    const markerContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.markers.forEach(marker => {
       const x = this.xScale.scaleObject(this.xAccessor(marker))
       markerContainer
@@ -179,7 +194,7 @@ export default class LineChart extends AbstractChart {
   }
 
   mountBaselines () {
-    const baselineContainer = this.svg.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    const baselineContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.baselines.forEach(baseline => {
       const y = this.yScale.scaleObject(this.yAccessor(baseline))
       baselineContainer

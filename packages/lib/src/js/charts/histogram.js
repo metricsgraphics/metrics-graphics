@@ -25,6 +25,10 @@ export default class HistogramChart extends AbstractChart {
     if (binCount) dataBin.thresholds(binCount)
     this.bins = dataBin(this.data)
 
+    this.draw()
+  }
+
+  draw () {
     // set up histogram rects
     this.mountRects()
 
@@ -39,6 +43,9 @@ export default class HistogramChart extends AbstractChart {
 
     // mount legend if any
     this.mountLegend(constants.legendObject.square)
+
+    // mount brush if necessary
+    this.mountBrush(this.brush)
   }
 
   /**
@@ -56,7 +63,7 @@ export default class HistogramChart extends AbstractChart {
         strokeWidth: 0,
         xAccessor: bin => bin.x0,
         yAccessor: bin => bin.length,
-        widthAccessor: bin => bin.x1 - bin.x0,
+        widthAccessor: bin => this.xScale.scaleObject(bin.x1) - this.xScale.scaleObject(bin.x0),
         heightAccessor: bin => -bin.length
       })
       rect.mountTo(this.container)
@@ -128,8 +135,10 @@ export default class HistogramChart extends AbstractChart {
     const bins = dataBin(this.data)
 
     // update domains
-    this.xScale.domain = [0, bins.length]
-    this.yScale.domain = [0, max(bins, bin => bin.length)]
+    return {
+      x: [0, bins.length],
+      y: [0, max(bins, bin => bin.length)]
+    }
   }
 
   set activeBar (i) {

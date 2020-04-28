@@ -1,12 +1,13 @@
 import { isArrayOfArrays, isArrayOfObjectsOrEmpty, getWidth, getHeight, randomId, makeAccessorFunction } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select, event } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis from '../components/axis'
 import Tooltip from '../components/tooltip'
 import Legend from '../components/legend'
-import { extent } from 'd3-array'
+import { extent, max } from 'd3-array'
 import constants from '../misc/constants'
 import Point from '../components/point'
+import { brush as d3brush, brushX, brushY } from 'd3-brush'
 
 /**
  * This abstract chart class implements all functionality that is shared between all available chart types.
@@ -33,6 +34,7 @@ import Point from '../components/point'
  * @param {Function} [args.tooltipFunction] function that receives a data object and returns the string displayed as tooltip.
  * @param {Array} [args.legend] names of the sub-arrays of data, used as legend labels.
  * @param {String | Object} [args.legendTarget] DOM node to which the legend should be mounted.
+ * @param {Boolean | String} [brush] if truthy, add a bidirectional brush. If `x` or `y`, add one-directional brush.
  */
 export default class AbstractChart {
   id = null
@@ -43,6 +45,7 @@ export default class AbstractChart {
   baselines = []
   target = null
   svg = null
+  content = null
   container = null
 
   // accessors
@@ -51,14 +54,20 @@ export default class AbstractChart {
   colors = []
 
   // scales
+  xDomain = null
+  yDomain = null
   xScale = null
   yScale = null
 
   // axes
   xAxis = null
+  xAxisParams = {}
   yAxis = null
+  yAxisParams = {}
 
   // tooltip and legend stuff
+  showTooltip = true
+  tooltipFunction = null
   tooltip = null
   legend = null
   legendTarget = null
@@ -79,6 +88,11 @@ export default class AbstractChart {
   isArrayOfArrays = false
   isNestedArrayOfArrays = false
   isNestedArrayOfObjects = false
+
+  // brush
+  brush = false
+  idleDelay = 350
+  idleTimeout = null
 
   constructor ({
     data,
@@ -101,6 +115,7 @@ export default class AbstractChart {
     tooltipFunction,
     legend,
     legendTarget,
+    brush,
     ...custom
   }) {
     // set parameters
@@ -110,6 +125,11 @@ export default class AbstractChart {
     this.baselines = baselines ?? this.baselines
     this.legend = legend ?? this.legend
     this.legendTarget = legendTarget ?? this.legendTarget
+    this.brush = brush ?? this.brush
+    this.xAxisParams = xAxis ?? this.xAxisParams
+    this.yAxisParams = yAxis ?? this.yAxisParams
+    this.showTooltip = showTooltip ?? this.showTooltip
+    this.tooltipFunction = tooltipFunction ?? this.tooltipFunction
 
     // convert string accessors to functions if necessary
     this.xAccessor = makeAccessorFunction(xAccessor)
@@ -138,17 +158,70 @@ export default class AbstractChart {
 
     // normalize data if necessary
     this.normalizeData()
-    this.computeDomains(custom)
+
+    // compute domains and set them
+    const { x, y } = this.computeDomains(custom)
+    this.xDomain = x
+    this.yDomain = y
+    this.xScale.domain = x
+    this.yScale.domain = y
+
+    this.abstractRedraw()
+  }
+
+  abstractRedraw () {
+    // clear
+    this.content.selectAll('*').remove()
 
     // set up axes if not disabled
-    this.mountXAxis(xAxis)
-    this.mountYAxis(yAxis)
+    this.mountXAxis(this.xAxisParams)
+    this.mountYAxis(this.yAxisParams)
 
     // pre-attach tooltip text container
-    this.mountTooltip(showTooltip, tooltipFunction)
+    this.mountTooltip(this.showTooltip, this.tooltipFunction)
 
     // set up main container
     this.mountContainer()
+  }
+
+  mountBrush (whichBrush) {
+    if (!whichBrush) return
+    const brush = typeof whichBrush === 'string'
+      ? whichBrush === 'x' ? brushX() : brushY()
+      : d3brush()
+    brush.on('end', () => {
+      // compute domains and re-draw
+      var s = event.selection
+      if (s === null) {
+        if (!this.idleTimeout) {
+          this.idleTimeout = setTimeout(() => { this.idleTimeout = null }, 350)
+          return
+        }
+
+        // set original domains
+        this.xScale.domain = this.xDomain
+        this.yScale.domain = this.yDomain
+      } else {
+        if (this.brush === 'x') {
+          this.xScale.domain = [s[0], s[1]].map(this.xScale.scaleObject.invert)
+        } else if (this.brush === 'y') {
+          this.yScale.domain = [s[0], s[1]].map(this.yScale.scaleObject.invert)
+        } else {
+          this.xScale.domain = [s[0][0], s[1][0]].map(this.xScale.scaleObject.invert)
+          this.yScale.domain = [s[1][1], s[0][1]].map(this.yScale.scaleObject.invert)
+        }
+        this.content.select('.brush').call(brush.move, null)
+      }
+
+      // re-draw abstract elements
+      this.abstractRedraw()
+
+      // re-draw specific chart
+      this.draw()
+    })
+    this.container.append('g')
+      .classed('brush', true)
+      .call(brush)
   }
 
   /**
@@ -186,7 +259,7 @@ export default class AbstractChart {
     if (!xAxis?.tickFormat) this.computeXAxisType()
 
     // attach axis
-    if (this.xAxis) this.xAxis.mountTo(this.svg)
+    if (this.xAxis) this.xAxis.mountTo(this.content)
   }
 
   /**
@@ -207,7 +280,7 @@ export default class AbstractChart {
       ...yAxis
     })
     if (!yAxis?.tickFormat) this.computeYAxisType()
-    if (this.yAxis) this.yAxis.mountTo(this.svg)
+    if (this.yAxis) this.yAxis.mountTo(this.content)
   }
 
   /**
@@ -228,7 +301,7 @@ export default class AbstractChart {
       colors: this.colors,
       legend: this.legend
     })
-    this.tooltip.mountTo(this.svg)
+    this.tooltip.mountTo(this.content)
   }
 
   /**
@@ -236,12 +309,20 @@ export default class AbstractChart {
    * @returns {void}
    */
   mountContainer () {
-    this.container = this.svg
+    this.container = this.content
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
       .attr('clip-path', `url(#mg-plot-window-${this.id})`)
       .append('g')
       .attr('transform', `translate(${this.buffer},${this.buffer})`)
+    this.container
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('opacity', 0)
+      .attr('pointer-events', 'all')
+      .attr('width', max(this.xScale.range))
+      .attr('height', max(this.yScale.range))
   }
 
   /**
@@ -303,6 +384,11 @@ export default class AbstractChart {
     if (this.isFullWidth || this.isFullHeight) {
       this.svg.attr('preserveAspectRatio', 'xMinYMin meet')
     }
+
+    // append content
+    this.content = this.svg
+      .append('g')
+      .classed('mg-content', true)
   }
 
   /**
@@ -314,14 +400,13 @@ export default class AbstractChart {
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
    * @param {Object} params object of custom parameters for the specific chart type
-   * @returns {void}
+   * @returns {Object} specifying the domain for x and y axis as separate properties.
    */
   computeDomains (params) {
     const flatData = this.data.flat()
-    const xExtent = extent(flatData, this.xAccessor)
-    const yExtent = extent(flatData, this.yAccessor)
-    this.xScale.domain = xExtent
-    this.yScale.domain = yExtent
+    const x = extent(flatData, this.xAccessor)
+    const y = extent(flatData, this.yAccessor)
+    return { x, y }
   }
 
   /**

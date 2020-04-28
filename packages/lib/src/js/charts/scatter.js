@@ -18,24 +18,32 @@ export default class ScatterChart extends AbstractChart {
   delaunayPoint = null
   sizeAccessor = null
   xRug = null
+  xRugParams = null
   yRug = null
+  yRugParams = null
   _activePoint = { i: -1, j: -1 }
 
   constructor ({ sizeAccessor, xRug, yRug, ...args }) {
     super(args)
+    this.xRugParams = xRug ?? this.xRugParams
+    this.yRugParams = yRug ?? this.yRugParams
 
+    this.sizeAccessor = sizeAccessor
+      ? makeAccessorFunction(sizeAccessor)
+      : () => 3
+
+    this.draw()
+  }
+
+  draw () {
     // set up rugs if necessary
-    this.mountRugs(xRug, yRug)
+    this.mountRugs(this.xRugParams, this.yRugParams)
 
     // set tooltip type
     if (this.tooltip) {
       this.tooltip.update({ legendObject: constants.legendObject.circle })
       this.tooltip.hide()
     }
-
-    this.sizeAccessor = sizeAccessor
-      ? makeAccessorFunction(sizeAccessor)
-      : () => 3
 
     // set up points
     this.mountPoints()
@@ -45,6 +53,9 @@ export default class ScatterChart extends AbstractChart {
 
     // mount legend if any
     this.mountLegend(constants.legendObject.circle)
+
+    // mount brush if necessary
+    this.mountBrush(this.brush)
   }
 
   /**
@@ -65,7 +76,7 @@ export default class ScatterChart extends AbstractChart {
         top: this.innerHeight + this.plotTop + this.buffer,
         orientation: constants.orientation.horizontal // TODO how to pass tickLength etc?
       })
-      this.xRug.mountTo(this.svg)
+      this.xRug.mountTo(this.content)
     }
     if (yRug) {
       this.yRug = new Rug({
@@ -77,7 +88,7 @@ export default class ScatterChart extends AbstractChart {
         top: this.plotTop,
         orientation: constants.orientation.vertical
       })
-      this.yRug.mountTo(this.svg)
+      this.yRug.mountTo(this.content)
     }
   }
 
