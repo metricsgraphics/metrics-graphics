@@ -1,5 +1,4 @@
 import { Delaunay as DelaunayObject } from 'd3-delaunay'
-import { max } from 'd3-array'
 import { mouse } from 'd3-selection'
 
 /**
@@ -26,7 +25,6 @@ export default class Delaunay {
   yScale = null
   xAccessor = null
   yAccessor = null
-  rect = null
   aggregate = false
 
   constructor ({
@@ -145,7 +143,7 @@ export default class Delaunay {
 
     // find nearest point
     const index = this.delaunay.find(x, y)
-    this.onClick({ ...this.points[index], index })
+    if (this.onClick) this.onClick({ ...this.points[index], index })
   }
 
   /**
@@ -155,22 +153,14 @@ export default class Delaunay {
    * @returns {void}
    */
   mountTo (svg) {
-    this.rect = svg
-      .append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('opacity', 0)
-      .attr('pointer-events', 'all')
-      .attr('width', max(this.xScale.range))
-      .attr('height', max(this.yScale.range))
-    this.rect.on('mousemove', () => {
+    svg.on('mousemove', () => {
       const rawCoords = mouse(svg.node())
       this.gotPoint(rawCoords[0], rawCoords[1])
     })
-    this.rect.on('mouseleave', () => {
+    svg.on('mouseleave', () => {
       this.onLeave()
     })
-    this.rect.on('click', () => {
+    svg.on('click', () => {
       const rawCoords = mouse(svg.node())
       this.clickedPoint(rawCoords[0], rawCoords[1])
     })
