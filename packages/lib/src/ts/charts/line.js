@@ -28,7 +28,7 @@ export default class LineChart extends AbstractChart {
   // one delaunay point per line
   delaunayPoints = []
 
-  constructor ({ area, confidenceBand, voronoi, defined = null, activeAccessor = null, activePoint, ...args }) {
+  constructor({ area, confidenceBand, voronoi, defined = null, activeAccessor = null, activePoint, ...args }) {
     super(args)
     this.defined = defined ?? this.defined
     this.activeAccessor = activeAccessor ? makeAccessorFunction(activeAccessor) : this.activeAccessor
@@ -40,7 +40,7 @@ export default class LineChart extends AbstractChart {
     this.redraw()
   }
 
-  redraw () {
+  redraw() {
     this.mountLines()
     this.mountActivePoints(this.activePoint)
 
@@ -79,7 +79,7 @@ export default class LineChart extends AbstractChart {
    * Mount lines for each array of data points.
    * @returns {void}
    */
-  mountLines () {
+  mountLines() {
     // compute lines and delaunay points
     this.data.forEach((lineData, index) => {
       const line = new Line({
@@ -101,10 +101,10 @@ export default class LineChart extends AbstractChart {
    * @param {Object} [params] custom parameters for point generation. See {@see Point} for a list of options.
    * @returns {void}
    */
-  mountActivePoints (params) {
+  mountActivePoints(params) {
     if (this.activeAccessor === null) return
     this.data.forEach((pointArray, index) => {
-      pointArray.filter(this.activeAccessor).forEach(data => {
+      pointArray.filter(this.activeAccessor).forEach((data) => {
         const point = this.generatePoint({
           data,
           color: this.colors[index],
@@ -122,19 +122,20 @@ export default class LineChart extends AbstractChart {
    * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
    * @returns {void}
    */
-  mountAreas (area) {
+  mountAreas(area) {
     if (typeof area === 'undefined') return
 
     let areas
-    const areaGenerator = (lineData, index) => new Area({
-      data: lineData,
-      xAccessor: this.xAccessor,
-      yAccessor: this.yAccessor,
-      xScale: this.xScale,
-      yScale: this.yScale,
-      color: this.colors[index],
-      defined: this.defined
-    })
+    const areaGenerator = (lineData, index) =>
+      new Area({
+        data: lineData,
+        xAccessor: this.xAccessor,
+        yAccessor: this.yAccessor,
+        xScale: this.xScale,
+        yScale: this.yScale,
+        color: this.colors[index],
+        defined: this.defined
+      })
 
     // if area is boolean and truthy, generate areas for each line
     if (typeof area === 'boolean' && area) {
@@ -146,7 +147,7 @@ export default class LineChart extends AbstractChart {
     }
 
     // mount areas
-    areas.forEach(area => area.mountTo(this.container))
+    areas.forEach((area) => area.mountTo(this.container))
   }
 
   /**
@@ -156,7 +157,7 @@ export default class LineChart extends AbstractChart {
    * @param {Function | String} upperAccessor for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
    * @returns {void}
    */
-  mountConfidenceBand ({ lowerAccessor, upperAccessor }) {
+  mountConfidenceBand({ lowerAccessor, upperAccessor }) {
     const confidenceBandGenerator = new Area({
       data: this.data[0], // confidence band only makes sense for one line
       xAccessor: this.xAccessor,
@@ -173,9 +174,9 @@ export default class LineChart extends AbstractChart {
    * Mount markers, if any.
    * @returns {void}
    */
-  mountMarkers () {
+  mountMarkers() {
     const markerContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
-    this.markers.forEach(marker => {
+    this.markers.forEach((marker) => {
       const x = this.xScale.scaleObject(this.xAccessor(marker))
       markerContainer
         .append('line')
@@ -184,18 +185,13 @@ export default class LineChart extends AbstractChart {
         .attr('x2', x)
         .attr('y1', this.yScale.range[0] + this.buffer)
         .attr('y2', this.yScale.range[1] + this.buffer)
-      markerContainer
-        .append('text')
-        .classed('text-marker', true)
-        .attr('x', x)
-        .attr('y', 8)
-        .text(marker.label)
+      markerContainer.append('text').classed('text-marker', true).attr('x', x).attr('y', 8).text(marker.label)
     })
   }
 
-  mountBaselines () {
+  mountBaselines() {
     const baselineContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
-    this.baselines.forEach(baseline => {
+    this.baselines.forEach((baseline) => {
       const y = this.yScale.scaleObject(this.yAccessor(baseline))
       baselineContainer
         .append('line')
@@ -218,12 +214,12 @@ export default class LineChart extends AbstractChart {
    *
    * @returns {Function} handler function.
    */
-  onPointHandler () {
-    return points => {
+  onPointHandler() {
+    return (points) => {
       // pre-hide all points
-      this.delaunayPoints.forEach(dp => dp.dismount())
+      this.delaunayPoints.forEach((dp) => dp.dismount())
 
-      points.forEach(point => {
+      points.forEach((point) => {
         const index = point.arrayIndex || 0
 
         // set hover point
@@ -242,9 +238,9 @@ export default class LineChart extends AbstractChart {
    *
    * @returns {Function} handler function.
    */
-  onLeaveHandler () {
+  onLeaveHandler() {
     return () => {
-      this.delaunayPoints.forEach(dp => dp.dismount())
+      this.delaunayPoints.forEach((dp) => dp.dismount())
       if (this.tooltip) this.tooltip.hide()
     }
   }
@@ -255,7 +251,7 @@ export default class LineChart extends AbstractChart {
    * @param {Object} customParameters custom parameters for {@link Delaunay}.
    * @returns {void}
    */
-  mountDelaunay (customParameters) {
+  mountDelaunay(customParameters) {
     this.delaunay = new Delaunay({
       points: this.data,
       xAccessor: this.xAccessor,
@@ -275,12 +271,11 @@ export default class LineChart extends AbstractChart {
    *
    * isSingleObject: return error
    * isArrayOfObjects: nest once
-   * isArrayOfArrays: do nothing
    * isNestedArrayOfArrays: do nothing, assume index-based accessor
    * isNestedArrayOfObjects: do nothing
    * @returns {void}
    */
-  normalizeData () {
+  normalizeData() {
     if (this.isSingleObject) {
       throw new Error('error: line chart needs data in array format')
     }
@@ -288,7 +283,7 @@ export default class LineChart extends AbstractChart {
     if (this.isArrayOfObjects) this.data = [this.data]
   }
 
-  computeXAxisType () {
+  computeXAxisType() {
     const flatData = this.data.flat()
     const xValue = this.xAccessor(flatData[0])
 
@@ -299,7 +294,7 @@ export default class LineChart extends AbstractChart {
     }
   }
 
-  computeYAxisType () {
+  computeYAxisType() {
     const flatData = this.data.flat()
     const yValue = this.yAccessor(flatData[0])
 

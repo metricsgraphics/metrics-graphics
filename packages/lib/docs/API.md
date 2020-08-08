@@ -235,7 +235,6 @@ Normalizes the passed data to a nested array of objects.
 
 isSingleObject: return error
 isArrayOfObjects: nest once
-isArrayOfArrays: do nothing
 isNestedArrayOfArrays: do nothing, assume index-based accessor
 isNestedArrayOfObjects: do nothing
 

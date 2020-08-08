@@ -1,5 +1,7 @@
 import AbstractShape from './abstractShape'
 
+export interface IRect extends IAbstr
+
 /**
  * Create a new rectangle.
  *
@@ -15,7 +17,7 @@ export default class Rect extends AbstractShape {
   widthAccessor = null
   heightAccessor = null
 
-  constructor ({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }) {
+  constructor({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }) {
     super(args)
     this.xAccessor = xAccessor
     this.yAccessor = yAccessor
@@ -23,10 +25,18 @@ export default class Rect extends AbstractShape {
     this.heightAccessor = heightAccessor
   }
 
-  get x () { return this.xScale.scaleObject(this.xAccessor(this.data)) }
-  get y () { return this.yScale.scaleObject(this.yAccessor(this.data)) }
-  get width () { return Math.max(0, Math.abs(this.widthAccessor(this.data))) }
-  get height () { return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data))) }
+  get x() {
+    return this.xScale.scaleObject(this.xAccessor(this.data))
+  }
+  get y() {
+    return this.yScale.scaleObject(this.yAccessor(this.data))
+  }
+  get width() {
+    return Math.max(0, Math.abs(this.widthAccessor(this.data)))
+  }
+  get height() {
+    return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data)))
+  }
 
   /**
    * Mount the rectangle to the given node.
@@ -34,7 +44,7 @@ export default class Rect extends AbstractShape {
    * @param {Object} svg d3 node to mount the rectangle to.
    * @returns {void}
    */
-  mountTo (svg) {
+  mountTo(svg) {
     this.shapeObject = svg
       .append('rect')
       .attr('x', this.x)
@@ -54,7 +64,7 @@ export default class Rect extends AbstractShape {
    * @param {Object} data updated data object.
    * @returns {void}
    */
-  update ({ data, ...args }) {
+  update({ data, ...args }) {
     this.updateGeneric(args)
     if (data) {
       this.data = data

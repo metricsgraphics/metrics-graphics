@@ -4,8 +4,6 @@
 
 -   [makeAccessorFunction][1]
     -   [Parameters][2]
--   [isArrayOfArrays][3]
-    -   [Parameters][4]
 -   [isArrayOfObjects][5]
     -   [Parameters][6]
 -   [isArrayOfObjectsOrEmpty][7]
@@ -27,16 +25,6 @@ Handle cases where the user specifies an accessor string instead of an accessor 
 -   `functionOrString` **([Function][16] \| [String][17])** accessor string/function to be made an accessor function
 
 Returns **[Function][16]** accessor function
-
-## isArrayOfArrays
-
-Check if an array is an array of arrays.
-
-### Parameters
-
--   `arr` **[Array][18]** array to be checked.
-
-Returns **[Boolean][19]** whether or not the given array is an array of arrays.
 
 ## isArrayOfObjects
 
@@ -103,8 +91,6 @@ Returns **[Number][20]** height of element.
 [1]: #makeaccessorfunction
 
 [2]: #parameters
-
-[3]: #isarrayofarrays
 
 [4]: #parameters-1
 
