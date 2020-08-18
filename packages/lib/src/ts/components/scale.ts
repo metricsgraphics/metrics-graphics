@@ -1,4 +1,5 @@
 import { scaleLinear, ScaleLinear } from 'd3-scale'
+import { Domain, Range } from '../misc/typings'
 
 export enum ScaleType {
   LINEAR = 'linear'
@@ -11,10 +12,10 @@ export interface IScale {
   type?: ScaleType
 
   /** scale range */
-  range?: Array<number>
+  range?: Range
 
   /** scale domain */
-  domain?: Array<number>
+  domain?: Domain
 
   /** overwrites domain lower bound */
   minValue?: number
@@ -55,17 +56,17 @@ export default class Scale {
     }
   }
 
-  get range(): Array<number> {
+  get range(): Range {
     return this.scaleObject.range()
   }
-  set range(range: Array<number>) {
+  set range(range: Range) {
     this.scaleObject.range(range)
   }
 
-  get domain(): Array<number> {
+  get domain(): Domain {
     return this.scaleObject.domain()
   }
-  set domain(domain: Array<number>) {
+  set domain(domain: Domain) {
     // fix custom domain values if necessary
     if (typeof this.minValue !== 'undefined') domain[0] = this.minValue
     if (typeof this.maxValue !== 'undefined') domain[1] = this.maxValue

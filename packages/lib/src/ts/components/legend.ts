@@ -1,20 +1,24 @@
 import constants from '../misc/constants'
 import { select } from 'd3-selection'
+import { LegendSymbol } from '../misc/typings'
 
-/**
- * Set up a new legend.
- *
- * @param {Object} args argument object.
- * @param {Array} args.legend array of descriptive legend strings.
- * @param {Array} args.colorScheme colors used for the legend. Will be darkened for better visibility.
- * @param {String} args.symbol used in the legend (line, circle, square).
- */
+export interface ILegend {
+  /** array of descriptive legend strings */
+  legend: Array<string>
+
+  /** colors used for the legend -- will be darkened for better visibility */
+  colorScheme: Array<string>
+
+  /** symbol used in the legend */
+  symbolType: LegendSymbol
+}
+
 export default class Legend {
-  legend = []
-  colorScheme = []
-  symbolType = ''
+  legend: Array<string>
+  colorScheme: Array<string>
+  symbolType: LegendSymbol
 
-  constructor ({ legend, colorScheme, symbolType }) {
+  constructor ({ legend, colorScheme, symbolType }: ILegend) {
     this.legend = legend
     this.colorScheme = colorScheme
     this.symbolType = symbolType
@@ -24,11 +28,11 @@ export default class Legend {
    * Darken a given color by a given amount.
    *
    * @see https://css-tricks.com/snippets/javascript/lighten-darken-color/
-   * @param {String} color hex color specifier
-   * @param {Number} amount how much to darken the color.
-   * @returns {String} darkened color in hex representation.
+   * @param color hex color specifier
+   * @param amount how much to darken the color
+   * @returns darkened color in hex representation.
    */
-  darkenColor (color, amount) {
+  darkenColor (color: string, amount: number): string {
     // remove hash
     color = color.slice(1)
 
@@ -44,10 +48,10 @@ export default class Legend {
   /**
    * Clamp a number between 0 and 255.
    *
-   * @param {Number} number number to be clamped.
-   * @returns {Number} clamped number.
+   * @param number number to be clamped.
+   * @returns clamped number.
    */
-  clamp (number) {
+  clamp (number: number): number {
     return number > 255
       ? 255
       : number < 0
@@ -58,10 +62,9 @@ export default class Legend {
   /**
    * Mount the legend to the given node.
    *
-   * @param {String | Object} node d3 specifier or d3 node to mount the legend to.
-   * @returns {void}
+   * @param node d3 specifier or d3 node to mount the legend to.
    */
-  mountTo (node) {
+  mountTo (node: any) {
     const symbol = constants.symbol[this.symbolType]
 
     // create d3 selection if necessary

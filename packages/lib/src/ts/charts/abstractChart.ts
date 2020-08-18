@@ -6,87 +6,126 @@ import Tooltip from '../components/tooltip'
 import Legend from '../components/legend'
 import { extent, max } from 'd3-array'
 import constants from '../misc/constants'
-import Point from '../components/point'
+import Point, { IPoint } from '../components/point'
 import { brush as d3brush, brushX, brushY } from 'd3-brush'
+import {
+  SvgD3Selection,
+  AccessorFunction,
+  Margin,
+  GenericD3Selection,
+  BrushType,
+  DomainObject,
+  Domain
+} from '../misc/typings'
+
+export interface IAbstractChart {
+  /** data that is to be visualized */
+  data: Array<any>
+
+  /** DOM node to which the graph will be mounted (D3 selection or D3 selection specifier) */
+  target: string | SvgD3Selection
+
+  /** total width of the graph */
+  width: number
+
+  /** total height of the graph */
+  height: number
+
+  /** markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field */
+  markers?: Array<any>
+
+  /** baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field */
+  baselines?: Array<any>
+
+  /** either name of the field that contains the x value or function that receives a data object and returns its x value */
+  xAccessor?: string | AccessorFunction
+
+  /** either name of the field that contains the y value or function that receives a data object and returns its y value */
+  yAccessor?: string | AccessorFunction
+
+  /** margins of the visualization for labels */
+  margin?: Margin
+
+  /** amount of buffer between the axes and the graph */
+  buffer?: number
+
+  /** custom color scheme for the graph */
+  colors?: Array<string>
+
+  /** overwrite parameters of the auto-generated x scale */
+  xScale?: Scale
+
+  /** overwrite parameters of the auto-generated y scale */
+  yScale?: Scale
+
+  /** overwrite parameters of the auto-generated x axis */
+  xAxis?: Axis
+
+  /** overwrite parameters of the auto-generated y axis */
+  yAxis?: Axis
+
+  /** whether or not to show a tooltip */
+  showTooltip?: boolean
+
+  /** generate a custom tooltip string */
+  tooltipFunction?: (datapoint: any) => string
+
+  /** names of the sub-arrays of data, used as legend labels */
+  legend?: Array<string>
+
+  /** DOM node to which the legend will be mounted (D3 selection or D3 selection specifier) */
+  legendTarget: string | GenericD3Selection
+
+  /** add an optional brush */
+  brush: BrushType
+}
 
 /**
  * This abstract chart class implements all functionality that is shared between all available chart types.
- * This is not meant to be directly instantiated.
- *
- * @param {Object} args argument object.
- * @param {Array} args.data data that needs to be visualized.
- * @param {String | Object} args.target DOM node to which the graph should be mounted. Either D3 selection or D3 selection specifier.
- * @param {Number} args.width total width of the graph.
- * @param {Number} args.height total height of the graph.
- * @param {Array} [args.markers=[]] markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field.
- * @param {Array} [args.baselines=[]] baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field.
- * @param {String | Function} [args.xAccessor=d=>d] either name of the field that contains the x value or function that receives a data object and returns its x value.
- * @param {String | Function} [args.yAccessor=d=>d] either name of the field that contains the y value or function that receives a data object and returns its y value.
- * @param {Object} [args.margin={ top: 10, left: 60, right: 20, bottom: 40 }] margin object specifying top, bottom, left and right margin.
- * @param {Number} [args.buffer=10] amount of buffer between the axes and the graph.
- * @param {String | Array} [args.color] custom color scheme for the graph.
- * @param {String | Array} [args.colors=schemeCategory10] alternative to color.
- * @param {Object} [args.xScale] object that can be used to overwrite parameters of the auto-generated x {@link Scale}.
- * @param {Object} [args.yScale] object that can be used to overwrite parameters of the auto-generated y {@link Scale}.
- * @param {Object} [args.xAxis] object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
- * @param {Object} [args.yAxis] object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
- * @param {Boolean} [args.showTooltip] whether or not to show a tooltip.
- * @param {Function} [args.tooltipFunction] function that receives a data object and returns the string displayed as tooltip.
- * @param {Array} [args.legend] names of the sub-arrays of data, used as legend labels.
- * @param {String | Object} [args.legendTarget] DOM node to which the legend should be mounted.
- * @param {Boolean | String} [brush] if truthy, add a bidirectional brush. If `x` or `y`, add one-directional brush.
  */
 export default abstract class AbstractChart {
-  id = null
+  id: string
 
   // base chart fields
-  data = null
-  markers = []
-  baselines = []
-  target = null
-  svg = null
-  content = null
-  container = null
+  data: Array<any>
+  markers: Array<any>
+  baselines: Array<any>
+  target: SvgD3Selection
+  svg?: SvgD3Selection
+  content?: SvgD3Selection
+  container?: SvgD3Selection
 
   // accessors
-  xAccessor = null
-  yAccessor = null
-  colors = []
+  xAccessor: AccessorFunction
+  yAccessor: AccessorFunction
+  colors: Array<string>
 
   // scales
-  xDomain = null
-  yDomain = null
-  xScale = null
-  yScale = null
+  xDomain: Domain
+  yDomain: Domain
+  xScale: Scale
+  yScale: Scale
 
   // axes
-  xAxis = null
-  xAxisParams = {}
-  yAxis = null
-  yAxisParams = {}
+  xAxis?: Axis
+  xAxisParams: any
+  yAxis?: Axis
+  yAxisParams: any
 
   // tooltip and legend stuff
-  showTooltip = true
-  tooltipFunction = null
-  tooltip = null
-  legend = null
-  legendTarget = null
+  showTooltip: boolean
+  tooltipFunction: (datapoint: any) => string
+  tooltip?: Tooltip
+  legend?: Legend
+  legendTarget?: GenericD3Selection
 
   // dimensions
-  width = 0
-  height = 0
-  isFullWidth = false
-  isFullHeight = false
+  width: number
+  height: number
 
   // margins
-  margin = { top: 10, left: 60, right: 20, bottom: 40 }
-  buffer = 10
-
-  // data type flags
-  isSingleObject = false
-  isArrayOfObjects = false
-  isNestedArrayOfArrays = false
-  isNestedArrayOfObjects = false
+  margin: Margin
+  buffer: number
 
   // brush
   brush = false
@@ -104,7 +143,6 @@ export default abstract class AbstractChart {
     buffer,
     width,
     height,
-    color,
     colors,
     xScale,
     yScale,
@@ -116,32 +154,32 @@ export default abstract class AbstractChart {
     legendTarget,
     brush,
     ...custom
-  }) {
+  }: IAbstractChart) {
     // set parameters
     this.data = data
-    this.target = target
-    this.markers = markers ?? this.markers
-    this.baselines = baselines ?? this.baselines
+    this.target = typeof target === 'string' ? select(target) : target
+    this.markers = markers ?? []
+    this.baselines = baselines ?? []
     this.legend = legend ?? this.legend
     this.legendTarget = legendTarget ?? this.legendTarget
     this.brush = brush ?? this.brush
     this.xAxisParams = xAxis ?? this.xAxisParams
     this.yAxisParams = yAxis ?? this.yAxisParams
-    this.showTooltip = showTooltip ?? this.showTooltip
+    this.showTooltip = showTooltip ?? true
     this.tooltipFunction = tooltipFunction ?? this.tooltipFunction
 
     // convert string accessors to functions if necessary
     this.xAccessor = makeAccessorFunction(xAccessor)
     this.yAccessor = makeAccessorFunction(yAccessor)
-    this.margin = margin ?? this.margin
-    this.buffer = buffer ?? this.buffer
+    this.margin = margin ?? { top: 10, left: 60, right: 20, bottom: 40 }
+    this.buffer = buffer ?? 10
 
     // set unique id for chart
     this.id = randomId()
 
     // compute dimensions
-    this.width = getWidth(this.isFullWidth, width, this.target)
-    this.height = getHeight(this.isFullHeight, height, this.target)
+    this.width = getWidth(width, this.target)
+    this.height = getHeight(height, this.target)
 
     // normalize color and colors arguments
     this.colors = color ? [color] : colors ? [colors] : constants.defaultColors
@@ -371,16 +409,15 @@ export default abstract class AbstractChart {
 
   /**
    * If needed, charts can implement data normalizations, which are applied when instantiating a new chart.
-   * @returns {void}
    */
-  normalizeData() {}
+  abstract normalizeData(): void
 
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
-   * @param {Object} params object of custom parameters for the specific chart type
-   * @returns {Object} specifying the domain for x and y axis as separate properties.
+   * @param params object of custom parameters for the specific chart type
+   * @returns domains for x and y axis as separate properties.
    */
-  computeDomains(params) {
+  computeDomains(params: any): DomainObject {
     const flatData = this.data.flat()
     const x = extent(flatData, this.xAccessor)
     const y = extent(flatData, this.yAccessor)
@@ -390,18 +427,16 @@ export default abstract class AbstractChart {
   /**
    * Meant to be overwritten by chart implementations.
    * Set tick format of the x axis.
-   * @returns {void}
    */
-  computeXAxisType() {}
+  abstract computeXAxisType(): void
 
   /**
    * Meant to be overwritten by chart implementations.
    * Set tick format of the y axis.
-   * @returns {void}
    */
-  computeYAxisType() {}
+  abstract computeYAxisType(): void
 
-  generatePoint(args) {
+  generatePoint(args: IPoint): Point {
     return new Point({
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
@@ -411,28 +446,28 @@ export default abstract class AbstractChart {
     })
   }
 
-  get top() {
+  get top(): number {
     return this.margin.top
   }
-  get left() {
+  get left(): number {
     return this.margin.left
   }
-  get bottom() {
+  get bottom(): number {
     return this.height - this.margin.bottom
   }
 
   // returns the pixel location of the respective side of the plot area.
-  get plotTop() {
+  get plotTop(): number {
     return this.top + this.buffer
   }
-  get plotLeft() {
+  get plotLeft(): number {
     return this.left + this.buffer
   }
 
-  get innerWidth() {
+  get innerWidth(): number {
     return this.width - this.margin.left - this.margin.right - 2 * this.buffer
   }
-  get innerHeight() {
+  get innerHeight(): number {
     return this.height - this.margin.top - this.margin.bottom - 2 * this.buffer
   }
 }

@@ -1,5 +1,5 @@
 import Scale from './scale'
-import { DefaultD3Selection } from '../misc/typings'
+import { SvgD3Selection } from '../misc/typings'
 
 export interface IAbstractShape {
   /** datapoint used to generate shape */
@@ -45,7 +45,7 @@ export default abstract class AbstractShape {
    *
    * @param svg D3 node to mount the shape to
    */
-  mountTo(svg: DefaultD3Selection): void {
+  mountTo(svg: SvgD3Selection): void {
     console.error('this needs to be implemented by inheriting classes', svg)
   }
 
