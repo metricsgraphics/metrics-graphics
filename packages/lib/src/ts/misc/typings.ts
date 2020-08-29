@@ -28,8 +28,8 @@ export interface Margin {
 }
 
 export interface DomainObject {
-  x?: Domain
-  y?: Domain
+  x: Domain
+  y: Domain
 }
 
 export enum LegendSymbol {
@@ -47,8 +47,8 @@ export enum BrushType {
 export type Domain = number[]
 export type Range = number[]
 
+export type GenericD3Selection = Selection<any, any, any, any>
 export type SvgD3Selection = Selection<SVGElement, any, Element, any>
 export type GD3Selection = Selection<SVGGElement, any, Element, any>
-export type GenericD3Selection = Selection<Element, any, Element, any>
 export type LineD3Selection = Selection<SVGLineElement, any, Element, any>
 export type TextD3Selection = Selection<SVGTextElement, any, Element, any>

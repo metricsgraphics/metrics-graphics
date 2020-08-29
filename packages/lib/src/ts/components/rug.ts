@@ -1,5 +1,5 @@
 import constants from '../misc/constants'
-import { AccessorFunction, DefaultD3Selection } from '../misc/typings'
+import { AccessorFunction, GenericD3Selection } from '../misc/typings'
 import Scale from './scale'
 
 enum RugOrientation {
@@ -44,7 +44,16 @@ export default class Rug {
   colors = constants.defaultColors
   orientation = RugOrientation.HORIZONTAL
 
-  constructor({ accessor, scale, data, tickLength, colors, orientation, left, top }: IRug) {
+  constructor({
+    accessor,
+    scale,
+    data,
+    tickLength,
+    colors,
+    orientation,
+    left,
+    top
+  }: IRug) {
     this.accessor = accessor
     this.scale = scale
     this.data = data
@@ -64,10 +73,12 @@ export default class Rug {
    *
    * @param svg d3 node to mount the rug to.
    */
-  mountTo(svg: DefaultD3Selection): void {
+  mountTo(svg: GenericD3Selection): void {
     // add container
     const top = this.isVertical ? this.top : this.top - this.tickLength
-    const container = svg.append('g').attr('transform', `translate(${this.left},${top})`)
+    const container = svg
+      .append('g')
+      .attr('transform', `translate(${this.left},${top})`)
 
     // add lines
     this.data.forEach((dataArray, i) =>

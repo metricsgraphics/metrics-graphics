@@ -1,7 +1,7 @@
-import { getWidth, getHeight, randomId, makeAccessorFunction } from '../misc/utility'
-import { select, event } from 'd3-selection'
+import { randomId, makeAccessorFunction } from '../misc/utility'
+import { select, event, Selection, BaseType } from 'd3-selection'
 import Scale from '../components/scale'
-import Axis from '../components/axis'
+import Axis, { IAxis, AxisOrientation } from '../components/axis'
 import Tooltip from '../components/tooltip'
 import Legend from '../components/legend'
 import { extent, max } from 'd3-array'
@@ -15,8 +15,12 @@ import {
   GenericD3Selection,
   BrushType,
   DomainObject,
-  Domain
+  Domain,
+  LegendSymbol,
+  GD3Selection
 } from '../misc/typings'
+
+type TooltipFunction = (datapoint: any) => string
 
 export interface IAbstractChart {
   /** data that is to be visualized */
@@ -91,9 +95,9 @@ export default abstract class AbstractChart {
   markers: Array<any>
   baselines: Array<any>
   target: SvgD3Selection
-  svg?: SvgD3Selection
-  content?: SvgD3Selection
-  container?: SvgD3Selection
+  svg?: GenericD3Selection
+  content?: GD3Selection
+  container?: GD3Selection
 
   // accessors
   xAccessor: AccessorFunction
@@ -114,9 +118,9 @@ export default abstract class AbstractChart {
 
   // tooltip and legend stuff
   showTooltip: boolean
-  tooltipFunction: (datapoint: any) => string
+  tooltipFunction: TooltipFunction
   tooltip?: Tooltip
-  legend?: Legend
+  legend?: Array<string>
   legendTarget?: GenericD3Selection
 
   // dimensions
@@ -128,9 +132,9 @@ export default abstract class AbstractChart {
   buffer: number
 
   // brush
-  brush = false
+  brush: BrushType
   idleDelay = 350
-  idleTimeout = null
+  idleTimeout: unknown
 
   constructor({
     data,
@@ -161,12 +165,15 @@ export default abstract class AbstractChart {
     this.markers = markers ?? []
     this.baselines = baselines ?? []
     this.legend = legend ?? this.legend
-    this.legendTarget = legendTarget ?? this.legendTarget
-    this.brush = brush ?? this.brush
+    if (legendTarget) {
+      this.legendTarget =
+        typeof legendTarget === 'string' ? select(legendTarget) : legendTarget
+    }
+    this.brush = brush ?? undefined
     this.xAxisParams = xAxis ?? this.xAxisParams
     this.yAxisParams = yAxis ?? this.yAxisParams
     this.showTooltip = showTooltip ?? true
-    this.tooltipFunction = tooltipFunction ?? this.tooltipFunction
+    this.tooltipFunction = tooltipFunction ?? ((x) => x)
 
     // convert string accessors to functions if necessary
     this.xAccessor = makeAccessorFunction(xAccessor)
@@ -178,11 +185,11 @@ export default abstract class AbstractChart {
     this.id = randomId()
 
     // compute dimensions
-    this.width = getWidth(width, this.target)
-    this.height = getHeight(height, this.target)
+    this.width = width
+    this.height = height
 
     // normalize color and colors arguments
-    this.colors = color ? [color] : colors ? [colors] : constants.defaultColors
+    this.colors = colors ?? constants.defaultColors
 
     // attach base elements to svg
     this.mountSvg()
@@ -206,9 +213,11 @@ export default abstract class AbstractChart {
 
   /**
    * Draw the abstract chart.
-   * @returns {void}
    */
-  abstractRedraw() {
+  abstractRedraw(): void {
+    // if not drawn yet, abort
+    if (!this.content) return
+
     // clear
     this.content.selectAll('*').remove()
 
@@ -226,14 +235,28 @@ export default abstract class AbstractChart {
   /**
    * Draw the actual chart.
    * This is meant to be overridden by chart implementations.
-   * @returns {void}
    */
-  redraw() {}
+  abstract redraw(): void
 
-  mountBrush(whichBrush) {
-    if (!whichBrush) return
-    const brush = typeof whichBrush === 'string' ? (whichBrush === 'x' ? brushX() : brushY()) : d3brush()
+  mountBrush(whichBrush: BrushType): void {
+    // brush can only be mounted after content is set
+    if (!this.content || !this.container) {
+      console.error('error: content not set yet')
+      return
+    }
+
+    const brush =
+      whichBrush === BrushType.X
+        ? brushX()
+        : whichBrush === BrushType.Y
+        ? brushY()
+        : d3brush()
     brush.on('end', () => {
+      // if no content is set, do nothing
+      if (!this.content) {
+        console.error('error: content is not set yet')
+        return
+      }
       // compute domains and re-draw
       const s = event.selection
       if (s === null) {
@@ -253,10 +276,14 @@ export default abstract class AbstractChart {
         } else if (this.brush === 'y') {
           this.yScale.domain = [s[0], s[1]].map(this.yScale.scaleObject.invert)
         } else {
-          this.xScale.domain = [s[0][0], s[1][0]].map(this.xScale.scaleObject.invert)
-          this.yScale.domain = [s[1][1], s[0][1]].map(this.yScale.scaleObject.invert)
+          this.xScale.domain = [s[0][0], s[1][0]].map(
+            this.xScale.scaleObject.invert
+          )
+          this.yScale.domain = [s[1][1], s[0][1]].map(
+            this.yScale.scaleObject.invert
+          )
         }
-        this.content.select('.brush').call(brush.move, null)
+        this.content.select('.brush').call((brush as any).move, null)
       }
 
       // re-draw abstract elements
@@ -271,9 +298,8 @@ export default abstract class AbstractChart {
   /**
    * Mount a new legend if necessary
    * @param {String} symbolType symbol type (circle, square, line)
-   * @returns {void}
    */
-  mountLegend(symbolType) {
+  mountLegend(symbolType: LegendSymbol): void {
     if (!this.legend || !this.legend.length || !this.legendTarget) return
     const legend = new Legend({
       legend: this.legend,
@@ -286,14 +312,19 @@ export default abstract class AbstractChart {
   /**
    * Mount new x axis.
    *
-   * @param {Object} [xAxis] object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
-   * @returns {void}
+   * @param xAxis object that can be used to overwrite parameters of the auto-generated x {@link Axis}.
    */
-  mountXAxis(xAxis) {
+  mountXAxis(xAxis: Partial<IAxis>): void {
+    // axis only mountable after content is mounted
+    if (!this.content) {
+      console.error('error: content needs to be mounted first')
+      return
+    }
+
     if (typeof xAxis?.show !== 'undefined' && !xAxis.show) return
     this.xAxis = new Axis({
       scale: this.xScale,
-      orientation: 'bottom',
+      orientation: AxisOrientation.BOTTOM,
       top: this.bottom,
       left: this.left,
       height: this.innerHeight,
@@ -309,14 +340,19 @@ export default abstract class AbstractChart {
   /**
    * Mount new y axis.
    *
-   * @param {Object} [yAxis] object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
-   * @returns {void}
+   * @param yAxis object that can be used to overwrite parameters of the auto-generated y {@link Axis}.
    */
-  mountYAxis(yAxis) {
-    if (typeof yAxis?.show !== 'undefined' && !Axis.show) return
+  mountYAxis(yAxis: Partial<IAxis>): void {
+    // axis only mountable after content is mounted
+    if (!this.content) {
+      console.error('error: content needs to be mounted first')
+      return
+    }
+
+    if (typeof yAxis?.show !== 'undefined' && !yAxis.show) return
     this.yAxis = new Axis({
       scale: this.yScale,
-      orientation: 'left',
+      orientation: AxisOrientation.LEFT,
       top: this.top,
       left: this.left,
       height: this.innerWidth,
@@ -330,11 +366,10 @@ export default abstract class AbstractChart {
   /**
    * Mount a new tooltip if necessary.
    *
-   * @param {Boolean} [showTooltip] whether or not to show a tooltip.
-   * @param {Function} [tooltipFunction] function that receives a data object and returns the string displayed as tooltip.
-   * @returns {void}
+   * @param showTooltip whether or not to show a tooltip.
+   * @param tooltipFunction function that receives a data object and returns the string displayed as tooltip.
    */
-  mountTooltip(showTooltip, tooltipFunction) {
+  mountTooltip(showTooltip?: boolean, tooltipFunction?: TooltipFunction): void {
     if (typeof showTooltip !== 'undefined' && !showTooltip) return
     this.tooltip = new Tooltip({
       top: this.buffer,
@@ -350,9 +385,24 @@ export default abstract class AbstractChart {
 
   /**
    * Mount the main container.
-   * @returns {void}
    */
-  mountContainer() {
+  mountContainer(): void {
+    // content needs to be mounted first
+    if (!this.content) {
+      console.error('content needs to be mounted first')
+      return
+    }
+
+    const width = max(this.xScale.range)
+    const height = max(this.yScale.range)
+
+    if (!width || !height) {
+      console.error(
+        `error: width or height is null (width: "${width}", height: "${height}")`
+      )
+      return
+    }
+
     this.container = this.content
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
@@ -365,21 +415,20 @@ export default abstract class AbstractChart {
       .attr('y', 0)
       .attr('opacity', 0)
       .attr('pointer-events', 'all')
-      .attr('width', max(this.xScale.range))
-      .attr('height', max(this.yScale.range))
+      .attr('width', width)
+      .attr('height', height)
   }
 
   /**
    * This method is called by the abstract chart constructor.
    * Append the local svg node to the specified target, if necessary.
    * Return existing svg node if it's already present.
-   * @returns {void}
    */
-  mountSvg() {
-    const svg = select(this.target).select('svg')
+  mountSvg(): void {
+    const svg = this.target.select('svg')
     this.svg =
       !svg || svg.empty()
-        ? select(this.target)
+        ? this.target
             .append('svg')
             .classed('mg-graph', true)
             .attr('width', this.width)
@@ -387,7 +436,7 @@ export default abstract class AbstractChart {
         : svg
 
     // prepare clip path
-    this.svg.selectAll('.mg-clip-path').remove()
+    this.svg.select('.mg-clip-path').remove()
     this.svg
       .append('defs')
       .attr('class', 'mg-clip-path')
@@ -399,9 +448,6 @@ export default abstract class AbstractChart {
 
     // set viewbox
     this.svg.attr('viewBox', `0 0 ${this.width} ${this.height}`)
-    if (this.isFullWidth || this.isFullHeight) {
-      this.svg.attr('preserveAspectRatio', 'xMinYMin meet')
-    }
 
     // append content
     this.content = this.svg.append('g').classed('mg-content', true)
@@ -421,7 +467,7 @@ export default abstract class AbstractChart {
     const flatData = this.data.flat()
     const x = extent(flatData, this.xAccessor)
     const y = extent(flatData, this.yAccessor)
-    return { x, y }
+    return { x: x as [number, number], y: y as [number, number] }
   }
 
   /**
@@ -438,11 +484,11 @@ export default abstract class AbstractChart {
 
   generatePoint(args: IPoint): Point {
     return new Point({
+      ...args,
       xAccessor: this.xAccessor,
       yAccessor: this.yAccessor,
       xScale: this.xScale,
-      yScale: this.yScale,
-      ...args
+      yScale: this.yScale
     })
   }
 

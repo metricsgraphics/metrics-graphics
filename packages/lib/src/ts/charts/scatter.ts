@@ -23,7 +23,7 @@ export default class ScatterChart extends AbstractChart {
   yRugParams = null
   _activePoint = { i: -1, j: -1 }
 
-  constructor ({ sizeAccessor, xRug, yRug, ...args }) {
+  constructor({ sizeAccessor, xRug, yRug, ...args }) {
     super(args)
     this.xRugParams = xRug ?? this.xRugParams
     this.yRugParams = yRug ?? this.yRugParams
@@ -35,7 +35,7 @@ export default class ScatterChart extends AbstractChart {
     this.redraw()
   }
 
-  redraw () {
+  redraw() {
     // set up rugs if necessary
     this.mountRugs(this.xRugParams, this.yRugParams)
 
@@ -65,7 +65,7 @@ export default class ScatterChart extends AbstractChart {
    * @param {Boolean} [yRug=false] whether or not to generate a rug for the y axis.
    * @returns {void}
    */
-  mountRugs (xRug, yRug) {
+  mountRugs(xRug, yRug) {
     if (xRug) {
       this.xRug = new Rug({
         accessor: this.xAccessor,
@@ -96,18 +96,20 @@ export default class ScatterChart extends AbstractChart {
    * Mount scatter points.
    * @returns {void}
    */
-  mountPoints () {
-    this.points = this.data.map((pointSet, i) => pointSet.map(data => {
-      const point = this.generatePoint({
-        data,
-        color: this.colors[i],
-        radius: this.sizeAccessor(data),
-        fillOpacity: 0.3,
-        strokeWidth: 1
+  mountPoints() {
+    this.points = this.data.map((pointSet, i) =>
+      pointSet.map((data) => {
+        const point = this.generatePoint({
+          data,
+          color: this.colors[i],
+          radius: this.sizeAccessor(data),
+          fillOpacity: 0.3,
+          strokeWidth: 1
+        })
+        point.mountTo(this.container)
+        return point
       })
-      point.mountTo(this.container)
-      return point
-    }))
+    )
   }
 
   /**
@@ -115,7 +117,7 @@ export default class ScatterChart extends AbstractChart {
    *
    * @returns {Function} handler function
    */
-  onPointHandler () {
+  onPointHandler() {
     return ([point]) => {
       this.activePoint = { i: point.arrayIndex ?? 0, j: point.index }
 
@@ -130,7 +132,7 @@ export default class ScatterChart extends AbstractChart {
    *
    * @returns {Function} handler function
    */
-  onLeaveHandler () {
+  onLeaveHandler() {
     return () => {
       this.activePoint = { i: -1, j: -1 }
       if (this.tooltip) this.tooltip.hide()
@@ -141,7 +143,7 @@ export default class ScatterChart extends AbstractChart {
    * Mount new delaunay triangulation instance.
    * @returns {void}
    */
-  mountDelaunay () {
+  mountDelaunay() {
     this.delaunayPoint = this.generatePoint({ radius: 3 })
     this.delaunay = new Delaunay({
       points: this.data,
@@ -156,10 +158,12 @@ export default class ScatterChart extends AbstractChart {
     this.delaunay.mountTo(this.container)
   }
 
-  set activePoint ({ i, j }) {
+  set activePoint({ i, j }) {
     // if a point was previously set, de-set it
     if (this._activePoint.i !== -1 && this._activePoint.j !== -1) {
-      this.points[this._activePoint.i][this._activePoint.j].update({ fillOpacity: 0.3 })
+      this.points[this._activePoint.i][this._activePoint.j].update({
+        fillOpacity: 0.3
+      })
     }
 
     // set state
@@ -169,7 +173,7 @@ export default class ScatterChart extends AbstractChart {
     if (i !== -1 && j !== -1) this.points[i][j].update({ fillOpacity: 1 })
   }
 
-  normalizeData () {
+  normalizeData() {
     if (this.isArrayOfObjects) this.data = [this.data]
   }
 }

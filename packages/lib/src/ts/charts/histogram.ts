@@ -17,7 +17,7 @@ export default class HistogramChart extends AbstractChart {
   delaunayBar = null
   _activeBar = -1
 
-  constructor ({ binCount, ...args }) {
+  constructor({ binCount, ...args }) {
     super({ binCount, ...args })
 
     // set up histogram
@@ -28,7 +28,7 @@ export default class HistogramChart extends AbstractChart {
     this.redraw()
   }
 
-  redraw () {
+  redraw() {
     // set up histogram rects
     this.mountRects()
 
@@ -52,8 +52,8 @@ export default class HistogramChart extends AbstractChart {
    * Mount the histogram rectangles.
    * @returns {void}
    */
-  mountRects () {
-    this.rects = this.bins.map(bin => {
+  mountRects() {
+    this.rects = this.bins.map((bin) => {
       const rect = new Rect({
         data: bin,
         xScale: this.xScale,
@@ -61,10 +61,11 @@ export default class HistogramChart extends AbstractChart {
         color: this.colors[0],
         fillOpacity: 0.5,
         strokeWidth: 0,
-        xAccessor: bin => bin.x0,
-        yAccessor: bin => bin.length,
-        widthAccessor: bin => this.xScale.scaleObject(bin.x1) - this.xScale.scaleObject(bin.x0),
-        heightAccessor: bin => -bin.length
+        xAccessor: (bin) => bin.x0,
+        yAccessor: (bin) => bin.length,
+        widthAccessor: (bin) =>
+          this.xScale.scaleObject(bin.x1) - this.xScale.scaleObject(bin.x0),
+        heightAccessor: (bin) => -bin.length
       })
       rect.mountTo(this.container)
       return rect
@@ -76,7 +77,7 @@ export default class HistogramChart extends AbstractChart {
    *
    * @returns {Function} handler function.
    */
-  onPointHandler () {
+  onPointHandler() {
     return ([point]) => {
       this.activeBar = point.index
 
@@ -91,7 +92,7 @@ export default class HistogramChart extends AbstractChart {
    *
    * @returns {Function} handler function.
    */
-  onLeaveHandler () {
+  onLeaveHandler() {
     return () => {
       this.activeBar = -1
       if (this.tooltip) this.tooltip.hide()
@@ -102,24 +103,24 @@ export default class HistogramChart extends AbstractChart {
    * Mount new delaunay triangulation.
    * @returns {void}
    */
-  mountDelaunay () {
+  mountDelaunay() {
     this.delaunayBar = new Rect({
       xScale: this.xScale,
       yScale: this.yScale,
-      xAccessor: bin => bin.x0,
-      yAccessor: bin => bin.length,
-      widthAccessor: bin => bin.x1 - bin.x0,
-      heightAccessor: bin => -bin.length
+      xAccessor: (bin) => bin.x0,
+      yAccessor: (bin) => bin.length,
+      widthAccessor: (bin) => bin.x1 - bin.x0,
+      heightAccessor: (bin) => -bin.length
     })
     this.delaunay = new Delaunay({
-      points: this.bins.map(bin => ({
+      points: this.bins.map((bin) => ({
         x: (bin.x1 + bin.x0) / 2,
         y: 0,
         time: bin.x0,
         count: bin.length
       })),
-      xAccessor: d => d.x,
-      yAccessor: d => d.y,
+      xAccessor: (d) => d.x,
+      yAccessor: (d) => d.y,
       xScale: this.xScale,
       yScale: this.yScale,
       onPoint: this.onPointHandler(),
@@ -128,7 +129,7 @@ export default class HistogramChart extends AbstractChart {
     this.delaunay.mountTo(this.container)
   }
 
-  computeDomains ({ binCount }) {
+  computeDomains({ binCount }) {
     // set up histogram
     const dataBin = bin()
     if (binCount) dataBin.thresholds(binCount)
@@ -137,11 +138,11 @@ export default class HistogramChart extends AbstractChart {
     // update domains
     return {
       x: [0, bins.length],
-      y: [0, max(bins, bin => bin.length)]
+      y: [0, max(bins, (bin) => bin.length)]
     }
   }
 
-  set activeBar (i) {
+  set activeBar(i) {
     // if a bar was previously set, de-set it
     if (this._activeBar !== -1) {
       this.rects[this._activeBar].update({ fillOpacity: 0.5 })

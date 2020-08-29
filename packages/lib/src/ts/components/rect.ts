@@ -1,23 +1,33 @@
-import AbstractShape from './abstractShape'
+import AbstractShape, { IAbstractShape } from './abstractShape'
+import { AccessorFunction, GenericD3Selection } from '../misc/typings'
 
-export interface IRect extends IAbstr
+export interface IRect extends IAbstractShape {
+  /** function to access the x value of the rectangle */
+  xAccessor: AccessorFunction
 
-/**
- * Create a new rectangle.
- *
- * @param {Object} args argument object. See {@link AbstractShape} for general parameters.
- * @param {Function} args.xAccessor function to access the x value of the rectangle.
- * @param {Function} args.yAccessor function to access the y value of the rectangle.
- * @param {Function} args.widthAccessor function to access the width of the rectangle.
- * @param {Function} args.heightAccessor function to access the height of the rectangle.
- */
+  /** function to access the y value of the rectangle */
+  yAccessor: AccessorFunction
+
+  /** function to access the width of the rectangle */
+  widthAccessor: AccessorFunction
+
+  /** function to access the height of the rectangle */
+  heightAccessor: AccessorFunction
+}
+
 export default class Rect extends AbstractShape {
-  xAccessor = null
-  yAccessor = null
-  widthAccessor = null
-  heightAccessor = null
+  xAccessor: AccessorFunction
+  yAccessor: AccessorFunction
+  widthAccessor: AccessorFunction
+  heightAccessor: AccessorFunction
 
-  constructor({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }) {
+  constructor({
+    xAccessor,
+    yAccessor,
+    widthAccessor,
+    heightAccessor,
+    ...args
+  }: IRect) {
     super(args)
     this.xAccessor = xAccessor
     this.yAccessor = yAccessor
@@ -25,26 +35,25 @@ export default class Rect extends AbstractShape {
     this.heightAccessor = heightAccessor
   }
 
-  get x() {
+  get x(): number {
     return this.xScale.scaleObject(this.xAccessor(this.data))
   }
-  get y() {
+  get y(): number {
     return this.yScale.scaleObject(this.yAccessor(this.data))
   }
-  get width() {
+  get width(): number {
     return Math.max(0, Math.abs(this.widthAccessor(this.data)))
   }
-  get height() {
+  get height(): number {
     return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data)))
   }
 
   /**
    * Mount the rectangle to the given node.
    *
-   * @param {Object} svg d3 node to mount the rectangle to.
-   * @returns {void}
+   * @param svg d3 node to mount the rectangle to.
    */
-  mountTo(svg) {
+  mountTo(svg: GenericD3Selection): void {
     this.shapeObject = svg
       .append('rect')
       .attr('x', this.x)
@@ -61,10 +70,9 @@ export default class Rect extends AbstractShape {
   /**
    * Update the rectangle.
    *
-   * @param {Object} data updated data object.
-   * @returns {void}
+   * @param data updated data object.
    */
-  update({ data, ...args }) {
+  update({ data, ...args }: IAbstractShape): void {
     this.updateGeneric(args)
     if (data) {
       this.data = data

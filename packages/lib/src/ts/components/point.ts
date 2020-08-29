@@ -59,7 +59,10 @@ export default class Point extends AbstractShape {
     if (data) {
       this.data = data
       if (!this.shapeObject) return
-      this.shapeObject.attr('cx', this.cx).attr('cy', this.cy).attr('opacity', 1)
+      this.shapeObject
+        .attr('cx', this.cx)
+        .attr('cy', this.cy)
+        .attr('opacity', 1)
     }
   }
 }

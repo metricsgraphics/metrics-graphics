@@ -3,7 +3,12 @@ import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
 import { format } from 'd3-format'
 import { timeFormat } from 'd3-time-format'
 import Scale from './scale'
-import { TextFunction, LineD3Selection, TextD3Selection, SvgD3Selection, GD3Selection } from '../misc/typings'
+import {
+  TextFunction,
+  LineD3Selection,
+  TextD3Selection,
+  GD3Selection
+} from '../misc/typings'
 
 const DEFAULT_VERTICAL_OFFSET = 35
 const DEFAULT_HORIZONTAL_OFFSET = 50
@@ -12,14 +17,14 @@ type NumberFormatFunction = (x: number) => string
 type DateFormatFunction = (x: Date) => string
 type FormatFunction = NumberFormatFunction | DateFormatFunction
 
-enum AxisOrientation {
+export enum AxisOrientation {
   TOP = 'top',
   BOTTOM = 'bottom',
   RIGHT = 'right',
   LEFT = 'left'
 }
 
-enum AxisFormat {
+export enum AxisFormat {
   DATE = 'date',
   NUMBER = 'number',
   PERCENTAGE = 'percentage'
@@ -31,6 +36,9 @@ export interface IAxis {
 
   /** buffer used by the chart, necessary to compute margins */
   buffer: number
+
+  /** whether or not to show the axis */
+  show?: boolean
 
   /** orientation of the axis */
   orientation?: AxisOrientation
@@ -169,11 +177,22 @@ export default class Axis {
         .append('line')
         .classed('domain', true)
         .attr('x1', this.isVertical ? 0.5 : this.compact ? this.buffer : 0)
-        .attr('x2', this.isVertical ? 0.5 : this.compact ? this.scale.range[1] : this.scale.range[1] + 2 * this.buffer)
+        .attr(
+          'x2',
+          this.isVertical
+            ? 0.5
+            : this.compact
+            ? this.scale.range[1]
+            : this.scale.range[1] + 2 * this.buffer
+        )
         .attr('y1', this.isVertical ? (this.compact ? this.top + 0.5 : 0.5) : 0)
         .attr(
           'y2',
-          this.isVertical ? (this.compact ? this.scale.range[0] + 0.5 : this.scale.range[0] + 2 * this.buffer + 0.5) : 0
+          this.isVertical
+            ? this.compact
+              ? this.scale.range[0] + 0.5
+              : this.scale.range[0] + 2 * this.buffer + 0.5
+            : 0
         )
   }
 
@@ -192,12 +211,18 @@ export default class Axis {
         .attr('y', yValue)
         .attr('text-anchor', 'middle')
         .classed('label', true)
-        .attr('transform', this.isVertical ? `rotate(${-90} ${xValue},${yValue})` : '')
+        .attr(
+          'transform',
+          this.isVertical ? `rotate(${-90} ${xValue},${yValue})` : ''
+        )
         .text(this.label)
   }
 
   get isVertical(): boolean {
-    return [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
+    return [
+      constants.axisOrientation.left,
+      constants.axisOrientation.right
+    ].includes(this.orientation)
   }
   get innerLeft(): number {
     return this.isVertical ? 0 : this.buffer
@@ -217,7 +242,7 @@ export default class Axis {
    * Mount the axis to the given d3 node.
    * @param svg d3 node.
    */
-  mountTo(svg: SvgD3Selection): void {
+  mountTo(svg: GD3Selection): void {
     // set up axis container
     const axisContainer = svg
       .append('g')
@@ -237,7 +262,10 @@ export default class Axis {
     // if necessary, make ticks longer
     if (this.extendedTicks) {
       axisContainer.call((g) =>
-        g.selectAll('.tick line').attr(this.tickAttribute, this.extendedTickLength).attr('opacity', 0.3)
+        g
+          .selectAll('.tick line')
+          .attr(this.tickAttribute, this.extendedTickLength)
+          .attr('opacity', 0.3)
       )
     }
 
@@ -291,9 +319,14 @@ export default class Axis {
 
   set tickFormat(tickFormat: FormatFunction | string) {
     // if tickFormat is a function, apply it directly
-    const formatFunction = typeof tickFormat === 'function' ? tickFormat : this.stringToFormat(tickFormat)
+    const formatFunction =
+      typeof tickFormat === 'function'
+        ? tickFormat
+        : this.stringToFormat(tickFormat)
 
-    this.axisObject.tickFormat((d: any) => `${this.prefix}${formatFunction(d)}${this.suffix}`)
+    this.axisObject.tickFormat(
+      (d: any) => `${this.prefix}${formatFunction(d)}${this.suffix}`
+    )
   }
 
   set tickCount(tickCount: number) {

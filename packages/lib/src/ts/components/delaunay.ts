@@ -1,6 +1,12 @@
 import { Delaunay as DelaunayObject } from 'd3-delaunay'
 import { mouse } from 'd3-selection'
-import { AccessorFunction, InteractionFunction, EmptyInteractionFunction, DefinedFunction } from '../misc/typings'
+import {
+  AccessorFunction,
+  InteractionFunction,
+  EmptyInteractionFunction,
+  DefinedFunction,
+  GenericD3Selection
+} from '../misc/typings'
 import Scale from './scale'
 
 export interface IDelaunay {
@@ -39,7 +45,7 @@ export interface IDelaunay {
 }
 
 export default class Delaunay {
-  points = []
+  points?: Array<any>
   aggregatedPoints: any
   delaunay: any
   xScale: Scale
@@ -47,9 +53,9 @@ export default class Delaunay {
   xAccessor: AccessorFunction
   yAccessor: AccessorFunction
   aggregate = false
-  onPoint?: InteractionFunction
+  onPoint: InteractionFunction
   onClick?: InteractionFunction
-  onLeave?: EmptyInteractionFunction
+  onLeave: EmptyInteractionFunction
 
   constructor({
     points = [],
@@ -66,8 +72,12 @@ export default class Delaunay {
   }: IDelaunay) {
     this.xScale = xScale
     this.yScale = yScale
-    this.onPoint = onPoint ?? this.onPoint
-    this.onLeave = onLeave ?? this.onLeave
+    this.onPoint =
+      onPoint ??
+      (() => {
+        return
+      })
+    this.onLeave = onLeave ?? (() => null)
     this.onClick = onClick ?? this.onClick
     this.xAccessor = xAccessor
     this.yAccessor = yAccessor
@@ -88,8 +98,17 @@ export default class Delaunay {
    * @param aggregate whether or not to aggregate points based on their x value
    */
   mountDelaunay(isNested: boolean, aggregate: boolean): void {
+    // if points are not set yet, stop
+    if (!this.points) {
+      console.error('error: points not defined')
+      return
+    }
+
     this.delaunay = DelaunayObject.from(
-      this.points.map((point) => [this.xAccessor(point), isNested && !aggregate ? this.yAccessor(point) : 0])
+      this.points.map((point) => [
+        this.xAccessor(point),
+        isNested && !aggregate ? this.yAccessor(point) : 0
+      ])
     )
   }
 
@@ -142,11 +161,16 @@ export default class Delaunay {
    * Handle raw mouse movement inside the delaunay rect.
    * Finds the nearest data point(s) and calls onPoint.
    *
-   * @param {Number} rawX raw x coordinate of the cursor.
-   * @param {Number} rawY raw y coordinate of the cursor.
-   * @returns {void}
+   * @param rawX raw x coordinate of the cursor.
+   * @param rawY raw y coordinate of the cursor.
    */
-  gotPoint(rawX, rawY) {
+  gotPoint(rawX: number, rawY: number): void {
+    // if points are empty, return
+    if (!this.points) {
+      console.error('error: points are empty')
+      return
+    }
+
     const x = this.xScale.scaleObject.invert(rawX)
     const y = this.yScale.scaleObject.invert(rawY)
 
@@ -155,7 +179,11 @@ export default class Delaunay {
 
     // if points should be aggregated, get all points with the same x value
     if (this.aggregate) {
-      this.onPoint(this.aggregatedPoints.get(JSON.stringify(this.xAccessor(this.points[index]))))
+      this.onPoint(
+        this.aggregatedPoints.get(
+          JSON.stringify(this.xAccessor(this.points[index]))
+        )
+      )
     } else {
       this.onPoint([this.points[index]])
     }
@@ -165,11 +193,16 @@ export default class Delaunay {
    * Handle raw mouse clicks inside the delaunay rect.
    * Finds the nearest data point(s) and calls onClick.
    *
-   * @param {Number} rawX raw x coordinate of the cursor.
-   * @param {Number} rawY raw y coordinate of the cursor.
-   * @returns {void}
+   * @param rawX raw x coordinate of the cursor.
+   * @param rawY raw y coordinate of the cursor.
    */
-  clickedPoint(rawX, rawY) {
+  clickedPoint(rawX: number, rawY: number): void {
+    // if points empty, abort
+    if (!this.points) {
+      console.error('error: points empty')
+      return
+    }
+
     const x = this.xScale.scaleObject.invert(rawX)
     const y = this.yScale.scaleObject.invert(rawY)
 
@@ -181,10 +214,9 @@ export default class Delaunay {
   /**
    * Mount the delaunator to a given d3 node.
    *
-   * @param {Object} svg d3 selection to mount the delaunay elements to.
-   * @returns {void}
+   * @param svg d3 selection to mount the delaunay elements to.
    */
-  mountTo(svg) {
+  mountTo(svg: GenericD3Selection): void {
     svg.on('mousemove', () => {
       const rawCoords = mouse(svg.node())
       this.gotPoint(rawCoords[0], rawCoords[1])

@@ -1,5 +1,9 @@
 import { area, curveCatmullRom, CurveFactory } from 'd3-shape'
-import { AccessorFunction, DefinedFunction, SvgD3Selection } from '../misc/typings'
+import {
+  AccessorFunction,
+  DefinedFunction,
+  SvgD3Selection
+} from '../misc/typings'
 import Scale from './scale'
 
 export interface IArea {
@@ -40,7 +44,18 @@ export default class Area {
   index = 0
   color = 'none'
 
-  constructor({ data, xAccessor, yAccessor, y0Accessor, y1Accessor, xScale, yScale, curve, color, defined }: IArea) {
+  constructor({
+    data,
+    xAccessor,
+    yAccessor,
+    y0Accessor,
+    y1Accessor,
+    xScale,
+    yScale,
+    curve,
+    color,
+    defined
+  }: IArea) {
     this.data = data
     this.color = color ?? this.color
 
@@ -65,6 +80,11 @@ export default class Area {
    * @param svg d3 node to mount the area to.
    */
   mountTo(svg: SvgD3Selection): void {
-    svg.append('path').classed('mg-area', true).attr('fill', this.color).datum(this.data).attr('d', this.areaObject)
+    svg
+      .append('path')
+      .classed('mg-area', true)
+      .attr('fill', this.color)
+      .datum(this.data)
+      .attr('d', this.areaObject)
   }
 }

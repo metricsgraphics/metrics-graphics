@@ -28,10 +28,20 @@ export default class LineChart extends AbstractChart {
   // one delaunay point per line
   delaunayPoints = []
 
-  constructor({ area, confidenceBand, voronoi, defined = null, activeAccessor = null, activePoint, ...args }) {
+  constructor({
+    area,
+    confidenceBand,
+    voronoi,
+    defined = null,
+    activeAccessor = null,
+    activePoint,
+    ...args
+  }) {
     super(args)
     this.defined = defined ?? this.defined
-    this.activeAccessor = activeAccessor ? makeAccessorFunction(activeAccessor) : this.activeAccessor
+    this.activeAccessor = activeAccessor
+      ? makeAccessorFunction(activeAccessor)
+      : this.activeAccessor
     this.activePoint = activePoint ?? this.activePoint
     this.area = area ?? this.area
     this.confidenceBand = confidenceBand ?? this.confidenceBand
@@ -143,7 +153,9 @@ export default class LineChart extends AbstractChart {
 
       // if area is array, only show areas for the truthy lines
     } else if (Array.isArray(area)) {
-      areas = this.data.filter((lineData, index) => area[index]).map(areaGenerator)
+      areas = this.data
+        .filter((lineData, index) => area[index])
+        .map(areaGenerator)
     }
 
     // mount areas
@@ -175,7 +187,9 @@ export default class LineChart extends AbstractChart {
    * @returns {void}
    */
   mountMarkers() {
-    const markerContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    const markerContainer = this.content
+      .append('g')
+      .attr('transform', `translate(${this.left},${this.top})`)
     this.markers.forEach((marker) => {
       const x = this.xScale.scaleObject(this.xAccessor(marker))
       markerContainer
@@ -185,12 +199,19 @@ export default class LineChart extends AbstractChart {
         .attr('x2', x)
         .attr('y1', this.yScale.range[0] + this.buffer)
         .attr('y2', this.yScale.range[1] + this.buffer)
-      markerContainer.append('text').classed('text-marker', true).attr('x', x).attr('y', 8).text(marker.label)
+      markerContainer
+        .append('text')
+        .classed('text-marker', true)
+        .attr('x', x)
+        .attr('y', 8)
+        .text(marker.label)
     })
   }
 
   mountBaselines() {
-    const baselineContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
+    const baselineContainer = this.content
+      .append('g')
+      .attr('transform', `translate(${this.left},${this.top})`)
     this.baselines.forEach((baseline) => {
       const y = this.yScale.scaleObject(this.yAccessor(baseline))
       baselineContainer
@@ -223,7 +244,10 @@ export default class LineChart extends AbstractChart {
         const index = point.arrayIndex || 0
 
         // set hover point
-        this.delaunayPoints[index].update({ data: point, color: this.colors[index] })
+        this.delaunayPoints[index].update({
+          data: point,
+          color: this.colors[index]
+        })
         this.delaunayPoints[index].mountTo(this.container)
       })
 
