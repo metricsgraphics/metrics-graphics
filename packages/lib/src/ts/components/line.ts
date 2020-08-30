@@ -19,10 +19,10 @@ export interface ILine {
   yScale: Scale
 
   /** curving function used to draw the line. See {@link https://github.com/d3/d3-shape#curves} for curves available in d3 */
-  curve: CurveFactory
+  curve?: CurveFactory
 
   /** color of the line */
-  color: string
+  color?: string
 
   /** function specifying whether or not to show a given datapoint */
   defined?: (datapoint: any) => boolean
@@ -46,7 +46,7 @@ export default class Line {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
-    this.color = color
+    this.color = color ?? 'black'
 
     // set up line object
     this.lineObject = line()

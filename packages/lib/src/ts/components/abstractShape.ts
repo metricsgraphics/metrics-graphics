@@ -3,7 +3,7 @@ import { SvgD3Selection } from '../misc/typings'
 
 export interface IAbstractShape {
   /** datapoint used to generate shape */
-  data: any
+  data?: any
 
   /** scale used to compute x values */
   xScale: Scale
@@ -12,7 +12,7 @@ export interface IAbstractShape {
   yScale: Scale
 
   /** color used for fill and strokes */
-  color: string
+  color?: string
 
   /** opacity of the shape fill */
   fillOpacity?: number
@@ -41,7 +41,7 @@ export default abstract class AbstractShape {
     this.data = data
     this.xScale = xScale
     this.yScale = yScale
-    this.color = color
+    this.color = color ?? 'black'
     this.fillOpacity = fillOpacity ?? this.fillOpacity
     this.strokeWidth = strokeWidth ?? this.strokeWidth
   }
@@ -52,9 +52,7 @@ export default abstract class AbstractShape {
    *
    * @param svg D3 node to mount the shape to
    */
-  mountTo(svg: SvgD3Selection): void {
-    console.error('this needs to be implemented by inheriting classes', svg)
-  }
+  abstract mountTo(svg: SvgD3Selection): void
 
   /**
    * Hide the shape by setting the opacity to 0. This doesn't remove the shape.
@@ -69,9 +67,7 @@ export default abstract class AbstractShape {
    *
    * @param args parameters to be updated
    */
-  update(args: Partial<IAbstractShape>): void {
-    console.error('this needs to be implemented by inheriting classes', args)
-  }
+  abstract update(args: any): void
 
   /**
    * Update generic properties of the shape.

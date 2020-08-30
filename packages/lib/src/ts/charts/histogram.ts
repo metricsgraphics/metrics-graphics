@@ -1,8 +1,17 @@
-import AbstractChart from './abstractChart'
-import { bin, max } from 'd3-array'
+import AbstractChart, { IAbstractChart } from './abstractChart'
+import { max, bin } from 'd3-array'
 import Delaunay from '../components/delaunay'
-import constants from '../misc/constants'
 import Rect from '../components/rect'
+import { TooltipSymbol } from '../components/tooltip'
+import {
+  LegendSymbol,
+  InteractionFunction,
+  DomainObject
+} from '../misc/typings'
+
+export interface IHistogramChart extends IAbstractChart {
+  binCount?: number
+}
 
 /**
  * Creates a new histogram graph.
@@ -11,13 +20,13 @@ import Rect from '../components/rect'
  * @param {Number} [args.binCount] approximate number of bins that should be used for the histogram. Defaults to what d3.bin thinks is best.
  */
 export default class HistogramChart extends AbstractChart {
-  bins = []
-  rects = []
-  delaunay = null
-  delaunayBar = null
+  bins: Array<any>
+  rects?: Array<Rect>
+  delaunay?: any
+  delaunayBar?: any
   _activeBar = -1
 
-  constructor({ binCount, ...args }) {
+  constructor({ binCount, ...args }: IHistogramChart) {
     super({ binCount, ...args })
 
     // set up histogram
@@ -28,13 +37,13 @@ export default class HistogramChart extends AbstractChart {
     this.redraw()
   }
 
-  redraw() {
+  redraw(): void {
     // set up histogram rects
     this.mountRects()
 
     // set tooltip type
     if (this.tooltip) {
-      this.tooltip.update({ legendObject: constants.legendObject.square })
+      this.tooltip.update({ legendObject: TooltipSymbol.SQUARE })
       this.tooltip.hide()
     }
 
@@ -42,7 +51,7 @@ export default class HistogramChart extends AbstractChart {
     this.mountDelaunay()
 
     // mount legend if any
-    this.mountLegend(constants.legendObject.square)
+    this.mountLegend(LegendSymbol.SQUARE)
 
     // mount brush if necessary
     this.mountBrush(this.brush)
@@ -50,9 +59,8 @@ export default class HistogramChart extends AbstractChart {
 
   /**
    * Mount the histogram rectangles.
-   * @returns {void}
    */
-  mountRects() {
+  mountRects(): void {
     this.rects = this.bins.map((bin) => {
       const rect = new Rect({
         data: bin,
@@ -67,7 +75,7 @@ export default class HistogramChart extends AbstractChart {
           this.xScale.scaleObject(bin.x1) - this.xScale.scaleObject(bin.x0),
         heightAccessor: (bin) => -bin.length
       })
-      rect.mountTo(this.container)
+      rect.mountTo(this.container!)
       return rect
     })
   }
@@ -75,9 +83,9 @@ export default class HistogramChart extends AbstractChart {
   /**
    * Handle move events from the delaunay triangulation.
    *
-   * @returns {Function} handler function.
+   * @returns handler function.
    */
-  onPointHandler() {
+  onPointHandler(): InteractionFunction {
     return ([point]) => {
       this.activeBar = point.index
 
@@ -101,9 +109,8 @@ export default class HistogramChart extends AbstractChart {
 
   /**
    * Mount new delaunay triangulation.
-   * @returns {void}
    */
-  mountDelaunay() {
+  mountDelaunay(): void {
     this.delaunayBar = new Rect({
       xScale: this.xScale,
       yScale: this.yScale,
@@ -129,7 +136,7 @@ export default class HistogramChart extends AbstractChart {
     this.delaunay.mountTo(this.container)
   }
 
-  computeDomains({ binCount }) {
+  computeDomains({ binCount }: any): DomainObject {
     // set up histogram
     const dataBin = bin()
     if (binCount) dataBin.thresholds(binCount)
@@ -138,11 +145,17 @@ export default class HistogramChart extends AbstractChart {
     // update domains
     return {
       x: [0, bins.length],
-      y: [0, max(bins, (bin) => bin.length)]
+      y: [0, max(bins, (bin: Array<any>) => +bin.length)!]
     }
   }
 
-  set activeBar(i) {
+  set activeBar(i: number) {
+    // if rexts are not set yet, abort
+    if (!this.rects) {
+      console.error('error: can not set active bar, rects are empty')
+      return
+    }
+
     // if a bar was previously set, de-set it
     if (this._activeBar !== -1) {
       this.rects[this._activeBar].update({ fillOpacity: 0.5 })

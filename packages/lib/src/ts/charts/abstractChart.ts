@@ -16,8 +16,7 @@ import {
   BrushType,
   DomainObject,
   Domain,
-  LegendSymbol,
-  GD3Selection
+  LegendSymbol
 } from '../misc/typings'
 
 type TooltipFunction = (datapoint: any) => string
@@ -96,8 +95,8 @@ export default abstract class AbstractChart {
   baselines: Array<any>
   target: SvgD3Selection
   svg?: GenericD3Selection
-  content?: GD3Selection
-  container?: GD3Selection
+  content?: GenericD3Selection
+  container?: GenericD3Selection
 
   // accessors
   xAccessor: AccessorFunction
@@ -197,9 +196,6 @@ export default abstract class AbstractChart {
     // set up scales
     this.xScale = new Scale({ range: [0, this.innerWidth], ...xScale })
     this.yScale = new Scale({ range: [this.innerHeight, 0], ...yScale })
-
-    // normalize data if necessary
-    this.normalizeData()
 
     // compute domains and set them
     const { x, y } = this.computeDomains(custom)
@@ -370,6 +366,12 @@ export default abstract class AbstractChart {
    * @param tooltipFunction function that receives a data object and returns the string displayed as tooltip.
    */
   mountTooltip(showTooltip?: boolean, tooltipFunction?: TooltipFunction): void {
+    // only mount of content is defined
+    if (!this.content) {
+      console.error('error: content is not defined yet')
+      return
+    }
+
     if (typeof showTooltip !== 'undefined' && !showTooltip) return
     this.tooltip = new Tooltip({
       top: this.buffer,
@@ -456,7 +458,7 @@ export default abstract class AbstractChart {
   /**
    * If needed, charts can implement data normalizations, which are applied when instantiating a new chart.
    */
-  abstract normalizeData(): void
+  // abstract normalizeData(): void
 
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
@@ -482,7 +484,7 @@ export default abstract class AbstractChart {
    */
   abstract computeYAxisType(): void
 
-  generatePoint(args: IPoint): Point {
+  generatePoint(args: Partial<IPoint>): Point {
     return new Point({
       ...args,
       xAccessor: this.xAccessor,

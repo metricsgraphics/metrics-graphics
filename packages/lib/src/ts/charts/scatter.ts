@@ -172,8 +172,4 @@ export default class ScatterChart extends AbstractChart {
     // set point to active
     if (i !== -1 && j !== -1) this.points[i][j].update({ fillOpacity: 1 })
   }
-
-  normalizeData() {
-    if (this.isArrayOfObjects) this.data = [this.data]
-  }
 }

@@ -1,47 +1,65 @@
-import AbstractChart from './abstractChart'
+import AbstractChart, { IAbstractChart } from './abstractChart'
 import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
-import Delaunay from '../components/delaunay'
+import Delaunay, { IDelaunay } from '../components/delaunay'
 import { makeAccessorFunction } from '../misc/utility'
+import {
+  AccessorFunction,
+  LegendSymbol,
+  InteractionFunction,
+  EmptyInteractionFunction
+} from '../misc/typings'
+import { IPoint } from '../components/point'
+import { TooltipSymbol } from '../components/tooltip'
 
-/**
- * Creates a new line graph.
- *
- * @param {Object} args argument object. See {@link AbstractChart} for general parameters.
- * @param {Boolean | Array} [args.area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
- * @param {Array} [args.confidenceBand] array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function.
- * @param {Object} [args.voronoi] custom parameters passed to the voronoi generator.
- * @param {Function} [args.defined] optional function specifying whether or not to show a given data point.
- * @param {String | Function} [args.activeAccessor] accessor specifying for a given data point whether or not to show it as active.
- * @param {Object} [activePoint] custom parameters passed to the active point generator. See {@see Point} for a list of parameters.
- */
+type ConfidenceBand = [AccessorFunction | string, AccessorFunction | string]
+
+export interface ILineChart extends IAbstractChart {
+  /** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array */
+  area?: Array<any> | boolean
+
+  /** array with two elements specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors and are either a string or a function */
+  confidenceBand?: ConfidenceBand
+
+  /** custom parameters passed to the voronoi generator */
+  voronoi?: Partial<IDelaunay>
+
+  /** function specifying whether or not to show a given datapoint */
+  defined?: (point: any) => boolean
+
+  /** accessor specifying for a given data point whether or not to show it as active */
+  activeAccessor?: AccessorFunction | string
+
+  /** custom parameters passed to the active point generator. See {@see Point} for a list of parameters */
+  activePoint?: Partial<IPoint>
+}
+
 export default class LineChart extends AbstractChart {
-  delaunay = null
-  defined = null
-  activeAccessor = null
-  activePoint = null
-  area = []
-  confidenceBand = null
-  delaunayParams = null
+  delaunay?: Delaunay
+  defined?: (point: any) => boolean
+  activeAccessor?: AccessorFunction
+  activePoint?: Partial<IPoint>
+  area?: Array<any> | boolean
+  confidenceBand?: ConfidenceBand
+  delaunayParams?: Partial<IDelaunay>
 
   // one delaunay point per line
-  delaunayPoints = []
+  delaunayPoints: Array<any> = []
 
   constructor({
     area,
     confidenceBand,
     voronoi,
-    defined = null,
-    activeAccessor = null,
+    defined,
+    activeAccessor,
     activePoint,
     ...args
-  }) {
+  }: ILineChart) {
     super(args)
-    this.defined = defined ?? this.defined
-    this.activeAccessor = activeAccessor
-      ? makeAccessorFunction(activeAccessor)
-      : this.activeAccessor
+    if (defined) this.defined = defined
+    if (activeAccessor)
+      this.activeAccessor = makeAccessorFunction(activeAccessor)
     this.activePoint = activePoint ?? this.activePoint
     this.area = area ?? this.area
     this.confidenceBand = confidenceBand ?? this.confidenceBand
@@ -50,25 +68,22 @@ export default class LineChart extends AbstractChart {
     this.redraw()
   }
 
-  redraw() {
+  redraw(): void {
     this.mountLines()
-    this.mountActivePoints(this.activePoint)
+    this.mountActivePoints(this.activePoint ?? {})
 
     // generate areas if necessary
-    this.mountAreas(this.area)
+    this.mountAreas(this.area || false)
 
     // set tooltip type
     if (this.tooltip) {
-      this.tooltip.update({ legendObject: constants.legendObject.line })
+      this.tooltip.update({ legendObject: TooltipSymbol.LINE })
       this.tooltip.hide()
     }
 
     // generate confidence band if necessary
     if (this.confidenceBand) {
-      this.mountConfidenceBand({
-        lowerAccessor: this.confidenceBand[0],
-        upperAccessor: this.confidenceBand[1]
-      })
+      this.mountConfidenceBand(this.confidenceBand)
     }
 
     // add markers and baselines
@@ -76,10 +91,10 @@ export default class LineChart extends AbstractChart {
     this.mountBaselines()
 
     // set up delaunay triangulation
-    this.mountDelaunay(this.delaunayParams)
+    this.mountDelaunay(this.delaunayParams ?? {})
 
     // mount legend if any
-    this.mountLegend(constants.legendObject.line)
+    this.mountLegend(LegendSymbol.LINE)
 
     // mount brush if necessary
     this.mountBrush(this.brush)
@@ -87,9 +102,14 @@ export default class LineChart extends AbstractChart {
 
   /**
    * Mount lines for each array of data points.
-   * @returns {void}
    */
-  mountLines() {
+  mountLines(): void {
+    // abort if container is not defined yet
+    if (!this.container) {
+      console.error('error: container is not defined yet')
+      return
+    }
+
     // compute lines and delaunay points
     this.data.forEach((lineData, index) => {
       const line = new Line({
@@ -102,26 +122,31 @@ export default class LineChart extends AbstractChart {
         defined: this.defined
       })
       this.delaunayPoints[index] = this.generatePoint({ radius: 3 })
-      line.mountTo(this.container)
+      line.mountTo(this.container!)
     })
   }
 
   /**
    * If an active accessor is specified, mount active points.
-   * @param {Object} [params] custom parameters for point generation. See {@see Point} for a list of options.
-   * @returns {void}
+   * @param params custom parameters for point generation. See {@see Point} for a list of options.
    */
-  mountActivePoints(params) {
+  mountActivePoints(params: Partial<IPoint>): void {
+    // abort if container is not defined yet
+    if (!this.container) {
+      console.error('error: container is not defined yet')
+      return
+    }
+
     if (this.activeAccessor === null) return
     this.data.forEach((pointArray, index) => {
-      pointArray.filter(this.activeAccessor).forEach((data) => {
+      pointArray.filter(this.activeAccessor).forEach((data: any) => {
         const point = this.generatePoint({
           data,
           color: this.colors[index],
           radius: 3,
           ...params
         })
-        point.mountTo(this.container)
+        point.mountTo(this.container!)
       })
     })
   }
@@ -132,11 +157,11 @@ export default class LineChart extends AbstractChart {
    * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
    * @returns {void}
    */
-  mountAreas(area) {
+  mountAreas(area: Array<any> | boolean): void {
     if (typeof area === 'undefined') return
 
-    let areas
-    const areaGenerator = (lineData, index) =>
+    let areas: Array<any> = []
+    const areaGenerator = (lineData: any, index: number) =>
       new Area({
         data: lineData,
         xAccessor: this.xAccessor,
@@ -165,16 +190,21 @@ export default class LineChart extends AbstractChart {
   /**
    * Mount the confidence band specified by two accessors.
    *
-   * @param {Function | String} lowerAccessor for the lower confidence bound. Either a string (specifying the property of the object representing the lower bound) or a function (returning the lower bound when given a data point).
-   * @param {Function | String} upperAccessor for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
-   * @returns {void}
+   * @param lowerAccessor for the lower confidence bound. Either a string (specifying the property of the object representing the lower bound) or a function (returning the lower bound when given a data point).
+   * @param upperAccessor for the upper confidence bound. Either a string (specifying the property of the object representing the upper bound) or a function (returning the upper bound when given a data point).
    */
-  mountConfidenceBand({ lowerAccessor, upperAccessor }) {
+  mountConfidenceBand([lowerAccessor, upperAccessor]: ConfidenceBand): void {
+    // abort if container is not set
+    if (!this.container) {
+      console.error('error: container not defined yet')
+      return
+    }
+
     const confidenceBandGenerator = new Area({
       data: this.data[0], // confidence band only makes sense for one line
       xAccessor: this.xAccessor,
       y0Accessor: makeAccessorFunction(lowerAccessor),
-      y1Accessor: makeAccessorFunction(upperAccessor),
+      yAccessor: makeAccessorFunction(upperAccessor),
       xScale: this.xScale,
       yScale: this.yScale,
       color: '#aaa'
@@ -184,9 +214,14 @@ export default class LineChart extends AbstractChart {
 
   /**
    * Mount markers, if any.
-   * @returns {void}
    */
-  mountMarkers() {
+  mountMarkers(): void {
+    // abort if content is not set yet
+    if (!this.content) {
+      console.error('error: content container not set yet')
+      return
+    }
+
     const markerContainer = this.content
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
@@ -208,7 +243,13 @@ export default class LineChart extends AbstractChart {
     })
   }
 
-  mountBaselines() {
+  mountBaselines(): void {
+    // abort if content is not set yet
+    if (!this.content) {
+      console.error('error: content container not set yet')
+      return
+    }
+
     const baselineContainer = this.content
       .append('g')
       .attr('transform', `translate(${this.left},${this.top})`)
@@ -233,9 +274,9 @@ export default class LineChart extends AbstractChart {
   /**
    * Handle incoming points from the delaunay move handler.
    *
-   * @returns {Function} handler function.
+   * @returns handler function.
    */
-  onPointHandler() {
+  onPointHandler(): InteractionFunction {
     return (points) => {
       // pre-hide all points
       this.delaunayPoints.forEach((dp) => dp.dismount())
@@ -260,9 +301,9 @@ export default class LineChart extends AbstractChart {
   /**
    * Handles leaving the delaunay area.
    *
-   * @returns {Function} handler function.
+   * @returns handler function.
    */
-  onLeaveHandler() {
+  onLeaveHandler(): EmptyInteractionFunction {
     return () => {
       this.delaunayPoints.forEach((dp) => dp.dismount())
       if (this.tooltip) this.tooltip.hide()
@@ -272,10 +313,15 @@ export default class LineChart extends AbstractChart {
   /**
    * Mount a new delaunay triangulation instance.
    *
-   * @param {Object} customParameters custom parameters for {@link Delaunay}.
-   * @returns {void}
+   * @param customParameters custom parameters for {@link Delaunay}.
    */
-  mountDelaunay(customParameters) {
+  mountDelaunay(customParameters: Partial<IDelaunay>): void {
+    // abort if container is not set yet
+    if (!this.container) {
+      console.error('error: container not set yet')
+      return
+    }
+
     this.delaunay = new Delaunay({
       points: this.data,
       xAccessor: this.xAccessor,
@@ -290,24 +336,13 @@ export default class LineChart extends AbstractChart {
     this.delaunay.mountTo(this.container)
   }
 
-  /**
-   * Normalizes the passed data to a nested array of objects.
-   *
-   * isSingleObject: return error
-   * isArrayOfObjects: nest once
-   * isNestedArrayOfArrays: do nothing, assume index-based accessor
-   * isNestedArrayOfObjects: do nothing
-   * @returns {void}
-   */
-  normalizeData() {
-    if (this.isSingleObject) {
-      throw new Error('error: line chart needs data in array format')
+  computeXAxisType(): void {
+    // abort if no x axis is used
+    if (!this.xAxis) {
+      console.error('error: no x axis set')
+      return
     }
 
-    if (this.isArrayOfObjects) this.data = [this.data]
-  }
-
-  computeXAxisType() {
     const flatData = this.data.flat()
     const xValue = this.xAccessor(flatData[0])
 
@@ -318,7 +353,13 @@ export default class LineChart extends AbstractChart {
     }
   }
 
-  computeYAxisType() {
+  computeYAxisType(): void {
+    // abort if no y axis is used
+    if (!this.yAxis) {
+      console.error('error: no y axis set')
+      return
+    }
+
     const flatData = this.data.flat()
     const yValue = this.yAccessor(flatData[0])
 

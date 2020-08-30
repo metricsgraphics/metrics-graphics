@@ -72,7 +72,7 @@ export default class Rect extends AbstractShape {
    *
    * @param data updated data object.
    */
-  update({ data, ...args }: IAbstractShape): void {
+  update({ data, ...args }: Partial<IAbstractShape>): void {
     this.updateGeneric(args)
     if (data) {
       this.data = data
