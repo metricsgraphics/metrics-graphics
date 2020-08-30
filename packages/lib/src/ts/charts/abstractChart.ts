@@ -21,7 +21,7 @@ import {
 
 type TooltipFunction = (datapoint: any) => string
 
-export interface IAbstractChart {
+export interface IAbstractChart extends Record<string, unknown> {
   /** data that is to be visualized */
   data: Array<any>
 
@@ -473,16 +473,44 @@ export default abstract class AbstractChart {
   }
 
   /**
-   * Meant to be overwritten by chart implementations.
    * Set tick format of the x axis.
    */
-  abstract computeXAxisType(): void
+  computeXAxisType(): void {
+    // abort if no x axis is used
+    if (!this.xAxis) {
+      console.error('error: no x axis set')
+      return
+    }
+
+    const flatData = this.data.flat()
+    const xValue = this.xAccessor(flatData[0])
+
+    if (xValue instanceof Date) {
+      this.xAxis.tickFormat = 'date'
+    } else if (Number(xValue) === xValue) {
+      this.xAxis.tickFormat = 'number'
+    }
+  }
 
   /**
-   * Meant to be overwritten by chart implementations.
    * Set tick format of the y axis.
    */
-  abstract computeYAxisType(): void
+  computeYAxisType(): void {
+    // abort if no y axis is used
+    if (!this.yAxis) {
+      console.error('error: no y axis set')
+      return
+    }
+
+    const flatData = this.data.flat()
+    const yValue = this.yAccessor(flatData[0])
+
+    if (yValue instanceof Date) {
+      this.yAxis.tickFormat = constants.axisFormat.date
+    } else if (Number(yValue) === yValue) {
+      this.yAxis.tickFormat = constants.axisFormat.number
+    }
+  }
 
   generatePoint(args: Partial<IPoint>): Point {
     return new Point({

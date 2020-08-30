@@ -98,7 +98,7 @@ export default class HistogramChart extends AbstractChart {
   /**
    * Handle leaving the delaunay triangulation area.
    *
-   * @returns {Function} handler function.
+   * @returns handler function.
    */
   onLeaveHandler() {
     return () => {

@@ -154,8 +154,7 @@ export default class LineChart extends AbstractChart {
   /**
    * Mount all specified areas.
    *
-   * @param {Boolean | Array} [area=[]] specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
-   * @returns {void}
+   * @param area specifies for which sub-array of data an area should be shown. Boolean if data is a simple array.
    */
   mountAreas(area: Array<any> | boolean): void {
     if (typeof area === 'undefined') return
@@ -334,23 +333,6 @@ export default class LineChart extends AbstractChart {
       ...customParameters
     })
     this.delaunay.mountTo(this.container)
-  }
-
-  computeXAxisType(): void {
-    // abort if no x axis is used
-    if (!this.xAxis) {
-      console.error('error: no x axis set')
-      return
-    }
-
-    const flatData = this.data.flat()
-    const xValue = this.xAccessor(flatData[0])
-
-    if (xValue instanceof Date) {
-      this.xAxis.tickFormat = 'date'
-    } else if (Number(xValue) === xValue) {
-      this.xAxis.tickFormat = 'number'
-    }
   }
 
   computeYAxisType(): void {

@@ -2,12 +2,12 @@ import constants from '../misc/constants'
 import { AccessorFunction, GenericD3Selection } from '../misc/typings'
 import Scale from './scale'
 
-enum RugOrientation {
+export enum RugOrientation {
   HORIZONTAL = 'horizontal',
   VERTICAL = 'vertical'
 }
 
-interface IRug {
+export interface IRug {
   /** accessor used to get the rug value for a given datapoint */
   accessor: AccessorFunction
 
