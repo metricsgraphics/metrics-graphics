@@ -1,7 +1,20 @@
 module.exports = {
-  parser: 'babel-eslint',
-  extends: 'standard',
+  env: {
+    node: true
+  },
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module'
+  },
+  plugins: ['@typescript-eslint', 'jsdoc', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended'
+  ],
   rules: {
-    'valid-jsdoc': 1
+    '@typescript-eslint/no-var-requires': 'off'
   }
 }

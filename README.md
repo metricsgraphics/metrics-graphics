@@ -39,3 +39,24 @@ The raw data for this example can be found [here](packages/examples/src/assets/d
 If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/docs/API.md).
 
 If you want to extend *MetricsGraphics*, you can read up on the [components](packages/lib/docs/Components.md) and [utilities](packages/lib/docs/Utility.md).
+
+## Development Setup
+
+This project uses [Lerna](https://lerna.js.org/). Installing it globally helps a lot (`npm i -g lerna`).
+
+```bash
+# clone and setup
+git clone https://github.com/metricsgraphics/metrics-graphics
+cd metrics-graphics
+lerna bootstrap
+```
+
+Run both the development setup of the library and the development setup of the examples
+
+```bash
+# inside packages/lib
+npm run dev
+
+# inside packages/examples
+npm run dev
+```

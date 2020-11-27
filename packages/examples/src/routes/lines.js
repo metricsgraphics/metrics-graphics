@@ -35,7 +35,7 @@ const charts = [{
     yAccessor: 'value'
   })`,
   object: {
-    data: fakeUsers,
+    data: [fakeUsers],
     width: 600,
     height: 200,
     yScale: {
@@ -69,10 +69,10 @@ const charts = [{
     confidenceBand: ['l', 'u']
   })`,
   object: {
-    data: confidence.map(entry => ({
+    data: [confidence.map(entry => ({
       ...entry,
       date: new Date(entry.date)
-    })),
+    }))],
     xAxis: {
       extendedTicks: true
     },
@@ -168,10 +168,10 @@ const charts = [{
     area: true
   })`,
   object: {
-    data: missing.map(entry => ({
+    data: [missing.map(entry => ({
       ...entry,
       date: new Date(entry.date)
-    })),
+    }))],
     width: 600,
     height: 200,
     target: '#missing',
@@ -197,10 +197,10 @@ const charts = [{
     }
   })`,
   object: {
-    data: fakeUsers.map((entry, i) => ({
+    data: [fakeUsers.map((entry, i) => ({
       ...entry,
       active: (i % 5 === 0)
-    })),
+    }))],
     width: 600,
     height: 200,
     target: '#active',
@@ -224,7 +224,7 @@ const charts = [{
     target: '#baselines'
   })`,
   object: {
-    data: fakeUsers,
+    data: [fakeUsers],
     baselines: [{ value: 160000000, label: 'a baseline' }],
     width: 600,
     height: 200,
