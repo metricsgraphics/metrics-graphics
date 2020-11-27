@@ -4,7 +4,6 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 
 module.exports = {
   entry: './src/MG.ts',
-  devtool: 'source-map',
   module: {
     rules: [
       {
