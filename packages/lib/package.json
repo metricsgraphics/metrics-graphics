@@ -7,6 +7,7 @@
   "scripts": {
     "build": "concurrently \"webpack\" \"gulp compileSass\"",
     "lint": "eslint src",
+    "test": "echo \"no tests set up, will do later\"",
     "dev": "concurrently \"webpack --watch \" \"gulp watchSass\"",
     "documentation": "yarn documentation:base && yarn documentation:components && yarn documentation:utility",
     "documentation:base": "documentation build src/js/charts/** -f md -o docs/API.md --shallow",
