@@ -3,11 +3,7 @@ import { max, bin } from 'd3-array'
 import Delaunay from '../components/delaunay'
 import Rect from '../components/rect'
 import { TooltipSymbol } from '../components/tooltip'
-import {
-  LegendSymbol,
-  InteractionFunction,
-  DomainObject
-} from '../misc/typings'
+import { LegendSymbol, InteractionFunction } from '../misc/typings'
 
 export interface IHistogramChart extends IAbstractChart {
   binCount?: number
@@ -27,7 +23,21 @@ export default class HistogramChart extends AbstractChart {
   _activeBar = -1
 
   constructor({ binCount, ...args }: IHistogramChart) {
-    super({ binCount, ...args })
+    super({
+      ...args,
+      computeDomains: () => {
+        // set up histogram
+        const dataBin = bin()
+        if (binCount) dataBin.thresholds(binCount)
+        const bins = dataBin(args.data)
+
+        // update domains
+        return {
+          x: [0, bins.length],
+          y: [0, max(bins, (bin: Array<any>) => +bin.length)!]
+        }
+      }
+    })
 
     // set up histogram
     const dataBin = bin()
@@ -72,7 +82,7 @@ export default class HistogramChart extends AbstractChart {
         xAccessor: (bin) => bin.x0,
         yAccessor: (bin) => bin.length,
         widthAccessor: (bin) =>
-          this.xScale.scaleObject(bin.x1) - this.xScale.scaleObject(bin.x0),
+          this.xScale.scaleObject(bin.x1)! - this.xScale.scaleObject(bin.x0)!,
         heightAccessor: (bin) => -bin.length
       })
       rect.mountTo(this.container!)
@@ -134,19 +144,6 @@ export default class HistogramChart extends AbstractChart {
       onLeave: this.onLeaveHandler()
     })
     this.delaunay.mountTo(this.container)
-  }
-
-  computeDomains({ binCount }: any): DomainObject {
-    // set up histogram
-    const dataBin = bin()
-    if (binCount) dataBin.thresholds(binCount)
-    const bins = dataBin(this.data)
-
-    // update domains
-    return {
-      x: [0, bins.length],
-      y: [0, max(bins, (bin: Array<any>) => +bin.length)!]
-    }
   }
 
   set activeBar(i: number) {

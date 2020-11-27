@@ -55,8 +55,8 @@ export default class Line {
         if (typeof defined === 'undefined') return true
         return defined(d)
       })
-      .x((d) => xScale.scaleObject(xAccessor(d)))
-      .y((d) => yScale.scaleObject(yAccessor(d)))
+      .x((d) => xScale.scaleObject(xAccessor(d))!)
+      .y((d) => yScale.scaleObject(yAccessor(d))!)
       .curve(curve ?? curveCatmullRom)
   }
 

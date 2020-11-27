@@ -1,5 +1,5 @@
 import { Delaunay as DelaunayObject } from 'd3-delaunay'
-import { mouse } from 'd3-selection'
+import { pointer } from 'd3-selection'
 import {
   AccessorFunction,
   InteractionFunction,
@@ -217,16 +217,16 @@ export default class Delaunay {
    * @param svg d3 selection to mount the delaunay elements to.
    */
   mountTo(svg: GenericD3Selection): void {
-    svg.on('mousemove', () => {
-      const rawCoords = mouse(svg.node())
-      this.gotPoint(rawCoords[0], rawCoords[1])
+    svg.on('mousemove', (event) => {
+      const coords = pointer(event)
+      this.gotPoint(coords[0], coords[1])
     })
     svg.on('mouseleave', () => {
       this.onLeave()
     })
-    svg.on('click', () => {
-      const rawCoords = mouse(svg.node())
-      this.clickedPoint(rawCoords[0], rawCoords[1])
+    svg.on('click', (event) => {
+      const coords = pointer(event)
+      this.clickedPoint(coords[0], coords[1])
     })
   }
 }

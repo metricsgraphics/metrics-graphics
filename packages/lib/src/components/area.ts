@@ -68,9 +68,9 @@ export default class Area {
         if (y0(d) === null || y1(d) === null) return false
         return !defined ? true : defined(d)
       })
-      .x((d) => xScale.scaleObject(xAccessor(d)))
-      .y1((d) => yScale.scaleObject(y1(d)))
-      .y0((d) => yScale.scaleObject(y0(d)))
+      .x((d) => xScale.scaleObject(xAccessor(d))!)
+      .y1((d) => yScale.scaleObject(y1(d))!)
+      .y0((d) => yScale.scaleObject(y0(d))!)
       .curve(curve ?? curveCatmullRom)
   }
 

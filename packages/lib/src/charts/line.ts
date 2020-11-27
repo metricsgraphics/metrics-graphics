@@ -57,6 +57,11 @@ export default class LineChart extends AbstractChart {
     ...args
   }: ILineChart) {
     super(args)
+
+    // if data is not a 2d array, die
+    if (!Array.isArray(args.data[0]))
+      throw new Error('data is not a 2-dimensional array.')
+
     if (defined) this.defined = defined
     if (activeAccessor)
       this.activeAccessor = makeAccessorFunction(activeAccessor)
@@ -137,7 +142,7 @@ export default class LineChart extends AbstractChart {
       return
     }
 
-    if (this.activeAccessor === null) return
+    if (!this.activeAccessor) return
     this.data.forEach((pointArray, index) => {
       pointArray.filter(this.activeAccessor).forEach((data: any) => {
         const point = this.generatePoint({
@@ -229,14 +234,14 @@ export default class LineChart extends AbstractChart {
       markerContainer
         .append('line')
         .classed('line-marker', true)
-        .attr('x1', x)
-        .attr('x2', x)
+        .attr('x1', x!)
+        .attr('x2', x!)
         .attr('y1', this.yScale.range[0] + this.buffer)
         .attr('y2', this.yScale.range[1] + this.buffer)
       markerContainer
         .append('text')
         .classed('text-marker', true)
-        .attr('x', x)
+        .attr('x', x!)
         .attr('y', 8)
         .text(marker.label)
     })
@@ -259,13 +264,13 @@ export default class LineChart extends AbstractChart {
         .classed('line-baseline', true)
         .attr('x1', this.xScale.range[0] + this.buffer)
         .attr('x2', this.xScale.range[1] + this.buffer)
-        .attr('y1', y)
-        .attr('y2', y)
+        .attr('y1', y!)
+        .attr('y2', y!)
       baselineContainer
         .append('text')
         .classed('text-baseline', true)
         .attr('x', this.xScale.range[1] + this.buffer)
-        .attr('y', y - 2)
+        .attr('y', y! - 2)
         .text(baseline.label)
     })
   }

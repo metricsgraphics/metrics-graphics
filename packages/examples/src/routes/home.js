@@ -8,7 +8,7 @@ class Home extends Component {
 
   componentDidMount () {
     this.lineChart = new LineChart({
-      data: sightings,
+      data: [sightings],
       markers: [{ year: 1964, label: '"The Creeping Terror" released' }],
       width: 650,
       height: 180,

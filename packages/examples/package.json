@@ -10,42 +10,24 @@
     "build": "preact build --no-esm --prerenderUrls src/prerender-urls.json",
     "serve": "preact build && sirv build --cors --single",
     "dev": "preact watch",
-    "lint": "eslint src",
-    "test": "jest"
-  },
-  "eslintConfig": {
-    "extends": "preact",
-    "ignorePatterns": [
-      "build/"
-    ]
+    "lint": "eslint src"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^2.1.0",
+    "@fullhuman/postcss-purgecss": "^3.0.0",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-preact-pure": "^2.2.0",
-    "eslint": "^6.8.0",
+    "enzyme-adapter-preact-pure": "^2.2.3",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^25.1.0",
-    "jest-preset-preact": "^1.0.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^5.0.0",
     "per-env": "^1.0.2",
-    "preact-cli": "^3.0.0-rc.6",
-    "preact-render-spy": "^1.3.0",
-    "sass-loader": "^8.0.2",
-    "sirv-cli": "^0.4.5",
-    "tailwindcss": "^1.2.0"
+    "preact-cli": "^3.0.3",
+    "sass-loader": "^10.1.0",
+    "sirv-cli": "^1.0.8",
+    "tailwindcss": "^2.0.1"
   },
   "dependencies": {
     "metrics-graphics": "^3.0.0-alpha4",
-    "preact": "^10.3.4",
-    "preact-render-to-string": "^5.1.4",
+    "preact": "^10.5.7",
+    "preact-render-to-string": "^5.1.12",
     "preact-router": "^3.2.1"
-  },
-  "jest": {
-    "preset": "jest-preset-preact",
-    "setupFiles": [
-      "<rootDir>/tests/__mocks__/browserMocks.js",
-      "<rootDir>/tests/__mocks__/setupTests.js"
-    ]
   }
 }

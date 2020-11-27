@@ -35,7 +35,7 @@ const charts = [{
     tooltipFunction: point => \`\${point.x} \${point.y}\`
   })`,
   object: {
-    data: points1,
+    data: [points1],
     width: 500,
     height: 200,
     target: '#scatterChart1',

@@ -1,5 +1,5 @@
 import { randomId, makeAccessorFunction } from '../misc/utility'
-import { select, event, Selection, BaseType } from 'd3-selection'
+import { select } from 'd3-selection'
 import Scale from '../components/scale'
 import Axis, { IAxis, AxisOrientation } from '../components/axis'
 import Tooltip from '../components/tooltip'
@@ -21,7 +21,7 @@ import {
 
 type TooltipFunction = (datapoint: any) => string
 
-export interface IAbstractChart extends Record<string, unknown> {
+export interface IAbstractChart {
   /** data that is to be visualized */
   data: Array<any>
 
@@ -81,6 +81,9 @@ export interface IAbstractChart extends Record<string, unknown> {
 
   /** add an optional brush */
   brush: BrushType
+
+  /** custom domain computations */
+  computeDomains?: () => DomainObject
 }
 
 /**
@@ -117,7 +120,7 @@ export default abstract class AbstractChart {
 
   // tooltip and legend stuff
   showTooltip: boolean
-  tooltipFunction: TooltipFunction
+  tooltipFunction?: TooltipFunction
   tooltip?: Tooltip
   legend?: Array<string>
   legendTarget?: GenericD3Selection
@@ -156,7 +159,7 @@ export default abstract class AbstractChart {
     legend,
     legendTarget,
     brush,
-    ...custom
+    computeDomains
   }: IAbstractChart) {
     // set parameters
     this.data = data
@@ -172,7 +175,7 @@ export default abstract class AbstractChart {
     this.xAxisParams = xAxis ?? this.xAxisParams
     this.yAxisParams = yAxis ?? this.yAxisParams
     this.showTooltip = showTooltip ?? true
-    this.tooltipFunction = tooltipFunction ?? ((x) => x)
+    this.tooltipFunction = tooltipFunction
 
     // convert string accessors to functions if necessary
     this.xAccessor = makeAccessorFunction(xAccessor)
@@ -198,7 +201,7 @@ export default abstract class AbstractChart {
     this.yScale = new Scale({ range: [this.innerHeight, 0], ...yScale })
 
     // compute domains and set them
-    const { x, y } = this.computeDomains(custom)
+    const { x, y } = computeDomains ? computeDomains() : this.computeDomains()
     this.xDomain = x
     this.yDomain = y
     this.xScale.domain = x
@@ -247,15 +250,14 @@ export default abstract class AbstractChart {
         : whichBrush === BrushType.Y
         ? brushY()
         : d3brush()
-    brush.on('end', () => {
+    brush.on('end', ({ selection }) => {
       // if no content is set, do nothing
       if (!this.content) {
         console.error('error: content is not set yet')
         return
       }
       // compute domains and re-draw
-      const s = event.selection
-      if (s === null) {
+      if (selection === null) {
         if (!this.idleTimeout) {
           this.idleTimeout = setTimeout(() => {
             this.idleTimeout = null
@@ -268,14 +270,18 @@ export default abstract class AbstractChart {
         this.yScale.domain = this.yDomain
       } else {
         if (this.brush === 'x') {
-          this.xScale.domain = [s[0], s[1]].map(this.xScale.scaleObject.invert)
-        } else if (this.brush === 'y') {
-          this.yScale.domain = [s[0], s[1]].map(this.yScale.scaleObject.invert)
-        } else {
-          this.xScale.domain = [s[0][0], s[1][0]].map(
+          this.xScale.domain = [selection[0], selection[1]].map(
             this.xScale.scaleObject.invert
           )
-          this.yScale.domain = [s[1][1], s[0][1]].map(
+        } else if (this.brush === 'y') {
+          this.yScale.domain = [selection[0], selection[1]].map(
+            this.yScale.scaleObject.invert
+          )
+        } else {
+          this.xScale.domain = [selection[0][0], selection[1][0]].map(
+            this.xScale.scaleObject.invert
+          )
+          this.yScale.domain = [selection[1][1], selection[0][1]].map(
             this.yScale.scaleObject.invert
           )
         }
@@ -457,15 +463,15 @@ export default abstract class AbstractChart {
 
   /**
    * If needed, charts can implement data normalizations, which are applied when instantiating a new chart.
+   * TODO this is currently unused
    */
   // abstract normalizeData(): void
 
   /**
    * Usually, the domains of the chart's scales depend on the chart type and the passed data, so this should usually be overwritten by chart implementations.
-   * @param params object of custom parameters for the specific chart type
    * @returns domains for x and y axis as separate properties.
    */
-  computeDomains(params: any): DomainObject {
+  computeDomains(): DomainObject {
     const flatData = this.data.flat()
     const x = extent(flatData, this.xAccessor)
     const y = extent(flatData, this.yAccessor)

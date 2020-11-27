@@ -48,7 +48,7 @@ export default class Tooltip {
   left = 0
   top = 0
   node: any
-  textFunction = (x: any) => `${x}`
+  textFunction = (x: any) => 'bla'
 
   constructor({
     legendObject,
@@ -165,10 +165,13 @@ export default class Tooltip {
         .text(this.legend[realIndex])
 
       // symbol
-      node.append('tspan').attr('dx', '0.5rem').attr('fill', color).text(symbol)
+      node.append('tspan').attr('dx', '6').attr('fill', color).text(symbol)
 
       // text
-      node.append('tspan').attr('dx', '0.5rem').text(this.textFunction(datum))
+      node
+        .append('tspan')
+        .attr('dx', '6')
+        .text(`${this.textFunction(datum)}`)
     })
   }
 }

@@ -86,8 +86,8 @@ export default class Rug {
         const value = this.scale.scaleObject(this.accessor(datum))
         container
           .append('line')
-          .attr(this.isVertical ? 'y1' : 'x1', value)
-          .attr(this.isVertical ? 'y2' : 'x2', value)
+          .attr(this.isVertical ? 'y1' : 'x1', value!)
+          .attr(this.isVertical ? 'y2' : 'x2', value!)
           .attr(this.isVertical ? 'x1' : 'y1', 0)
           .attr(this.isVertical ? 'x2' : 'y2', this.tickLength)
           .attr('stroke', this.colors[i])

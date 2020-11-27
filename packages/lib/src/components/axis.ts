@@ -11,7 +11,7 @@ import {
 } from '../misc/typings'
 
 const DEFAULT_VERTICAL_OFFSET = 35
-const DEFAULT_HORIZONTAL_OFFSET = 50
+const DEFAULT_HORIZONTAL_OFFSET = 45
 
 type NumberFormatFunction = (x: number) => string
 type DateFormatFunction = (x: Date) => string
