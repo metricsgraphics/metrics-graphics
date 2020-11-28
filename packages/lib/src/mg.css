@@ -1,0 +1,60 @@
+.mg-graph .domain {
+  stroke: #b3b2b2;
+}
+
+.mg-graph .tick line {
+  stroke: #b3b2b2;
+}
+
+.mg-graph .tick text {
+  font-size: 0.7rem;
+  fill: black;
+  opacity: 0.6;
+}
+
+.mg-graph .label {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.mg-graph .line-marker {
+  stroke: #ccc;
+  stroke-width: 1px;
+  stroke-dasharray: 2;
+}
+
+.mg-graph .line-baseline {
+  stroke: #ccc;
+  stroke-width: 1px;
+}
+
+.mg-graph .text-marker {
+  text-anchor: middle;
+  font-size: 0.7rem;
+  fill: black;
+}
+
+.mg-graph .text-baseline {
+  text-anchor: end;
+  font-size: 0.7rem;
+  fill: black;
+}
+
+.mg-graph .text-category {
+  font-weight: bold;
+}
+
+.mg-line {
+  stroke-width: 1;
+  fill: none;
+}
+
+.mg-area {
+  fill-opacity: 0.3;
+}
+
+.text-legend {
+  margin-right: 1em;
+  font-size: 0.7rem;
+}
