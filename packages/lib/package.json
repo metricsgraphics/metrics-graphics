@@ -1,6 +1,6 @@
 {
   "name": "metrics-graphics",
-  "version": "3.0.0-beta1.0",
+  "version": "3.0.0-beta1.1",
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/bundle.js",
   "types": "dist/MG.d.ts",
