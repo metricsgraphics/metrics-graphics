@@ -2,7 +2,7 @@
   "name": "metrics-graphics",
   "version": "3.0.0-beta1.0",
   "description": "A library optimized for concise, principled data graphics and layouts",
-  "main": "dist/MG.js",
+  "main": "dist/bundle.js",
   "types": "dist/MG.d.ts",
   "scripts": {
     "build": "concurrently \"webpack\" \"gulp compileSass\"",
