@@ -9,7 +9,6 @@ module.exports = (config, env, helpers, params) => {
 
   const postCssLoaders = helpers.getLoadersByName(config, 'postcss-loader')
   postCssLoaders.forEach(({ loader }) => {
-    console.log(loader.options)
     const plugins = loader.options.postcssOptions.plugins
 
     // Add tailwind css at the top.
