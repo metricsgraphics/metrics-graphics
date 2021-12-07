@@ -1,12 +1,13 @@
 {
+  "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap --no-ci",
-    "dev:examples": "lerna run --scope mg-examples start:development --stream",
-    "dev:lib": "lerna run --scope metrics-graphics dev --stream",
-    "build:examples": "lerna run --scope mg-examples build --stream",
-    "build:lib": "lerna run --scope metrics-graphics build --stream",
-    "documentation": "lerna run --scope metrics-graphics documentation --stream"
+    "dev:examples": "yarn workspace mg-examples start:development",
+    "dev:lib": "yarn workspace metrics-graphics dev --stream",
+    "build:examples": "yarn workspace mg-examples build --stream",
+    "build:lib": "yarn workspace metrics-graphics build --stream",
+    "documentation": "yarn workspace metrics-graphics documentation --stream"
   },
+  "workspaces": ["lib", "examples"],
   "repository": "github:metricsgraphics/metrics-graphics",
   "contributors": [
     "Ali Almossawi",
@@ -33,7 +34,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.1.0",
-    "lerna": "^3.22.1",
     "prettier": "^2.2.0",
     "typescript": "^4.1.2"
   }

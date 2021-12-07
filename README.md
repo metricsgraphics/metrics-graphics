@@ -42,21 +42,21 @@ If you want to extend *MetricsGraphics*, you can read up on the [components](pac
 
 ## Development Setup
 
-This project uses [Lerna](https://lerna.js.org/). Installing it globally helps a lot (`npm i -g lerna`).
+This project uses [Yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/). Please make sure that Yarn is installed.
 
 ```bash
 # clone and setup
 git clone https://github.com/metricsgraphics/metrics-graphics
 cd metrics-graphics
-lerna bootstrap
+yarn install
 ```
 
 Run both the development setup of the library and the development setup of the examples
 
 ```bash
 # inside packages/lib
-npm run dev
+yarn dev
 
 # inside packages/examples
-npm run dev
+yarn dev
 ```
