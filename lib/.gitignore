@@ -20,6 +20,7 @@ yarn-error.log
 
 # Dist files
 dist
+build
 
 # Generated CSS
 examples/css/metricsgraphics.css

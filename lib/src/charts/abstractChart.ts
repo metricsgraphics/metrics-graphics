@@ -26,7 +26,7 @@ export interface IAbstractChart {
   data: Array<any>
 
   /** DOM node to which the graph will be mounted (D3 selection or D3 selection specifier) */
-  target: string | SvgD3Selection
+  target: string
 
   /** total width of the graph */
   width: number
@@ -56,16 +56,16 @@ export interface IAbstractChart {
   colors?: Array<string>
 
   /** overwrite parameters of the auto-generated x scale */
-  xScale?: Scale
+  xScale?: Partial<Scale>
 
   /** overwrite parameters of the auto-generated y scale */
-  yScale?: Scale
+  yScale?: Partial<Scale>
 
   /** overwrite parameters of the auto-generated x axis */
-  xAxis?: Axis
+  xAxis?: Partial<Axis>
 
   /** overwrite parameters of the auto-generated y axis */
-  yAxis?: Axis
+  yAxis?: Partial<Axis>
 
   /** whether or not to show a tooltip */
   showTooltip?: boolean
@@ -77,10 +77,10 @@ export interface IAbstractChart {
   legend?: Array<string>
 
   /** DOM node to which the legend will be mounted (D3 selection or D3 selection specifier) */
-  legendTarget: string | GenericD3Selection
+  legendTarget?: string | GenericD3Selection
 
   /** add an optional brush */
-  brush: BrushType
+  brush?: BrushType
 
   /** custom domain computations */
   computeDomains?: () => DomainObject
@@ -134,7 +134,7 @@ export default abstract class AbstractChart {
   buffer: number
 
   // brush
-  brush: BrushType
+  brush?: BrushType
   idleDelay = 350
   idleTimeout: unknown
 
@@ -163,7 +163,7 @@ export default abstract class AbstractChart {
   }: IAbstractChart) {
     // set parameters
     this.data = data
-    this.target = typeof target === 'string' ? select(target) : target
+    this.target = select(target)
     this.markers = markers ?? []
     this.baselines = baselines ?? []
     this.legend = legend ?? this.legend
@@ -237,7 +237,10 @@ export default abstract class AbstractChart {
    */
   abstract redraw(): void
 
-  mountBrush(whichBrush: BrushType): void {
+  mountBrush(whichBrush?: BrushType): void {
+    // if no brush is specified, there's nothing to mount
+    if (!whichBrush) return
+
     // brush can only be mounted after content is set
     if (!this.content || !this.container) {
       console.error('error: content not set yet')
@@ -434,14 +437,20 @@ export default abstract class AbstractChart {
    */
   mountSvg(): void {
     const svg = this.target.select('svg')
-    this.svg =
-      !svg || svg.empty()
-        ? this.target
-            .append('svg')
-            .classed('mg-graph', true)
-            .attr('width', this.width)
-            .attr('height', this.height)
-        : svg
+
+    // warn user if svg is not empty
+    if (!svg.empty()) {
+      console.warn('Warning: SVG is not empty. Rendering might be unnecessary.')
+    }
+
+    // clear svg
+    svg.remove()
+
+    this.svg = this.target
+      .append('svg')
+      .classed('mg-graph', true)
+      .attr('width', this.width)
+      .attr('height', this.height)
 
     // prepare clip path
     this.svg.select('.mg-clip-path').remove()

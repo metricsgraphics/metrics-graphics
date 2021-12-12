@@ -7,7 +7,7 @@
     "build:lib": "yarn workspace metrics-graphics build --stream",
     "documentation": "yarn workspace metrics-graphics documentation --stream"
   },
-  "workspaces": ["lib", "examples"],
+  "workspaces": ["lib", "examples", "docs"],
   "repository": "github:metricsgraphics/metrics-graphics",
   "contributors": [
     "Ali Almossawi",
