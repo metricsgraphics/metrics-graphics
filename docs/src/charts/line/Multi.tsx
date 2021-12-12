@@ -21,7 +21,6 @@ const Multi = () => (
         xAccessor: 'date',
         yAccessor: 'value',
         legend: ['Line 1', 'Line 2', 'Line 3'],
-        legendTarget: '#fakeUsers2Legend',
         tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
       })
     }
@@ -35,8 +34,7 @@ const Multi = () => (
   target: '#fakeUsers2',
   xAccessor: 'date',
   yAccessor: 'value',
-  legend: ['Line 1', 'Line 2', 'Line 3'],
-  legendTarget: '#fakeUsers2Legend'
+  legend: ['Line 1', 'Line 2', 'Line 3']
 })`}
   />
 )

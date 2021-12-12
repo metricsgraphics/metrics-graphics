@@ -76,9 +76,6 @@ export interface IAbstractChart {
   /** names of the sub-arrays of data, used as legend labels */
   legend?: Array<string>
 
-  /** DOM node to which the legend will be mounted (D3 selection or D3 selection specifier) */
-  legendTarget?: string | GenericD3Selection
-
   /** add an optional brush */
   brush?: BrushType
 
@@ -123,7 +120,6 @@ export default abstract class AbstractChart {
   tooltipFunction?: TooltipFunction
   tooltip?: Tooltip
   legend?: Array<string>
-  legendTarget?: GenericD3Selection
 
   // dimensions
   width: number
@@ -157,7 +153,6 @@ export default abstract class AbstractChart {
     showTooltip,
     tooltipFunction,
     legend,
-    legendTarget,
     brush,
     computeDomains
   }: IAbstractChart) {
@@ -167,10 +162,6 @@ export default abstract class AbstractChart {
     this.markers = markers ?? []
     this.baselines = baselines ?? []
     this.legend = legend ?? this.legend
-    if (legendTarget) {
-      this.legendTarget =
-        typeof legendTarget === 'string' ? select(legendTarget) : legendTarget
-    }
     this.brush = brush ?? undefined
     this.xAxisParams = xAxis ?? this.xAxisParams
     this.yAxisParams = yAxis ?? this.yAxisParams
@@ -192,6 +183,9 @@ export default abstract class AbstractChart {
 
     // normalize color and colors arguments
     this.colors = colors ?? constants.defaultColors
+
+    // clear target
+    this.target.selectAll('*').remove()
 
     // attach base elements to svg
     this.mountSvg()
@@ -305,13 +299,13 @@ export default abstract class AbstractChart {
    * @param {String} symbolType symbol type (circle, square, line)
    */
   mountLegend(symbolType: LegendSymbol): void {
-    if (!this.legend || !this.legend.length || !this.legendTarget) return
+    if (!this.legend || !this.legend.length) return
     const legend = new Legend({
       legend: this.legend,
       colorScheme: this.colors,
       symbolType
     })
-    legend.mountTo(this.legendTarget)
+    legend.mountTo(this.target)
   }
 
   /**

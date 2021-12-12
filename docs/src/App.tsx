@@ -4,6 +4,7 @@ import Logo from './components/Logo'
 import NavLink from './components/NavLink'
 import Home from './views/Home'
 import Lines from './views/Lines'
+import Scatter from './views/Scatter'
 
 setCDN('https://unpkg.com/shiki/')
 
@@ -29,6 +30,7 @@ const App: React.FC = () => (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/line" element={<Lines />} />
+        <Route path="/scatter" element={<Scatter />} />
       </Routes>
     </div>
   </div>

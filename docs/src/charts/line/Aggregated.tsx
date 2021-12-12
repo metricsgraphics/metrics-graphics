@@ -21,7 +21,6 @@ const Aggregated = () => (
         xAccessor: 'date',
         yAccessor: 'value',
         legend: ['Line 1', 'Line 2', 'Line 3'],
-        legendTarget: '#aggregateLegend',
         voronoi: {
           aggregate: true
         },
@@ -39,7 +38,6 @@ const Aggregated = () => (
   xAccessor: 'date',
   yAccessor: 'value',
   legend: ['Line 1', 'Line 2', 'Line 3'],
-  legendTarget: '#aggregateLegend',
   voronoi: {
     aggregate: true
   }
