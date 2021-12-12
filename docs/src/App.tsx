@@ -2,6 +2,7 @@ import { Link, Route, Routes } from 'react-router-dom'
 import { setCDN } from 'shiki'
 import Logo from './components/Logo'
 import NavLink from './components/NavLink'
+import Histogram from './views/Histogram'
 import Home from './views/Home'
 import Lines from './views/Lines'
 import Scatter from './views/Scatter'
@@ -31,6 +32,7 @@ const App: React.FC = () => (
         <Route path="/" element={<Home />} />
         <Route path="/line" element={<Lines />} />
         <Route path="/scatter" element={<Scatter />} />
+        <Route path="/histogram" element={<Histogram />} />
       </Routes>
     </div>
   </div>
