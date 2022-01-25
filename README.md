@@ -32,13 +32,13 @@ That's it!
 
 ![Sample Screenshot](.img/screenshot.png)
 
-The raw data for this example can be found [here](packages/examples/src/assets/data/ufoSightings.js)
+The raw data for this example can be found [here](examples/src/assets/data/ufoSightings.js)
 
 ## Documentation
 
-If you want to use *MetricsGraphics*, you can find the public API [here](packages/lib/docs/API.md).
+If you want to use *MetricsGraphics*, you can find the public API [here](lib/docs/API.md).
 
-If you want to extend *MetricsGraphics*, you can read up on the [components](packages/lib/docs/Components.md) and [utilities](packages/lib/docs/Utility.md).
+If you want to extend *MetricsGraphics*, you can read up on the [components](lib/docs/Components.md) and [utilities](lib/docs/Utility.md).
 
 ## Development Setup
 
@@ -54,9 +54,9 @@ yarn install
 Run both the development setup of the library and the development setup of the examples
 
 ```bash
-# inside packages/lib
+# inside lib
 yarn dev
 
-# inside packages/examples
+# inside examples
 yarn dev
 ```
