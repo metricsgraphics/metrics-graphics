@@ -1,13 +1,6 @@
 {
   "private": true,
-  "scripts": {
-    "dev:examples": "yarn workspace mg-examples start:development",
-    "dev:lib": "yarn workspace metrics-graphics dev --stream",
-    "build:examples": "yarn workspace mg-examples build --stream",
-    "build:lib": "yarn workspace metrics-graphics build --stream",
-    "documentation": "yarn workspace metrics-graphics documentation --stream"
-  },
-  "workspaces": ["lib", "examples"],
+  "workspaces": ["lib", "docs"],
   "repository": "github:metricsgraphics/metrics-graphics",
   "contributors": [
     "Ali Almossawi",
