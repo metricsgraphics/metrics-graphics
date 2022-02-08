@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply text-gray-800 leading-normal;
+}
+
+h1 {
+  @apply text-lg font-bold;
+}
+
+.shiki {
+  @apply p-4;
+}
