@@ -64,12 +64,10 @@ export default class Legend {
     const symbol = constants.symbol[this.symbolType]
 
     // create d3 selection if necessary
-    const target =
-      typeof node === 'string' ? select(node).append('div') : node.append('div')
-    target.classed('mg-legend', true)
+    if (typeof node === 'string') node = select(node)
 
     this.legend.forEach((item, index) => {
-      target
+      node
         .append('span')
         .classed('text-legend', true)
         .style('color', this.darkenColor(this.colorScheme[index], -10))

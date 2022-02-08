@@ -1,2 +1,2 @@
 exclude_patterns:
-- "packages/docs/src/data/"
+- "packages/examples/src/assets/data/"
