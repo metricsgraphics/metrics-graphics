@@ -1,13 +1,11 @@
 import { randomId, makeAccessorFunction } from '../misc/utility'
-import { select } from 'd3-selection'
+import { select, extent, max, brush as d3brush, brushX, brushY } from 'd3'
 import Scale from '../components/scale'
 import Axis, { IAxis, AxisOrientation } from '../components/axis'
 import Tooltip from '../components/tooltip'
 import Legend from '../components/legend'
-import { extent, max } from 'd3-array'
 import constants from '../misc/constants'
 import Point, { IPoint } from '../components/point'
-import { brush as d3brush, brushX, brushY } from 'd3-brush'
 import {
   SvgD3Selection,
   AccessorFunction,
@@ -534,9 +532,11 @@ export default abstract class AbstractChart {
   get top(): number {
     return this.margin.top
   }
+
   get left(): number {
     return this.margin.left
   }
+
   get bottom(): number {
     return this.height - this.margin.bottom
   }
@@ -545,6 +545,7 @@ export default abstract class AbstractChart {
   get plotTop(): number {
     return this.top + this.buffer
   }
+
   get plotLeft(): number {
     return this.left + this.buffer
   }
@@ -552,6 +553,7 @@ export default abstract class AbstractChart {
   get innerWidth(): number {
     return this.width - this.margin.left - this.margin.right - 2 * this.buffer
   }
+
   get innerHeight(): number {
     return this.height - this.margin.top - this.margin.bottom - 2 * this.buffer
   }

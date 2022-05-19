@@ -1,7 +1,12 @@
 import constants from '../misc/constants'
-import { axisTop, axisLeft, axisRight, axisBottom } from 'd3-axis'
-import { format } from 'd3-format'
-import { timeFormat } from 'd3-time-format'
+import {
+  axisTop,
+  axisLeft,
+  axisRight,
+  axisBottom,
+  format,
+  timeFormat
+} from 'd3'
 import Scale from './scale'
 import {
   TextFunction,
@@ -224,15 +229,19 @@ export default class Axis {
       constants.axisOrientation.right
     ].includes(this.orientation)
   }
+
   get innerLeft(): number {
     return this.isVertical ? 0 : this.buffer
   }
+
   get innerTop(): number {
     return this.isVertical ? this.buffer : 0
   }
+
   get tickAttribute(): string {
     return this.isVertical ? 'x1' : 'y1'
   }
+
   get extendedTickLength(): number {
     const factor = this.isVertical ? 1 : -1
     return factor * (this.height + 2 * this.buffer)
@@ -332,6 +341,7 @@ export default class Axis {
   set tickCount(tickCount: number) {
     this.axisObject.ticks(tickCount)
   }
+
   set tickLength(length: number) {
     this.axisObject.tickSize(length)
   }

@@ -1,4 +1,4 @@
-import { area, curveCatmullRom, CurveFactory } from 'd3-shape'
+import { area, curveCatmullRom, CurveFactory } from 'd3'
 import {
   AccessorFunction,
   DefinedFunction,
