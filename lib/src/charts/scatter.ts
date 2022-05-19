@@ -33,10 +33,10 @@ export default class ScatterChart extends AbstractChart {
   yRug?: Rug
   _activePoint: ActivePoint = { i: -1, j: -1 }
 
-  constructor({ sizeAccessor = () => 3, xRug = false, yRug = false, ...args }: IScatterChart) {
+  constructor({ sizeAccessor, xRug, yRug, ...args }: IScatterChart) {
     super(args)
-    this.showXRug = xRug
-    this.showYRug = yRug
+    this.showXRug = xRug ?? false
+    this.showYRug = yRug ?? false
 
     this.sizeAccessor = sizeAccessor ? makeAccessorFunction(sizeAccessor) : () => 3
 

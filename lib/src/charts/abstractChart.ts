@@ -137,8 +137,8 @@ export default abstract class AbstractChart {
     target,
     markers,
     baselines,
-    xAccessor = 'date',
-    yAccessor = 'value',
+    xAccessor,
+    yAccessor,
     margin,
     buffer,
     width,
@@ -154,6 +154,10 @@ export default abstract class AbstractChart {
     brush,
     computeDomains
   }: IAbstractChart) {
+    // convert string accessors to functions if necessary
+    this.xAccessor = makeAccessorFunction(xAccessor ?? 'date')
+    this.yAccessor = makeAccessorFunction(yAccessor ?? 'value')
+
     // set parameters
     this.data = data
     this.target = select(target)
@@ -166,9 +170,6 @@ export default abstract class AbstractChart {
     this.showTooltip = showTooltip ?? true
     this.tooltipFunction = tooltipFunction
 
-    // convert string accessors to functions if necessary
-    this.xAccessor = makeAccessorFunction(xAccessor)
-    this.yAccessor = makeAccessorFunction(yAccessor)
     this.margin = margin ?? { top: 10, left: 60, right: 20, bottom: 40 }
     this.buffer = buffer ?? 10
 

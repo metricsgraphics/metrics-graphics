@@ -57,7 +57,7 @@ export default class Delaunay {
   onLeave: EmptyInteractionFunction
 
   constructor({
-    points = [],
+    points,
     xAccessor,
     yAccessor,
     xScale,
@@ -69,13 +69,13 @@ export default class Delaunay {
     aggregate,
     defined
   }: IDelaunay) {
+    this.xAccessor = xAccessor
+    this.yAccessor = yAccessor
     this.xScale = xScale
     this.yScale = yScale
     this.onPoint = onPoint ?? (() => null)
     this.onLeave = onLeave ?? (() => null)
     this.onClick = onClick ?? this.onClick
-    this.xAccessor = xAccessor
-    this.yAccessor = yAccessor
     this.aggregate = aggregate ?? this.aggregate
 
     // normalize passed points

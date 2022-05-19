@@ -30,11 +30,11 @@ export default class Rect extends AbstractShape {
   }
 
   get x(): number {
-    return this.xScale.scaleObject(this.xAccessor(this.data))!
+    return this.xScale.scaleObject(this.xAccessor(this.data))
   }
 
   get y(): number {
-    return this.yScale.scaleObject(this.yAccessor(this.data))!
+    return this.yScale.scaleObject(this.yAccessor(this.data))
   }
 
   get width(): number {
@@ -42,7 +42,7 @@ export default class Rect extends AbstractShape {
   }
 
   get height(): number {
-    return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data))!)
+    return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data)))
   }
 
   /**

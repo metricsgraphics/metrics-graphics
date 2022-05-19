@@ -25,11 +25,11 @@ export default class Point extends AbstractShape {
   }
 
   get cx(): number {
-    return this.xScale.scaleObject(this.xAccessor(this.data))!
+    return this.xScale.scaleObject(this.xAccessor(this.data))
   }
 
   get cy(): number {
-    return this.yScale.scaleObject(this.yAccessor(this.data))!
+    return this.yScale.scaleObject(this.yAccessor(this.data))
   }
 
   /**
