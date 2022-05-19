@@ -7,7 +7,7 @@ export enum RugOrientation {
   VERTICAL = 'vertical'
 }
 
-export interface IRug {
+interface IRug {
   /** accessor used to get the rug value for a given datapoint */
   accessor: AccessorFunction
 

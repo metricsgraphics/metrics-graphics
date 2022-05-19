@@ -5,7 +5,7 @@ import { TooltipSymbol } from '../components/tooltip'
 import { LegendSymbol, InteractionFunction } from '../misc/typings'
 import AbstractChart, { IAbstractChart } from './abstractChart'
 
-export interface IHistogramChart extends IAbstractChart {
+interface IHistogramChart extends IAbstractChart {
   binCount?: number
 }
 

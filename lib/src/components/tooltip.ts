@@ -7,7 +7,7 @@ export enum TooltipSymbol {
   SQUARE = 'square'
 }
 
-export interface ITooltip {
+interface ITooltip {
   /** symbol to show in the tooltip (defaults to line) */
   legendObject?: TooltipSymbol
 

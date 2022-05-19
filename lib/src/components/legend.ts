@@ -2,7 +2,7 @@ import { select } from 'd3'
 import constants from '../misc/constants'
 import { LegendSymbol } from '../misc/typings'
 
-export interface ILegend {
+interface ILegend {
   /** array of descriptive legend strings */
   legend: Array<string>
 

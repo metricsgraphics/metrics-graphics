@@ -2,7 +2,7 @@ import { area, curveCatmullRom, CurveFactory } from 'd3'
 import { AccessorFunction, DefinedFunction, SvgD3Selection } from '../misc/typings'
 import Scale from './scale'
 
-export interface IArea {
+interface IArea {
   /** data for which the area should be created */
   data: Array<any>
 

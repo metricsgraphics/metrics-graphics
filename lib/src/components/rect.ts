@@ -1,7 +1,7 @@
 import { AccessorFunction, GenericD3Selection } from '../misc/typings'
 import AbstractShape, { IAbstractShape } from './abstractShape'
 
-export interface IRect extends IAbstractShape {
+interface IRect extends IAbstractShape {
   /** function to access the x value of the rectangle */
   xAccessor: AccessorFunction
 

@@ -1,13 +1,13 @@
 import { scaleLinear, ScaleLinear } from 'd3'
 import { Domain, Range } from '../misc/typings'
 
-export enum ScaleType {
+enum ScaleType {
   LINEAR = 'linear'
 }
 
 type SupportedScale = ScaleLinear<number, number>
 
-export interface IScale {
+interface IScale {
   /** type of scale (currently only linear) */
   type?: ScaleType
 

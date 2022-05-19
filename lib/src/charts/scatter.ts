@@ -6,7 +6,7 @@ import Point from '../components/point'
 import { TooltipSymbol } from '../components/tooltip'
 import AbstractChart, { IAbstractChart } from './abstractChart'
 
-export interface IScatterChart extends IAbstractChart {
+interface IScatterChart extends IAbstractChart {
   /** accessor specifying the size of a data point. Can be either a string (name of the size field) or a function (receiving a data point and returning its size) */
   sizeAccessor?: string | AccessorFunction
 

@@ -1,5 +1,4 @@
 import { Selection } from 'd3'
-import Point from '../components/point'
 
 export interface AccessorFunction<X = any, Y = any> {
   (dataObject: X): Y
@@ -53,7 +52,3 @@ export type SvgD3Selection = Selection<SVGElement, any, Element, any>
 export type GD3Selection = Selection<SVGGElement, any, Element, any>
 export type LineD3Selection = Selection<SVGLineElement, any, Element, any>
 export type TextD3Selection = Selection<SVGTextElement, any, Element, any>
-
-export interface OnPointHandler {
-  (points: Array<Point>): void
-}

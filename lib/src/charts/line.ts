@@ -10,7 +10,7 @@ import AbstractChart, { IAbstractChart } from './abstractChart'
 
 type ConfidenceBand = [AccessorFunction | string, AccessorFunction | string]
 
-export interface ILineChart extends IAbstractChart {
+interface ILineChart extends IAbstractChart {
   /** specifies for which sub-array of data an area should be shown. Boolean if data is a simple array */
   area?: Array<any> | boolean
 

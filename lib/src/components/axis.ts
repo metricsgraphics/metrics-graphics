@@ -17,7 +17,7 @@ export enum AxisOrientation {
   LEFT = 'left'
 }
 
-export enum AxisFormat {
+enum AxisFormat {
   DATE = 'date',
   NUMBER = 'number',
   PERCENTAGE = 'percentage'

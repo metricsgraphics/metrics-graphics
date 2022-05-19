@@ -2,7 +2,7 @@ import { line, curveCatmullRom, CurveFactory } from 'd3'
 import { AccessorFunction, SvgD3Selection } from '../misc/typings'
 import Scale from './scale'
 
-export interface ILine {
+interface ILine {
   /** array of datapoints used to create the line */
   data: Array<any>
 
@@ -46,8 +46,8 @@ export default class Line {
         if (typeof defined === 'undefined') return true
         return defined(d)
       })
-      .x((d) => xScale.scaleObject(xAccessor(d))!)
-      .y((d) => yScale.scaleObject(yAccessor(d))!)
+      .x((d) => xScale.scaleObject(xAccessor(d)))
+      .y((d) => yScale.scaleObject(yAccessor(d)))
       .curve(curve ?? curveCatmullRom)
   }
 
