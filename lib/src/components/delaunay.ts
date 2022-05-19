@@ -1,5 +1,4 @@
-import { Delaunay as DelaunayObject } from 'd3-delaunay'
-import { pointer } from 'd3-selection'
+import { Delaunay as DelaunayObject, pointer } from 'd3'
 import {
   AccessorFunction,
   InteractionFunction,
@@ -72,11 +71,7 @@ export default class Delaunay {
   }: IDelaunay) {
     this.xScale = xScale
     this.yScale = yScale
-    this.onPoint =
-      onPoint ??
-      (() => {
-        return
-      })
+    this.onPoint = onPoint ?? (() => {})
     this.onLeave = onLeave ?? (() => null)
     this.onClick = onClick ?? this.onClick
     this.xAccessor = xAccessor

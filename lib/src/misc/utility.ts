@@ -1,4 +1,4 @@
-import { select } from 'd3-selection'
+import { select } from 'd3'
 import { AccessorFunction } from './typings'
 
 enum Dimension {

@@ -1,4 +1,4 @@
-import { Selection } from 'd3-selection'
+import { Selection } from 'd3'
 import Point from '../components/point'
 
 export interface AccessorFunction {

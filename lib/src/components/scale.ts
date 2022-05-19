@@ -1,4 +1,4 @@
-import { scaleLinear, ScaleLinear } from 'd3-scale'
+import { scaleLinear, ScaleLinear } from 'd3'
 import { Domain, Range } from '../misc/typings'
 
 export enum ScaleType {
@@ -59,6 +59,7 @@ export default class Scale {
   get range(): Range {
     return this.scaleObject.range()
   }
+
   set range(range: Range) {
     this.scaleObject.range(range)
   }
@@ -66,6 +67,7 @@ export default class Scale {
   get domain(): Domain {
     return this.scaleObject.domain()
   }
+
   set domain(domain: Domain) {
     // fix custom domain values if necessary
     if (typeof this.minValue !== 'undefined') domain[0] = this.minValue

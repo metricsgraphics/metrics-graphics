@@ -1,5 +1,5 @@
 import AbstractChart, { IAbstractChart } from './abstractChart'
-import { max, bin } from 'd3-array'
+import { max, bin } from 'd3'
 import Delaunay from '../components/delaunay'
 import Rect from '../components/rect'
 import { TooltipSymbol } from '../components/tooltip'

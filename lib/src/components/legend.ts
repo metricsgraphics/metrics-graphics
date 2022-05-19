@@ -1,5 +1,5 @@
 import constants from '../misc/constants'
-import { select } from 'd3-selection'
+import { select } from 'd3'
 import { LegendSymbol } from '../misc/typings'
 
 export interface ILegend {

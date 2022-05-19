@@ -1,4 +1,4 @@
-import { line, curveCatmullRom, CurveFactory } from 'd3-shape'
+import { line, curveCatmullRom, CurveFactory } from 'd3'
 import { AccessorFunction, SvgD3Selection } from '../misc/typings'
 import Scale from './scale'
 
