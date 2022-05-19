@@ -1,0 +1,27 @@
+name: Deploy GitHub Pages
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
+      - run: yarn
+      - name: Build library
+        run: yarn build
+        working-directory: ./lib
+      - name: Build frontend
+        run: yarn build
+        working-directory: ./docs
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        with:
+          branch: gh-pages
+          folder: ./docs/dist
