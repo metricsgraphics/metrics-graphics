@@ -1,5 +1,5 @@
-import { randomId, makeAccessorFunction } from '../misc/utility'
 import { select, extent, max, brush as d3brush, brushX, brushY } from 'd3'
+import { randomId, makeAccessorFunction } from '../misc/utility'
 import Scale from '../components/scale'
 import Axis, { IAxis, AxisOrientation } from '../components/axis'
 import Tooltip from '../components/tooltip'
@@ -239,12 +239,7 @@ export default abstract class AbstractChart {
       return
     }
 
-    const brush =
-      whichBrush === BrushType.X
-        ? brushX()
-        : whichBrush === BrushType.Y
-        ? brushY()
-        : d3brush()
+    const brush = whichBrush === BrushType.X ? brushX() : whichBrush === BrushType.Y ? brushY() : d3brush()
     brush.on('end', ({ selection }) => {
       // if no content is set, do nothing
       if (!this.content) {
@@ -265,20 +260,12 @@ export default abstract class AbstractChart {
         this.yScale.domain = this.yDomain
       } else {
         if (this.brush === 'x') {
-          this.xScale.domain = [selection[0], selection[1]].map(
-            this.xScale.scaleObject.invert
-          )
+          this.xScale.domain = [selection[0], selection[1]].map(this.xScale.scaleObject.invert)
         } else if (this.brush === 'y') {
-          this.yScale.domain = [selection[0], selection[1]].map(
-            this.yScale.scaleObject.invert
-          )
+          this.yScale.domain = [selection[0], selection[1]].map(this.yScale.scaleObject.invert)
         } else {
-          this.xScale.domain = [selection[0][0], selection[1][0]].map(
-            this.xScale.scaleObject.invert
-          )
-          this.yScale.domain = [selection[1][1], selection[0][1]].map(
-            this.yScale.scaleObject.invert
-          )
+          this.xScale.domain = [selection[0][0], selection[1][0]].map(this.xScale.scaleObject.invert)
+          this.yScale.domain = [selection[1][1], selection[0][1]].map(this.yScale.scaleObject.invert)
         }
         this.content.select('.brush').call((brush as any).move, null)
       }
@@ -400,9 +387,7 @@ export default abstract class AbstractChart {
     const height = max(this.yScale.range)
 
     if (!width || !height) {
-      console.error(
-        `error: width or height is null (width: "${width}", height: "${height}")`
-      )
+      console.error(`error: width or height is null (width: "${width}", height: "${height}")`)
       return
     }
 
@@ -438,11 +423,7 @@ export default abstract class AbstractChart {
     // clear svg
     svg.remove()
 
-    this.svg = this.target
-      .append('svg')
-      .classed('mg-graph', true)
-      .attr('width', this.width)
-      .attr('height', this.height)
+    this.svg = this.target.append('svg').classed('mg-graph', true).attr('width', this.width).attr('height', this.height)
 
     // prepare clip path
     this.svg.select('.mg-clip-path').remove()

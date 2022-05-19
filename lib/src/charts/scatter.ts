@@ -1,15 +1,10 @@
-import AbstractChart, { IAbstractChart } from './abstractChart'
 import Delaunay from '../components/delaunay'
 import Rug, { RugOrientation } from '../components/rug'
 import { makeAccessorFunction } from '../misc/utility'
-import {
-  AccessorFunction,
-  LegendSymbol,
-  InteractionFunction,
-  EmptyInteractionFunction
-} from '../misc/typings'
+import { AccessorFunction, LegendSymbol, InteractionFunction, EmptyInteractionFunction } from '../misc/typings'
 import Point from '../components/point'
 import { TooltipSymbol } from '../components/tooltip'
+import AbstractChart, { IAbstractChart } from './abstractChart'
 
 export interface IScatterChart extends IAbstractChart {
   /** accessor specifying the size of a data point. Can be either a string (name of the size field) or a function (receiving a data point and returning its size) */
@@ -38,19 +33,12 @@ export default class ScatterChart extends AbstractChart {
   yRug?: Rug
   _activePoint: ActivePoint = { i: -1, j: -1 }
 
-  constructor({
-    sizeAccessor = () => 3,
-    xRug = false,
-    yRug = false,
-    ...args
-  }: IScatterChart) {
+  constructor({ sizeAccessor = () => 3, xRug = false, yRug = false, ...args }: IScatterChart) {
     super(args)
     this.showXRug = xRug
     this.showYRug = yRug
 
-    this.sizeAccessor = sizeAccessor
-      ? makeAccessorFunction(sizeAccessor)
-      : () => 3
+    this.sizeAccessor = sizeAccessor ? makeAccessorFunction(sizeAccessor) : () => 3
 
     this.redraw()
   }
@@ -129,7 +117,7 @@ export default class ScatterChart extends AbstractChart {
         const point = this.generatePoint({
           data,
           color: this.colors[i],
-          radius: this.sizeAccessor(data),
+          radius: this.sizeAccessor(data) as number,
           fillOpacity: 0.3,
           strokeWidth: 1
         })
@@ -188,6 +176,10 @@ export default class ScatterChart extends AbstractChart {
       onLeave: this.onLeaveHandler()
     })
     this.delaunay.mountTo(this.container)
+  }
+
+  get activePoint() {
+    return this._activePoint
   }
 
   set activePoint({ i, j }: ActivePoint) {

@@ -33,16 +33,7 @@ export default class Line {
   data: Array<any>
   color: string
 
-  constructor({
-    data,
-    xAccessor,
-    yAccessor,
-    xScale,
-    yScale,
-    curve,
-    color,
-    defined
-  }: ILine) {
+  constructor({ data, xAccessor, yAccessor, xScale, yScale, curve, color, defined }: ILine) {
     // cry if no data was passed
     if (!data) throw new Error('line needs data')
     this.data = data
@@ -66,11 +57,6 @@ export default class Line {
    * @param svg d3 node to mount the line to.
    */
   mountTo(svg: SvgD3Selection): void {
-    svg
-      .append('path')
-      .classed('mg-line', true)
-      .attr('stroke', this.color)
-      .datum(this.data)
-      .attr('d', this.lineObject)
+    svg.append('path').classed('mg-line', true).attr('stroke', this.color).datum(this.data).attr('d', this.lineObject)
   }
 }

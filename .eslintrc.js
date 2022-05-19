@@ -1,31 +1,64 @@
-/** @ts-check @type import('./types').TsEslintConfig */
 module.exports = {
+  ignorePatterns: ['lib/dist/**/*'],
   extends: [
-    'eslint-config-standard',
+    'standard',
+    'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
     'plugin:prettier/recommended'
   ],
-  plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: '2020'
+  },
+  plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
-    //
-    // Disable rules provided by other configs
-    //
-
-    'no-unused-vars': 0, // Provided by TypeScript
-    'no-undef': 0, // Provided by TypeScript
-    'no-void': 0,
-
-    //
-    // Disable opinionated rules from @typescript-eslint
-    //
-
-    '@typescript-eslint/member-delimiter-style': 0, // Provided by Prettier
-    '@typescript-eslint/interface-name-prefix': 0,
-    '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/explicit-function-return-type': 0,
-    '@typescript-eslint/no-use-before-define': 0,
-    '@typescript-eslint/no-non-null-assertion': 0,
-    '@typescript-eslint/no-unused-vars': 0 // Use TS compiler option instead
+    camelcase: 'off',
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
+    'prettier/prettier': [
+      'error',
+      {
+        tabWidth: 2,
+        printWidth: 120,
+        singleQuote: true,
+        trailingComma: 'none',
+        semi: false,
+        overrides: [
+          {
+            files: '*.json',
+            options: {
+              parser: 'json'
+            }
+          },
+          {
+            files: '*.html',
+            options: {
+              parser: 'html'
+            }
+          },
+          {
+            files: '*.css',
+            options: {
+              parser: 'css'
+            }
+          },
+          {
+            files: '*.md',
+            options: {
+              parser: 'markdown'
+            }
+          }
+        ]
+      }
+    ],
+    'import/order': 'error',
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off'
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
   }
 }

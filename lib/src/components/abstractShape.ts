@@ -1,5 +1,5 @@
-import Scale from './scale'
 import { SvgD3Selection } from '../misc/typings'
+import Scale from './scale'
 
 export interface IAbstractShape {
   /** datapoint used to generate shape */
@@ -30,14 +30,7 @@ export default abstract class AbstractShape {
   fillOpacity = 1
   strokeWidth = 0
 
-  constructor({
-    data,
-    xScale,
-    yScale,
-    color,
-    fillOpacity,
-    strokeWidth
-  }: IAbstractShape) {
+  constructor({ data, xScale, yScale, color, fillOpacity, strokeWidth }: IAbstractShape) {
     this.data = data
     this.xScale = xScale
     this.yScale = yScale

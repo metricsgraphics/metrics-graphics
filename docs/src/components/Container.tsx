@@ -37,10 +37,7 @@ const Container: React.FC<ContainerProps> = ({ title, description, chartRenderer
       </div>
       <div className="flex-1">
         {rendered && (
-          <div
-            className="rounded-lg overflow-hidden text-xs"
-            dangerouslySetInnerHTML={{ __html: rendered }}
-          />
+          <div className="rounded-lg overflow-hidden text-xs" dangerouslySetInnerHTML={{ __html: rendered }} />
         )}
       </div>
     </div>

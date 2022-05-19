@@ -1,16 +1,16 @@
 import { Selection } from 'd3'
 import Point from '../components/point'
 
-export interface AccessorFunction {
-  (dataObject: any): any
+export interface AccessorFunction<X = any, Y = any> {
+  (dataObject: X): Y
 }
 
 export interface TextFunction {
-  (dataObject: any): string
+  (dataObject: unknown): string
 }
 
-export interface InteractionFunction {
-  (pointArray: Array<any>): void
+export interface InteractionFunction<T = any> {
+  (pointArray: Array<T>): void
 }
 
 export interface EmptyInteractionFunction {
@@ -18,7 +18,7 @@ export interface EmptyInteractionFunction {
 }
 
 export interface DefinedFunction {
-  (dataObject: any): boolean
+  (dataObject: unknown): boolean
 }
 
 export interface Margin {

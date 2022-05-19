@@ -1,19 +1,7 @@
+import { axisTop, axisLeft, axisRight, axisBottom, format, timeFormat } from 'd3'
 import constants from '../misc/constants'
-import {
-  axisTop,
-  axisLeft,
-  axisRight,
-  axisBottom,
-  format,
-  timeFormat
-} from 'd3'
+import { GD3Selection, LineD3Selection, TextD3Selection, TextFunction } from '../misc/typings'
 import Scale from './scale'
-import {
-  TextFunction,
-  LineD3Selection,
-  TextD3Selection,
-  GD3Selection
-} from '../misc/typings'
 
 const DEFAULT_VERTICAL_OFFSET = 35
 const DEFAULT_HORIZONTAL_OFFSET = 45
@@ -182,22 +170,11 @@ export default class Axis {
         .append('line')
         .classed('domain', true)
         .attr('x1', this.isVertical ? 0.5 : this.compact ? this.buffer : 0)
-        .attr(
-          'x2',
-          this.isVertical
-            ? 0.5
-            : this.compact
-            ? this.scale.range[1]
-            : this.scale.range[1] + 2 * this.buffer
-        )
+        .attr('x2', this.isVertical ? 0.5 : this.compact ? this.scale.range[1] : this.scale.range[1] + 2 * this.buffer)
         .attr('y1', this.isVertical ? (this.compact ? this.top + 0.5 : 0.5) : 0)
         .attr(
           'y2',
-          this.isVertical
-            ? this.compact
-              ? this.scale.range[0] + 0.5
-              : this.scale.range[0] + 2 * this.buffer + 0.5
-            : 0
+          this.isVertical ? (this.compact ? this.scale.range[0] + 0.5 : this.scale.range[0] + 2 * this.buffer + 0.5) : 0
         )
   }
 
@@ -216,18 +193,12 @@ export default class Axis {
         .attr('y', yValue)
         .attr('text-anchor', 'middle')
         .classed('label', true)
-        .attr(
-          'transform',
-          this.isVertical ? `rotate(${-90} ${xValue},${yValue})` : ''
-        )
+        .attr('transform', this.isVertical ? `rotate(${-90} ${xValue},${yValue})` : '')
         .text(this.label)
   }
 
   get isVertical(): boolean {
-    return [
-      constants.axisOrientation.left,
-      constants.axisOrientation.right
-    ].includes(this.orientation)
+    return [constants.axisOrientation.left, constants.axisOrientation.right].includes(this.orientation)
   }
 
   get innerLeft(): number {
@@ -271,10 +242,7 @@ export default class Axis {
     // if necessary, make ticks longer
     if (this.extendedTicks) {
       axisContainer.call((g) =>
-        g
-          .selectAll('.tick line')
-          .attr(this.tickAttribute, this.extendedTickLength)
-          .attr('opacity', 0.3)
+        g.selectAll('.tick line').attr(this.tickAttribute, this.extendedTickLength).attr('opacity', 0.3)
       )
     }
 
@@ -326,20 +294,27 @@ export default class Axis {
     }
   }
 
+  get tickFormat() {
+    return this.axisObject.tickFormat()
+  }
+
   set tickFormat(tickFormat: FormatFunction | string) {
     // if tickFormat is a function, apply it directly
-    const formatFunction =
-      typeof tickFormat === 'function'
-        ? tickFormat
-        : this.stringToFormat(tickFormat)
+    const formatFunction = typeof tickFormat === 'function' ? tickFormat : this.stringToFormat(tickFormat)
 
-    this.axisObject.tickFormat(
-      (d: any) => `${this.prefix}${formatFunction(d)}${this.suffix}`
-    )
+    this.axisObject.tickFormat((d: any) => `${this.prefix}${formatFunction(d)}${this.suffix}`)
+  }
+
+  get tickCount() {
+    return this.axisObject.ticks()
   }
 
   set tickCount(tickCount: number) {
     this.axisObject.ticks(tickCount)
+  }
+
+  get tickLength() {
+    return this.axisObject.tickSize()
   }
 
   set tickLength(length: number) {

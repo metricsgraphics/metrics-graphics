@@ -1,17 +1,12 @@
-import AbstractChart, { IAbstractChart } from './abstractChart'
 import Line from '../components/line'
 import Area from '../components/area'
 import constants from '../misc/constants'
 import Delaunay, { IDelaunay } from '../components/delaunay'
 import { makeAccessorFunction } from '../misc/utility'
-import {
-  AccessorFunction,
-  LegendSymbol,
-  InteractionFunction,
-  EmptyInteractionFunction
-} from '../misc/typings'
+import { AccessorFunction, LegendSymbol, InteractionFunction, EmptyInteractionFunction } from '../misc/typings'
 import { IPoint } from '../components/point'
 import { TooltipSymbol } from '../components/tooltip'
+import AbstractChart, { IAbstractChart } from './abstractChart'
 
 type ConfidenceBand = [AccessorFunction | string, AccessorFunction | string]
 
@@ -47,24 +42,14 @@ export default class LineChart extends AbstractChart {
   // one delaunay point per line
   delaunayPoints: Array<any> = []
 
-  constructor({
-    area,
-    confidenceBand,
-    voronoi,
-    defined,
-    activeAccessor,
-    activePoint,
-    ...args
-  }: ILineChart) {
+  constructor({ area, confidenceBand, voronoi, defined, activeAccessor, activePoint, ...args }: ILineChart) {
     super(args)
 
     // if data is not a 2d array, die
-    if (!Array.isArray(args.data[0]))
-      throw new Error('data is not a 2-dimensional array.')
+    if (!Array.isArray(args.data[0])) throw new Error('data is not a 2-dimensional array.')
 
     if (defined) this.defined = defined
-    if (activeAccessor)
-      this.activeAccessor = makeAccessorFunction(activeAccessor)
+    if (activeAccessor) this.activeAccessor = makeAccessorFunction(activeAccessor)
     this.activePoint = activePoint ?? this.activePoint
     this.area = area ?? this.area
     this.confidenceBand = confidenceBand ?? this.confidenceBand
@@ -182,9 +167,7 @@ export default class LineChart extends AbstractChart {
 
       // if area is array, only show areas for the truthy lines
     } else if (Array.isArray(area)) {
-      areas = this.data
-        .filter((lineData, index) => area[index])
-        .map(areaGenerator)
+      areas = this.data.filter((lineData, index) => area[index]).map(areaGenerator)
     }
 
     // mount areas
@@ -226,9 +209,7 @@ export default class LineChart extends AbstractChart {
       return
     }
 
-    const markerContainer = this.content
-      .append('g')
-      .attr('transform', `translate(${this.left},${this.top})`)
+    const markerContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.markers.forEach((marker) => {
       const x = this.xScale.scaleObject(this.xAccessor(marker))
       markerContainer
@@ -238,12 +219,7 @@ export default class LineChart extends AbstractChart {
         .attr('x2', x!)
         .attr('y1', this.yScale.range[0] + this.buffer)
         .attr('y2', this.yScale.range[1] + this.buffer)
-      markerContainer
-        .append('text')
-        .classed('text-marker', true)
-        .attr('x', x!)
-        .attr('y', 8)
-        .text(marker.label)
+      markerContainer.append('text').classed('text-marker', true).attr('x', x!).attr('y', 8).text(marker.label)
     })
   }
 
@@ -254,9 +230,7 @@ export default class LineChart extends AbstractChart {
       return
     }
 
-    const baselineContainer = this.content
-      .append('g')
-      .attr('transform', `translate(${this.left},${this.top})`)
+    const baselineContainer = this.content.append('g').attr('transform', `translate(${this.left},${this.top})`)
     this.baselines.forEach((baseline) => {
       const y = this.yScale.scaleObject(this.yAccessor(baseline))
       baselineContainer

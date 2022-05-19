@@ -1,9 +1,5 @@
 import constants from '../misc/constants'
-import {
-  TextFunction,
-  AccessorFunction,
-  GenericD3Selection
-} from '../misc/typings'
+import { TextFunction, AccessorFunction, GenericD3Selection } from '../misc/typings'
 
 export enum TooltipSymbol {
   CIRCLE = 'circle',
@@ -50,17 +46,7 @@ export default class Tooltip {
   node: any
   textFunction = (x: any) => 'bla'
 
-  constructor({
-    legendObject,
-    legend,
-    colors,
-    textFunction,
-    data,
-    left,
-    top,
-    xAccessor,
-    yAccessor
-  }: ITooltip) {
+  constructor({ legendObject, legend, colors, textFunction, data, left, top, xAccessor, yAccessor }: ITooltip) {
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? []
     this.colors = colors ?? this.colors
@@ -77,16 +63,9 @@ export default class Tooltip {
    * @param xAccessor if no custom text function is specified, this function specifies how to get the x value from a specific data point.
    * @param yAccessor if no custom text function is specified, this function specifies how to get the y value from a specific data point.
    */
-  setTextFunction(
-    textFunction?: TextFunction,
-    xAccessor?: AccessorFunction,
-    yAccessor?: AccessorFunction
-  ): void {
+  setTextFunction(textFunction?: TextFunction, xAccessor?: AccessorFunction, yAccessor?: AccessorFunction): void {
     this.textFunction =
-      textFunction ||
-      (xAccessor && yAccessor
-        ? this.baseTextFunction(xAccessor, yAccessor)
-        : this.textFunction)
+      textFunction || (xAccessor && yAccessor ? this.baseTextFunction(xAccessor, yAccessor) : this.textFunction)
   }
 
   /**
@@ -96,21 +75,14 @@ export default class Tooltip {
    * @param yAccessor returns the y value of a given data point.
    * @returns base text function used to render the tooltip for a given datapoint.
    */
-  baseTextFunction(
-    xAccessor: AccessorFunction,
-    yAccessor: AccessorFunction
-  ): TextFunction {
+  baseTextFunction(xAccessor: AccessorFunction, yAccessor: AccessorFunction): TextFunction {
     return (point: any) => `${xAccessor(point)}: ${yAccessor(point)}`
   }
 
   /**
    * Update the tooltip.
    */
-  update({
-    data,
-    legendObject,
-    legend
-  }: Pick<ITooltip, 'data' | 'legendObject' | 'legend'>): void {
+  update({ data, legendObject, legend }: Pick<ITooltip, 'data' | 'legendObject' | 'legend'>): void {
     this.data = data ?? this.data
     this.legendObject = legendObject ?? this.legendObject
     this.legend = legend ?? this.legend
@@ -158,11 +130,7 @@ export default class Tooltip {
         .attr('y', index * 12)
 
       // category
-      node
-        .append('tspan')
-        .classed('text-category', true)
-        .attr('fill', color)
-        .text(this.legend[realIndex])
+      node.append('tspan').classed('text-category', true).attr('fill', color).text(this.legend[realIndex])
 
       // symbol
       node.append('tspan').attr('dx', '6').attr('fill', color).text(symbol)
