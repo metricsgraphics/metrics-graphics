@@ -9,7 +9,8 @@
     "ts-types": "tsc --emitDeclarationOnly --outDir dist",
     "build": "rimraf dist && concurrently \"node ./esbuild.mjs\" \"npm run ts-types\" && cp src/mg.css dist/mg.css",
     "lint": "eslint src",
-    "test": "echo \"no tests set up, will do later\""
+    "test": "echo \"no tests set up, will do later\"",
+    "analyze": "source-map-explorer dist/esm/index.js"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,7 @@
     "concurrently": "^7.2.0",
     "deepmerge": "^4.2.2",
     "esbuild": "^0.14.39",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "source-map-explorer": "^2.5.2"
   }
 }
