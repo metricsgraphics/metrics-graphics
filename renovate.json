@@ -1,8 +1,0 @@
-{
-  "extends": [
-    "config:base",
-    ":maintainLockFilesWeekly",
-    ":prNotPending"
-  ],
-  "pinVersions": false
-}
