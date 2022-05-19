@@ -1,5 +1,5 @@
-import constants from '../misc/constants'
 import { select } from 'd3'
+import constants from '../misc/constants'
 import { LegendSymbol } from '../misc/typings'
 
 export interface ILegend {
@@ -64,8 +64,7 @@ export default class Legend {
     const symbol = constants.symbol[this.symbolType]
 
     // create d3 selection if necessary
-    const target =
-      typeof node === 'string' ? select(node).append('div') : node.append('div')
+    const target = typeof node === 'string' ? select(node).append('div') : node.append('div')
     target.classed('mg-legend', true)
 
     this.legend.forEach((item, index) => {

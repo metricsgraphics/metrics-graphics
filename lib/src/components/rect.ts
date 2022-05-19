@@ -1,5 +1,5 @@
-import AbstractShape, { IAbstractShape } from './abstractShape'
 import { AccessorFunction, GenericD3Selection } from '../misc/typings'
+import AbstractShape, { IAbstractShape } from './abstractShape'
 
 export interface IRect extends IAbstractShape {
   /** function to access the x value of the rectangle */
@@ -21,13 +21,7 @@ export default class Rect extends AbstractShape {
   widthAccessor: AccessorFunction
   heightAccessor: AccessorFunction
 
-  constructor({
-    xAccessor,
-    yAccessor,
-    widthAccessor,
-    heightAccessor,
-    ...args
-  }: IRect) {
+  constructor({ xAccessor, yAccessor, widthAccessor, heightAccessor, ...args }: IRect) {
     super(args)
     this.xAccessor = xAccessor
     this.yAccessor = yAccessor
@@ -38,12 +32,15 @@ export default class Rect extends AbstractShape {
   get x(): number {
     return this.xScale.scaleObject(this.xAccessor(this.data))!
   }
+
   get y(): number {
     return this.yScale.scaleObject(this.yAccessor(this.data))!
   }
+
   get width(): number {
     return Math.max(0, Math.abs(this.widthAccessor(this.data)))
   }
+
   get height(): number {
     return Math.max(0, this.yScale.scaleObject(this.heightAccessor(this.data))!)
   }

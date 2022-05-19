@@ -12,12 +12,8 @@ enum Dimension {
  * @param functionOrString accessor string/function to be made an accessor function
  * @returns accessor function
  */
-export function makeAccessorFunction(
-  functionOrString: AccessorFunction | string
-): AccessorFunction {
-  return typeof functionOrString === 'string'
-    ? (d: any) => d[functionOrString]
-    : functionOrString
+export function makeAccessorFunction(functionOrString: AccessorFunction | string): AccessorFunction {
+  return typeof functionOrString === 'string' ? (d: any) => d[functionOrString] : functionOrString
 }
 
 /**
@@ -37,10 +33,7 @@ export function randomId(): string {
  * @param dimension height or width.
  * @returns width or height in pixels.
  */
-export function getPixelDimension(
-  target: string,
-  dimension: Dimension
-): number {
+export function getPixelDimension(target: string, dimension: Dimension): number {
   return Number(select(target).style(dimension).replace(/px/g, ''))
 }
 
@@ -62,10 +55,6 @@ export function getWidth(width: number, target: string): number {
  * @param target d3 select specifier.
  * @returns height of element.
  */
-export function getHeight(
-  isFullHeight: boolean,
-  height: number,
-  target: string
-): number {
+export function getHeight(isFullHeight: boolean, height: number, target: string): number {
   return getPixelDimension(target, Dimension.WIDTH)
 }

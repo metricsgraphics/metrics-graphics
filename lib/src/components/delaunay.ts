@@ -71,7 +71,7 @@ export default class Delaunay {
   }: IDelaunay) {
     this.xScale = xScale
     this.yScale = yScale
-    this.onPoint = onPoint ?? (() => {})
+    this.onPoint = onPoint ?? (() => null)
     this.onLeave = onLeave ?? (() => null)
     this.onClick = onClick ?? this.onClick
     this.xAccessor = xAccessor
@@ -101,8 +101,8 @@ export default class Delaunay {
 
     this.delaunay = DelaunayObject.from(
       this.points.map((point) => [
-        this.xAccessor(point),
-        isNested && !aggregate ? this.yAccessor(point) : 0
+        this.xAccessor(point) as number,
+        (isNested && !aggregate ? this.yAccessor(point) : 0) as number
       ])
     )
   }
@@ -174,11 +174,7 @@ export default class Delaunay {
 
     // if points should be aggregated, get all points with the same x value
     if (this.aggregate) {
-      this.onPoint(
-        this.aggregatedPoints.get(
-          JSON.stringify(this.xAccessor(this.points[index]))
-        )
-      )
+      this.onPoint(this.aggregatedPoints.get(JSON.stringify(this.xAccessor(this.points[index]))))
     } else {
       this.onPoint([this.points[index]])
     }

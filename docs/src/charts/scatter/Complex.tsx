@@ -27,8 +27,7 @@ const Complex = () => (
         xAccessor: 'x',
         yAccessor: 'y',
         sizeAccessor: (x: any) => Math.abs(x.w) * 3,
-        tooltipFunction: (point) =>
-          `${formatDecimal(point.x)} - ${formatDecimal(point.y)}: ${formatDecimal(point.w)}`
+        tooltipFunction: (point) => `${formatDecimal(point.x)} - ${formatDecimal(point.y)}: ${formatDecimal(point.w)}`
       })
     }
     code={`new ScatterChart({

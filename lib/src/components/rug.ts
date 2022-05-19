@@ -11,7 +11,7 @@ export interface IRug {
   /** accessor used to get the rug value for a given datapoint */
   accessor: AccessorFunction
 
-  /**scale function of the rug */
+  /** scale function of the rug */
   scale: Scale
 
   /** data to be rugged */
@@ -44,16 +44,7 @@ export default class Rug {
   colors = constants.defaultColors
   orientation = RugOrientation.HORIZONTAL
 
-  constructor({
-    accessor,
-    scale,
-    data,
-    tickLength,
-    colors,
-    orientation,
-    left,
-    top
-  }: IRug) {
+  constructor({ accessor, scale, data, tickLength, colors, orientation, left, top }: IRug) {
     this.accessor = accessor
     this.scale = scale
     this.data = data
@@ -76,9 +67,7 @@ export default class Rug {
   mountTo(svg: GenericD3Selection): void {
     // add container
     const top = this.isVertical ? this.top : this.top - this.tickLength
-    const container = svg
-      .append('g')
-      .attr('transform', `translate(${this.left},${top})`)
+    const container = svg.append('g').attr('transform', `translate(${this.left},${top})`)
 
     // add lines
     this.data.forEach((dataArray, i) =>

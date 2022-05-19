@@ -1,5 +1,5 @@
-import AbstractShape, { IAbstractShape } from './abstractShape'
 import { AccessorFunction, SvgD3Selection } from '../misc/typings'
+import AbstractShape, { IAbstractShape } from './abstractShape'
 
 export interface IPoint extends IAbstractShape {
   /** function to access the x value of the point */
@@ -27,6 +27,7 @@ export default class Point extends AbstractShape {
   get cx(): number {
     return this.xScale.scaleObject(this.xAccessor(this.data))!
   }
+
   get cy(): number {
     return this.yScale.scaleObject(this.yAccessor(this.data))!
   }
@@ -59,10 +60,7 @@ export default class Point extends AbstractShape {
     if (data) {
       this.data = data
       if (!this.shapeObject) return
-      this.shapeObject
-        .attr('cx', this.cx)
-        .attr('cy', this.cy)
-        .attr('opacity', 1)
+      this.shapeObject.attr('cx', this.cx).attr('cy', this.cy).attr('opacity', 1)
     }
   }
 }

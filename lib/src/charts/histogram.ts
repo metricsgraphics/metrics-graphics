@@ -1,9 +1,9 @@
-import AbstractChart, { IAbstractChart } from './abstractChart'
 import { max, bin } from 'd3'
 import Delaunay from '../components/delaunay'
 import Rect from '../components/rect'
 import { TooltipSymbol } from '../components/tooltip'
 import { LegendSymbol, InteractionFunction } from '../misc/typings'
+import AbstractChart, { IAbstractChart } from './abstractChart'
 
 export interface IHistogramChart extends IAbstractChart {
   binCount?: number
@@ -81,8 +81,7 @@ export default class HistogramChart extends AbstractChart {
         strokeWidth: 0,
         xAccessor: (bin) => bin.x0,
         yAccessor: (bin) => bin.length,
-        widthAccessor: (bin) =>
-          this.xScale.scaleObject(bin.x1)! - this.xScale.scaleObject(bin.x0)!,
+        widthAccessor: (bin) => this.xScale.scaleObject(bin.x1)! - this.xScale.scaleObject(bin.x0)!,
         heightAccessor: (bin) => -bin.length
       })
       rect.mountTo(this.container!)
@@ -144,6 +143,10 @@ export default class HistogramChart extends AbstractChart {
       onLeave: this.onLeaveHandler()
     })
     this.delaunay.mountTo(this.container)
+  }
+
+  get activeBar() {
+    return this._activeBar
   }
 
   set activeBar(i: number) {
