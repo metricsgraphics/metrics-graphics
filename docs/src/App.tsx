@@ -5,9 +5,7 @@ import NavLink from './components/NavLink'
 import Histogram from './views/Histogram'
 import Home from './views/Home'
 import Lines from './views/Lines'
-// import Api from './views/Api'
 import Scatter from './views/Scatter'
-import ReactMarkdown from 'react-markdown'
 
 setCDN('https://unpkg.com/shiki/')
 
@@ -25,7 +23,6 @@ const App: React.FC = () => (
         <NavLink to="/line">Lines</NavLink>
         <NavLink to="/scatter">Scatterplots</NavLink>
         <NavLink to="/histogram">Histograms</NavLink>
-        <NavLink to="/api">API</NavLink>
       </div>
     </header>
 
@@ -36,7 +33,6 @@ const App: React.FC = () => (
         <Route path="/line" element={<Lines />} />
         <Route path="/scatter" element={<Scatter />} />
         <Route path="/histogram" element={<Histogram />} />
-        {/* <Route path="/api" element={<ReactMarkdown>{Api}</ReactMarkdown>} /> */}
       </Routes>
     </div>
   </div>
