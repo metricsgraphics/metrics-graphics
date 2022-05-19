@@ -1,5 +1,8 @@
 name: PR Gate
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - gh-pages
 
 jobs:
   lint-lib:
