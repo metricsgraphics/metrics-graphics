@@ -1,6 +1,6 @@
 {
   "name": "metrics-graphics",
-  "version": "3.0.0-beta2",
+  "version": "3.0.0-beta1",
   "description": "A library optimized for concise, principled data graphics and layouts",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
