@@ -18,7 +18,7 @@ jobs:
         run: yarn build
         working-directory: ./lib
       - name: Build frontend
-        run: yarn build:gh
+        run: yarn build
         working-directory: ./docs
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.3.0
