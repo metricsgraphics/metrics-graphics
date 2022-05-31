@@ -14,7 +14,7 @@ const Simple: React.FC<PropsWithChildren<unknown>> = ({ children }) => (
         target: ref as any,
         xAccessor: 'x',
         yAccessor: 'y',
-        brush: true,
+        brush: 'xy',
         xRug: true,
         tooltipFunction: (point) => `${formatDecimal(point.x)} - ${formatDecimal(point.y)}`
       })
