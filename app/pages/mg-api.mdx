@@ -1,0 +1,162 @@
+import ParameterTable from '../components/ParameterTable'
+import Layout from '../components/Layout'
+
+<Layout title="MG - API">
+
+# API
+
+All MetricsGraphics charts are classes that can be instantiated with a set of parameters (e.g. `new LineChart({ ... })`). The chart is then mounted to the given `target` (see below), which is for example the `id` of an empty `div` in your DOM or a React `ref`.
+
+## Data formats
+
+MetricsGraphics assumes that your data is either an array of objects or an array of arrays of objects. For example, your data could look like this:
+
+```js
+[{
+  date: '2020-02-01',
+  value: 10
+}, {
+  date: '2020-02-02',
+  value: 12
+}]
+```
+
+## Common Parameters
+
+All charts inherit from an abstract chart, which has the following parameters (optional parameters marked with `?`):
+
+<ParameterTable props={[{
+  name: 'data',
+  type: 'Array<Data>',
+  description: 'Data that is to be visualized.'
+}, {
+  name: 'target',
+  type: 'string',
+  description: 'DOM node to which the graph will be mounted (compatible D3 selection or D3 selection specifier).'
+}, {
+  name: 'width',
+  type: 'number',
+  description: 'Total width of the graph.'
+}, {
+  name: 'height',
+  type: 'number',
+  description: 'Total height of the graph.'
+}, {
+  name: 'markers?',
+  type: 'Array<Data>',
+  description: 'Markers that should be added to the chart. Each marker object should be accessible through the xAccessor and contain a label field.'
+}, {
+  name: 'baselines?',
+  type: 'Array<Data>',
+  description: 'Baselines that should be added to the chart. Each baseline object should be accessible through the yAccessor and contain a label field.'
+}, {
+  name: 'xAccessor?',
+  type: 'string | Accessor',
+  default: 'date',
+  description: 'Either the name of the field that contains the x value or a function that receives a data object and returns its x value.'
+}, {
+  name: 'yAccessor?',
+  type: 'string | Accessor',
+  default: 'value',
+  description: 'Either the name of the field that contains the y value or a function that receives a data object and returns its y value.'
+}, {
+  name: 'margin?',
+  type: 'Margin',
+  default: 'top: 10, left: 60, right: 20, bottom: 40',
+  description: 'Margin around the chart for labels.'
+}, {
+  name: 'buffer?',
+  type: 'number',
+  default: '10',
+  description: 'Amount of buffer space between the axes and the actual graph.'
+}, {
+  name: 'colors?',
+  type: 'Array<string>',
+  default: 'd3.schemeCategory10',
+  description: 'Custom color scheme for the graph.'
+}, {
+  name: 'xScale?',
+  type: 'Partial<Scale>',
+  description: 'Overwrite parameters of the auto-generated x scale.'
+}, {
+  name: 'yScale?',
+  type: 'Partial<Scale>',
+  description: 'Overwrite parameters of the auto-generated y scale.'
+}, {
+  name: 'xAxis?',
+  type: 'Partial<Axis>',
+  description: 'Overwrite parameters of the auto-generated x axis.'
+}, {
+  name: 'yAxis?',
+  type: 'Partial<Axis>',
+  description: 'Overwrite parameters of the auto-generated y axis.'
+}, {
+  name: 'showTooltip?',
+  type: 'boolean',
+  default: 'true',
+  description: 'Whether or not to show a tooltip.'
+}, {
+  name: 'tooltipFunction',
+  type: 'Accessor<Data, string>',
+  description: 'Generate a custom tooltip string.'
+}, {
+  name: 'legend?',
+  type: 'Array<string>',
+  description: 'Used if data is an array of arrays. Names of the sub-arrays of data, used as legend labels.'
+}, {
+  name: 'brush?',
+  type: '"xy" | "x" | "y"',
+  description: 'Adds either a one- or two-dimensional brush to the chart.'
+}]} />
+
+## Common Types
+
+```ts
+type Accessor<X = unknown, Y = unknown> = (dataObject: X) => Y
+
+type Margin = {
+  left: number
+  right: number
+  bottom: number
+  top: number
+}
+
+type Scale = {
+  type: 'linear' // this will be extended in the future
+  range?: [number, number]
+  domain?: [number, number]
+}
+
+type Axis = {
+  scale: Scale
+  buffer: number
+  show?: boolean
+  orientation?: 'top' | 'bottom' | 'left' | 'right'
+  label?: string
+  labelOffset?: number
+  top?: number
+  left?: number
+  
+  // a function to format a given tick, or one of the standard types (date, number, percentage), or string for d3-format
+  tickFormat?: TextFunction | AxisFormat | string
+
+  // defaults to 3 for vertical and 6 for horizontal axes
+  tickCount?: number
+
+  compact?: boolean
+
+  // tick label prefix
+  prefix?: string
+
+  // tick label suffix
+  suffix?: string
+
+  // overwrite d3's default tick lengths
+  tickLength?: number
+
+  // draw extended tick lines
+  extendedTicks?: boolean
+}
+```
+
+</Layout>

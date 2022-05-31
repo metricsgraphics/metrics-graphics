@@ -1,0 +1,31 @@
+{
+  "name": "metrics-graphics-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mapbox/rehype-prism": "^0.8.0",
+    "@mdx-js/loader": "^2.1.1",
+    "@next/mdx": "^12.1.6",
+    "classnames": "^2.3.1",
+    "metrics-graphics": "3.0.0-beta1",
+    "next": "^12.1.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
+    "@types/node": "^17.0.35",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.6.4"
+  }
+}
