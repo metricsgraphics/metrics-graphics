@@ -1,4 +1,4 @@
-<a href="http://metricsgraphicsjs.org/"><img src="http://metricsgraphicsjs.org/images/logo.svg" hspace="0" vspace="0" width="400" height="63"></a>
+[![MetricsGraphics Logo](.github/logo.svg)](https://metricsgraphicsjs.org)
 
 [![BundlePhobia](https://badgen.net/bundlephobia/minzip/mg2)](https://bundlephobia.com/result?p=mg2) [![CodeClimate](https://api.codeclimate.com/v1/badges/dc22d28ce4d8bece4504/maintainability)](https://codeclimate.com/github/jens-ox/metrics-graphics/maintainability) [![Netlify Status](https://api.netlify.com/api/v1/badges/797ef16b-da9e-461f-851b-e50ddfd905ab/deploy-status)](https://app.netlify.com/sites/affectionate-benz-6e3cf9/deploys)
 
