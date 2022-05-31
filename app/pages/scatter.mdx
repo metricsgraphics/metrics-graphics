@@ -1,0 +1,97 @@
+import Layout from '../components/Layout'
+import ParameterTable from '../components/ParameterTable'
+import Simple from '../components/charts/scatter/Simple'
+import Categories from '../components/charts/scatter/Categories'
+import Complex from '../components/charts/scatter/Complex'
+
+<Layout title="MG - Scatterplots">
+
+# Scatterplots
+
+## API
+
+Extends the [base chart options](./mg-api). All options below are optional.
+
+<ParameterTable props={[{
+  name: 'sizeAccessor',
+  type: 'Accessor | string',
+  description: 'Specifies the size of a data point. Can be either a string (name of size field per data object) or a function (returning a number for a given data object).',
+  default: '() => 3'
+}, {
+  name: 'xRug',
+  type: 'boolean',
+  description: 'Whether or not to generate a rug for the x axis.'
+}, {
+  name: 'yRug',
+  type: 'boolean',
+  description: 'Whether or not to generate a rug for the y axis.'
+}]} />
+
+## Examples
+
+### Simple Scatterplot
+
+This is an example scatterplot, in which we have enabled rug plots on the y-axis by setting the rug option to `true`.
+
+<Simple>
+
+```js
+new ScatterChart({
+  data: [points1],
+  width: 500,
+  height: 200,
+  target: '#my-div',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  brush: true,
+  xRug: true,
+  tooltipFunction: (point) => `${formatDecimal(point.x)} - ${formatDecimal(point.y)}`
+})
+```
+
+</Simple>
+
+### Multi-Category Scatterplot
+
+This scatterplot contains data of multiple categories.
+
+<Categories>
+
+```js
+new ScatterChart({
+  data: points2.map((x: any) => x.values),
+  legend: points2.map((x: any) => x.key),
+  width: 500,
+  height: 200,
+  xAccessor: 'x',
+  yAccessor: 'y',
+  yRug: true,
+  target: '#my-div',
+  tooltipFunction: (point) => `${formatDecimal(point.x)} - ${formatDecimal(point.y)}`
+})
+```
+</Categories>
+
+### Scatterplot with Size and Color
+
+Scatterplots have xAccessor, yAccessor and sizeAccessor.
+
+<Complex>
+
+```js
+new ScatterChart({
+  data: points2.map((x: any) => x.values),
+  legend: points2.map((x: any) => x.key),
+  width: 500,
+  height: 200,
+  target: '#my-div',
+  xAccessor: 'x',
+  yAccessor: 'y',
+  sizeAccessor: (x: any) => Math.abs(x.w) * 3,
+  tooltipFunction: (point) => `${formatDecimal(point.x)} - ${formatDecimal(point.y)}: ${formatDecimal(point.w)}`
+})
+```
+  
+</Complex>
+
+</Layout>

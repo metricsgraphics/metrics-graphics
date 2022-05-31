@@ -240,7 +240,7 @@ export default abstract class AbstractChart {
       return
     }
 
-    const brush = whichBrush === BrushType.X ? brushX() : whichBrush === BrushType.Y ? brushY() : d3brush()
+    const brush = whichBrush === 'x' ? brushX() : whichBrush === 'y' ? brushY() : d3brush()
     brush.on('end', ({ selection }) => {
       // if no content is set, do nothing
       if (!this.content) {

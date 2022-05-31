@@ -1,0 +1,224 @@
+import ParameterTable from '../components/ParameterTable'
+import Layout from '../components/Layout'
+import Simple from '../components/charts/line/Simple'
+import Confidence from '../components/charts/line/Confidence'
+import Multi from '../components/charts/line/Multi'
+import Aggregated from '../components/charts/line/Aggregated'
+import Broken from '../components/charts/line/Broken'
+import Active from '../components/charts/line/Active'
+import Baseline from '../components/charts/line/Baseline'
+
+<Layout title="MG - Line Charts">
+
+# Line Charts
+
+## API
+
+Extends the [base chart options](./mg-api). All options below are optional.
+
+<ParameterTable props={[{
+  name: 'area',
+  type: 'Array<Data> | boolean',
+  description: 'Specifies for which sub-array of data an area should be shown. If the chart is only one line, you can set it to true.'
+}, {
+  name: 'confidenceBand',
+  type: '[Accessor, Accessor]',
+  description: 'Two-element array specifying how to access the lower (first) and upper (second) value for the confidence band. The two elements work like accessors (either a string or a function).'
+}, {
+  name: 'voronoi',
+  type: 'Partial<IDelaunay>',
+  description: 'Custom parameters passed to the voronoi generator.'
+}, {
+  name: 'defined',
+  type: '(point: Data) => boolean',
+  description: 'Function specifying whether or not to show a given datapoint. This is mainly used to create partially defined graphs.'
+}, {
+  name: 'activeAccessor',
+  type: 'Accessor',
+  description: 'Accessor that defines whether or not a given data point should be shown as active'
+}, {
+  name: 'activePoint',
+  type: 'Partial<IPoint>',
+  description: 'Custom parameters passed to the active point generator.'
+}]} />
+
+## Examples
+
+### Simple Line Chart
+
+This is a simple line chart. You can remove the area portion by adding `area: false` to the arguments list.
+
+<Simple>
+
+```js
+new LineChart({
+  data: [fakeUsers.map(({ date, value }) => ({ date: new Date(date), value }))],
+  width: 600,
+  height: 200,
+  yScale: {
+    minValue: 0
+  },
+  target: '#my-div',
+  brush: 'xy',
+  area: true,
+  xAccessor: 'date',
+  yAccessor: 'value',
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
+})
+```
+
+</Simple>
+
+### Confidence Band
+
+This is an example of a graph with a confidence band and extended x-axis ticks enabled.
+
+<Confidence>
+
+```js
+new LineChart({
+  data: [
+    confidence.map((entry) => ({
+      ...entry,
+      date: new Date(entry.date)
+    }))
+  ],
+  xAxis: {
+    extendedTicks: true
+  },
+  yAxis: {
+    tickFormat: 'percentage'
+  },
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  confidenceBand: ['l', 'u'],
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatPercent(point.value)}`
+})
+```
+</Confidence>
+
+### Multiple Lines
+
+This line chart contains multiple lines.
+
+<Multi>
+```js
+new LineChart({
+  data: fakeUsers.map((fakeArray) =>
+    fakeArray.map((fakeEntry) => ({
+      ...fakeEntry,
+      date: new Date(fakeEntry.date)
+    }))
+  ),
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
+})
+```
+</Multi>
+
+### Aggregate Rollover
+
+One rollover for all lines.
+
+<Aggregated>
+
+```js
+new LineChart({
+  data: fakeUsers.map((fakeArray) =>
+    fakeArray.map((fakeEntry) => ({
+      ...fakeEntry,
+      date: new Date(fakeEntry.date)
+    }))
+  ),
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  xAccessor: 'date',
+  yAccessor: 'value',
+  legend: ['Line 1', 'Line 2', 'Line 3'],
+  voronoi: {
+    aggregate: true
+  },
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
+})
+```
+</Aggregated>
+
+### Broken lines (missing data points)
+
+You can hide individual data points on a particular attribute by setting the defined accessor (which has to return true for visible points). Data points whose y-accessor values are null are also hidden.
+
+<Broken>
+
+```js
+new LineChart({
+  data: [missing.map((e) => ({ ...e, date: new Date(e.date) }))],
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  defined: (d) => !d.dead,
+  area: true,
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${point.value}`
+})
+```
+
+</Broken>
+
+### Active Points
+
+This line chart displays pre-defined active points.
+
+<Active>
+
+```js
+new LineChart({
+  data: [
+    fakeUsers.map((entry, i) => ({
+      ...entry,
+      date: new Date(entry.date),
+      active: i % 5 === 0
+    }))
+  ],
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  activeAccessor: 'active',
+  activePoint: {
+    radius: 2
+  },
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
+})
+```
+</Active>
+
+### Baseline
+
+Baselines are horizontal lines that can added at arbitrary points.
+
+<Baseline>
+
+```js
+new LineChart({
+  data: [
+    fakeUsers.map((entry) => ({
+      ...entry,
+      date: new Date(entry.date)
+    }))
+  ],
+  baselines: [{ value: 160000000, label: 'a baseline' }],
+  width: 600,
+  height: 200,
+  target: '#my-div',
+  tooltipFunction: (point) => `${formatDate(point.date)}: ${formatCompact(point.value)}`
+})
+```
+
+</Baseline>
+
+</Layout>

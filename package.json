@@ -2,7 +2,7 @@
   "private": true,
   "workspaces": [
     "lib",
-    "docs"
+    "app"
   ],
   "repository": "github:metricsgraphics/metrics-graphics",
   "contributors": [

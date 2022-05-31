@@ -38,11 +38,7 @@ export enum LegendSymbol {
   SQUARE = 'square'
 }
 
-export enum BrushType {
-  XY = 'xy',
-  X = 'x',
-  Y = 'y'
-}
+export type BrushType = 'xy' | 'x' | 'y'
 
 export type Domain = number[]
 export type Range = number[]
